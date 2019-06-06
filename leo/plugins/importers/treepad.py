@@ -61,9 +61,8 @@ class TreePad_Scanner():
         '''Return the next line from self.lines, or None.'''
         if self.i >= len(self.lines):
             return None
-        else:
-            self.i += 1
-            return self.lines[self.i-1]
+        self.i += 1
+        return self.lines[self.i-1]
     #@+node:ekr.20180201204402.5: *3* treepad.read_node
     END_RE = re.compile(r'^<end node> ([^ ]+)$')
 

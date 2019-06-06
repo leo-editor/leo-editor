@@ -40,12 +40,7 @@ class Java_Importer(Importer):
     #@+node:ekr.20161126163014.1: *3* java_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return the cleaned headline.'''
-        if s.strip().endswith('{'):
-            return s.strip('{').strip()
-        else:
-            return s.strip()\
-
-
+        return s.strip('{').strip() if s.strip().endswith('{') else s.strip()
     #@+node:ekr.20161205042019.2: *3* java_i.match_name_patterns
     java_name_pattern = re.compile(r'\s*([\w:]+)')
 

@@ -62,8 +62,7 @@ class Lua_Importer(Importer):
             if self.start_stack:
                 top = self.start_stack.pop()
                 return top == 'function'
-            else:
-                g.trace('unmatched "end" statement at line', i)
+            g.trace('unmatched "end" statement at line', i)
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
     def gen_lines(self, s, parent):

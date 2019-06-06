@@ -76,19 +76,16 @@ class C_Importer(Importer):
         if m:
             if self.c_types_pattern.match(m.group(3)):
                 return True
-            else:
-                prefix = m.group(1).strip() if m.group(1) else ''
-                self.headline = '%s %s' % (prefix, m.group(3))
-                self.headline = self.headline.strip()
-                return True
+            prefix = m.group(1).strip() if m.group(1) else ''
+            self.headline = '%s %s' % (prefix, m.group(3))
+            self.headline = self.headline.strip()
+            return True
         m = self.c_typedef_pattern.match(line)
         if m:
             # Does not set self.headline.
             return True
         m = self.c_types_pattern.match(line)
-        if m:
-            return True
-        return False
+        return bool(m)
     #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''

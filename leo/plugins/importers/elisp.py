@@ -71,8 +71,7 @@ class Elisp_Importer(Importer):
         m = self.elisp_clean_pattern.match(s)
         if m and m.group(1):
             return 'defun %s' % m.group(1)
-        else:
-            return s.strip()
+        return s.strip()
     #@+node:ekr.20161127185851.1: *3* elisp_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''

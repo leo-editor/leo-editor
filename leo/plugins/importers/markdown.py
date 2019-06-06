@@ -86,9 +86,8 @@ class Markdown_Importer(Importer):
         assert 0 <= level < len(self.stack), (level, len(self.stack))
         return self.stack[level]
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
-    # md_hash_pattern = re.compile(r'^(#+)\s*(\w+)(.*)\n')
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
-        # 2016/12/16: Allow any non-blank after the hashes.
+        # Allow any non-blank after the hashes.
 
     def is_hash(self, line):
         '''
@@ -102,10 +101,7 @@ class Markdown_Importer(Importer):
             name = m.group(2).strip()
             if name:
                 return level, name
-            else:
-                return None, None
-        else:
-            return None, None
+        return None, None
     #@+node:ekr.20161202085119.1: *4* md_i.is_underline
     md_pattern_table = (
         re.compile(r'^(=+)\n'),
@@ -129,8 +125,7 @@ class Markdown_Importer(Importer):
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
             return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
-        else:
-            return False
+        return False
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
     def make_decls_node(self, line):
         '''Make a decls node.'''

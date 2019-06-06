@@ -106,8 +106,7 @@ class Rst_Importer(Importer):
                 len(line0) >= len(line1) and
                 len(line2) >= len(line1)
             )
-        else:
-            return False
+        return False
     #@+node:ekr.20161129112703.1: *4* rst_i.is_lookahead_underline
     def is_lookahead_underline(self, i, lines):
         '''True if lines[i:i+1] form an underlined line.'''
@@ -117,8 +116,7 @@ class Rst_Importer(Importer):
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
             return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1)
-        else:
-            return False
+        return False
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
     def is_underline(self, line, extra=None):
         '''True if the line consists of nothing but the same underlining characters.'''
@@ -162,10 +160,9 @@ class Rst_Importer(Importer):
         d = self.rst_seen
         if ch in d:
             return d.get(ch)
-        else:
-            self.rst_level += 1
-            d[ch] = self.rst_level
-            return self.rst_level
+        self.rst_level += 1
+        d[ch] = self.rst_level
+        return self.rst_level
     #@+node:ekr.20161129040921.11: *3* rst_i.post_pass
     def post_pass(self, parent):
         '''A do-nothing post-pass for markdown.'''

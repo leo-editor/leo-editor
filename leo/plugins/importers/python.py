@@ -50,8 +50,7 @@ class Py_Importer(Importer):
                         if s.endswith('('):
                             s = s[:-1].strip()
                         return s + ' '
-                    else:
-                        return ''
+                    return ''
         return ''
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
@@ -217,10 +216,9 @@ class Py_Importer(Importer):
         # Comparing new_state against prev_state does not work for python.
         if self.is_ws_line(line) or prev_state.in_context():
             return False
-        else:
-            # *Any* underindented non-blank line ends the class/def.
-            top = stack[-1]
-            return new_state.level() < top.state.level()
+        # *Any* underindented non-blank line ends the class/def.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         '''
@@ -277,13 +275,12 @@ class Py_Importer(Importer):
         if top.kind == 'None' and new_state.indent > 0:
             # Underindented top-level class/def.
             return False
-        elif top.kind == 'def' and new_state.indent > prev_indent:
+        if top.kind == 'def' and new_state.indent > prev_indent:
             # class/def within a def.
             return False
-        elif top.at_others_flag and new_state.indent > prev_indent:
+        if top.at_others_flag and new_state.indent > prev_indent:
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20170305105047.1: *4* py_i.starts_decorator
     decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
 
@@ -313,10 +310,9 @@ class Py_Importer(Importer):
                     # 2018/05/24: don't check in_context!
                     # The class or def could start a context.
                     return True
-                else:
-                    self.decorator_lines.append(line)
-                    self.skip += 1
-                    prev_state = new_state
+                self.decorator_lines.append(line)
+                self.skip += 1
+                prev_state = new_state
         # Recover froma a bare decorator, without a class or def.
         self.skip = old_skip
         self.decorator_lines = old_decorator_lines

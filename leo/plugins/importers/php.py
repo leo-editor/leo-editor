@@ -85,9 +85,8 @@ class Php_Importer(Importer):
                 self.here_doc_target = None
                 i = n
                 return '', i, 0, 0, 0, False
-            else:
-                # Skip the rest of the line
-                return '', len(s), 0, 0, 0, False
+            # Skip the rest of the line
+            return '', len(s), 0, 0, 0, False
         ch = s[i] # For traces.
         aList = d.get(ch)
         if aList and context:
@@ -132,9 +131,9 @@ class Php_Importer(Importer):
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
             return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        else:
-            # No match: stay in present state. All deltas are zero.
-            new_context = context
+        #
+        # No match: stay in present state. All deltas are zero.
+        new_context = context
         return new_context, i+1, 0, 0, 0, False
     #@+node:ekr.20161130044051.1: *3* php_i.skip_heredoc_string (not used)
     # EKR: This is Dave Hein's heredoc code from the old PHP scanner.

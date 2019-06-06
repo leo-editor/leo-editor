@@ -25,10 +25,7 @@ class Dart_Importer(Importer):
     def clean_headline(self, s, p=None):
 
         m = self.dart_pattern.match(s)
-        if m:
-            return m.group(0).strip('(').strip()
-        else:
-            return s.strip()
+        return m.group(0).strip('(').strip() if m else s.strip()
     #@-others
 #@+node:ekr.20161123120245.6: ** class class Dart_ScanState
 class Dart_ScanState:

@@ -228,8 +228,9 @@ class Import_IPYNB:
         d = p.v.u.get('ipynb')
         if not d:
             return {}
-        else:
-            return d.get(key) if key else d
+        if key:
+            return d.get(key)
+        return d
     #@+node:ekr.20160412101537.16: *4* ipynb.move_node
     def move_node(self, n, p, stack):
         '''Move node to level n'''

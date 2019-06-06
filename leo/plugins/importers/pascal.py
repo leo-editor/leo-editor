@@ -26,10 +26,7 @@ class Pascal_Importer(Importer):
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         m = self.pascal_clean_pattern.match(s)
-        if m:
-            return '%s %s' % (m.group(1), m.group(2))
-        else:
-            return s.strip()
+        return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
 
     #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
     def cut_stack(self, new_state, stack):
@@ -43,10 +40,9 @@ class Pascal_Importer(Importer):
         '''True if line ends a function or procedure.'''
         if prev_state.context:
             return False
-        else:
-            ls = line.lstrip()
-            val = g.match_word(ls, 0, 'end')
-            return val
+        ls = line.lstrip()
+        val = g.match_word(ls, 0, 'end')
+        return val
     #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict
     #@@nobeautify
 
@@ -100,12 +96,11 @@ class Pascal_Importer(Importer):
         '''True if the line starts a block.'''
         if prev_state.context:
             return False
-        else:
-            line = lines[i]
-            for pattern in self.pascal_pattern_table:
-                m = pattern.match(line)
-                if m: return True
-            return False
+        line = lines[i]
+        for pattern in self.pascal_pattern_table:
+            m = pattern.match(line)
+            if m: return True
+        return False
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:

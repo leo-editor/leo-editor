@@ -274,10 +274,9 @@ class Importer:
         table = self.cached_scan_tables.get(key)
         if table:
             return table
-        else:
-            table = self.get_new_dict(context)
-            self.cached_scan_tables[key] = table
-            return table
+        table = self.get_new_dict(context)
+        self.cached_scan_tables[key] = table
+        return table
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
     def scan_dict(self, context, i, s, d):
         '''
@@ -322,9 +321,9 @@ class Importer:
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
             return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        else:
-            # No match: stay in present state. All deltas are zero.
-            new_context = context
+        #
+        # No match: stay in present state. All deltas are zero.
+        new_context = context
         return new_context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s, prev_state):
@@ -1157,9 +1156,8 @@ class Importer:
         undent_val = self.get_leading_indent(lines, 0, ignoreComments=ignoreComments)
         if undent_val == 0:
             return s
-        else:
-            result = self.undent_by(s, undent_val)
-            return result
+        result = self.undent_by(s, undent_val)
+        return result
     #@+node:ekr.20161108180655.2: *5* i.undent_by
     def undent_by(self, s, undent_val):
         '''
