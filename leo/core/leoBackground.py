@@ -155,38 +155,39 @@ class BackgroundProcessManager:
         This is not what g.es_print does!
         '''
         # Warning: don't use g.es or g.es_print here!
-        s = s and s.rstrip()
-        if not s:
-            print('bpm.put_log: no s')
-            return
-        # Make sure c still exists
         data = self.data
-        c = data and data.c
-        if not c or not c.exists:
-            print('bpm.put_log: no c!')
+        s = s and s.rstrip()
+        if not s or not data:
             return
+        #
+        # Make sure c still exists.
+        c = data.c
+        if not c or not c.exists:
+            return
+        log = c.frame.log
+        #
         # Always print the message.
         print(s)
-        # Put the plain message if there are no links.
+        #
+        # Put the plain message if the link is not valid.
         link_pattern, link_root = data.link_pattern, data.link_root
         if not (link_pattern and link_root):
-            c.frame.log.put(s + '\n')
+            log.put(s + '\n')
             return
-        # Put a clickable link if the message matches the link pattern.
         m = link_pattern.match(s)
-        if m:
-            # Not an error.  It's just a false match.
-            try:
-                line = int(m.group(1))
-            except ValueError:
-                c.frame.log.put(s + '\n')
-                return
-            unl = link_root.get_UNL(with_proto=True, with_count=True)
-            nodeLink = "%s,%d" % (unl, -line)
-            c.frame.log.put(s + '\n', nodeLink=nodeLink)
+        if not m:
+             log.put(s + '\n')
+             return
+        try:
+            line = int(m.group(1))
+        except ValueError:
+            log.put(s + '\n')
             return
-        # No match. Just print s.
-        c.frame.log.put(s + '\n')
+        #
+        # Put a clickable link.
+        unl = link_root.get_UNL(with_proto=True, with_count=True)
+        nodeLink = "%s,%d" % (unl, -line)
+        log.put(s + '\n', nodeLink=nodeLink)
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,
         fn=None,
@@ -195,14 +196,15 @@ class BackgroundProcessManager:
         shell=False,
     ):
         '''Start or queue a process described by command and fn.'''
-        self.data = data = self.ProcessData(c,
-            kind, fn, link_pattern, link_root, shell)
+        data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+            # 2019/06/05: don't set self.data unless we start the process!
         if self.pid:
             # A process is already active.  Add a new callback.
+            # g.trace('\nQUEUE', link_root.h)
 
             def callback(data=data, kind=kind):
-                fn = data.fn
-                self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
+                '''This is called when a process ends.'''
+                self.put_log('%s: %s\n' % (kind, g.shortFileName(data.fn)))
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -214,6 +216,8 @@ class BackgroundProcessManager:
             self.process_queue.append(data)
         else:
             # Start the process immediately.
+            self.data = data
+            # g.trace('\nSTART', link_root.h)
             self.kind = kind
             self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
             self.pid = subprocess.Popen(
