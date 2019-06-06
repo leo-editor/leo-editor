@@ -192,8 +192,7 @@ class SFTPController:
         if not has_path:
             self.log("ERROR: need a file path!", color='red')
             return None
-        else:
-            remotefile = headline.split(':')[1].strip()
+        remotefile = headline.split(':')[1].strip()
         if not remotefile:
             self.log("ERROR: need a file path!", color='red')
             return None

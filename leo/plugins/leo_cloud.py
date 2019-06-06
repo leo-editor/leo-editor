@@ -355,9 +355,8 @@ class LeoCloud:
         if v.h.startswith('@leo_cloud'):
             found.add(v)
             return
-        else:
-            for child in v.children:
-                self._find_clouds_recursive(child, found)
+        for child in v.children:
+            self._find_clouds_recursive(child, found)
 
     def find_clouds(self):
         """find_clouds - return a list of @leo_cloud nodes
