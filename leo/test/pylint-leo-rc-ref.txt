@@ -54,14 +54,12 @@ disable=
         # len-as-condition,
         # inconsistent-return-statements,
         # no-else-raise,
+        # no-else-return, # Leo's new style
         # no-value-for-parameter,
         # trailing-comma-tuple,
         # unsupported-assignment-operation,
         # useless-object-inheritance, # class x(object):
         # useless-return,
-    #
-    # Enforce these only for Leo's core.  I'll disable them for all other files.
-        no-else-return, # Generates lots of warnings.
     #
     # new warnings...suppressed for now.
         chained-comparison,
