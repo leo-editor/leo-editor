@@ -311,19 +311,16 @@ class backlinkController:
             else:
                 self.handleURL(url.rsplit('##', 1)[0])
             return
-
-        if not self.deleteMode:
-            assert self.c.positionExists(self.dests[selected][1])
-            self.c.selectPosition(self.dests[selected][1])
-            return
-
-        elif self.deleteMode:
+        if self.deleteMode:
             self.deleteLink(
                 self.c.p.v,
                 self.dests[selected][1].v.gnx,
                 self.dests[selected][0]
             )
             self.updateTabInt()
+            return
+        assert self.c.positionExists(self.dests[selected][1])
+        self.c.selectPosition(self.dests[selected][1])
     #@+node:ekr.20090616105756.3952: *3* linkDst
     def linkDst(self):
         """link from current position to dest. node"""

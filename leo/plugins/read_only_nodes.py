@@ -178,8 +178,7 @@ class FTPurl:
             s = self.lst[self.currentLine]
             self.currentLine = self.currentLine + 1
             return s
-        else:
-            return ''
+        return ''
     #@+node:edream.110203113231.884: *3* Setters
     #@+node:edream.110203113231.885: *4* write
     def write(self, s):
@@ -222,15 +221,15 @@ class FTPurl:
             raise IOError(msg)
     #@+node:edream.110203113231.890: *4* exists
     def exists(self, path=None):
-        """Return 1 if the specified path exists. If path is omitted, the current file name is tried."""
+        """
+        Return True if the specified path exists.
+        If path is omitted, the current file name is tried.
+        """
         if path is None:
             path = self.filename
-
         s = self.dir(path)
-        if s.lower().find('no such file') == -1:
-            return 1
-        else:
-            return 0
+        # return s.lower().find('no such file') == -1
+        return 'no such file' not in s.lower()
     #@+node:edream.110203113231.891: *4* checkParams
     def checkParams(self):
         if self.mode not in ('','b'):

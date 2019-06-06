@@ -182,45 +182,31 @@ class LeoCursor:
     def __getattr__(self, what):
 
         if what == '_H':
-
             return str(self.__v.h)
-
-        elif what == '_B':
-
+        if what == '_B':
             return self.__body()
-
-        elif what == '_U':
-
+        if what == '_U':
             return self.__v.u
-
-        elif what == '_P':
-
+        if what == '_P':
             return self.__parents
-
-        elif what == '_GNX':  # or _G?
-
+        if what == '_GNX':  # or _G?
             return self.__v.gnx
-
-        elif what == '_R':
+        if what == '_R':
             return self.__at(self.__root)
-
-        elif what == '_K':
+        if what == '_K':
             ans = []
             for i in self.__attribManagers:
                 ans.extend(i.keys(self.__v))
             return ans
-
         for child in self.__v.children:
             if child.h == what:
                 return self.__at(child)
-
         for i in self.__attribManagers:
             t = what[1:] if what.startswith('_') else what
             try:
                 return i.getAttrib(self.__v, t)
             except AttribManager.NotPresent:
                 pass
-
         raise LeoCursor.NotPresent()
     #@+node:tbrown.20100208110238.12228: *3* __getitem__
     def __getitem__(self, what):
@@ -228,8 +214,7 @@ class LeoCursor:
 
         if isinstance(what, int):
             return self.__at(self.__v.children[what])
-        else:
-            return [self.__at(i) for i in self.__v.children[what]]
+        return [self.__at(i) for i in self.__v.children[what]]
     #@+node:tbrown.20100206093439.5449: *3* __body
     def __body(self):
 

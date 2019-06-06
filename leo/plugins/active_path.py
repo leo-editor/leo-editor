@@ -203,33 +203,16 @@ def isFileNode(p):
 def inAny(item, group, regEx=False):
     """ Helper function to check if word from list is in a string """
     if regEx:
-        if any(re.search(word,item) for word in group):
-            return True
-        else:
-            return False
-    else:
-        if any(word in item for word in group):
-            return True
-        else:
-            return False
-
+        return any(re.search(word,item) for word in group)
+    return any(word in item for word in group)
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
     """ Primary logic to check if an item is in either the include or exclude list """
     if inc and not exc:
-        if inAny(item,inc,regEx):
-            return True
-        else:
-            return False
-    elif exc and not inc:
-        if not inAny(item,exc,regEx):
-            return True
-        else:
-            return False
-    elif exc and inc:
-        return True
-    else:
-        return True
+        return inAny(item,inc,regEx)
+    if exc and not inc:
+        return not inAny(item,exc,regEx)
+    return exc and inc
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
     for pat in lst:
@@ -244,16 +227,13 @@ def subDir(d, p):
         if len(p) != 2:
             return None
         p = p[1]
-
     elif p.b.strip().startswith('@path'):
         p = p.b.split('\n',1)[0].split(None,1)
         if len(p) != 2:
             return None
         p = p[1]
-
     else:
         p = p.h.strip(' /')
-
     return os.path.join(d,p)
 #@+node:tbrown.20080613095157.4: ** onSelect
 def onSelect (tag,keywords):
@@ -291,28 +271,20 @@ def getPath(c, p):
 def getPathOld(p):
     # NOT USED, my version which does its own @path scanning
     p = p.copy()
-
     path = []
-
     while p:
         h = p.h
-
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
             d = os.path.join(*path)
             return d
-
-        elif h.startswith('@'):  # some other directive, run away
+        if h.startswith('@'):  # some other directive, run away
             break
-
         elif isDirNode(p):  # a directory
             path.insert(0,h.strip('/*'))
-
         elif not p.hasChildren():  # a leaf node, assume a file
             path.insert(0,h.strip('*'))
-
         p = p.parent()
-
     return None
 #@+node:tbrown.20080613095157.5: ** flattenOrganizers
 def flattenOrganizers(p):
@@ -636,8 +608,7 @@ def cmd_ActOnNode(event, p=None):
         sync_node_to_folder(c,pos,path)
         c.redraw()
         return True
-    else:
-        raise leoPlugins.TryNext
+    raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
 #@+node:tbrown.20111207143354.19381: ** cmd_MakeDir (active_path.py)

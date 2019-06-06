@@ -727,7 +727,7 @@ class BookMarkDisplay:
             # simple bookmark actions
             getattr(self, action_name)(bm)
             return
-        elif action_name == 'add_child':
+        if action_name == 'add_child':
             cmd_bookmark_child(event={'c': bm.v.context})
             return
 
@@ -752,7 +752,6 @@ class BookMarkDisplay:
         else:
             # don't leave focus adrift when clicking organizer node
             self.c.bodyWantsFocusNow()
-
     #@+node:tbrown.20140807091931.30231: *3* button_menu
     def button_menu(self, event, bm, but, up=False):
         """button_menu - handle a button being right-clicked
@@ -918,15 +917,13 @@ class BookMarkDisplay:
         :Parameters:
         - `p`: position to use instead of self.c.p
         """
-
         p = p or self.c.p
         c = p.v.context  # just in case it's not self.c
         if self.v.context == c:
             # local
             return "#"+p.get_UNL(with_file=False, with_proto=False)
-        else:
-            # not local
-            return p.get_UNL(with_file=True, with_proto=True)
+        # not local
+        return p.get_UNL(with_file=True, with_proto=True)
 
     #@+node:tbrown.20131227100801.23858: *3* show_list
     def show_list(self, links, up=False):

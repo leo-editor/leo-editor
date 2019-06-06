@@ -107,21 +107,18 @@ def onIconDoubleClick(tag, keywords):
     directive = words[0]
     if directive[0] != '@' or directive not in file_directives:
         return None
-
-    #Get filename by removing directive from node's headstring
+    #
+    # Get filename by removing directive from node's headstring
     filename = h.replace(directive + " ", "", 1)
-
-    if 1:  # EKR: This seems dubious to me, but I'll let it go :-)
-
-        # This writes all modified files, not just the one that has been clicked on.
-        # This generates a slightly confusing warning if there are no dirty nodes.
-        c.fileCommands.writeDirtyAtFileNodes()
-
+    #
+    # This writes all modified files, not just the one that has been clicked on.
+    # This generates a slightly confusing warning if there are no dirty nodes.
+    c.fileCommands.writeDirtyAtFileNodes()
     if doFileAction(filename,c):
-        return True #Action was taken - Stop other double-click handlers from running
-    else:
-        return None #No action taken - Let other double-click handlers run
-
+        return True
+            # Action was taken - Stop other double-click handlers from running
+    return None
+        # No action taken - Let other double-click handlers run
 
 #@+node:ekr.20040915105758.15: ** doFileAction
 def doFileAction(filename, c):
@@ -139,11 +136,9 @@ def doFileAction(filename, c):
         if not done:
             g.warning("no file action matches " + filename)
             return False #TL - Inform onIconDoubleClick that no action was taken
-        else:
-            return True #TL - Inform onIconDoubleClick that action was taken
-    else:
-        g.warning("no FileActions node")
-        return False #TL - Inform onIconDoubleClick that no action was taken
+        return True #TL - Inform onIconDoubleClick that action was taken
+    g.warning("no FileActions node")
+    return False #TL - Inform onIconDoubleClick that no action was taken
 #@+node:ekr.20040915105758.16: ** applyFileAction
 def applyFileAction(p, filename, c):
 
