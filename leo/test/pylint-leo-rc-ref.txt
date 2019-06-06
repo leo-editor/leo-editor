@@ -47,26 +47,28 @@ disable=
         consider-using-set-comprehension,
         consider-using-ternary,
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
+        ungrouped-imports,
         unnecessary-pass, # Can be pedantic in some situations.
         useless-import-alias, # the "as" keeps pyflakes happy.
+        wrong-import-position,
+        wrong-import-order,
     #
     # Good warnings. Don't suppress these.
+        # chained-comparison,
         # len-as-condition,
         # inconsistent-return-statements,
+        # literal-comparison,
+        # old-style-class,
         # no-else-raise,
-        # no-else-return, # Leo's new style
+        # no-else-return, # Leo's new style.
         # no-value-for-parameter,
+        # not-an-iterable,
         # trailing-comma-tuple,
         # unsupported-assignment-operation,
+        # unsupported-delete-operation,
+        # unsubscriptable-object,
         # useless-object-inheritance, # class x(object):
         # useless-return,
-    #
-    # new warnings...suppressed for now.
-        chained-comparison,
-        literal-comparison,
-        not-an-iterable,
-        unsupported-delete-operation,
-        unsubscriptable-object,
     #
     # Previously suppressed warnings.
     design,import,format,similarities,
@@ -87,7 +89,6 @@ disable=
     multiple-statements,
     no-init,
     no-self-use,
-    old-style-class,
     protected-access,
     redefined-builtin,
     redefined-outer-name,
@@ -99,12 +100,10 @@ disable=
     superfluous-parens,
     too-few-public-methods,
     trailing-whitespace,
-    ungrouped-imports,
     unused-argument,
     unused-variable,
     using-constant-test,
-    wrong-import-position,
-    wrong-import-order,
+    
 
 # Categories:
 # basic,classes,design,import,format,similarities,typecheck,variables
