@@ -39,16 +39,30 @@ load-plugins=
 # Disable the message, report, category or checker with the given id(s).
 disable=
     #
-    # Always disable these. They could cause more harm than good.
-        design,import,format,similarities, # Make work.
+    # Always disable these. Imo, they cause more harm than good.
+    #
+        design,import,format,similarities, # Make work, and not helpful.
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
+        attribute-defined-outside-init,
         broad-except, # except Exception is justified if followed by g.es_exception.
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-set-comprehension,
         consider-using-ternary,
+        exec-used,
+        global-statement, #  Assume we know what we are doing.
+        global-variable-not-assigned, # not helpful.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
+        import-error, # A really stupid test.
+        misplaced-comparison-constant, # pedantic.
+        missing-docstring, # Some other time ;-)
+        no-self-use, # so what?
+        protected-access,
+        redefined-argument-from-local, # I do this all the time.
+        redefined-builtin, # all, next, etc. so what?
+        redefined-outer-name,
+        redefined-variable-type,
         reimported,
         too-few-public-methods,
         ungrouped-imports,
@@ -61,6 +75,7 @@ disable=
         unused-variable, # way too many false positives, esp. tuple unpacking.
     #
     # Good warnings. Don't suppress these.
+    #
         # bad-builtin,
         # bad-continuation,
         # bad-option-value, # obsolete pylint option.
@@ -68,12 +83,16 @@ disable=
         # chained-comparison,
         # len-as-condition,
         # inconsistent-return-statements,
+        # line-too-long, # Max is 120: see below.
         # literal-comparison,
-        # old-style-class,
+        # locally-disabled,
+        # multiple-statements,
         # no-else-raise,
         # no-else-return, # Leo's new style.
+        # no-init,
         # no-value-for-parameter,
         # not-an-iterable,
+        # old-style-class, # Probably not an issue.
         # simplifiable-if-statement,
         # singleton-comparison,
         # superfluous-parens,
@@ -84,35 +103,9 @@ disable=
         # unsubscriptable-object,
         # useless-object-inheritance, # class x(object):
         # useless-return,
-    #
-    # Previously suppressed warnings.
-    attribute-defined-outside-init,
-    exec-used,
-    global-statement,
-    global-variable-not-assigned,
-    import-error,
-    line-too-long,
-    locally-disabled,
-    misplaced-comparison-constant,
-    missing-docstring,
-    multiple-statements,
-    no-init,
-    no-self-use,
-    protected-access,
-    redefined-builtin,
-    redefined-outer-name,
-    redefined-variable-type,
-    redefined-argument-from-local,
 
 # Categories:
 # basic,classes,design,import,format,similarities,typecheck,variables
-
-# Notes:
-# - trailing whitespace can happen because of @others.
-#   This could be called a bug in the @others logic.
-# - line-too-long can happen because of @others.
-# - global-statement: Assume we know what we are doing.
-# - superfluous-parens: must be disabled for Python 3 code.
 
 [REPORTS]
 
@@ -297,7 +290,8 @@ max-public-methods=20
 [IMPORTS]
 
 # Deprecated modules which should not be used, separated by a comma
-deprecated-modules=regsub,TERMIOS,Bastion,rexec # string
+deprecated-modules=regsub,TERMIOS,Bastion,rexec 
+    # string is sometimes essential.
 
 # Create a graph of internal and external dependencies in the given graph.
 # (report R0402 must not be disabled)
@@ -320,6 +314,7 @@ max-line-length=120
 # Maximum number of lines in a module
 #max-module-lines=1000
 max-module-lines=20000
+    # Leonine code is different.
 
 # String used as indentation unit.
 # This is usually " " (4 spaces) or "\t" (1 tab).
