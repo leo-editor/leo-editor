@@ -180,7 +180,7 @@ class BackgroundProcessManager:
              return
         try:
             line = int(m.group(1))
-        except ValueError:
+        except Exception:
             log.put(s + '\n')
             return
         #
