@@ -2745,6 +2745,7 @@ class LoadManager:
         lm = self
         table = (
             '--dock',
+            '--no-dock', # #1171: retire legacy Qt guis.
             '--no-cache',
             '--session-restore',
             '--session-save',
@@ -2754,7 +2755,7 @@ class LoadManager:
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print('\nIgnoring the deprecated/unsupported %s option\n' % bad_option)
+                print('\nIgnoring the deprecated %s option\n' % bad_option)
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -2849,11 +2850,15 @@ class LoadManager:
         gui = options.gui
         if gui:
             gui = gui.lower()
-            if gui == 'qttabs':
+            if gui == 'qt':
+                print('--gui=qt is equivalent to --gui=qttabs\n')
+                    # Will be removed eventually.
+                g.app.qt_use_tabs = True # #1171: retire legacy Qt guis.
+            elif gui == 'qttabs':
                 g.app.qt_use_tabs = True
             elif gui.startswith('browser'):
                 g.app.qt_use_tabs = False
-            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
+            elif gui in ('console', 'curses', 'text', 'null'): ### 'qt'
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
@@ -2918,8 +2923,10 @@ class LoadManager:
         # --minimized
         g.app.start_minimized = options.minimized
         # --no-dock
-        if options.no_dock:
-            g.app.dock = False
+        # #1171: retire legacy Qt guis.
+            # g.app.dock is always True, and will be retired.
+            # if options.no_dock:
+                # g.app.dock = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
