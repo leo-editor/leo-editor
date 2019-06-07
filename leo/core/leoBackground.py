@@ -174,13 +174,18 @@ class BackgroundProcessManager:
         if not (link_pattern and link_root):
             log.put(s + '\n')
             return
-        m = link_pattern.match(s)
+        try:
+            m = link_pattern.match(s)
+        except Exception:
+            # g.es_exception()
+            m = None
         if not m:
-             log.put(s + '\n')
-             return
+            log.put(s + '\n')
+            return
         try:
             line = int(m.group(1))
         except Exception:
+            # g.es_exception()
             log.put(s + '\n')
             return
         #

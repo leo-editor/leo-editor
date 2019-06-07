@@ -305,7 +305,7 @@ class PyflakesCommand:
 class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
     
-    regex = r'^[^:]+?:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
+    regex = r'^.*:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
         # m.group(1) is the line number.
         # m.group(2) is the (unused) test name.
         
