@@ -83,7 +83,7 @@ disable=
         # chained-comparison,
         # len-as-condition,
         # inconsistent-return-statements,
-        # line-too-long, # Max is 120: see below.
+        # line-too-long, # Max is 100: see below.
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
@@ -309,7 +309,7 @@ int-import-graph=no
 
 # Maximum number of characters on a single line.
 # max-line-length=80
-max-line-length=120
+max-line-length=100 # Anything less than 100 is make work.
 
 # Maximum number of lines in a module
 #max-module-lines=1000
