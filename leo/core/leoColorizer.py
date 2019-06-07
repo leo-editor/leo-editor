@@ -1489,44 +1489,6 @@ class JEditColorizer(BaseJEditColorizer):
 
     def match_url_w(self, s, i):
         return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_w)
-    #@+node:ekr.20190606201152.1: *4* jedit.match_lua_literal
-    ### Derived from match_seq: all the flags are false.
-
-    def match_lua_literal(self, s, i, kind):
-        # kind='', seq='', at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate=''
-        '''
-        Succeed if s[:] is a lua literal. See #1175
-        '''
-        j = i
-        if g.match(s, i, '[['):
-            j = i + 2
-            self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
-            self.trace_match(kind, s, i, j)
-            return j-i
-        if g.match(s, i, '[='):
-            return 0
-        return 0
-        ### To do.
-        return j-i
-        
-        ### Old code
-            # if at_line_start and i != 0 and s[i - 1] != '\n':
-                # j = i
-            # elif at_whitespace_end and i != g.skip_ws(s, 0):
-                # j = i
-            # elif at_word_start and i > 0 and s[i - 1] in self.word_chars: # 7/5/2008
-                # j = i
-            # if at_word_start and i + len(seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
-                # j = i # 7/5/2008
-            # elif g.match(s, i, seq):
-                # j = i + len(seq)
-                # self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-                # self.prev = (i, j, kind)
-                # self.trace_match(kind, s, i, j)
-            # else:
-                # j = i
-            # return j - i
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
         '''Succeed if the compiled regular expression regexp matches at s[i:].'''
@@ -1639,6 +1601,21 @@ class JEditColorizer(BaseJEditColorizer):
         j = g.skip_to_end_of_line(s, i)
         self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
         return j - i
+    #@+node:ekr.20190606201152.1: *4* jedit.match_lua_literal
+    def match_lua_literal(self, s, i, kind):
+        '''Succeed if s[i:] is a lua literal. See #1175'''
+        k = self.match_span(s, i, kind=kind, begin="[[", end="]]")
+        if k not in (None, 0):
+            return k
+        if not g.match(s, i, '[='):
+            return 0
+        # Calculate begin and end, then just call match_span
+        j = i + 2
+        while g.match(s, j, '='):
+            j += 1
+        if not g.match(s, j, '['):
+            return 0
+        return self.match_span(s, i, kind=kind, begin=s[i:j], end=s[i+1:j]+']')
     #@+node:ekr.20110605121601.18616: *4* jedit.match_mark_following & getNextToken
     def match_mark_following(self, s, i,
         kind='', pattern='',
