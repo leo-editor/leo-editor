@@ -321,7 +321,7 @@ class extendForth:
         aList = pair.split(' ')
         if len(aList) != 2:
             g.trace('can not happen: expecting pair of forth strings:', pair)
-            return
+            return None
         begin, end = aList
 
         def forth_string_word_rule(colorer, s, i):
