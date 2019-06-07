@@ -223,14 +223,9 @@ def lua_rule4(colorer, s, i):
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
-# Leo issue #1175: recognize [=[xxx]=]  [==[xxx]==] etc
-# where the closing sequence matches the opening sequence.
+# Leo issue #1175:
 def lua_rule5(colorer, s, i):
     return colorer.match_lua_literal(s, i, kind="literal1")
-        # return colorer.match_span(s, i, kind="literal1", begin="[[", end="]]",
-        #   at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        #   delegate="",exclude_match=False,
-        #   no_escape=False, no_line_break=False, no_word_break=False)
 
 def lua_rule6(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="+",
