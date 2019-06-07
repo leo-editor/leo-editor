@@ -330,8 +330,16 @@ class PylintCommand:
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        roots = g.findRootsWithPredicate(c, root, predicate=None)
-        # g.printObj([z.h for z in roots])
+            
+        # Ignore @nopylint trees.
+
+        def predicate(p):
+            for parent in p.self_and_parents():
+                if g.match_word(parent.h, 0, '@nopylint'):
+                    return False
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+
+        roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         data = [(self.get_fn(p), p.copy()) for p in roots]
         data = [z for z in data if z[0] is not None]
         if not data:
