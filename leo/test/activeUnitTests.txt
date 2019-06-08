@@ -505,24 +505,6 @@ vim_event = leoVim.VimEvent(c, char, stroke, w)
 # assert hasattr(event_wrapper, 'c')
 assert hasattr(key_event, 'c')
 assert hasattr(vim_event, 'c')
-#@+node:ekr.20190608071309.1: *3* @test regex for pylint
-import re
-import leo.commands.checkerCommands as checkerCommands
-x = checkerCommands.PylintCommand(c)
-pattern = re.compile(x.regex)
-table = (
-    r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',
-    r'c:\test\pylint_links_test.py:6:3: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)',
-    # A particularly good test, because it has two parenthesized expressions.
-)
-for message in table:
-    # Windows style file names.
-    m = pattern.match(message)
-    assert m, message
-    # Linux style file names.
-    message = message.replace('\\', '/')
-    m = pattern.match(message)
-    assert m, message
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
     self.skipTest('Not for TravisCI')
@@ -675,6 +657,25 @@ assert not fails, 'old gui: %s: null g.app ivars in %s...\n%s' % (
 
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.
+#@+node:ekr.20190608143232.1: *3* commands/checkerCommands.py
+#@+node:ekr.20190608071309.1: *4* @test regex for pylint
+import re
+import leo.commands.checkerCommands as checkerCommands
+x = checkerCommands.PylintCommand(c)
+pattern = re.compile(x.regex)
+table = (
+    r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',
+    r'c:\test\pylint_links_test.py:6:3: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)',
+    # A particularly good test, because it has two parenthesized expressions.
+)
+for message in table:
+    # Windows style file names.
+    m = pattern.match(message)
+    assert m, message
+    # Linux style file names.
+    message = message.replace('\\', '/')
+    m = pattern.match(message)
+    assert m, message
 #@+node:ekr.20100131171342.5506: *3* leoApp
 #@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
 @
@@ -9826,6 +9827,155 @@ table = (
 for command in table:
     c.k.simulateCommand(command)
     c.k.simulateCommand(command)
+#@+node:ekr.20190608143418.1: *4* New leoFind Tests
+#@+node:ekr.20190608144111.1: *5* @test leoFind.LeoFind clean init
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    'batch', 'ignore_case', 'node_only', 'pattern_match',
+    'search_headline', 'search_body', 'suboutline_only',
+    'mark_changes', 'mark_finds', 'reverse',
+    'wrap', 'whole_word',
+)
+for ivar in table:
+    assert getattr(x, ivar) is None, ivar
+#@+node:ekr.20190608143502.1: *5* @test find.regexHelper
+import re
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, back, nocase):
+    for pattern, s, expected in table:
+        flags = re.IGNORECASE if nocase else 0
+        x.re_obj = re.compile(pattern, flags)
+        pos, new_pos = x.regexHelper(s, 0, len(s), pattern, backwards=back, nocase=nocase)
+        got = s[pos:new_pos]
+        assert expected==got, (
+            '\n   table: %s'
+            '\n pattern: %r'
+            '\n       s: %r'
+            '\nexpected: %r'
+            '\n     got: %r' % (table_name, pattern, s, expected, got)
+        )
+
+plain_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'A',      'xAy',  'A'),
+)
+nocase_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'.',      'a',    'a'),
+    (r'A',      'xay',  'a'),
+    (r'a',      'xAy',  'A'),
+)
+back_table = (
+    # pattern   s           expected
+    (r'a.b',    'a1b a2b',  'a2b'),
+)
+test(plain_table,  'plain_table',  back=False, nocase=False)
+test(nocase_table, 'nocase_table', back=False, nocase=True)
+test(back_table,   'back_table',   back=True,  nocase=False)
+#@+node:ekr.20190608143502.2: *5* @test find.backwardsHelper
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x.backwardsHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'abaca',     0, -1,  'a',      4,          5),
+    ('A',      'Abcde',     0, -1,  'A',      0,          1),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      5,          6),
+    ('A',       'Abcdca',   0, -1,  'a',      5,          6),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AB',  0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+#@+node:ekr.20190608143502.3: *5* @test find.plainHelper
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x.plainHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'baca',     0, -1,   'a',      1,          2),
+    ('A',      'bAcde',     0, -1,  'A',      1,          2),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      0,          1),
+    ('A',       'abcdca',   0, -1,  'a',      0,          1),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AAB', 0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+#@+node:ekr.20190608143503.1: *5* @test find.replaceBackSlashes
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    ('\\\\', '\\'),
+    ('\\n', '\n'),
+    ('\\t', '\t'),
+)
+for s, expected in table:
+    got = x.replaceBackSlashes(s)
+    assert expected==got, (
+        '\n         s: %r'
+        '\n  expected: %r'
+        '\n       got: %r'
+        % (s, expected, got))
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoFind tests.')

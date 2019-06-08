@@ -2138,7 +2138,7 @@ class LeoFind:
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         return pos, newpos
-    #@+node:ekr.20060526140328: *5* passedWrapPoint
+    #@+node:ekr.20060526140328: *5* find.passedWrapPoint
     def passedWrapPoint(self, p, pos, newpos):
         '''Return True if the search has gone beyond the wrap point.'''
         return (
@@ -2148,7 +2148,7 @@ class LeoFind:
                 (self.reverse and pos < self.wrapPos or
                 not self.reverse and newpos > self.wrapPos)
         )
-    #@+node:ekr.20060526081931: *5* searchHelper & allies
+    #@+node:ekr.20060526081931: *5* find.searchHelper & allies
     def searchHelper(self, s, i, j, pattern):
         '''Dispatch the proper search method based on settings.'''
         backwards = self.reverse
@@ -2165,7 +2165,7 @@ class LeoFind:
         else:
             pos, newpos = self.plainHelper(s, i, j, pattern, nocase, word)
         return pos, newpos
-    #@+node:ekr.20060526092203: *6* regexHelper
+    #@+node:ekr.20060526092203: *6* find.regexHelper
     def regexHelper(self, s, i, j, pattern, backwards, nocase):
 
         re_obj = self.re_obj # Use the pre-compiled object
@@ -2200,22 +2200,23 @@ class LeoFind:
                 return mo.start(), mo.end()
         self.match_obj = None
         return -1, -1
-    #@+node:ekr.20060526140744: *6* backwardsHelper
+    #@+node:ekr.20060526140744: *6* find.backwardsHelper
     debugIndices = []
-    #@+at
-    # rfind(sub [,start [,end]])
-    # 
-    # Return the highest index in the string where substring sub is found, such that
-    # sub is contained within s[start,end]. Optional arguments start and end are
-    # interpreted as in slice notation. Return -1 on failure.
-    #@@c
 
     def backwardsHelper(self, s, i, j, pattern, nocase, word):
+        '''
+        rfind(sub [,start [,end]])
 
+        Return the highest index in the string where substring sub is found,
+        such that sub is contained within s[start,end].
+        
+        Optional arguments start and end are interpreted as in slice notation.
+
+        Return (-1, -1) on failure.
+        '''
         if nocase:
             s = s.lower()
             pattern = pattern.lower()
-                # Bug fix: 10/5/06: At last the bug is found!
         pattern = self.replaceBackSlashes(pattern)
         n = len(pattern)
         # Put the indices in range.  Indices can get out of range
@@ -2237,7 +2238,7 @@ class LeoFind:
             if k == -1:
                 return -1, -1
             return k, k + n
-    #@+node:ekr.20060526093531: *6* plainHelper
+    #@+node:ekr.20060526093531: *6* find.plainHelper
     def plainHelper(self, s, i, j, pattern, nocase, word):
         '''Do a plain search.'''
         if nocase:
@@ -2257,7 +2258,7 @@ class LeoFind:
             if k == -1:
                 return -1, -1
             return k, k + n
-    #@+node:ekr.20060526140744.1: *6* matchWord
+    #@+node:ekr.20060526140744.1: *6* find.matchWord
     def matchWord(self, s, i, pattern):
         '''Do a whole-word search.'''
         pattern = self.replaceBackSlashes(pattern)
@@ -2273,7 +2274,7 @@ class LeoFind:
         isWordCh2 = g.isWordChar(ch2)
         inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
         return not inWord
-    #@+node:ekr.20070105165924: *6* replaceBackSlashes
+    #@+node:ekr.20070105165924: *6* find.replaceBackSlashes
     def replaceBackSlashes(self, s):
         '''Carefully replace backslashes in a search pattern.'''
         # This is NOT the same as:
