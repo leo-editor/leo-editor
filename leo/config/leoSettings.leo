@@ -1473,12 +1473,12 @@
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
 <v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
+<v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
-<v t="ekr.20131213135427.22062"><vh>@item &amp;cycle-editor-focus</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
 <v t="ekr.20170509104949.1"><vh>@menu &amp;Change Window Layout</vh>
@@ -1488,24 +1488,6 @@
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
 <v t="ekr.20180511075115.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
-</v>
-<v t="ekr.20170509103101.1"><vh>@menu &amp;Expand/Contract Panes</vh>
-<v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
-<v t="ekr.20180403110757.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22325"><vh>@item contract-&amp;body-pane</vh></v>
-<v t="ekr.20131213135427.22326"><vh>@item contract-&amp;log-pane</vh></v>
-<v t="ekr.20131213135427.22327"><vh>@item contract-&amp;outline-pane</vh></v>
-<v t="ekr.20131213135427.22328"><vh>@item contract-&amp;pane</vh></v>
-<v t="ekr.20131213135427.22329"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22330"><vh>@item expand-bo&amp;dy-pane</vh></v>
-<v t="ekr.20131213135427.22331"><vh>@item expand-lo&amp;g-pane</vh></v>
-<v t="ekr.20131213135427.22332"><vh>@item expand-o&amp;utline-pane</vh></v>
-<v t="ekr.20131213135427.22333"><vh>@item expand-pa&amp;ne</vh></v>
-<v t="ekr.20131213135427.22334"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22335"><vh>@item &amp;fully-expand-body-pane</vh></v>
-<v t="ekr.20131213135427.22336"><vh>@item full&amp;y-expand-log-pane</vh></v>
-<v t="ekr.20131213135427.22337"><vh>@item fully-e&amp;xpand-outline-pane</vh></v>
-<v t="ekr.20131213135427.22338"><vh>@item fully-exp&amp;and-pane</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -1531,31 +1513,6 @@
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
-</v>
-<v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide Panes</vh>
-<v t="ekr.20170509103811.1"><vh>@item gui-&amp;all-hide</vh></v>
-<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
-<v t="ekr.20170509104140.2"><vh>@item gui-&amp;all-toggle</vh></v>
-<v t="ekr.20180406014050.1"><vh>@item-</vh></v>
-<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
-<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
-<v t="ekr.20170509104140.3"><vh>@item gui-&amp;iconbar-toggle</vh></v>
-<v t="ekr.20180406014102.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
-<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
-<v t="ekr.20170509104140.4"><vh>@item gui-&amp;menu-toggle</vh></v>
-<v t="ekr.20180406014111.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
-<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
-<v t="ekr.20170509104140.5"><vh>@item gui-&amp;minibuffer-toggle</vh></v>
-<v t="ekr.20180406014118.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
-<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
-<v t="ekr.20170509104140.6"><vh>@item gui-&amp;statusbar-toggle</vh></v>
-<v t="ekr.20180406014127.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103944.1"><vh>@item gui-&amp;tabbar-hide</vh></v>
-<v t="ekr.20170509104039.7"><vh>@item gui-&amp;tabbar-show</vh></v>
-<v t="ekr.20170509104140.7"><vh>@item gui-&amp;tabbar-toggle</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
@@ -2317,6 +2274,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20131213135427.21826"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6066,7 +6024,6 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22059"></t>
 <t tx="ekr.20131213135427.22060"></t>
 <t tx="ekr.20131213135427.22061"></t>
-<t tx="ekr.20131213135427.22062"></t>
 <t tx="ekr.20131213135427.22063"></t>
 <t tx="ekr.20131213135427.22072"></t>
 <t tx="ekr.20131213135427.22078"></t>
@@ -6237,20 +6194,6 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22321"></t>
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
-<t tx="ekr.20131213135427.22325"></t>
-<t tx="ekr.20131213135427.22326"></t>
-<t tx="ekr.20131213135427.22327"></t>
-<t tx="ekr.20131213135427.22328"></t>
-<t tx="ekr.20131213135427.22329"></t>
-<t tx="ekr.20131213135427.22330"></t>
-<t tx="ekr.20131213135427.22331"></t>
-<t tx="ekr.20131213135427.22332"></t>
-<t tx="ekr.20131213135427.22333"></t>
-<t tx="ekr.20131213135427.22334"></t>
-<t tx="ekr.20131213135427.22335"></t>
-<t tx="ekr.20131213135427.22336"></t>
-<t tx="ekr.20131213135427.22337"></t>
-<t tx="ekr.20131213135427.22338"></t>
 <t tx="ekr.20131213135427.22340"></t>
 <t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
@@ -11001,27 +10944,7 @@ Light
 <t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
 <t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
 </t>
-<t tx="ekr.20170509103101.1"></t>
 <t tx="ekr.20170509103221.1"></t>
-<t tx="ekr.20170509103811.1"></t>
-<t tx="ekr.20170509103823.1"></t>
-<t tx="ekr.20170509103833.1"></t>
-<t tx="ekr.20170509103834.1"></t>
-<t tx="ekr.20170509103931.1"></t>
-<t tx="ekr.20170509103944.1"></t>
-<t tx="ekr.20170509104039.1"></t>
-<t tx="ekr.20170509104039.2"></t>
-<t tx="ekr.20170509104039.3"></t>
-<t tx="ekr.20170509104039.4"></t>
-<t tx="ekr.20170509104039.5"></t>
-<t tx="ekr.20170509104039.6"></t>
-<t tx="ekr.20170509104039.7"></t>
-<t tx="ekr.20170509104140.2"></t>
-<t tx="ekr.20170509104140.3"></t>
-<t tx="ekr.20170509104140.4"></t>
-<t tx="ekr.20170509104140.5"></t>
-<t tx="ekr.20170509104140.6"></t>
-<t tx="ekr.20170509104140.7"></t>
 <t tx="ekr.20170509104817.1"></t>
 <t tx="ekr.20170509104949.1"></t>
 <t tx="ekr.20170530035032.1"></t>
@@ -11469,7 +11392,6 @@ May be overridden by themes.</t>
 <t tx="ekr.20180403105609.1"></t>
 <t tx="ekr.20180403105636.1"></t>
 <t tx="ekr.20180403105722.1"></t>
-<t tx="ekr.20180403110757.1"></t>
 <t tx="ekr.20180403114533.1"></t>
 <t tx="ekr.20180403114558.1"></t>
 <t tx="ekr.20180403114818.1"></t>
@@ -11504,11 +11426,6 @@ May be overridden by themes.</t>
 <t tx="ekr.20180405112923.1"></t>
 <t tx="ekr.20180405112939.1"></t>
 <t tx="ekr.20180406013812.1"></t>
-<t tx="ekr.20180406014050.1"></t>
-<t tx="ekr.20180406014102.1"></t>
-<t tx="ekr.20180406014111.1"></t>
-<t tx="ekr.20180406014118.1"></t>
-<t tx="ekr.20180406014127.1"></t>
 <t tx="ekr.20180411070112.1">The setting only has effect on MacOS.
 False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.

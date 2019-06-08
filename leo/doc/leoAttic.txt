@@ -3214,57 +3214,343 @@ def open_bridge(self):
         return
     c = bridge.openLeoFile(path)
     return c, g
-#@+node:ekr.20190602145908.12: ** No longer used: find.batchChange
-def batchChange(self, pos1, pos2):
-    '''
-    Do a single batch change operation, updating the head or body string of
-    p and leaving the result in s_ctrl.
+#@+node:ekr.20190608104256.1: ** Retired commands & menu items
+#@+node:ekr.20190608105206.1: *3* @menu &Show Or Hide Panes
+#@+node:ekr.20190608105206.2: *4* @item gui-&all-hide
+#@+node:ekr.20190608105206.3: *4* @item gui-&all-show
+#@+node:ekr.20190608105206.4: *4* @item gui-&all-toggle
+#@+node:ekr.20190608105206.5: *4* @item-
+#@+node:ekr.20190608105206.6: *4* @item gui-&iconbar-hide
+#@+node:ekr.20190608105206.7: *4* @item gui-&iconbar-show
+#@+node:ekr.20190608105206.8: *4* @item gui-&iconbar-toggle
+#@+node:ekr.20190608105206.9: *4* @item -
+#@+node:ekr.20190608105206.10: *4* @item gui-&menu-hide
+#@+node:ekr.20190608105206.11: *4* @item gui-&menu-show
+#@+node:ekr.20190608105206.12: *4* @item gui-&menu-toggle
+#@+node:ekr.20190608105206.13: *4* @item -
+#@+node:ekr.20190608105206.14: *4* @item gui-&minibuffer-hide
+#@+node:ekr.20190608105206.15: *4* @item gui-&minibuffer-show
+#@+node:ekr.20190608105206.16: *4* @item gui-&minibuffer-toggle
+#@+node:ekr.20190608105206.17: *4* @item -
+#@+node:ekr.20190608105206.18: *4* @item gui-&statusbar-hide
+#@+node:ekr.20190608105206.19: *4* @item gui-&statusbar-show
+#@+node:ekr.20190608105206.20: *4* @item gui-&statusbar-toggle
+#@+node:ekr.20190608105206.21: *4* @item -
+#@+node:ekr.20190608105206.22: *4* @item gui-&tabbar-hide
+#@+node:ekr.20190608105206.23: *4* @item gui-&tabbar-show
+#@+node:ekr.20190608105206.24: *4* @item gui-&tabbar-toggle
+#@+node:ekr.20190608105941.1: *3* @menu &Expand/Contract Panes
+#@+node:ekr.20190608105941.2: *4* @item &equal-sized-panes
+#@+node:ekr.20190608105941.3: *4* @item -
+#@+node:ekr.20190608105941.4: *4* @item contract-&body-pane
+#@+node:ekr.20190608105941.5: *4* @item contract-&log-pane
+#@+node:ekr.20190608105941.6: *4* @item contract-&outline-pane
+#@+node:ekr.20190608105941.7: *4* @item contract-&pane
+#@+node:ekr.20190608105941.8: *4* @item -
+#@+node:ekr.20190608105941.9: *4* @item expand-bo&dy-pane
+#@+node:ekr.20190608105941.10: *4* @item expand-lo&g-pane
+#@+node:ekr.20190608105941.11: *4* @item expand-o&utline-pane
+#@+node:ekr.20190608105941.12: *4* @item expand-pa&ne
+#@+node:ekr.20190608105941.13: *4* @item -
+#@+node:ekr.20190608105941.14: *4* @item &fully-expand-body-pane
+#@+node:ekr.20190608105941.15: *4* @item full&y-expand-log-pane
+#@+node:ekr.20190608105941.16: *4* @item fully-e&xpand-outline-pane
+#@+node:ekr.20190608105941.17: *4* @item fully-exp&and-pane
+#@+node:ekr.20150514063305.198: *3* ec.cycleAllFocus
+editWidgetCount = 0
 
-    s_ctrl contains the found text on entry and contains the changed text
-    on exit. pos and pos2 indicate the selection. The selection will never
-    be empty.
+def cycleAllFocus(self, event):
     '''
-    c, u = self.c, self.c.undoer
-    p = self.p
-    if not p:
-        g.trace('===== can not happen: no p.')
-        return
-    w = self.s_ctrl
-    # Replace the selection with self.change_text
-    if pos1 > pos2:
-        pos1, pos2 = pos2, pos1
-    s = w.getAllText()
-    if pos1 != pos2:
-        w.delete(pos1, pos2)
-    w.insert(pos1, self.change_text)
-    # Update the selection.
-    insert = pos1 if self.reverse else pos1 + len(self.change_text)
-    w.setSelectionRange(insert, insert)
-    w.setInsertPoint(insert)
-    # Update the node
-    s = w.getAllText()
-    if s and s[-1] == '\n': s = s[: -1]
-    changed = s != p.h if self.in_headline else s != p.b
-    if changed:
-        undoData = u.beforeChangeNodeContents(p)
-        if self.in_headline:
-            p.initHeadString(s)
+    Cycle the keyboard focus between Leo's outline,
+    all body editors and all tabs in the log pane.
+    '''
+    c, k = self.c, self.c.k
+    w = event and event.widget # Does **not** require a text widget.
+    pane = None # The widget that will get the new focus.
+    log = c.frame.log
+    w_name = c.widget_name(w)
+    # w may not be the present body widget, so test its name, not its id.
+    if w_name.find('tree') > -1 or w_name.startswith('head'):
+        pane = c.frame.body.wrapper
+    elif w_name.startswith('body'):
+        # Cycle through the *body* editor if there are several.
+        n = c.frame.body.numberOfEditors
+        if n > 1:
+            self.editWidgetCount += 1
+            if self.editWidgetCount == 1:
+                pane = c.frame.body.wrapper
+            elif self.editWidgetCount > n:
+                self.editWidgetCount = 0
+                c.frame.log.selectTab('Log')
+                pane = c.frame.log.logCtrl
+            else:
+                c.frame.body.cycleEditorFocus(event)
+                pane = None
         else:
-            # Fix #456: replace-all is very slow.
-            # p.b calls c.setBodyString, which is *very* slow.
-            p.v.setBodyString(s)
-        if self.mark_changes:
-            p.setMarked() # Just calls v.setMarked.
-        # Fix #456: replace-all is very slow.
-        # p.setDirty if very slow.
-        p.v.setDirty()
-        if not c.isChanged():
-            c.setChanged(True)
-        u.afterChangeNodeContents(
-            p,
-            'Change Headline' if self.in_headline else 'Change Body',
-            undoData,
-        )
+            self.editWidgetCount = 0
+            c.frame.log.selectTab('Log')
+            pane = c.frame.log.logCtrl
+    elif log.isLogWidget(w):
+        # A log widget.  Cycle until we come back to 'Log'.
+        log.cycleTabFocus()
+        pane = c.frame.tree.canvas if log.tabName == 'Log' else None
+    else:
+        # A safe default: go to the body.
+        pane = c.frame.body.wrapper
+    if pane:
+        k.newMinibufferWidget = pane
+        c.widgetWantsFocusNow(pane)
+        k.showStateAndMode()
+#@+node:ekr.20150514063305.197: *3* ec.cycleFocus
+@cmd('cycle-focus')
+def cycleFocus(self, event):
+    '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
+    c, k = self.c, self.c.k
+    w = event and event.widget
+    body = c.frame.body.wrapper
+    log = c.frame.log.logCtrl
+    tree = c.frame.tree.canvas
+    # A hack for the Qt gui.
+    if hasattr(w, 'logCtrl'):
+        w = w.logCtrl
+    panes = [body, log, tree]
+    if w in panes:
+        i = panes.index(w) + 1
+        if i >= len(panes): i = 0
+        pane = panes[i]
+    else:
+        pane = body
+    # Warning: traces mess up the focus
+        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+    #
+    # This works from the minibuffer *only* if there is no typing completion.
+    c.widgetWantsFocusNow(pane)
+    k.newMinibufferWidget = pane
+    k.showStateAndMode()
+#@+node:ekr.20060528170438: *3* LeoBody.cycleEditorFocus
+@cmd('editor-cycle-focus')
+@cmd('cycle-editor-focus') # There is no LeoQtBody method
+def cycleEditorFocus(self, event=None):
+    '''Cycle keyboard focus between the body text editors.'''
+    c = self.c
+    d = self.editorWidgets
+    w = c.frame.body.wrapper
+    values = list(d.values())
+    if len(values) > 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = values[i]
+        assert(w != w2)
+        self.selectEditor(w2)
+        c.frame.body.wrapper = w2
+#@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
+### @cmd('cycle-tab-focus')
+def cycleTabFocus(self, event=None):
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+    d = self.frameDict # Keys are page names. Values are Frames.
+    w = d.get(self.tabName)
+    values = list(d.values())
+    if self.numberOfVisibleTabs() > 1:
+        try:
+            i = values.index(w)
+            if i >= len(values)-1:
+                i = 0
+        except ValueError:
+            i = 0
+        tabName = list(d.keys())[i]
+        self.selectTab(tabName)
+        return i
+    return None
+#@+node:ekr.20110605121601.18327: *3* LeoQtLog.cycleTabFocus
+@cmd('cycle-tab-focus')
+def cycleTabFocus(self, event=None):
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+    w = self.tabWidget
+    i = w.currentIndex()
+    i += 1
+    if i >= w.count():
+        i = 0
+    tabName = w.tabText(i)
+    self.selectTab(tabName, createText=False)
+    return i
+#@+node:tbrown.20140620095406.40066: *3* qt: gui-show/hide/toggle
+# create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
+widgets = [
+    ('menu', lambda c: c.frame.top.menuBar()),
+    ('iconbar', lambda c: c.frame.top.iconBar),
+    ('statusbar', lambda c: c.frame.top.statusBar),
+    ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
+    ('tabbar', lambda c: g.app.gui.frameFactory.masterFrame.tabBar()),
+]
+for vis in 'hide', 'show', 'toggle':
+    for name, widget in widgets:
+
+        def dovis(event, widget=widget, vis=vis):
+            c = event['c']
+            w = widget(c)
+            if vis == 'toggle':
+                vis = 'hide' if w.isVisible() else 'show'
+            # Executes either w.hide() or w.show()
+            getattr(w, vis)()
+
+        g.command("gui-%s-%s" % (name, vis))(dovis)
+
+    def doall(event, vis=vis):
+        c = event['c']
+        for name, widget in widgets:
+            w = widget(c)
+            if vis == 'toggle':
+                # note, this *intentionally* toggles all to on/off
+                # based on the state of the first
+                vis = 'hide' if w.isVisible() else 'show'
+            getattr(w, vis)()
+
+    g.command("gui-all-%s" % vis)(doall)
+#@+node:ekr.20110605121601.18294: *3* qtFrame.Minibuffer commands...
+#@+node:ekr.20110605121601.18295: *4* qtFrame.contractPane
+@cmd('contract-pane')
+def contractPane(self, event=None):
+    '''Contract the selected pane.'''
+    f = self; c = f.c
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w: return
+    if wname.startswith('body'):
+        f.contractBodyPane()
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        f.contractLogPane()
+        c.logWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                f.contractOutlinePane()
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20110605121601.18296: *4* qtFrame.expandPane
+@cmd('expand-pane')
+def expandPane(self, event=None):
+    '''Expand the selected pane.'''
+    f = self; c = f.c
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w: return
+    if wname.startswith('body'):
+        f.expandBodyPane()
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        f.expandLogPane()
+        c.logWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                f.expandOutlinePane()
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20110605121601.18297: *4* qtFrame.fullyExpandPane
+@cmd('fully-expand-pane')
+def fullyExpandPane(self, event=None):
+    '''Fully expand the selected pane.'''
+    f = self; c = f.c
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w: return
+    if wname.startswith('body'):
+        f.fullyExpandBodyPane()
+        c.treeWantsFocus()
+    elif wname.startswith('log'):
+        f.fullyExpandLogPane()
+        c.bodyWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                f.fullyExpandOutlinePane()
+                c.bodyWantsFocus()
+                break
+#@+node:ekr.20110605121601.18298: *4* qtFrame.hidePane
+@cmd('hide-pane')
+def hidePane(self, event=None):
+    '''Completely contract the selected pane.'''
+    f = self; c = f.c
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w: return
+    if wname.startswith('body'):
+        f.hideBodyPane()
+        c.treeWantsFocus()
+    elif wname.startswith('log'):
+        f.hideLogPane()
+        c.bodyWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                f.hideOutlinePane()
+                c.bodyWantsFocus()
+                break
+#@+node:ekr.20110605121601.18299: *4* qtFrame.expand/contract...Pane
+@cmd('contract-body-pane')
+@cmd('expand-outline-pane')
+def contractBodyPane(self, event=None):
+    '''Contract the body pane.'''
+    r = min(1.0, self.ratio + 0.1)
+    self.divideLeoSplitter1(r)
+
+expandOutlinePane = contractBodyPane
+
+@cmd('contract-outline-pane')
+@cmd('expand-body-pane')
+def contractOutlinePane(self, event=None):
+    '''Contract the outline pane.'''
+    r = max(0.0, self.ratio - 0.1)
+    self.divideLeoSplitter1(r)
+
+expandBodyPane = contractOutlinePane
+
+@cmd('contract-log-pane')
+def contractLogPane(self, event=None):
+    '''Contract the log pane.'''
+    r = min(1.0, self.secondary_ratio + 0.1)
+    self.divideLeoSplitter2(r)
+
+@cmd('expand-log-pane')
+def expandLogPane(self, event=None):
+    '''Expand the log pane.'''
+    r = max(0.0, self.secondary_ratio - 0.1)
+    self.divideLeoSplitter2(r)
+#@+node:ekr.20110605121601.18300: *4* qtFrame.fullyExpand/hide...Pane
+@cmd('fully-expand-body-pane')
+@cmd('hide-outline-pane')
+def fullyExpandBodyPane(self, event=None):
+    '''Fully expand the body pane.'''
+    self.divideLeoSplitter1(0.0)
+
+@cmd('fully-expand-outline-pane')
+@cmd('hide-body-pane')
+def fullyExpandOutlinePane(self, event=None):
+    '''Fully expand the outline pane.'''
+    self.divideLeoSplitter1(1.0)
+
+@cmd('fully-expand-log-pane')
+def fullyExpandLogPane(self, event=None):
+    '''Fully expand the log pane.'''
+    self.divideLeoSplitter2(0.0)
+
+@cmd('hide-log-pane')
+def hideLogPane(self, event=None):
+    '''Completely contract the log pane.'''
+    self.divideLeoSplitter2(1.0)
+#@+node:ekr.20140815160132.18822: *3* vc.cycle_focus & cycle_all_focus (:gt & :gT)
+@cmd(':gt')
+def cycle_focus(self, event=None):
+    '''Cycle focus'''
+    event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
+    self.do('cycle-focus', event=event)
+
+@cmd(':gT')
+def cycle_all_focus(self, event=None):
+    '''Cycle all focus'''
+    event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
+    self.do('cycle-all-focus', event=event)
 #@-all
 #@@nosearch
 #@-leo

@@ -65,39 +65,6 @@ def undetach_editor(c):
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
-#@+node:tbrown.20140620095406.40066: ** qt: gui-show/hide/toggle
-# create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
-widgets = [
-    ('menu', lambda c: c.frame.top.menuBar()),
-    ('iconbar', lambda c: c.frame.top.iconBar),
-    ('statusbar', lambda c: c.frame.top.statusBar),
-    ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
-    ('tabbar', lambda c: g.app.gui.frameFactory.masterFrame.tabBar()),
-]
-for vis in 'hide', 'show', 'toggle':
-    for name, widget in widgets:
-
-        def dovis(event, widget=widget, vis=vis):
-            c = event['c']
-            w = widget(c)
-            if vis == 'toggle':
-                vis = 'hide' if w.isVisible() else 'show'
-            # Executes either w.hide() or w.show()
-            getattr(w, vis)()
-
-        g.command("gui-%s-%s" % (name, vis))(dovis)
-
-    def doall(event, vis=vis):
-        c = event['c']
-        for name, widget in widgets:
-            w = widget(c)
-            if vis == 'toggle':
-                # note, this *intentionally* toggles all to on/off
-                # based on the state of the first
-                vis = 'hide' if w.isVisible() else 'show'
-            getattr(w, vis)()
-
-    g.command("gui-all-%s" % vis)(doall)
 #@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
 def print_style_sheet(event):
