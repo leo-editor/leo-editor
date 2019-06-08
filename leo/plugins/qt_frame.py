@@ -3435,13 +3435,9 @@ class LeoQtLog(leoFrame.LeoLog):
         log.createTab('Log')
         self.logWidget = logWidget = self.contentsDict.get('Log')
         option = QtGui.QTextOption
-        logWidget.setWordWrapMode(
-            option.WordWrap if self.wrap else option.NoWrap)
-        for i in range(w.count()):
-            if w.tabText(i) == 'Log':
-                w.removeTab(i)
+        logWidget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
         w.insertTab(0, logWidget, 'Log')
-        c.spellCommands.openSpellTab()
+            # Required.
         #
         # set up links in log handling
         logWidget.setTextInteractionFlags(
@@ -3452,6 +3448,9 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)
         logWidget.anchorClicked.connect(self.linkClicked)
+        #
+        # Show the spell tab.
+        c.spellCommands.openSpellTab()
         #
         #794: Clicking Find Tab should do exactly what pushing Ctrl-F does
         
