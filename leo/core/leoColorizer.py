@@ -677,9 +677,11 @@ class BaseJEditColorizer (BaseColorizer):
         self.language = language
         self.rulesetName = rulesetName
         self.properties = getattr(mode, 'properties', None) or {}
-        self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) if hasattr(mode, 'keywordsDictDict') else {}
+        self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) \
+            if hasattr(mode, 'keywordsDictDict') else {}
         self.setKeywords()
-        self.attributesDict = mode.attributesDictDict.get(rulesetName) if hasattr(mode, 'attributesDictDict') else {}
+        self.attributesDict = mode.attributesDictDict.get(rulesetName) \
+            if hasattr(mode, 'attributesDictDict') else {}
         self.setModeAttributes()
         self.rulesDict = mode.rulesDictDict.get(rulesetName) if hasattr(mode, 'rulesDictDict') else {}
         self.addLeoRules(self.rulesDict)

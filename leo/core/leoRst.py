@@ -1981,7 +1981,6 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
              anchor -> p
             Update the list of replacements for the document.
         '''
-        # if bwm_file: print >> bwm_file, "Is link?", tag, attrs
         if not self.is_link(tag, attrs):
             return
         marker = self.node_begin_marker
@@ -1993,13 +1992,11 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
                     href_a = href_parts[0]
                 else:
                     href_a = href_parts[1]
-                # if bwm_file: print >> bwm_file, "link(1):", name, value, href_a
                 if not href_a.startswith(marker):
                     if href_a in self.anchor_map:
                         href_file, href_node = self.anchor_map[href_a]
                         http_node_ref = mod_http.node_reference(href_node)
                         line, column = self.getpos()
-                        # if bwm_file: print >> bwm_file, "link(2):", line, column, href, href_file, http_node_ref
                         self.replacements.append((line, column, href, href_file, http_node_ref))
     #@+node:ekr.20120219194520.10462: *4* get_replacements
     def get_replacements(self):

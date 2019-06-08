@@ -9,7 +9,8 @@
 import os
 import sys
 # Partial fix for #541.
-# See https://stackoverflow.com/questions/24835155/pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
+# See https://stackoverflow.com/questions/24835155/
+# pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
 if sys.executable.endswith("pythonw.exe"):
     sys.stdout = open(os.devnull, "w");
     sys.stderr = open(

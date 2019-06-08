@@ -49,8 +49,7 @@ class FreeLayoutController:
     NestedSplitter uses as callbacks to populate splitter-handle context-menu
     and the empty pane Action button menu:
 
-    see (ctrl-click this URL)
-    file://{{g.getBaseDirectory(c)}}/LeoPyRef.leo#Code-->Qt%20gui-->@file%20../plugins/nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
+    see nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
 
     ns_provides
       tell NestedSplitter which Action button items we can provide
@@ -279,7 +278,9 @@ class FreeLayoutController:
             return True
         if id_ == '_fl_save_layout':
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
+                g.es("WARNING: embedded layout in")
+                g.es("@settings/@data free-layout-layout")
+                g.es("will override saved layout")
             layout = self.get_top_splitter().get_saveable_layout()
             name = g.app.gui.runAskOkCancelStringDialog(self.c,
                 title="Save layout",
@@ -294,7 +295,9 @@ class FreeLayoutController:
             return True
         if id_.startswith('_fl_load_layout:'):
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
+                g.es("WARNING: embedded layout in")
+                g.es("@settings/@data free-layout-layout")
+                g.es("will override saved layout")
             name = id_.split(':', 1)[1]
             self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]

@@ -1110,7 +1110,8 @@ class LeoImportCommands:
             assert(i > outer_progress)
     #@+node:ekr.20031218072017.3236: *5* Symbol table
     #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
-    # We canonicalize strings before looking them up, but strings are entered in the form they are first encountered.
+    # We canonicalize strings before looking them up,
+    # but strings are entered in the form they are first encountered.
 
     def cstCanonicalize(self, s, lower=True):
         if lower:

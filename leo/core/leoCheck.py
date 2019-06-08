@@ -1694,7 +1694,11 @@ class ShowData:
                 self.show_returns(name, result)
         self.show_undefined_calls(result)
         # Put the result in a new node.
-        summary = 'files: %s lines: %s chars: %s classes: %s\ndefs: %s calls: %s undefined calls: %s returns: %s' % (
+        format = (
+            'files: %s lines: %s chars: %s classes: %s\n'
+            'defs: %s calls: %s undefined calls: %s returns: %s'
+        )
+        summary = format % (
             # g.plural(self.files),
             len(self.files),
             "{:,}".format(self.tot_lines),

@@ -113,7 +113,8 @@ setup_requires = []
 user_requires = [
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
-        # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
+        # disabled, pending "pip install from .whl fails conditional dependency check"
+        # https://github.com/pypa/pip/issues/4886
     'docutils', # used by Sphinx, rST plugin
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
     'nbformat', # for Jupyter notebook integration
@@ -127,7 +128,8 @@ def define_entry_points(entry_points=None):
     '''1. Define scripts that get installed to PYTHONHOME/Scripts.
       2. Extend `python setup.py clean` to remove more files (issue #1055)   
     '''
-    print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
+    print('Creating entry_points for [OS name - system]: {} - {}'.format(
+        platform.os.name, platform.system()))
     entry_points={'console_scripts': [
             'leo-c = leo.core.runLeo:run_console',
             'leo-console = leo.core.runLeo:run_console'],

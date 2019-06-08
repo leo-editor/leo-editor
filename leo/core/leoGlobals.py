@@ -434,7 +434,15 @@ fileLikeObject = FileLikeObject
 class GeneralSetting:
     '''A class representing any kind of setting except shortcuts.'''
 
-    def __init__(self, kind, encoding=None, ivar=None, setting=None, val=None, path=None, tag='setting', unl=None):
+    def __init__(self, kind,
+        encoding=None,
+        ivar=None,
+        setting=None,
+        val=None,
+        path=None,
+        tag='setting',
+        unl=None,
+    ):
         self.encoding = encoding
         self.ivar = ivar
         self.kind = kind

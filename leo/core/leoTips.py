@@ -167,9 +167,12 @@ UserTip(
     title='Move clones to the last top-level node',
     text="""
     
-Focus your attention of the task at hand by cloning nodes, including @file nodes, then moving those clones so they are the last top-level nodes in the outline.
+Focus your attention of the task at hand by cloning nodes,
+including @file nodes, then moving those clones so they are
+the last top-level nodes in the outline.
 
-This allows you to work on nodes scattered throughout an outline without altering the structure of @file nodes.
+This allows you to work on nodes scattered throughout an
+outline without altering the structure of @file nodes.
 
 """),
 
@@ -211,7 +214,9 @@ UserTip(
     title="The clone-find commands gather nodes matching a pattern",
     text="""
 
-The cff command (aka clone-find-flattened) prompts for a search pattern, then clones all matching nodes so they are the children of a new last top-level node.
+The cff command (aka clone-find-flattened) prompts for a
+search pattern, then clones all matching nodes so they are
+the children of a new last top-level node.
 
 This is a great way to study code.
 
@@ -234,7 +239,9 @@ UserTip(
     title="The cffm command gathers marked outline nodes",
     text="""
 
-The cffm command (aka clone-find-flattened-marked) clones all marked nodes as a children of a new node, created as the last top-level node.
+The cffm command (aka clone-find-flattened-marked) clones
+all marked nodes as a children of a new node, created as the
+last top-level node.
 
 Use this to gather nodes throughout an outline.
 
@@ -287,7 +294,9 @@ UserTip(
     title='leo-* commands open common .leo files',
     text="""
     
-You can open files such as CheatSheet.leo, quickstart.leo, leoSettings.leo, myLeoSettings.leo and scripts.leo with commands starting with 'leo-'.
+You can open files such as CheatSheet.leo, quickstart.leo,
+leoSettings.leo, myLeoSettings.leo and scripts.leo with
+commands starting with 'leo-'.
 
 <Alt-X>leo-<tab> shows the complete list.
 
@@ -364,7 +373,10 @@ UserTip(
     title="Clearing the Log window",
     text="""\
     
-When developing scripts that use Log window to display results, it is sometimes useful to clear Log window by inserting the following two lines at the beginning of your script:
+When developing scripts that use Log window to display
+results, it is sometimes useful to clear Log window by
+inserting the following two lines at the beginning of your
+script:
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()
@@ -376,7 +388,9 @@ UserTip(
     tags=['Scripting', 'Debugging', 'Beginner'],
     title="<html>The g.callers() function",
     text="""
-<p>g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example:</p>
+<p>g.callers() returns the last n callers (default 4) callers of a function or method.
+The verbose option shows each caller on a separate line.
+For example:</p>
 
 <p><pre>    g.trace(g.callers())</pre></p>
 
@@ -471,7 +485,9 @@ UserTip(
     title="Use section references sparingly",
     text="""
 
-Within scripts, use section references only when code must be placed exactly. Here is a common pattern for @file nodes for python files:
+Within scripts, use section references only when code must
+be placed exactly. Here is a common pattern for @file nodes
+for python files:
 
     @first # -*- coding: utf-8 -*-
     %s
@@ -555,7 +571,9 @@ You can have a personal shortcut to run script while developing it.
 
 For example: put `@key=Alt-4` in headline.
 
-If your script grows to several subnodes, you won't have to select top node every time you wish to run script. It would be enough to just press your universal shortcut.
+If your script grows to several subnodes, you won't have to
+select top node every time you wish to run script. It would
+be enough to just press your universal shortcut.
 
 """),
 #@+node:ekr.20180324072951.1: *4* How to find documenation
@@ -603,9 +621,12 @@ UserTip(
     title="How to minimize panes",
     text="""
 
-Middle mouse click on the window divider (splitter) to minimize all windows to the left of vertical splitters and below horizontal splitters.
+Middle mouse click on the window divider (splitter) to
+minimize all windows to the left of vertical splitters and
+below horizontal splitters.
 
-Using this with "Toggle Split Direction" allows a maximized body, tree or even log window.
+Using this with "Toggle Split Direction" allows a maximized
+body, tree or even log window.
 
 """),
 #@+node:ekr.20180503082333.1: *4* How to see all @command commands

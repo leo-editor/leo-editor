@@ -884,7 +884,11 @@ class TestManager:
         # A kludge so we the statement below can get c and p.
         g.app.unitTestDict = {'c': c, 'p': p and p.copy()}
         # This looks like the best we can do.
-        setup = 'import leo.core.leoGlobals as g; c = g.app.unitTestDict.get("c"); p = g.app.unitTestDict.get("p")'
+        setup = (
+            'import leo.core.leoGlobals as g; ' +
+            'c = g.app.unitTestDict.get("c"); ' +
+            'p = g.app.unitTestDict.get("p")'
+        )
         t = timeit.Timer(s, setup)
         try:
             if count is None:

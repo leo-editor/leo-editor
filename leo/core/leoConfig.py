@@ -1406,7 +1406,8 @@ class LocalConfigManager:
             # No longer needed now that c.config.initIvar always sets
             # both c and c.config ivars.
             self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
-            self.redirect_execute_script_output_to_log_pane = g.app.config.redirect_execute_script_output_to_log_pane
+            self.redirect_execute_script_output_to_log_pane = \
+                g.app.config.redirect_execute_script_output_to_log_pane
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize

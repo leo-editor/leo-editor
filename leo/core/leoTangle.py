@@ -2555,9 +2555,11 @@ class BaseTangleCommands:
         s = "top of stack:"
         for i in range(-1, -(len(self.refpart_stack) + 1), -1):
             if self.refpart_stack[i].__class__ == PartNode:
-                s += "\nnode: " + self.refpart_stack[i].name + " delims: " + repr(self.refpart_stack[i].delims)
+                s += ("\nnode: " + self.refpart_stack[i].name +
+                      " delims: " + repr(self.refpart_stack[i].delims))
             elif self.refpart_stack[i].__class__ == TstNode:
-                s += "\nsection: " + self.refpart_stack[i].name + " delims: " + repr(self.refpart_stack[i].delims)
+                s += ("\nsection: " + self.refpart_stack[i].name +
+                " delims: " + repr(self.refpart_stack[i].delims))
             else:
                 s += "\nINVALID ENTRY of type " + repr(self.refpart_stack[i].__class__)
         s += "\nbottom of stack.\n"
@@ -2899,7 +2901,11 @@ class BaseTangleCommands:
         return i, kind, end
     #@+node:ekr.20031218072017.3598: *4* standardize_name
     def standardize_name(self, name):
-        """Removes leading and trailing brackets, converts white space to a single blank and converts to lower case."""
+        """
+        Removes leading and trailing brackets,
+        converts white space to a single blank and
+        converts to lower case.
+        """
         # Convert to lowercase.
         # Convert whitespace to a single space.
         name = name.lower().replace('\t', ' ').replace('  ', ' ')
