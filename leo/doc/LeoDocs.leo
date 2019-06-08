@@ -1355,6 +1355,7 @@
 </v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
+<v t="ekr.20190608092106.1"><vh>Writing clickable links to the Log tab</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16178"><vh>Exploring Leo's Code Base</vh>
@@ -30223,6 +30224,10 @@ You can specify per-language settings by preceding the settings names by a prefi
 </t>
 <t tx="ekr.20190424063410.38">https://github.com/leo-editor/leo-editor/issues/1118
 </t>
+<t tx="ekr.20190608092106.1">g.es_clickable_link(c, p, line_number, message) writes a clickable
+message to the Log pane.
+
+Clicking it selects the given line number of p.b.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
