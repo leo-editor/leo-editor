@@ -510,6 +510,7 @@
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20190608085550.1"><vh>@bool max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
@@ -11846,6 +11847,7 @@ c.redraw()
 <t tx="ekr.20190325050733.9"></t>
 <t tx="ekr.20190325052226.1"></t>
 <t tx="ekr.20190422173857.1"></t>
+<t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
