@@ -53,7 +53,6 @@ def find_long_lines(event):
                 return parent
         return None
     #@-others
-    log = c.frame.log
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
@@ -77,9 +76,7 @@ def find_long_lines(event):
                     g.es_print(root.h)
                     g.es_print(p.h)
                     print(short_s)
-                    unl = p.get_UNL(with_proto=True, with_count=True)
-                    nodeLink = "%s,%d" % (unl, i)
-                    log.put(short_s, nodeLink=nodeLink)
+                    g.es_clickable_link(c, p, line_number=i, message=short_s)
                 break
     g.es_print('found %s long line%s longer than %s characters in %s file%s' % (
         count, g.plural(count), max_line, len(files), g.plural(len(files))))

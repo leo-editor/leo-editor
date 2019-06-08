@@ -6162,6 +6162,16 @@ def es(*args, **keys):
         
 log = es
 
+#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
+def es_clickable_link(c, p, line_number, message):
+    '''Write a clickable message to the given line number of p.b.'''
+    log = c.frame.log
+    unl = p.get_UNL(with_proto=True, with_count=True)
+    if unl:
+        nodeLink = "%s,%d" % (unl, line_number)
+        log.put(message, nodeLink=nodeLink)
+    else:
+        log.put(message)
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
@@ -6383,9 +6393,6 @@ def prettyPrintType(obj):
     if t.startswith("<type '"): t = t[7:]
     if t.endswith("'>"): t = t[: -2]
     return t
-#@+node:ekr.20041122153823: *3* g.printStack
-def printStack():
-    traceback.print_stack()
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
     bindings = window.bind()
@@ -6424,6 +6431,9 @@ def printLeoModules(message=None):
     for m in mods:
         g.pr(m, newline=False)
     g.pr('')
+#@+node:ekr.20041122153823: *3* g.printStack
+def printStack():
+    traceback.print_stack()
 #@+node:ekr.20031218072017.2317: *3* g.trace
 def trace(*args, **keys):
     '''Print a tracing message.'''
