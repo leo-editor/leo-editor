@@ -2044,18 +2044,6 @@ class VimCommands:
             '''Called when the user types :tabnew<tab>'''
             self.vc.c.k.getFileName(event=None, callback=self.open_file_by_name)
         #@-others
-    #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
-    @cmd(':gt')
-    def cycle_focus(self, event=None):
-        '''Cycle focus'''
-        event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
-        self.do('cycle-focus', event=event)
-
-    @cmd(':gT')
-    def cycle_all_focus(self, event=None):
-        '''Cycle all focus'''
-        event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
-        self.do('cycle-all-focus', event=event)
     #@+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
     @cmd(':e')
     def e_command(self, event=None):

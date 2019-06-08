@@ -3690,18 +3690,6 @@ class LeoQtLog(leoFrame.LeoLog):
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents, tabName)
         return contents
-    #@+node:ekr.20110605121601.18327: *4* LeoQtLog.cycleTabFocus
-    @cmd('cycle-tab-focus')
-    def cycleTabFocus(self, event=None):
-        '''Cycle keyboard focus between the tabs in the log pane.'''
-        w = self.tabWidget
-        i = w.currentIndex()
-        i += 1
-        if i >= w.count():
-            i = 0
-        tabName = w.tabText(i)
-        self.selectTab(tabName, createText=False)
-        return i
     #@+node:ekr.20110605121601.18328: *4* LeoQtLog.deleteTab
     def deleteTab(self, tabName, force=False):
         '''

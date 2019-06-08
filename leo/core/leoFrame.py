@@ -320,22 +320,6 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-    #@+node:ekr.20060528170438: *5* LeoBody.cycleEditorFocus
-    @cmd('editor-cycle-focus')
-    @cmd('cycle-editor-focus') # There is no LeoQtBody method
-    def cycleEditorFocus(self, event=None):
-        '''Cycle keyboard focus between the body text editors.'''
-        c = self.c
-        d = self.editorWidgets
-        w = c.frame.body.wrapper
-        values = list(d.values())
-        if len(values) > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
-            w2 = values[i]
-            assert(w != w2)
-            self.selectEditor(w2)
-            c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
     def deleteEditor(self, event=None):
         '''Delete the presently selected body text editor.'''
@@ -1154,24 +1138,6 @@ class LeoLog:
             self.frameDict[tabName] = tabName # tabFrame
     #@+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
     def createTextWidget(self, parentFrame):
-        return None
-    #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
-    ### @cmd('cycle-tab-focus')
-    def cycleTabFocus(self, event=None):
-        '''Cycle keyboard focus between the tabs in the log pane.'''
-        d = self.frameDict # Keys are page names. Values are Frames.
-        w = d.get(self.tabName)
-        values = list(d.values())
-        if self.numberOfVisibleTabs() > 1:
-            try:
-                i = values.index(w)
-                if i >= len(values)-1:
-                    i = 0
-            except ValueError:
-                i = 0
-            tabName = list(d.keys())[i]
-            self.selectTab(tabName)
-            return i
         return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName, force=False):
