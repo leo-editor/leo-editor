@@ -369,31 +369,6 @@ exclude = ['leoIPython.py',]
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20100131171342.5471: ** General
-#@+node:ekr.20100210222021.5388: *3* @test save new file
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-import os
-import sys
-if sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    self.skipTest('Not for Linux.')
-c1 = c
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
-if g.os_path_exists(fn):
-    os.remove(fn)
-assert not g.os_path_exists(fn)
-try:
-    c = c1.new()
-    # Not a perfect unit test, but it similar to c.save.
-    c.mFileName = fn
-    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
-    c.fileCommands.save(c.mFileName,silent=False)
-    c.close()
-    assert g.os_path_exists(fn)
-finally:
-    if g.os_path_exists(fn):
-        os.remove(fn)
 #@+node:ekr.20100131171342.5485: *3* @test all commands have an event arg
 import inspect
 
@@ -530,6 +505,49 @@ vim_event = leoVim.VimEvent(c, char, stroke, w)
 # assert hasattr(event_wrapper, 'c')
 assert hasattr(key_event, 'c')
 assert hasattr(vim_event, 'c')
+#@+node:ekr.20190608071309.1: *3* @test regex for pylint
+import re
+import leo.commands.checkerCommands as checkerCommands
+x = checkerCommands.PylintCommand(c)
+pattern = re.compile(x.regex)
+table = (
+    r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',
+    r'c:\test\pylint_links_test.py:6:3: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)',
+    # A particularly good test, because it has two parenthesized expressions.
+)
+for message in table:
+    # Windows style file names.
+    m = pattern.match(message)
+    assert m, message
+    # Linux style file names.
+    message = message.replace('\\', '/')
+    m = pattern.match(message)
+    assert m, message
+#@+node:ekr.20100210222021.5388: *3* @test save new file
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+import os
+import sys
+if sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux.')
+c1 = c
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+if g.os_path_exists(fn):
+    os.remove(fn)
+assert not g.os_path_exists(fn)
+try:
+    c = c1.new()
+    # Not a perfect unit test, but it similar to c.save.
+    c.mFileName = fn
+    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+    c.fileCommands.save(c.mFileName,silent=False)
+    c.close()
+    assert g.os_path_exists(fn)
+finally:
+    if g.os_path_exists(fn):
+        os.remove(fn)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
 #@+node:ekr.20120227152633.3934: *4* @test c.config.initIvar sets *commander* ivars
 for ivar,setting_type,default in g.app.config.ivarsData:
