@@ -34,14 +34,14 @@ load-plugins=
 [MESSAGES CONTROL]
 
 # Enable the message, report, category or checker with the given id(s).
-#enable=
+# enable=
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
     #
     # Always disable these. Imo, they cause more harm than good.
     #
-        design,import,format,similarities, # Make work, and not helpful.
+        design,import,format,similarities, # Make work.
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
@@ -56,7 +56,8 @@ disable=
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
         import-error, # A really stupid test.
         misplaced-comparison-constant, # pedantic.
-        missing-docstring, # Some other time ;-)
+        missing-docstring,
+            # Some other time :-)  Instead, use Leo's find-missing-docstrings command.
         no-self-use, # so what?
         protected-access,
         redefined-argument-from-local, # I do this all the time.
@@ -83,7 +84,9 @@ disable=
         # chained-comparison,
         # len-as-condition,
         # inconsistent-return-statements,
-        # line-too-long, # Max is 90: see below.
+        # line-too-long,
+            # Not enabled because it is a format test.
+            # Instead, use Leo's find-long-lines command.
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
@@ -308,8 +311,10 @@ int-import-graph=no
 [FORMAT]
 
 # Maximum number of characters on a single line.
-# max-line-length=80
-max-line-length=90 # Anything less is make work.
+# max-line-length=80  # Set abive
+max-line-length=120 
+    # Anything less than 90 is make work, except for testing the pylint test itself.
+    # A script in leoPy.leo finds long lines very quickly
 
 # Maximum number of lines in a module
 #max-module-lines=1000
