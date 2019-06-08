@@ -1736,7 +1736,8 @@ def set_debugGc():
     )
 #@+node:ekr.20051104075904.19: *4* makeObjectList
 def makeObjectList(message):
-    # WARNING: this id trick is not proper: newly allocated objects can have the same address as old objects.
+    # WARNING: this id trick is not proper:
+    # newly allocated objects can have the same address as old objects.
     global lastObjectsDict
     objects = gc.get_objects()
     newObjects = [o for o in objects if not id(o) in lastObjectsDict]
