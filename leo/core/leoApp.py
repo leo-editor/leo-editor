@@ -2745,7 +2745,7 @@ class LoadManager:
         lm = self
         table = (
             '--dock',
-            '--no-dock', # #1171: retire legacy Qt guis.
+            # '--no-dock', # #1171: retire legacy Qt guis.
             '--no-cache',
             '--session-restore',
             '--session-save',
@@ -2922,11 +2922,10 @@ class LoadManager:
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-dock
-        # #1171: retire legacy Qt guis.
-            # g.app.dock is always True, and will be retired.
-            # if options.no_dock:
-                # g.app.dock = False
+        # --no-dock:
+        # #1171: retain --no-dock indefinitely.
+        if options.no_dock:
+            g.app.dock = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
