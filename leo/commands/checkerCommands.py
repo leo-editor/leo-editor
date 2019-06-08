@@ -33,6 +33,56 @@ def checkConventsion(event):
         import leo.core.leoCheck as leoCheck
         imp.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20190608084751.1: *3* find-long-lines
+@g.command('find-long-lines')
+def find_long_lines(event):
+    c = event.get('c')
+    if not c:
+        return
+    #@+others # helper functions
+    #@+node:ekr.20190608084751.2: *4* helper functions
+    def in_nosearch(p):
+        for parent in p.self_and_parents():
+            if '@nosearch' in parent.b:
+                return True
+        return False
+        
+    def get_root(p):
+        for parent in p.self_and_parents():
+            if parent.anyAtFileNodeName():
+                return parent
+        return None
+    #@-others
+    log = c.frame.log
+    max_line = c.config.getInt('max-find-long-lines-length') or 110
+    count, files, ignore = 0, [], []
+    for p in c.all_unique_positions():
+        if in_nosearch(p):
+            continue
+        root = get_root(p)
+        if not root:
+            continue
+        if root.v not in files:
+            files.append(root.v)
+        for i, s in enumerate(g.splitLines(p.b)):
+            if len(s) > max_line:
+                if not root:
+                    if p.v not in ignore:
+                        ignore.append(p.v)
+                        g.es_print('no root', p.h)
+                else:
+                    count += 1
+                    short_s = g.truncate(s, 30)
+                    g.es('')
+                    g.es_print(root.h)
+                    g.es_print(p.h)
+                    print(short_s)
+                    unl = p.get_UNL(with_proto=True, with_count=True)
+                    nodeLink = "%s,%d" % (unl, i)
+                    log.put(short_s, nodeLink=nodeLink)
+                break
+    g.es_print('found %s long line%s longer than %s characters in %s file%s' % (
+        count, g.plural(count), max_line, len(files), g.plural(len(files))))
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
