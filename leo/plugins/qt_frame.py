@@ -3430,20 +3430,8 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
-        # Remove unneeded tabs.
-        for name in ('Tab 1', 'Page'):
-            for i in range(w.count()):
-                if name == w.tabText(i):
-                    w.removeTab(i)
-                    break
-        # Rename the 'Tab 2' tab to 'Find'.
-        for i in range(w.count()):
-            if w.tabText(i) in ('Find', 'Tab 2'):
-                w.setTabText(i, 'Find')
-                self.contentsDict['Find'] = w.currentWidget()
-                break
+        #
         # Create the log tab as the leftmost tab.
-        # log.selectTab('Log')
         log.createTab('Log')
         self.logWidget = logWidget = self.contentsDict.get('Log')
         option = QtGui.QTextOption
@@ -3454,6 +3442,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
         c.spellCommands.openSpellTab()
+        #
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             QtCore.Qt.LinksAccessibleByMouse |
@@ -3463,6 +3452,7 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)
         logWidget.anchorClicked.connect(self.linkClicked)
+        #
         #794: Clicking Find Tab should do exactly what pushing Ctrl-F does
         
         def tab_callback(index):
