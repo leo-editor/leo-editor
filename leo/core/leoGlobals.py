@@ -2709,8 +2709,7 @@ def printGcAll(full=False, sort_by_n=True):
             for z in reversed(items):
                 print('%8s %s' % (z[1], z[0]))
         else: # Sort by type
-            for t in sorted(d):
-                print('%8s %s' % (z[1], z[0]))
+            g.printObj(d)
     #
     # Summarize
     print('\nprintGcAll: %d objects in %5.2f sec. ' % (len(objects), t2-t1))
