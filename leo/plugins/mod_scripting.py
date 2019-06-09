@@ -349,7 +349,8 @@ class AtButtonCallback:
         '''AtButtonCallback.__getattr__. Implement __name__.'''
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
-        return None
+        raise AttributeError
+            # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         '''Execute the script associated with this button.'''
