@@ -2683,33 +2683,37 @@ def printGcRefs(tag=''):
     else:
         g.pr("%d referers" % len(refs))
 #@+node:ekr.20060202161935: *4* g.printGcAll
-def printGcAll(tag=''):
-    # Suppress warning about keywords arg not supported in sort.
-    tag = tag or g._callerName(n=2)
-    d = {}; objects = gc.get_objects()
-    if not g.unitTesting:
-        g.pr('-' * 30)
-        g.pr('%s: %d objects' % (tag, len(objects)))
+def printGcAll(full=False, sort_by_n=True):
+    '''Print a summary of all presently live objects.'''
+    if g.unitTesting:
+        return
+    t1 = time.clock()
+    objects = gc.get_objects()
+    d = {} # Keys are types, values are ints (number of instances).
     for obj in objects:
         t = type(obj)
         if t == 'instance':
-            try: t = obj.__class__
-            except Exception: pass
-        # 2011/02/28: Some types may not be hashable.
+            try:
+                t = obj.__class__
+            except Exception:
+                pass
         try:
             d[t] = d.get(t, 0) + 1
         except TypeError:
             d = {}
-    if 1: # Sort by n
-        items = list(d.items())
-        items.sort(key=lambda x: x[1])
-            # key is a function that extracts args.
-        if not g.unitTesting:
-            for z in items:
-                g.pr('%40s %7d' % (z[0], z[1]))
-    else: # Sort by type
-        for t in sorted(d):
-            g.pr('%40s %7d' % (t, d.get(t)))
+    t2 = time.clock()
+    if full:
+        if sort_by_n: # Sort by n
+            items = list(d.items())
+            items.sort(key=lambda x: x[1])
+            for z in reversed(items):
+                print('%8s %s' % (z[1], z[0]))
+        else: # Sort by type
+            for t in sorted(d):
+                print('%8s %s' % (z[1], z[0]))
+    #
+    # Summarize
+    print('\nprintGcAll: %d objects in %5.2f sec. ' % (len(objects), t2-t1))
 #@+node:ekr.20060127164729.1: *4* g.printGcObjects
 def printGcObjects(tag=''):
     '''Print newly allocated objects.'''
