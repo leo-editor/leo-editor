@@ -248,19 +248,6 @@ class Position:
         # 2011/07/28: Bug fix suggested by SegundoBob.
         x1 = other._childIndex; v2, x2 = self.stack[n]
         return x2 >= x1
-    #@+node:ekr.20040117170612: *4* p.__getattr__ (no longer used)
-    # No longer used.  All code must now be aware of the one-node world.
-    # def __getattr__ (self,attr):
-        # """Convert references to p.t into references to p.v."""
-        # if attr=="t":
-            # return self.v
-        # else:
-            # # New in 4.3: _silently_ raise the attribute error.
-            # # This allows plugin code to use hasattr(p,attr) !
-            # if 0:
-                # print("unknown position attribute: %s" % attr)
-                # import traceback ; traceback.print_stack()
-            # raise AttributeError(attr)
     #@+node:ekr.20040117173448: *4* p.__nonzero__ & __bool__
     def __bool__(self):
         """
