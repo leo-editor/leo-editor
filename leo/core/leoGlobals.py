@@ -2663,6 +2663,19 @@ def enable_gc_debug(event=None):
         # gc.DEBUG_INSTANCES |
         # gc.DEBUG_OBJECTS |
         gc.DEBUG_SAVEALL)
+#@+node:ekr.20190609113810.1: *4* g.GetRepresentativeObjects (new)
+def GetRepresentativeLiveObjects():
+    '''
+    Return a dict.
+    Keys classes.
+    Values are the first (representative) live object for each type.
+    '''
+    d = {} # Keys are types, values are the *first* instance.
+    for obj in gc.get_objects():
+        t = type(obj)
+        if t not in d and hasattr(obj, '__class__'):
+            d [t] = obj
+    return d
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
@@ -2692,15 +2705,8 @@ def printGcAll(full=False, sort_by_n=True):
     d = {} # Keys are types, values are ints (number of instances).
     for obj in objects:
         t = type(obj)
-        if t == 'instance':
-            try:
-                t = obj.__class__
-            except Exception:
-                pass
-        try:
+        if hasattr(obj, '__class__'):
             d[t] = d.get(t, 0) + 1
-        except TypeError:
-            d = {}
     t2 = time.clock()
     if full:
         if sort_by_n: # Sort by n
