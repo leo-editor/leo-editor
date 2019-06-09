@@ -41,23 +41,24 @@ def find_long_lines(event):
     if not c:
         return
     #@+others # helper functions
-    #@+node:ekr.20190608084751.2: *4* helper functions
-    def in_nosearch(p):
-        for parent in p.self_and_parents():
-            if '@nosearch' in parent.b:
-                return True
-        return False
-        
+    #@+node:ekr.20190609135639.1: *4* function: get_root
     def get_root(p):
         for parent in p.self_and_parents():
             if parent.anyAtFileNodeName():
                 return parent
         return None
+    #@+node:ekr.20190608084751.2: *4* function: in_no_pylint
+    def in_nopylint(p):
+        for parent in p.self_and_parents():
+            if '@nopylint' in parent.h:
+                return True
+        return False
+        
     #@-others
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
-        if in_nosearch(p):
+        if in_nopylint(p):
             continue
         root = get_root(p)
         if not root:
@@ -81,27 +82,6 @@ def find_long_lines(event):
                 break
     g.es_print('found %s long line%s longer than %s characters in %s file%s' % (
         count, g.plural(count), max_line, len(files), g.plural(len(files))))
-#@+node:ekr.20190608162547.1: *3* find-missing-docstrings (LATER)
-@g.command('find-missing-docstrings')
-def find_missing_docstrings(event):
-    '''Report missing docstrings in the log, with clickable links.'''
-    c = event.get('c')
-    if not c:
-        return
-    #@+others # helper functions
-    #@+node:ekr.20190608162645.1: *4* helper functions
-    def find_roots(c, root):
-        
-        def predicate(p):
-            # Honor @nopylint.
-            for parent in p.self_and_parents():
-                if g.match_word(parent.h, 0, '@nopylint'):
-                    return False
-            return p.isAnyAtFileNode() and (p == root or root.isAncestorOf(p))
-        
-        return g.findRootsWithPredicate(c, root, predicate=predicate)
-    #@-others
-    g.es('find-missing-docstrings: not ready yet')
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
