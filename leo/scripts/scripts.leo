@@ -4601,7 +4601,9 @@ for cls in leo_classes:
 total_missing = 0
 for key, aList in missing.items():
     total_missing += len(aList)
-    if 1:
+    if 1: # Short
+        print('%3s missing docstring%s in %s' % (len(aList), g.plural(len(aList)) or ' ', key))
+    else: # Long
         print(key)
         for z in sorted(aList):
             print('  ', z)
