@@ -2011,7 +2011,10 @@ class StyleSheetManager:
         Carefully return the master widget.
         c.frame.top is a DynamicWindow.
         '''
-        return top or self.c.frame.top
+        if top is None:
+            top = self.c.frame.top
+        master = top.leo_master or top
+        return master
     #@+node:ekr.20140913054442.19391: *4* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''
