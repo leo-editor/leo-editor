@@ -3214,49 +3214,50 @@ def open_bridge(self):
         return
     c = bridge.openLeoFile(path)
     return c, g
-#@+node:ekr.20190608104256.1: ** Retired commands & menu items
-#@+node:ekr.20190608105206.1: *3* @menu &Show Or Hide Panes
-#@+node:ekr.20190608105206.2: *4* @item gui-&all-hide
-#@+node:ekr.20190608105206.3: *4* @item gui-&all-show
-#@+node:ekr.20190608105206.4: *4* @item gui-&all-toggle
-#@+node:ekr.20190608105206.5: *4* @item-
-#@+node:ekr.20190608105206.6: *4* @item gui-&iconbar-hide
-#@+node:ekr.20190608105206.7: *4* @item gui-&iconbar-show
-#@+node:ekr.20190608105206.8: *4* @item gui-&iconbar-toggle
-#@+node:ekr.20190608105206.9: *4* @item -
-#@+node:ekr.20190608105206.10: *4* @item gui-&menu-hide
-#@+node:ekr.20190608105206.11: *4* @item gui-&menu-show
-#@+node:ekr.20190608105206.12: *4* @item gui-&menu-toggle
-#@+node:ekr.20190608105206.13: *4* @item -
-#@+node:ekr.20190608105206.14: *4* @item gui-&minibuffer-hide
-#@+node:ekr.20190608105206.15: *4* @item gui-&minibuffer-show
-#@+node:ekr.20190608105206.16: *4* @item gui-&minibuffer-toggle
-#@+node:ekr.20190608105206.17: *4* @item -
-#@+node:ekr.20190608105206.18: *4* @item gui-&statusbar-hide
-#@+node:ekr.20190608105206.19: *4* @item gui-&statusbar-show
-#@+node:ekr.20190608105206.20: *4* @item gui-&statusbar-toggle
-#@+node:ekr.20190608105206.21: *4* @item -
-#@+node:ekr.20190608105206.22: *4* @item gui-&tabbar-hide
-#@+node:ekr.20190608105206.23: *4* @item gui-&tabbar-show
-#@+node:ekr.20190608105206.24: *4* @item gui-&tabbar-toggle
-#@+node:ekr.20190608105941.1: *3* @menu &Expand/Contract Panes
-#@+node:ekr.20190608105941.2: *4* @item &equal-sized-panes
-#@+node:ekr.20190608105941.3: *4* @item -
-#@+node:ekr.20190608105941.4: *4* @item contract-&body-pane
-#@+node:ekr.20190608105941.5: *4* @item contract-&log-pane
-#@+node:ekr.20190608105941.6: *4* @item contract-&outline-pane
-#@+node:ekr.20190608105941.7: *4* @item contract-&pane
-#@+node:ekr.20190608105941.8: *4* @item -
-#@+node:ekr.20190608105941.9: *4* @item expand-bo&dy-pane
-#@+node:ekr.20190608105941.10: *4* @item expand-lo&g-pane
-#@+node:ekr.20190608105941.11: *4* @item expand-o&utline-pane
-#@+node:ekr.20190608105941.12: *4* @item expand-pa&ne
-#@+node:ekr.20190608105941.13: *4* @item -
-#@+node:ekr.20190608105941.14: *4* @item &fully-expand-body-pane
-#@+node:ekr.20190608105941.15: *4* @item full&y-expand-log-pane
-#@+node:ekr.20190608105941.16: *4* @item fully-e&xpand-outline-pane
-#@+node:ekr.20190608105941.17: *4* @item fully-exp&and-pane
-#@+node:ekr.20150514063305.198: *3* ec.cycleAllFocus
+#@+node:ekr.20190609205751.1: ** Retired from Leo 6.0
+#@+node:ekr.20190608104256.1: *3* Retired commands & menu items
+#@+node:ekr.20190608105206.1: *4* @menu &Show Or Hide Panes
+#@+node:ekr.20190608105206.2: *5* @item gui-&all-hide
+#@+node:ekr.20190608105206.3: *5* @item gui-&all-show
+#@+node:ekr.20190608105206.4: *5* @item gui-&all-toggle
+#@+node:ekr.20190608105206.5: *5* @item-
+#@+node:ekr.20190608105206.6: *5* @item gui-&iconbar-hide
+#@+node:ekr.20190608105206.7: *5* @item gui-&iconbar-show
+#@+node:ekr.20190608105206.8: *5* @item gui-&iconbar-toggle
+#@+node:ekr.20190608105206.9: *5* @item -
+#@+node:ekr.20190608105206.10: *5* @item gui-&menu-hide
+#@+node:ekr.20190608105206.11: *5* @item gui-&menu-show
+#@+node:ekr.20190608105206.12: *5* @item gui-&menu-toggle
+#@+node:ekr.20190608105206.13: *5* @item -
+#@+node:ekr.20190608105206.14: *5* @item gui-&minibuffer-hide
+#@+node:ekr.20190608105206.15: *5* @item gui-&minibuffer-show
+#@+node:ekr.20190608105206.16: *5* @item gui-&minibuffer-toggle
+#@+node:ekr.20190608105206.17: *5* @item -
+#@+node:ekr.20190608105206.18: *5* @item gui-&statusbar-hide
+#@+node:ekr.20190608105206.19: *5* @item gui-&statusbar-show
+#@+node:ekr.20190608105206.20: *5* @item gui-&statusbar-toggle
+#@+node:ekr.20190608105206.21: *5* @item -
+#@+node:ekr.20190608105206.22: *5* @item gui-&tabbar-hide
+#@+node:ekr.20190608105206.23: *5* @item gui-&tabbar-show
+#@+node:ekr.20190608105206.24: *5* @item gui-&tabbar-toggle
+#@+node:ekr.20190608105941.1: *4* @menu &Expand/Contract Panes
+#@+node:ekr.20190608105941.2: *5* @item &equal-sized-panes
+#@+node:ekr.20190608105941.3: *5* @item -
+#@+node:ekr.20190608105941.4: *5* @item contract-&body-pane
+#@+node:ekr.20190608105941.5: *5* @item contract-&log-pane
+#@+node:ekr.20190608105941.6: *5* @item contract-&outline-pane
+#@+node:ekr.20190608105941.7: *5* @item contract-&pane
+#@+node:ekr.20190608105941.8: *5* @item -
+#@+node:ekr.20190608105941.9: *5* @item expand-bo&dy-pane
+#@+node:ekr.20190608105941.10: *5* @item expand-lo&g-pane
+#@+node:ekr.20190608105941.11: *5* @item expand-o&utline-pane
+#@+node:ekr.20190608105941.12: *5* @item expand-pa&ne
+#@+node:ekr.20190608105941.13: *5* @item -
+#@+node:ekr.20190608105941.14: *5* @item &fully-expand-body-pane
+#@+node:ekr.20190608105941.15: *5* @item full&y-expand-log-pane
+#@+node:ekr.20190608105941.16: *5* @item fully-e&xpand-outline-pane
+#@+node:ekr.20190608105941.17: *5* @item fully-exp&and-pane
+#@+node:ekr.20150514063305.198: *4* ec.cycleAllFocus
 editWidgetCount = 0
 
 def cycleAllFocus(self, event):
@@ -3301,7 +3302,7 @@ def cycleAllFocus(self, event):
         k.newMinibufferWidget = pane
         c.widgetWantsFocusNow(pane)
         k.showStateAndMode()
-#@+node:ekr.20150514063305.197: *3* ec.cycleFocus
+#@+node:ekr.20150514063305.197: *4* ec.cycleFocus
 @cmd('cycle-focus')
 def cycleFocus(self, event):
     '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
@@ -3327,7 +3328,7 @@ def cycleFocus(self, event):
     c.widgetWantsFocusNow(pane)
     k.newMinibufferWidget = pane
     k.showStateAndMode()
-#@+node:ekr.20060528170438: *3* LeoBody.cycleEditorFocus
+#@+node:ekr.20060528170438: *4* LeoBody.cycleEditorFocus
 @cmd('editor-cycle-focus')
 @cmd('cycle-editor-focus') # There is no LeoQtBody method
 def cycleEditorFocus(self, event=None):
@@ -3343,7 +3344,7 @@ def cycleEditorFocus(self, event=None):
         assert(w != w2)
         self.selectEditor(w2)
         c.frame.body.wrapper = w2
-#@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
+#@+node:ekr.20070302094848.4: *4* LeoLog.cycleTabFocus
 ### @cmd('cycle-tab-focus')
 def cycleTabFocus(self, event=None):
     '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -3361,7 +3362,7 @@ def cycleTabFocus(self, event=None):
         self.selectTab(tabName)
         return i
     return None
-#@+node:ekr.20110605121601.18327: *3* LeoQtLog.cycleTabFocus
+#@+node:ekr.20110605121601.18327: *4* LeoQtLog.cycleTabFocus
 @cmd('cycle-tab-focus')
 def cycleTabFocus(self, event=None):
     '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -3373,7 +3374,7 @@ def cycleTabFocus(self, event=None):
     tabName = w.tabText(i)
     self.selectTab(tabName, createText=False)
     return i
-#@+node:tbrown.20140620095406.40066: *3* qt: gui-show/hide/toggle
+#@+node:tbrown.20140620095406.40066: *4* qt: gui-show/hide/toggle
 # create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
 widgets = [
     ('menu', lambda c: c.frame.top.menuBar()),
@@ -3406,8 +3407,8 @@ for vis in 'hide', 'show', 'toggle':
             getattr(w, vis)()
 
     g.command("gui-all-%s" % vis)(doall)
-#@+node:ekr.20110605121601.18294: *3* qtFrame.Minibuffer commands...
-#@+node:ekr.20110605121601.18295: *4* qtFrame.contractPane
+#@+node:ekr.20110605121601.18294: *4* qtFrame.Minibuffer commands...
+#@+node:ekr.20110605121601.18295: *5* qtFrame.contractPane
 @cmd('contract-pane')
 def contractPane(self, event=None):
     '''Contract the selected pane.'''
@@ -3427,7 +3428,7 @@ def contractPane(self, event=None):
                 f.contractOutlinePane()
                 c.treeWantsFocus()
                 break
-#@+node:ekr.20110605121601.18296: *4* qtFrame.expandPane
+#@+node:ekr.20110605121601.18296: *5* qtFrame.expandPane
 @cmd('expand-pane')
 def expandPane(self, event=None):
     '''Expand the selected pane.'''
@@ -3447,7 +3448,7 @@ def expandPane(self, event=None):
                 f.expandOutlinePane()
                 c.treeWantsFocus()
                 break
-#@+node:ekr.20110605121601.18297: *4* qtFrame.fullyExpandPane
+#@+node:ekr.20110605121601.18297: *5* qtFrame.fullyExpandPane
 @cmd('fully-expand-pane')
 def fullyExpandPane(self, event=None):
     '''Fully expand the selected pane.'''
@@ -3467,7 +3468,7 @@ def fullyExpandPane(self, event=None):
                 f.fullyExpandOutlinePane()
                 c.bodyWantsFocus()
                 break
-#@+node:ekr.20110605121601.18298: *4* qtFrame.hidePane
+#@+node:ekr.20110605121601.18298: *5* qtFrame.hidePane
 @cmd('hide-pane')
 def hidePane(self, event=None):
     '''Completely contract the selected pane.'''
@@ -3487,7 +3488,7 @@ def hidePane(self, event=None):
                 f.hideOutlinePane()
                 c.bodyWantsFocus()
                 break
-#@+node:ekr.20110605121601.18299: *4* qtFrame.expand/contract...Pane
+#@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract...Pane
 @cmd('contract-body-pane')
 @cmd('expand-outline-pane')
 def contractBodyPane(self, event=None):
@@ -3517,7 +3518,7 @@ def expandLogPane(self, event=None):
     '''Expand the log pane.'''
     r = max(0.0, self.secondary_ratio - 0.1)
     self.divideLeoSplitter2(r)
-#@+node:ekr.20110605121601.18300: *4* qtFrame.fullyExpand/hide...Pane
+#@+node:ekr.20110605121601.18300: *5* qtFrame.fullyExpand/hide...Pane
 @cmd('fully-expand-body-pane')
 @cmd('hide-outline-pane')
 def fullyExpandBodyPane(self, event=None):
@@ -3539,7 +3540,7 @@ def fullyExpandLogPane(self, event=None):
 def hideLogPane(self, event=None):
     '''Completely contract the log pane.'''
     self.divideLeoSplitter2(1.0)
-#@+node:ekr.20140815160132.18822: *3* vc.cycle_focus & cycle_all_focus (:gt & :gT)
+#@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
 @cmd(':gt')
 def cycle_focus(self, event=None):
     '''Cycle focus'''
@@ -3551,6 +3552,35 @@ def cycle_all_focus(self, event=None):
     '''Cycle all focus'''
     event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
     self.do('cycle-all-focus', event=event)
+#@+node:ekr.20110605121601.18462: *3* class SDIFrameFactory
+class SDIFrameFactory:
+    """
+    Top-level frame builder for Qt Gui without tabs.
+
+    This only deals with Qt level widgets, not Leo wrappers
+    """
+    @others
+#@+node:ekr.20110605121601.18463: *4* createFrame (SDIFrameFactory)
+def createFrame(self, leoFrame):
+    c = leoFrame.c
+    dw = DynamicWindow(c)
+    dw.construct()
+    g.app.gui.attachLeoIcon(dw)
+    dw.setWindowTitle(leoFrame.title)
+    g.app.gui.setFilter(c, dw, dw, tag='sdi-frame')
+    if g.app.start_minimized:
+        dw.showMinimized()
+    elif g.app.start_maximized:
+        dw.showMaximized()
+    elif g.app.start_fullscreen:
+        dw.showFullScreen()
+    else:
+        dw.show()
+    return dw
+
+def deleteFrame(self, wdg):
+    # Do not delete.  Called from destroySelf.
+    pass
 #@-all
 #@@nosearch
 #@-leo

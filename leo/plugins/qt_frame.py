@@ -4717,36 +4717,6 @@ class QtSearchWidget:
         self.wrapper = self
         self.body = self
         self.text = None
-#@+node:ekr.20110605121601.18462: ** class SDIFrameFactory
-class SDIFrameFactory:
-    """
-    Top-level frame builder for Qt Gui without tabs.
-
-    This only deals with Qt level widgets, not Leo wrappers
-    """
-    #@+others
-    #@+node:ekr.20110605121601.18463: *3* createFrame (SDIFrameFactory)
-    def createFrame(self, leoFrame):
-        c = leoFrame.c
-        dw = DynamicWindow(c)
-        dw.construct()
-        g.app.gui.attachLeoIcon(dw)
-        dw.setWindowTitle(leoFrame.title)
-        g.app.gui.setFilter(c, dw, dw, tag='sdi-frame')
-        if g.app.start_minimized:
-            dw.showMinimized()
-        elif g.app.start_maximized:
-            dw.showMaximized()
-        elif g.app.start_fullscreen:
-            dw.showFullScreen()
-        else:
-            dw.show()
-        return dw
-
-    def deleteFrame(self, wdg):
-        # Do not delete.  Called from destroySelf.
-        pass
-    #@-others
 #@+node:ekr.20110605121601.18464: ** class TabbedFrameFactory
 class TabbedFrameFactory:
     """ 'Toplevel' frame builder for tabbed toplevel interface
