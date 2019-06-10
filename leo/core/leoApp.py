@@ -113,7 +113,7 @@ class LeoApp:
         self.listen_to_log_flag = False
             # True: execute listen-to-log command.
         self.qt_use_tabs = False
-            # True: allow tabbed main window.
+            # True: using qt gui: allow tabbed main window.
         self.loaded_session = False
             # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False
@@ -1044,7 +1044,10 @@ class LeoApp:
             return # The bridge will create the gui later.
         if app.gui:
             return # This method can be called twice if we had to get .leoID.txt.
-        if argName in ('qt', 'qttabs'): # 2011/06/15.
+        ### if argName in ('qt', 'qttabs'):
+        assert argName != 'qttabs'
+            # For compatibility with g.assertUi('qt')
+        if argName == 'qt':
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
@@ -2416,7 +2419,7 @@ class LoadManager:
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
         c = c1
-        # For qttabs gui, select the first-loaded tab.
+        # For qt gui, select the first-loaded tab.
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
@@ -2805,7 +2808,7 @@ class LoadManager:
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
-        add_other('--gui',          'gui to use (qt/qttabs/console/null)')
+        add_other('--gui',          'gui to use (qt/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
@@ -2845,33 +2848,33 @@ class LoadManager:
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
-    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
+    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption (changed)
     def doGuiOption(self, options):
         gui = options.gui
         if gui:
             gui = gui.lower()
-            if gui == 'qt':
-                print('--gui=qt is equivalent to --gui=qttabs\n')
-                    # Will be removed eventually.
-                g.app.qt_use_tabs = True # #1171: retire legacy Qt guis.
-            elif gui == 'qttabs':
-                g.app.qt_use_tabs = True
+            # #1171: retire non-tabbed qt gui.
+            if gui in ('qt', 'qttabs'):
+                gui = 'qt' # For compatibilty with g.UiTypeException
             elif gui.startswith('browser'):
-                g.app.qt_use_tabs = False
-            elif gui in ('console', 'curses', 'text', 'null'): ### 'qt'
-                    # text: cursesGui.py, curses: cursesGui2.py.
-                g.app.qt_use_tabs = False
+                pass
+            elif gui in ('console', 'curses', 'text', 'null'):
+                pass
             else:
                 print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
                 gui = 'qt'
-                g.app.qt_use_tabs = False
-        elif sys.platform == 'darwin':
-            gui = 'qt'
-            g.app.qt_use_tabs = False
         else:
-            gui = 'qttabs'
-            g.app.qt_use_tabs = True
+            gui = 'qt'
+        ###
+            # elif sys.platform == 'darwin':
+                # gui = 'qt'
+                # g.app.qt_use_tabs = False
+            # else:
+                # gui = 'qttabs'
+                # g.app.qt_use_tabs = True
         assert gui
+        assert gui != 'qttabs' # For compatibilty with g.UiTypeException
+        g.app.qt_use_tabs = gui == 'qt'
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption

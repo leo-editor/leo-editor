@@ -129,10 +129,13 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-        if g.app.qt_use_tabs:
-            self.frameFactory = qt_frame.TabbedFrameFactory()
-        else:
-            self.frameFactory = qt_frame.SDIFrameFactory()
+        # #1171:
+        self.frameFactory = qt_frame.TabbedFrameFactory()
+        ###
+            # if g.app.qt_use_tabs:
+                # self.frameFactory = qt_frame.TabbedFrameFactory()
+            # else:
+                # self.frameFactory = qt_frame.SDIFrameFactory()
         
     def reloadSettings(self):
         pass
@@ -873,7 +876,7 @@ class LeoQtGui(leoGui.LeoGui):
         #
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
-        # For qttabs gui, select the first-loaded tab.
+        # For the qt gui, select the first-loaded tab.
         if 'focus' in g.app.debug:
             g.trace(c1)
         if hasattr(g.app.gui, 'frameFactory'):
@@ -2016,9 +2019,11 @@ class StyleSheetManager:
         For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
         For --gui=qt,     c.frame.top is a DynamicWindow.
         '''
-        if top is None: top = self.c.frame.top
-        master = top.leo_master or top
-        return master
+        # if top is None:
+            # top = self.c.frame.top
+        return top or self.c.frame.top
+        ### master = top.leo_master or top
+        ### return master
     #@+node:ekr.20140913054442.19391: *4* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''

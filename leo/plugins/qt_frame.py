@@ -43,10 +43,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     is the top-level window, **not** this QMainWindow!
 
     c.frame.top is a DynamicWindow object.
-
-    For --gui==qttabs:
-        c.frame.top.parent is a TabbedFrameFactory
-        c.frame.top.leo_master is a LeoTabbedTopLevel
+    c.frame.top.parent is a TabbedFrameFactory
+    c.frame.top.leo_master is a LeoTabbedTopLevel
 
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
@@ -56,7 +54,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def __init__(self, c, parent=None):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
-            # For qttabs gui, parent is a LeoTabbedTopLevel.
+            # parent is a LeoTabbedTopLevel.
         super().__init__(parent)
         self.leo_c = c
         self.leo_docks = [] # List of created QDockWidgets.
@@ -1301,7 +1299,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
-        '''Set the window geometry, but only once when using the qttabs gui.'''
+        '''Set the window geometry, but only once when using the qt gui.'''
         if g.app.qt_use_tabs:
             m = self.leo_master
             assert self.leo_master
@@ -3091,9 +3089,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def minimize(self, frame):
         # This unit test will fail when run externally.
         if frame and frame.top:
-            # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
-            # For --gui=qt,     frame.top is a DynamicWindow.
-            w = frame.top.leo_master or frame.top
+            ###
+                # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+                # For --gui=qt,     frame.top is a DynamicWindow.
+            ### w = frame.top.leo_master or frame.top
+            w = frame.top
             if g.unitTesting:
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
@@ -3120,9 +3120,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         frame = self
         # This unit test will fail when run externally.
         if frame and frame.top:
-            # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
-            # For --gui=qt,     frame.top is a DynamicWindow.
-            w = frame.top.leo_master or frame.top
+            ###
+                # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
+                # For --gui=qt,     frame.top is a DynamicWindow.
+            ### w = frame.top.leo_master or frame.top
+            w = frame.top
             if g.unitTesting:
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
