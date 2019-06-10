@@ -4717,7 +4717,8 @@ class QtSearchWidget:
         self.text = None
 #@+node:ekr.20110605121601.18464: ** class TabbedFrameFactory
 class TabbedFrameFactory:
-    """ 'Toplevel' frame builder for tabbed toplevel interface
+    """
+    'Toplevel' frame builder for tabbed toplevel interface
 
     This causes Leo to maintain only one toplevel window,
     with multiple tabs for documents
