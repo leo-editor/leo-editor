@@ -1199,9 +1199,9 @@ class Commands:
             return
         if not c.frame.top:
             return
-        master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
         if not redrawFlag: # Prevent flash when fixing #387.
             return
+        master = getattr(c.frame.top, 'leo_master', None)
         if master:
             # Call LeoTabbedTopLevel.setChanged.
             master.setChanged(c, changedFlag)

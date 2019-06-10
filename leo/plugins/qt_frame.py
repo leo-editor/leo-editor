@@ -1290,13 +1290,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
             QtWidgets.QApplication.UnicodeUTF8)
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c):
-        '''Select the window or tab for c. self is c.frame.top.'''
-        if self.leo_master:
-            # A LeoTabbedTopLevel.
-            self.leo_master.select(c)
-        else:
-            w = c.frame.body.wrapper
-            g.app.gui.set_focus(c, w)
+        '''Select the window or tab for c.'''
+        # Called from the save commands.
+        self.leo_master.select(c)
+        ###
+            # if self.leo_master:
+                # # A LeoTabbedTopLevel.
+                # self.leo_master.select(c)
+            # else:
+                # w = c.frame.body.wrapper
+                # g.app.gui.set_focus(c, w)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qt gui.'''
@@ -3089,11 +3092,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def minimize(self, frame):
         # This unit test will fail when run externally.
         if frame and frame.top:
-            ###
-                # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
-                # For --gui=qt,     frame.top is a DynamicWindow.
-            ### w = frame.top.leo_master or frame.top
-            w = frame.top
+            w = frame.top.leo_master or frame.top
             if g.unitTesting:
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
@@ -3123,8 +3122,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             ###
                 # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
                 # For --gui=qt,     frame.top is a DynamicWindow.
-            ### w = frame.top.leo_master or frame.top
-            w = frame.top
+            w = frame.top.leo_master or frame.top
             if g.unitTesting:
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
@@ -3205,7 +3203,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
 
     def get_window_info(self):
-        if hasattr(self.top, 'leo_master') and self.top.leo_master:
+        if getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
         else:
             f = self.top
@@ -3227,7 +3225,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     def getTitle(self):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-        # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+        # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master if g.app.qt_use_tabs else self.top
         return w.windowTitle()
 

@@ -1631,11 +1631,12 @@ class LeoApp:
         frame.deiconify()
         frame.lift()
         c.setLog()
-        master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
-        if master: # 2011/11/21: selecting the new tab ensures focus is set.
-            # frame.top.leo_master is a TabbedTopLevel.
+        master = getattr(frame.top, 'leo_master', None)
+        if master:
+            # master is a TabbedTopLevel.
+            # Selecting the new tab ensures focus is set.
             master.select(c)
-        if 1: # 2016/04/09
+        if 1:
             c.initialFocusHelper()
         else:
             c.bodyWantsFocus()
@@ -3238,7 +3239,6 @@ class LoadManager:
                 # c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self, fn):
-        # lm = self
 
         def munge(name):
             return g.os_path_normpath(name or '').lower()
@@ -3246,11 +3246,11 @@ class LoadManager:
         for frame in g.app.windowList:
             c = frame.c
             if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
-                # don't frame.bringToFront(), it breaks --minimize
+                # Don't call frame.bringToFront(), it breaks --minimize
                 c.setLog()
-                # 2011/11/21: selecting the new tab ensures focus is set.
-                master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
-                if master: # frame.top.leo_master is a TabbedTopLevel.
+                # Selecting the new tab ensures focus is set.
+                master =getattr(frame.top, 'leo_master', None)
+                if master: # master is a TabbedTopLevel.
                     master.select(frame.c)
                 c.outerUpdate()
                 return c

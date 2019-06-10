@@ -568,10 +568,6 @@ class Demo:
     def set_top_size(self, height, width):
         top = self.c.frame.top
         widget = getattr(top, 'leo_master', None) or top
-        # if isinstance(size, (QtCore.QSize, QtCore.QRect)):
-            # w, h = size.width(), size.height()
-        # else:
-            # w, h = size
         r = self.get_top_geometry()
         r.setHeight(height)
         r.setWidth(width)
