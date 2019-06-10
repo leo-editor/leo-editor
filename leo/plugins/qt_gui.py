@@ -131,11 +131,6 @@ class LeoQtGui(leoGui.LeoGui):
             self.splashScreen = self.createSplashScreen()
         # #1171:
         self.frameFactory = qt_frame.TabbedFrameFactory()
-        ###
-            # if g.app.qt_use_tabs:
-                # self.frameFactory = qt_frame.TabbedFrameFactory()
-            # else:
-                # self.frameFactory = qt_frame.SDIFrameFactory()
         
     def reloadSettings(self):
         pass
@@ -280,7 +275,6 @@ class LeoQtGui(leoGui.LeoGui):
     def createLeoFrame(self, c, title):
         """Create a new Leo frame."""
         gui = self
-        ### g.pr('\ncreateLeoFrame: creating LeoQtFrame', title, g.callers())
         return qt_frame.LeoQtFrame(c, title, gui)
 
     def createSpellTab(self, c, spellHandler, tabName):
@@ -654,7 +648,6 @@ class LeoQtGui(leoGui.LeoGui):
                 # Save reference to the window so it won't disappear.
             g.trace('startpath:', startpath)
             g.app.gui.attachLeoIcon(w)
-            ### w.setPath(g.os_path_dirname(startpath))
             w.setPath(startpath)
                 # Tell it what to look at.
             w.setStyleSheet("background: #657b83;")
@@ -1315,7 +1308,7 @@ class LeoQtGui(leoGui.LeoGui):
         c = g.app.log and g.app.log.c
         if not c:
             g.pr('qt_gui:show_tips: NO g.app.log')
-            return ### pyzo guard.
+            return # pyzo guard.
         self.show_tips_flag = c.config.getBool('show-tips', default=False)
         if not force and not self.show_tips_flag:
             return
@@ -2016,14 +2009,9 @@ class StyleSheetManager:
     def get_master_widget(self, top=None):
         '''
         Carefully return the master widget.
-        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-        For --gui=qt,     c.frame.top is a DynamicWindow.
+        c.frame.top is a DynamicWindow.
         '''
-        # if top is None:
-            # top = self.c.frame.top
         return top or self.c.frame.top
-        ### master = top.leo_master or top
-        ### return master
     #@+node:ekr.20140913054442.19391: *4* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''

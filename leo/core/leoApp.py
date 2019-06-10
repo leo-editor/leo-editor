@@ -1044,7 +1044,6 @@ class LeoApp:
             return # The bridge will create the gui later.
         if app.gui:
             return # This method can be called twice if we had to get .leoID.txt.
-        ### if argName in ('qt', 'qttabs'):
         assert argName != 'qttabs'
             # For compatibility with g.assertUi('qt')
         if argName == 'qt':
@@ -2865,13 +2864,6 @@ class LoadManager:
                 gui = 'qt'
         else:
             gui = 'qt'
-        ###
-            # elif sys.platform == 'darwin':
-                # gui = 'qt'
-                # g.app.qt_use_tabs = False
-            # else:
-                # gui = 'qttabs'
-                # g.app.qt_use_tabs = True
         assert gui
         assert gui != 'qttabs' # For compatibilty with g.UiTypeException
         g.app.qt_use_tabs = gui == 'qt'
