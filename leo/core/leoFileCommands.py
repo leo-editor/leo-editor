@@ -194,14 +194,11 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (***)
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         # #1189.
-        if g.app.start_maximized:
-            # Not setting the geometry may cause problems when
-            # unmaximizing the window, but for now that can't be helped.
-            return
+        trace = 'size' in g.app.debug
         c = self.c   
         d = self.getGlobalData()
         windowSize = g.app.loadManager.options.get('windowSize')
@@ -213,12 +210,25 @@ class FastRead:
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
         c.frame.setTopGeometry(w, h, x, y)
-            # #1189: This ruins --maximized, but not --fullscreen(!)
         r1, r2 = d.get('r1'), d.get('r2')
         c.frame.resizePanesToRatio(r1, r2)
-        ### Not needed
-            # if not g.app.start_minimized:
-                # c.frame.deiconify()
+        #
+        # #1189: Must be done *after* restoring geometry.
+        #        Was done in TabbedFrameFactory.createMaster.
+        frameFactory = getattr(g.app.gui, 'frameFactory', None)
+        if not frameFactory:
+            return
+        if trace: g.trace('sizing screen')
+        mf = frameFactory.masterFrame
+        if g.app.start_minimized:
+            mf.showMinimized()
+        elif g.app.start_maximized:
+            # #1189: fast.scanGlobals calls showMaximized later.
+            mf.showMaximized()
+        elif g.app.start_fullscreen:
+            mf.showFullScreen()
+        else:
+            mf.show()
     #@+node:ekr.20180708060437.1: *6* fast.getGlobalData
     def getGlobalData(self):
         '''Return a dict containing all global data.'''

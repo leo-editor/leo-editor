@@ -2945,8 +2945,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         # pylint: disable=arguments-differ
-        if g.app.dock:
-            return
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
@@ -4805,14 +4803,21 @@ class TabbedFrameFactory:
         if 'size' in g.app.debug:
             g.trace('minimized: %s, maximized: %s fullscreen: %s' % (
                 g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
+        #
+        # #1189: We *can* (and should) minimize here, to eliminate flash.
         if g.app.start_minimized:
             mf.showMinimized()
-        elif g.app.start_maximized:
-            mf.showMaximized()
-        elif g.app.start_fullscreen:
-            mf.showFullScreen()
-        else:
-            mf.show()
+        ###
+            # #1189: done later in fast.scanGlobals...
+            # if g.app.start_minimized:
+                # mf.showMinimized()
+            # elif g.app.start_maximized:
+                # # #1189: fast.scanGlobals calls showMaximized later.
+                # pass ### mf.showMaximized()
+            # elif g.app.start_fullscreen:
+                # mf.showFullScreen()
+            # else:
+                # mf.show()
     #@+node:ekr.20110605121601.18472: *3* createTabCommands (TabbedFrameFactory)
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
