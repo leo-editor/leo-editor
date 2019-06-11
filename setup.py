@@ -117,6 +117,7 @@ user_requires = [
         # https://github.com/pypa/pip/issues/4886
     'docutils', # used by Sphinx, rST plugin
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
+    'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
     'sphinx', # rST plugin
