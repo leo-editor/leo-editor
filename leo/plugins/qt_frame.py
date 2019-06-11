@@ -2945,6 +2945,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         # pylint: disable=arguments-differ
+        if g.app.dock:
+            return
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
@@ -3237,7 +3239,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w = self.top.leo_master if g.app.qt_use_tabs else self.top
             w.setWindowTitle(s)
 
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+    def setTopGeometry(self, w, h, x, y):
         # self.top is a DynamicWindow.
         if self.top:
             self.top.setGeometry(QtCore.QRect(x, y, w, h))

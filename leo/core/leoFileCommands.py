@@ -194,10 +194,15 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (***)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
-        c = self.c
+        # #1189.
+        if g.app.start_maximized:
+            # Not setting the geometry may cause problems when
+            # unmaximizing the window, but it appears that can't be helped.
+            return
+        c = self.c   
         d = self.getGlobalData()
         windowSize = g.app.loadManager.options.get('windowSize')
         if windowSize is not None:
@@ -206,13 +211,18 @@ class FastRead:
             w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
-        if g.app.start_minimized:
-            c.frame.setTopGeometry(w, h, x, y)
-        elif not g.app.start_maximized and not g.app.start_fullscreen:
-            c.frame.setTopGeometry(w, h, x, y)
+        if not g.app.start_minimized:
             c.frame.deiconify()
+        ### Old code
+            # c.frame.setTopGeometry(w, h, x, y)
+            # c.frame.resizePanesToRatio(r1, r2)
+            # if g.app.start_minimized:
+                # c.frame.setTopGeometry(w, h, x, y)
+            # elif not g.app.start_maximized and not g.app.start_fullscreen:
+                # c.frame.setTopGeometry(w, h, x, y)
+                # c.frame.deiconify()
     #@+node:ekr.20180708060437.1: *6* fast.getGlobalData
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
@@ -978,7 +988,7 @@ class FileCommands:
             v.parents = [findNode(x) for x in v.parents]
         c.hiddenRootNode.children = rootChildren
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
         p = fc.decodePosition(encp)
         c.setCurrentPosition(p)
@@ -990,7 +1000,7 @@ class FileCommands:
         v = leoNodes.VNode(context=c)
         c.hiddenRootNode.children = [v]
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
         c.sqlite_connection = conn
         fc.exportToSqlite(c.mFileName)

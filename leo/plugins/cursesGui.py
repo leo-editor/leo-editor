@@ -209,7 +209,7 @@ class TextFrame(leoFrame.LeoFrame):
     def setMinibufferBindings(self):
         pass
 
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+    def setTopGeometry(self, w, h, x, y):
         pass # N/A
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):

@@ -1087,7 +1087,7 @@ class LeoFrame:
     def resizePanesToRatio(self, ratio, secondary_ratio): self.oops()
     def resizeToScreen(self, event=None): self.oops()
     def setInitialWindowGeometry(self): self.oops()
-    def setTopGeometry(self, w, h, x, y, adjustSize=True): self.oops()
+    def setTopGeometry(self, w, h, x, y): self.oops()
     def toggleActivePane(self, event=None): self.oops()
     def toggleSplitDirection(self, event=None): self.oops()
     #@-others
@@ -1735,7 +1735,7 @@ class NullFrame(LeoFrame):
     def resizePanesToRatio(self, ratio, secondary_ratio): pass
     def resizeToScreen(self, event=None): pass
     def setInitialWindowGeometry(self): pass
-    def setTopGeometry(self, w, h, x, y, adjustSize=True): return 0, 0, 0, 0
+    def setTopGeometry(self, w, h, x, y): return 0, 0, 0, 0
     def setWrap(self, flag, force=False): pass
     def toggleActivePane(self, event=None): pass
     def toggleSplitDirection(self, event=None): pass

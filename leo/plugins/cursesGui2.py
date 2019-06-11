@@ -2316,7 +2316,7 @@ class CoreFrame (leoFrame.LeoFrame):
     def setTitle(self, title):
         self.title = g.toUnicode(title)
 
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+    def setTopGeometry(self, w, h, x, y):
         pass
 
     def setWrap(self, p):
