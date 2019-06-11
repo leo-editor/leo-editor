@@ -1293,13 +1293,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Select the window or tab for c.'''
         # Called from the save commands.
         self.leo_master.select(c)
-        ###
-            # if self.leo_master:
-                # # A LeoTabbedTopLevel.
-                # self.leo_master.select(c)
-            # else:
-                # w = c.frame.body.wrapper
-                # g.app.gui.set_focus(c, w)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qt gui.'''
@@ -3119,9 +3112,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         frame = self
         # This unit test will fail when run externally.
         if frame and frame.top:
-            ###
-                # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
-                # For --gui=qt,     frame.top is a DynamicWindow.
+            # frame.top.leo_master is a LeoTabbedTopLevel.
+            # frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
                 g.app.unitTestDict['resize-to-screen'] = True

@@ -1067,14 +1067,7 @@ class JEditColorizer(BaseJEditColorizer):
         self.stateNameDict = {} # Keys are state names, values are state numbers.
         #
         # Init common data...
-        ###
-        ### Now done in reload settings.
-            # self.init_style_ivars()
-            # self.defineLeoKeywordsDict()
-            # self.defineDefaultColorsDict()
-            # self.defineDefaultFontDict()
         self.reloadSettings()
-        ### self.init()
     #@+node:ekr.20110605121601.18580: *4* jedit.init
     def init(self, p=None):
         '''Init the colorizer, but *not* state. p is for tracing only.'''
