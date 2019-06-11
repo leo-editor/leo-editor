@@ -200,7 +200,7 @@ class FastRead:
         # #1189.
         if g.app.start_maximized:
             # Not setting the geometry may cause problems when
-            # unmaximizing the window, but it appears that can't be helped.
+            # unmaximizing the window, but for now that can't be helped.
             return
         c = self.c   
         d = self.getGlobalData()
@@ -210,18 +210,14 @@ class FastRead:
         else:
             w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
-        r1, r2 = d.get('r1'), d.get('r2')
+        if 'size' in g.app.debug:
+            g.trace(w, h, x, y, c.shortFileName())
         c.frame.setTopGeometry(w, h, x, y)
+            # #1189: This ruins --maximized, but not --fullscreen(!)
+        r1, r2 = d.get('r1'), d.get('r2')
         c.frame.resizePanesToRatio(r1, r2)
-        if not g.app.start_minimized:
-            c.frame.deiconify()
-        ### Old code
-            # c.frame.setTopGeometry(w, h, x, y)
-            # c.frame.resizePanesToRatio(r1, r2)
-            # if g.app.start_minimized:
-                # c.frame.setTopGeometry(w, h, x, y)
-            # elif not g.app.start_maximized and not g.app.start_fullscreen:
-                # c.frame.setTopGeometry(w, h, x, y)
+        ### Not needed
+            # if not g.app.start_minimized:
                 # c.frame.deiconify()
     #@+node:ekr.20180708060437.1: *6* fast.getGlobalData
     def getGlobalData(self):

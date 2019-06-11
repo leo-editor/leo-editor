@@ -1419,7 +1419,7 @@ class LeoApp:
         
         This is called for all closed windows.
         '''
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'startup')])
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -1648,7 +1648,10 @@ class LeoApp:
         
         Use the per-file state of the first loaded .leo file, or the global state.
         '''
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'startup')])
+        #
+        # Note for #1189: The windows has already been improperly resized
+        #                 by the time this method is called.
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -2754,7 +2757,7 @@ class LoadManager:
             '--session-save',
         )
         trace_m='''cache,coloring,dock,drawing,events,focus,gnx,ipython,
-          keys,plugins,select,shutdown,startup,themes'''
+          keys,plugins,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)

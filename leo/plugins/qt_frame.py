@@ -3194,17 +3194,23 @@ class LeoQtFrame(leoFrame.LeoFrame):
         __get_secondary_ratio, # no setter.
         doc="qtFrame.secondary_ratio property")
     #@+node:ekr.20110605121601.18311: *3* qtFrame.Qt bindings...
+    #@+node:ekr.20190611053431.1: *4* qtFrame.bringToFront
     def bringToFront(self):
+        if 'size' in g.app.debug:
+            g.trace()
         self.lift()
 
+    #@+node:ekr.20190611053431.2: *4* qtFrame.deiconify
     def deiconify(self):
+        '''Undo --minimized'''
+        if 'size' in g.app.debug:
+            g.trace('top:', bool(self.top), 'isMinimized:', self.top and self.top.isMinimized())
         if self.top and self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
 
-    def getFocus(self):
-        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
-
+    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
     def get_window_info(self):
+        '''Return the geometry of the top window.'''
         if getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
         else:
@@ -3213,24 +3219,39 @@ class LeoQtFrame(leoFrame.LeoFrame):
         topLeft = rect.topLeft()
         x, y = topLeft.x(), topLeft.y()
         w, h = rect.width(), rect.height()
+        if 'size' in g.app.debug:
+            g.trace(w, h, x, y)
         return w, h, x, y
 
-    def iconify(self):
-        if self.top: self.top.showMinimized()
+    #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
+    def getFocus(self):
+        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
 
-    def lift(self):
-        if not self.top: return
-        if self.top.isMinimized(): # Bug 379141
-            self.top.showNormal()
-        self.top.activateWindow()
-        self.top.raise_()
-
+    #@+node:ekr.20190611053431.7: *4* qtFrame.getTitle
     def getTitle(self):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master if g.app.qt_use_tabs else self.top
         return w.windowTitle()
 
+    #@+node:ekr.20190611053431.5: *4* qtFrame.iconify
+    def iconify(self):
+        if 'size' in g.app.debug:
+            g.trace(bool(self.top))
+        if self.top: self.top.showMinimized()
+
+    #@+node:ekr.20190611053431.6: *4* qtFrame.lift
+    def lift(self):
+        if 'size' in g.app.debug:
+            g.trace(bool(self.top), self.top and self.top.isMinimized())
+        if not self.top:
+            return
+        if self.top.isMinimized(): # Bug 379141
+            self.top.showNormal()
+        self.top.activateWindow()
+        self.top.raise_()
+
+    #@+node:ekr.20190611053431.8: *4* qtFrame.setTitle
     def setTitle(self, s):
         # pylint: disable=arguments-differ
         if self.top:
@@ -3239,12 +3260,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w = self.top.leo_master if g.app.qt_use_tabs else self.top
             w.setWindowTitle(s)
 
+    #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
     def setTopGeometry(self, w, h, x, y):
         # self.top is a DynamicWindow.
+        if 'size' in g.app.debug:
+            g.trace(bool(self.top), w, h, x, y)
         if self.top:
             self.top.setGeometry(QtCore.QRect(x, y, w, h))
 
+    #@+node:ekr.20190611053431.10: *4* qtFrame.update
     def update(self, *args, **keys):
+        if 'size' in g.app.debug:
+            g.trace(bool(self.top))
         self.top.update()
     #@-others
 #@+node:ekr.20110605121601.18312: ** class LeoQtLog (LeoLog)
@@ -4775,6 +4802,9 @@ class TabbedFrameFactory:
         except AttributeError:
             pass # Qt 4.4 does not support setTabsClosable
         mf.currentChanged.connect(self.slotCurrentChanged)
+        if 'size' in g.app.debug:
+            g.trace('minimized: %s, maximized: %s fullscreen: %s' % (
+                g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:
