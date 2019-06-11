@@ -173,7 +173,7 @@ class LeoQtGui(leoGui.LeoGui):
         There are problems with PyQt5.
         '''
         if isQt5:
-            # Alas, returning s reopens bug 218: https://github.com/leo-editor/leo-editor/issues/218
+            # Alas, returning s reopens #218.
             return
         if s:
             # This code generates a harmless, but annoying warning on PyQt5.

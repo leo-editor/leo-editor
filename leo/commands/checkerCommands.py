@@ -434,7 +434,7 @@ class PylintCommand:
         if not p.isAnyAtFileNode():
             g.trace('not an @<file> node: %r' % p.h)
             return None
-        # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+        # #67.
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         fn = p.anyAtFileNodeName()

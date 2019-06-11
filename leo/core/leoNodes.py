@@ -814,7 +814,7 @@ class Position:
         def visible(p, root=None):
             for parent in p.parents(copy=False):
                 if parent and parent == root:
-                    # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
+                    # #12.
                     return True
                 if not c.shouldBeExpanded(parent):
                     return False
@@ -823,7 +823,7 @@ class Position:
         if c.hoistStack:
             root = c.hoistStack[-1].p
             if p == root:
-                # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
+                # #12.
                 return True
             return root.isAncestorOf(p) and visible(p, root=root)
         for root in c.rootPosition().self_and_siblings(copy=False):

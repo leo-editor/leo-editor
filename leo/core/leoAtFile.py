@@ -2012,8 +2012,8 @@ class AtFile:
     #@+node:ekr.20041005105605.177: *7* at.putRefAt
     def putRefAt(self, name, ref, delta):
         at = self
-        # Fix #132: Section Reference causes clone...
-        # https://github.com/leo-editor/leo-editor/issues/132
+        # #132: Section Reference causes clone...
+        #
         # Never put any @+middle or @-middle sentinels.
         at.indent += delta
         at.putSentinel("@+" + name)

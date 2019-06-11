@@ -1382,10 +1382,9 @@ class QTextEditWrapper(QTextMixin):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op, mode)
-        # 2012/03/25.  Add this common code.
         self.seeInsertPoint()
         self.rememberSelectionAndScroll()
-        # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
+        # #218.
         cursor = w.textCursor()
         sel = cursor.selection().toPlainText()
         if sel and hasattr(g.app.gui, 'setClipboardSelection'):
@@ -1517,8 +1516,7 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(j)
             tc.setPosition(i, tc.KeepAnchor)
         w.setTextCursor(tc)
-        #
-        # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
+        # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):
             if s[i:j]:
                 g.app.gui.setClipboardSelection(s[i:j])

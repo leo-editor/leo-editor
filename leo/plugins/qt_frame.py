@@ -2582,8 +2582,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             s2 = line[0: col]
             col = g.computeWidth(s2, c.tab_width)
             #
-            # Fix bug #195: fcol when using @first directive is inaccurate
-            # https://github.com/leo-editor/leo-editor/issues/195
+            # #195: fcol when using @first directive is inaccurate
             i = line.find('<<')
             j = line.find('>>')
             if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
@@ -3996,8 +3995,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             itemHash = tree.itemHash(item)
             p = tree.item2positionDict.get(itemHash)
         if not p:
-            # Fix bug: https://github.com/leo-editor/leo-editor/issues/59
-            # Drop at last node.
+            # #59: Drop at last node.
             p = c.rootPosition()
             while p.hasNext():
                 p.moveToNext()
@@ -4205,16 +4203,14 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p2 = p.insertAsNthChild(0)
             parent = p
         elif p.h.startswith('@path '):
-            # Fix bug https://github.com/leo-editor/leo-editor/issues/60
-            # create relative paths & urls when dragging files
+            # #60: create relative paths & urls when dragging files.
             p2 = p.insertAsNthChild(0)
             p.expand()
             parent = p
         else:
             p2 = p.insertAfter()
             parent = p.parent()
-        # Fix bug https://github.com/leo-editor/leo-editor/issues/60
-        # create relative paths & urls when dragging files
+        # #60: create relative paths & urls when dragging files.
         aList = g.get_directives_dict_list(parent)
         path = g.scanAtPathDirectives(c, aList)
         if path:

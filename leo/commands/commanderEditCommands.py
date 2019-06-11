@@ -853,9 +853,7 @@ def showInvisiblesHelper(c, val):
     if index is None:
         if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
         else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
-    # 2016/03/09: Set the status bits here.
-    # May fix #240: body won't scroll to end of text
-    # https://github.com/leo-editor/leo-editor/issues/240
+    # #240: Set the status bits here.
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
     c.frame.body.recolor(c.p)

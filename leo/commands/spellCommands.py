@@ -70,7 +70,7 @@ class BaseSpellWrapper:
                 "..", "plugins",
                 'spellpyx.txt',
             )
-        # Fix bug https://github.com/leo-editor/leo-editor/issues/108
+        # #108.
         if not g.os_path_exists(fn):
             fn = g.os_path_finalize_join(
                 g.app.homeDir,

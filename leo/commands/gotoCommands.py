@@ -49,8 +49,7 @@ class GoToCommands:
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start
     def find_node_start(self, p, s=None):
         '''Return the global line number of the first line of p.b'''
-        # See #283: https://github.com/leo-editor/leo-editor/issues/283
-        # c = self.c
+        # See #283.
         root, fileName = self.find_root(p)
         if not root:
             return None

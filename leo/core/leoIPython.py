@@ -109,8 +109,8 @@ class InternalIPKernel:
             self.put_log('new_qt_console: connecting...')
             self.put_log(self.kernelApp.connection_file, raw=True)
         try:
-            # Fix #213: leo --ipython fails to connect with python3.5 and jupyter
-            # https://github.com/leo-editor/leo-editor/issues/213
+            # #213: leo --ipython fails to connect with python3.5 and jupyter
+            #
             # The connection file has the form kernel-nnn.json.
             # Using the defaults lets connect_qtconsole find the .json file.
             console = connect_qtconsole()

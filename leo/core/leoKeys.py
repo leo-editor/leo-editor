@@ -1038,8 +1038,7 @@ class FileNameChooser:
     def compute_tab_list(self):
         '''Compute the list of completions.'''
         path = self.get_label()
-        # Fix bug 215: insert-file-name doesn't process ~
-        # https://github.com/leo-editor/leo-editor/issues/215
+        # #215: insert-file-name doesn't process ~
         path = g.os_path_expanduser(path)
         sep = os.path.sep
         if g.os_path_exists(path):
@@ -1283,7 +1282,7 @@ class GetArg:
         else:
             tabList = []
         if completion:
-            # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+            # #323.
             common_prefix, tabList = self.compute_tab_list(tabList)
             self.show_tab_list(tabList)
             self.reset_tab_cycling()
@@ -1303,8 +1302,7 @@ class GetArg:
             # a 'tab_callback' attribute.
             if len(tabList) == 1 and self.do_tab_callback():
                 return
-            # #323: https://github.com/leo-editor/leo-editor/issues/323
-            # *Always* call ga.do_tab_list
+            # #323: *Always* call ga.do_tab_list.
             self.do_tab_cycling(common_prefix, tabList)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
@@ -1330,7 +1328,7 @@ class GetArg:
         if not common_prefix:
             # Leave the minibuffer as it is.
             self.show_tab_list(tabList)
-        # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+        # #323.
         elif (
             self.cycling_prefix and
             s.startswith(self.cycling_prefix) and

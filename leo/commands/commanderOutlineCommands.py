@@ -537,8 +537,7 @@ def goToNextClone(self, event=None):
     if p:
         c.expandAllAncestors(p)
         if cc:
-            # Fix bug #252: goto-next clone activate chapter.
-            # https://github.com/leo-editor/leo-editor/issues/252
+            # #252: goto-next clone activate chapter.
             chapter = cc.getSelectedChapter()
             old_name = chapter and chapter.name
             new_name = cc.findChapterNameForPosition(p)

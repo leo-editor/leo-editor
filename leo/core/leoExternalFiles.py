@@ -557,12 +557,11 @@ class ExternalFilesController:
             return False
         # The file has really changed.
         assert old_time, path
-        if 0: # Fix bug 208: external change overwrite protection only works once
-            # https://github.com/leo-editor/leo-editor/issues/208
-            # These next two lines mean that if the Leo version
-            # is changed (dirtied) again, overwrite will occur without warning.
-            self.set_time(path, new_time)
-            self.checksum_d[path] = new_sum
+        # #208: external change overwrite protection only works once.
+        # If the Leo version is changed (dirtied) again,
+        # overwrite will occur without warning.
+            # self.set_time(path, new_time)
+            # self.checksum_d[path] = new_sum
         return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):

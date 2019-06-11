@@ -404,8 +404,7 @@ class ParserBaseClass:
             else:
                 g.es_print("ERROR: didn't find menu path " + targetPath)
         elif g.app.inBridge:
-            pass # Not an error.
-                # Fix: https://github.com/leo-editor/leo-editor/issues/48
+            pass # #48: Not an error.
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* pbc.getName

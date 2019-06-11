@@ -4192,7 +4192,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
     except IndexError:
-        # Fix bug https://github.com/leo-editor/leo-editor/issues/36
+        # #36.
         pos = False
     if pos:
         use_idx_mode = True # ok to use hard/soft_idx
@@ -6363,7 +6363,7 @@ def pr(*args, **keys):
     stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
         # Unit tests require sys.stdout.
     if not stdout:
-        # Fix #541.
+        # #541.
         return
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
@@ -6381,8 +6381,7 @@ def pr(*args, **keys):
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
     try:
-        # 783: print-* commands fail under pythonw.
-        # https://github.com/leo-editor/leo-editor/issues/783.
+        # #783: print-* commands fail under pythonw.
         stdout.write(s)
     except Exception:
         pass

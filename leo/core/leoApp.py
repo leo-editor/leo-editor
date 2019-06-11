@@ -1320,7 +1320,7 @@ class LeoApp:
             g.app.destroyWindow(frame)
             g.app.windowList.remove(frame)
         else:
-            # Fix bug https://github.com/leo-editor/leo-editor/issues/69
+            # #69.
             g.app.forgetOpenFile(fn=c.fileName(), force=True)
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
@@ -1482,7 +1482,7 @@ class LeoApp:
         trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
-            # Fix https://github.com/leo-editor/leo-editor/issues/69
+            # #69.
             return
         if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             return
@@ -2615,7 +2615,7 @@ class LoadManager:
             g.printDict(g.app.writersDispatchDict)
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
-        # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+        # Creates problems: See #40.
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''
@@ -3274,9 +3274,7 @@ class LoadManager:
         if k: k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()
-            # Honor focus requests.
-            # This fixes bug 181: Focus remains in previous file
-            # https://github.com/leo-editor/leo-editor/issues/181
+            # #181: Honor focus requests.
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
     def initWrapperLeoFile(self, c, fn):
         '''

@@ -182,8 +182,7 @@ class BridgeController:
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
             if path not in sys.path:
                 sys.path.append(path)
-        # Attempt a fix for bug #258: leoBridge does not work with @auto-md subtrees.
-        # https://github.com/leo-editor/leo-editor/issues/258
+        # #258: leoBridge does not work with @auto-md subtrees.
         for theDir in ('importers', 'writers'):
             path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', theDir)
             if path not in sys.path:

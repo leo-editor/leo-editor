@@ -19,7 +19,7 @@ class ChapterController:
             # Important: chapter names never change,
             # even if their @chapter node changes.
         self.initing = True
-            # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+            # #31
             # True: suppress undo when creating chapters.
         self.re_chapter = None
             # Set where used.
@@ -51,7 +51,7 @@ class ChapterController:
         cc.createIcon()
         cc.setAllChapterNames()
             # Create all chapters.
-        # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+        # #31.
         cc.initing = False
         cc.selectChapterByName('main', collapse=False)
             # Always select the main chapter.

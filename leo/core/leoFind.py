@@ -2387,8 +2387,7 @@ class LeoFind:
         # Select the first node.
         if self.suboutline_only or self.node_only:
             self.p = c.p
-             # Fix bug 188: Find/Replace All Suboutline only same as Node only
-            # https://github.com/leo-editor/leo-editor/issues/188
+            # #188: Find/Replace All Suboutline only same as Node only.
             self.onlyPosition = self.p.copy()
         else:
             p = c.rootPosition()
@@ -2602,9 +2601,7 @@ class LeoFind:
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
             w.see(insert)
-                # Fix bug 78: find-next match not always scrolled into view.
-                # https://github.com/leo-editor/leo-editor/issues/78
-            # g.app.allow_delayed_see = True
+                # #78: find-next match not always scrolled into view.
             c.outerUpdate()
                 # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
@@ -2635,7 +2632,8 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
-        # Disable part of https://github.com/leo-editor/leo-editor/issues/177
+        #
+        # Disable part of #177.
         # Set ignore-case if the find text is mixed case.
         # This does not work well in practice.
         if False and c.config.getBool('auto-set-ignore-case', default=True):
