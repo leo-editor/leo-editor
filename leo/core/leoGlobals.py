@@ -2664,7 +2664,7 @@ def enable_gc_debug(event=None):
         # gc.DEBUG_OBJECTS |
         gc.DEBUG_SAVEALL)
 #@+node:ekr.20190609113810.1: *4* g.GetRepresentativeObjects (new)
-def GetRepresentativeLiveObjects():
+def getRepresentativeLiveObjects():
     '''
     Return a dict.
     Keys classes.

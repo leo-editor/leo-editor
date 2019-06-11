@@ -4573,7 +4573,7 @@ c.redraw()
 import inspect
 import time
 t1 = time.clock()
-d = g.GetRepresentativeLiveObjects()
+d = g.getRepresentativeLiveObjects()
 #
 # Get only Leo objects
 leo_objects = [obj for key, obj in d.items() if 'leo' in repr(key)]
