@@ -3265,7 +3265,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             g.trace(bool(self.top), w, h, x, y)
         if self.top:
             self.top.setGeometry(QtCore.QRect(x, y, w, h))
-
     #@+node:ekr.20190611053431.10: *4* qtFrame.update
     def update(self, *args, **keys):
         if 'size' in g.app.debug:
@@ -4751,7 +4750,7 @@ class TabbedFrameFactory:
     with multiple tabs for documents
     """
     #@+others
-    #@+node:ekr.20110605121601.18465: *3*  ctor (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18465: *3* frameFactory.__init__	
     def __init__(self):
         # will be created when first frame appears
         # DynamicWindow => Leo frame map
@@ -4763,7 +4762,7 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
@@ -4789,7 +4788,7 @@ class TabbedFrameFactory:
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         g.app.gui.attachLeoIcon(mf)
@@ -4807,18 +4806,7 @@ class TabbedFrameFactory:
         # #1189: We *can* (and should) minimize here, to eliminate flash.
         if g.app.start_minimized:
             mf.showMinimized()
-        ###
-            # #1189: done later in fast.scanGlobals...
-            # if g.app.start_minimized:
-                # mf.showMinimized()
-            # elif g.app.start_maximized:
-                # # #1189: fast.scanGlobals calls showMaximized later.
-                # pass ### mf.showMaximized()
-            # elif g.app.start_fullscreen:
-                # mf.showFullScreen()
-            # else:
-                # mf.show()
-    #@+node:ekr.20110605121601.18472: *3* createTabCommands (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
         del self.leoFrames[wdg]
@@ -4873,7 +4861,7 @@ class TabbedFrameFactory:
             """ Cycle to next tab """
             tab_cycle(-1)
         #@-<< Commands for tabs >>
-    #@+node:ekr.20110605121601.18467: *3* deleteFrame (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18467: *3* frameFactory.deleteFrame
     def deleteFrame(self, wdg):
 
         if not wdg:
@@ -4890,7 +4878,7 @@ class TabbedFrameFactory:
         if wdg2:
             g.app.selectLeoWindow(wdg2.leo_c)
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-    #@+node:ekr.20110605121601.18471: *3* focusCurrentBody (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18471: *3* frameFactory.focusCurrentBody
     def focusCurrentBody(self):
         """ Focus body control of current tab """
         tabw = self.masterFrame
@@ -4901,7 +4889,7 @@ class TabbedFrameFactory:
         c.bodyWantsFocusNow()
         # Fix bug 690260: correct the log.
         g.app.log = f.log
-    #@+node:ekr.20110605121601.18469: *3* setTabForCommander (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18469: *3* frameFactory.setTabForCommander
     def setTabForCommander(self, c):
         tabw = self.masterFrame # a QTabWidget
         for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
@@ -4911,7 +4899,7 @@ class TabbedFrameFactory:
                         tabw.setCurrentIndex(i)
                         break
                 break
-    #@+node:ekr.20110605121601.18470: *3* signal handlers (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18470: *3* frameFactory.signal handlers
     def slotCloseRequest(self, idx):
 
         tabw = self.masterFrame

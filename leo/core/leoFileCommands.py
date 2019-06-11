@@ -197,7 +197,6 @@ class FastRead:
     #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
-        # #1189.
         trace = 'size' in g.app.debug
         c = self.c   
         d = self.getGlobalData()
