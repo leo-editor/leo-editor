@@ -183,7 +183,7 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.setFocus()
 
     # Careful: we may be unit testing.
-    if wdg and wdg.parent():
+    if wdg and wdg.parent() and not g.app.dock:
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 #@+node:ekr.20111014074810.15659: *3* matchLines

@@ -3540,7 +3540,6 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
-        g.trace(tabName, widget)
         c = self.c
         # #1159: Raise dockwidget with focus to top of tabified dock.
         if g.app.dock and tabName in ('Find', 'Spell'):
