@@ -3540,8 +3540,9 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
+        g.trace(tabName, widget)
         c = self.c
-        # #1159
+        # #1159: Raise dockwidget with focus to top of tabified dock.
         if g.app.dock and tabName in ('Find', 'Spell'):
             return None
         if widget is None:
@@ -3574,7 +3575,16 @@ class LeoQtLog(leoFrame.LeoLog):
                     # Tell the truth.
             g.app.gui.setFilter(c, widget, contents, 'tabWidget')
             self.contentsDict[tabName] = contents
-            self.tabWidget.addTab(contents, tabName)
+            if g.app.dock:
+                # #1154: Support docks in the Log pane.
+                dw = c.frame.top
+                dock = dw.createDockWidget(
+                    closeable=False, moveable=True, height=200, name=tabName)
+                dock.setWidget(contents)
+                area = QtCore.Qt.RightDockWidgetArea
+                dw.addDockWidget(area, dock)
+            else:
+                self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18328: *4* LeoQtLog.deleteTab
     def deleteTab(self, tabName, force=False):
