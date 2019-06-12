@@ -55,6 +55,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
             # parent is a LeoTabbedTopLevel.
+        if 'startup' in g.app.debug:
+            print('DynamicWindow.__init__', c.shortFileName())
         super().__init__(parent)
         self.leo_c = c
         self.leo_docks = [] # List of created QDockWidgets.

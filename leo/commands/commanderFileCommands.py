@@ -869,7 +869,10 @@ def sortRecentFiles(self, event=None):
 #@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):
-    '''Sort the recent files list.'''
+    ''' 
+    Write content of "edit_headline" node as recentFiles and recreates
+    menues.
+    '''
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
 #@+node:vitalije.20170831154859.1: ** Reference outline commands
