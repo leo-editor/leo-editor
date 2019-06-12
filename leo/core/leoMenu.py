@@ -244,16 +244,28 @@ class LeoMenu:
     #@+node:ekr.20051022053758.1: *3* LeoMenu.Helpers
     #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*
     def canonicalizeMenuName(self, name):
-        # #1121.
-        return ''.join([ch for ch in name if ch not in '& \t\n\r'])
+        
+        # #1121: Allow Chinese characters in command names
+        ### return ''.join([ch for ch in name if ch not in '& \t\n\r'])
+        
+        ### Old code: new code appears to be the cause of #1188.
+        if g.isascii(name):
+            return ''.join([ch for ch in name.lower() if ch.isalnum()])
+        return name
 
     def canonicalizeTranslatedMenuName(self, name):
-        # #1121.
+
+        # #1121: Allow Chinese characters in command names
+        ### return ''.join([ch for ch in name if ch not in '& \t\n\r'])
+        
+        ### Old code: new code appears to be the cause of #1188.
+        if g.isascii(name):
+            return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
     #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey
     def computeOldStyleShortcutKey(self, s):
         '''Compute the old-style shortcut key for @shortcuts entries.'''
-        # #1121.
+        # #1121: Allow Chinese characters in command names
         return s.strip()
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
     def createMenuEntries(self, menu, table, dynamicMenu=False):
