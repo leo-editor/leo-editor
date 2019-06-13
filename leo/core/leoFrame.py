@@ -1513,9 +1513,13 @@ class LeoTree:
             unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         else:
             unselect = True
-        if unselect and old_p != p:
-            # Actually unselect the old node.
+        
+        # Actually unselect the old node.
+        if unselect and old_p and old_p != p:
             self.endEditLabel()
+            # #1168: Ctrl-minus selects multiple nodes.
+            if hasattr(self, 'unselectItem'):
+                self.unselectItem(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper

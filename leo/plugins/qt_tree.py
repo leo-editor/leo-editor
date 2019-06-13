@@ -1454,6 +1454,12 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.busy = False
         return item
+    #@+node:ekr.20190613080606.1: *4* qtree.unselectItem
+    def unselectItem(self, p):
+        
+        item = self.position2item(p)
+        if item:
+            item.setSelected(False)
     #@-others
 #@-others
 #@@language python

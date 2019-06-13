@@ -2515,7 +2515,7 @@ class LeoFind:
                 g.app.gui.hideFindDialog()
         c.frame.bringToFront() # Needed on the Mac
         # Don't try to reedit headline.
-        if p and c.positionExists(p): # 2013/11/22.
+        if p and c.positionExists(p):
             c.selectPosition(p)
         else:
             c.selectPosition(c.rootPosition()) # New in Leo 4.5.
