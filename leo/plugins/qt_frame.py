@@ -303,8 +303,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if central_widget.lower() not in ('body', 'outline', 'tabs'):
             central_widget = 'outline'
         dockable = c.config.getBool('dockable-log-tabs', default=False)
-        ### if not dockable:
-        ###    w = self.createSpellTab(parent=None)
+        
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
             (True, 100, bottom, 'body', self.createBodyPane),
@@ -313,9 +312,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             (dockable, 20, rt, 'spell', self.createSpellDock),
         ]
         for make_dock, height, area, name, creator in table:
-            w = creator(parent=None)
             if not make_dock:
                 continue
+            w = creator(parent=None)
             dock = self.createDockWidget(
                 closeable=False,
                 moveable=name != central_widget,
@@ -331,6 +330,25 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # Important: the central widget should be a dock.
             else:
                 self.addDockWidget(area, dock)
+        if not dockable:
+            #
+            # Find tab.
+            tabWidget = self.tabWidget
+            findTab = QtWidgets.QWidget()
+            findTab.setObjectName('findTab')
+            findScrollArea = QtWidgets.QScrollArea()
+            if True: ###not use_minibuffer and not use_dialog:
+                tabWidget.addTab(findScrollArea, 'Find')
+            # Do this later, in LeoFind.finishCreate
+            self.findScrollArea = findScrollArea
+            self.findTab = findTab
+            #
+            # Spell tab.
+            spellTab = QtWidgets.QWidget()
+            spellTab.setObjectName('spellTab')
+            tabWidget.addTab(spellTab, 'Spell')
+            self.createSpellTab(spellTab)
+            tabWidget.setCurrentIndex(1)
         #
         # Create minibuffer.
         bottom_toolbar = QtWidgets.QToolBar(self)
