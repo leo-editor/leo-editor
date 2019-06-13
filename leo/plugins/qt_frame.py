@@ -3101,8 +3101,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         This command does noting when --dock is in effect.
         '''
         if g.app.dock:
-            g.es('toggle-split-direction does nothing')
-            g.es('when --dock is in effect')
+            g.es('toggle-split-direction works only when')
+            g.es('--no-dock is in effect')
             return
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
