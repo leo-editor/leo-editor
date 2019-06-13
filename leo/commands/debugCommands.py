@@ -180,6 +180,11 @@ class DebugCommandsClass(BaseEditCommandsClass):
         c = event.get('c')
         if c:
             print(c.frame.top.saveState())
+            if not c.config.getBool('dockable-log-tabs', default=False):
+                print('Warning: @bool dockable-log-tabs is True')
+            central_widget = c.config.getString('central-dock-widget')
+            if central_widget != 'outline':
+                print('Warning: @string central-dock-widget is %r' % central_widget)
         else:
             print('no c')
         
