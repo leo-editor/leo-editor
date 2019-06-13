@@ -632,6 +632,10 @@
 <v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
 </v>
 </v>
+<v t="ekr.20190613024818.1"><vh>Docks</vh>
+<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
+<v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
+</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
@@ -2274,7 +2278,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20131213135427.21826"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11765,6 +11768,15 @@ c.redraw()
 <t tx="ekr.20190325052226.1"></t>
 <t tx="ekr.20190422173857.1"></t>
 <t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
+<t tx="ekr.20190613024818.1"></t>
+<t tx="ekr.20190613024836.1">valid values are: outline, body, tabs
+
+Warning: you may have to clear the caches in .leo/db after changing this setting.
+
+</t>
+<t tx="ekr.20190613024838.1">False: (recommended) Plugins create areas in the Tabs dock.
+
+True: create separate docks for plugins that used to be in Log pane.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

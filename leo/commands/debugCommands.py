@@ -167,6 +167,22 @@ class DebugCommandsClass(BaseEditCommandsClass):
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()
+    #@+node:ekr.20190613062749.1: ** debug.print-window-state
+    @cmd('print-window-state')
+    def printWindowState(self, event=None):
+        '''
+        For Leo's core developers.
+        
+        Print QMainWindow.saveState().
+        
+        This is the value to be assigned to QtQui.defaultWindowState.
+        '''
+        c = event.get('c')
+        if c:
+            print(c.frame.top.saveState())
+        else:
+            print('no c')
+        
     #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):

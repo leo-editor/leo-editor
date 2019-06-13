@@ -194,6 +194,9 @@ class LeoApp:
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
+        self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01%\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01%\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x03\x1e\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01%\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
+            # For self.restoreWindowState the first time Leo is run.
+            # Use the print-window-state to print this value after arranging the docks to your liking.
         self.globalKillBuffer = []
             # The global kill buffer.
         self.globalRegisters = {}
@@ -1412,39 +1415,6 @@ class LeoApp:
                 break
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
-    #@+node:ekr.20190528045643.1: *4* app.saveWindowState
-    def saveWindowState(self, c):
-        '''
-        Save the window geometry and layout of dock widgets and toolbars.
-        
-        This is called for all closed windows.
-        '''
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        dw = c.frame.top
-        if not dw or not hasattr(dw, 'saveState'):
-            if trace: g.trace('no dw.saveState. dw:', repr(dw))
-            return
-        table = (
-            # Save a default *global* state, for *all* outline files.
-            ('windowState:', dw.saveState),
-            # Save a per-file state.
-            ('windowState:%s' % (c.fileName()), dw.saveState),
-            # Do not save/restore window geometry. That is done elsewhere.
-            # ('windowGeometry:%s' % (c.fileName()) , dw.saveGeometry),
-        )
-        for key, method in table:
-            # This is pyzo code...
-            val = method()
-                # Method is a QMainWindow method.
-            try:
-                val = bytes(val) # PyQt4
-            except Exception:
-                val = bytes().join(val) # PySide
-            if trace: g.trace('%s set key: %s' % (c.shortFileName(), key))
-            g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1641,7 +1611,8 @@ class LeoApp:
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
-    #@+node:ekr.20190528045549.1: *3* app.restoreWindowState
+    #@+node:ekr.20190613062357.1: *3* app.WindowState
+    #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     def restoreWindowState(self, c):
         '''
         Restore the layout of dock widgets and toolbars.
@@ -1683,6 +1654,49 @@ class LeoApp:
             # This is not an error.
             elif trace:
                 g.trace('%s missing key: %s' % (sfn, key))
+        #
+        # #1190: bad initial layout:
+        try:
+            if 'startup' in g.app.debug:
+                print('app.restoreWindowState: defaultWindowState:')
+                print(self.defaultWindowState)
+            dw.restoreState(self.defaultWindowState)
+            # See print-window-state.
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20190528045643.1: *4* app.saveWindowState
+    def saveWindowState(self, c):
+        '''
+        Save the window geometry and layout of dock widgets and toolbars.
+        
+        This is called for all closed windows.
+        '''
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
+            return
+        dw = c.frame.top
+        if not dw or not hasattr(dw, 'saveState'):
+            if trace: g.trace('no dw.saveState. dw:', repr(dw))
+            return
+        table = (
+            # Save a default *global* state, for *all* outline files.
+            ('windowState:', dw.saveState),
+            # Save a per-file state.
+            ('windowState:%s' % (c.fileName()), dw.saveState),
+            # Do not save/restore window geometry. That is done elsewhere.
+            # ('windowGeometry:%s' % (c.fileName()) , dw.saveGeometry),
+        )
+        for key, method in table:
+            # This is pyzo code...
+            val = method()
+                # Method is a QMainWindow method.
+            try:
+                val = bytes(val) # PyQt4
+            except Exception:
+                val = bytes().join(val) # PySide
+            if trace: g.trace('%s set key: %s' % (c.shortFileName(), key))
+            g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
