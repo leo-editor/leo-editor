@@ -292,29 +292,42 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
         '''Create all the dock widgets.'''
+        c = self.leo_c
         Qt = QtCore.Qt
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        table = (
-            (False, False, 100, lt, 'outline', self.createOutlineDock),
-            (False, True, 100, bottom, 'body', self.createBodyPane),
-            (False, True, 20, rt, 'tabs', self.createTabsDock),
-            (True, True, 20, rt, 'find', self.createFindDock),
-            (True, True, 20, rt, 'spell', self.createSpellDock),
-        )
-        for closeable, moveable, height, area, name, creator in table:
-            height = 0
-            closeable = False
-                # A temporary workaround for #1167.
-            dock = self.createDockWidget(closeable, moveable, height, name)
-                # Important: the central widget should be a dock.
+        #
+        # Only docks created below can be the central widget.
+        central_widget = c.config.getString('central-dock-widget') or 'outline'
+        if central_widget.lower() not in ('body', 'outline', 'tabs'):
+            central_widget = 'outline'
+        ### g.trace('central widget', central_widget)
+        dockable = c.config.getBool('dockable-log-tabs', default=False)
+        table = [
+            (True, 100, lt, 'outline', self.createOutlineDock),
+            (True, 100, bottom, 'body', self.createBodyPane),
+            (True, 20, rt, 'tabs', self.createTabsDock),
+            (dockable, 20, rt, 'find', self.createFindDock),
+            (dockable, 20, rt, 'spell', self.createSpellDock),
+        ]
+        for make_dock, height, area, name, creator in table:
+            w = creator(parent=None)
+            if not make_dock:
+                continue
+            dock = self.createDockWidget(
+                closeable=False,
+                moveable=name != central_widget,
+                    # A temporary workaround for #1167: can't reopen a closed dock.
+                height=0,
+                name=name)
             w = creator(parent=None)
             dock.setWidget(w)
             # Remember the dock.
             setattr(self, '%s_dock' % (name), dock)
-            if name == 'outline':
+            if name == central_widget: ### 'outline':
                 self.setCentralWidget(dock)
+                    # Important: the central widget should be a dock.
             else:
                 self.addDockWidget(area, dock)
         #
@@ -3574,7 +3587,7 @@ class LeoQtLog(leoFrame.LeoLog):
                     # Tell the truth.
             g.app.gui.setFilter(c, widget, contents, 'tabWidget')
             self.contentsDict[tabName] = contents
-            if g.app.dock:
+            if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
                 dock = dw.createDockWidget(
