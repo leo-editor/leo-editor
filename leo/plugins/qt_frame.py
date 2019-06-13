@@ -303,18 +303,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if central_widget.lower() not in ('body', 'outline', 'tabs'):
             central_widget = 'outline'
         dockable = c.config.getBool('dockable-log-tabs', default=False)
-        
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
             (True, 100, bottom, 'body', self.createBodyPane),
             (True, 20, rt, 'tabs', self.createTabsDock),
-            (dockable, 20, rt, 'find', self.createFindDock),
-            (dockable, 20, rt, 'spell', self.createSpellDock),
+            (dockable, 20, rt, 'find', self.createFindDockOrTab),
+            (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
         ]
         for make_dock, height, area, name, creator in table:
+            w = creator(parent=None)
             if not make_dock:
                 continue
-            w = creator(parent=None)
             dock = self.createDockWidget(
                 closeable=False,
                 moveable=name != central_widget,
@@ -330,25 +329,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # Important: the central widget should be a dock.
             else:
                 self.addDockWidget(area, dock)
-        if not dockable:
-            #
-            # Find tab.
-            tabWidget = self.tabWidget
-            findTab = QtWidgets.QWidget()
-            findTab.setObjectName('findTab')
-            findScrollArea = QtWidgets.QScrollArea()
-            if True: ###not use_minibuffer and not use_dialog:
-                tabWidget.addTab(findScrollArea, 'Find')
-            # Do this later, in LeoFind.finishCreate
-            self.findScrollArea = findScrollArea
-            self.findTab = findTab
-            #
-            # Spell tab.
-            spellTab = QtWidgets.QWidget()
-            spellTab.setObjectName('spellTab')
-            tabWidget.addTab(spellTab, 'Spell')
-            self.createSpellTab(spellTab)
-            tabWidget.setCurrentIndex(1)
         #
         # Create minibuffer.
         bottom_toolbar = QtWidgets.QToolBar(self)
@@ -660,23 +640,26 @@ class DynamicWindow(QtWidgets.QMainWindow):
             QtWidgets.QMainWindow.AnimatedDocks)
     #@+node:ekr.20190527162547.1: *4* dw.docks
     # Used when legacy_log_dock is False.
-    #@+node:ekr.20190527120808.1: *5* dw.createFindDock
-    def createFindDock(self, parent):
-        '''Create a Find dock.'''
+    #@+node:ekr.20190527120808.1: *5* dw.createFindDockOrTab
+    def createFindDockOrTab(self, parent):
+        '''Create a Find dock or tab in the Log pane.'''
         assert g.app.dock
         assert not parent, repr(parent)
+        c = self.leo_c
         #
-        # Embed the Find tab in a QScrollArea.
+        # Create widgets.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
         findScrollArea = QtWidgets.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
         #
-        # Find tab.
-        findTab = QtWidgets.QWidget()
-        findTab.setObjectName('findTab')
-        #
-        # Official ivars.
+        # For LeoFind.finishCreate.
         self.findScrollArea = findScrollArea
         self.findTab = findTab
+        #
+        # Create a tab in the log Dock, if necessary.
+        if not c.config.getBool('dockable-log-tabs', default=False):
+            self.tabWidget.addTab(findScrollArea, 'Find')
         return findScrollArea
     #@+node:ekr.20190528112002.1: *5* dw.createOutlineDock
     def createOutlineDock(self, parent):
@@ -694,16 +677,25 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars...
         self.treeWidget = treeWidget
         return treeFrame
-    #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
-    def createSpellDock(self, parent):
-        '''Create a Spell dock.'''
+    #@+node:ekr.20190527120829.1: *5* dw.createSpellDockOrTab
+    def createSpellDockOrTab(self, parent):
+        '''Create a Spell dock  or tab in the Log pane.'''
         assert g.app.dock
         assert not parent, repr(parent)
+        c = self.leo_c
         #
-        # Create the spell tab.
+        # Create an outer widget.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('docked.spellTab')
+        #
+        # Create the contents.
         self.createSpellTab(spellTab)
+        #
+        # Create the Spell tab in the Log dock, if necessary.
+        if not c.config.getBool('dockable-log-tabs', default=False):
+            tabWidget = self.tabWidget
+            tabWidget.addTab(spellTab, 'Spell')
+            tabWidget.setCurrentIndex(1)
         return spellTab
     #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy)
     def createTabbedLogDock(self, parent):
