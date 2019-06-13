@@ -302,8 +302,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         central_widget = c.config.getString('central-dock-widget') or 'outline'
         if central_widget.lower() not in ('body', 'outline', 'tabs'):
             central_widget = 'outline'
-        ### g.trace('central widget', central_widget)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
+        ### if not dockable:
+        ###    w = self.createSpellTab(parent=None)
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
             (True, 100, bottom, 'body', self.createBodyPane),
