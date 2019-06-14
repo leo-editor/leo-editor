@@ -588,6 +588,7 @@ class Commands:
         args=None, p=None, script=None, useSelectedText=True,
         define_g=True, define_name='__main__',
         silent=False, namespace=None, raiseFlag=False,
+        runPyflakes=True,
     ):
         '''
         Execute a *Leo* script.
@@ -601,9 +602,13 @@ class Commands:
         silent=False            No longer used.
         namespace=None          Not None: execute the script in this namespace.
         raiseFlag=False         True: reraise any exceptions.
+        runPyflakes=True        True: run pyflakes if allowed by setting.
         '''
         c, script1 = self, script
-        run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False) 
+        if runPyflakes:
+            run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
+        else:
+            run_pyflakes = False
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
