@@ -230,10 +230,9 @@ def open_outline(self, event=None):
             # Only one untitled window has ever been opened
     )
     table = [
-        # Show all files by default.
-        ("All files", "*"),
         ("Leo files", "*.leo *.db"),
         ("Python files", "*.py"),
+        ("All files", "*"),
     ]
     fileName = ''.join(c.k.givenArgs)
     if fileName:
