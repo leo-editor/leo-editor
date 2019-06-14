@@ -391,14 +391,16 @@ def viewrendered(event):
         vr.adjust_layout('open')
         c.bodyWantsFocusNow()
         return vr
+    #
+    # Instantiate the controller.
     h = c.hash()
     controllers[h] = vr = ViewRenderedController(c)
     if g.app.dock and c.config.getBool('use-vr-dock', default=False):
         # Nothing more needs to be done here.
         return
-    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
     #
-    # Legacy code.
+    # Legacy code: add the pane to the splitter.
+    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
     #
