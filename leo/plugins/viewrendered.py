@@ -702,16 +702,16 @@ if QtWidgets: # NOQA
             if not g.app.dock:
                 return
             dw = c.frame.top
+            separate_dock = c.config.getBool('use-vr-dock', default=False)
             dock = dw.createDockWidget(
-                closeable=False, moveable=True, height=50, name='Render')
-            if c.config.getBool('use-vr-dock', default=False):
-                # #1193: Create a dockable area.
+                closeable=False, moveable=separate_dock, height=50, name='Render')
+            if separate_dock:
+                # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
                 return
             #
-            # Like dw.addEditorDock
-            ### g.trace('legacy VR dock:', dock)
+            # Split the body dock.
             self.leo_dock = dock
             dw.leo_docks.append(dock)
             dock.setWidget(self)
