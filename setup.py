@@ -120,6 +120,7 @@ user_requires = [
     'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
+    'PyQtWebEngine', # #1202 QtWebKit deprecated in Qt 5.5, removed in 5.6
     'sphinx', # rST plugin
     'future', # python 2/3 compatibility layer, same with 'six'
     'six',
