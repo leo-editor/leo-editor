@@ -288,7 +288,7 @@ latex_template = '''\
 '''
 #@-<< define html templates >>
 controllers = {}
-    # Keys are c.hash(): values are PluginControllers
+    # Keys are c.hash(): values are PluginControllers (QWidget's).
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 #@+others
@@ -444,11 +444,18 @@ def hide_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-    vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+    ###
+    ### vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+    vr = controllers.get(c.hash())
+    g.trace(vr)
     if not vr:
         return
     if vr.pyplot_active:
         g.es_print('can not close VR pane after using pyplot')
+        return
+    if g.app.dock:
+        ### Testing only.
+        vr.hide()
         return
     vr.store_layout('open')
     vr.deactivate()
@@ -507,13 +514,26 @@ def show_rendering_pane(event):
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            hide_rendering_pane(event)
-        else:
-            viewrendered(event)
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        viewrendered(event)
+        return
+    if vr.isHidden():
+        vr.show()
+    else:
+        # vr.hide()
+        hide_rendering_pane(event)
+        
+    ### Old
+        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+        # if vr:
+            # hide_rendering_pane(event)
+        # else:
+            # viewrendered(event)
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
@@ -761,6 +781,7 @@ if QtWidgets: # NOQA
                 # Dispatch based on the computed kind.
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
                 if not kind:
+                    # Do *not* try to render plain text.
                     w = pc.ensure_text_widget()
                     w.setPlainText(s)
                     pc.show() # Must be last.
