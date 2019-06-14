@@ -326,9 +326,15 @@ def isVisible():
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
-    if c:
-        provider = ViewRenderedProvider(c)
-        free_layout.register_provider(c, provider)
+    if not c:
+        return
+    provider = ViewRenderedProvider(c)
+    free_layout.register_provider(c, provider)
+    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+        g.trace('INSTANTIATE')
+        # Instantiate immediately.
+        viewrendered(event={'c': c})
+
 #@+node:vitalije.20170712174157.1: *3* vr.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -444,10 +450,10 @@ def hide_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-    ###
-    ### vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+        # Can't hide a dock.
+        return
     vr = controllers.get(c.hash())
-    g.trace(vr)
     if not vr:
         return
     if vr.pyplot_active:
@@ -517,6 +523,9 @@ def toggle_rendering_pane(event):
     global controllers
     c = event.get('c')
     if not c:
+        return
+    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+        # Can't hide a dock.
         return
     vr = controllers.get(c.hash())
     if not vr:
@@ -615,9 +624,7 @@ if QtWidgets: # NOQA
             self.c = c
             # Create the widget.
             super().__init__(parent)
-            self.setObjectName('viewrendered_pane')
-            self.setLayout(QtWidgets.QVBoxLayout())
-            self.layout().setContentsMargins(0, 0, 0, 0)
+            self.create_pane(parent)
             # Set the ivars.
             self.active = False
             self.badColors = []
@@ -676,6 +683,31 @@ if QtWidgets: # NOQA
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+        #@+node:ekr.20190614065659.1: *4* vr.create_pane
+        def create_pane(self, parent):
+            '''Create the VR pane or dock.'''
+            c = self.c
+            if g.app.unitTesting:
+                return
+            self.setObjectName('viewrendered_pane')
+            self.setLayout(QtWidgets.QVBoxLayout())
+            self.layout().setContentsMargins(0, 0, 0, 0)
+            if not g.app.dock:
+                return
+            if c.config.getBool('use-vr-dock', default=False):
+                # #1193: Create a dockable area.
+                area = QtCore.Qt.RightDockWidgetArea
+                dw = c.frame.top
+                dock = dw.createDockWidget(
+                    closeable=False,
+                    moveable=True,
+                    height=0,
+                    name='Rendering')
+                dock.setWidget(self)
+                dw.addDockWidget(area, dock)
+            #
+            # Not ready yet: like the legacy look.
+            g.trace('legacy VR pane not ready yet.')
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
