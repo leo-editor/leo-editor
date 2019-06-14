@@ -525,15 +525,7 @@ def toggle_rendering_pane(event):
     if vr.isHidden():
         vr.show()
     else:
-        # vr.hide()
         hide_rendering_pane(event)
-        
-    ### Old
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if vr:
-            # hide_rendering_pane(event)
-        # else:
-            # viewrendered(event)
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
@@ -1325,7 +1317,7 @@ if QtWidgets: # NOQA
             if language and language in pc.dispatch_dict:
                 return language
             # To do: look at ancestors, or uA's.
-            return None ### pc.default_kind # The default.
+            return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self
