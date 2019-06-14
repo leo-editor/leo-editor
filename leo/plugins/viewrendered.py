@@ -329,6 +329,9 @@ def onCreate(tag, keys):
     if c:
         provider = ViewRenderedProvider(c)
         free_layout.register_provider(c, provider)
+        # #1193: Should be instantiated immediately.
+        if g.app.dock:
+            viewrendered(event={'c':c})
 #@+node:vitalije.20170712174157.1: *3* vr.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -507,6 +510,8 @@ def show_rendering_pane(event):
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
+    if g.app.dock:
+        return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -596,6 +601,7 @@ if QtWidgets: # NOQA
 
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
+        # #1193: Should be instantiated on startup when using docks.
         #@+others
         #@+node:ekr.20110317080650.14380: *3* vr.ctor & helpers
         def __init__(self, c, parent=None):
@@ -603,9 +609,7 @@ if QtWidgets: # NOQA
             self.c = c
             # Create the widget.
             super().__init__(parent)
-            self.setObjectName('viewrendered_pane')
-            self.setLayout(QtWidgets.QVBoxLayout())
-            self.layout().setContentsMargins(0, 0, 0, 0)
+            self.create_pane(parent)
             # Set the ivars.
             self.active = False
             self.badColors = []
@@ -657,13 +661,33 @@ if QtWidgets: # NOQA
             }
             pc.dispatch_dict = d
             return d
+        #@+node:ekr.20190614065659.1: *4* vr.create_pane
+        def create_pane(self, parent):
+            
+            self.setObjectName('viewrendered_pane')
+            self.setLayout(QtWidgets.QVBoxLayout())
+            self.layout().setContentsMargins(0, 0, 0, 0)
+            if g.app.unitTesting:
+                return
+            if not g.app.dock:
+                return
+            # #1193: Create a dockable area.
+            area = QtCore.Qt.RightDockWidgetArea
+            dw = self.c.frame.top
+            dock = dw.createDockWidget(
+                closeable=False,
+                moveable=True,
+                height=0,
+                name='Rendering')
+            dock.setWidget(self)
+            dw.addDockWidget(area, dock)
         #@+node:ekr.20171114150510.1: *4* vr.reloadSettings
         def reloadSettings(self):
             c = self.c
             c.registerReloadSettings(self)
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
-            self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+            self.default_kind = c.config.getString('view-rendered-default-kind')
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -762,8 +786,9 @@ if QtWidgets: # NOQA
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
                 f = pc.dispatch_dict.get(kind)
                 if not f:
-                    g.trace('no handler for kind: %s' % kind)
-                    f = pc.update_rst
+                    # g.trace('no handler for kind: %s' % kind)
+                    # f = pc.update_rst
+                    return # Don't mess with plain text.
                 f(s, keywords)
             else:
                 # Save the scroll position.
@@ -842,16 +867,10 @@ if QtWidgets: # NOQA
                 return False
             if pc.locked:
                 return False
-            if pc.gnx != p.v.gnx:
-                return True
-            if len(p.b) != pc.length:
-                if pc.get_kind(p) in ('html', 'pyplot'):
-                    pc.length = len(p.b)
-                    return False # Only update explicitly.
-                return True
-            # This trace would be called at idle time.
-                # g.trace('no change')
-            return False
+            kind = pc.get_kind(p)
+            if kind in (None, 'pyplot'): 
+                return False
+            return pc.gnx != p.v.gnx
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
@@ -860,13 +879,16 @@ if QtWidgets: # NOQA
             if pc.gs and not force:
                 return
             if not pc.gs:
-                splitter = c.free_layout.get_top_splitter()
-                # Careful: we may be unit testing.
-                if not splitter:
-                    g.trace('no splitter')
-                    return
+                if g.app.dock:
+                    parent = self
+                else:
+                    parent = c.free_layout.get_top_splitter()
+                    # Careful: we may be unit testing.
+                    if not parent:
+                        g.trace('no splitter')
+                        return
                 # Create the widgets.
-                pc.gs = QtWidgets.QGraphicsScene(splitter)
+                pc.gs = QtWidgets.QGraphicsScene(parent)
                 pc.gv = QtWidgets.QGraphicsView(pc.gs)
                 w = pc.gv.viewport() # A QWidget
                 # Embed the widgets.
@@ -879,7 +901,9 @@ if QtWidgets: # NOQA
                 pc.embed_widget(w, delete_callback=delete_callback)
             c.executeScript(
                 script=s,
-                namespace={'gs': pc.gs, 'gv': pc.gv})
+                namespace={'gs': pc.gs, 'gv': pc.gv},
+                runPyflakes=False,
+            )
         #@+node:ekr.20110321005148.14534: *4* vr.update_html
         update_html_count = 0
 
@@ -975,7 +999,6 @@ if QtWidgets: # NOQA
             import sys
             pc = self
             c = pc.c
-            ###
             if sys.platform.startswith('win'):
                 g.es_print('latex rendering not ready for Python 3')
                 w = pc.ensure_text_widget()
@@ -1288,7 +1311,7 @@ if QtWidgets: # NOQA
                 word = h[1: i].lower().strip()
                 if word in pc.dispatch_dict:
                     return word
-            # 2016/03/25: Honor @language
+            # Honor @language
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p, use_default=False)
                 # Fix #344: don't use c.target_language as a default.
@@ -1298,8 +1321,7 @@ if QtWidgets: # NOQA
                 return language
             if language and language in pc.dispatch_dict:
                 return language
-            # To do: look at ancestors, or uA's.
-            return pc.default_kind # The default.
+            return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self
