@@ -2473,6 +2473,8 @@ class LoadManager:
         # Create an empty frame.
         fn = lm.computeWorkbookFileName()
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+        if not c:
+            return None # #1201: AttributeError below.
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
             # #933: Save clipboard.
