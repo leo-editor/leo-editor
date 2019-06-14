@@ -453,7 +453,9 @@ def hide_rendering_pane(event):
     if not vr:
         return
     if g.app.dock:
-        vr.hide()
+        dock = vr.leo_dock
+        if dock:
+            dock.hide()
         return
     #
     # Legacy code.
@@ -514,7 +516,7 @@ def show_rendering_pane(event):
     if not vr:
         viewrendered(event)
         return
-    vr.show_pane()
+    vr.show_dock_or_pane()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
@@ -531,17 +533,14 @@ def toggle_rendering_pane(event):
         viewrendered(event)
         return
     if g.app.dock:
-        if vr.isHidden():
-            vr.show()
-        else:
-            vr.hide()
+        dock = vr.leo_dock
+        if dock:
+            if dock.isHidden():
+                dock.show()
+            else:
+                dock.hide()
     else:
         hide_rendering_pane(event)
-        # if vr:
-            # hide_rendering_pane(event)
-        # else:
-            # viewrendered(event)
-   
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
@@ -690,10 +689,11 @@ if QtWidgets: # NOQA
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-        #@+node:ekr.20190614065659.1: *4* vr.create_pane (to do)
+        #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
             c = self.c
+            self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
             self.setObjectName('viewrendered_pane')
@@ -701,21 +701,21 @@ if QtWidgets: # NOQA
             self.layout().setContentsMargins(0, 0, 0, 0)
             if not g.app.dock:
                 return
+            dw = c.frame.top
+            dock = dw.createDockWidget(
+                closeable=False, moveable=True, height=50, name='Render')
             if c.config.getBool('use-vr-dock', default=False):
                 # #1193: Create a dockable area.
-                area = QtCore.Qt.RightDockWidgetArea
-                dw = c.frame.top
-                dock = dw.createDockWidget(
-                    closeable=False,
-                    moveable=True,
-                    height=0,
-                    name='Rendering')
                 dock.setWidget(self)
-                dw.addDockWidget(area, dock)
+                dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
                 return
             #
-            # Not ready yet: like the legacy look.
-            g.trace('legacy VR pane not ready yet.')
+            # Like dw.addEditorDock
+            ### g.trace('legacy VR dock:', dock)
+            self.leo_dock = dock
+            dw.leo_docks.append(dock)
+            dock.setWidget(self)
+            dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -1416,12 +1416,15 @@ if QtWidgets: # NOQA
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:
                 splitter.load_layout(loo)
-        #@+node:ekr.20190614133401.1: *3* vr.show_pane (new)
-        def show_pane(self):
+        #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane (new)
+        def show_dock_or_pane(self):
             
             c, vr = self.c, self
             if g.app.dock:
-                vr.show()
+                if c.config.getBool('use-vr-dock', default=False):
+                    vr.show()
+                elif vr.leo_dock:
+                    vr.leo_dock.show()
             else:
                 vr.activate()
                 vr.show()
