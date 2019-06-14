@@ -760,6 +760,11 @@ if QtWidgets: # NOQA
                 s = pc.remove_directives(s)
                 # Dispatch based on the computed kind.
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
+                if not kind:
+                    w = pc.ensure_text_widget()
+                    w.setPlainText(s)
+                    pc.show() # Must be last.
+                    return
                 f = pc.dispatch_dict.get(kind)
                 if not f:
                     g.trace('no handler for kind: %s' % kind)
@@ -1299,7 +1304,7 @@ if QtWidgets: # NOQA
             if language and language in pc.dispatch_dict:
                 return language
             # To do: look at ancestors, or uA's.
-            return pc.default_kind # The default.
+            return None ### pc.default_kind # The default.
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self
