@@ -331,7 +331,6 @@ def onCreate(tag, keys):
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
     if g.app.dock and c.config.getBool('use-vr-dock', default=False):
-        g.trace('INSTANTIATE')
         # Instantiate immediately.
         viewrendered(event={'c': c})
 
@@ -390,34 +389,32 @@ def viewrendered(event):
         vr.activate()
         vr.show()
         vr.adjust_layout('open')
-    else:
-        h = c.hash()
-        controllers[h] = vr = ViewRenderedController(c)
-        layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-        if hasattr(c, 'free_layout'):
-            vr._ns_id = '_leo_viewrendered' # for free_layout load/save
-            vr.splitter = splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
-            if splitter:
-                vr.store_layout('closed')
-                sizes = split_last_sizes(splitter.sizes())
-                ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
-                if not ok:
-                    splitter.insert(0, vr)
-                else:
-                    if splitter.orientation() == QtCore.Qt.Horizontal:
-                        splitter.setSizes(sizes)
-                vr.adjust_layout('open')
-        else:
-            vr.setWindowTitle("Rendered View")
-            vr.resize(600, 600)
-            vr.show()
+        c.bodyWantsFocusNow()
+        return vr
+    h = c.hash()
+    controllers[h] = vr = ViewRenderedController(c)
+    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+        # Nothing more needs to be done here.
+        return
+    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
+    #
+    # Legacy code.
+    vr._ns_id = '_leo_viewrendered' # for free_layout load/save
+    vr.splitter = splitter = c.free_layout.get_top_splitter()
+    #
+    # Careful: we may be unit testing.
+    if not splitter:
+        c.bodyWantsFocusNow()
+        return vr
+    vr.store_layout('closed')
+    sizes = split_last_sizes(splitter.sizes())
+    ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+    if not ok:
+        splitter.insert(0, vr)
+    elif splitter.orientation() == QtCore.Qt.Horizontal:
+        splitter.setSizes(sizes)
+    vr.adjust_layout('open')
     c.bodyWantsFocusNow()
-    # The following conflicts with F11: help-for-command.
-    # I'm not sure why it was needed, but for sure it can not be used.
-        # def at_idle(c=c):
-        #    c.bodyWantsFocusNow()
-        # QtCore.QTimer.singleShot(0,at_idle)
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
@@ -513,7 +510,7 @@ def show_rendering_pane(event):
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
-            pass # hide_rendering_pane(event)
+            pass
         else:
             viewrendered(event)
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
@@ -528,13 +525,14 @@ def toggle_rendering_pane(event):
         # Can't hide a dock.
         return
     vr = controllers.get(c.hash())
-    if not vr:
-        viewrendered(event)
-        return
-    if vr.isHidden():
-        vr.show()
-    else:
+    if vr:
         hide_rendering_pane(event)
+    else:
+        viewrendered(event)
+    # if vr.isHidden():
+        # vr.show()
+    # else:
+        # hide_rendering_pane(event)
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
@@ -705,6 +703,7 @@ if QtWidgets: # NOQA
                     name='Rendering')
                 dock.setWidget(self)
                 dw.addDockWidget(area, dock)
+                return
             #
             # Not ready yet: like the legacy look.
             g.trace('legacy VR pane not ready yet.')
