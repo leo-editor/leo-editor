@@ -376,7 +376,7 @@ def split_last_sizes(sizes):
 def preview(event):
     '''A synonym for the vr-toggle command.'''
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (changed)
 @g.command('vr')
 def viewrendered(event):
     """Open render view for commander"""
@@ -387,11 +387,6 @@ def viewrendered(event):
     vr = controllers.get(c.hash())
     if vr:
         vr.show_pane()
-        ###
-            # vr.activate()
-            # vr.show()
-            # vr.adjust_layout('open')
-            # c.bodyWantsFocusNow()
         return vr
     #
     # Instantiate the controller.
@@ -443,7 +438,7 @@ def expand_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide') (changed)
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
@@ -457,12 +452,13 @@ def hide_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         return
+    if g.app.dock:
+        vr.hide()
+        return
+    #
+    # Legacy code.
     if vr.pyplot_active:
         g.es_print('can not close VR pane after using pyplot')
-        return
-    if g.app.dock:
-        ### Testing only.
-        vr.hide()
         return
     vr.store_layout('open')
     vr.deactivate()
@@ -506,7 +502,7 @@ def pause_play_movie(event):
                 vp.pause()
             else:
                 vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show') (changed)
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
@@ -519,24 +515,7 @@ def show_rendering_pane(event):
         viewrendered(event)
         return
     vr.show_pane()
-    ###
-        # if g.app.dock:
-            # vr.show()
-        # else:
-            # vr.activate()
-            # vr.show()
-            # vr.adjust_layout('open')
-        # c.bodyWantsFocusNow()
-    ### old
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if vr:
-            # vr.activate()
-            # vr.show()
-            # vr.adjust_layout('open')
-            # c.bodyWantsFocusNow()
-        # else:
-            # viewrendered(event)
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
@@ -711,7 +690,7 @@ if QtWidgets: # NOQA
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-        #@+node:ekr.20190614065659.1: *4* vr.create_pane
+        #@+node:ekr.20190614065659.1: *4* vr.create_pane (to do)
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
             c = self.c
@@ -1426,7 +1405,7 @@ if QtWidgets: # NOQA
                         continue
                 result.append(s)
             return ''.join(result)
-        #@+node:vitalije.20170712183051.1: *3* vr.adjust_layout
+        #@+node:vitalije.20170712183051.1: *3* vr.adjust_layout (legacy only)
         def adjust_layout(self, which):
             global layouts
             c = self.c
