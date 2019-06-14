@@ -3725,6 +3725,12 @@ class LeoQtLog(leoFrame.LeoLog):
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
 class LeoQtMenu(leoMenu.LeoMenu):
+    
+    # #1199: Supress menu items when g.app.dock is True.
+    no_dock_only_menus = (
+        'equal-sized-panes',
+        'toggle-split-direction',
+    )
     #@+others
     #@+node:ekr.20110605121601.18341: *3* LeoQtMenu.__init__
     def __init__(self, c, frame, label):
@@ -3777,6 +3783,13 @@ class LeoQtMenu(leoMenu.LeoMenu):
         accel = keys.get('accelerator') or ''
         command = keys.get('command') or ''
         commandName = keys.get('commandName')
+        #
+        # #1199: Suppress equal-sized-panes and toggle-split-direction
+        #        when g.app.dock is True.
+        if (g.app.dock and commandName and
+            commandName.replace('&','') in self.no_dock_only_menus
+        ):
+            return
         label = keys.get('label')
         n = keys.get('underline')
         if n is None: n = -1

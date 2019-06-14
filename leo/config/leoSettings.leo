@@ -1480,18 +1480,17 @@
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
-<v t="ekr.20170509104949.1"><vh>@menu &amp;Change Window Layout</vh>
+<v t="ekr.20170509104949.1"><vh>@menu &amp;Window Layout</vh>
 <v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
-<v t="ekr.20180511075115.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -11434,7 +11433,6 @@ False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
-<t tx="ekr.20180511075115.1"></t>
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html
 </t>
