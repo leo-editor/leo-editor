@@ -386,16 +386,18 @@ def viewrendered(event):
     global controllers, layouts
     vr = controllers.get(c.hash())
     if vr:
-        vr.activate()
-        vr.show()
-        vr.adjust_layout('open')
-        c.bodyWantsFocusNow()
+        vr.show_pane()
+        ###
+            # vr.activate()
+            # vr.show()
+            # vr.adjust_layout('open')
+            # c.bodyWantsFocusNow()
         return vr
     #
     # Instantiate the controller.
     h = c.hash()
     controllers[h] = vr = ViewRenderedController(c)
-    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+    if g.app.dock: ### and c.config.getBool('use-vr-dock', default=False):
         # Nothing more needs to be done here.
         return
     #
@@ -508,13 +510,32 @@ def pause_play_movie(event):
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            pass
-        else:
-            viewrendered(event)
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        viewrendered(event)
+        return
+    vr.show_pane()
+    ###
+        # if g.app.dock:
+            # vr.show()
+        # else:
+            # vr.activate()
+            # vr.show()
+            # vr.adjust_layout('open')
+        # c.bodyWantsFocusNow()
+    ### old
+        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+        # if vr:
+            # vr.activate()
+            # vr.show()
+            # vr.adjust_layout('open')
+            # c.bodyWantsFocusNow()
+        # else:
+            # viewrendered(event)
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
@@ -527,14 +548,21 @@ def toggle_rendering_pane(event):
         # Can't hide a dock.
         return
     vr = controllers.get(c.hash())
-    if vr:
-        hide_rendering_pane(event)
-    else:
+    if not vr:
         viewrendered(event)
-    # if vr.isHidden():
-        # vr.show()
-    # else:
-        # hide_rendering_pane(event)
+        return
+    if g.app.dock:
+        if vr.isHidden():
+            vr.show()
+        else:
+            vr.hide()
+    else:
+        hide_rendering_pane(event)
+        # if vr:
+            # hide_rendering_pane(event)
+        # else:
+            # viewrendered(event)
+   
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
@@ -1409,6 +1437,17 @@ if QtWidgets: # NOQA
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:
                 splitter.load_layout(loo)
+        #@+node:ekr.20190614133401.1: *3* vr.show_pane (new)
+        def show_pane(self):
+            
+            c, vr = self.c, self
+            if g.app.dock:
+                vr.show()
+            else:
+                vr.activate()
+                vr.show()
+                vr.adjust_layout('open')
+            c.bodyWantsFocusNow()
         #@+node:vitalije.20170712183618.1: *3* vr.store_layout
         def store_layout(self, which):
             global layouts
