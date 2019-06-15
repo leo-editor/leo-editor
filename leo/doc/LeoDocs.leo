@@ -2290,6 +2290,7 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20180126191031.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26032,10 +26033,16 @@ To install Leo do this from a console::
 
 The `Miniconda`_ environment includes just Python and the `conda` package management tool. Pick and choose from the full Anaconda ecosystem.
 
-To install Leo do this from a console::
+To install Leo using Miniconda, do this from a console::
 
-    conda install pyqt5
-    pip install leo
+    conda install pyqt
+    conda run pip install PyQtWebEngine
+    conda run pip install leo
+    
+To install Leo using Anaconda, do this from a console::
+
+    conda run pip install PyQtWebEngine
+    conda run pip install leo
 </t>
 <t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
 <t tx="ekr.20180128051013.1">for pane in ('body', 'tree', 'log'):
