@@ -330,7 +330,7 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
-    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
+    if g.app.dock:
         # Instantiate immediately.
         viewrendered(event={'c': c})
 
@@ -380,39 +380,30 @@ def preview(event):
 @g.command('vr')
 def viewrendered(event):
     """Open render view for commander"""
+    global controllers, layouts
     c = event.get('c')
     if not c:
         return None
-    global controllers, layouts
-    vr = controllers.get(c.hash())
-    if vr:
-        vr.show_pane()
-        return vr
-    #
-    # Instantiate the controller.
     h = c.hash()
-    controllers[h] = vr = ViewRenderedController(c)
-    if g.app.dock: ### and c.config.getBool('use-vr-dock', default=False):
-        # Nothing more needs to be done here.
-        return
+    vr = controllers.get(h)
+    if not vr:
+        controllers[h] = vr = ViewRenderedController(c)
+    if g.app.dock:
+        return vr
     #
     # Legacy code: add the pane to the splitter.
     layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
-    #
-    # Careful: we may be unit testing.
-    if not splitter:
-        c.bodyWantsFocusNow()
-        return vr
-    vr.store_layout('closed')
-    sizes = split_last_sizes(splitter.sizes())
-    ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
-    if not ok:
-        splitter.insert(0, vr)
-    elif splitter.orientation() == QtCore.Qt.Horizontal:
-        splitter.setSizes(sizes)
-    vr.adjust_layout('open')
+    if splitter:
+        vr.store_layout('closed')
+        sizes = split_last_sizes(splitter.sizes())
+        ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+        if not ok:
+            splitter.insert(0, vr)
+        elif splitter.orientation() == QtCore.Qt.Horizontal:
+            splitter.setSizes(sizes)
+        vr.adjust_layout('open')
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -703,16 +694,19 @@ if QtWidgets: # NOQA
                 return
             dw = c.frame.top
             separate_dock = c.config.getBool('use-vr-dock', default=False)
-            dock = dw.createDockWidget(
+            #
+            # Can't allow the "body dock" to move:
+            # There is (at present) no way to put it back.
+            self.leo_dock = dock = dw.createDockWidget(
                 closeable=False, moveable=separate_dock, height=50, name='Render')
             if separate_dock:
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+                dock.show()
                 return
             #
             # Split the body dock.
-            self.leo_dock = dock
             dw.leo_docks.append(dock)
             dock.setWidget(self)
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
