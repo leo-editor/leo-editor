@@ -785,30 +785,31 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
     dock_names = []
 
+
     def createDockWidget(self, closeable, moveable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         c = self.leo_c
-        w = QtWidgets.QDockWidget(self)
+        dock = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
-        features = w.NoDockWidgetFeatures
+        features = dock.NoDockWidgetFeatures
         if moveable:
-            features |= w.DockWidgetMovable
+            features |= dock.DockWidgetMovable
         if moveable and floatable_docks:
-            features |= w.DockWidgetFloatable
+            features |= dock.DockWidgetFloatable
         if closeable:
-            features |= w.DockWidgetClosable
-        w.setFeatures(features)
-        w.setMinimumHeight(height)
+            features |= dock.DockWidgetClosable
+        dock.setFeatures(features)
+        dock.setMinimumHeight(height)
         # An important check.
         key = '%s.%s:%s' % (id(c), c.shortFileName(),name)
         if key in self.dock_names:
             g.es_print('\nDuplicate dock name: %s' % key)
         else:
             self.dock_names.append(key)
-        w.setObjectName('dock.%s' % name)
-        w.setWindowTitle(name.capitalize())
-        w.show() # Essential!
-        return w
+        dock.setObjectName('dock.%s' % name)
+        dock.setWindowTitle(name.capitalize())
+        dock.show() # Essential!
+        return dock
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
