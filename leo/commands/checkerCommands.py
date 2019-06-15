@@ -97,6 +97,7 @@ def find_missing_docstrings(event):
         Returns True if function/method/class whose definition
         starts on n-th line in lines has a docstring
         '''
+        # By Виталије Милошевић.
         for line in lines[n:]:
             s = line.strip()
             if not s or s.startswith('#'):
@@ -105,6 +106,7 @@ def find_missing_docstrings(event):
     #@+node:ekr.20190615181104.2: *4* function: is_a_definition 
     def is_a_definition(line):
         '''Return True if line is a definition line.'''
+        # By Виталије Милошевић.
         # It may be useful to skip __init__ methods because their docstring
         # is usually docstring of the class
         return (
@@ -113,7 +115,9 @@ def find_missing_docstrings(event):
         )
     #@+node:ekr.20190615182754.1: *4* function: is_root
     def is_root(p):
-        '''Return True if p is an @<file> node that is not under @nopylint.'''
+        '''
+        A predicate returning True if p is an @<file> node that is not under @nopylint.
+        '''
         for parent in p.self_and_parents():
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
@@ -125,7 +129,7 @@ def find_missing_docstrings(event):
         return "%s,%d" % (link, i)
     #@-others
 
-    count, found = 0, []
+    count, found, t1 = 0, [], time.clock()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         for p in root.self_and_subtree():
             lines = p.b.split('\n')
@@ -140,8 +144,10 @@ def find_missing_docstrings(event):
                     g.es(line, nodeLink=clickable_link(p, i+1))
                     break
     g.es_print('')
-    g.es_print('found %s missing docstring%s in %s file%s' % (
-        count, g.plural(count), len(found), g.plural(len(found))))
+    g.es_print('found %s missing docstring%s in %s file%s in %5.2f sec.' % (
+        count, g.plural(count),
+        len(found), g.plural(len(found)),
+        (time.clock() - t1)))
         
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
