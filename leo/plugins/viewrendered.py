@@ -769,7 +769,7 @@ if QtWidgets: # NOQA
             # Can't allow the "body dock" to move:
             # There is (at present) no way to put it back.
             self.leo_dock = dock = dw.createDockWidget(
-                closeable=False, moveable=separate_dock, height=50, name='Render')
+                closeable=True, moveable=separate_dock, height=50, name='Render')
             if separate_dock:
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)

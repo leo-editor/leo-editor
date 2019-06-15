@@ -319,9 +319,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if not make_dock:
                 continue
             dock = self.createDockWidget(
-                closeable=False,
+                closeable=name != central_widget,
                 moveable=name != central_widget,
-                    # A temporary workaround for #1167: can't reopen a closed dock.
                 height=0,
                 name=name)
             w = creator(parent=None)
