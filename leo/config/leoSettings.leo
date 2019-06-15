@@ -11779,7 +11779,9 @@ True: create separate docks for plugins that used to be in Log pane.</t>
 <t tx="ekr.20190614191608.1">True: The VR dock is (can be) moved.
 False: (Recommended) The VR dock splits the body dock.
 
-*Warning*: You may have to clear caches if you change this setting.</t>
+*Warning*: You may have to clear caches if you change this setting.
+
+The --init-docks command-line option is the easy way to do this.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

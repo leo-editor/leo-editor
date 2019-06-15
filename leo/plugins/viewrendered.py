@@ -371,7 +371,7 @@ def split_last_sizes(sizes):
     result.append(sizes[-1])
     return result
 #@+node:ekr.20110320120020.14490: ** vr.Commands
-#@+node:ekr.20131213163822.16471: *3* g.command('preview') (vr)
+#@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
 def preview(event):
     '''A synonym for the vr-toggle command.'''
@@ -389,6 +389,7 @@ def viewrendered(event):
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
     if g.app.dock:
+        vr.show_dock_or_pane()
         return vr
     #
     # Legacy code: add the pane to the splitter.
@@ -406,30 +407,48 @@ def viewrendered(event):
         vr.adjust_layout('open')
     c.bodyWantsFocusNow()
     return vr
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract') (changed)
 @g.command('vr-contract')
 def contract_rendering_pane(event):
     '''Contract the rendering pane.'''
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.contract()
-        else:
-            # Just open the pane.
-            viewrendered(event)
-#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    if g.app.dock:
+        return
+    vr.contract()
+    ###
+        # c = event.get('c')
+        # if c:
+            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            # if vr:
+                # vr.contract()
+            # else:
+                # # Just open the pane.
+                # viewrendered(event)
+#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand') (changed)
 @g.command('vr-expand')
 def expand_rendering_pane(event):
     '''Expand the rendering pane.'''
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr:
-            vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    if g.app.dock:
+        return
+    vr.expand()
+    ###
+        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+        # if not vr:
+            # vr = viewrendered(event)
+        # if vr:
+            # vr.expand()
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide') (changed)
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
@@ -437,13 +456,12 @@ def hide_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
-        # Can't hide a dock.
-        return
     vr = controllers.get(c.hash())
     if not vr:
-        return
+        vr = viewrendered(event)
     if g.app.dock:
+        if vr.external_dock:
+            return # Can't hide a top-level dock.
         dock = vr.leo_dock
         if dock:
             dock.hide()
@@ -471,31 +489,56 @@ def hide_rendering_pane(event):
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
+#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock') (changed)
 @g.command('vr-lock')
 def lock_rendering_pane(event):
     '''Lock the rendering pane.'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr and not vr.locked:
-            vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    if not vr.locked():
+        vr.lock()
+    ###
+        # c = event.get('c')
+        # if not c:
+            # return
+        # ### vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+        # vr = controllers.get(c.hash())
+        # if vr and not vr.locked():
+            # vr.lock()
+#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play') (changed)
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event):
     '''Pause or play a movie in the rendering pane.'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr and vr.vp:
-            vp = vr.vp
-            if vp.isPlaying():
-                vp.pause()
-            else:
-                vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vp = vr.vp
+    if not vp:
+        return
+    f = vp.pause if vp.isPlaying() else vp.play
+    f()
+    ###
+        # c = event.get('c')
+        # if c:
+            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            # if not vr:
+                # vr = viewrendered(event)
+            # if vr and vr.vp:
+                # vp = vr.vp
+                # if vp.isPlaying():
+                    # vp.pause()
+                # else:
+                    # vp.play()
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show') (changed)
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
@@ -505,10 +548,9 @@ def show_rendering_pane(event):
         return
     vr = controllers.get(c.hash())
     if not vr:
-        viewrendered(event)
-        return
+        vr = viewrendered(event)
     vr.show_dock_or_pane()
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
@@ -516,49 +558,75 @@ def toggle_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-    if g.app.dock and c.config.getBool('use-vr-dock', default=False):
-        # Can't hide a dock.
-        return
     vr = controllers.get(c.hash())
     if not vr:
-        viewrendered(event)
-        return
+        vr = viewrendered(event)
+        vr.hide() # So the toggle below will work.
     if g.app.dock:
+        if vr.external_dock:
+            return # Can't hide a top-level dock.
         dock = vr.leo_dock
         if dock:
-            if dock.isHidden():
-                dock.show()
-            else:
-                dock.hide()
+            f = dock.show if dock.isHidden() else dock.hide
+            f()
+    elif vr.isHidden():
+        show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
-#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
+#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock') (changed)
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
     '''Pause or play a movie in the rendering pane.'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr and vr.locked:
-            vr.unlock()
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    if vr.locked:
+        vr.unlock()
+    ###
+    # c = event.get('c')
+    # if c:
+        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+        # if vr and vr.locked:
+            # vr.unlock()
+#@+node:ekr.20110321151523.14464: *3* g.command('vr-update') (changed)
 @g.command('vr-update')
 def update_rendering_pane(event):
     '''Update the rendering pane'''
+    global controllers
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr:
-            vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.update(tag='view', keywords={'c': c, 'force': True})
+    
+    ###
+        # c = event.get('c')
+        # if c:
+            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            # if not vr:
+                # vr = viewrendered(event)
+            # if vr:
+                # vr.update(tag='view', keywords={'c': c, 'force': True})
+#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom') (changed)
 @g.command('vr-zoom')
 def zoom_rendering_pane(event):
+
+    global controllers
     c = event.get('c')
-    flc = c.free_layout
+    if not c:
+        return
     vr = controllers.get(c.hash())
-    if not vr: return
+    if not vr:
+        vr = viewrendered(event)
+    if g.app.dock:
+        return
+    flc = c.free_layout
     if vr.zoomed:
         for ns in flc.get_top_splitter().top().self_and_descendants():
             if hasattr(ns, '_unzoom'):
@@ -680,10 +748,13 @@ if QtWidgets: # NOQA
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+            self.external_dock = c.config.getBool('use-vr-dock', default=False)
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
             c = self.c
+            external_dock = c.config.getBool('use-vr-dock', default=False)
+                # reload_settings has not yet been called.
             self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
@@ -693,10 +764,7 @@ if QtWidgets: # NOQA
             if not g.app.dock:
                 return
             dw = c.frame.top
-            separate_dock = (
-                c.config.getBool('use-vr-dock', default=False)
-                and not g.app.init_docks
-            )
+            separate_dock = external_dock and not g.app.init_docks
             #
             # Can't allow the "body dock" to move:
             # There is (at present) no way to put it back.
@@ -1418,10 +1486,7 @@ if QtWidgets: # NOQA
             
             c, vr = self.c, self
             if g.app.dock:
-                separate_dock = (
-                    c.config.getBool('use-vr-dock', default=False)
-                    and not g.app.init_docks
-                )
+                separate_dock = vr.external_dock and not g.app.init_docks
                 if separate_dock:
                     vr.show()
                 elif vr.leo_dock:
