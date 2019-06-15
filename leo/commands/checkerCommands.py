@@ -82,6 +82,67 @@ def find_long_lines(event):
                 break
     g.es_print('found %s long line%s longer than %s characters in %s file%s' % (
         count, g.plural(count), max_line, len(files), g.plural(len(files))))
+#@+node:ekr.20190615180048.1: *3* find-missing-docstrings
+@g.command('find-missing-docstrings')
+def find_missing_docstrings(event):
+    '''Report missing docstrings in the log, with clickable links.'''
+    c = event.get('c')
+    if not c:
+        return
+
+    #@+others # Define functions
+    #@+node:ekr.20190615181104.1: *4* function: has_docstring 
+    def has_docstring(lines, n):
+        '''
+        Returns True if function/method/class whose definition
+        starts on n-th line in lines has a docstring
+        '''
+        for line in lines[n:]:
+            s = line.strip()
+            if not s or s.startswith('#'):
+                continue
+            return s.startswith(('"""', "'''"))
+    #@+node:ekr.20190615181104.2: *4* function: is_a_definition 
+    def is_a_definition(line):
+        '''Return True if line is a definition line.'''
+        # It may be useful to skip __init__ methods because their docstring
+        # is usually docstring of the class
+        return (
+            line.startswith(('def ', 'class ')) and
+            not line.partition(' ')[2].startswith('__init__')
+        )
+    #@+node:ekr.20190615182754.1: *4* function: is_root
+    def is_root(p):
+        '''Return True if p is an @<file> node that is not under @nopylint.'''
+        for parent in p.self_and_parents():
+            if g.match_word(parent.h, 0, '@nopylint'):
+                return False
+        return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+    #@+node:ekr.20190615180900.1: *4* function: clickable_link 
+    def clickable_link (p, i):
+        '''Return a clickable link to line i of p.b.'''
+        link =  p.get_UNL(with_proto=True, with_count=True, with_index=True)
+        return "%s,%d" % (link, i)
+    #@-others
+
+    count, found = 0, []
+    for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
+        for p in root.self_and_subtree():
+            lines = p.b.split('\n')
+            for i, line in enumerate(lines):
+                if is_a_definition(line) and not has_docstring(lines, i):
+                    count += 1
+                    if root.v not in found:
+                        found.append(root.v)
+                        g.es_print('')
+                        g.es_print(root.h)
+                    print(line)
+                    g.es(line, nodeLink=clickable_link(p, i+1))
+                    break
+    g.es_print('')
+    g.es_print('found %s missing docstring%s in %s file%s' % (
+        count, g.plural(count), len(found), g.plural(len(found))))
+        
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
