@@ -376,7 +376,7 @@ def split_last_sizes(sizes):
 def preview(event):
     '''A synonym for the vr-toggle command.'''
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (changed)
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
     """Open render view for commander"""
@@ -429,7 +429,7 @@ def expand_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide') (changed)
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
@@ -495,7 +495,7 @@ def pause_play_movie(event):
                 vp.pause()
             else:
                 vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show') (changed)
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
@@ -508,7 +508,7 @@ def show_rendering_pane(event):
         viewrendered(event)
         return
     vr.show_dock_or_pane()
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
@@ -1410,7 +1410,7 @@ if QtWidgets: # NOQA
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:
                 splitter.load_layout(loo)
-        #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane (new)
+        #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane
         def show_dock_or_pane(self):
             
             c, vr = self.c, self
