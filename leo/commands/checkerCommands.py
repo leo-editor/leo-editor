@@ -25,7 +25,8 @@ import time
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
 @g.command('check-conventions')
 @g.command('cc')
-def checkConventsion(event):
+def checkConventions(event):
+    '''Experimental script to test Leo's conventsions.'''
     c = event.get('c')
     if c:
         if c.changed: c.save()
@@ -43,12 +44,14 @@ def find_long_lines(event):
     #@+others # helper functions
     #@+node:ekr.20190609135639.1: *4* function: get_root
     def get_root(p):
+        '''Return True if p is any @<file> node.'''
         for parent in p.self_and_parents():
             if parent.anyAtFileNodeName():
                 return parent
         return None
     #@+node:ekr.20190608084751.2: *4* function: in_no_pylint
     def in_nopylint(p):
+        '''Return p if p is controlled by @nopylint.'''
         for parent in p.self_and_parents():
             if '@nopylint' in parent.h:
                 return True
@@ -310,6 +313,8 @@ class PyflakesCommand:
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
     class LogStream:
+        
+        '''A log stream for pyflakes.'''
          
         def __init__(self, fn_n=0, roots=None):
              self.fn_n = fn_n
@@ -358,6 +363,7 @@ class PyflakesCommand:
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
     def check_script(self, p, script):
+        '''Call pyflakes to check the given script.'''
         try:
             from pyflakes import api, reporter
         except Exception: # ModuleNotFoundError
@@ -370,7 +376,7 @@ class PyflakesCommand:
         return errors == 0
     #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
     def finalize(self, p):
-
+        '''Finalize p's path.'''
         aList = g.get_directives_dict_list(p)
         path = self.c.scanAtPathDirectives(aList)
         fn = p.anyAtFileNodeName()
