@@ -385,7 +385,6 @@
 </v>
 <v t="ekr.20190609162248.1"><vh>Leo 6.0</vh>
 <v t="ekr.20190509062342.1"><vh>sqlite3 demo</vh></v>
-<v t="ekr.20190609162241.1"><vh>script: report missing docstrings in Leo itself</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4569,47 +4568,6 @@ p.b = '\n'.join([str(z) for z in result])
 last.expand()
 c.redraw() 
 </t>
-<t tx="ekr.20190609162241.1">g.cls()
-import inspect
-import time
-t1 = time.clock()
-d = g.getRepresentativeLiveObjects()
-#
-# Get only Leo objects
-leo_objects = [obj for key, obj in d.items() if 'leo' in repr(key)]
-leo_classes = [z for z in leo_objects if inspect.getmembers(z, inspect.isclass)]
-leo_classes.sort(key=lambda x: x.__class__.__name__)
-#
-# Compute missing methods.
-total_methods = 0
-missing = {}
-    # Keys are classes, values lists of methods missing a docstring.
-for cls in leo_classes:
-    methods = inspect.getmembers(cls, inspect.ismethod) or []
-    methods = [val for name, val in methods if not name.startswith('__')]
-        # Ignore special methods.
-    total_methods += len(methods)
-    for method in methods:
-        if getattr(method, '__doc__', None) is None:
-            key = cls.__class__.__name__
-            name = getattr(method, '__name__', None) or repr(method)
-            aList = missing.get(key, [])
-            if name not in aList:
-                aList.append(name)
-            missing [key] = aList
-# Summarize
-total_missing = 0
-for key, aList in missing.items():
-    total_missing += len(aList)
-    if 1: # Short
-        print('%3s missing docstring%s in %s' % (len(aList), g.plural(len(aList)) or ' ', key))
-    else: # Long
-        print(key)
-        for z in sorted(aList):
-            print('  ', z)
-t2 = time.clock()
-print('%s leo classes. methods %s, w/o docstrings %s in %4.2f sec' % (
-    len(leo_classes), total_methods, total_missing, t2-t1))</t>
 <t tx="ekr.20190609162248.1"></t>
 <t tx="maphew.20130510011223.1646">This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code for Open Command is:
