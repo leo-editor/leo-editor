@@ -106,6 +106,8 @@ class LeoApp:
             # The gui class.
         self.guiArgName = None
             # The gui name given in --gui option.
+        self.init_docks = False
+            # True: --init-docks
         self.ipython_inited = False
             # True if leoIpython.py imports succeeded.
         self.isTheme = False
@@ -194,7 +196,9 @@ class LeoApp:
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
-        self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01%\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01%\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x03\x1e\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01%\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
+        self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01^\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01^\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x02\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x01\xfd\x00\x00\x001\x00\xff\xff\xff\xfb\x00\x00\x00\x16\x00d\x00o\x00c\x00k\x00.\x00R\x00e\x00n\x00d\x00e\x00r\x01\x00\x00\x02\x05\x00\x00\x01\x19\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01^\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
+            #### Previous:
+            # b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01%\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01%\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x03\x1e\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01%\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
             # For self.restoreWindowState the first time Leo is run.
             # Use the print-window-state to print this value after arranging the docks to your liking.
         self.globalKillBuffer = []
@@ -1630,32 +1634,35 @@ class LeoApp:
         if not dw or not hasattr(dw, 'restoreState'):
             if trace: g.trace('no dw.restoreState. dw:', repr(dw))
             return
-        sfn = c.shortFileName()
-        table = (
-            # First, try the per-outline state.
-            ('windowState:%s' % (c.fileName()), dw.restoreState),
-            # Restore the actual window state.
-            ('windowState:', dw.restoreState),
-            #
-            # The window geometry has already been restored.
-            # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
-        )
-        for key, method in table:
-            val = self.db.get(key)
-            if val:
-                if trace: g.trace('%s found key: %s' % (sfn, key))
-                try:
-                    val = base64.decodebytes(val.encode('ascii'))
-                        # Elegant pyzo code.
-                    method(val)
-                    return
-                except Exception as err:
-                    g.trace('%s bad value: %s %s' % (sfn, key, err))
-            # This is not an error.
-            elif trace:
-                g.trace('%s missing key: %s' % (sfn, key))
         #
-        # #1190: bad initial layout:
+        # Support --init-docks.
+        if not g.app.init_docks:
+            sfn = c.shortFileName()
+            table = (
+                # First, try the per-outline state.
+                ('windowState:%s' % (c.fileName()), dw.restoreState),
+                # Restore the actual window state.
+                ('windowState:', dw.restoreState),
+                #
+                # The window geometry has already been restored.
+                # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
+            )
+            for key, method in table:
+                val = self.db.get(key)
+                if val:
+                    if trace: g.trace('%s found key: %s' % (sfn, key))
+                    try:
+                        val = base64.decodebytes(val.encode('ascii'))
+                            # Elegant pyzo code.
+                        method(val)
+                        return
+                    except Exception as err:
+                        g.trace('%s bad value: %s %s' % (sfn, key, err))
+                # This is not an error.
+                elif trace:
+                    g.trace('%s missing key: %s' % (sfn, key))
+        #
+        # --init-docks or bad initial layout (#1190)
         try:
             if 'startup' in g.app.debug:
                 print('app.restoreWindowState: defaultWindowState:')
@@ -2825,6 +2832,7 @@ class LoadManager:
         add_bool('--diff',          'use Leo as an external git diff')
         # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
+        add_bool('--init-docks',    'put docks in default positions')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
         add_other('--gui',          'gui to use (qt/console/null)')
@@ -2929,6 +2937,8 @@ class LoadManager:
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
+        # --init-docks
+        g.app.init_docks = options.init_docks
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython

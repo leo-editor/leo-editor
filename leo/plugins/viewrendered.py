@@ -693,7 +693,10 @@ if QtWidgets: # NOQA
             if not g.app.dock:
                 return
             dw = c.frame.top
-            separate_dock = c.config.getBool('use-vr-dock', default=False)
+            separate_dock = (
+                c.config.getBool('use-vr-dock', default=False)
+                and not g.app.init_docks
+            )
             #
             # Can't allow the "body dock" to move:
             # There is (at present) no way to put it back.
@@ -1415,7 +1418,11 @@ if QtWidgets: # NOQA
             
             c, vr = self.c, self
             if g.app.dock:
-                if c.config.getBool('use-vr-dock', default=False):
+                separate_dock = (
+                    c.config.getBool('use-vr-dock', default=False)
+                    and not g.app.init_docks
+                )
+                if separate_dock:
                     vr.show()
                 elif vr.leo_dock:
                     vr.leo_dock.show()

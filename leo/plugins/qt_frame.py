@@ -293,15 +293,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createAllDockWidgets(self):
         '''Create all the dock widgets.'''
         c = self.leo_c
+        #
+        # Compute constants.
         Qt = QtCore.Qt
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         #
-        # Only docks created below can be the central widget.
+        # Compute the central widget.
         central_widget = c.config.getString('central-dock-widget') or 'outline'
         if central_widget.lower() not in ('body', 'outline', 'tabs'):
             central_widget = 'outline'
+        #
+        # Create all the docks.
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
@@ -324,7 +328,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             dock.setWidget(w)
             # Remember the dock.
             setattr(self, '%s_dock' % (name), dock)
-            if name == central_widget: ### 'outline':
+            if name == central_widget:
                 self.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
             else:

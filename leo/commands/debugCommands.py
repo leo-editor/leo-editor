@@ -175,7 +175,17 @@ class DebugCommandsClass(BaseEditCommandsClass):
         
         Print QMainWindow.saveState().
         
-        This is the value to be assigned to QtQui.defaultWindowState.
+        This is the value to be assigned to g.app.defaultWindowState.
+        
+        Recommended procedure:
+
+        - Set @bool user-vr-dock = False.  Close Leo.
+        - Clear .leo/db caches. Reopen Leo.
+        - Make sure Render dock is visible to left of Body dock.
+        - Set @bool user-vr-dock = True. Close Leo & reopen.
+          The vr dock will be moveable.  Don't move it!
+        - Do print-window-state.
+        - Change g.app.defaultWindowState.
         '''
         c = event.get('c')
         if c:
