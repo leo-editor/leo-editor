@@ -635,6 +635,7 @@
 <v t="ekr.20190613024818.1"><vh>Docks</vh>
 <v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 <v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
+<v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
@@ -11775,6 +11776,10 @@ Warning: you may have to clear the caches in .leo/db after changing this setting
 <t tx="ekr.20190613024838.1">False: (recommended) Plugins create areas in the Tabs dock.
 
 True: create separate docks for plugins that used to be in Log pane.</t>
+<t tx="ekr.20190614191608.1">True: The VR dock is (can be) moved.
+False: (Recommended) The VR dock splits the body dock.
+
+*Warning*: You may have to clear caches if you change this setting.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
