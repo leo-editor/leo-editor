@@ -102,7 +102,9 @@ def find_missing_docstrings(event):
             s = line.strip()
             if not s or s.startswith('#'):
                 continue
-            return s.startswith(('"""', "'''"))
+            if s.startswith(('"""', "'''")):
+                return True
+        return False
     #@+node:ekr.20190615181104.2: *4* function: is_a_definition 
     def is_a_definition(line):
         '''Return True if line is a definition line.'''
