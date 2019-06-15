@@ -868,13 +868,24 @@ if QtWidgets: # NOQA
             pc = self
             p = pc.c.p
             if pc.must_update(keywords):
+                #
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
                 pc.length = len(p.b) # not s
+                #
                 # Remove Leo directives.
                 s = keywords.get('s') if 's' in keywords else p.b
                 s = pc.remove_directives(s)
+                #
+                # Use plain text if we are hidden.
+                # This avoids annoying messages with rst.
+                dock = pc.leo_dock or pc
+                if dock.isHidden():
+                    w = pc.ensure_text_widget()
+                    w.setPlainText(s)
+                    return
+                #
                 # Dispatch based on the computed kind.
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
                 if not kind:
