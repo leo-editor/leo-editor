@@ -74,9 +74,11 @@ class BaseEditCommandsClass:
         return w
     #@+node:ekr.20150514043714.8: *3* BaseEdit.getWSString
     def getWSString(self, s):
+        '''Return s with all characters replaced by tab or space.'''
         return ''.join([ch if ch == '\t' else ' ' for ch in s])
     #@+node:ekr.20150514043714.9: *3* BaseEdit.oops
     def oops(self):
+        '''Return a "must be overridden" message'''
         g.pr("BaseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
@@ -92,6 +94,7 @@ class BaseEditCommandsClass:
         return val
     #@+node:ekr.20150514043714.13: *4* BaseEdit.getRectanglePoints
     def getRectanglePoints(self, w):
+        '''Return the rectangle corresponding to the selection range.'''
         c = self.c
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
