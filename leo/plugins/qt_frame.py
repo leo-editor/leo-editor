@@ -299,10 +299,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        ###
-            # central_widget = c.config.getString('central-dock-widget') or 'outline'
-            # if central_widget.lower() not in ('body', 'outline', 'tabs'):
-                # central_widget = 'outline'
         #
         # Create all the docks.
         central_widget = g.app.get_central_widget(c)

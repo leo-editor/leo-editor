@@ -245,20 +245,14 @@ class LeoMenu:
     #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*
     def canonicalizeMenuName(self, name):
         
-        # #1121: Allow Chinese characters in command names
-        ### return ''.join([ch for ch in name if ch not in '& \t\n\r'])
-        
-        ### Old code: new code appears to be the cause of #1188.
+        # #1121 & #1188. Allow Chinese characters in command names
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch.isalnum()])
         return name
 
     def canonicalizeTranslatedMenuName(self, name):
 
-        # #1121: Allow Chinese characters in command names
-        ### return ''.join([ch for ch in name if ch not in '& \t\n\r'])
-        
-        ### Old code: new code appears to be the cause of #1188.
+        # #1121 & #1188. Allow Chinese characters in command names
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
