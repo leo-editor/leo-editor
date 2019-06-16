@@ -323,7 +323,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 moveable=name != central_widget,
                 height=0,
                 name=name)
-            w = creator(parent=None)
             dock.setWidget(w)
             # Remember the dock.
             setattr(self, '%s_dock' % (name), dock)
