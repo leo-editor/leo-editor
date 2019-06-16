@@ -201,7 +201,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
-
+        '''Init d from tree_s, the text of a copied outline.'''
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
         if not hidden_root:
@@ -470,7 +470,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
     def match_prefix(self, ch, i, j, prefix, s):
-
+        '''A match helper.'''
         i = j - len(prefix)
         word = g.checkUnicode(prefix) + g.checkUnicode(ch)
         tag = 'tree'
@@ -666,7 +666,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
 
     def dynamicExpandHelper1(self, event):
-
+        '''Finisher for dabbrev-expands.'''
         c, k = self.c, self.c.k
         p = c.p
         c.frame.log.deleteTab('Completion')
@@ -690,6 +690,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
     def getDynamicList(self, w, s):
+        '''Return a list of dynamic abbreviations.'''
         if self.globalDynamicAbbrevs:
             # Look in all nodes.h
             items = []
