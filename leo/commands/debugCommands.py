@@ -192,12 +192,15 @@ class DebugCommandsClass(BaseEditCommandsClass):
             print(c.frame.top.saveState())
             if c.config.getBool('dockable-log-tabs', default=False):
                 print('Warning: @bool dockable-log-tabs is True')
-            central_widget = c.config.getString('central-dock-widget')
+            ###
+                # central_widget = c.config.getString('central-dock-widget')
+                # if central_widget != 'outline':
+            central_widget = g.app.get_central_widget(c)
             if central_widget != 'outline':
                 print('Warning: @string central-dock-widget is %r' % central_widget)
         else:
             print('no c')
-        
+
     #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):

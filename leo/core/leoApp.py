@@ -1497,6 +1497,16 @@ class LeoApp:
                 title='Already Open Files',
                 message=message,
                 text="Ok")
+    #@+node:ekr.20190616092159.1: *3* app.get_central_widget
+    def get_central_widget(self, c):
+        
+        assert self.dock, g.callers()
+        s = c.config.getString('central-dock-widget')
+        if s:
+            s = s.lower()
+            if s in ('body', 'outline', 'tabs'):
+                return s
+        return 'outline'
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
     def scanner_for_at_auto(self, c, p, **kwargs):
@@ -1673,9 +1683,10 @@ class LeoApp:
         # The print-window-state prints this magic number for a *given* layout.
         # But this number will work *only* if the central widgets match.
         try:
-            central_widget = c.config.getString('central-dock-widget')
-            if central_widget:
-                central_widget = central_widget.lower()
+            central_widget = self.get_central_widget(c)
+            # central_widget = c.config.getString('central-dock-widget')
+            # if central_widget:
+                # central_widget = central_widget.lower()
             if central_widget in (None, 'outline'):
                 if trace:
                     print(tag, 'using app.defaultWindowState')

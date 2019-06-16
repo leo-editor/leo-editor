@@ -299,13 +299,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        #
-        # Compute the central widget.
-        central_widget = c.config.getString('central-dock-widget') or 'outline'
-        if central_widget.lower() not in ('body', 'outline', 'tabs'):
-            central_widget = 'outline'
+        ###
+            # central_widget = c.config.getString('central-dock-widget') or 'outline'
+            # if central_widget.lower() not in ('body', 'outline', 'tabs'):
+                # central_widget = 'outline'
         #
         # Create all the docks.
+        central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
