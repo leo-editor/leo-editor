@@ -1627,6 +1627,7 @@ class LeoApp:
         # Note for #1189: The windows has already been improperly resized
         #                 by the time this method is called.
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        tag = 'app.restoreWindowState:'
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -1636,40 +1637,56 @@ class LeoApp:
             return
         #
         # Support --init-docks.
-        if not g.app.init_docks:
-            sfn = c.shortFileName()
-            table = (
-                # First, try the per-outline state.
-                ('windowState:%s' % (c.fileName()), dw.restoreState),
-                # Restore the actual window state.
-                ('windowState:', dw.restoreState),
-                #
-                # The window geometry has already been restored.
-                # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
-            )
-            for key, method in table:
-                val = self.db.get(key)
-                if val:
-                    if trace: g.trace('%s found key: %s' % (sfn, key))
-                    try:
-                        val = base64.decodebytes(val.encode('ascii'))
-                            # Elegant pyzo code.
-                        method(val)
-                        return
-                    except Exception as err:
-                        g.trace('%s bad value: %s %s' % (sfn, key, err))
-                # This is not an error.
-                elif trace:
-                    g.trace('%s missing key: %s' % (sfn, key))
+        # #1196. Let Qt use it's own notion of a default layout.
+        #        This should work regardless of the central widget.
+        if g.app.init_docks:
+            if trace:
+                g.trace('using qt default layout')
+            return
+        sfn = c.shortFileName()
+        table = (
+            # First, try the per-outline state.
+            ('windowState:%s' % (c.fileName()), dw.restoreState),
+            # Restore the actual window state.
+            ('windowState:', dw.restoreState),
+            #
+            # The window geometry has already been restored.
+            # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
+        )
+        for key, method in table:
+            val = self.db.get(key)
+            if val:
+                if trace: g.trace('%s found key: %s' % (sfn, key))
+                try:
+                    val = base64.decodebytes(val.encode('ascii'))
+                        # Elegant pyzo code.
+                    method(val)
+                    return
+                except Exception as err:
+                    g.trace('%s bad value: %s %s' % (sfn, key, err))
+            # This is not an error.
+            elif trace:
+                g.trace('%s missing key: %s' % (sfn, key))
         #
-        # --init-docks or bad initial layout (#1190)
+        # #1190 (bad initial layout)
+        # Use a pre-defined layout (magic number).
+        # The print-window-state prints this magic number for a *given* layout.
+        # But this number will work *only* if the central widgets match.
         try:
-            if 'startup' in g.app.debug:
-                print('app.restoreWindowState: defaultWindowState:')
-                print(self.defaultWindowState)
-            dw.restoreState(self.defaultWindowState)
+            central_widget = c.config.getString('central-dock-widget')
+            if central_widget:
+                central_widget = central_widget.lower()
+            if central_widget in (None, 'outline'):
+                if trace:
+                    print(tag, 'using app.defaultWindowState')
+                dw.restoreState(self.defaultWindowState)
+            elif trace:
+                print(tag)
+                print('central widget does not match default')
+                print('using qt default window state')
             # See print-window-state.
         except Exception:
+            g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):

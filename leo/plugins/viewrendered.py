@@ -764,7 +764,11 @@ if QtWidgets: # NOQA
             if not g.app.dock:
                 return
             dw = c.frame.top
-            separate_dock = external_dock and not g.app.init_docks
+            separate_dock = (
+                external_dock and not g.app.init_docks or
+                c.config.getString('central-dock-widget') == 'body'
+            )
+            # g.trace('SEPARATE DOCK', separate_dock)
             #
             # Can't allow the "body dock" to move:
             # There is (at present) no way to put it back.

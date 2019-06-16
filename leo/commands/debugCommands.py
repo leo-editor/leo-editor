@@ -171,11 +171,11 @@ class DebugCommandsClass(BaseEditCommandsClass):
     @cmd('print-window-state')
     def printWindowState(self, event=None):
         '''
-        For Leo's core developers.
-        
-        Print QMainWindow.saveState().
+        For Leo's core developers: print QMainWindow.saveState().
         
         This is the value to be assigned to g.app.defaultWindowState.
+        
+        Warning: this window state should *only* be used for new users! #1190.
         
         Recommended procedure:
 
