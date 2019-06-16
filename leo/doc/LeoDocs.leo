@@ -2293,12 +2293,12 @@
 </v>
 <v t="ekr.20190616175854.1"></v>
 <v t="ekr.20190616175944.1"><vh>Leo 6.0 release notes</vh>
-<v t="ekr.20190616182152.1"><vh>Major features</vh>
+<v t="ekr.20190616182152.1"><vh>6.0: Major features</vh>
 <v t="ekr.20190616180552.119"><vh>#1137: Complete transition to python 3</vh>
 <v t="ekr.20190616180552.55"><vh>#1121: Chinese characters in command names</vh></v>
 <v t="ekr.20190616180023.61"><vh>#1169: Use super wherever possible</vh></v>
 </v>
-<v t="ekr.20190616180552.196"><vh>#1150: support docks in Leo's core</vh>
+<v t="ekr.20190616180552.196"><vh>#1150: Support docks in Leo's core</vh>
 <v t="ekr.20190616180552.636"><vh>#1171: Will retain non-tabbed Qt gui</vh>
 <v t="ekr.20190616180552.882"><vh>LM.scanOptions &amp; helpers</vh>
 <v t="ekr.20190616180552.883"><vh>LM.addOptionsToParser</vh></v>
@@ -2313,7 +2313,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190616182221.1"><vh>Bugs</vh>
+<v t="ekr.20190616182221.1"><vh>6.0: Bugs</vh>
 <v t="ekr.20190616180552.42"><vh>#1117: @command vs @item</vh></v>
 <v t="ekr.20190616180023.5"><vh>#1127: Duplicate headlines</vh></v>
 <v t="ekr.20190616180552.84"><vh>#1131: LeoWapp key handling in minibuffer</vh></v>
@@ -2334,28 +2334,29 @@
 <v t="ekr.20190616180552.854"><vh>#1200: open-outline buglet</vh></v>
 <v t="ekr.20190616180552.893"><vh>Fixed misalignment in LeoQtLog.put</vh></v>
 </v>
-<v t="ekr.20190616182340.1"><vh>Code</vh>
-<v t="ekr.20190616180552.78"><vh>#1126: git hooks</vh></v>
-<v t="ekr.20190616180552.112"><vh>#1134: disallow nested @&lt;file&gt;</vh></v>
-<v t="ekr.20190616180552.417"><vh>#1161: serious crasher</vh></v>
-<v t="ekr.20190616180552.669"><vh>#1179: unit tests for find methods</vh></v>
+<v t="ekr.20190616182340.1"><vh>6.0: Code</vh>
+<v t="ekr.20190616180552.78"><vh>#1126: Reform how Leo handles git time stamps</vh></v>
+<v t="ekr.20190616180552.112"><vh>#1134: Disallow nested @&lt;file&gt;</vh></v>
+<v t="ekr.20190616180552.417"><vh>#1161: Fixed a serious crasher</vh></v>
+<v t="ekr.20190616180552.669"><vh>#1179: Added unit tests for find methods</vh></v>
 <v t="ekr.20190616180552.852"><vh>#1199: Suppress menu items at load time</vh></v>
 <v t="ekr.20190616180552.908"><vh>Added g.es_clickable_link</vh></v>
 <v t="ekr.20190616180552.909"><vh>Added g.GetRepresentativeObjects</vh></v>
 </v>
-<v t="ekr.20190616183951.1"><vh>New and improved commands/features</vh>
+<v t="ekr.20190616183951.1"><vh>6.0: Features</vh>
 <v t="ekr.20190616180552.392"><vh>#1152: Huge speed up of replace-all</vh></v>
 <v t="ekr.20190616180552.646"><vh>#1173: Clickable pylint messages</vh></v>
 <v t="ekr.20190616180552.665"><vh>#1175: Support colorizing of Lua long brackets</vh></v>
-<v t="ekr.20190616180552.667"><vh>#1178: @nopylint</vh></v>
+<v t="ekr.20190616180552.667"><vh>#1178: Added support for @nopylint</vh></v>
 <v t="ekr.20190616180552.895"><vh>Added find-long-lines command</vh></v>
 <v t="ekr.20190616180552.903"><vh>Added find-missing-docstrings commands</vh></v>
 <v t="ekr.20190616180552.910"><vh>Added import-free-mind-files</vh></v>
 <v t="ekr.20190616180552.899"><vh>Added print-window-state command</vh></v>
 </v>
-<v t="ekr.20190616183759.1"><vh>Settings and arguments</vh>
-<v t="ekr.20190616180552.857"><vh>#1205: --init-docks</vh></v>
+<v t="ekr.20190616183759.1"><vh>6.0: Settings and arguments</vh>
 <v t="ekr.20190616180552.180"><vh>#1145: --trace=aList</vh></v>
+<v t="ekr.20190616180552.857"><vh>#1205: --init-docks</vh></v>
+<v t="ekr.20190616184706.1"><vh>Added --no-dock</vh></v>
 </v>
 </v>
 </vnodes>
@@ -30303,12 +30304,18 @@ message to the Log pane.
 
 Clicking it selects the given line number of p.b.</t>
 <t tx="ekr.20190616175854.1"></t>
-<t tx="ekr.20190616175944.1">Leo 5.8 final, http://leoeditor.com, is now available on
+<t tx="ekr.20190616175944.1">Leo 6.0 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.0**
+
+- Leo no longer supports Python 2, resulting in much simpler code.
+- Leo's default gui uses Qt Docks.
+  Use --no-dock to use Leo's legacy gui.
+- Several commands now generate clickable links in the Log pane.
+- The usual assortment of bug fixes and minor improvements.
 
 **Links**
 
@@ -30691,6 +30698,7 @@ Values are the first (representative) live object for each type.
 <t tx="ekr.20190616182340.1"></t>
 <t tx="ekr.20190616183759.1"></t>
 <t tx="ekr.20190616183951.1"></t>
+<t tx="ekr.20190616184706.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
