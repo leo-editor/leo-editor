@@ -1,24 +1,17 @@
-Leo 5.9 final, http://leoeditor.com, is now available on
+Leo 6.0 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.9**
+**The highlights of Leo 6.0**
 
-This will be the last version of Leo that supports Python 2.
-
-Major features
-- LeoWapp: Leo in a browser.
-- Optional syntax coloring using pygments.
-  Optional: you may use @color & @font directives instead of pygments styles.
-- Integrated debugger.
-
-Other features
-- Nested @clean nodes, useful for LaTex files.
-- A major refactoring of the code that writes external files.
-- Better error recovery.
-- Support for continuous integration with TravisCI.
-- More than 50 minor bug fixes.
+- Leo now requires python 3.6 or above.
+  This greatly simplifies Leo's code.
+- Leo's default gui uses Qt Docks.
+  Use --no-dock to use Leo's legacy gui.
+- Several commands now generate clickable links in the Log pane.
+  This greatly speeds navigation.
+- The usual assortment of bug fixes and minor improvements.
 
 **Links**
 

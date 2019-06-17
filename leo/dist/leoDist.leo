@@ -235,7 +235,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.9
+Version: 6.0
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -253,29 +253,21 @@ Classifier: Programming Language :: Python
 Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
-
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.9 final, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.0 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.9**
+**The highlights of Leo 6.0**
 
-This will be the last version of Leo that supports Python 2.
-
-Major features
-- LeoWapp: Leo in a browser.
-- Optional syntax coloring using pygments.
-  Optional: you may use @color &amp; @font directives instead of pygments styles.
-- Integrated debugger.
-
-Other features
-- Nested @clean nodes, useful for LaTex files.
-- A major refactoring of the code that writes external files.
-- Better error recovery.
-- Support for continuous integration with TravisCI.
-- More than 50 minor bug fixes.
+- Leo now requires python 3.6 or above.
+  This greatly simplifies Leo's code.
+- Leo's default gui uses Qt Docks.
+  Use --no-dock to use Leo's legacy gui.
+- Several commands now generate clickable links in the Log pane.
+  This greatly speeds navigation.
+- The usual assortment of bug fixes and minor improvements.
 
 **Links**
 

@@ -71,7 +71,7 @@
 <v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
-<v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
+<v t="ekr.20180816105258.1"><vh>script: diff-branches (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 </v>
 </v>
@@ -108,7 +108,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31392e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -205,6 +205,7 @@
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
+<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
 <v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
@@ -286,6 +287,7 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
 <v t="ekr.20150326145530.1"><vh>@clean ../modes/forth.py</vh>
 <v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt;</vh></v>
@@ -323,6 +325,7 @@
 <t tx="EKR.20040430162943">@nosearch
 </t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -790,7 +793,7 @@ def pre_init_mode(c):
     aList = pair.split(' ')
     if len(aList) != 2:
         g.trace('can not happen: expecting pair of forth strings:', pair)
-        return
+        return None
     begin, end = aList
 
     def forth_string_word_rule(colorer, s, i):
@@ -968,7 +971,7 @@ rulesDictDict = {
 # Import dict for forth mode.
 importDict = {}
 </t>
-<t tx="ekr.20150326145530.4">class extendForth(object):
+<t tx="ekr.20150326145530.4">class extendForth:
     '''A helper class to extend the mode tables from @data forth-x settings.'''
     @others
 </t>
@@ -1164,7 +1167,7 @@ contract-log-pane</t>
 
 print('===== Start =====')
 
-class CreateDecorators(object):
+class CreateDecorators:
     '''
     A class to create decorators from tables in getPublicCommands.
     
@@ -1348,7 +1351,7 @@ CreateDecorators(c,make_changes=False).run()
 make_changes = True
     # True, actually make the change
 
-class CreateDecorators(object):
+class CreateDecorators:
     '''
     A class to create decorators from tables in getPublicCommands.
     
@@ -1578,7 +1581,7 @@ def define_s(self):
 'open-online-toc':              c.openLeoTOC,
 'open-online-tutorials':        c.openLeoTutorials,
 'open-online-videos':           c.openLeoVideos,
-'open-outline':                 c.open,
+'open-outline':                 c.open_outline,
 'open-python-window':           c.openPythonWindow,
 'open-quickstart-leo':          c.leoQuickStart,
 'open-scripts-leo':             c.openLeoScripts,
@@ -2045,9 +2048,9 @@ precede the node's line that have not already been returned.
 <t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='pyzo', # old branch
-    branch2='devel', # new branch
-    fn='leo/core/leoApp.py',
+    branch1='devel', # old branch
+    branch2='dock', # new branch
+    fn='leo/plugins/qt_frame.py',
     directory=None,
 )
 </t>
@@ -2149,8 +2152,8 @@ found 284 nodes
 <t tx="ekr.20190402091335.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='263fcc0bcc20ef5', # good
-    rev2='2a307cf4a625105a', # bad, present rev.
+    rev1='0505d8c9cabbd3', # Much better alignment
+    rev2='588a192fa7a026', # Latest
     directory=None,
 )
 </t>
@@ -2191,5 +2194,6 @@ viewrendered.py
 # valuespace.py
 # xdb_pane.py
 </t>
+<t tx="ekr.20190607124533.1"></t>
 </tnodes>
 </leo_file>

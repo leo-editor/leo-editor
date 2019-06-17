@@ -128,6 +128,7 @@
 <v t="ekr.20101110093449.5822"><vh>@file mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
 </v>
+<v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
 <v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
@@ -170,6 +171,7 @@
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 <v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
+<v t="ekr.20190410171646.1"><vh>@file pyzo_support.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -340,6 +342,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20181028052650.1"><vh>@file leowapp.py</vh></v>
 </v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
@@ -600,7 +603,7 @@ If it's long, you might put it in a separate section.
 
     thePluginController=pluginController(c)
 </t>
-<t tx="ekr.20050303051222">class pluginController(object):
+<t tx="ekr.20050303051222">class pluginController:
 
     @others</t>
 <t tx="ekr.20050303051222.1">def __init__(self,c):
@@ -1193,14 +1196,12 @@ done with the link_htmlParserClass.
 </t>
 <t tx="ekr.20050805162550.41">def __init__(self,rst):
 
-    HTMLParser.HTMLParser.__init__(self) # Init the base class.
-
+    super().__init__()
     self.rst = rst
 
     # Set ivars from options.  This works only if we don't change nodes!
     self.node_begin_marker      = rst.getOption('node_begin_marker')
     self.clear_http_attributes  = rst.getOption('clear_http_attributes')
-
     self.current_file = rst.outputFileName
 </t>
 <t tx="ekr.20050805162550.42">def is_anchor(self, tag, attrs):
@@ -1247,7 +1248,7 @@ done with the link_htmlParserClass.
 </t>
 <t tx="ekr.20050805162550.45">def __init__ (self,rst):
 
-    linkAnchorParserClass.__init__(self,rst) # Init the base class.
+    super().__init__(rst) # Init the base class.
 
     self.stack = None
     # The stack contains lists of the form:
@@ -1357,7 +1358,7 @@ done with the link_htmlParserClass.
 </t>
 <t tx="ekr.20050805162550.51">def __init__ (self,rst,p):
 
-    linkAnchorParserClass.__init__(self,rst)
+    super().__init__(rst)
 
     self.p = p.copy()
     self.anchor_map = rst.anchor_map
@@ -1401,7 +1402,7 @@ done with the link_htmlParserClass.
 </t>
 <t tx="ekr.20050805162550.54">def __init__ (self,rst,p):
 
-    linkAnchorParserClass.__init__(self,rst)
+    super().__init__(rst)
 
     self.p = p.copy()
     self.anchor_map = rst.anchor_map
@@ -1449,7 +1450,7 @@ done with the link_htmlParserClass.
         # Warning: Do not return anything but None here!
         # Doing so suppresses the loading of other 'new' or 'open2' hooks!
 </t>
-<t tx="ekr.20050805162550.8">class rstClass(object):
+<t tx="ekr.20050805162550.8">class rstClass:
 
     '''A class to write rst markup in Leo outlines.'''
 
