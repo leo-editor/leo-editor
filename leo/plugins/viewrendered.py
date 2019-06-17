@@ -1168,7 +1168,7 @@ if QtWidgets: # NOQA
                         s = self.convert_to_markdown(s)
                 self.set_html(s,w)
             else:
-                g.trace('markdown not available: using rst')
+                # g.trace('markdown not available: using rst')
                 self.update_rst(s,keywords)
         #@+node:ekr.20160921134552.1: *5* convert_to_markdown
         def convert_to_markdown(self, s):
