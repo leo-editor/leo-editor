@@ -30426,7 +30426,7 @@ https://github.com/leo-editor/leo-editor/issues/1173
   
 The pylint command honors @nopylint.
 https://github.com/leo-editor/leo-editor/issues/1178</t>
-<t tx="ekr.20190617015847.1">Disallow nested @&lt;file&gt;
+<t tx="ekr.20190617015847.1">Disallow nested @&lt;file&gt; nodes: a failed experiment
 https://github.com/leo-editor/leo-editor/issues/1134
 
 Support colorizing of Lua long brackets
