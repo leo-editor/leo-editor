@@ -2293,6 +2293,7 @@
 </v>
 <v t="ekr.20190616175854.1"></v>
 <v t="ekr.20190616175944.1"><vh>Leo 6.0 release notes</vh>
+<v t="ekr.20190617064101.1"><vh>Acknowledgements</vh></v>
 <v t="ekr.20190616182152.1"><vh>6.0: Major features</vh>
 <v t="ekr.20190616180552.119"><vh>Leo requires python 3</vh></v>
 <v t="ekr.20190616180552.196"><vh>Leo uses a dock-based gui by default</vh></v>
@@ -30254,7 +30255,35 @@ You can specify per-language settings by preceding the settings names by a prefi
 message to the Log pane.
 
 Clicking it selects the given line number of p.b.</t>
-<t tx="ekr.20190616175854.1"></t>
+<t tx="ekr.20190616175854.1">Leo now requires python 3.6 or above. This greatly simplifies Leo's code.
+
+Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
+
+New and improved commands and features:
+
+- Huge speed up of replace-all
+- Added find-long-lines. Uses @bool max-find-long-lines-length = 110
+- Added find-missing-docstrings. Honors @nopylint.
+- Added import-free-mind-files
+- Added print-window-state. This command is for Leo's developers.
+- The pylint command generates clickable log messages and honor @nopylint.
+- Support colorizing of Lua long brackets
+  
+New command-line arguments:
+
+--init-docks
+--no-dock
+--trace=aList https://github.com/leo-editor/leo-editor/issues/1145
+
+New settings:
+
+For the find-long-lines command:
+@bool max-find-long-lines-length = 110
+    
+For docks:
+@bool dockable-log-tabs = False
+@string central-dock-widget = outline
+</t>
 <t tx="ekr.20190616175944.1">Leo 6.0 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -30314,7 +30343,7 @@ https://github.com/leo-editor/leo-editor/issues/1199
 Added g.es_clickable_link.
 
 Added g.GetRepresentativeObjects</t>
-<t tx="ekr.20190616183759.1">New command-line arguments...
+<t tx="ekr.20190616183759.1">New command-line arguments:
 
 --init-docks
 https://github.com/leo-editor/leo-editor/issues/1205
@@ -30325,16 +30354,14 @@ Use Leo's legacy gui instead of the new Qt docks gui.
 --trace=aList
 https://github.com/leo-editor/leo-editor/issues/1145
 
-New settings...
+New settings:
 
 For the find-long-lines command:
-    @bool max-find-long-lines-length = 110
+@bool max-find-long-lines-length = 110
     
-For the new dock-based gui:
-    @bool dockable-log-tabs = False
-    @string central-dock-widget = outline
-
-</t>
+For docks:
+@bool dockable-log-tabs = False
+@string central-dock-widget = outline</t>
 <t tx="ekr.20190616183951.1"></t>
 <t tx="ekr.20190617012812.1">As you can see from this bug list, adding support for Qt docks took a lot of work.
 
@@ -30434,6 +30461,17 @@ https://github.com/leo-editor/leo-editor/issues/1134
 
 Support colorizing of Lua long brackets
 https://github.com/leo-editor/leo-editor/issues/1175</t>
+<t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
+
+Terry Brown
+Josef Dalcolmo
+Chris George
+Bob Hossley
+Rob Keeney
+Виталије Милошевић (Vitalije Milosevitch)
+Lewis Neal
+Matt Wilkie
+ZoomQuiet</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
