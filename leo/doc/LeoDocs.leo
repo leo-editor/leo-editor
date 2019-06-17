@@ -30367,6 +30367,9 @@ https://github.com/leo-editor/leo-editor/issues/1198
 
 Always split body dock
 https://github.com/leo-editor/leo-editor/issues/1206
+
+Docks created by plugins can't be closed
+https://github.com/leo-editor/leo-editor/issues/1207
 </t>
 <t tx="ekr.20190617012909.1">@command vs @item
 https://github.com/leo-editor/leo-editor/issues/1117
