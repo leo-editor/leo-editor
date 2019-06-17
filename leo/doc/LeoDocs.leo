@@ -30366,7 +30366,8 @@ Use --no-dock to use Leo's legacy Qt gui.
 https://github.com/leo-editor/leo-editor/issues/1171
 </t>
 <t tx="ekr.20190616182152.1"></t>
-<t tx="ekr.20190616182221.1"></t>
+<t tx="ekr.20190616182221.1">This page shows all bugs related to Leo 6.0:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.0+label%3Abug</t>
 <t tx="ekr.20190616182340.1">Reform how Leo handles git time stamps
 https://github.com/leo-editor/leo-editor/issues/1126
 
@@ -30398,7 +30399,9 @@ For the find-long-lines command:
 For docks:
 @bool dockable-log-tabs = False
 @string central-dock-widget = outline</t>
-<t tx="ekr.20190616183951.1"></t>
+<t tx="ekr.20190616183951.1">This page shows all enhancements related to Leo 6.0:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.0+label%3Aenhancement
+</t>
 <t tx="ekr.20190617012812.1">As you can see from this bug list, adding support for Qt docks took a lot of work.
 
 Support docks in "Log pane" plugins
