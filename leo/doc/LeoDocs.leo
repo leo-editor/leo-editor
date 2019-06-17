@@ -2294,70 +2294,21 @@
 <v t="ekr.20190616175854.1"></v>
 <v t="ekr.20190616175944.1"><vh>Leo 6.0 release notes</vh>
 <v t="ekr.20190616182152.1"><vh>6.0: Major features</vh>
-<v t="ekr.20190616180552.119"><vh>#1137: Complete transition to python 3</vh>
-<v t="ekr.20190616180552.55"><vh>#1121: Chinese characters in command names</vh></v>
-<v t="ekr.20190616180023.61"><vh>#1169: Use super wherever possible</vh></v>
-</v>
-<v t="ekr.20190616180552.196"><vh>#1150: Support docks in Leo's core</vh>
-<v t="ekr.20190616180552.636"><vh>#1171: Will retain non-tabbed Qt gui</vh>
-<v t="ekr.20190616180552.882"><vh>LM.scanOptions &amp; helpers</vh>
-<v t="ekr.20190616180552.883"><vh>LM.addOptionsToParser</vh></v>
-<v t="ekr.20190616180552.884"><vh>LM.computeFilesList</vh></v>
-<v t="ekr.20190616180552.885"><vh>LM.doGuiOption (changed)</vh></v>
-<v t="ekr.20190616180552.886"><vh>LM.doLoadTypeOption</vh></v>
-<v t="ekr.20190616180552.887"><vh>LM.doScreenShotOption</vh></v>
-<v t="ekr.20190616180552.888"><vh>LM.doScriptOption</vh></v>
-<v t="ekr.20190616180552.889"><vh>LM.doSimpleOptions</vh></v>
-<v t="ekr.20190616180552.890"><vh>LM.doWindowSizeOption</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20190616180552.119"><vh>Leo requires python 3</vh></v>
+<v t="ekr.20190616180552.196"><vh>Leo uses a dock-based gui by default</vh></v>
 </v>
 <v t="ekr.20190616182221.1"><vh>6.0: Bugs</vh>
-<v t="ekr.20190616180552.42"><vh>#1117: @command vs @item</vh></v>
-<v t="ekr.20190616180023.5"><vh>#1127: Duplicate headlines</vh></v>
-<v t="ekr.20190616180552.84"><vh>#1131: LeoWapp key handling in minibuffer</vh></v>
-<v t="ekr.20190616180552.117"><vh>#1136: git-diff crash</vh></v>
-<v t="ekr.20190616180023.14"><vh>#1142: insert-child duplicates p.b</vh></v>
-<v t="ekr.20190616180023.40"><vh>#1143: Ctrl-S doesn't save</vh></v>
-<v t="ekr.20190616180552.172"><vh>#1144: broken menu</vh></v>
-<v t="ekr.20190616180023.53"><vh>#1144: setting_finder plugin</vh></v>
-<v t="ekr.20190616180023.55"><vh>#1146: LeoWapp focus issues</vh></v>
-<v t="ekr.20190616180552.398"><vh>#1154, #1167, #1192, #1197: flexible docks</vh></v>
-<v t="ekr.20190616180552.405"><vh>#1159: raise dock with focus</vh></v>
-<v t="ekr.20190616180552.424"><vh>#1163: Completion tab is not visible</vh></v>
-<v t="ekr.20190616180552.442"><vh>#1166: Focus problems in Find Tab </vh></v>
-<v t="ekr.20190616180552.443"><vh>#1168: Ctrl-minus selects multiple nodes</vh></v>
-<v t="ekr.20190616180552.819"><vh>#1188: Recent files menu</vh></v>
-<v t="ekr.20190616180552.821"><vh>#1189: --maximize doesn't work</vh></v>
-<v t="ekr.20190616180552.839"><vh>#1190 &amp; #1198: bad initial layout</vh></v>
-<v t="ekr.20190616180552.854"><vh>#1200: open-outline buglet</vh></v>
-<v t="ekr.20190616180552.893"><vh>Fixed misalignment in LeoQtLog.put</vh></v>
-</v>
-<v t="ekr.20190616182340.1"><vh>6.0: Code</vh>
-<v t="ekr.20190616180552.78"><vh>#1126: Reform how Leo handles git time stamps</vh></v>
-<v t="ekr.20190616180552.112"><vh>#1134: Disallow nested @&lt;file&gt;</vh></v>
-<v t="ekr.20190616180552.417"><vh>#1161: Fixed a serious crasher</vh></v>
-<v t="ekr.20190616180552.669"><vh>#1179: Added unit tests for find methods</vh></v>
-<v t="ekr.20190616180552.852"><vh>#1199: Suppress menu items at load time</vh></v>
-<v t="ekr.20190616180552.908"><vh>Added g.es_clickable_link</vh></v>
-<v t="ekr.20190616180552.909"><vh>Added g.GetRepresentativeObjects</vh></v>
+<v t="ekr.20190617012909.1"><vh>Bugs related to transition to python 3</vh></v>
+<v t="ekr.20190617012812.1"><vh>Bugs related to Qt docks</vh></v>
+<v t="ekr.20190617012953.1"><vh>Fixes to LeoWapp</vh></v>
+<v t="ekr.20190617013257.1"><vh>Other bugs</vh></v>
 </v>
 <v t="ekr.20190616183951.1"><vh>6.0: Features</vh>
-<v t="ekr.20190616180552.392"><vh>#1152: Huge speed up of replace-all</vh></v>
-<v t="ekr.20190616180552.646"><vh>#1173: Clickable pylint messages</vh></v>
-<v t="ekr.20190616180552.665"><vh>#1175: Support colorizing of Lua long brackets</vh></v>
-<v t="ekr.20190616180552.667"><vh>#1178: Added support for @nopylint</vh></v>
-<v t="ekr.20190616180552.895"><vh>Added find-long-lines command</vh></v>
-<v t="ekr.20190616180552.903"><vh>Added find-missing-docstrings commands</vh></v>
-<v t="ekr.20190616180552.910"><vh>Added import-free-mind-files</vh></v>
-<v t="ekr.20190616180552.899"><vh>Added print-window-state command</vh></v>
+<v t="ekr.20190617014858.1"><vh>New and improved commands</vh></v>
+<v t="ekr.20190616182340.1"><vh>Code features</vh></v>
+<v t="ekr.20190617015847.1"><vh>Other features</vh></v>
 </v>
-<v t="ekr.20190616183759.1"><vh>6.0: Settings and arguments</vh>
-<v t="ekr.20190616180552.180"><vh>#1145: --trace=aList</vh></v>
-<v t="ekr.20190616180552.857"><vh>#1205: --init-docks</vh></v>
-<v t="ekr.20190616184706.1"><vh>Added --no-dock</vh></v>
-</v>
+<v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -30311,10 +30262,12 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 6.0**
 
-- Leo no longer supports Python 2, resulting in much simpler code.
+- Leo now requires python 3.6 or above.
+  This greatly simplifies Leo's code.
 - Leo's default gui uses Qt Docks.
   Use --no-dock to use Leo's legacy gui.
 - Several commands now generate clickable links in the Log pane.
+  This greatly speeds navigation.
 - The usual assortment of bug fixes and minor improvements.
 
 **Links**
@@ -30331,374 +30284,153 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20190616180023.14">https://github.com/leo-editor/leo-editor/issues/1142
+<t tx="ekr.20190616180552.119">Complete transition to python 3
+https://github.com/leo-editor/leo-editor/issues/1137
 
-</t>
-<t tx="ekr.20190616180023.40">https://github.com/leo-editor/leo-editor/issues/1143</t>
-<t tx="ekr.20190616180023.5">https://github.com/leo-editor/leo-editor/issues/1127</t>
-<t tx="ekr.20190616180023.53">https://github.com/leo-editor/leo-editor/issues/1144</t>
-<t tx="ekr.20190616180023.55">https://github.com/leo-editor/leo-editor/issues/1146</t>
-<t tx="ekr.20190616180023.61">Doesn't find x.__init__(self)
-
-regex: ([\w\.]+\.__init__\(\s*self,\s*)
-change: super().__init__(
-
-regex: ([\w\.]+\.__init__\(\s*self\s*\))
-change: super().__init__()
-
-# Super only works with new-style classes.
-regex: \bclass\b\s+\w+\s*:</t>
-<t tx="ekr.20190616180552.112">https://github.com/leo-editor/leo-editor/issues/1134</t>
-<t tx="ekr.20190616180552.117">https://github.com/leo-editor/leo-editor/issues/1136</t>
-<t tx="ekr.20190616180552.119">https://github.com/leo-editor/leo-editor/issues/1137</t>
-<t tx="ekr.20190616180552.172">https://github.com/leo-editor/leo-editor/issues/1144</t>
-<t tx="ekr.20190616180552.180">https://github.com/leo-editor/leo-editor/issues/1145
-</t>
-<t tx="ekr.20190616180552.196">https://github.com/leo-editor/leo-editor/issues/1150</t>
-<t tx="ekr.20190616180552.392">https://github.com/leo-editor/leo-editor/issues/1152
-
-https://github.com/leo-editor/leo-editor/issues/1166
-
-A huge speedup in the replace-all command.
-</t>
-<t tx="ekr.20190616180552.398">https://github.com/leo-editor/leo-editor/issues/1154
-https://github.com/leo-editor/leo-editor/issues/1167 Can't reopen a closed dock
-https://github.com/leo-editor/leo-editor/issues/1192 Allow the user to choose central widget
-https://github.com/leo-editor/leo-editor/issues/1196 Phantom dock widget
-https://github.com/leo-editor/leo-editor/issues/1197 Find and spell tabs
-https://github.com/leo-editor/leo-editor/issues/1206 always split body dock
-
-New settings:
-    
-@bool dockable-log-tabs = False
-
-False: (recommended) Plugins create areas in the Tabs dock.
-True: create separate docks for plugins that used to be in Log pane.
-
-@string central-dock-widget = outline
-
-valid values are: outline, body, tabs
-Warning: you may have to clear the caches in .leo/db after changing this setting.   
-</t>
-<t tx="ekr.20190616180552.405">https://github.com/leo-editor/leo-editor/issues/1159
-
-Changed qt_gui.Focus and LeoQtLog.selectHelper to raise any parent QDockWidgets.</t>
-<t tx="ekr.20190616180552.417">https://github.com/leo-editor/leo-editor/issues/1161</t>
-<t tx="ekr.20190616180552.42">https://github.com/leo-editor/leo-editor/issues/1117
-
-What I did:
-
-- Added warning in k.masterCommand for unknown commands.
-- Munged @item nodes in pbc.doItems.
-</t>
-<t tx="ekr.20190616180552.424">https://github.com/leo-editor/leo-editor/issues/1163
-
-The fix was easy: LeoQtLog.selectHelper must return True at the end.</t>
-<t tx="ekr.20190616180552.442">https://github.com/leo-editor/leo-editor/issues/1166</t>
-<t tx="ekr.20190616180552.443">https://github.com/leo-editor/leo-editor/issues/1168
-
-Added qtree.unselectItem, called from LeoTree.unselect_helper.</t>
-<t tx="ekr.20190616180552.55">https://github.com/leo-editor/leo-editor/issues/1121
-</t>
-<t tx="ekr.20190616180552.636">https://github.com/leo-editor/leo-editor/issues/1171
-
-Notes:
-- dw.leo_master *is* used, and *is* essential.
-- A mistake in ssm.get_master_widget caused tabs not to be colored properly.
-- qt_use_tabs is true iff using qt gui.
-- c.frame.top.master_widget is still used.
-- The official qt name is 'qt', for compatibility.
-
-Other changes:
-- Use getattr(obj, ivar, None) to simplify tests.
-- Simplified dw.select.
-- Changed how Leo handles --gui: qt is equivalent to qttabs.
-</t>
-<t tx="ekr.20190616180552.646">https://github.com/leo-editor/leo-editor/issues/1173</t>
-<t tx="ekr.20190616180552.665">https://github.com/leo-editor/leo-editor/issues/1175
-
-regex: \[(=*?)\[(.*)\](=*?)\]
-
-A Lua long literal string is any sequence of characters enclosed within:
-[[ and ]]
-[=[ and ]=]
-[==[ and ]==]
-
-Any number of equal signs are allowed. The closing sequence must match the opening sequence.
-
-Leo's colorizer recognizes the pair [[ and ]], but not the others.
-</t>
-<t tx="ekr.20190616180552.667">https://github.com/leo-editor/leo-editor/issues/1178
-</t>
-<t tx="ekr.20190616180552.669">https://github.com/leo-editor/leo-editor/issues/1179</t>
-<t tx="ekr.20190616180552.78">https://github.com/leo-editor/leo-editor/issues/1126
-</t>
-<t tx="ekr.20190616180552.819">https://github.com/leo-editor/leo-editor/issues/1188
-
+Chinese characters in command names
 https://github.com/leo-editor/leo-editor/issues/1121
 
-@bool recent_files_group_always = True
-
-The default of this setting is 'False'. If set to 'True', an unexpected result is to list the recent files across the top menu bar instead of in the File&gt;Recent Files list as before.</t>
-<t tx="ekr.20190616180552.821">https://github.com/leo-editor/leo-editor/issues/1189</t>
-<t tx="ekr.20190616180552.839">https://github.com/leo-editor/leo-editor/issues/1190
-
-https://github.com/leo-editor/leo-editor/issues/1198</t>
-<t tx="ekr.20190616180552.84">https://github.com/leo-editor/leo-editor/issues/1131</t>
-<t tx="ekr.20190616180552.852">https://github.com/leo-editor/leo-editor/issues/1199
-
-Suppress toggle-split-direction and equal-sized-panes if g.app.dock.</t>
-<t tx="ekr.20190616180552.854">https://github.com/leo-editor/leo-editor/issues/1200</t>
-<t tx="ekr.20190616180552.857">https://github.com/leo-editor/leo-editor/issues/1205</t>
-<t tx="ekr.20190616180552.882">def scanOptions(self, fileName, pymacs):
-    '''Handle all options, remove them from sys.argv and set lm.options.'''
-    lm = self
-    table = (
-        '--dock',
-        # '--no-dock', # #1171: retire legacy Qt guis.
-        '--no-cache',
-        '--session-restore',
-        '--session-save',
-    )
-    trace_m='''cache,coloring,dock,drawing,events,focus,gnx,ipython,
-      keys,plugins,select,shutdown,size,startup,themes'''
-    for bad_option in table:
-        if bad_option in sys.argv:
-            sys.argv.remove(bad_option)
-            print('\nIgnoring the deprecated %s option\n' % bad_option)
-    lm.old_argv = sys.argv[:]
-    parser = optparse.OptionParser(
-        usage="usage: launchLeo.py [options] file1, file2, ...")
-        # Automatically implements the --help option.
-    #
-    # Parse the options, and remove them from sys.argv.
-    self.addOptionsToParser(parser, trace_m)
-    options, args = parser.parse_args()
-    sys.argv = [sys.argv[0]]
-    sys.argv.extend(args)
-    # Handle simple args...
-    self.doSimpleOptions(options, trace_m)
-    # Compute the lm.files ivar.
-    lm.files = lm.computeFilesList(options, fileName)
-    script = None if pymacs else self.doScriptOption(options, parser)
-    d = {
-        'gui': lm.doGuiOption(options),
-        'load_type': lm.doLoadTypeOption(options),
-        'screenshot_fn': lm.doScreenShotOption(options),
-            # --screen-shot=fn
-        'script': script,
-        'select': options.select and options.select.strip('"'),
-            # --select=headline
-        'theme_path': options.theme,
-            # --theme=name
-        'version': options.version,
-            # --version: print the version and exit.
-        'windowFlag': script and options.script_window, 
-        'windowSize': lm.doWindowSizeOption(options),
-    }
-    return d
+Use super wherever possible
+https://github.com/leo-editor/leo-editor/issues/1169
 </t>
-<t tx="ekr.20190616180552.883">@nobeautify
+<t tx="ekr.20190616180552.196">Support docks in Leo's core
+https://github.com/leo-editor/leo-editor/issues/1150
 
-def addOptionsToParser(self, parser, trace_m):
-    
-    add = parser.add_option
-    
-    def add_bool(option, help, dest=None):
-        add(option, action='store_true', dest=dest, help=help)
+Use --no-dock to use Leo's legacy Qt gui.
+https://github.com/leo-editor/leo-editor/issues/1171
 
-    def add_other(option, help, dest=None, m=None):
-        add(option, dest=dest, help=help, metavar=m)
-
-    add_bool('--diff',          'use Leo as an external git diff')
-    # add_bool('--dock',          'use a Qt dock')
-    add_bool('--fullscreen',    'start fullscreen')
-    add_bool('--init-docks',    'put docks in default positions')
-    add_bool('--ipython',       'enable ipython support')
-    add_bool('--fail-fast',     'stop unit tests after the first failure')
-    add_other('--gui',          'gui to use (qt/console/null)')
-    add_bool('--listen-to-log', 'start log_listener.py on startup')
-    add_other('--load-type',    '@&lt;file&gt; type for non-outlines', m='TYPE')
-    add_bool('--maximized',     'start maximized')
-    add_bool('--minimized',     'start minimized')
-    add_bool('--no-dock',       'use legacy look &amp; feel')
-    add_bool('--no-plugins',    'disable all plugins')
-    add_bool('--no-splash',     'disable the splash screen')
-    add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
-    add_other('--script',       'execute a script and then exit', m="PATH")
-    add_bool('--script-window', 'execute script using default gui')
-    add_other('--select',       'headline or gnx of node to select', m='ID')
-    add_bool('--silent',        'disable all log messages')
-    add_other('--theme',        'use the named theme file', m='NAME')
-    add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
-    add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-    add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-    add_other('--window-size',  'initial window size (height x width)', m='SIZE')
-    # Multiple bool values.
-    add('-v', '--version', action='store_true',
-        help='print version number and exit')
 </t>
-<t tx="ekr.20190616180552.884">def computeFilesList(self, options, fileName):
-    '''Return the list of files on the command line.'''
-    lm = self
-    files = []
-    if fileName:
-        files.append(fileName)
-    for arg in sys.argv[1:]:
-        if arg and not arg.startswith('-'):
-            files.append(arg)
-    result = []
-    for z in files:
-        # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
-        aList = g.glob_glob(lm.completeFileName(z))
-        if aList:
-            result.extend(aList)
-        else:
-            result.append(z)
-    return [g.os_path_normslashes(z) for z in result]
-</t>
-<t tx="ekr.20190616180552.885">def doGuiOption(self, options):
-    gui = options.gui
-    if gui:
-        gui = gui.lower()
-        # #1171: retire non-tabbed qt gui.
-        if gui in ('qt', 'qttabs'):
-            gui = 'qt' # For compatibilty with g.UiTypeException
-        elif gui.startswith('browser'):
-            pass
-        elif gui in ('console', 'curses', 'text', 'null'):
-            pass
-        else:
-            print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
-            gui = 'qt'
-    else:
-        gui = 'qt'
-    assert gui
-    assert gui != 'qttabs' # For compatibilty with g.UiTypeException
-    g.app.qt_use_tabs = gui == 'qt'
-    g.app.guiArgName = gui
-    return gui
-</t>
-<t tx="ekr.20190616180552.886">def doLoadTypeOption(self, options):
-    
-    s = options.load_type
-    s = s.lower() if s else 'edit'
-    return '@' + s
-
-    
-</t>
-<t tx="ekr.20190616180552.887">def doScreenShotOption(self, options):
-
-    # --screen-shot=fn
-    s = options.screen_shot
-    if s:
-        s = s.strip('"')
-    return s
-</t>
-<t tx="ekr.20190616180552.888">def doScriptOption(self, options, parser):
-
-    # --script
-    script = options.script
-    if script:
-        # #1090: use cwd, not g.app.loadDir, to find scripts.
-        fn = g.os_path_finalize_join(os.getcwd(), script)
-        script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
-        if not script:
-            print('script not found:%s' % fn)
-            sys.exit(1)
-    else:
-        script = None
-    return script
-</t>
-<t tx="ekr.20190616180552.889">def doSimpleOptions(self, options, trace_m):
-    '''These args just set g.app ivars.'''
-    # --fail-fast
-    g.app.failFast = options.fail_fast
-    # --fullscreen
-    g.app.start_fullscreen = options.fullscreen
-    # --git-diff
-    g.app.diff = options.diff
-    # --init-docks
-    g.app.init_docks = options.init_docks
-    # --listen-to-log
-    g.app.listen_to_log_flag = options.listen_to_log
-    # --ipython
-    g.app.useIpython = options.ipython
-    # --maximized
-    g.app.start_maximized = options.maximized
-    # --minimized
-    g.app.start_minimized = options.minimized
-    # --no-dock:
-    # #1171: retain --no-dock indefinitely.
-    if options.no_dock:
-        g.app.dock = False
-    # --no-plugins
-    if options.no_plugins:
-        g.app.enablePlugins = False
-    # --no-splash: --minimized disables the splash screen
-    g.app.use_splash_screen = (
-        not options.no_splash and
-        not options.minimized)
-    # --silent
-    g.app.silentMode = options.silent
-    # --trace=...
-    valid = trace_m.replace(' ','').replace('\n','').split(',')
-    # g.trace('valid', valid)
-    if options.trace:
-        values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-        for val in values.split(','):
-            if val in valid:
-                # g.trace('val', val)
-                g.app.debug.append(val)
-            else:
-                g.es_print('unknown --trace value: %s' % val)
-    # g.trace('g.app.debug', repr(g.app.debug))
-    #
-    # These are not bool options.
-    # --trace-binding
-    g.app.trace_binding = options.trace_binding
-        # g.app.config does not exist yet.
-    #
-    # --trace-setting=setting
-    g.app.trace_setting = options.trace_setting
-        # g.app.config does not exist yet.
-    
-</t>
-<t tx="ekr.20190616180552.890">def doWindowSizeOption(self, options):
-    
-    # --window-size
-    windowSize = options.window_size
-    if windowSize:
-        try:
-            h, w = windowSize.split('x')
-            windowSize = int(h), int(w)
-        except ValueError:
-            windowSize = None
-            print('scanOptions: bad --window-size:', windowSize)
-    return windowSize
-</t>
-<t tx="ekr.20190616180552.893"># The corrected code is:
-    
-    if n &gt; 0 and s.strip():
-        s = '&amp;nbsp;' * (n) + s[n:]</t>
-<t tx="ekr.20190616180552.895">@bool max-find-long-lines-length = 110</t>
-<t tx="ekr.20190616180552.899">This command is for Leo's core developers.</t>
-<t tx="ekr.20190616180552.903"></t>
-<t tx="ekr.20190616180552.908">g.es_clickable_link(c, p, line_number, message):
-
-Writes a clickable message to the given line number of p.b.</t>
-<t tx="ekr.20190616180552.909">g.getRepresentativeLiveObjects():
-
-Returns a dict. Keys are classes.
-Values are the first (representative) live object for each type.
-</t>
-<t tx="ekr.20190616180552.910"></t>
 <t tx="ekr.20190616182152.1"></t>
 <t tx="ekr.20190616182221.1"></t>
-<t tx="ekr.20190616182340.1"></t>
-<t tx="ekr.20190616183759.1"></t>
+<t tx="ekr.20190616182340.1">Reform how Leo handles git time stamps
+https://github.com/leo-editor/leo-editor/issues/1126
+
+Added unit tests for find methods
+https://github.com/leo-editor/leo-editor/issues/1179
+
+Suppress menu items at load time
+https://github.com/leo-editor/leo-editor/issues/1199
+
+Added g.es_clickable_link.
+
+Added g.GetRepresentativeObjects</t>
+<t tx="ekr.20190616183759.1">New command-line arguments...
+
+--init-docks
+https://github.com/leo-editor/leo-editor/issues/1205
+
+--no-dock
+Use Leo's legacy gui instead of the new Qt docks gui.
+
+--trace=aList
+https://github.com/leo-editor/leo-editor/issues/1145
+
+New settings...
+
+For the find-long-lines command:
+    @bool max-find-long-lines-length = 110
+    
+For the new dock-based gui:
+    @bool dockable-log-tabs = False
+    @string central-dock-widget = outline
+
+</t>
 <t tx="ekr.20190616183951.1"></t>
-<t tx="ekr.20190616184706.1"></t>
+<t tx="ekr.20190617012812.1">As you can see from this bug list, adding support for Qt docks took a lot of work.
+
+Support docks in "Log pane" plugins
+https://github.com/leo-editor/leo-editor/issues/1154
+
+Raise dock with focus
+https://github.com/leo-editor/leo-editor/issues/1159
+
+Completion tab is not visible
+https://github.com/leo-editor/leo-editor/issues/1163
+
+Can't reopen a closed dock
+https://github.com/leo-editor/leo-editor/issues/1167
+
+Random dock layout for new users
+https://github.com/leo-editor/leo-editor/issues/1190
+
+Allow the user to choose central widget
+https://github.com/leo-editor/leo-editor/issues/1192
+
+Phantom dock widget
+https://github.com/leo-editor/leo-editor/issues/1196
+
+Find and spell tabs
+https://github.com/leo-editor/leo-editor/issues/1197
+
+New documents have collapsed body pane
+https://github.com/leo-editor/leo-editor/issues/1198
+
+Always split body dock
+https://github.com/leo-editor/leo-editor/issues/1206
+</t>
+<t tx="ekr.20190617012909.1">@command vs @item
+https://github.com/leo-editor/leo-editor/issues/1117
+
+Recent changes probably broke settings_finder.py
+https://github.com/leo-editor/leo-editor/issues/1144
+
+</t>
+<t tx="ekr.20190617012953.1">Duplicate headlines
+https://github.com/leo-editor/leo-editor/issues/1127
+
+LeoWapp key handling in minibuffer
+https://github.com/leo-editor/leo-editor/issues/1131
+
+insert-child duplicates p.b
+https://github.com/leo-editor/leo-editor/issues/1142
+
+Ctrl-S doesn't save
+https://github.com/leo-editor/leo-editor/issues/1143
+
+LeoWapp focus issues
+https://github.com/leo-editor/leo-editor/issues/1146
+</t>
+<t tx="ekr.20190617013257.1">git-diff crash
+https://github.com/leo-editor/leo-editor/issues/1136
+
+Fixed a serious crasher
+https://github.com/leo-editor/leo-editor/issues/1161
+
+Ctrl-minus selects multiple nodes
+https://github.com/leo-editor/leo-editor/issues/1168
+
+Recent files menu
+https://github.com/leo-editor/leo-editor/issues/1188
+
+--maximize doesn't work
+https://github.com/leo-editor/leo-editor/issues/1189
+
+open-outline buglet
+https://github.com/leo-editor/leo-editor/issues/1200
+
+Fixed misalignment in LeoQtLog.put</t>
+<t tx="ekr.20190617014858.1">Huge speed up of replace-all
+https://github.com/leo-editor/leo-editor/issues/1152
+
+Added find-long-lines. Uses @bool max-find-long-lines-length = 110
+
+Added find-missing-docstrings. Honors @nopylint.
+https://github.com/leo-editor/leo-editor/issues/1178
+
+Added import-free-mind-files
+
+Added print-window-state. This command is for Leo's developers.
+
+The pylint command generates clickable log messages.
+https://github.com/leo-editor/leo-editor/issues/1173
+  
+The pylint command honors @nopylint.
+https://github.com/leo-editor/leo-editor/issues/1178</t>
+<t tx="ekr.20190617015847.1">Disallow nested @&lt;file&gt;
+https://github.com/leo-editor/leo-editor/issues/1134
+
+Support colorizing of Lua long brackets
+https://github.com/leo-editor/leo-editor/issues/1175</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
