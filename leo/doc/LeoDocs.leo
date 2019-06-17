@@ -11780,7 +11780,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 5.9b1
+| latest_release_version = 6.0b1
 | latest_release_date = {{release date and age|2018|01|27}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
@@ -22520,7 +22520,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-5.9.
+~/leo-6.0.
 
 You now have several choices.
 
@@ -22528,7 +22528,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.9
+    cd ~/leo-6.0
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -26818,7 +26818,7 @@ At all times, anyone can pull stable code from master.
 
 Only the maintainer (EKR) is supposed to work on release or master, so nobody needs to hold back or knows what is going on in them. At all times everyone can happily hack on devel,  or better, their personal feature branches.
 
-To prepare a new release,  the maintainer branches devel to a new branch, say 5.9.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
+To prepare a new release,  the maintainer branches devel to a new branch, say 6.0.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
 
 This visualization made it all clear to me:
 https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png</t>
