@@ -20478,6 +20478,9 @@ Regardless of focus::
 </t>
 <t tx="ekr.20150323200950.1">``c-to-python``
     Converts c or c++ text to python text. The conversion is not perfect, but it eliminates a lot of tedious text manipulation.  This command is a rewrapping of the first Python script I ever wrote.
+    
+``import-free-mind-files``
+    Prompts for FreeMind files and imports them.
 
 ``typescript-to-py``
     Converts typescript text to python text. The conversion is not perfect, but it eliminates a lot of tedious text manipulation.
@@ -21540,6 +21543,12 @@ Actually, the above code is dubious, because it will break if the mode of the op
     Clear the outline's file cache.
 ``escape``
     Enter watch escape mode.
+``find-long-lines``
+    Report lines longer than specified by:
+    @bool max-find-long-lines-length = 110
+``find-missing-docstrings``
+    Report python classes, functions and methods lacking python docstrings.
+    Does not report nodes that are descendants of @nopylint.
 ``pdb``
     Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
 ``print-buttons``
@@ -21567,6 +21576,9 @@ Idle time::
     disable-idle-time-events
     enable-idle-time-events
     toggle-idle-time-events
+    
+``print-window-state``
+    This command is for Leo's developers.
 
 </t>
 <t tx="ekr.20161020064706.1">The following print information to Leo's log pane::
@@ -30322,12 +30334,36 @@ https://github.com/leo-editor/leo-editor/issues/1121
 Use super wherever possible
 https://github.com/leo-editor/leo-editor/issues/1169
 </t>
-<t tx="ekr.20190616180552.196">Support docks in Leo's core
+<t tx="ekr.20190616180552.196">Leo now uses Qt dock widgets by default.
+
+With default settings, Leo looks very much like it always has, but using Qt
+docks allows you to rearrange the screen to your liking.
+
+Leo remembers the layout of docks when you close Leo, and restores that
+layout when you restart layout.
+
+Two new settings customize the appearance of docks::
+
+    @bool dockable-log-tabs = False
+    @string central-dock-widget = outline
+    
+See the corresponding nodes in leoSettings.leo for full details.
+
+**Note**: When changing the above settings, it's best to add the
+--init-docks setting the next time you run Leo.
+
+**Note**: Right-clicking the title area of any dock brings up a menu of
+docks. You can show or hide any dock (except the central widget) using this
+menu. Don't be afraid to hide any dock. You can restore it at any later
+time, including after restarting Leo.
+
+Issues related to Leo docks:
+
+Support docks in Leo's core
 https://github.com/leo-editor/leo-editor/issues/1150
 
 Use --no-dock to use Leo's legacy Qt gui.
 https://github.com/leo-editor/leo-editor/issues/1171
-
 </t>
 <t tx="ekr.20190616182152.1"></t>
 <t tx="ekr.20190616182221.1"></t>
