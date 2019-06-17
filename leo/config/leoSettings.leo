@@ -2866,7 +2866,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 g.cls()
 import leo.core.leoConfig as leoConfig
 # import leo.core.leoTest as leoTest
-parser = leoConfig.SettingsTreeParser(c)
+parser = leoConfig.SettingsTreeParser(c, localFlag=True)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
 optionalCommandNames = [
@@ -3199,7 +3199,7 @@ zap-to-character
 Focus
 
 abort-edit-headline
-cycle-focus
+# cycle-focus
 edit-headline
 end-edit-headline
 focus-to-body
@@ -3251,23 +3251,6 @@ goto-prev-visible
 
 Panes
 
-contract-body-pane
-contract-log-pane
-contract-outline-pane
-contract-pane
-expand-body-pane
-expand-log-pane
-expand-outline-pane
-expand-pane
-find-tab-hide
-fully-expand-body-pane
-fully-expand-log-pane
-fully-expand-outline-pane
-fully-expand-pane
-hide-body-pane
-hide-log-pane
-hide-pane
-hide-outline-pane
 spell-tab-hide
 
 Furthermore, the find commands are a good tool for using Leo without a mouse
@@ -3515,8 +3498,8 @@ move-past-close-extend-selection    = None
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
 select-all                          = Ctrl-a</t>
-<t tx="ekr.20060925060533.2">contract-pane       = Alt-Ctrl--
-expand-pane         = Alt-Ctrl-=
+<t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
+# expand-pane         = Alt-Ctrl-=
 focus-to-body       = Alt-d
 focus-to-tree       = Alt-t
 toggle-active-pane  = Ctrl-t
@@ -4134,7 +4117,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
+<t tx="ekr.20080510072134.2"># cycle-focus                       = None
 # cycle-all-focus                   = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
@@ -6288,7 +6271,7 @@ copy-text                           = None      # Ctrl-C conflicts with quick-co
 count-region                        = Alt-equal
 cut-node                            = Shift-Ctrl-X
 cut-text                            = None      # Ctrl-X (possible)
-cycle-focus                         = None
+# cycle-focus                         = None
 dabbrev-completion                  = Alt-Ctrl-slash
 dabbrev-expands                     = Alt-slash
 de-hoist                            = None
@@ -6653,10 +6636,10 @@ close-window                        = None
 contract-all                        = None
 contract-node                       = None
 contract-or-go-left                 = None
-contract-body-pane                  = None
-contract-log-pane                   = None
-contract-outline-pane               = None
-contract-pane                       = None
+# contract-body-pane                  = None
+# contract-log-pane                   = None
+# contract-outline-pane               = None
+# contract-pane                       = None
 contract-parent                     = None
 convert-all-blanks                  = None
 convert-all-tabs                    = None
@@ -6669,8 +6652,8 @@ count-region                        = None
 cut-node                            = None
 cut-text                            = None
 # cycle-all-focus                     = None
-cycle-focus                         = None
-cycle-editor-focus                  = None
+# cycle-focus                         = None
+# cycle-editor-focus                  = None
 dabbrev-completion                  = None
 dabbrev-expands                     = None
 debug                               = None
@@ -6716,10 +6699,10 @@ expand-and-go-right                 = None
 expand-next-level                   = None
 expand-node                         = None
 expand-or-go-right                  = None
-expand-body-pane                    = None
-expand-log-pane                     = None
-expand-outline-pane                 = None
-expand-pane                         = None
+# expand-body-pane                    = None
+# expand-log-pane                     = None
+# expand-outline-pane                 = None
+# expand-pane                         = None
 expand-prev-level                   = None
 # expand-region-abbrevs             = None
 expand-to-level-1                   = None
@@ -6779,10 +6762,10 @@ forward-sentence-extend-selection   = None
 forward-word                        = None
 forward-word-extend-selection       = None
 full-command                        = None
-fully-expand-body-pane              = None
-fully-expand-log-pane               = None
-fully-expand-outline-pane           = None
-fully-expand-pane                   = None
+# fully-expand-body-pane              = None
+# fully-expand-log-pane               = None
+# fully-expand-outline-pane           = None
+# fully-expand-pane                   = None
 gc-collect-garbage                  = None
 gc-dump-all-objects                 = None
 gc-dump-new-objects                 = None
@@ -6827,10 +6810,10 @@ help-for-command                    = None
 help-for-find-commands              = None
 help-for-minibuffer                 = None
 help-for-python                     = None
-hide-body-pane                      = None
-hide-log-pane                       = None
-hide-pane                           = None
-hide-outline-pane                   = None
+# hide-body-pane                      = None
+# hide-log-pane                       = None
+# hide-pane                           = None
+# hide-outline-pane                   = None
 spell-tab-hide                      = None
 hoist                               = None
 iconify-frame                       = None
@@ -10534,7 +10517,7 @@ scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
 scroll-up-page          ! tree = PageUp         
 
-cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
+# cycle-focus                       = None
 # cycle-all-focus                   = Ctrl-Shift-tab
 
 back-word                            ! text = Alt-LtArrow
@@ -10622,8 +10605,8 @@ toggle-find-wrap-around-option      = None
 
 ###
 
-contract-pane       = None
-expand-pane         = None
+# contract-pane       = None
+# expand-pane         = None
 focus-to-body       = Meta-d
 focus-to-tree       = Meta-t
 toggle-active-pane  = Ctrl-t
