@@ -780,7 +780,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
     dock_names = []
 
-
     def createDockWidget(self, closeable, moveable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         c = self.leo_c
@@ -3601,7 +3600,8 @@ class LeoQtLog(leoFrame.LeoLog):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
                 dock = dw.createDockWidget(
-                    closeable=False, moveable=True, height=200, name=tabName)
+                    closeable=True, moveable=True, height=200, name=tabName)
+                        # #1207: all plugins docks should be closeable.
                 dock.setWidget(contents)
                 area = QtCore.Qt.RightDockWidgetArea
                 dw.addDockWidget(area, dock)
