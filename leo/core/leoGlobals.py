@@ -4991,7 +4991,12 @@ def getGitVersion(directory=None):
             stderr=subprocess.DEVNULL,
             shell=True,
         )
+        if 'startup' in g.app.debug:
+            g.trace(s)
     except Exception:
+        if 'startup' in g.app.debug:
+            g.es_print('Exception in g.getGitVersion')
+            g.es_exception()
         return '', '', ''
         
     info = [g.toUnicode(z) for z in s.splitlines()]
