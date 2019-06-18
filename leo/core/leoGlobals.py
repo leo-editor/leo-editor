@@ -4994,11 +4994,13 @@ def getGitVersion(directory=None):
         )
         if trace:
             g.trace(s)
+    # #1209.
     except subprocess.CalledProcessError as e:
         s = e.output
         if trace:
             g.trace('return code', e.returncode)
             g.trace('value', repr(s))
+        s = g.toUnicode(s)
         if not isinstance(s, str):
             return '', '', ''
     except Exception:
