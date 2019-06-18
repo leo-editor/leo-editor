@@ -35,7 +35,7 @@ leoVersion.version:     Leo's version number.
 # 5.9:    May 5, 2019.
 # 6.0b1:  June 18, 2019.
 #@-<< version dates >>
-version = '6.0-b1'
+version = '6.0-b2-devel'
 static_date = 'June 18, 2019'
 
 #@@language python
