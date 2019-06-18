@@ -4984,6 +4984,7 @@ def getGitVersion(directory=None):
     '''Return a tuple (author, build, date) from the git log, or None.'''
     #
     # -n: Get only the last log.
+    trace = 'startup' in g.app.debug
     try:
         s = subprocess.check_output(
             'git log -n 1 --date=iso', 
@@ -4993,8 +4994,15 @@ def getGitVersion(directory=None):
         )
         if 'startup' in g.app.debug:
             g.trace(s)
+    except subprocess.CalledProcessError as e:
+        s = e.output
+        if trace:
+            g.trace('return code', e.returncode)
+            g.trace('value', repr(s))
+        if not isinstance(s, str):
+            return '', '', ''
     except Exception:
-        if 'startup' in g.app.debug:
+        if trace:
             g.es_print('Exception in g.getGitVersion')
             g.es_exception()
         return '', '', ''
