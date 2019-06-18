@@ -177,12 +177,12 @@
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
-<v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
+<v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
-<v t="ekr.20190506132427.1"><vh>Merge git *tag* into devel</vh></v>
-<v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
+<v t="ekr.20190618104609.1"><vh>Merge git *tag* into devel</vh></v>
+<v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
-<v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
+<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1846,44 +1846,12 @@ Create a git tag **last**
 git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180405171433.8">- Create a documentation file at SourceForge, directing people to GitHub.
-
-- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
-   This must be done *soon* after the release's actual commit.
-   There is a "Draft New Release" button at the top-right of the page.
-</t>
-<t tx="ekr.20180405171433.9">- Update version number on Leo's wikipedia site:
-  http://en.wikipedia.org/wiki/Leo_%28editor%29
-  - Edit with the 'Edit this page' *tab* (not a link)
-  - Update version number on web site.
-
-- Announce to SourceForge:  http://sourceforge.net/projects/leo/
-   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-
-- Announce to leo-editor: **Paste source-forge announcement**.
-
-- Announce to Python-announce-list using email:
-   mailto:python-announce-list@python.org
-   **Paste source-forge or leo-editor announcement**.
-
-  - Check it by visiting the archive:
-  https://mail.python.org/pipermail/python-announce-list/
-
-- Register Leo at https://pypi.python.org/pypi/leo
-
-- My blog: http://edreamleo.blogspot.com/
-  **Paste source-forge or leo-editor announcement** as text, not html.
-  
-- Email Matt Wilkie, maphew@gmail.com, announcing the release.
-  </t>
 <t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
 git push origin x.y-final-rel
 </t>
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112153.1">git checkout master
-git merge devel</t>
 <t tx="ekr.20181001112218.1"></t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
@@ -2341,7 +2309,38 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190506132427.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.</t>
+<t tx="ekr.20190618104430.1">From rel branch:
+    
+- git merge master
+- Fix any conflicts and push.
+- git checkout master
+- git merge devel</t>
+<t tx="ekr.20190618104609.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+
+git checkout devel
+git merge master (will update leoVersion.py, so tags are also updated)
+git push
+</t>
+<t tx="ekr.20190618104622.1">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+
+This must be done *soon* after the release's actual commit.
+There is a "Draft New Release" button at the top-right of the page.
+</t>
+<t tx="ekr.20190618104704.1">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
+
+- Announce to Python-announce-list using email:
+   python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+
+  - Check it by visiting the archive:
+  https://mail.python.org/pipermail/python-announce-list/
+
+- [Matt] Register Leo at https://pypi.python.org/pypi/leo
+
+- My blog: http://edreamleo.blogspot.com/
+  **Paste source-forge or leo-editor announcement** as text, not html.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
