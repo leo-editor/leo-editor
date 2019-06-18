@@ -4833,10 +4833,9 @@ False: show completions in Leo's Completions tab.
 
 **Note**: this option has effect only when using the qt or qttabs gui's.
 </t>
-<t tx="ekr.20110510071925.14590">True: use codewise completions.
-False: use leo-specific completions.
+<t tx="ekr.20110510071925.14590">This setting is no longer used!
 
-This setting is no longer used!</t>
+Instead, enable the codewisecompleter.py plugin.</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="ekr.20110611092035.16463"></t>
