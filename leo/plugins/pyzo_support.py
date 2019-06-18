@@ -7,7 +7,11 @@ pyzo_support.py: Allow access to pyzo features within Leo.
 
 This plugin will work only if pyzo can be imported successfully.
 '''
-# Work on this project started March 6, 2019.
+
+# Integrating pyzo into Leo is a very bad idea.
+# See https://groups.google.com/d/msg/leo-editor/fVGuU2XzqjU/hqdgJ3TxBAAJ
+# No further work is planned.
+
 #@+<< copyright >>
 #@+node:ekr.20190412042616.1: ** << copyright >>
 #@+at
