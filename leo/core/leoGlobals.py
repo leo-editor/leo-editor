@@ -4992,7 +4992,7 @@ def getGitVersion(directory=None):
             stderr=subprocess.DEVNULL,
             shell=True,
         )
-        if 'startup' in g.app.debug:
+        if trace:
             g.trace(s)
     except subprocess.CalledProcessError as e:
         s = e.output
