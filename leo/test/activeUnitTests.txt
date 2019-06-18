@@ -9729,7 +9729,7 @@ for s, find, change, count, result in plain_table:
     count2, result2 = fc.batchPlainReplace(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-print('pass')
+# print('pass')
 #@+node:ekr.20190603192140.1: *4* @test replace-all: plain search: ignore case
 fc = c.findCommands
 
