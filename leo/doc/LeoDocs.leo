@@ -30510,7 +30510,7 @@ Rob Keeney
 Виталије Милошевић (Vitalije Milosevitch)
 Lewis Neal
 Matt Wilkie
-ZoomQuiet</t>
+周琦 (ZoomQuiet)</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
