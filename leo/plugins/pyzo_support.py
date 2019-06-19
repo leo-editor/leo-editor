@@ -541,7 +541,7 @@ class PyzoController:
         pyzo_menu_map = pyzo_main_window.menuBar()._menumap
         #
         # Create a new *Leo* menu.
-        leo_pyzo_menu = c.frame.menu.createNewMenu('&Pyzo') ###, before='Run')
+        leo_pyzo_menu = c.frame.menu.createNewMenu('&Pyzo')
         c.frame.menu.setMenu('Pyzo', leo_pyzo_menu)
         #
         # Populate the menu with sub-menus containing *Pyzo* actions.

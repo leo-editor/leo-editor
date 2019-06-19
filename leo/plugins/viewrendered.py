@@ -767,7 +767,6 @@ if QtWidgets: # NOQA
             separate_dock = (
                 external_dock and not g.app.init_docks or
                 g.app.get_central_widget(c) == 'body'
-                ###c.config.getString('central-dock-widget') == 'body'
             )
             # g.trace('SEPARATE DOCK', separate_dock)
             #
