@@ -230,54 +230,58 @@ if QtWidgets:
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
             qt = QtCore.Qt
-            if event.key() == qt.Key_Tab:
-                line = str(self.document().lastBlock().text())[4:]
-                completer = Completer(self.interpreter.locals)
-                suggestion = completer.complete(line, 0)
-                if suggestion is not None:
-                    self.insertPlainText(suggestion[len(line):])
-                return
-            if event.key() == qt.Key_Down:
-                if self.historyIndex == len(self.history):
-                    self.historyIndex -= 1
-                try:
-                    if self.historyIndex > -1:
-                        self.historyIndex -= 1
-                        self.recallHistory()
-                    else:
-                        self.clearCurrentBlock()
-                except Exception:
-                    pass
-                return
-            if event.key() == qt.Key_Up:
-                try:
-                    if len(self.history) - 1 > self.historyIndex:
-                        self.historyIndex += 1
-                        self.recallHistory()
-                    else:
-                        self.historyIndex = len(self.history)
-                except Exception:
-                    pass
-                return
-            if event.key() == qt.Key_Home:
-                # set cursor to position 4 in current block. 4 because that's where
-                # the marker stops
-                blockLength = len(self.document().lastBlock().text()[4:])
-                lineLength  = len(self.document().toPlainText())
-                position = lineLength - blockLength
-                textCursor  = self.textCursor()
-                textCursor.setPosition(position)
-                self.setTextCursor(textCursor)
-                return
-            if event.key() in [qt.Key_Left, qt.Key_Backspace]:
-                # don't allow deletion of marker
-                if self.textCursor().positionInBlock() == 4:
+            try:
+                if event.key() == qt.Key_Tab:
+                    line = str(self.document().lastBlock().text())[4:]
+                    completer = Completer(self.interpreter.locals)
+                    suggestion = completer.complete(line, 0)
+                    if suggestion is not None:
+                        self.insertPlainText(suggestion[len(line):])
                     return
-            if event.key() in [qt.Key_Return, qt.Key_Enter]:
-                self.doEnter(event)
-                return
-            # allow all other key events
-            super(PyInterp, self).keyPressEvent(event)
+                if event.key() == qt.Key_Down:
+                    if self.historyIndex == len(self.history):
+                        self.historyIndex -= 1
+                    try:
+                        if self.historyIndex > -1:
+                            self.historyIndex -= 1
+                            self.recallHistory()
+                        else:
+                            self.clearCurrentBlock()
+                    except Exception:
+                        pass
+                    return
+                if event.key() == qt.Key_Up:
+                    try:
+                        if len(self.history) - 1 > self.historyIndex:
+                            self.historyIndex += 1
+                            self.recallHistory()
+                        else:
+                            self.historyIndex = len(self.history)
+                    except Exception:
+                        pass
+                    return
+                if event.key() == qt.Key_Home:
+                    # set cursor to position 4 in current block. 4 because that's where
+                    # the marker stops
+                    blockLength = len(self.document().lastBlock().text()[4:])
+                    lineLength  = len(self.document().toPlainText())
+                    position = lineLength - blockLength
+                    textCursor  = self.textCursor()
+                    textCursor.setPosition(position)
+                    self.setTextCursor(textCursor)
+                    return
+                if event.key() in [qt.Key_Left, qt.Key_Backspace]:
+                    # don't allow deletion of marker
+                    if self.textCursor().positionInBlock() == 4:
+                        return
+                if event.key() in [qt.Key_Return, qt.Key_Enter]:
+                    self.doEnter(event)
+                    return
+                # allow all other key events
+                super(PyInterp, self).keyPressEvent(event)
+            except Exception:
+                g.es_exception()
+
             
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter
         def doEnter(self, event):
