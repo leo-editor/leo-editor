@@ -99,7 +99,7 @@ if QtWidgets:
             #@-others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
-            super(PyInterp, self).__init__(parent)
+            super().__init__(parent)
             #
             # this widget swallows stdout + stderr while focused,
             # but resets them upon losing focus
@@ -405,11 +405,6 @@ if QtWidgets:
             sys.stdout = g.user_dict['old_stdout']
             sys.stderr = g.user_dict['old_stderr']
         #@-others
-
-
-
-
-
 
 
 
