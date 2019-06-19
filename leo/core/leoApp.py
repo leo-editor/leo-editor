@@ -3097,7 +3097,8 @@ class LoadManager:
     def isValidPython(self):
         if sys.platform == 'cli':
             return True
-        minimum_python_version = '2.6'
+        # #1215.
+        minimum_python_version = '3.6'
         message = """\
     Leo requires Python %s or higher.
     You may download Python from
@@ -3110,7 +3111,7 @@ class LoadManager:
                 print(message)
                 try:
                     # g.app.gui does not exist yet.
-                    import Tkinter as Tk
+                    import tkinter as Tk
                     #@+<< define emergency dialog class >>
                     #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
                     class EmergencyDialog:
@@ -3130,8 +3131,11 @@ class LoadManager:
                             self.root = None # Created in createTopFrame.
                             self.top = None # The toplevel Tk widget.
                             self.createTopFrame()
-                            buttons = tuple({"text": "OK", "command": self.okButton, "default": True})
-                                # Singleton tuple.
+                            buttons = [{
+                                "text": "OK",
+                                "command": self.okButton,
+                                "default": True,
+                            }]
                             self.createButtons(buttons)
                             self.top.bind("<Key>", self.onKey)
                         #@+node:ekr.20120219154958.10494: *6* createButtons
@@ -3193,7 +3197,7 @@ class LoadManager:
                         message=message)
                     d.run()
                 except Exception:
-                    pass
+                    g.es_exception()
             return ok
         except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")
