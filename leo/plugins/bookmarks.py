@@ -241,9 +241,14 @@ def init():
 def onCreate(tag, keys):
 
     c = keys.get('c')
-
+    if not c:
+        return
     BookMarkDisplayProvider(c)
-
+    if not g.app.dock:
+        return
+    # #1214: Create a dock or an area in the Log pane.
+    bmd = BookMarkDisplay(c)
+    c.frame.log.createTab("Bookmarks", widget=bmd.w)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
@@ -273,13 +278,17 @@ def cmd_open_node(event):
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 @g.command('bookmarks-show')
 def cmd_show(event):
+    
+    if g.app.dock:
+       return
     c = event.get('c')
     bmd = BookMarkDisplay(c)
+    if g.app.dock:
+       return
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
-
 #@+node:tbrown.20131226095537.26309: ** bookmarks-switch
 @g.command('bookmarks-switch')
 def cmd_switch(event):
@@ -460,6 +469,7 @@ def cmd_mark_as_target(event):
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
+#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline
 @g.command('bookmarks-use-other-outline')
 def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
@@ -470,9 +480,9 @@ def cmd_use_other_outline(event):
         g.es("Use bookmarks-mark-as-target first")
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
-
+    if g.app.dock:
+       return
     bmd = BookMarkDisplay(c, g._bookmarks_target_v)
-
     splitter = c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
@@ -1159,10 +1169,6 @@ class BookMarkDisplayProvider:
     #@+node:tbrown.20110712121053.19747: *3* __init__
     def __init__(self, c):
         self.c = c
-
-        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # Second hasattr temporary until free_layout merges with trunk
-
         splitter = c.free_layout.get_top_splitter()
         # Careful: we could be unit testing.
         if splitter:
