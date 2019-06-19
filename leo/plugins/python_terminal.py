@@ -314,8 +314,9 @@ if QtWidgets:
             # Always end the input.
             self.append('')
             #
-            # Handle special lines.
-            last_line = lines and lines[-1]
+            last_line = lines[-1] if lines else ''
+                # Fix #1212: seg-faults in python_terminal.py.
+                # Looks like a Python bug somewhere.
             if self.customCommands(last_line):
                 return
             # Handle the history and indent.
