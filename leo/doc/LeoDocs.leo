@@ -30436,6 +30436,9 @@ https://github.com/leo-editor/leo-editor/issues/1206
 
 Docks created by plugins can't be closed
 https://github.com/leo-editor/leo-editor/issues/1207
+
+free-layout plugin with docks
+https://github.com/leo-editor/leo-editor/issues/1216
 </t>
 <t tx="ekr.20190617012909.1">@command vs @item
 https://github.com/leo-editor/leo-editor/issues/1117

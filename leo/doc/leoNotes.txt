@@ -447,6 +447,8 @@ The version of codewise completer that works with Tk is now on trunk.
 Attempting to complete 'foo->' is useless, but 'foo->ba' will work (provided you
 don't have 2000 functions/methods starting with 'ba'. 'foo->' portion is ignored
 in completion search.
+.. @+node:ekr.20190618031237.1: ** How to create ~/.leo/tags
+ctags --recurse -f c:/users/edreamleo/.leo/tags
 .. @+node:ekr.20161022035203.1: ** Test code: do not delete
 @language python
 # This tree contains clones. None are contained in any external file.
