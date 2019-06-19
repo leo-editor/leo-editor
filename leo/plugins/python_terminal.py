@@ -186,8 +186,6 @@ if QtWidgets:
         #@+node:peckj.20150428142729.18: *3* PyInterp.customCommands
         def customCommands(self, command):
 
-            # pylint: disable=anomalous-backslash-in-string
-
             if command == '!hist': # display history
                 self.append('') # move down one line
                 # vars that are in the command are prefixed with ____CC and deleted
@@ -204,7 +202,7 @@ if QtWidgets:
                 self.insert_marker()
                 return True
 
-            if re.match('!hist\(\d+\)', command): # recall command from history
+            if re.match(r'!hist\(\d+\)', command): # recall command from history
                 backup = self.interpreterLocals.copy()
                 history = self.history[:]
                 history.reverse()
@@ -217,13 +215,13 @@ if QtWidgets:
                 self.updateInterpreterLocals(backup)
                 return True
 
-            if re.match('(quit|exit)\(\)', command): # prevent quitting!
+            if re.match(r'(quit|exit)\(\)', command): # prevent quitting!
                 self.append('')
                 self.write('Cannot quit() from an embedded console.\n')
                 self.insert_marker()
                 return True
 
-            if re.match('!clear', command): # clear the screen
+            if re.match(r'!clear', command): # clear the screen
                 self.clear()
                 self.insert_marker()
                 return True
