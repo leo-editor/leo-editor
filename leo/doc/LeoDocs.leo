@@ -30477,6 +30477,9 @@ https://github.com/leo-editor/leo-editor/issues/1189
 open-outline buglet
 https://github.com/leo-editor/leo-editor/issues/1200
 
+Never crash during startup
+https://github.com/leo-editor/leo-editor/issues/1215
+
 Fixed misalignment in LeoQtLog.put</t>
 <t tx="ekr.20190617014858.1">Huge speed up of replace-all
 https://github.com/leo-editor/leo-editor/issues/1152
