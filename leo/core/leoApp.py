@@ -1080,8 +1080,13 @@ class LeoApp:
             from leo.core.leoQt import Qt
             assert Qt
         except Exception:
-            g.es_exception()
-            print('can not import Qt')
+            message='Can not Import Qt'
+            print(message)
+            try:
+                d = g.EmergencyDialog(title=message, message=message)
+                d.run()
+            except Exception:
+                g.es_exception()
             sys.exit(1)
         try:
             import leo.plugins.qt_gui as qt_gui
@@ -3093,7 +3098,7 @@ class LoadManager:
             sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
         if not sys.stderr:
             sys.stderr = sys.__stderr__ = LeoStdOut('stderr')
-    #@+node:ekr.20120219154958.10491: *4* LM.isValidPython & emergency (Tk) dialog class
+    #@+node:ekr.20120219154958.10491: *4* LM.isValidPython
     def isValidPython(self):
         if sys.platform == 'cli':
             return True
@@ -3111,88 +3116,7 @@ class LoadManager:
                 print(message)
                 try:
                     # g.app.gui does not exist yet.
-                    import tkinter as Tk
-                    #@+<< define emergency dialog class >>
-                    #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
-                    class EmergencyDialog:
-                        """A class that creates an Tkinter dialog with a single OK button."""
-                        #@+others
-                        #@+node:ekr.20120219154958.10493: *6* __init__ (emergencyDialog)
-                        def __init__(self, title, message):
-                            """Constructor for the leoTkinterDialog class."""
-                            self.answer = None # Value returned from run()
-                            self.title = title
-                            self.message = message
-                            self.buttonsFrame = None # Frame to hold typical dialog buttons.
-                            self.defaultButtonCommand = None
-                                # Command to call when user closes the window
-                                # by clicking the close box.
-                            self.frame = None # The outermost frame.
-                            self.root = None # Created in createTopFrame.
-                            self.top = None # The toplevel Tk widget.
-                            self.createTopFrame()
-                            buttons = [{
-                                "text": "OK",
-                                "command": self.okButton,
-                                "default": True,
-                            }]
-                            self.createButtons(buttons)
-                            self.top.bind("<Key>", self.onKey)
-                        #@+node:ekr.20120219154958.10494: *6* createButtons
-                        def createButtons(self, buttons):
-                            """Create a row of buttons.
-
-                            buttons is a list of dictionaries containing
-                            the properties of each button."""
-                            assert(self.frame)
-                            self.buttonsFrame = f = Tk.Frame(self.top)
-                            f.pack(side="top", padx=30)
-                            # Buttons is a list of dictionaries, with an empty dictionary
-                            # at the end if there is only one entry.
-                            buttonList = []
-                            for d in buttons:
-                                text = d.get("text", "<missing button name>")
-                                isDefault = d.get("default", False)
-                                underline = d.get("underline", 0)
-                                command = d.get("command", None)
-                                bd = 4 if isDefault else 2
-                                b = Tk.Button(f, width=6, text=text, bd=bd,
-                                    underline=underline, command=command)
-                                b.pack(side="left", padx=5, pady=10)
-                                buttonList.append(b)
-                                if isDefault and command:
-                                    self.defaultButtonCommand = command
-                            return buttonList
-                        #@+node:ekr.20120219154958.10495: *6* createTopFrame
-                        def createTopFrame(self):
-                            """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-                            self.root = Tk.Tk()
-                            self.top = Tk.Toplevel(self.root)
-                            self.top.title(self.title)
-                            self.root.withdraw()
-                            self.frame = Tk.Frame(self.top)
-                            self.frame.pack(side="top", expand=1, fill="both")
-                            label = Tk.Label(self.frame, text=message, bg='white')
-                            label.pack(pady=10)
-                        #@+node:ekr.20120219154958.10496: *6* okButton
-                        def okButton(self):
-                            """Do default click action in ok button."""
-                            self.top.destroy()
-                            self.top = None
-                        #@+node:ekr.20120219154958.10497: *6* onKey
-                        def onKey(self, event):
-                            """Handle Key events in askOk dialogs."""
-                            self.okButton()
-                        #@+node:ekr.20120219154958.10498: *6* run
-                        def run(self):
-                            """Run the modal emergency dialog."""
-                            self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
-                            self.top.lift()
-                            self.top.grab_set() # Make the dialog a modal dialog.
-                            self.root.wait_window(self.top)
-                        #@-others
-                    #@-<< define emergency dialog class >>
-                    d = EmergencyDialog(
+                    d = g.EmergencyDialog(
                         title='Python Version Error',
                         message=message)
                     d.run()

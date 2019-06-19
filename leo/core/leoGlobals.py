@@ -317,6 +317,58 @@ inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
+#@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
+class BindingInfo:
+    '''
+    A class representing any kind of key binding line.
+
+    This includes other information besides just the KeyStroke.
+    '''
+    # Important: The startup code uses this class,
+    # so it is convenient to define it in leoGlobals.py.
+    #@+others
+    #@+node:ekr.20120129040823.10254: *4* bi.__init__
+    def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
+
+        if not g.isStrokeOrNone(stroke):
+            g.trace('***** (BindingInfo) oops', repr(stroke))
+        self.kind = kind
+        self.commandName = commandName
+        self.func = func
+        self.nextMode = nextMode
+        self.pane = pane
+        self.stroke = stroke
+            # The *caller* must canonicalize the shortcut.
+    #@+node:ekr.20120203153754.10031: *4* bi.__hash__
+    def __hash__(self):
+        return self.stroke.__hash__() if self.stroke else 0
+    #@+node:ekr.20120125045244.10188: *4* bi.__repr__ & ___str_& dump
+    def __repr__(self):
+        return self.dump()
+
+    __str__ = __repr__
+
+    def dump(self):
+        result = ['BindingInfo %17s' % (self.kind)]
+        # Print all existing ivars.
+        table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
+        for ivar in table:
+            if hasattr(self, ivar):
+                val = getattr(self, ivar)
+                if val not in (None, 'none', 'None', ''):
+                    if ivar == 'func':
+                        # pylint: disable=no-member
+                        val = val.__name__
+                    s = '%s: %r' % (ivar, val)
+                    result.append(s)
+        return '[%s]' % ' '.join(result).strip()
+    #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
+    def isModeBinding(self):
+        return self.kind.startswith('*mode')
+    #@-others
+
+def isBindingInfo(obj):
+    return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 #@+at
 # From The Python Cookbook: 
@@ -374,6 +426,87 @@ class Bunch:
         return key in self.__dict__
 
 bunch = Bunch
+#@+node:ekr.20120219154958.10492: *3* class g.EmergencyDialog
+class EmergencyDialog:
+    """A class that creates an tkinter dialog with a single OK button."""
+    #@+others
+    #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
+    def __init__(self, title, message):
+        """Constructor for the leoTkinterDialog class."""
+        self.answer = None # Value returned from run()
+        self.title = title
+        self.message = message
+        self.buttonsFrame = None # Frame to hold typical dialog buttons.
+        self.defaultButtonCommand = None
+            # Command to call when user closes the window
+            # by clicking the close box.
+        self.frame = None # The outermost frame.
+        self.root = None # Created in createTopFrame.
+        self.top = None # The toplevel Tk widget.
+        self.createTopFrame()
+        buttons = [{
+            "text": "OK",
+            "command": self.okButton,
+            "default": True,
+        }]
+        self.createButtons(buttons)
+        self.top.bind("<Key>", self.onKey)
+    #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
+    def createButtons(self, buttons):
+        """Create a row of buttons.
+
+        buttons is a list of dictionaries containing
+        the properties of each button.
+        """
+        import tkinter as Tk
+        assert(self.frame)
+        self.buttonsFrame = f = Tk.Frame(self.top)
+        f.pack(side="top", padx=30)
+        # Buttons is a list of dictionaries, with an empty dictionary
+        # at the end if there is only one entry.
+        buttonList = []
+        for d in buttons:
+            text = d.get("text", "<missing button name>")
+            isDefault = d.get("default", False)
+            underline = d.get("underline", 0)
+            command = d.get("command", None)
+            bd = 4 if isDefault else 2
+            b = Tk.Button(f, width=6, text=text, bd=bd,
+                underline=underline, command=command)
+            b.pack(side="left", padx=5, pady=10)
+            buttonList.append(b)
+            if isDefault and command:
+                self.defaultButtonCommand = command
+        return buttonList
+    #@+node:ekr.20120219154958.10495: *4* emergencyDialog.createTopFrame
+    def createTopFrame(self):
+        """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+        import tkinter as Tk
+        self.root = Tk.Tk()
+        self.top = Tk.Toplevel(self.root)
+        self.top.title(self.title)
+        self.root.withdraw()
+        self.frame = Tk.Frame(self.top)
+        self.frame.pack(side="top", expand=1, fill="both")
+        label = Tk.Label(self.frame, text=self.message, bg='white')
+        label.pack(pady=10)
+    #@+node:ekr.20120219154958.10496: *4* emergencyDialog.okButton
+    def okButton(self):
+        """Do default click action in ok button."""
+        self.top.destroy()
+        self.top = None
+    #@+node:ekr.20120219154958.10497: *4* emergencyDialog.onKey
+    def onKey(self, event):
+        """Handle Key events in askOk dialogs."""
+        self.okButton()
+    #@+node:ekr.20120219154958.10498: *4* emergencyDialog.run
+    def run(self):
+        """Run the modal emergency dialog."""
+        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+        self.top.lift()
+        self.top.grab_set() # Make the dialog a modal dialog.
+        self.root.wait_window(self.top)
+    #@-others
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
@@ -1267,160 +1400,6 @@ class MatchBrackets:
         else:
             g.es("unmatched", repr(ch))
     #@-others
-#@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
-#@@nobeautify
-
-class NullObject:
-    """An object that does nothing, and does it very well."""
-    def __init__(self, *args, **keys): pass
-    def __call__(self, *args, **keys): return self
-    def __repr__(self): return "NullObject"
-    def __str__(self): return "NullObject"
-    # Attribute access...
-    def __delattr__(self, attr): return self
-    def __getattr__(self, attr): return self
-    def __setattr__(self, attr, val): return self
-    # Container methods..
-    def __bool__(self): return False
-    def __contains__(self, item): return False
-    def __getitem__(self, key): raise KeyError
-    def __iter__(self): return self
-    def __len__(self): return 0
-    # Iteration methods: 
-    def __next__(self): raise StopIteration
-    
-tracing_tags = {}
-    # Keys are id's, values are tags.
-    
-tracing_signatures = {}
-    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
-
-class TracingNullObject:
-    '''Tracing NullObject.'''
-    def __init__(self, tag, *args, **kwargs):
-        tracing_tags [id(self)] = tag
-        if 0:
-            suppress = ('tree item',)
-            if tag not in suppress:
-                print('='*10, 'NullObject.__init__:', id(self), tag)
-    def __call__(self, *args, **kwargs):
-        if 0:
-            suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
-            for z in suppress:
-                if z not in repr(args):
-                    print('%30s' % 'NullObject.__call__:', args, kwargs)
-        return self
-    def __repr__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
-    def __str__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
-    #
-    # Attribute access...
-    def __delattr__(self, attr):
-        return self
-    def __getattr__(self, attr):
-        null_object_print_attr(id(self), attr)
-        return self
-    def __setattr__(self, attr, val):
-        g.null_object_print(id(self), '__setattr__')
-        return self
-    #
-    # All other methods...
-    def __bool__(self):
-        if 0: # To do: print only once.
-            suppress = ('getShortcut','on_idle', 'setItemText')
-            callers = g.callers(2)
-            if not callers.endswith(suppress):
-                g.null_object_print(id(self), '__bool__')
-        return False
-    def __contains__(self, item):
-        g.null_object_print(id(self), '__contains__')
-        return False
-    def __getitem__(self, key):
-        g.null_object_print(id(self), '__getitem__')
-        # pylint doesn't like trailing return None.
-        # return None
-    def __iter__(self):
-        g.null_object_print(id(self), '__iter__')
-        return self
-    def __len__(self):
-        # g.null_object_print(id(self), '__len__')
-        return 0
-    def __next__(self):
-        g.null_object_print(id(self), '__next__')
-        raise StopIteration
-    def __setitem__(self, key, val):
-        g.null_object_print(id(self), '__setitem__')
-        # pylint doesn't like trailing return None.
-        # return None
-#@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
-def null_object_print_attr(id_, attr):
-    suppress = True
-    if suppress:
-        #@+<< define suppression lists >>
-        #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
-        suppress_callers = (
-            'drawNode', 'drawTopTree', 'drawTree',
-            'contractItem', 'getCurrentItem',
-            'declutter_node',
-            'finishCreate',
-            'initAfterLoad',
-            'show_tips',
-            'writeWaitingLog',
-            # 'set_focus', 'show_tips',
-        )
-        suppress_attrs = (
-            # Leo...
-            'c.frame.body.wrapper',
-            'c.frame.getIconBar.add',
-            'c.frame.log.createTab',
-            'c.frame.log.enable',
-            'c.frame.log.finishCreate',
-            'c.frame.menu.createMenuBar',
-            'c.frame.menu.finishCreate',
-            # 'c.frame.menu.getMenu',
-            'currentItem',
-            'dw.leo_master.windowTitle',
-            # Pyzo...
-            'pyzo.keyMapper.connect',
-            'pyzo.keyMapper.keyMappingChanged',
-            'pyzo.keyMapper.setShortcut',
-        )
-        #@-<< define suppression lists >>
-    else:
-        # Print everything.
-        suppress_callers = []
-        suppress_attrs = []
-   
-    tag = tracing_tags.get(id_, "<NO TAG>")
-    callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
-    in_callers = any([z in callers for z in suppress_callers])
-    s = '%s.%s' % (tag, attr)
-    if suppress:
-        # Filter traces.
-        if not in_callers and s not in suppress_attrs:
-            g.pr('%40s %s' % (s, callers))
-    else:
-        # Print each signature once.  No need to filter!
-        signature = '%s.%s:%s' % (tag, attr, callers)
-        if signature not in tracing_signatures:
-            tracing_signatures [signature] = True
-            g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_, kind):
-    tag = tracing_tags.get(id_, "<NO TAG>")
-    callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
-    s = '%s.%s' % (kind, tag)
-    signature = '%s:%s' % (s, callers)
-    if 1:
-        # Always print:
-        g.pr('%40s %s' % (s, callers))
-    elif signature not in tracing_signatures:
-        # Print each signature once.
-        tracing_signatures [signature] = True
-        g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
     #@+<< docstring for PosList >>
@@ -1934,58 +1913,6 @@ class SherlockTracer:
         import sys
         sys.settrace(None)
     #@-others
-#@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
-class BindingInfo:
-    '''
-    A class representing any kind of key binding line.
-
-    This includes other information besides just the KeyStroke.
-    '''
-    # Important: The startup code uses this class,
-    # so it is convenient to define it in leoGlobals.py.
-    #@+others
-    #@+node:ekr.20120129040823.10254: *4* bi.__init__
-    def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
-
-        if not g.isStrokeOrNone(stroke):
-            g.trace('***** (BindingInfo) oops', repr(stroke))
-        self.kind = kind
-        self.commandName = commandName
-        self.func = func
-        self.nextMode = nextMode
-        self.pane = pane
-        self.stroke = stroke
-            # The *caller* must canonicalize the shortcut.
-    #@+node:ekr.20120203153754.10031: *4* bi.__hash__
-    def __hash__(self):
-        return self.stroke.__hash__() if self.stroke else 0
-    #@+node:ekr.20120125045244.10188: *4* bi.__repr__ & ___str_& dump
-    def __repr__(self):
-        return self.dump()
-
-    __str__ = __repr__
-
-    def dump(self):
-        result = ['BindingInfo %17s' % (self.kind)]
-        # Print all existing ivars.
-        table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
-        for ivar in table:
-            if hasattr(self, ivar):
-                val = getattr(self, ivar)
-                if val not in (None, 'none', 'None', ''):
-                    if ivar == 'func':
-                        # pylint: disable=no-member
-                        val = val.__name__
-                    s = '%s: %r' % (ivar, val)
-                    result.append(s)
-        return '[%s]' % ' '.join(result).strip()
-    #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
-    def isModeBinding(self):
-        return self.kind.startswith('*mode')
-    #@-others
-
-def isBindingInfo(obj):
-    return isinstance(obj, BindingInfo)
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
 class Tracer:
     '''A "debugger" that computes a call graph.
@@ -2106,6 +2033,160 @@ def startTracer(limit=0, trace=False, verbose=False):
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
+#@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
+#@@nobeautify
+
+class NullObject:
+    """An object that does nothing, and does it very well."""
+    def __init__(self, *args, **keys): pass
+    def __call__(self, *args, **keys): return self
+    def __repr__(self): return "NullObject"
+    def __str__(self): return "NullObject"
+    # Attribute access...
+    def __delattr__(self, attr): return self
+    def __getattr__(self, attr): return self
+    def __setattr__(self, attr, val): return self
+    # Container methods..
+    def __bool__(self): return False
+    def __contains__(self, item): return False
+    def __getitem__(self, key): raise KeyError
+    def __iter__(self): return self
+    def __len__(self): return 0
+    # Iteration methods: 
+    def __next__(self): raise StopIteration
+    
+tracing_tags = {}
+    # Keys are id's, values are tags.
+    
+tracing_signatures = {}
+    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
+
+class TracingNullObject:
+    '''Tracing NullObject.'''
+    def __init__(self, tag, *args, **kwargs):
+        tracing_tags [id(self)] = tag
+        if 0:
+            suppress = ('tree item',)
+            if tag not in suppress:
+                print('='*10, 'NullObject.__init__:', id(self), tag)
+    def __call__(self, *args, **kwargs):
+        if 0:
+            suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
+            for z in suppress:
+                if z not in repr(args):
+                    print('%30s' % 'NullObject.__call__:', args, kwargs)
+        return self
+    def __repr__(self):
+        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+    def __str__(self):
+        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+    #
+    # Attribute access...
+    def __delattr__(self, attr):
+        return self
+    def __getattr__(self, attr):
+        null_object_print_attr(id(self), attr)
+        return self
+    def __setattr__(self, attr, val):
+        g.null_object_print(id(self), '__setattr__')
+        return self
+    #
+    # All other methods...
+    def __bool__(self):
+        if 0: # To do: print only once.
+            suppress = ('getShortcut','on_idle', 'setItemText')
+            callers = g.callers(2)
+            if not callers.endswith(suppress):
+                g.null_object_print(id(self), '__bool__')
+        return False
+    def __contains__(self, item):
+        g.null_object_print(id(self), '__contains__')
+        return False
+    def __getitem__(self, key):
+        g.null_object_print(id(self), '__getitem__')
+        # pylint doesn't like trailing return None.
+        # return None
+    def __iter__(self):
+        g.null_object_print(id(self), '__iter__')
+        return self
+    def __len__(self):
+        # g.null_object_print(id(self), '__len__')
+        return 0
+    def __next__(self):
+        g.null_object_print(id(self), '__next__')
+        raise StopIteration
+    def __setitem__(self, key, val):
+        g.null_object_print(id(self), '__setitem__')
+        # pylint doesn't like trailing return None.
+        # return None
+#@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
+def null_object_print_attr(id_, attr):
+    suppress = True
+    if suppress:
+        #@+<< define suppression lists >>
+        #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
+        suppress_callers = (
+            'drawNode', 'drawTopTree', 'drawTree',
+            'contractItem', 'getCurrentItem',
+            'declutter_node',
+            'finishCreate',
+            'initAfterLoad',
+            'show_tips',
+            'writeWaitingLog',
+            # 'set_focus', 'show_tips',
+        )
+        suppress_attrs = (
+            # Leo...
+            'c.frame.body.wrapper',
+            'c.frame.getIconBar.add',
+            'c.frame.log.createTab',
+            'c.frame.log.enable',
+            'c.frame.log.finishCreate',
+            'c.frame.menu.createMenuBar',
+            'c.frame.menu.finishCreate',
+            # 'c.frame.menu.getMenu',
+            'currentItem',
+            'dw.leo_master.windowTitle',
+            # Pyzo...
+            'pyzo.keyMapper.connect',
+            'pyzo.keyMapper.keyMappingChanged',
+            'pyzo.keyMapper.setShortcut',
+        )
+        #@-<< define suppression lists >>
+    else:
+        # Print everything.
+        suppress_callers = []
+        suppress_attrs = []
+   
+    tag = tracing_tags.get(id_, "<NO TAG>")
+    callers = g.callers(3).split(',')
+    callers = ','.join(callers[:-1])
+    in_callers = any([z in callers for z in suppress_callers])
+    s = '%s.%s' % (tag, attr)
+    if suppress:
+        # Filter traces.
+        if not in_callers and s not in suppress_attrs:
+            g.pr('%40s %s' % (s, callers))
+    else:
+        # Print each signature once.  No need to filter!
+        signature = '%s.%s:%s' % (tag, attr, callers)
+        if signature not in tracing_signatures:
+            tracing_signatures [signature] = True
+            g.pr('%40s %s' % (s, callers))
+#@+node:ekr.20190330072832.1: *4* g.null_object_print
+def null_object_print(id_, kind):
+    tag = tracing_tags.get(id_, "<NO TAG>")
+    callers = g.callers(3).split(',')
+    callers = ','.join(callers[:-1])
+    s = '%s.%s' % (kind, tag)
+    signature = '%s:%s' % (s, callers)
+    if 1:
+        # Always print:
+        g.pr('%40s %s' % (s, callers))
+    elif signature not in tracing_signatures:
+        # Print each signature once.
+        tracing_signatures [signature] = True
+        g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20120129181245.10220: *3* class g.TypedDict/OfLists & isTypedDict/OfLists
 class TypedDict:
     '''A class containing a name and enforcing type checking.'''
