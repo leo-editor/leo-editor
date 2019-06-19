@@ -30506,12 +30506,15 @@ https://github.com/leo-editor/leo-editor/issues/1175</t>
 <t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
 
 Terry Brown
+Ross Burnett
 Josef Dalcolmo
 Chris George
 Bob Hossley
+Seth Johnson
 Rob Keeney
 Виталије Милошевић (Vitalije Milosevitch)
 Lewis Neal
+Viktor Ransmayr
 Matt Wilkie
 周琦 (ZoomQuiet)</t>
 <t tx="matt.20180826201749.1">**Problem**
