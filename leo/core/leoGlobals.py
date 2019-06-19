@@ -13,6 +13,8 @@ Important: This module imports no other Leo module.
 # pylint: disable=deprecated-method
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
+minimum_python_version = '3.6'
+    # #1215.
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< global switches >>

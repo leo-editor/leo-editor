@@ -1080,6 +1080,7 @@ class LeoApp:
             from leo.core.leoQt import Qt
             assert Qt
         except Exception:
+            # #1215: Raise an emergency dialog.
             message='Can not Import Qt'
             print(message)
             try:
@@ -3102,16 +3103,14 @@ class LoadManager:
     def isValidPython(self):
         if sys.platform == 'cli':
             return True
-        # #1215.
-        minimum_python_version = '3.6'
         message = """\
     Leo requires Python %s or higher.
     You may download Python from
     http://python.org/download/
-    """ % minimum_python_version
+    """ % g.minimum_python_version
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-            ok = g.CheckVersion(version, minimum_python_version)
+            ok = g.CheckVersion(version, g.minimum_python_version)
             if not ok:
                 print(message)
                 try:
