@@ -11864,14 +11864,15 @@ Leo's scripting environment takes full advantage of outline structure:
 [[Category:Free software programmed in Python]]
 [[Category:Outliners]]
 </t>
-<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
+<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.6 or above.
+To install Python, see http://python.org.
 
 **PyQt**: `PyQt`_ provides Leo's widgets:
 
 * Download PyQt4 from http://www.riverbankcomputing.com/software/pyqt/download.
 * Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
 
-**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later.
+**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.6 or later.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab. There is an executable installer for Windows users.
 </t>
@@ -18036,7 +18037,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
 Leo's minimal dependencies are:
 
-* `Python`_ 2.6 or later, including all Python 3.x versions.
+* `Python`_ 3.6 or later.
 * `PyQt4`_ or `PyQt5`_.
 
 The following packages are optional, but recommended:
@@ -22458,7 +22459,7 @@ Leo has a binary installer for Windows, available at the `SourceForge download p
 </t>
 <t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
 
-You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python26\\Lib\\site-packages.
+You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python36\\Lib\\site-packages.
 
 Next, you will find it convenient to create Windows files associations for .leo files, as described in the next section.
 </t>
@@ -26101,27 +26102,13 @@ the headline of any node.
 
 Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically.
 
-1. `Install Python`_ first, if necessary. If you are new to Python, install Python 3, not Python 2.
+1. `Install Python`_ first, if necessary. Make sure to install Python 3, not Python 2.
 
 2. Check whether pip has been installed using the terminal window command below. If there's an error `Install pip`_::
 
     pip --version
 
 3. Install Leo and all required packages:
-
-**Python 3**::
-
-    pip install leo
-
-**Python 2 with Anaconda**::
-
-    conda install pyqt
-    pip install leo
-
-**Python 2 without Anaconda**
-
-* Install `PyQt`_
-* Install Leo::
 
     pip install leo
 </t>
@@ -30515,18 +30502,26 @@ Support colorizing of Lua long brackets
 https://github.com/leo-editor/leo-editor/issues/1175</t>
 <t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
 
-Terry Brown
+Terry Brown: Born in New Zealand, living in Duluth, Minnesota for 22 years.
 Ross Burnett
-Josef Dalcolmo, born in Italy, living and working in Germany.
-Chris George
+Josef Dalcolmo: Born in Italy, living and working in Germany.
+Chris George: Notch HIll, British Columbia, Canada
 Bob Hossley
 Seth Johnson
-Rob Keeney, Suwanee, Georgia, USA
+Rob Keeney: Suwanee, Georgia, USA
 Виталије Милошевић (Vitalije Milosevitch)
 Lewis Neal, Sydney, Australia
-Viktor Ransmayr, Munich, Germany. 
+Viktor Ransmayr: Munich, Germany. 
 Matt Wilkie
-周琦 (ZoomQuiet) China.</t>
+周琦 (ZoomQuiet): China.
+
+The following people have made numerous contributions to Leo through the years.
+
+Kent Tenny.
+Ville M. Vainio.
+
+EKR lives in Madison, Wisconsin, USA
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
