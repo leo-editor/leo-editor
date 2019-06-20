@@ -30517,14 +30517,14 @@ https://github.com/leo-editor/leo-editor/issues/1175</t>
 
 Terry Brown
 Ross Burnett
-Josef Dalcolmo
+Josef Dalcolmo, born in Italy, living and working in Germany.
 Chris George
 Bob Hossley
 Seth Johnson
 Rob Keeney, Suwanee, Georgia, USA
 Виталије Милошевић (Vitalije Milosevitch)
 Lewis Neal, Sydney, Australia
-Viktor Ransmayr, Germany
+Viktor Ransmayr, Munich, Germany. 
 Matt Wilkie
 周琦 (ZoomQuiet) China.</t>
 <t tx="matt.20180826201749.1">**Problem**
