@@ -53,6 +53,7 @@ import leo.core.leoGlobals as g
 import re
 import sys
 import code
+
 from rlcompleter import Completer
 
 from leo.core.leoQt import QtWidgets,QtCore
@@ -74,29 +75,29 @@ if QtWidgets:
             hBox.addWidget(self.textEdit)
             hBox.setContentsMargins(0,0,0,0)
             hBox.setSpacing(0)
+#@+node:peckj.20150428142729.6: ** class InteractiveInterpreter (code.InteractiveInterpreter)
+class InteractiveInterpreter(code.InteractiveInterpreter):
+    #@+others
+    #@+node:peckj.20150428142729.7: *3* InteractiveInterpreter.__init__
+    def __init__(self, locals, c):
+        '''Ctor for InteractiveInterpreter class.'''
+        self.c = c
+        # inject g, c, p
+        loc = locals
+        loc['c'] = self.c
+        loc['g'] = g
+        loc['p'] = self.c.p
+        super().__init__(loc)
+    #@+node:peckj.20150428142729.8: *3* InteractiveInterpreter.runIt
+    def runIt(self, command):
+
+        code.InteractiveInterpreter.runsource(self, command)
+    #@-others
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
     
     class PyInterp(QtWidgets.QTextEdit):
         #@+others
-        #@+node:peckj.20150428142729.6: *3* class InteractiveInterpreter (code.InteractiveInterpreter)
-        class InteractiveInterpreter(code.InteractiveInterpreter):
-            #@+others
-            #@+node:peckj.20150428142729.7: *4* InteractiveInterpreter.__init__
-            def __init__(self, locals, c):
-                '''Ctor for InteractiveInterpreter class.'''
-                self.c = c
-                # inject g, c, p
-                loc = locals
-                loc['c'] = self.c
-                loc['g'] = g
-                loc['p'] = self.c.p
-                super().__init__(loc)
-            #@+node:peckj.20150428142729.8: *4* InteractiveInterpreter.runIt
-            def runIt(self, command):
-
-                code.InteractiveInterpreter.runsource(self, command)
-            #@-others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
             super().__init__(parent)
@@ -147,6 +148,7 @@ if QtWidgets:
             self.insertPlainText(line + ' '*self.indent)
         #@+node:peckj.20150428142729.13: *3* PyInterp.initInterpreter
         def initInterpreter(self, interpreterLocals=None):
+
             if interpreterLocals:
                 # when we pass in locals, we don't want it to be named "self"
                 # so we rename it with the name of the class that did the passing
@@ -156,7 +158,8 @@ if QtWidgets:
                 self.interpreterLocals[selfName] = interpreterLocalVars
             else:
                 self.interpreterLocals = interpreterLocals
-            self.interpreter = self.InteractiveInterpreter(self.interpreterLocals, self.c)
+
+            self.interpreter = InteractiveInterpreter(self.interpreterLocals, self.c)
         #@+node:peckj.20150428142729.14: *3* PyInterp.updateInterpreterLocals
         def updateInterpreterLocals(self, newLocals):
             className = newLocals.__class__.__name__
@@ -403,9 +406,6 @@ if QtWidgets:
             sys.stdout = g.user_dict['old_stdout']
             sys.stderr = g.user_dict['old_stderr']
         #@-others
-
-
-
 
 #@+node:peckj.20150428142633.4: ** init
 def init ():
