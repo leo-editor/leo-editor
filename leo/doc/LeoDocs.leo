@@ -2311,6 +2311,7 @@
 </v>
 <v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
+<v t="ekr.20190620113133.1"><vh>*** How to modify themes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30521,6 +30522,36 @@ Kent Tenny.
 Ville M. Vainio.
 
 EKR lives in Madison, Wisconsin, USA
+</t>
+<t tx="ekr.20190620113133.1">@language rest
+@wrap
+
+Here is how I use themes.
+
+In the directory leo-editor/leo/themes are a number of theme files. These
+can be loaded using the File, Open Outline menu option in Leo. Opening an
+outline automatically loads it. Keep opening outlines until you find one
+you like.
+
+Then close all of the theme files.
+
+Copy the theme file you chose from leo-editor/leo/themes to ~/.leo/themes
+(you will have to create the themes folder here) and rename it something
+like this: Original file is BreezeDarkTheme.leo rename to
+BreezeDarkThemeLocal.leo
+
+Now open your myLeoSettings.leo file.
+
+Add the following to the headline of a new node as a child of your
+@settings node:
+@string theme-name = BreezeDarkThemeLocal
+
+Now save the file and restart Leo.
+
+You should now be using the theme of your choice. From here you need to
+open the local theme file with Leo. The font sizing and colors are under
+Theme Settings in the tree.
+
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
