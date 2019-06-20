@@ -297,7 +297,7 @@ if QtWidgets:
             def compute_indent(line):
                 '''Return the indentation of a line.'''
                 indent = len(line) - len(line.lstrip())
-                if line.endswith((':','(')):
+                if line.endswith(':'):
                     indent += 4
                 return indent
             #@+node:ekr.20190619183908.1: *5* function: compile_lines
@@ -315,7 +315,6 @@ if QtWidgets:
             def compile_and_run_lines(lines):
                 '''Compile and run code lines.  Return 1 if there are errors.'''
                 assert lines
-                ### g.printObj(lines, tag='compile_and_run')
                 the_code = compile_lines(lines)
                 if the_code:
                     return run_code(the_code)
@@ -357,23 +356,20 @@ if QtWidgets:
             # Always end the log line.
             self.append('')
             #
-            # Compute the last line.
+            # Clean the lines and compute the last line.
             last_line = lines[-1].rstrip() if lines else ''
-            #
-            # Clean the lines.
             lines = [z.rstrip() + '\n' for z in lines if z.strip()]
             if self.customCommands(last_line):
                 return
             #
-            # Handle the history and indent.
+            # Handle the history and set self.indent for insert_marker.
             if last_line.strip():
                 self.history.insert(0, last_line)
                 self.indent = compute_indent(last_line)
             #
-            # Just return if the last line if it is a non-blank continued line.
+            # Check for a continued line.
             if self.indent > 0 and last_line:
                 self.insert_marker()
-                    # Uses self.indent
                 return
             #
             # Execute lines in groups, delimited by indentation.
@@ -388,6 +384,7 @@ if QtWidgets:
                 exec_lines = [line]
                 if not ok:
                     break
+            # Tail group.
             if ok and exec_lines:
                 compile_and_run_lines(exec_lines)
             self.indent = 0
