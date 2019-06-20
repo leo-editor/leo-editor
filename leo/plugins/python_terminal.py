@@ -3,11 +3,12 @@
 #@@language python
 #@@tabwidth -4
 
-# this code from http://stackoverflow.com/questions/12431555/enabling-code-completion-in-an-embedded-python-interpreter
-# with modifications from Jake Peck
+# This code from http://stackoverflow.com/questions/12431555
+# with modifications from Jake Peck and EKR.
 
-# to do:
-  # styling
+use_rlcompleter = False
+    # A workaround for #1212: segfaults at startup when importing this file.
+    # True: enable tab completion, at the risk of segfaults.
 
 #@+<< docstring >>
 #@+node:peckj.20150428142633.2: ** << docstring >>
@@ -54,7 +55,10 @@ import re
 import sys
 import code
 
-from rlcompleter import Completer
+if use_rlcompleter:
+    from rlcompleter import Completer
+else:
+    Completer = None
 
 from leo.core.leoQt import QtWidgets,QtCore
 #@-<< imports >>
@@ -236,7 +240,8 @@ if QtWidgets:
         def keyPressEvent(self, event):
             qt = QtCore.Qt
             try:
-                if event.key() == qt.Key_Tab:
+                # #1212: Disable this by default.
+                if use_rlcompleter and event.key() == qt.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
                     completer = Completer(self.interpreter.locals)
                     suggestion = completer.complete(line, 0)
