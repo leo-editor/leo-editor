@@ -30506,7 +30506,7 @@ https://github.com/leo-editor/leo-editor/issues/1175</t>
 Terry Brown: Born in New Zealand, living in Duluth, Minnesota for 22 years.
 Ross Burnett
 Josef Dalcolmo: Born in Italy, living and working in Germany.
-Chris George: Notch HIll, British Columbia, Canada.
+Chris George: Notch Hill, British Columbia, Canada.
 Bob Hossley
 Seth Johnson
 Rob Keeney: Suwanee, Georgia, USA.
