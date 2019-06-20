@@ -30521,12 +30521,12 @@ Josef Dalcolmo
 Chris George
 Bob Hossley
 Seth Johnson
-Rob Keeney
+Rob Keeney, Suwanee, Georgia, USA
 Виталије Милошевић (Vitalije Milosevitch)
-Lewis Neal
-Viktor Ransmayr
+Lewis Neal, Sydney, Australia
+Viktor Ransmayr, Germany
 Matt Wilkie
-周琦 (ZoomQuiet)</t>
+周琦 (ZoomQuiet) China.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
