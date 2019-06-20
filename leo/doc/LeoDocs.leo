@@ -30509,7 +30509,7 @@ Chris George: Notch HIll, British Columbia, Canada
 Bob Hossley
 Seth Johnson
 Rob Keeney: Suwanee, Georgia, USA
-Виталије Милошевић (Vitalije Milosevitch)
+Виталије Милошевић (Vitalije Milosevitch): Serbia.
 Lewis Neal, Sydney, Australia
 Viktor Ransmayr: Munich, Germany. 
 Matt Wilkie
