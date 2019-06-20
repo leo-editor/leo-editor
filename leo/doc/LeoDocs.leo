@@ -30516,9 +30516,9 @@ Viktor Ransmayr: Munich, Germany.
 Matt Wilkie
 周琦 (ZoomQuiet): China.
 
-The following people have made numerous contributions to Leo through the years.
+The following people have made numerous contributions to Leo throughout the years:
 
-Kent Tenny.
+Kent Tenny: Ashland Wisconsin, USA.
 Ville M. Vainio.
 
 EKR lives in Madison, Wisconsin, USA
