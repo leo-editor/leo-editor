@@ -30422,6 +30422,9 @@ https://github.com/leo-editor/leo-editor/issues/1190
 Allow the user to choose central widget
 https://github.com/leo-editor/leo-editor/issues/1192
 
+Allow Render dock.
+https://github.com/leo-editor/leo-editor/issues/1193
+
 Phantom dock widget
 https://github.com/leo-editor/leo-editor/issues/1196
 
@@ -30500,7 +30503,11 @@ The pylint command generates clickable log messages.
 https://github.com/leo-editor/leo-editor/issues/1173
   
 The pylint command honors @nopylint.
-https://github.com/leo-editor/leo-editor/issues/1178</t>
+https://github.com/leo-editor/leo-editor/issues/1178
+
+Improved python_terminal plugin.
+*Important*: this plugin segfaults when Leo starts up on some machines.
+https://github.com/leo-editor/leo-editor/issues/1212</t>
 <t tx="ekr.20190617015847.1">Disallow nested @&lt;file&gt; nodes: a failed experiment
 https://github.com/leo-editor/leo-editor/issues/1134
 
