@@ -2440,20 +2440,20 @@ selection-background-color: @dark-base1;
 font-family: @font-family-tree;
 font-size: @font-size-tree;
 }</t>
-<t tx="chris.20190619152603.15">QLineEdit#status1 {
-  background: @dark-base4;
-  border-color: @dark-base5;
-  color: @dark-base2;
-  border-width: 1px;
-  border-style: solid;
+<t tx="chris.20190619152603.15">/* Text color and background color are set in the text color settings. */
+
+QLineEdit#status1 {
+border-color: @dark-base5;
+color: @dark-base2;
+border-width: 1px;
+border-style: solid;
 }
 
 QLineEdit#status2 {
-  background: @dark-base4;
-  border-color: @dark-base5;
-  color: @dark-base2;
-  border-width: 1px;
-  border-style: solid;
+border-color: @dark-base5;
+color: @dark-base2;
+border-width: 1px;
+border-style: solid;
 }
 
 
@@ -2690,7 +2690,6 @@ QMenu::icon
 QMenu::item
 {
 border-width: 2px;
-padding: 4px;
 border-style: solid;
 border-color: @dark-base3;
 border-radius: 5px;
@@ -2701,7 +2700,6 @@ stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
 QMenu::item:selected
 {
 border-width: 1px;
-padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
@@ -2859,9 +2857,7 @@ border-radius: 5px;
 <t tx="chris.20190621145935.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based on Breeze Dark for KDE Plasma and the Breeze Dark Qt stylesheet by Colin Duquesnoy.
 
-The status area styling is currently broken. Investigations are in progress. Stay tuned.
 
-The body pop-up menu has some issues. Investigations are in progress. Stay tuned.
 
 </t>
 </tnodes>
