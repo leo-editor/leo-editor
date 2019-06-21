@@ -15,6 +15,12 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="ekr.20190621161940.1"><vh>Colors: Status area</vh>
+<v t="ekr.20190621161940.2"><vh>@color status-bg = @dark-base4</vh></v>
+<v t="ekr.20190621161940.3"><vh>@color status-fg = @dark-base1</vh></v>
+<v t="ekr.20190621161940.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20190621161940.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
+</v>
 <v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
 <v t="chris.20180313181652.115"><vh>Theme description settings</vh>
@@ -758,14 +764,16 @@ QTreeView QLineEdit {
   font-style: normal;
 }</t>
 <t tx="chris.20180313181652.131">QLineEdit#status1 {
-  background: @dark-base3;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base3; */
   border-color: @dark-base4;
   border-width: 1px;
   border-style: solid;
 }
 
 QLineEdit#status2 {
-  background: @dark-base3;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base3; */
   border-color: @dark-base4;
   border-width: 1px;
   border-style: solid;
@@ -2665,5 +2673,10 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
+<t tx="ekr.20190621161940.1"></t>
+<t tx="ekr.20190621161940.2"></t>
+<t tx="ekr.20190621161940.3"></t>
+<t tx="ekr.20190621161940.4"></t>
+<t tx="ekr.20190621161940.5"></t>
 </tnodes>
 </leo_file>
