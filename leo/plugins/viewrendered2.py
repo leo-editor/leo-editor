@@ -247,10 +247,7 @@ try:
 except ImportError:
     pygments = None
 import os
-if g.isPython3:
-    from io import StringIO
-else:
-    from StringIO import StringIO
+from io import StringIO
 import sys
 # import traceback
 

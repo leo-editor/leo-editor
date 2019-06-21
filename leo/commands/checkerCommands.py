@@ -7,6 +7,8 @@
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import leo.core.leoGlobals as g
 try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
     import flake8
 except Exception: # May not be ImportError.
     flake8 = None
@@ -217,6 +219,8 @@ class Flake8Command:
     def check_all(self, paths):
         '''Run flake8 on all paths.'''
         try:
+            # pylint: disable=import-error
+                # We can't assume the user has this.
             from flake8 import engine, main
         except Exception:
             return

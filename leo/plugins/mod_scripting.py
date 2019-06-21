@@ -499,6 +499,8 @@ class ScriptingController:
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule'] # Essential.
+                # pylint: disable=import-error
+                    # This *will* exist.
                 import leo.core.leoScriptModule as leoScriptModule
                 assert leoScriptModule # for pyflakes.
             else:

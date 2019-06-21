@@ -77,6 +77,7 @@ except ImportError:
 from leo.core.leoQt import isQt5, Qt, QtWidgets
 
 # pylint: disable=no-name-in-module
+# pylint: disable= import-error
 if isQt5:
     from PyQt5.QtCore import QTimer
     try:

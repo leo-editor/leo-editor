@@ -10,6 +10,8 @@ import re
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
     import enchant
 except Exception: # May throw WinError(!)
     enchant = None

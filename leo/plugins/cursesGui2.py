@@ -53,6 +53,8 @@ npyscreen = g.importExtension(
     verbose=True, # Issue a warning if the import fails.
 )
 if npyscreen:
+    # pylint: disable=import-error
+        # These imports *will* work, because we are using g.importExtension.
     import npyscreen.utilNotify as utilNotify
     assert utilNotify
     from npyscreen.wgwidget import  EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP

@@ -33,6 +33,8 @@ import tempfile
 import urllib.request as urllib
 
 try:
+    # pylint: disable=import-error
+        # These are optional.
     import pydot
     import dot_parser
     assert dot_parser

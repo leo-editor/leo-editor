@@ -66,7 +66,7 @@ import os
 import sys
 
 import urllib.parse as urlparse
-import urllib.request.urlopen as urlopen
+from urllib.request import urlopen
 from formatter import AbstractFormatter, DumbWriter
 import html.parser as HTMLParser
 #@-<< imports >>
