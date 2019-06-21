@@ -91,6 +91,8 @@
 <v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base5</vh></v>
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base4</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
+<v t="chris.20190621145932.1"><vh>@color status-bg = @dark-base3</vh></v>
+<v t="chris.20190621145935.1"><vh>@color status-fg = @dark-base0</vh></v>
 </v>
 <v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
@@ -2853,6 +2855,8 @@ border-radius: 5px;
 <t tx="chris.20190620151916.1"></t>
 <t tx="chris.20190620151919.1"></t>
 <t tx="chris.20190620151923.1"></t>
+<t tx="chris.20190621145932.1"></t>
+<t tx="chris.20190621145935.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based on Breeze Dark for KDE Plasma and the Breeze Dark Qt stylesheet by Colin Duquesnoy.
 
 The status area styling is currently broken. Investigations are in progress. Stay tuned.
