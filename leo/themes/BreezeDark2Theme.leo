@@ -15,6 +15,12 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="ekr.20190621160703.1"><vh>Colors: Status area</vh>
+<v t="ekr.20190621160703.2"><vh>@color status-bg = @dark-base4</vh></v>
+<v t="ekr.20190621160703.3"><vh>@color status-fg = @dark-base1</vh></v>
+<v t="ekr.20190621160703.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20190621160703.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
+</v>
 <v t="chris.20180313181652.2"><vh>@theme Breeze Dark 2</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
 <v t="chris.20180313181652.115"><vh>Theme description settings</vh>
@@ -2441,7 +2447,8 @@ font-family: @font-family-tree;
 font-size: @font-size-tree;
 }</t>
 <t tx="chris.20190619152603.15">QLineEdit#status1 {
-  background: @dark-base4;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base4; */
   border-color: @dark-base5;
   color: @dark-base2;
   border-width: 1px;
@@ -2449,7 +2456,8 @@ font-size: @font-size-tree;
 }
 
 QLineEdit#status2 {
-  background: @dark-base4;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base4; */
   border-color: @dark-base5;
   color: @dark-base2;
   border-width: 1px;
@@ -2864,5 +2872,10 @@ The status area styling is currently broken. Investigations are in progress. Sta
 The body pop-up menu has some issues. Investigations are in progress. Stay tuned.
 
 </t>
+<t tx="ekr.20190621160703.1"></t>
+<t tx="ekr.20190621160703.2"></t>
+<t tx="ekr.20190621160703.3"></t>
+<t tx="ekr.20190621160703.4"></t>
+<t tx="ekr.20190621160703.5"></t>
 </tnodes>
 </leo_file>

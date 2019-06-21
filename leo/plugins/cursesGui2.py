@@ -33,13 +33,10 @@ import logging.handlers
 import re
 import sys
 try:
-    from tkinter import Tk # Python 3
+    from tkinter import Tk
 except ImportError:
-    try:
-        from Tkinter import Tk # Python 2
-    except ImportError:
-        print('cursesGui.py: Tk required for clipboard handling.')
-        raise
+    print('cursesGui.py: Tk required for clipboard handling.')
+    Tk = None
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
@@ -1587,6 +1584,8 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
+        if not Tk:
+            return ''
         root = Tk()
         root.withdraw()
         try:
@@ -1598,6 +1597,8 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
+        if not Tk:
+            return
         root = Tk()
         root.withdraw()
         root.clipboard_clear()
