@@ -939,13 +939,15 @@ QSplitter::handle:hover {
 </t>
 <t tx="ekr.20180318145515.824">/* The status area */
 QLineEdit#status1 {
-  background: @dark-base03;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
   border-color: @dark-base02;
   border-width: 1px;
   border-style: solid;
 }
 QLineEdit#status2 {
-  background: @dark-base03;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
   border-color: @dark-base02;
   border-width: 1px;
   border-style: solid;

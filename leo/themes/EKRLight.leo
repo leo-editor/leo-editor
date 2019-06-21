@@ -347,13 +347,15 @@ QScrollBar::add-line, QScrollBar::sub-line {
 </t>
 <t tx="ekr.20180309185230.115">/* The status area */
 QLineEdit#status1 {
-  background: @LeoBlue;
+  /* at-color status-bg overrides this! */
+  /* background: @LeoBlue; */
   border-color: @LeoBlue;
   border-width: 1px;
   border-style: solid;
 }
 QLineEdit#status2 {
-  background: @LeoBlue;
+  /* at-color status-bg overrides this! */
+  /* background: @LeoBlue; */
   border-color: @LeoBlue;
   border-width: 1px;
   border-style: solid;
