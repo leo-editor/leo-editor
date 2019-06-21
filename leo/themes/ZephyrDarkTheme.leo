@@ -15,12 +15,6 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="ekr.20190621162518.1"><vh>Colors: Status area</vh>
-<v t="ekr.20190621162518.2"><vh>@color status-bg = @dark-base3</vh></v>
-<v t="ekr.20190621162518.3"><vh>@color status-fg = @dark-base1</vh></v>
-<v t="ekr.20190621162518.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
-<v t="ekr.20190621162518.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
-</v>
 <v t="chris.20180313181652.2"><vh>@theme Zephyr Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
 <v t="chris.20180313181652.115"><vh>Theme description settings</vh>
@@ -39,7 +33,7 @@
 <v t="chris.20180313181652.10"><vh>@color dark-base5 = #2C211D</vh></v>
 <v t="chris.20180313181652.11"><vh>@color dark-base6 = #D9A648</vh></v>
 <v t="chris.20180313181652.12"><vh>@color dark-base7 = #1B5E20</vh></v>
-<v t="chris.20180313181652.13"><vh>@color dark-base8 = #D9A648</vh></v>
+<v t="chris.20180313181652.13"><vh>@color dark-base8 = #8D6E63</vh></v>
 <v t="chris.20190619135732.1"><vh>@color dark-base9 = #6D4C41</vh></v>
 </v>
 <v t="chris.20180313181652.15"><vh>Colors: Logical colors</vh>
@@ -97,6 +91,8 @@
 <v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base5</vh></v>
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base4</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
+<v t="chris.20190621143531.1"><vh>@color status-bg = @dark-base3</vh></v>
+<v t="chris.20190621143635.1"><vh>@color status-fg = @dark-base0</vh></v>
 </v>
 <v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
@@ -159,7 +155,7 @@
 <v t="chris.20190619152603.3"><vh>Body &amp; Text</vh></v>
 <v t="chris.20190620105125.1"><vh>Icon Bar</vh></v>
 <v t="chris.20190619152603.4"><vh>Minibuffer</vh></v>
-<v t="chris.20190619152603.5"><vh>Active WIdget Highlighting</vh></v>
+<v t="chris.20190619152603.5"><vh>Active Widget Highlighting</vh></v>
 <v t="chris.20190619152603.6"><vh>Buttons</vh></v>
 <v t="chris.20190619152603.7"><vh>Docks</vh></v>
 <v t="chris.20190620120545.1"><vh>Find Widget</vh></v>
@@ -2152,7 +2148,9 @@ text-decoration: @bookmarks_current_decoration;
 QListWidget#nodetags-listWidget
 {
 background-color: @dark-base5;
-}</t>
+}
+
+</t>
 <t tx="chris.20190619152603.11">QAbstractScrollArea
 {
 border-radius: 0.2ex;
@@ -2355,7 +2353,7 @@ font-size: @font-size-tabs;
 }
 
 QTabBar::tab {
-color: @dark-base5;
+color: @dark-base0;
 border-width: 1px;
 padding: 5px;
 border-style: solid;
@@ -2387,7 +2385,7 @@ stop:0 @dark-base5, stop: 0.2 @dark-base9, stop:1 @dark-base1)
 }
 
 QTabBar::tab:selected {
-color: @dark-base0;
+color: @dark-base2;
 font-weight: bold;
 border-width: 1px;
 padding: 5px;
@@ -2467,7 +2465,7 @@ padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
-color: @dark-base5;
+color: @dark-base2;
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
 stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
 }
@@ -2493,61 +2491,40 @@ selection-background-color: @dark-base1;
 font-family: @font-family-tree;
 font-size: @font-size-tree;
 }</t>
-<t tx="chris.20190619152603.15">QLineEdit#status1
-{
-  /* at-color status-bg overrides this! */
-  /* background: @dark-base3; */
-  border-color: @dark-base1;
-  color: @dark-base2;
-  border-width: 1px;
-  border-style: solid;
-}
+<t tx="chris.20190619152603.15">/* The background color and the text color are both set in ZephyrDarkThemeLocal.leo#@settings--&gt;@theme Zephyr Dark--&gt;Settings for Leo Zephyr Dark--&gt;Colors...--&gt;Colors: Text */
 
-QLineEdit#status2
-{
-  /* at-color status-bg overrides this! */
-  /* background: @dark-base3; */
-  border-color: @dark-base1;
-  color: @dark-base2;
-  border-width: 1px;
-  border-style: solid;
-}
 
-QStatusBar
+QLineEdit#status1
 {
-background: @dark-base3;
 border-color: @dark-base1;
 color: @dark-base2;
 border-width: 1px;
 border-style: solid;
 }
 
-
-
-
-/*
-QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @dark-base3;
-    color:      @dark-base0;
+QLineEdit#status2
+{
+border-color: @dark-base1;
+color: @dark-base2;
+border-width: 1px;
+border-style: solid;
 }
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @dark-base8;
-    color:      @dark-base0;
-}
-*/</t>
+</t>
 <t tx="chris.20190619152603.2">*
 {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5);
+background: @dark-base3;
 font: 14px @dark-base1 @font-family;
 }
 
 /*
 One style to rule them all. This applies to ALL objects in Leo as sensible defaults until I get around to styling the individual bits.
-*/</t>
+*/
+
+LeoTabbedTopLevel
+{
+background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5);
+}</t>
 <t tx="chris.20190619152603.3">/* The body pane */
 QTextEdit#richTextEdit
 {
@@ -2758,12 +2735,14 @@ QMenu
     color: @dark-base0;
     margin: 0.2ex;
     font-size: @font-size-menu;
+    padding: 4px;
 }
 
-QMenu::icon
+/* QMenu::icon
 {
     margin: 0.5ex;
 }
+*/
 
 QMenu::item
 {
@@ -2936,17 +2915,12 @@ border-radius: 5px;
 }
 
 </t>
+<t tx="chris.20190621143531.1"></t>
+<t tx="chris.20190621143635.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based on the Breeze Dark Theme for Leo and supporting material from Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy.
 
-The status area styling is currently broken. Investigations are in progress. Stay tuned.
-
-The body pop-up menu has some issues. Investigations are in progress. Stay tuned.
+The body and dock widget pop-up menus have some issues. Investigations are in progress. Stay tuned.
 
 </t>
-<t tx="ekr.20190621162518.1"></t>
-<t tx="ekr.20190621162518.2"></t>
-<t tx="ekr.20190621162518.3"></t>
-<t tx="ekr.20190621162518.4"></t>
-<t tx="ekr.20190621162518.5"></t>
 </tnodes>
 </leo_file>
