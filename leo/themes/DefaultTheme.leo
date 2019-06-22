@@ -188,7 +188,6 @@
 </v>
 <v t="chris.20180322171328.16"><vh>Rendering pane</vh></v>
 <v t="chris.20180322171328.17"><vh>Splitter</vh></v>
-<v t="chris.20180322171328.18"><vh>Vim mode borders</vh></v>
 <v t="chris.20180322171328.19"><vh>Status areas</vh></v>
 </v>
 </v>
@@ -2677,20 +2676,6 @@ QSplitter::handle {
 
 QSplitter::handle:hover {
     background-color:   @splitter-hover-bg;
-}
-</t>
-<t tx="chris.20180322171328.18">/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
 }
 </t>
 <t tx="chris.20180322171328.19">/* Status areas. */

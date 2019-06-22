@@ -2491,7 +2491,14 @@ selection-background-color: @dark-base1;
 font-family: @font-family-tree;
 font-size: @font-size-tree;
 }</t>
-<t tx="chris.20190619152603.15">/* The background color and the text color are both set in ZephyrDarkThemeLocal.leo#@settings--&gt;@theme Zephyr Dark--&gt;Settings for Leo Zephyr Dark--&gt;Colors...--&gt;Colors: Text */
+<t tx="chris.20190619152603.15">/* The background color and the text color are both set in
+
+ZephyrDarkThemeLocal.leo#at-settings--&gt;
+at-theme Zephyr Dark--&gt;
+Settings for Leo Zephyr Dark--&gt;
+Colors...--&gt;Colors: Text
+
+*/
 
 
 QLineEdit#status1

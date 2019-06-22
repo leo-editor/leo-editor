@@ -182,7 +182,6 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
-<v t="ekr.20190106105105.1"><vh>zz must be last</vh></v>
 </v>
 </v>
 </v>
@@ -1012,17 +1011,6 @@ QTreeView QLineEdit {
 #859900: real solarized green. Bad hue</t>
 <t tx="ekr.20181005084517.1">QFrame#gutter {
   /* background: gray; */
-}</t>
-<t tx="ekr.20190106105105.1">QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @solarized-blue;
-    color:      @solarized-white;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @solarized-red;
-    color:      @solarized-white;
 }</t>
 <t tx="ekr.20190531140643.1">QMainWindow::separator {
     /* The separator between QDockWidget's. */
