@@ -2403,9 +2403,9 @@ class VimCommands:
         # #1221: Use a style sheet based on new settings.
         if focus_flag:
             d = {
-                'normal': ('vim-normal-border', 'border: 3px solid white'),
-                'insert': ('vim-insert-border', 'border: 3px solid red'),
-                'visual': ('vim-visual-border', 'border: 3px solid yellow'),
+                'normal': ('vim-mode-normal-border', 'border: 3px solid white'),
+                'insert': ('vim-mode-insert-border', 'border: 3px solid red'),
+                'visual': ('vim-mode-visual-border', 'border: 3px solid yellow'),
             }
             data = d.get(state)
             if not data:
@@ -2413,7 +2413,7 @@ class VimCommands:
                 return
             setting, default_border = data
         else:
-            setting = 'vim-unfocused-border'
+            setting = 'vim-mode-unfocused-border'
             default_border = 'border: 3px dashed white'
         border = c.config.getString(setting) or default_border
         # g.trace(setting, border)

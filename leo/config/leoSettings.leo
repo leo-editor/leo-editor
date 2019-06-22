@@ -406,9 +406,10 @@
 <v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
 </v>
 <v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
-<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
-<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
-<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = border: 3px solid white</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = border: 3px solid red</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = border: 3px solid gray</vh></v>
+<v t="ekr.20190622093004.1"><vh>@string vim-mode-unfocused-border = border: 3px dashed white</vh></v>
 </v>
 </v>
 <v t="edward.20150615144141.1"><vh>Outline indicators</vh>
@@ -2278,12 +2279,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20190622023049.1"><vh>Found:vim-mode-*-border</vh>
-<v t="ekr.20140912075503.19367"></v>
-<v t="ekr.20140912075503.19366"></v>
-<v t="ekr.20140912075503.19368"></v>
+<v t="ekr.20190622023049.1"><vh>vim-mode-*-border</vh></v>
+<v t="ekr.20140912075503.19365"></v>
 <v t="ekr.20190106080417.1"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11775,6 +11773,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 # flattened, ignore-case, head, body
 
 # found 8 nodes</t>
+<t tx="ekr.20190622093004.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
