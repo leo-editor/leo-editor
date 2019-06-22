@@ -28,7 +28,6 @@ search.
 #@+<< ctagscompleter imports >>
 #@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>
 import os
-import re
 import leo.core.leoGlobals as g
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 if isQt5:
@@ -80,7 +79,7 @@ def read_tags_file():
         with open(tagsFileName, 'rb') as f:
             tags = g.toUnicode(f.read())
             lines = g.splitLines(tags)
-            g.trace('LINES', len(lines))
+            g.trace('%s line%s' % (len(lines), g.plural(len(lines))))
             return lines
     except Exception:
         g.es_exception()
@@ -163,19 +162,13 @@ class CtagsController:
         global tagLines
         #
         # Find all lines with the given prefix.
-        hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
-        # g.printObj(hits, tag='hits')
-        g.trace('HITS', len(hits))
+        if not prefix:
+            return []
+        hits = [z.split(None, 1) for z in tagLines if z.startswith(prefix)]
         desc = []
         for h in hits:
-            s = h[0]
-            m = re.findall(r'class:(\w+)', h[1])
-            if m:
-                s+= "\t" + m[0]
-            desc.append(s)
-        aList = sorted(list(set(desc)))
-        g.printObj(aList[:200], tag='result')
-        return aList
+            desc.append(h[0])
+        return sorted(list(set(desc)))
     #@+node:ekr.20110307092028.14159: *3* ctags.onKey
     def onKey (self,event,stroke):
 
@@ -190,7 +183,7 @@ class CtagsController:
             event.ignore() # Does work.
         else:
             self.complete(event)
-    #@+node:ekr.20110307092028.14157: *3* ctags.start
+    #@+node:ekr.20110307092028.14157: *3* ctags.start (ctags-complete)
     def start (self,event):
         '''Initialize.'''
         c = self.c
@@ -203,11 +196,6 @@ class CtagsController:
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body_widget)
         cpl.activated.connect(completion_callback)
-        ###
-            # self.popup = cpl.popup()
-            # self.popup_filter = PopupEventFilter(c,self.popup) # Required
-            # self.popup.installEventFilter(self.popup_filter)
-            # self.popup.setFocus()
         #
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
