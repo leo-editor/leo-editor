@@ -2279,9 +2279,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20190622023049.1"><vh>vim-mode-*-border</vh></v>
-<v t="ekr.20140912075503.19365"></v>
-<v t="ekr.20190106080417.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11731,9 +11728,6 @@ False: (Recommended) The VR dock splits the body dock.
 *Warning*: You may have to clear caches if you change this setting.
 
 The --init-docks command-line option is the easy way to do this.</t>
-<t tx="ekr.20190622023049.1">@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/1221.</t>
 <t tx="ekr.20190622093004.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
