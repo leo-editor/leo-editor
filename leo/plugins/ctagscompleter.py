@@ -27,33 +27,22 @@ search.
 #@-<< docstring >>
 #@+<< ctagscompleter imports >>
 #@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>
-import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
-if 1:
-    # pylint: disable=no-name-in-module,no-member
-    if isQt5:
-        QCompleter = QtWidgets.QCompleter
-        QStringListModel = QtCore.QStringListModel
-    else:
-        QCompleter = QtGui.QCompleter
-        QStringListModel = QtWidgets.QStringListModel
 import os
 import re
+import leo.core.leoGlobals as g
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+if isQt5:
+    QCompleter = QtWidgets.QCompleter
+    QStringListModel = QtCore.QStringListModel
+else:
+    QCompleter = QtGui.QCompleter
+    QStringListModel = QtWidgets.QStringListModel
 #@-<< ctagscompleter imports >>
 # Global variables
 controllers = {} # Keys are commanders, values are controllers.
 tagLines = []
     # The saved contents of the tags file.
-    # This is used only if keep_tag_lines is True
-keep_tag_lines = True
-    # True:  Read the tags file only once, keeping
-    #        the contents of the tags file in memory.
-    #        This might stress the garbage collector.
-    # False: Read the tags file each time it is needed,
-    #        in a separate process, and return the
-    #        results of running grep on the file.
-    #        This saves lots of memory, but reads the
-    #        tags file many times.
+
 #@+others
 #@+node:ekr.20110307092028.14155: ** Module level...
 #@+node:ville.20090317180704.11: *3* init
@@ -62,11 +51,10 @@ def init ():
     global tagLines
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        if keep_tag_lines:
-            tagLines = read_tags_file()
-            if not tagLines:
-                print('ctagscompleter: can not read ~/.leo/tags')
-                ok = False
+        tagLines = read_tags_file()
+        if not tagLines:
+            print('ctagscompleter: can not read ~/.leo/tags')
+            ok = False
         if ok:
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
@@ -82,12 +70,14 @@ def onCreate (tag, keys):
 #@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
 
-    '''Return the lines of ~/.leo/tags.
-    Return [] on error.'''
+    '''
+    Return the lines of ~/.leo/tags.
+    Return [] on error.
+    '''
 
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
-        return [] # EKR: 11/18/2009
+        return []
     assert os.path.isfile(tagsFileName)
 
     try:
@@ -170,20 +160,11 @@ class CtagsController:
         self.ev_filter.ctagscompleter_active = False
     #@+node:ville.20090321223959.2: *3* lookup
     def lookup(self,prefix):
-
         '''Return a list of all items starting with prefix.'''
-
         global tagLines
 
-        if keep_tag_lines:
-            # Use saved lines. Split at first whitespace.
-            hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
-        else:
-            # Open the file in a separate process, then use grep to match lines.
-            # This will be slower, but grep returns very few lines.
-            hits = (z.split(None) for z in os.popen('grep "^%s" ~/.leo/tags' % prefix))
-
-
+        # Split at first whitespace.
+        hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
         desc = []
         for h in hits:
             s = h[0]
@@ -192,7 +173,6 @@ class CtagsController:
             if m:
                 s+= "\t" + m[0]
             desc.append(s)
-
         aList = list(set(desc))
         aList.sort()
         return aList
