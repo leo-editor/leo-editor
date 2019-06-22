@@ -2344,7 +2344,8 @@ This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
 
-The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
+The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.
+</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.14">This option affects how Leo treats body text in @root trees.
@@ -3770,7 +3771,6 @@ viewrendered.py
 # bookmarks.py
 # bzr_qcommands.py
 # chapter_hoist.py
-# codewisecompleter.py
 # colorize_headlines.py
 # contextmenu.py
 # ctagscompleter.py
