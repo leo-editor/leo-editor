@@ -3215,6 +3215,43 @@ def open_bridge(self):
     c = bridge.openLeoFile(path)
     return c, g
 #@+node:ekr.20190609205751.1: ** Retired from Leo 6.0
+#@+node:ekr.20190622094635.1: *3* leoSettings.leo: class-based css
+/* ----- Minibuffer ----- */
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+
+/* ----- Status line ----- */
+
+QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
+    background-color:   @find-found-bg;
+    color:              @find-found-fg;
+}
+
+QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
+    background-color:   @find-not-found-bg;
+    color:              @find-not-found-fg;
+}
+
+/* Vim mode borders... */
+
+QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+  border: @vim-mode-normal-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+  border: @vim-mode-insert-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+  border: @vim-mode-visual-border;
+}
 #@+node:ekr.20190608104256.1: *3* Retired commands & menu items
 #@+node:ekr.20190608105206.1: *4* @menu &Show Or Hide Panes
 #@+node:ekr.20190608105206.2: *5* @item gui-&all-hide

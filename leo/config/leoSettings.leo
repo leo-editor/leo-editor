@@ -2282,6 +2282,7 @@
 <v t="ekr.20190622023049.1"><vh>vim-mode-*-border</vh></v>
 <v t="ekr.20140912075503.19365"></v>
 <v t="ekr.20190106080417.1"></v>
+<v t="ekr.20190622094730.1"><vh>Not used: minibuffer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11613,43 +11614,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 </t>
 <t tx="ekr.20181018113813.1"></t>
 <t tx="ekr.20181018113857.1"></t>
-<t tx="ekr.20190106080417.1">/* ----- Minibuffer ----- */
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
-
-/* ----- Status line ----- */
-
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
-    background-color:   @find-found-bg;
-    color:              @find-found-fg;
-}
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
-    background-color:   @find-not-found-bg;
-    color:              @find-not-found-fg;
-}
-
-/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
-}
-
+<t tx="ekr.20190106080417.1">
 /* ----- bookmarks.py ----- */
 
 #show_bookmarks QPushButton[style_class~='bookmark_children'] {
@@ -11774,6 +11739,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 
 # found 8 nodes</t>
 <t tx="ekr.20190622093004.1"></t>
+<t tx="ekr.20190622094730.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
