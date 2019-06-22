@@ -5083,6 +5083,8 @@ def getGitVersion(directory=None):
         if trace:
             g.trace('return code', e.returncode)
             g.trace('value', repr(s))
+            g.es_print('Exception in g.getGitVersion')
+            g.es_exception()
         s = g.toUnicode(s)
         if not isinstance(s, str):
             return '', '', ''
