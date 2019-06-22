@@ -2379,8 +2379,10 @@ class VimCommands:
         Set the border color of self.w, depending on state.
         Called from qtBody.onFocusColorHelper and self.show_status.
         '''
-        if not w: w = g.app.gui.get_focus()
-        if not w: return
+        if not w:
+            w = g.app.gui.get_focus()
+        if not w:
+            return
         w_name = self.widget_name(w)
         if w_name == 'richTextEdit':
             self.set_property(w, focus_flag=activeFlag in (None, True))
@@ -2396,7 +2398,33 @@ class VimCommands:
     #@+node:ekr.20140807070500.18161: *5* vc.set_property
     def set_property(self, w, focus_flag):
         '''Set the property of w, depending on focus and state.'''
-        selector = 'vim_%s' % (self.state) if focus_flag else 'vim_unfocused'
+        c, state = self.c, self.state
+        #
+        # #1221: Use a style sheet based on new settings.
+        if focus_flag:
+            d = {
+                'normal': ('vim-normal-border', 'border: 3px solid white'),
+                'insert': ('vim-insert-border', 'border: 3px solid red'),
+                'visual': ('vim-visual-border', 'border: 3px solid yellow'),
+            }
+            data = d.get(state)
+            if not data:
+                g.trace('bad vim mode', repr(state))
+                return
+            setting, default_border = data
+        else:
+            setting = 'vim-unfocused-border'
+            default_border = 'border: 3px dashed white'
+        border = c.config.getString(setting) or default_border
+        # g.trace(setting, border)
+        w.setStyleSheet(border)
+        return
+        #
+        # Set the css class.
+        #
+        # This code doesn't work on Qt 5, because of a Qt bug.
+        # It probably isn't coming back.
+        selector = 'vim_%s' % (state) if focus_flag else 'vim_unfocused'
         w.setProperty('vim_state', selector)
         w.style().unpolish(w)
         w.style().polish(w)
