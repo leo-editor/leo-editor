@@ -45,7 +45,7 @@ tagLines = []
     # The saved contents of the tags file.
 
 #@+others
-#@+node:ekr.20110307092028.14155: ** Module level...
+#@+node:ekr.20110307092028.14155: ** Top-level functions
 #@+node:ville.20090317180704.11: *3* init (ctagscompleter.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
@@ -77,16 +77,20 @@ def read_tags_file():
         g.trace('not a file:', repr(tagsFileName))
         return []
     try:
-        with open(tagsFileName) as f:
-            tags = f.read()
+        with open(tagsFileName, 'rb') as f:
+            tags = g.toUnicode(f.read())
             lines = g.splitLines(tags)
+            g.trace('LINES', len(lines))
             return lines
     except Exception:
         g.es_exception()
         return []
-#@+node:ekr.20110307092028.14160: *3* start
+#@+node:ekr.20110307092028.14160: *3* start (ctags-complete)
 def start(event):
-    '''Call cc.start() where cc is the CtagsController for event's commander.'''
+    '''
+    The ctags-complete command.
+    Call cc.start() where cc is the CtagsController for event's commander.
+    '''
     global conrollers
     c = event.get('c')
     if not c:
@@ -102,25 +106,25 @@ class CtagsController:
     # To do: put cursor at end of word initially.
 
     #@+others
-    #@+node:ekr.20110307092028.14161: *3*  ctor
+    #@+node:ekr.20110307092028.14161: *3* ctags.__init__
     def __init__ (self,c):
-
         self.active = False
-        self.body = c.frame.top.ui.richTextEdit
+        self.body_widget = c.frame.body.widget
+        g.trace(self.body_widget)
         self.c = c
         self.completer = None
         self.popup = None
         self.popup_filter = None
-
         # Init.
-        w = c.frame.body.wrapper # A LeoQTextBrowser.
-        self.ev_filter = w.ev_filter
-    #@+node:ekr.20091015185801.5243: *3* complete
+        ### w = c.frame.body.wrapper # A LeoQTextBrowser.
+        ### g.trace('wrapper', w)
+        self.ev_filter = c.frame.body.wrapper.ev_filter
+    #@+node:ekr.20091015185801.5243: *3* ctags.complete
     def complete(self,event):
-
+        '''Find all completions.'''
         # c = self.c
-        cpl = self.completer
-        tc = self.body.textCursor()
+        cpl, w = self.completer, self.body_widget
+        tc = w.textCursor()
         tc.select(tc.WordUnderCursor)
         prefix = tc.selectedText()
         hits = self.lookup(prefix)
@@ -128,24 +132,24 @@ class CtagsController:
         cpl.setModel(model)
         cpl.setCompletionPrefix(prefix)
         cpl.complete()
-    #@+node:ekr.20110307141357.14195: *3* end
+    #@+node:ekr.20110307141357.14195: *3* ctags.end
     def end (self,completion=''):
 
-        body = self.body
+        w = self.body_widget
         cpl = self.completer
         if not completion:
             completion = cpl.currentCompletion()
         if completion:
             cmpl = completion.split(None,1)[0]
             prefix = cpl.completionPrefix()
-            tc = body.textCursor()
+            tc = w.textCursor()
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)
             tc.movePosition(tc.EndOfWord)
             tc.insertText(cmpl[-extra:])
-            body.setTextCursor(tc)
+            w.setTextCursor(tc)
         self.kill()
-    #@+node:ekr.20110307141357.14198: *3* kill
+    #@+node:ekr.20110307141357.14198: *3* ctags.kill
     def kill (self):
 
         # Delete the completer.
@@ -153,29 +157,30 @@ class CtagsController:
         self.completer = None
         self.active = False
         self.ev_filter.ctagscompleter_active = False
-    #@+node:ville.20090321223959.2: *3* lookup
-    def lookup(self,prefix):
+    #@+node:ville.20090321223959.2: *3* ctags.lookup
+    def lookup(self, prefix):
         '''Return a list of all items starting with prefix.'''
         global tagLines
-
-        # Split at first whitespace.
+        #
+        # Find all lines with the given prefix.
         hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
+        # g.printObj(hits, tag='hits')
+        g.trace('HITS', len(hits))
         desc = []
         for h in hits:
             s = h[0]
-            # pylint: disable=anomalous-backslash-in-string
-            m = re.findall('class:(\w+)',h[1])
+            m = re.findall(r'class:(\w+)', h[1])
             if m:
                 s+= "\t" + m[0]
             desc.append(s)
-        aList = list(set(desc))
-        aList.sort()
+        aList = sorted(list(set(desc)))
+        g.printObj(aList[:200], tag='result')
         return aList
-    #@+node:ekr.20110307092028.14159: *3* onKey
+    #@+node:ekr.20110307092028.14159: *3* ctags.onKey
     def onKey (self,event,stroke):
 
         stroke = stroke.lower()
-
+        g.trace(repr(stroke))
         if stroke in ('space','return'):
             event.accept() # Doesn't work.
             self.end()
@@ -185,31 +190,30 @@ class CtagsController:
             event.ignore() # Does work.
         else:
             self.complete(event)
-    #@+node:ekr.20110307092028.14157: *3* start
+    #@+node:ekr.20110307092028.14157: *3* ctags.start
     def start (self,event):
-
+        '''Initialize.'''
         c = self.c
-
+        #
         # Create the callback to insert the selected completion.
         def completion_callback(completion,self=self):
             self.end(completion)
-
+        #
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
-        cpl.setWidget(self.body)
-        # cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        cpl.setWidget(self.body_widget)
         cpl.activated.connect(completion_callback)
-        # Connect key strokes to the popup.
-        # self.popup = cpl.popup()
-        # self.popup_filter = PopupEventFilter(c,self.popup) # Required
-        # self.popup.installEventFilter(self.popup_filter)
-        # self.popup.setFocus()
-
+        ###
+            # self.popup = cpl.popup()
+            # self.popup_filter = PopupEventFilter(c,self.popup) # Required
+            # self.popup.installEventFilter(self.popup_filter)
+            # self.popup.setFocus()
+        #
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
         self.ev_filter.ctagscompleter_active = True
         self.ev_filter.ctagscompleter_onKey = self.onKey
-
+        #
         # Show the completions.
         self.complete(event)
     #@-others
