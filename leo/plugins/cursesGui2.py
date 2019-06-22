@@ -2814,9 +2814,13 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
     def delete_line_value(self, ch_i=None):
 
+        c = self.leo_c
         if self.values:
             del self.values[self.cursor_line]
             self.display()
+            # #1224:
+            # g.trace(g.objToString(self.values, tag='values'))
+            c.p.b = ''.join(self.values)
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
         '''
@@ -2871,8 +2875,9 @@ class LeoBody (npyscreen.MultiLineEditable):
         # Don't recolor the body.
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        if not c.changed: c.setChanged(True)
-        self.updateEditors()
+        if not c.changed:
+            c.setChanged(True)
+        ### self.updateEditors()
         p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
