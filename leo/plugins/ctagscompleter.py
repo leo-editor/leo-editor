@@ -107,16 +107,15 @@ class CtagsController:
     #@+others
     #@+node:ekr.20110307092028.14161: *3* ctags.__init__
     def __init__ (self,c):
+        
+        # Init ivars.
         self.active = False
         self.body_widget = c.frame.body.widget
-        g.trace(self.body_widget)
         self.c = c
         self.completer = None
         self.popup = None
         self.popup_filter = None
-        # Init.
-        ### w = c.frame.body.wrapper # A LeoQTextBrowser.
-        ### g.trace('wrapper', w)
+        # Patch the body's event filter.
         self.ev_filter = c.frame.body.wrapper.ev_filter
     #@+node:ekr.20091015185801.5243: *3* ctags.complete
     def complete(self,event):
@@ -165,9 +164,7 @@ class CtagsController:
         if not prefix:
             return []
         hits = [z.split(None, 1) for z in tagLines if z.startswith(prefix)]
-        desc = []
-        for h in hits:
-            desc.append(h[0])
+        desc = [z[0] for z in hits]
         return sorted(list(set(desc)))
     #@+node:ekr.20110307092028.14159: *3* ctags.onKey
     def onKey (self,event,stroke):
