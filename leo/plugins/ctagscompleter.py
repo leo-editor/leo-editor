@@ -39,68 +39,63 @@ else:
     QStringListModel = QtWidgets.QStringListModel
 #@-<< ctagscompleter imports >>
 # Global variables
-controllers = {} # Keys are commanders, values are controllers.
+controllers = {}
+    # Keys are commanders, values are controllers.
 tagLines = []
     # The saved contents of the tags file.
 
 #@+others
 #@+node:ekr.20110307092028.14155: ** Module level...
-#@+node:ville.20090317180704.11: *3* init
+#@+node:ville.20090317180704.11: *3* init (ctagscompleter.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     global tagLines
-    ok = g.app.gui.guiName() == "qt"
-    if ok:
-        tagLines = read_tags_file()
-        if not tagLines:
-            print('ctagscompleter: can not read ~/.leo/tags')
-            ok = False
-        if ok:
-            g.registerHandler('after-create-leo-frame',onCreate)
-            g.plugin_signon(__name__)
-    return ok
+    if g.app.gui.guiName() != "qt":
+        return False
+    tagLines = read_tags_file()
+    if not tagLines:
+        print('ctagscompleter: can not read ~/.leo/tags')
+        return False
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.plugin_signon(__name__)
+    return True
+
 #@+node:ville.20090317180704.12: *3* onCreate (ctagscompleter.py)
 def onCreate (tag, keys):
-
     '''Register the ctags-complete command for the newly-created commander.'''
-
     c = keys.get('c')
     if c:
-        c.k.registerCommand('ctags-complete', start, shortcut='Alt-0')
+        c.k.registerCommand('ctags-complete', start)
 #@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
-
-    '''
-    Return the lines of ~/.leo/tags.
-    Return [] on error.
-    '''
-
+    '''Return the lines of ~/.leo/tags or [] on error.'''
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
+        g.trace('not found:', repr(tagsFileName))
         return []
-    assert os.path.isfile(tagsFileName)
-
+    if not os.path.isfile(tagsFileName):
+        g.trace('not a file:', repr(tagsFileName))
+        return []
     try:
-        f = open(tagsFileName)
-        tags = f.read()
-        lines = g.splitLines(tags)
-        return lines
-    except IOError:
+        with open(tagsFileName) as f:
+            tags = f.read()
+            lines = g.splitLines(tags)
+            return lines
+    except Exception:
+        g.es_exception()
         return []
 #@+node:ekr.20110307092028.14160: *3* start
 def start(event):
-
     '''Call cc.start() where cc is the CtagsController for event's commander.'''
-
     global conrollers
-
     c = event.get('c')
-    if c:
-        h = c.hash()
-        cc = controllers.get(h)
-        if not cc:
-            controllers[h] = cc = CtagsController(c)
-        cc.start(event)
+    if not c:
+        return
+    h = c.hash()
+    cc = controllers.get(h)
+    if not cc:
+        controllers[h] = cc = CtagsController(c)
+    cc.start(event)
 #@+node:ekr.20110307092028.14154: ** class CtagsController
 class CtagsController:
 
