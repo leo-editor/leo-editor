@@ -2312,6 +2312,7 @@
 <v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
 <v t="ekr.20190620113133.1"><vh>*** How to modify themes</vh></v>
+<v t="ekr.20190622142940.1"><vh>*** How to use Leo's bridge in vim</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30510,6 +30511,7 @@ Chris George: Notch Hill, British Columbia, Canada.
 Bob Hossley
 Seth Johnson
 Rob Keeney: Suwanee, Georgia, USA.
+John Lunzer.
 Виталије Милошевић (Vitalije Milosevitch): Serbia.
 Lewis Neal, Sydney, Australia.
 Viktor Ransmayr: Munich, Germany. 
@@ -30554,6 +30556,44 @@ You should now be using the theme of your choice. From here you need to
 open the local theme file with Leo. The font sizing and colors are under
 Theme Settings in the tree.
 
+</t>
+<t tx="ekr.20190622142940.1">@language rest
+@wrap
+
+This script appends the outline headlines, indented, to the current vim buffer:
+
+@language python
+
+import leo.core.leoBridge as leoBridge
+import vim
+
+controller = leoBridge.controller(
+    gui='nullGui',
+    loadPlugins=True,  # True: attempt to load plugins.
+    readSettings=True,  # True: read standard settings files.
+    silent=True,  # True: don't print signon messages.
+    verbose=False,  # True: print informational messages.
+)
+g = controller.globals()
+c = controller.openLeoFile("/home/tbrown/.leo/del.leo")
+
+def dent(node, result, level=0):
+    result.append('  ' * level + node.h)
+    for child in node.children:
+        dent(child, result, level + 1)
+    return result
+
+result = []
+dent(c.hiddenRootNode, result)
+vim.current.buffer[-1:] = result
+
+@language rest
+
+It can be invoked with
+
+:py import leodent
+
+assuming it's in a file leodent.py and on the Python path.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
