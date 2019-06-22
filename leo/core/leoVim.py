@@ -2420,14 +2420,12 @@ class VimCommands:
         w.setStyleSheet(border)
         return
         #
-        # Set the css class.
-        #
         # This code doesn't work on Qt 5, because of a Qt bug.
         # It probably isn't coming back.
-        selector = 'vim_%s' % (state) if focus_flag else 'vim_unfocused'
-        w.setProperty('vim_state', selector)
-        w.style().unpolish(w)
-        w.style().polish(w)
+            # selector = 'vim_%s' % (state) if focus_flag else 'vim_unfocused'
+            # w.setProperty('vim_state', selector)
+            # w.style().unpolish(w)
+            # w.style().polish(w)
     #@+node:ekr.20140802142132.17981: *4* vc.show_dot & show_list
     def show_command(self):
         '''Show the accumulating command.'''
