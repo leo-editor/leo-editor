@@ -2686,9 +2686,9 @@ QWidget#qt_scrollarea_viewport {
 </t>
 <t tx="chris.20190619152603.9">QMenuBar
 {
-    background-color: @dark-base3;
-    color: @dark-base0;
-    font-size: @font-size-menubar;
+background-color: @dark-base3;
+color: @dark-base0;
+font-size: @font-size-menubar;
 }
 
 QMenuBar#menubar
@@ -2696,7 +2696,6 @@ QMenuBar#menubar
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
 stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5);
 }
-
 
 QMenuBar::item
 {
@@ -2733,21 +2732,18 @@ QMenu
 {
     border: 2px solid @dark-base4;
     color: @dark-base0;
-    margin: 0.2ex;
     font-size: @font-size-menu;
     padding: 4px;
 }
 
-/* QMenu::icon
+QMenu::icon
 {
     margin: 0.5ex;
 }
-*/
 
 QMenu::item
 {
 border-width: 2px;
-padding: 4px;
 border-style: solid;
 border-color: @dark-base3;
 border-radius: 5px;
@@ -2758,7 +2754,6 @@ stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
 QMenu::item:selected
 {
 border-width: 1px;
-padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
@@ -2781,7 +2776,8 @@ QMenu::item:pressed
     color: @dark-base0;
     margin-bottom: -0.1ex;
     padding-bottom: 0.1ex;
-}</t>
+}
+</t>
 <t tx="chris.20190620105125.1">QToolBar
 {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
@@ -2919,7 +2915,7 @@ border-radius: 5px;
 <t tx="chris.20190621143635.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based on the Breeze Dark Theme for Leo and supporting material from Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy.
 
-The body and dock widget pop-up menus have some issues. Investigations are in progress. Stay tuned.
+
 
 </t>
 </tnodes>
