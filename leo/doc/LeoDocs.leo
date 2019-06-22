@@ -30518,8 +30518,10 @@ Matt Wilkie
 
 The following people have made numerous contributions to Leo throughout the years:
 
+Offray Vladimir Luna Cárdenas: Bogotá, Colombia.
 Kent Tenny: Ashland Wisconsin, USA.
 Ville M. Vainio.
+
 
 EKR lives in Madison, Wisconsin, USA
 </t>
