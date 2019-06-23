@@ -631,6 +631,9 @@ class BaseJEditColorizer (BaseColorizer):
         '''Name may be a language name or a delegate name.'''
         if not name:
             return False
+        if name == 'latex':
+            name = 'tex'
+                # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
         bunch = self.modes.get(rulesetName)
         if bunch:
@@ -1904,6 +1907,29 @@ class JEditColorizer(BaseJEditColorizer):
             self.trace_match(kind, s, i, j2)
             return j2 - i
         return 0
+    #@+node:ekr.20190623132338.1: *4* jedit.match_tex_backslash
+    ascii_letters = re.compile(r'[a-zA-Z]+')
+
+    def match_tex_backslash(self, s, i, kind):
+        '''
+        Match the tex s[i:].
+        
+        (Conventional) acro names are a backslashe followed by either:
+        1. One or more ascii letters, or
+        2. Exactly one character, of any kind.
+        '''
+        assert s[i] == '\\'
+        m = self.ascii_letters.match(s, i+1)
+        if m:
+            n = len(m.group(0))
+            j = i + n + 1
+        else:
+            # Colorize the backslash plus exactly one more character.
+            j = i + 2
+        self.colorRangeWithTag(s, i, j, kind, delegate='')
+        self.prev = (i, j, kind)
+        self.trace_match(kind, s, i, j)
+        return j - i
     #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
     def match_wiki_pattern(self, s, i, pattern):
         '''Show or hide a regex pattern managed by the wikiview plugin.'''
