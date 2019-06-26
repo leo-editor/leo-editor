@@ -30515,7 +30515,7 @@ John Lunzer.
 Виталије Милошевић (Vitalije Milosevitch): Serbia.
 Lewis Neal, Sydney, Australia.
 Viktor Ransmayr: Munich, Germany. 
-Matt Wilkie
+Matt Wilkie: Whitehorse, Yukon, Canada.
 周琦 (ZoomQuiet): China.
 
 The following people have made numerous contributions to Leo throughout the years:
