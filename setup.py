@@ -111,16 +111,13 @@ setup_requires = []
     # setup_requires no longer needed with PEP-518 and pip >v10
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'PyQt5; python_version >= "3.0"',
-    #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
-        # disabled, pending "pip install from .whl fails conditional dependency check"
-        # https://github.com/pypa/pip/issues/4886
+    'PyQt5>=5.12; python_version >= "3.0"', # v5.12+ to close #1217
+    'PyQtWebEngine', # #1202 QtWebKit deprecated in Qt 5.5, removed in 5.6
     'docutils', # used by Sphinx, rST plugin
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
     'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
-    'PyQtWebEngine', # #1202 QtWebKit deprecated in Qt 5.5, removed in 5.6
     'sphinx', # rST plugin
     'future', # python 2/3 compatibility layer, same with 'six'
     'six',
