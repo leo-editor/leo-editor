@@ -204,36 +204,24 @@ def isFileNode(p):
 #@+node:jlunz.20150611151435.1: ** inAny
 def inAny(item, group, regEx=False):
     """ Helper function to check if word from list is in a string """
-    # pylint: disable=simplifiable-if-statement,no-else-return
+    ### py--lint: disable=simplifiable-if-statement,no-else-return
     if regEx:
-        if any(re.search(word,item) for word in group):
-            return True
-        else:
-            return False
-    else:
-        if any(word in item for word in group):
-            return True
-        else:
-            return False
-
+        return any(re.search(word,item) for word in group)
+    return any(word in item for word in group)
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
     """ Primary logic to check if an item is in either the include or exclude list """
-    # pylint: disable=simplifiable-if-statement,no-else-return
+    ### py--lint: disable=simplifiable-if-statement,no-else-return
     if inc and not exc:
-        if inAny(item,inc,regEx):
-            return True
-        else:
-            return False
+        return inAny(item,inc,regEx)
     elif exc and not inc:
-        if not inAny(item,exc,regEx):
-            return True
-        else:
-            return False
-    elif exc and inc:
-        return True
-    else:
-        return True
+        return not inAny(item,exc,regEx)
+    ###
+        # elif exc and inc:
+            # return True
+        # else:
+            # return True
+    return True
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
     for pat in lst:
