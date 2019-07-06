@@ -132,6 +132,8 @@ def init():
 #@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
 def attachToCommander(t,k):
+    
+    # pylint: disable=simplifiable-if-statement
     c = k.get('c')
     event = c.config.getString('active-path-event') or "headdclick1"
     # pylint: disable=unnecessary-lambda
@@ -202,6 +204,7 @@ def isFileNode(p):
 #@+node:jlunz.20150611151435.1: ** inAny
 def inAny(item, group, regEx=False):
     """ Helper function to check if word from list is in a string """
+    # pylint: disable=simplifiable-if-statement,no-else-return
     if regEx:
         if any(re.search(word,item) for word in group):
             return True
@@ -216,6 +219,7 @@ def inAny(item, group, regEx=False):
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
     """ Primary logic to check if an item is in either the include or exclude list """
+    # pylint: disable=simplifiable-if-statement,no-else-return
     if inc and not exc:
         if inAny(item,inc,regEx):
             return True
