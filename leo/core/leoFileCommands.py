@@ -132,7 +132,6 @@ class FastRead:
             return None
         # Leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
-            ### if g.isString(val) or g.isBytes(val):
             if isinstance(val, (str, bytes)):
                 return g.toUnicode(val)
         try:
@@ -1909,7 +1908,6 @@ class FileCommands:
         '''Put attribute whose name is key and value is val to the output stream.'''
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
-            ### if g.isString(val) or g.isBytes(val):
             if isinstance(val, (str, bytes)):
                 val = g.toUnicode(val)
                 attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
