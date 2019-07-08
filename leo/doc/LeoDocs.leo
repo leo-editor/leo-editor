@@ -25941,8 +25941,8 @@ scripts, c.p is the presently selected outline node.
 
 Put your `personal settings`_ in myLeoSettings.leo, not leoSettings.leo.
 
-- The leo-settings-leo command opens leoSettings.leo.
-- The my-leo-settings-leo command opens myLeoSettings.leo.
+- The leo-settings command opens leoSettings.leo.
+- The my-leo-settings command opens myLeoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 </t>
 <t tx="ekr.20180126061429.15">.. _`clones tutorial`: tutorial-pim.html#clones
@@ -26247,7 +26247,7 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     leo-py-leo
     leo-quickstart-leo
     leo-scripts-leo
-    leo-settings-leo
+    leo-settings
     leo-unittest-leo
 </t>
 <t tx="ekr.20180216043451.7">https://github.com/leo-editor/leo-editor/issues/718

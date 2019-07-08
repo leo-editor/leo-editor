@@ -185,8 +185,8 @@ UserTip(
     
 Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 
-- The leo-settings-leo command opens leoSettings.leo.
-- The my-leo-settings-leo command opens myLeoSettings.leo.
+- The leo-settings command opens leoSettings.leo.
+- The my-leo-settings command opens myLeoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 
 """),
