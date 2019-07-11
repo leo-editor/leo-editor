@@ -303,6 +303,7 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    global got_docutils
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (
             not g.unitTesting and
@@ -311,7 +312,6 @@ def init():
         ):
             g.es_print('viewrendered requires Qt')
         return False
-    global got_docutils
     if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')
     # Always enable this plugin, even if imports fail.
@@ -753,28 +753,29 @@ if QtWidgets: # NOQA
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
             c = self.c
-            external_dock = c.config.getBool('use-vr-dock', default=False)
-                # reload_settings has not yet been called.
+            dw = c.frame.top
             self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
+            #
+            # Create the inner contents.
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
             if not g.app.dock:
                 return
-            dw = c.frame.top
-            separate_dock = (
-                external_dock and not g.app.init_docks or
+            external_dock = c.config.getBool('use-vr-dock', default=False)
+                # reload_settings has not yet been called.
+            #
+            # Allow the VR dock to move only in special circumstances.
+            moveable = (
+                external_dock and g.app.init_docks or
                 g.app.get_central_widget(c) == 'body'
             )
-            # g.trace('SEPARATE DOCK', separate_dock)
-            #
-            # Can't allow the "body dock" to move:
-            # There is (at present) no way to put it back.
             self.leo_dock = dock = dw.createDockWidget(
-                closeable=True, moveable=separate_dock, height=50, name='Render')
-            if separate_dock:
+                closeable=True, moveable=moveable, height=50, name='Render')
+            if moveable:
+                #
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
@@ -868,7 +869,7 @@ if QtWidgets: # NOQA
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
-            '''Update the vr pane.'''
+            '''Update the vr pane. Called at idle time.'''
             pc = self
             p = pc.c.p
             if pc.must_update(keywords):
@@ -914,8 +915,6 @@ if QtWidgets: # NOQA
                     except Exception:
                         g.es_exception()
                         pc.deactivate()
-                # Will be called at idle time.
-                # if trace: g.trace('no update')
         #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
         def create_base_text_widget(self):
             '''Create a QWebView or a QTextBrowser.'''
@@ -1501,11 +1500,12 @@ if QtWidgets: # NOQA
             
             c, vr = self.c, self
             if g.app.dock:
-                separate_dock = vr.external_dock and not g.app.init_docks
-                if separate_dock:
-                    vr.show()
-                elif vr.leo_dock:
-                    vr.leo_dock.show()
+                dock = vr.leo_dock
+                if dock:
+                    if dock.isHidden():
+                        dock.show()
+                    dock.raise_()
+                        # #1230.
             else:
                 vr.activate()
                 vr.show()
