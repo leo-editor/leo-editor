@@ -13,7 +13,7 @@ from setuptools import setup, find_packages # Always prefer setuptools over dist
 import sys
 
 # Ensure setup.py's folder is in module search path else import leo fails
-# required for pip >v10 and pyproject.toml 
+# required for pip >v10 and pyproject.toml
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
@@ -125,7 +125,7 @@ user_requires = [
 #@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
     '''1. Define scripts that get installed to PYTHONHOME/Scripts.
-      2. Extend `python setup.py clean` to remove more files (issue #1055)   
+       2. Extend `python setup.py clean` to remove more files (issue #1055)
     '''
     print('Creating entry_points for [OS name - system]: {} - {}'.format(
         platform.os.name, platform.system()))
@@ -133,14 +133,19 @@ def define_entry_points(entry_points=None):
             'leo-c = leo.core.runLeo:run_console',
             'leo-console = leo.core.runLeo:run_console'],
             'gui_scripts': ['leo = leo.core.runLeo:run']}
+
+    # Add leo-messages wrapper for windows platform
+    # (use python.exe instead of pythonw.exe in order to show console msgs)
     if platform.system() == 'Windows':
-        entry_points.update({'console_scripts': [
-            'leo-m = leo.core.runLeo:run',
-            'leo-messages = leo.core.runLeo:run']})
+        x = entry_points['console_scripts']
+        x.append('leo-m = leo.core.runLeo:run')
+        x.append('leo-messages = leo.core.runLeo:run')
+        entry_points.update({'console_scripts': x})
 
     entry_points.update({
             'distutils.commands': [
             'clean = setupext_janitor.janitor:CleanCommand']})
+
     return entry_points
 #@-others
 

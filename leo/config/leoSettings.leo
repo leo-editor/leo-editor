@@ -997,7 +997,7 @@
 <v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
-<v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
+<v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
@@ -1301,7 +1301,7 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
-<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
@@ -6419,7 +6419,7 @@ next-line-extend-selection      = None
 open-leo-docs-leo               = None
 open-leo-dist-leo               = None
 open-leo-plugins-leo            = None
-open-leo-settings-leo           = None
+open-leo-settings               = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
 open-online-home                = None
@@ -6875,7 +6875,7 @@ next-line-extend-selection          = None
 open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-plugins-leo                = None
-open-leo-settings-leo               = None
+open-leo-settings                   = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
 open-online-home                    = None
