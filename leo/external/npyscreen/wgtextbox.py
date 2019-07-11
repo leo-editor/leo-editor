@@ -82,14 +82,12 @@ class TextfieldBase(widget.Widget):
         # Not needed here -- gets called too much!
             #pmfuncs.hide_cursor()
 
-        trace = False
         self.update_count += 1
-        if trace:
-            name = self.__class__.__name__
-            if name.startswith('LeoLogTextField'):
-                g.trace('=====', name, g.callers())
-                g.trace('(TextfieldBase) %3s %s TextfieldBase: cursor: %5r %s' % (
-                    self.update_count, id(self), self.cursor_position, self.value))
+        # name = self.__class__.__name__
+        # if name.startswith('LeoLogTextField'):
+            # g.trace('=====', name, g.callers())
+            # g.trace('(TextfieldBase) %3s %s TextfieldBase: cursor: %5r %s' % (
+                # self.update_count, id(self), self.cursor_position, self.value))
         if clear: self.clear()
         if self.hidden:
             return True
@@ -406,8 +404,7 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.337: *3* Textfield.edit
     def edit(self):
 
-        trace = False and not g.unitTesting
-        if trace: g.trace('===== (Textfield:%s)' % self.__class__.__name__)
+        # g.trace('===== (Textfield:%s)' % self.__class__.__name__)
         self.editing = 1
         if self.cursor_position is False:
             self.cursor_position = len(self.value or '')

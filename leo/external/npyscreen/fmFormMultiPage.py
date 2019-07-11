@@ -116,7 +116,8 @@ class FormMultiPage(fmForm.FormBaseNew):
 
     #@+node:ekr.20170428084207.234: *3* FormMultiPage.find_next_editable
     def find_next_editable(self, *args):
-        g.trace('===== (FormMultiPage)')
+
+        # g.trace('===== (FormMultiPage)')
         if not self.editw == len(self._widgets__):
             value_changed = False
             if not self.cycle_widgets:

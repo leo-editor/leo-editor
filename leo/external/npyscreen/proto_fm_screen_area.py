@@ -149,7 +149,7 @@ class ScreenArea:
 
     #@+node:ekr.20170428084207.432: *3* ScreenArea.refresh
     def refresh(self):
-        # g.trace(g.callers())
+
         pmfuncs.hide_cursor()
         _my, _mx = self._max_physical()
         self.curses_pad.move(0,0)

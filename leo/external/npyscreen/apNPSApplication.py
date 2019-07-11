@@ -39,9 +39,7 @@ class NPSApp:
     #@+node:ekr.20170428084207.10: *3* NPS.run
     def run(self, fork=None):
         """Run application.  Calls Mainloop wrapped properly."""
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('===== (NPS) fork:', repr(fork))
+        # g.trace('===== (NPS) fork:', repr(fork))
         if fork is None:
             return npyssafewrapper.wrapper(self.__remove_argument_call_main)
         else:

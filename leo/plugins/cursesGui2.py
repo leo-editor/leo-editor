@@ -573,7 +573,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        g.trace('==== LeoTreeLine')
+        #### g.trace('===== LeoTreeLine')
         self.editing = True
         # self._pre_edit()
         self.highlight = True
@@ -2819,7 +2819,6 @@ class LeoBody (npyscreen.MultiLineEditable):
             del self.values[self.cursor_line]
             self.display()
             # #1224:
-            # g.trace(g.objToString(self.values, tag='values'))
             c.p.b = ''.join(self.values)
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
@@ -3225,13 +3224,12 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Handle the return key in the minibuffer.
         Send the contents to k.masterKeyHandler.
         '''
-        trace = False and not g.unitTesting
         c = self.leo_c
         k = c.k
         val = self.value.strip()
         self.value = ''
         self.update()
-        if trace: g.trace('===== inState: %r val: %r' % (k.inState(), val))
+        ### g.trace('===== inState: %r val: %r' % (k.inState(), val))
         commandName = val
         c.frame.tree.set_status_line(c.p)
             # This may be changed by the command.
@@ -4246,7 +4244,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-        g.trace('=====', event)
+        if 0: g.trace('=====', event)
     #@-others
 #@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
 class HeadWrapper(leoFrame.StringTextWrapper):

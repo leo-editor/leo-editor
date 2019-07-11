@@ -352,6 +352,7 @@ class MultiLine(widget.Widget):
         line.show_bold = value
     #@+node:ekr.20170428084208.90: *4* MultiLine.set_is_line_cursor
     def set_is_line_cursor(self, line, value):
+
         # g.trace('Multiline')
         line.highlight = value
     #@+node:ekr.20170504211232.1: *3* MultiLine.filters
@@ -613,7 +614,6 @@ class MultiLine(widget.Widget):
         trace = False and not g.unitTesting
         if trace:
             g.trace('===== (MultiLine:%s)' % self.__class__.__name__)
-            # g.trace('CALLERS', g.callers(verbose=True))
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value
