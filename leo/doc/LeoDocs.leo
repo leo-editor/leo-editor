@@ -21554,8 +21554,8 @@ Actually, the above code is dubious, because it will break if the mode of the op
     Does not report nodes that are descendants of @nopylint.
 ``pdb``
     Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
-``print-buttons``
-    Print all @button and @command commands, their bindings and their source.
+``show-buttons``
+    Show all @button and @command commands, their bindings and their source.
 
 Dumping Leo's internal data::
 
