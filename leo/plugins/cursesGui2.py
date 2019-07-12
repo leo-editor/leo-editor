@@ -1696,7 +1696,6 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run an askYesNoCancel dialog ."""
         if g.unitTesting:
             return False
-        g.trace(g.callers())
         self.in_dialog = True
         val = utilNotify.notify_yes_no(message=message,title=title)
             # Important: don't use notify_ok_cancel.
