@@ -386,7 +386,7 @@ def viewrendered(event):
     """Open render view for commander"""
     global controllers, layouts
     if g.app.gui.guiName() != 'qt':
-        return
+        return None
     c = event.get('c')
     if not c:
         return None
