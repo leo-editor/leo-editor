@@ -1087,7 +1087,7 @@ body text of a node as a Leo script.
 #@+node:ekr.20101121125326.4962: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
 #@+node:ekr.20101119112650.5368: *3* @slide c, g and p
-.. _`Scripting Chapter`: scripting.html
+.. _`Scripting Chapter`: tutorial-scripting.html
 .. _`Leo's Users Guide`: leo_toc.html
 
 Leo scripts execute in an environment containing
@@ -1273,7 +1273,7 @@ full-screen `Pudb debugger`_ instead of pdb.
 #@+node:ekr.20101121130516.4962: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 #@+node:ekr.20101121021109.5352: *3* @slide Further reading
-.. _`Scripting Chapter`: scripting.html
+.. _`Scripting Chapter`: tutorial-scripting.html
 .. _`Leo's Users Guide`: leo_toc.html
 
 This concludes our brief introduction to scripting in Leo.
