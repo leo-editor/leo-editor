@@ -228,14 +228,14 @@ import hashlib
 #@+node:ekr.20100128073941.5371: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.unitTesting
-    if ok:
-        g.registerHandler('after-create-leo-frame', onCreate)
-        # temporary until double-click is bindable in user settings
-        if g.app.config.getBool('bookmarks-grab-dblclick'):
-            g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k))
-        g.plugin_signon(__name__)
-    return ok
+    if g.unitTesting:
+        return False
+    g.registerHandler('after-create-leo-frame', onCreate)
+    # temporary until double-click is bindable in user settings
+    if g.app.config.getBool('bookmarks-grab-dblclick', default=False):
+        g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k))
+    g.plugin_signon(__name__)
+    return True
 
 #@+node:tbrown.20110712121053.19751: ** onCreate
 def onCreate(tag, keys):
