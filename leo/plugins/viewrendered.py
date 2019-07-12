@@ -304,6 +304,10 @@ def decorate_window(w):
 def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
+    if g.app.gui.guiName() != 'qt':
+        return False
+            # #1248.
+    # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (
             not g.unitTesting and
@@ -381,6 +385,8 @@ def preview(event):
 def viewrendered(event):
     """Open render view for commander"""
     global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return None
@@ -407,10 +413,12 @@ def viewrendered(event):
         vr.adjust_layout('open')
     c.bodyWantsFocusNow()
     return vr
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract') (changed)
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event):
     '''Contract the rendering pane.'''
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -429,10 +437,12 @@ def contract_rendering_pane(event):
             # else:
                 # # Just open the pane.
                 # viewrendered(event)
-#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand') (changed)
+#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event):
     '''Expand the rendering pane.'''
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -448,11 +458,13 @@ def expand_rendering_pane(event):
             # vr = viewrendered(event)
         # if vr:
             # vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide') (changed)
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
     global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -489,11 +501,13 @@ def hide_rendering_pane(event):
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock') (changed)
+#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
     '''Lock the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -502,19 +516,13 @@ def lock_rendering_pane(event):
         vr = viewrendered(event)
     if not vr.locked():
         vr.lock()
-    ###
-        # c = event.get('c')
-        # if not c:
-            # return
-        # ### vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # vr = controllers.get(c.hash())
-        # if vr and not vr.locked():
-            # vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play') (changed)
+#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event):
     '''Pause or play a movie in the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -526,23 +534,13 @@ def pause_play_movie(event):
         return
     f = vp.pause if vp.isPlaying() else vp.play
     f()
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if not vr:
-                # vr = viewrendered(event)
-            # if vr and vr.vp:
-                # vp = vr.vp
-                # if vp.isPlaying():
-                    # vp.pause()
-                # else:
-                    # vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show') (changed)
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -550,13 +548,17 @@ def show_rendering_pane(event):
     if not vr:
         vr = viewrendered(event)
     vr.show_dock_or_pane()
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
+        return
+    if g.app.gui.guiName() != 'qt':
         return
     vr = controllers.get(c.hash())
     if not vr:
@@ -573,11 +575,13 @@ def toggle_rendering_pane(event):
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
-#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock') (changed)
+#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
     '''Pause or play a movie in the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -586,17 +590,13 @@ def unlock_rendering_pane(event):
         vr = viewrendered(event)
     if vr.locked:
         vr.unlock()
-    ###
-    # c = event.get('c')
-    # if c:
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if vr and vr.locked:
-            # vr.unlock()
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update') (changed)
+#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
 def update_rendering_pane(event):
     '''Update the rendering pane'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -604,20 +604,13 @@ def update_rendering_pane(event):
     if not vr:
         vr = viewrendered(event)
     vr.update(tag='view', keywords={'c': c, 'force': True})
-    
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if not vr:
-                # vr = viewrendered(event)
-            # if vr:
-                # vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom') (changed)
+#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
 @g.command('vr-zoom')
 def zoom_rendering_pane(event):
 
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return

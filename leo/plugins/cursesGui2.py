@@ -745,7 +745,7 @@ def init():
             s = "Can't install text gui: previous gui installed"
             g.es_print(s, color="red")
         return False
-    return curses and not g.app.gui and not g.app.unitTesting
+    return curses and not g.app.unitTesting
         # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
