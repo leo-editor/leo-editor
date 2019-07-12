@@ -571,7 +571,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        # g.trace('===== LeoTreeLine')
+        # g.trace('LeoTreeLine 1')
         self.editing = True
         # self._pre_edit()
         self.highlight = True
@@ -2552,14 +2552,15 @@ class CoreTree (leoFrame.LeoTree):
         Officially change a headline.   
         This is c.frame.tree.onHeadChanged.
         '''
-        trace = False and not g.unitTesting
+        trace = False
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
+            if trace: g.trace('NO wrapper')
             return # Startup.
         if not self.revertVnode:
-            # This is a hack, but all unit tests pass.
             if trace: g.trace('no headline ever edited')
-            return
+            self.revertHeadline = ''
+                # Fix #1238: A hack to force an update.
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
