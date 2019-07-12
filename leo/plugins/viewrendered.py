@@ -1350,7 +1350,8 @@ if QtWidgets: # NOQA
                 w = pc.w
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
-                s = g.adjustTripleString(s, pc.c.tab_width).strip() # Sensitive to leading blank lines.
+                s = g.adjustTripleString(s, pc.c.tab_width).strip()
+                    # Sensitive to leading blank lines.
                 s = g.toEncodedString(s)
                 pc.show()
                 w.load(QtCore.QByteArray(s))
