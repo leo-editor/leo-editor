@@ -99,6 +99,18 @@ def openCheatSheet(self, event=None, redraw=True):
         return c2
     g.es('file not found: %s' % fn)
     return None
+#@+node:lkj.20190714022527.1: *3* c_help.openDesktopIntegration
+@g.commander_command('open-desktop-integration-leo')
+@g.commander_command('desktop-integration-leo')
+def openDesktopIntegration(self, event=None):
+    '''Open Desktop-integration.leo.'''
+    c = self
+    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'Desktop-integration.leo')
+    # only call g.openWithFileName if the file exists.
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es('not found:', fileName)
 #@+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
 @g.commander_command('leo-dist-leo')
