@@ -40,3 +40,7 @@ Devs, please add your descriptions here.
 
 - A long-lived branch a long-lived branch containing prototype code related to client/server/javascript/vue.js code.
 - There are no plans to merge or delete this branch at this time.
+
+## gh-pages
+
+- The branch that hosts the website. This is a permanent branch.
