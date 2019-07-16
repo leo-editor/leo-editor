@@ -1335,6 +1335,7 @@
 <v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
 <v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
 </v>
+<v t="lkj.20190714020301.1"><vh>@item open-desktop-integration-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
@@ -2280,6 +2281,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20131213135427.21951"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11770,6 +11772,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
+<t tx="lkj.20190714020301.1"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.

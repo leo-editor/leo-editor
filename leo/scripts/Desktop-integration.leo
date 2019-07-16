@@ -6,6 +6,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="lkj.20190711235336.1"><vh>Readme</vh></v>
 <v t="ekr.20070615131954"><vh>Startup</vh>
 <v t="ekr.20150302053516.3"><vh>@settings</vh>
 <v t="mhw.20181210131101.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
@@ -37,7 +38,6 @@
 </v>
 </v>
 </v>
-<v t="lkj.20190711235336.1"><vh>Readme</vh></v>
 <v t="lkj.20190712001203.1"><vh>scripts</vh>
 <v t="mhw-debug-1081.20190310203401.1"><vh>Windows</vh>
 <v t="maphew.20130611235500.2658"><vh>@file register-leo.leox</vh></v>
