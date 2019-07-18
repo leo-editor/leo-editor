@@ -1,4 +1,5 @@
 [build-system]
 requires = ["setuptools>=38.6.0",
+    "setupext-janitor>=1.1",
     "wheel>=0.31.0",
     "twine>=1.11.0"]
