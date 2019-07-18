@@ -2354,11 +2354,6 @@ Once published to pypi Leo can be installed with:
 
     pip install leo
 
-Python 2.7 will need to install PyQt 4 or 5 as a separate step. Anaconda or
-miniconda is recommended:
-
-    conda install pyqt
-
 Developers should install from git as some files are left out when using pip (see Caveats):
 
     git clone --depth=500 https://github.com/leo-editor/leo-editor.git
@@ -2373,8 +2368,9 @@ nb: Optional `--depth=500` fetches the last 3-4 months of activity and is
  - Wheel: for building cross platform binaries (might be installed already)
  - Setuptools: because ...setup!
  - Twine: for secure upload to pypi.org
+ - Setupext-janitor: extend clean command (e.g. `python setup.py clean --all`)
 
-    pip install setuptools twine wheel
+    pip install setuptools twine wheel setupext-janitor
 </t>
 <t tx="maphew.20180128212042.3">A PyPi account is needed to update Leo's pypi reference. Contact one of the
 package index owners to be added as a maintainer if needed. See end of
@@ -2384,6 +2380,9 @@ Verify access Leo package edit page at:
 https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
 <t tx="maphew.20180128212042.4">## Overview
+
+_All of this is now handled in Travis Continual Integration build system. This recipe kept here for troubleshooting if something goes wrong in Travis._
+
 
 * Remove stale distribution files &amp; folders.  
 * Optionally set local checkout to specific version tag.  
