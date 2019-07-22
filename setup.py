@@ -19,12 +19,11 @@ import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
 
 #@+node:mhw-nc.20190126224021.1: ** setup janitor
-# Initiated by #1055 - Have 'setup clean' play nice with others
-# Until accepted upstream we require this forked module pre-installed
-# from: https://github.com/maphew/setupext-janitor/setupext_janitor
-# to: ./leo/extensions/setupext_janitor
 try:
-   from leo.extensions.setupext_janitor import janitor
+   #from leo.extensions.setupext_janitor import janitor
+   #   https://github.com/leo-editor/leo-editor/issues/1255
+   #   remove these comments after Aug-2019 if no issues
+   from setupext_janitor import janitor
    CleanCommand = janitor.CleanCommand
 except ImportError:
    CleanCommand = None
@@ -118,6 +117,7 @@ user_requires = [
     'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
+    'setupext-janitor >= 1.1', # extend `setup.py clean` #1055,#1255
     'sphinx', # rST plugin
     'future', # python 2/3 compatibility layer, same with 'six'
     'six',
