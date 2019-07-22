@@ -204,23 +204,16 @@ def isFileNode(p):
 #@+node:jlunz.20150611151435.1: ** inAny
 def inAny(item, group, regEx=False):
     """ Helper function to check if word from list is in a string """
-    ### py--lint: disable=simplifiable-if-statement,no-else-return
     if regEx:
         return any(re.search(word,item) for word in group)
     return any(word in item for word in group)
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
     """ Primary logic to check if an item is in either the include or exclude list """
-    ### py--lint: disable=simplifiable-if-statement,no-else-return
     if inc and not exc:
         return inAny(item,inc,regEx)
-    elif exc and not inc:
+    if exc and not inc:
         return not inAny(item,exc,regEx)
-    ###
-        # elif exc and inc:
-            # return True
-        # else:
-            # return True
     return True
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
@@ -283,28 +276,20 @@ def getPath(c, p):
 def getPathOld(p):
     # NOT USED, my version which does its own @path scanning
     p = p.copy()
-
     path = []
-
     while p:
         h = p.h
-
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
             d = os.path.join(*path)
             return d
-
-        elif h.startswith('@'):  # some other directive, run away
+        if h.startswith('@'):  # some other directive, run away
             break
-
         elif isDirNode(p):  # a directory
             path.insert(0,h.strip('/*'))
-
         elif not p.hasChildren():  # a leaf node, assume a file
             path.insert(0,h.strip('*'))
-
         p = p.parent()
-
     return None
 #@+node:tbrown.20080613095157.5: ** flattenOrganizers
 def flattenOrganizers(p):
@@ -628,8 +613,7 @@ def cmd_ActOnNode(event, p=None):
         sync_node_to_folder(c,pos,path)
         c.redraw()
         return True
-    else:
-        raise leoPlugins.TryNext
+    raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
 #@+node:tbrown.20111207143354.19381: ** cmd_MakeDir (active_path.py)

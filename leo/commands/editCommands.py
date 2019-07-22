@@ -3575,10 +3575,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     def printUas(self, event=None, v=None):
         '''Print the uA's in the selected node.'''
         c = self.c
-        if v: d, h = v.u, v.h
-        else: d, h = c.p.v.u, c.p.h
-        print(h)
-        g.printObj(d)
+        if v:
+            d, h = v.u, v.h
+        else:
+            d, h = c.p.v.u, c.p.h
+        g.es_print(h)
+        g.es_print(g.objToString(d))
     #@+node:ekr.20150514063305.351: *4* ec.setUa
     @cmd('set-ua')
     def setUa(self, event):

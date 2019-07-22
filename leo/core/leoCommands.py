@@ -2012,7 +2012,8 @@ class Commands:
                 # We will use the (weird) key value for, say, Ctrl-s,
                 # if there is no binding for Ctrl-s.
         if not isinstance(event, leoGui.LeoKeyEvent):
-            g.trace('not leo event: %r, callers: %s' % (event, g.callers()))
+            if g.app.gui.guiName() not in ('console', 'curses'):
+                g.trace('not leo event: %r, callers: %s' % (event, g.callers()))
         if expected != got:
             g.trace('stroke: %r, expected char: %r, got: %r' % (
                 stroke, expected, got))

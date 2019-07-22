@@ -520,7 +520,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.1: *3* Widget.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        g.trace('===== (Widget)')
+        # g.trace('===== (Widget)')
         self.editing = 1
         self._pre_edit()
         self._edit_loop()
@@ -834,8 +834,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         actually refresh the curses display, since this should be done as
         little as possible. This base widget puts nothing on screen.
         """
-        trace = False and not g.unitTesting
-        if trace: g.trace('===== Widget', g.callers())
+        # g.trace('===== Widget', g.callers())
         if self.hidden:
             self.clear()
             return True

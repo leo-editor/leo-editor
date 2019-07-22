@@ -1920,6 +1920,7 @@
 <v t="ekr.20181018080344.1"><vh>@int fts-max-hits = 30</vh></v>
 </v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
+<v t="ekr.20190712053127.1"><vh>@bool bookmarks-grab-dblclick = False</vh></v>
 <v t="tbrown.20140102100730.27778"><vh>@int bookmarks-levels = 1</vh></v>
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
@@ -11731,6 +11732,7 @@ False: (Recommended) The VR dock splits the body dock.
 
 The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190622093004.1"></t>
+<t tx="ekr.20190712053127.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
