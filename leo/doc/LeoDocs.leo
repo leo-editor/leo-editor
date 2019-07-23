@@ -22422,45 +22422,46 @@ Leo has a binary installer for Windows, available at the `SourceForge download p
 </t>
 <t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
 
-You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python36\\Lib\\site-packages.
+You may download Leo's sources in one of three ways, as described at
+`Leo's download page`_.
 
-Next, you will find it convenient to create Windows files associations for .leo files, as described in the next section.
+*Method 1: Application Install*
+After download run::
+
+    pip install C:\\users\me\Downloads\\leo-editor-master.zip
+
+This will put Leo in Python's \*site-packages* folder, for example,
+C:\\Python36\\Lib\\site-packages, and create launch scripts in
+PYTHONHOME\\Scripts.
+
+*Method 2: Editable Install*
+After download unpack the zip archive where you like and::
+
+    pip install --editable C:\\path\\to\\leo-editor
+
+This will leave Leo where it is and and create launch scripts in
+PYTHONHOME\\Scripts.
+
+*Running Leo*
+
+See "Running Leo after pip install leo".
+
+
+Next, you will find it convenient to create Windows files associations
+for .leo files, as described in the next section.
 </t>
 <t tx="ekr.20170206073747.5">*Important*: Leo's binary Windows installer sets file associations
 automatically, so this section is needed only if you are installing Leo
 from a .zip file or other sources.
 
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
+From *Settings* menu select **Open Desktop Integration**.
+The new Leo file that opens will add 2 buttons under the menu bar:
 
-**Method 1: Using the Windows Control Panel**
+*[Register-leo]* - Creates registry keys for Leo file type and .leo
+file association. Afterwards .leo files will show Leo icon and
+double-clicking them will open in Leo Editor.
 
-The goal is that you want to associate .leo files with the following command::
-
-    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
-    
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
-
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
-
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
-
-**Method 2: Using the Windows Console**
-
-Open a Windows console with administrator privileges, then type::
-
-    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
-    
-You may omit the /b option if you want to create a separate console window for Leo.
+*[Unregister-leo]* - Removes the above.
 </t>
 <t tx="ekr.20170206073747.6">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
 .. _`install Leo from sources`: installing.html#installing-from-sources-linux
@@ -26349,9 +26350,13 @@ You can run as many of these process as you like, without involving the BPM in a
 
     ``leo`` - start Leo in normal graphical mode (qt)
     ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
-    ``leo-m``, ``leo-messages`` - start Leo in normal (qt) mode, and echo log messages to the starting shell
+    ``leo-m``, ``leo-messages`` [Windows only] - start Leo in normal (qt) mode, and echo log messages to the starting shell
 
 The launchers are installed in ``PYTHONHOME/Scripts``.
+
+If for some reason the launchers fail run Leo directly with::
+
+    python path/to/leo-editor/launchLeo.py
 </t>
 <t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
 
