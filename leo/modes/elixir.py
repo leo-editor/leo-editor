@@ -3,7 +3,7 @@
 
 # Properties for elixir mode.
 properties = {
-    "lineComment": "%",
+    "lineComment": "#",
 }
 
 # Attributes dict for elixir_main ruleset.
@@ -162,7 +162,7 @@ keywordsDictDict = {
 # Rules for elixir_main ruleset.
 
 def elixir_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="%",
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
 
@@ -186,6 +186,7 @@ def elixir_rule4(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="literal2", pattern=":",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
+# Not used.
 def elixir_rule5(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\$.\\w*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -334,8 +335,8 @@ rulesDict1 = {
     "!": [elixir_rule27,],
     "\"": [elixir_rule1,],
     "#": [elixir_rule17,],
-    "$": [elixir_rule5,],
-    "%": [elixir_rule0,],
+    ### "$": [elixir_rule5,],
+    "#": [elixir_rule0,],
     "'": [elixir_rule2,],
     "(": [elixir_rule3,],
     "*": [elixir_rule19,],
