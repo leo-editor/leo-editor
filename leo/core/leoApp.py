@@ -439,6 +439,7 @@ class LeoApp:
             "el":       "elisp",
             "eml":      "mail",
             "erl":      "erlang",
+            "ex":       "elixir",
             "f":        "fortran",
             "f90":      "fortran90",
             "factor":   "factor",
@@ -629,6 +630,7 @@ class LeoApp:
             "eiffel"             : "--",
             "elisp"              : ";",
             "erlang"             : "%",
+            "elixir"             : "#",
             "factor"             : "!_ ( )", # Use the rem hack.
             "forth"              : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"            : "C",
@@ -809,6 +811,7 @@ class LeoApp:
             "eiffel"        : "e",
             "elisp"         : "el",
             "erlang"        : "erl",
+            "elixir"        : "ex",
             "factor"        : "factor",
             "forth"         : "forth",
             "fortran"       : "f",
