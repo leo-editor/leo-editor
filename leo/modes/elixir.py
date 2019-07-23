@@ -62,6 +62,7 @@ elixir_main_keywords_dict = {
     "cosh": "keyword2",
     "date": "keyword2",
     "delete_module": "keyword2",
+    "defmodule": "keyword1",
     "disconnect_node": "keyword2",
     "element": "keyword2",
     "end": "keyword1",
