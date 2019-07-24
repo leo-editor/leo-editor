@@ -1494,6 +1494,11 @@
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20190724171032.1"><vh>@item -</vh></v>
+<v t="ekr.20190724173715.1"><vh>@item show-hide-body-dock</vh></v>
+<v t="ekr.20190724173724.1"><vh>@item show-hide-outline-dock</vh></v>
+<v t="ekr.20190724173733.1"><vh>@item show-hide-render-dock</vh></v>
+<v t="ekr.20190724171039.1"><vh>@item show-hide-tabs-dock</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -2281,7 +2286,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20131213135427.21951"></v>
+<v t="ekr.20170509104949.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11733,6 +11738,11 @@ False: (Recommended) The VR dock splits the body dock.
 The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190622093004.1"></t>
 <t tx="ekr.20190712053127.1"></t>
+<t tx="ekr.20190724171032.1"></t>
+<t tx="ekr.20190724171039.1"></t>
+<t tx="ekr.20190724173715.1"></t>
+<t tx="ekr.20190724173724.1"></t>
+<t tx="ekr.20190724173733.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

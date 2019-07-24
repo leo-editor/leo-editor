@@ -65,13 +65,6 @@ def undetach_editor(c):
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
-#@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
-@g.command('show-style-sheet')
-def print_style_sheet(event):
-    '''show-style-sheet command.'''
-    c = event.get('c')
-    if c:
-        c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
 def showColorNames(event=None):
@@ -176,6 +169,97 @@ def showFonts(self, event=None):
         ]
         p.b = ''.join(comments + defs)
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
+#@+node:ekr.20190724172314.1: ** qt: show-hide-body-dock
+@g.command('show-hide-body-dock')
+def show_hide_body_dock(event):
+    '''Show or hide the Tabs dock.'''
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.body_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'body':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724172258.1: ** qt: show-hide-outline-dock
+@g.command('show-hide-outline-dock')
+def show_hide_outline_dock(event):
+    '''Show or hide the Outline dock.'''
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.outline_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'outline':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724172547.1: ** qt: show-hide-render-dock
+@g.command('show-hide-render-dock')
+def show_hide_render_dock(event):
+    '''Show or hide the Tabs dock.'''
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    pc = g.app.pluginsController
+    vr = pc.getPluginModule('leo.plugins.viewrendered')
+    x = vr and vr.controllers.get(c.hash())
+    dock = x and x.leo_dock
+    if not dock:
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724170436.1: ** qt: show-hide-tabs-dock
+@g.command('show-hide-tabs-dock')
+def show_hide_tabs_dock(event):
+    '''Show or hide the Tabs dock.'''
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.tabs_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'tabs':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
+@g.command('show-style-sheet')
+def print_style_sheet(event):
+    '''show-style-sheet command.'''
+    c = event.get('c')
+    if c:
+        c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')

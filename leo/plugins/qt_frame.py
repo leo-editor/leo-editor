@@ -313,6 +313,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         for make_dock, height, area, name, creator in table:
             w = creator(parent=None)
             if not make_dock:
+                setattr(self, '%s_dock' % (name), None)
                 continue
             dock = self.createDockWidget(
                 closeable=name != central_widget,
