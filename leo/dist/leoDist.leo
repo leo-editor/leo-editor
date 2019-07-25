@@ -183,8 +183,8 @@
 <v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104609.1"><vh>Merge git *tag* into devel</vh></v>
-<v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
+<v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
@@ -1855,7 +1855,13 @@ git push origin x.y-final-rel
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112218.1"></t>
+<t tx="ekr.20181001112218.1">Matt: After merge create dev tag that matches static version added to leoversion.py 4 steps ago.  
+    #static version = '6.0-b2-devel'
+
+git checkout devel
+git tag -a v6.0-b2-dev -m "Added v6.0-b2-dev tag"
+git push --follow-tags
+</t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
 '''
@@ -2322,8 +2328,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
-git push
-</t>
+git push</t>
 <t tx="ekr.20190618104622.1">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
