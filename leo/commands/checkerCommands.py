@@ -257,9 +257,6 @@ class BlackCommand:
             return
         t1 = time.clock()
         self.changed, self.errors, self.total = 0, 0, 0
-        ###
-            # self.at.initWriteIvars(root, "<string-file>",
-                # forcePythonSentinels=False, sentinels=False)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             for root in roots:
@@ -317,19 +314,17 @@ class BlackCommand:
             for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
                 m = pat.match(line)
                 if m:
-                    #g.trace(blacken, repr(m))
-                    #g.printObj(chunk_lines)
                     if blacken and chunk_lines:
                         # End a chunk of blackened lines.
-                        chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+                        chunks.append(self.Chunk(blacken, chunk_lines))
                         chunk_lines = []
                     blacken = False
                     chunk_lines.append(line)
                     if pat == self.doc_pat:
                         in_doc = True
                     if pat == self.c_pat:
+                        chunks.append(self.Chunk(blacken, chunk_lines))
                         in_doc = False
-                        chunks.append(self.Chunk(blacken=False, lines=chunk_lines))
                         blacken = True
                         chunk_lines = []
                     break
@@ -342,18 +337,14 @@ class BlackCommand:
                     # A plain line.
                     if not blacken and chunk_lines:
                         # End a chunk of non-blackened lines.
-                        # g.trace(blacken)
-                        # g.printObj(chunk_lines)
-                        chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+                        chunks.append(self.Chunk(blacken, chunk_lines))
                         chunk_lines = []
                     blacken = True
                     chunk_lines.append(line)
         #
         # End the last chunk.
         if chunk_lines:
-            # g.trace('LAST', blacken)
-            # g.printObj(chunk_lines)
-            chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+            chunks.append(self.Chunk(blacken, chunk_lines))
         return chunks
     #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
