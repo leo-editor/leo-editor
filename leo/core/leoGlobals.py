@@ -4143,8 +4143,9 @@ def findRootsWithPredicate(c, root, predicate=None):
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
 
-    This function formalizes the search order used by the pylint, pyflakes and
-    the rst3 commands, returning a list of zero or more found roots.
+    This function formalizes the search order used by the black,
+    pylint, pyflakes and the rst3 commands, returning a list of zero
+    or more found roots.
     '''
     seen = []
     roots = []

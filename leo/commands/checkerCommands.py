@@ -9,6 +9,12 @@ import leo.core.leoGlobals as g
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
+    import black
+except Exception:
+    black = None
+try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
     import flake8
 except Exception: # May not be ImportError.
     flake8 = None
@@ -17,6 +23,7 @@ try:
 except ImportError:
     pyflakes = None
 # import os
+import re
 import shlex
 # import subprocess
 import sys
@@ -24,6 +31,22 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20190725155006.1: *3* black
+@g.command('black')
+def black_command(event):
+    '''
+    Run black on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        ### if c.isChanged():
+        ###    c.save()
+        BlackCommand(c).run(c.p)
+    else:
+        g.es_print('can not import black')
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
 @g.command('check-conventions')
 @g.command('cc')
@@ -204,6 +227,135 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
+#@+node:ekr.20190725154916.1: ** class BlackCommand
+class BlackCommand:
+    '''A class to run black on all Python @<file> nodes in c.p's tree.'''
+
+    def __init__(self, c):
+        '''ctor for PyflakesCommand class.'''
+        ### self.at = c.atFileCommands
+        self.c = c
+        self.mode = black.FileMode()
+        # self.mode.line_length = 79
+
+    #@+others
+    #@+node:ekr.20190726022420.1: *3* class Chunk
+    class Chunk:
+        '''
+        A class containing lines.
+        These lines are blacken only if the blacken flag is True.
+        '''
+
+        def __init__(self, blacken, lines):
+            self.blacken = blacken
+            self.lines = lines
+    #@+node:ekr.20190725154916.7: *3* black.run & helper
+    def run(self, root):
+        '''Run black on all Python @<file> nodes in root's tree.'''
+        c = self.c
+        if not black or not root:
+            return
+        t1 = time.clock()
+        self.changed, self.errors, self.total = 0, 0, 0
+        ###
+            # self.at.initWriteIvars(root, "<string-file>",
+                # forcePythonSentinels=False, sentinels=False)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        if roots:
+            for root in roots:
+                print('')
+                print(root.h)
+                for p in root.self_and_subtree():
+                    self.blacken_node(p)
+        else:
+            # Handle selected tree.
+            for p in root.self_and_subtree():
+                self.blacken_node(p)
+        t2 = time.clock()
+        print('scanned %s node%s, changed %s node%s, %s error%s in %3.1f sec.' % (
+            self.total, g.plural(self.total),
+            self.changed, g.plural(self.changed),
+            self.errors, g.plural(self.errors), t2-t1))
+        if self.changed:
+            c.redraw()
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node
+    def blacken_node(self, p):
+        '''blacken p.b, incrementing counts'''
+        self.total += 1
+        body = p.b.rstrip()+'\n'
+        chunks = self.make_chunks(p)
+        for chunk in chunks:
+            if chunk.blacken:
+                s = ''.join(chunk.lines)
+                try:
+                    s2 = black.format_str(s, mode=self.mode)
+                    chunk.lines = g.splitLines(s2)
+                except Exception:
+                    self.errors += 1
+                    print('\n===== error', p.h, '\n')
+                    g.printObj(chunk.lines)
+        #
+        # Join the chunks.
+        result = []
+        for chunk in chunks:
+            result.extend(chunk.lines)
+        result = ''.join(result).rstrip()+'\n'
+        if result != body:
+            self.changed += 1
+            print('===== changed', p.h)
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+    #@+node:ekr.20190726021203.1: *3* black.make_chunks
+    c_pat = re.compile('^@c\b')
+    dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
+    ref_pat = re.compile(r'.*\<\<.*\>\>')
+    doc_pat = re.compile(r'^(@\s+|@doc\s+)')
+
+    def make_chunks(self, p):
+        '''Split p.b into chunks that separate Leo constructs from plain python text.'''
+        blacken, chunks, chunk_lines, in_doc = True, [], [], False
+        for line in g.splitLines(p.b):
+            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
+                m = pat.match(line)
+                if m:
+                    #g.trace(blacken, repr(m))
+                    #g.printObj(chunk_lines)
+                    if blacken and chunk_lines:
+                        # End a chunk of blackened lines.
+                        chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+                        chunk_lines = []
+                    blacken = False
+                    chunk_lines.append(line)
+                    if pat == self.doc_pat:
+                        in_doc = True
+                    if pat == self.c_pat:
+                        in_doc = False
+                        chunks.append(self.Chunk(blacken=False, lines=chunk_lines))
+                        blacken = True
+                        chunk_lines = []
+                    break
+            else:
+                if in_doc:
+                    # A doc line line.
+                    assert not blacken
+                    chunk_lines.append(line)
+                else:
+                    # A plain line.
+                    if not blacken and chunk_lines:
+                        # End a chunk of non-blackened lines.
+                        # g.trace(blacken)
+                        # g.printObj(chunk_lines)
+                        chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+                        chunk_lines = []
+                    blacken = True
+                    chunk_lines.append(line)
+        #
+        # End the last chunk.
+        if chunk_lines:
+            # g.trace('LAST', blacken)
+            # g.printObj(chunk_lines)
+            chunks.append(self.Chunk(blacken=blacken, lines=chunk_lines))
+        return chunks
+    #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
