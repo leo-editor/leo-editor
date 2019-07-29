@@ -42,8 +42,6 @@ def blacken_node(event):
     if not c:
         return
     if black:
-        ### if c.isChanged():
-        ###    c.save()
         BlackCommand(c).blacken_node(c.p)
     else:
         g.es_print('can not import black')
@@ -259,7 +257,7 @@ class BlackCommand:
         self.changed, self.errors, self.total = 0, 0, 0
         self.blacken_node_helper(root)
         t2 = time.clock()
-        print('scanned %s node%s, changed %s node%s, %s error%s in %3.1f sec.' % (
+        print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
             self.total, g.plural(self.total),
             self.changed, g.plural(self.changed),
             self.errors, g.plural(self.errors), t2-t1))
@@ -285,7 +283,7 @@ class BlackCommand:
             for p in root.self_and_subtree():
                 self.blacken_node_helper(p)
         t2 = time.clock()
-        print('scanned %s node%s, changed %s node%s, %s error%s in %3.1f sec.' % (
+        print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
             self.total, g.plural(self.total),
             self.changed, g.plural(self.changed),
             self.errors, g.plural(self.errors), t2-t1))
@@ -294,6 +292,7 @@ class BlackCommand:
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p):
         '''blacken p.b, incrementing counts'''
+        trace = True
         self.total += 1
         body = p.b.rstrip()+'\n'
         chunks = self.make_chunks(p)
@@ -315,8 +314,9 @@ class BlackCommand:
         result = ''.join(result).rstrip()+'\n'
         if result != body:
             self.changed += 1
-            print('===== changed', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+            if trace:
+                print('===== changed', p.h)
+                print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
     #@+node:ekr.20190726021203.1: *3* black.make_chunks
     c_pat = re.compile('^@c\b')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
