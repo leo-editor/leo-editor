@@ -326,19 +326,20 @@ class BlackCommand:
         for chunk in chunks:
             result.extend(chunk.lines)
         result = ''.join(result).rstrip()+'\n'
-        if result != body:
-            self.changed += 1
-            if trace:
-                print('===== changed', p.h)
-                print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
-            p.b = result
-            c.frame.body.updateEditors()
-            p.v.contentModified()
-            c.undoer.setUndoTypingParams(p, 'blacken',
-                oldText=body, newText=result, oldSel=None, newSel=None, oldYview=None)
-            if not p.v.isDirty():
-                p.v.setDirty()
-                
+        if result == body:
+            return
+        self.changed += 1
+        if trace:
+            print('===== changed', p.h)
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+        # Update p.b and set undo params.
+        p.b = result
+        c.frame.body.updateEditors()
+        p.v.contentModified()
+        c.undoer.setUndoTypingParams(p, 'blacken',
+            oldText=body, newText=result) ###, oldSel=None, newSel=None, oldYview=None)
+        if not p.v.isDirty():
+            p.v.setDirty()
     #@+node:ekr.20190726021203.1: *3* black.make_chunks & helpers
     c_pat = re.compile('^@c\b')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
