@@ -35,6 +35,19 @@ import time
 @g.command('blacken-node')
 def blacken_node(event):
     '''
+    Run black on all nodes of the selected node.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_node(c.p)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190729105252.1: *3* blacken-tree
+@g.command('blacken-tree')
+def blacken_tree(event):
+    '''
     Run black on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     '''
@@ -42,7 +55,7 @@ def blacken_node(event):
     if not c:
         return
     if black:
-        BlackCommand(c).blacken_node(c.p)
+        BlackCommand(c).blacken_tree(c.p)
     else:
         g.es_print('can not import black')
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
@@ -231,9 +244,9 @@ class BlackCommand:
 
     def __init__(self, c):
         '''ctor for PyflakesCommand class.'''
-        ### self.at = c.atFileCommands
         self.c = c
         self.mode = black.FileMode()
+        self.wrapper = c.frame.body.wrapper
         # self.mode.line_length = 79
 
     #@+others
@@ -288,12 +301,14 @@ class BlackCommand:
             self.changed, g.plural(self.changed),
             self.errors, g.plural(self.errors), t2-t1))
         if self.changed:
+            if not c.changed: c.setChanged(True)
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p):
-        '''blacken p.b, incrementing counts'''
-        trace = True
+        '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
+        trace = True and not g.unitTesting
         self.total += 1
+        c = self.c
         body = p.b.rstrip()+'\n'
         chunks = self.make_chunks(p)
         for chunk in chunks:
@@ -306,7 +321,6 @@ class BlackCommand:
                     self.errors += 1
                     print('\n===== error', p.h, '\n')
                     g.printObj(chunk.lines)
-        #
         # Join the chunks.
         result = []
         for chunk in chunks:
@@ -317,51 +331,75 @@ class BlackCommand:
             if trace:
                 print('===== changed', p.h)
                 print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
-    #@+node:ekr.20190726021203.1: *3* black.make_chunks
+            p.b = result
+            c.frame.body.updateEditors()
+            p.v.contentModified()
+            c.undoer.setUndoTypingParams(p, 'blacken',
+                oldText=body, newText=result, oldSel=None, newSel=None, oldYview=None)
+            if not p.v.isDirty():
+                p.v.setDirty()
+                
+    #@+node:ekr.20190726021203.1: *3* black.make_chunks & helpers
     c_pat = re.compile('^@c\b')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
     ref_pat = re.compile(r'.*\<\<.*\>\>')
     doc_pat = re.compile(r'^(@\s+|@doc\s+)')
+    lang_pat = re.compile(r'@language\s+(\w+)')
 
     def make_chunks(self, p):
         '''Split p.b into chunks that separate Leo constructs from plain python text.'''
-        blacken, chunks, chunk_lines, in_doc = True, [], [], False
+        self.blacken, self.in_doc, self.in_python = True, False, True
+        self.chunks, self.chunk_lines = [], []
         for line in g.splitLines(p.b):
-            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
-                m = pat.match(line)
-                if m:
-                    if blacken and chunk_lines:
-                        # End a chunk of blackened lines.
-                        chunks.append(self.Chunk(blacken, chunk_lines))
-                        chunk_lines = []
-                    blacken = False
-                    chunk_lines.append(line)
-                    if pat == self.doc_pat:
-                        in_doc = True
-                    if pat == self.c_pat:
-                        chunks.append(self.Chunk(blacken, chunk_lines))
-                        in_doc = False
-                        blacken = True
-                        chunk_lines = []
-                    break
+            m = self.lang_pat.match(line)
+            if m:
+                self.in_python = m.group(1).lower() == 'python'
+                self.add_raw_line(line)
+            elif self.in_python:
+                self.do_python_line(line)
             else:
-                if in_doc:
-                    # A doc line line.
-                    assert not blacken
-                    chunk_lines.append(line)
-                else:
-                    # A plain line.
-                    if not blacken and chunk_lines:
-                        # End a chunk of non-blackened lines.
-                        chunks.append(self.Chunk(blacken, chunk_lines))
-                        chunk_lines = []
-                    blacken = True
-                    chunk_lines.append(line)
-        #
+                self.add_raw_ine(line)
         # End the last chunk.
-        if chunk_lines:
-            chunks.append(self.Chunk(blacken, chunk_lines))
-        return chunks
+        if self.chunk_lines:
+            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
+        return self.chunks
+    #@+node:ekr.20190729102343.1: *4* black.add_blackend/raw_line
+    def add_blackened_line(self, line):
+        '''Add line to a blackened chunk, ending the previous non-blackened chunk if need be.'''
+        if not self.blacken and self.chunk_lines:
+            # End a chunk of non-blackened lines.
+            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
+            self.chunk_lines = []
+        self.blacken = True
+        self.chunk_lines.append(line)
+        
+    def add_raw_line(self, line):
+        '''Add line to a non-blackened chunk, ending the previous blackened chunk if need be.'''
+        if self.blacken and self.chunk_lines:
+            # End a chunk of blackened lines.
+            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
+            self.chunk_lines = []
+        self.blacken = False
+        self.chunk_lines.append(line)
+    #@+node:ekr.20190729102345.1: *4* black.do_python_line
+    def do_python_line(self, line):
+        
+        for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
+            m = pat.match(line)
+            if m:
+                self.add_raw_line(line)
+                if pat == self.doc_pat:
+                    self.in_doc = True
+                if pat == self.c_pat:
+                    self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
+                    self.in_doc = False
+                    self.blacken = True
+                    self.chunk_lines = []
+                return
+        if self.in_doc:
+            self.add_raw_line(line)
+        else:
+            self.add_blackened_line(line)
     #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
