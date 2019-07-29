@@ -268,6 +268,7 @@ class BlackCommand:
             return
         t1 = time.clock()
         self.changed, self.errors, self.total = 0, 0, 0
+        self.undo_type = 'blacken-node'
         self.blacken_node_helper(root)
         t2 = time.clock()
         print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
@@ -284,17 +285,23 @@ class BlackCommand:
             return
         t1 = time.clock()
         self.changed, self.errors, self.total = 0, 0, 0
-        roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if roots:
-            for root in roots:
-                print('')
-                print(root.h)
-                for p in root.self_and_subtree():
-                    self.blacken_node_helper(p)
-        else:
-            # Handle selected tree.
-            for p in root.self_and_subtree():
-                self.blacken_node_helper(p)
+        undo_type = 'blacken-tree'
+        bunch = c.undoer.beforeChangeTree(root)
+        ### Not so useful
+            # roots = g.findRootsWithPredicate(c, root, predicate=None)
+            # if roots:
+                # for root in roots:
+                    # print('')
+                    # print(root.h)
+                    # for p in root.self_and_subtree():
+                        # self.blacken_node_helper(p)
+        # Blacken *only* the selected tree.
+        changed = False
+        for p in root.self_and_subtree():
+            changed |= self.blacken_node_helper(p)
+        if changed:
+            c.setChanged(True)
+            c.undoer.afterChangeTree(root, undo_type, bunch)
         t2 = time.clock()
         print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
             self.total, g.plural(self.total),
@@ -327,7 +334,7 @@ class BlackCommand:
             result.extend(chunk.lines)
         result = ''.join(result).rstrip()+'\n'
         if result == body:
-            return
+            return False
         self.changed += 1
         if trace:
             print('===== changed', p.h)
@@ -336,10 +343,11 @@ class BlackCommand:
         p.b = result
         c.frame.body.updateEditors()
         p.v.contentModified()
-        c.undoer.setUndoTypingParams(p, 'blacken',
+        c.undoer.setUndoTypingParams(p, 'blacken-node',
             oldText=body, newText=result) ###, oldSel=None, newSel=None, oldYview=None)
         if not p.v.isDirty():
             p.v.setDirty()
+        return True
     #@+node:ekr.20190726021203.1: *3* black.make_chunks & helpers
     c_pat = re.compile('^@c\b')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
