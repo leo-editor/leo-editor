@@ -31,9 +31,9 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
-#@+node:ekr.20190725155006.1: *3* black
-@g.command('black')
-def black_command(event):
+#@+node:ekr.20190725155006.1: *3* blacken-node
+@g.command('blacken-node')
+def blacken_node(event):
     '''
     Run black on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -44,7 +44,7 @@ def black_command(event):
     if black:
         ### if c.isChanged():
         ###    c.save()
-        BlackCommand(c).run(c.p)
+        BlackCommand(c).blacken_node(c.p)
     else:
         g.es_print('can not import black')
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
@@ -249,8 +249,24 @@ class BlackCommand:
         def __init__(self, blacken, lines):
             self.blacken = blacken
             self.lines = lines
-    #@+node:ekr.20190725154916.7: *3* black.run & helper
-    def run(self, root):
+    #@+node:ekr.20190725154916.7: *3* black.blacken_node
+    def blacken_node(self, root):
+        '''Run black on all Python @<file> nodes in root's tree.'''
+        c = self.c
+        if not black or not root:
+            return
+        t1 = time.clock()
+        self.changed, self.errors, self.total = 0, 0, 0
+        self.blacken_node_helper(root)
+        t2 = time.clock()
+        print('scanned %s node%s, changed %s node%s, %s error%s in %3.1f sec.' % (
+            self.total, g.plural(self.total),
+            self.changed, g.plural(self.changed),
+            self.errors, g.plural(self.errors), t2-t1))
+        if self.changed:
+            c.redraw()
+    #@+node:ekr.20190729065756.1: *3* black.blacken_tree
+    def blacken_tree(self, root):
         '''Run black on all Python @<file> nodes in root's tree.'''
         c = self.c
         if not black or not root:
@@ -263,11 +279,11 @@ class BlackCommand:
                 print('')
                 print(root.h)
                 for p in root.self_and_subtree():
-                    self.blacken_node(p)
+                    self.blacken_node_helper(p)
         else:
             # Handle selected tree.
             for p in root.self_and_subtree():
-                self.blacken_node(p)
+                self.blacken_node_helper(p)
         t2 = time.clock()
         print('scanned %s node%s, changed %s node%s, %s error%s in %3.1f sec.' % (
             self.total, g.plural(self.total),
@@ -275,8 +291,8 @@ class BlackCommand:
             self.errors, g.plural(self.errors), t2-t1))
         if self.changed:
             c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node
-    def blacken_node(self, p):
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
+    def blacken_node_helper(self, p):
         '''blacken p.b, incrementing counts'''
         self.total += 1
         body = p.b.rstrip()+'\n'
