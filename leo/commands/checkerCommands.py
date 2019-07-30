@@ -357,8 +357,9 @@ class BlackCommand:
 
     def make_chunks(self, p):
         '''Split p.b into chunks that separate Leo constructs from plain python text.'''
-        self.blacken, self.in_doc, self.in_python = True, False, True
-        self.chunks, self.chunk_lines = [], []
+        language = g.findLanguageDirectives(self.c, p)
+        self.blacken = self.in_python = language == 'python'
+        self.chunks, self.chunk_lines, self.in_doc = [], [], False
         for line in g.splitLines(p.b):
             m = self.lang_pat.match(line)
             if m:
@@ -367,7 +368,7 @@ class BlackCommand:
             elif self.in_python:
                 self.do_python_line(line)
             else:
-                self.add_raw_ine(line)
+                self.add_raw_line(line)
         # End the last chunk.
         if self.chunk_lines:
             self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
