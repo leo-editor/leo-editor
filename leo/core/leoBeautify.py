@@ -861,7 +861,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
-        self.print_stats() ###
+        ### self.print_stats()
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''
@@ -1086,7 +1086,7 @@ class PythonTokenBeautifier:
         tok0 = self.code_list[i]
         assert tok0.value in ')]}'
         tok1_value = { ')': '(', ']': '[', '{': '}'}.get(tok0.value)
-        g.trace('=====', tok1_value, tok0.value)
+        ### g.trace('=====', tok1_value, tok0.value)
         level = 0
         while i >= 0:
             tok = self.code_list[i]
@@ -1095,8 +1095,9 @@ class PythonTokenBeautifier:
             elif tok.value == tok1_value:
                 level -= 1
                 if level == 0:
-                    # g.printObj(self.code_list[i:])
-                    # print(''.join([z.to_string() for z in self.code_list[i:]]))
+                    ###
+                        # g.printObj(self.code_list[i:])
+                        # print(''.join([z.to_string() for z in self.code_list[i:]]))
                     while i >= 0:
                         tok = self.code_list[i]
                         if tok.kind == 'file-start':
@@ -1115,7 +1116,6 @@ class PythonTokenBeautifier:
             i -= 1
         print('----- not found', tok0.kind)
         g.printObj(self.code_list)
-        
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''

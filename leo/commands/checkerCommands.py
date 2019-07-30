@@ -313,7 +313,7 @@ class BlackCommand:
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.total += 1
         c = self.c
         body = p.b.rstrip()+'\n'
