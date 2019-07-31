@@ -30581,7 +30581,23 @@ At current commit rate:
 
     depth=100 is 6 months of history and 60mb (.git &amp; Leo together)
     depth=500 is 2 years and 73 MB
-    depth={infinity} is 11 years and 242 MB</t>
+    depth={infinity} is 11 years and 242 MB
+    
+The command shown only fetches master branch, and checkout of other branches will fail. Two solutions:
+
+# add all remote branch names
+# use 'devel' instead of '*' to get only devel branch
+# quotes are significant
+git remote set-branches origin '*'
+git fetch
+git checkout devel
+
+Or:
+
+# shallow clone each branch
+git clone --depth=nn --no-single-branch ...
+
+</t>
 <t tx="ekr.20190731085747.1">@language rest
 @wrap
 
