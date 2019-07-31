@@ -246,7 +246,7 @@ if encOK:
                 # #1265: When in doubt, use MODE_EAX.
                 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
         except Exception: ### UnicodeDecodeError:
-            g.es("Decode failed")
+            g.es("encryption failed")
             __ENCKEY[0] = None
             return None
             
