@@ -239,12 +239,13 @@ if encOK:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
+
     def sn_decode(s):
         try:
             return AES.new(__ENCKEY[0], AES.MODE_EAX).decrypt(base64.b64decode(s)).decode('utf-8').strip()
                 # #1265: When in doubt, use MODE_EAX.
                 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
-        except UnicodeDecodeError:
+        except Exception: ### UnicodeDecodeError:
             g.es("Decode failed")
             __ENCKEY[0] = None
             return None
