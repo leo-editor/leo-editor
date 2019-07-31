@@ -247,14 +247,14 @@ if encOK:
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
                 # #1265: When in doubt, use MODE_EAX.
                 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
-        else:
-            return AES.new(__ENCKEY[0])
+        # pylint: disable=no-value-for-parameter
+        return AES.new(__ENCKEY[0])
 
     def sn_decode(s):
         try:
             s1 = base64.b64decode(s)
             return get_AES().decrypt(s1).decode('utf8').strip()
-        except Exception: ### UnicodeDecodeError:
+        except Exception:
             g.es("encryption failed")
             __ENCKEY[0] = None
             return None
