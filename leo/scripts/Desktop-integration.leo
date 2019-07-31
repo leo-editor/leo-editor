@@ -48,6 +48,11 @@
 </v>
 <v t="lkj.20190711232707.1"><vh>Linux</vh></v>
 <v t="lkj.20190711232711.1"><vh>Mac</vh></v>
+<v t="mhw.20190730140115.1"><vh>@button testing-Shortcutter</vh>
+<v t="mhw.20190730142513.1"><vh>Notes</vh></v>
+<v t="mhw.20190730140619.1"><vh>@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
+<v t="mhw.20190730141446.1"><vh>@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -326,5 +331,87 @@ False: (Good for files like unitTest.leo)
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
+<t tx="mhw.20190730140115.1">'''naive implementation of https://github.com/kiwi0fruit/shortcutter'''
+import sys
+from shortcutter import ShortCutter
+sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+desktop = sc.create_desktop_shortcut("leo-messages", shortcut_name="Leo Editor")
+menu = sc.create_menu_shortcut("leo-messages", shortcut_name="Leo Editor")
+term = sc.create_shortcut_to_env_terminal()
+
+if desktop:
+    g.es("Created shortcuts:")
+    g.es("{} - {}".format(desktop[0],desktop[2]))
+    g.es("{} - {}".format(menu[0],menu[2]))
+    
+    print("{} - {}".format(desktop[0],desktop[2]))
+    print("{} - {}".format(menu[0],menu[2]))
+    
+@first # -*- coding: utf-8 -*-
+@language python
+@tabwidth -4
+</t>
+<t tx="mhw.20190730140619.1">@language batch
+@echo off
+set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
+set PYTHONNOUSERSITE=1
+call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
+set "u=chcp 65001 &amp;&amp; set PYTHONIOENCODING=utf-8"
+set "a=chcp 1252 &amp;&amp; set PYTHONIOENCODING="
+set "b=set LANG=C.UTF-8 &amp;&amp; set PYTHONIOENCODING=utf-8 &amp;&amp; "%PROGRAMFILES%\Git\git-bash.exe""
+cd /d %USERPROFILE%
+cmd /k
+</t>
+<t tx="mhw.20190730141446.1">@language batch
+@echo off
+set PYTHONNOUSERSITE=1
+call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
+"c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
+call "c:\tools\miniconda3\Scripts\deactivate.bat"
+</t>
+<t tx="mhw.20190730142513.1">@
+Example straight from docs creates a .lnk file like:
+    
+    Name: Terminal at leo-dev
+    Command: C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
+
+and the bat file:
+    
+    @echo off
+    set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
+    set PYTHONNOUSERSITE=1
+    call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
+    set "u=chcp 65001 &amp;&amp; set PYTHONIOENCODING=utf-8"
+    set "a=chcp 1252 &amp;&amp; set PYTHONIOENCODING="
+    set "b=set LANG=C.UTF-8 &amp;&amp; set PYTHONIOENCODING=utf-8 &amp;&amp; "%PROGRAMFILES%\Git\git-bash.exe""
+    cd /d %USERPROFILE%
+    cmd /k
+
+------
+Using `leo` instead of Python or `Leo Editor`:
+
+C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
+
+Contents:
+    @language batch
+    @echo off
+    set PYTHONNOUSERSITE=1
+    call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
+    "c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
+    call "c:\tools\miniconda3\Scripts\deactivate.bat"
+
+----
+passing `activate=False` bypasses creation of .bat file, this is what we need. It Just Works. :-)
+
+    C:\tools\miniconda3\envs\leo-dev\Scripts\leo-messages.exe
+
+
+-----
+# What's Next
+
+ - Record location of the created shortcuts so they can be removed later with a script
+ - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
+
+@c</t>
 </tnodes>
 </leo_file>
