@@ -241,15 +241,19 @@ if encOK:
 if encOK:
     def sn_decode(s):
         try:
-            return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
+            return AES.new(__ENCKEY[0], AES.MODE_EAX).decrypt(base64.b64decode(s)).decode('utf-8').strip()
+                # #1265: When in doubt, use MODE_EAX.
+                # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
         except UnicodeDecodeError:
             g.es("Decode failed")
             __ENCKEY[0] = None
             return None
-
+            
     def sn_encode(s):
         pad = ' '*(16-len(s)%16)
-        txt = base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8')))
+        txt = base64.b64encode(AES.new(__ENCKEY[0], AES.MODE_EAX).encrypt((s+pad).encode('utf-8')))
+            # #1265: When in doubt, use MODE_EAX.
+            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
         txt = str(txt, 'utf-8')
         wrapped = textwrap.wrap(txt, break_long_words=True)
         return '\n'.join(wrapped)
@@ -262,12 +266,10 @@ if encOK:
         )
         if not ok:
             return
-
         if str(txt).startswith('v0:'):
             txt = QString(txt[3:])
         else:
             txt = g.toUnicode(txt)
-
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()
