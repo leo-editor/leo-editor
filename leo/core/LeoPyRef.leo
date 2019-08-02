@@ -320,7 +320,6 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
-<v t="lkj.20190714022527.1"><vh>c_help.openDesktopIntegration</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -2196,17 +2195,5 @@ viewrendered.py
 # xdb_pane.py
 </t>
 <t tx="ekr.20190607124533.1"></t>
-<t tx="lkj.20190714022527.1">@g.commander_command('open-desktop-integration-leo')
-@g.commander_command('desktop-integration-leo')
-def openDesktopIntegration(self, event=None):
-    '''Open Desktop-integration.leo.'''
-    c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'Desktop-integration.leo')
-    # only call g.openWithFileName if the file exists.
-    if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
-    g.es('not found:', fileName)
-</t>
 </tnodes>
 </leo_file>
