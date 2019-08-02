@@ -30561,33 +30561,33 @@ You should now be using the theme of your choice. From here you need to
 open the local theme file with Leo. The font sizing and colors are under
 Theme Settings in the tree.
 </t>
-<t tx="ekr.20190622142940.1">This script appends the outline headlines, indented, to the current vim buffer:
+<t tx="ekr.20190622142940.1">@language python
 
-@language python
+This script appends the outline headlines, indented, to the current vim buffer::
 
-import leo.core.leoBridge as leoBridge
-import vim
-
-controller = leoBridge.controller(
-    gui='nullGui',
-    loadPlugins=True,  # True: attempt to load plugins.
-    readSettings=True,  # True: read standard settings files.
-    silent=True,  # True: don't print signon messages.
-    verbose=False,  # True: print informational messages.
-)
-g = controller.globals()
-c = controller.openLeoFile("/home/tbrown/.leo/del.leo")
-
-def dent(node, result, level=0):
-    result.append('  ' * level + node.h)
-    for child in node.children:
-        dent(child, result, level + 1)
-    return result
-
-result = []
-dent(c.hiddenRootNode, result)
-vim.current.buffer[-1:] = result
-
+    import leo.core.leoBridge as leoBridge
+    import vim
+    
+    controller = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=True,  # True: attempt to load plugins.
+        readSettings=True,  # True: read standard settings files.
+        silent=True,  # True: don't print signon messages.
+        verbose=False,  # True: print informational messages.
+    )
+    g = controller.globals()
+    c = controller.openLeoFile("/home/tbrown/.leo/del.leo")
+    
+    def dent(node, result, level=0):
+        result.append('  ' * level + node.h)
+        for child in node.children:
+            dent(child, result, level + 1)
+        return result
+    
+    result = []
+    dent(c.hiddenRootNode, result)
+    vim.current.buffer[-1:] = result
+    
 @language rest
 
 It can be invoked with::
@@ -30638,17 +30638,17 @@ How it is possible to specify settings in @file? As I understand every setting s
 
 Vitalije:
     
-You can use clones. For example:
+You can use clones. For example::
     
---@settings
-----my-shared-settings
-------...
-----some-specific-settings-for-this-outline
-------....
-
---@file my-shared-settings-somewhere.txt
-----my-shared-settings
-
+    --@settings
+    ----my-shared-settings
+    ------...
+    ----some-specific-settings-for-this-outline
+    ------....
+    
+    --@file my-shared-settings-somewhere.txt
+    ----my-shared-settings
+    
 where `my-shared-settings` node is cloned from the @file subtree.
 
 Quite often I use some script to combine some nodes, process them and generate some output file. And such script I put in a node with the following headline: `@button n-save @key=Ctrl-s`. Then whenever I open this outline and whenever I hit Ctrl-s to save the outline, this script is executed. Of course I put in this script `c.save()` call and on every save my files are regenerated. 
@@ -30657,7 +30657,8 @@ When working for a web I often use Coffeescript, some html template generators l
 
 Attached to this message is a Leo file that I have extracted from one of my projects. I hope that I didn't miss anything that the script require. 
 
-In the outline you can find build server implemented in Coffeescript. You have to use npm or yarn to install necessary modules for this server to work. Once installed you start server by executing `coffee tools/build-server.coffee and it will start listening on port 8011. The script bound to Ctrl-s will search outline for nodes with the headlines like: @vendor, @pug, @coffee, @bulma and for each found node, it checks if the content of this node and its subtree has changed since last time and if it is, this content is sent to build server which transforms the source and returns result that script writes to output file. 
+In the outline you can find build server implemented in Coffeescript. You have to use npm or yarn to install necessary modules for this server to work. Once installed you start server by executing
+`coffee tools/build-server.coffee` and it will start listening on port 8011. The script bound to Ctrl-s will search outline for nodes with the headlines like: @vendor, @pug, @coffee, @bulma and for each found node, it checks if the content of this node and its subtree has changed since last time and if it is, this content is sent to build server which transforms the source and returns result that script writes to output file. 
 
 There is one more thing I use for sharing outlines. There are three commands `set-reference-file`, `update-ref-file` and `read-ref-file`. The first lets you choose a reference file for this outline, i.e. public shared outline. It adds a top level headline `---begin-private-area---` to the outline. In the body of this node is the path to the public Leo file. Everything below this node is private, and above is public. The public file should be added to version control (git, fossil,...) and the private file should be added to ignored files for version control tool. And then in the script bound to Ctrl-s you can add `c.fileCommands.save_ref()`, so every time you save your private Leo file, at the same time is updated the public Leo file. That way they never get out of sync.</t>
 <t tx="ekr.20190802082825.1"></t>
