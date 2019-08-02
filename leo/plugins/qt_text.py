@@ -1550,7 +1550,7 @@ class QTextEditWrapper(QTextMixin):
         te = self.widget
         if index is None:
             return 0
-        if g.isInt(index):
+        if isinstance(index, int):
             return index
         if index == '1.0':
             return 0
