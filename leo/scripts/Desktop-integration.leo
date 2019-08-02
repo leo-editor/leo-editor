@@ -48,10 +48,11 @@
 </v>
 <v t="lkj.20190711232707.1"><vh>Linux</vh></v>
 <v t="lkj.20190711232711.1"><vh>Mac</vh></v>
-<v t="mhw.20190730140115.1"><vh>@button testing-Shortcutter</vh>
-<v t="mhw.20190730142513.1"><vh>Notes</vh></v>
-<v t="mhw.20190730140619.1"><vh>@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
-<v t="mhw.20190730141446.1"><vh>@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
+<v t="mhw.20190730140115.1"><vh>@button add-desktop-links</vh>
+<v t="mhw.20190730142513.1"><vh>Notes</vh>
+<v t="mhw.20190730140619.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
+<v t="mhw.20190730141446.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -80,7 +81,14 @@ Example of success:
 <t tx="ekr.20150302053516.3"></t>
 <t tx="lkj.20190711232707.1">{placeholder for future functions}</t>
 <t tx="lkj.20190711232711.1">{placeholder for future functions}</t>
-<t tx="lkj.20190711235336.1">Desktop integration buttons (under the menu bar)
+<t tx="lkj.20190711235336.1">_Desktop integration buttons (under the menu bar)_
+
+## All Platforms - Linux, Mac, Windows ##
+
+[add-desktop-links] - Creates launch shortcuts in Desktop and Start Menu 
+
+
+## Windows ## 
 
 [Register-leo] - Creates registry keys for Leo file type and .leo file association. Afterwards .leo files will show Leo icon and double-clicking them will open in Leo Editor.
 
@@ -333,20 +341,34 @@ False: (Good for files like unitTest.leo)
     be expanded when Leo opens an outline.</t>
 <t tx="mhw.20190730140115.1">'''naive implementation of https://github.com/kiwi0fruit/shortcutter'''
 import sys
+
+
+
+import platform
 from shortcutter import ShortCutter
 sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
-desktop = sc.create_desktop_shortcut("leo-messages", shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut("leo-messages", shortcut_name="Leo Editor")
+
+
+
+
+
+leocmd = "leo"
+if platform.system() == 'Windows':
+    leocmd = "leo-messages"
+
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
 term = sc.create_shortcut_to_env_terminal()
 
 if desktop:
-    g.es("Created shortcuts:")
-    g.es("{} - {}".format(desktop[0],desktop[2]))
-    g.es("{} - {}".format(menu[0],menu[2]))
+    g.es_print("Created shortcut: {} - {}".format(desktop[0],desktop[2]))
+
+if menu:
+    g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
     
-    print("{} - {}".format(desktop[0],desktop[2]))
-    print("{} - {}".format(menu[0],menu[2]))
-    
+
+
+
 @first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
