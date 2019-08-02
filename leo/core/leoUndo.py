@@ -265,7 +265,7 @@ class Undoer:
     def setRedoType(self, theType):
 
         u = self; frame = u.c.frame
-        if not g.isString(theType):
+        if not isinstance(theType, str):
             g.trace('oops: expected string for command, got %s' % repr(theType))
             g.trace(g.callers())
             theType = '<unknown>'
@@ -286,7 +286,7 @@ class Undoer:
     def setUndoType(self, theType):
 
         u = self; frame = u.c.frame
-        if not g.isString(theType):
+        if not isinstance(theType, str):
             g.trace('oops: expected string for command, got %s' % repr(theType))
             g.trace(g.callers())
             theType = '<unknown>'

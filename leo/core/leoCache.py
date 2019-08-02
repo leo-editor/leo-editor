@@ -707,7 +707,7 @@ def dump_list(heading, aList):
         print('\n%s...\n' % heading)
     for aTuple in aList:
         key, val = aTuple
-        if g.isString(val):
+        if isinstance(val, str):
             if key.startswith('windowState'):
                 print(key)
             elif key.endswith(('leo_expanded', 'leo_marked')):

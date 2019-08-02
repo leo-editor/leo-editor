@@ -2350,7 +2350,7 @@ class Commands:
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
-            if g.isString(gnxString):
+            if isinstance(gnxString, str):
                 d[gnxString] = v
                 if 'gnx' in g.app.debug:
                     g.trace(c.shortFileName(), gnxString, v)

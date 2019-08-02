@@ -2409,7 +2409,7 @@ if QtGui:
             """ Sets the style to the specified Pygments style.
             """
             from pygments.styles import get_style_by_name
-            if g.isString(style):
+            if isinstance(style, str):
                 style = get_style_by_name(style)
             self._style = style
             self._clear_caches()

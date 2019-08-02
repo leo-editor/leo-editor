@@ -183,7 +183,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
         d = {}
         # #904: data may be a string or a list of two strings.
-        aList = [data] if g.isString(data) else data
+        aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
             #
             # Expand the tree so we can traverse it.

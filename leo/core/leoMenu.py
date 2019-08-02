@@ -337,7 +337,7 @@ class LeoMenu:
     def getMenuEntryBindings(self, command, dynamicMenu, label):
         '''Compute commandName from command.'''
         c = self.c
-        if g.isString(command):
+        if isinstance(command, str):
             # Command is really a command name.
             commandName = command
         else:
@@ -348,7 +348,7 @@ class LeoMenu:
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
     def getMenuEntryInfo(self, data, menu):
         done = False
-        if g.isString(data):
+        if isinstance(data, str):
             # A single string is both the label and the command.
             s = data
             removeHyphens = s and s[0] == '*'

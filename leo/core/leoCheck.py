@@ -316,7 +316,7 @@ class ConventionChecker:
         return 'line: %s file: %s: %s' % (
             getattr(node, 'lineno', '??'),
             self.file_name or '<string>',
-            ' '.join([z if g.isString(z) else repr(z) for z in args]),
+            ' '.join([z if isinstance(z, str) else repr(z) for z in args]),
         )
         
     def note(self, node, *args, **kwargs):
@@ -338,7 +338,7 @@ class ConventionChecker:
     def resolve(self, node, name, context, trace=False):
         '''Resolve name in the given context to a Type.'''
         self.stats.resolve += 1
-        assert g.isString(name), (repr(name), g.callers())
+        assert isinstance(name, str), (repr(name), g.callers())
         if context:
             if context.kind in ('error', 'unknown'):
                 result = context
@@ -367,7 +367,7 @@ class ConventionChecker:
             func = chain.pop()
             if isinstance(func, ast.Name):
                 func = func.id
-            assert g.isString(func), repr(func)
+            assert isinstance(func, str), repr(func)
         if chain:
             assert isinstance(chain[0], ast.Name), repr(chain[0])
             chain[0] = chain[0].id
@@ -389,7 +389,7 @@ class ConventionChecker:
         name = '<no name>'
         for obj in chain:
             name = obj.id if isinstance(obj, ast.Name) else obj
-            assert g.isString(name), (repr(name), g.callers())
+            assert isinstance(name, str), (repr(name), g.callers())
             context = self.resolve(node, name, context, trace=trace)
         assert isinstance(context, self.Type), repr(context)
         return context
@@ -546,7 +546,7 @@ class ConventionChecker:
             if len(chain) == 2:
                 var1, var2 = chain
                 assert isinstance(var1, ast.Name), repr(var1)
-                assert g.isString(var2), repr(var2)
+                assert isinstance(var2, str), repr(var2)
                 name = var1.id
                 if name == 'self':
                     self.do_assn_to_self(node, name, var2)
@@ -688,7 +688,7 @@ class ConventionChecker:
         chain, node1 = [], node
         while not isinstance(node, ast.Name):
             if isinstance(node, ast.Attribute):
-                assert g.isString(node.attr), repr(node.attr)
+                assert isinstance(node.attr, str), repr(node.attr)
                 chain.append(node.attr)
                 node = node.value
             else:

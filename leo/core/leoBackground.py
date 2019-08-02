@@ -76,7 +76,7 @@ class BackgroundProcessManager:
             self.shell = shell
             #
             # Check and compile the link pattern.
-            if link_pattern and g.isString(link_pattern):
+            if link_pattern and isinstance(link_pattern, str):
                 try:
                     self.link_pattern = re.compile(link_pattern)
                 except Exception:

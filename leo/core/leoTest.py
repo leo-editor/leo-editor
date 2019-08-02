@@ -425,7 +425,7 @@ class LinterTable():
         paths = []
         if functions:
             for func in functions:
-                files = [func] if g.isString(func) else func()
+                files = [func] if isinstance(func, str) else func()
                     # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)

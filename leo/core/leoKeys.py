@@ -4158,7 +4158,7 @@ class KeyHandlerClass:
     def isFKey(self, stroke):
         # k = self
         if not stroke: return False
-        assert g.isString(stroke) or g.isStroke(stroke)
+        assert isinstance(stroke, str) or g.isStroke(stroke)
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
