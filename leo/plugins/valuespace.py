@@ -488,7 +488,7 @@ class ValueSpaceController:
 
         if isinstance(value, SList):
             p.b = value.n
-        elif g.isString(value): # Works with Python 3.x.
+        elif isinstance(value, str):
             p.b = value
         else:
             p.b = pprint.pformat(value)

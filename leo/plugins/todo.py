@@ -576,9 +576,9 @@ class todoController:
             attrib in node.unknownAttributes["annotate"]
         ):
             x = node.unknownAttributes["annotate"][attrib]
-            if attrib in self._date_fields and g.isString(x):
+            if attrib in self._date_fields and isinstance(x, str):
                 x = self._date(x)
-            if attrib in self._time_fields and g.isString(x):
+            if attrib in self._time_fields and isinstance(x, str):
                 x = self._time(x)
             return x
         return 9999 if attrib == "priority" else ''
@@ -1259,7 +1259,7 @@ def todo_fix_datetime(event):
     for nd in c.all_unique_nodes():
         for key in c.cleo._datetime_fields:
             x = c.cleo.getat(nd, key)
-            if not g.isString(x):
+            if not isinstance(x, str):
                 c.cleo.setat(nd, key, x)
                 changed += 1
                 g.es("%r -> %r" % (x, c.cleo.getat(nd, key)))

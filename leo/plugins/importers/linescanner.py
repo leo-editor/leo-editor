@@ -160,7 +160,7 @@ class Importer:
 
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert s and g.isString(s), (repr(s), g.callers())
+        assert s and isinstance(s, str), (repr(s), g.callers())
         # *Never* change p unexpectedly!
         assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
         p.v._import_lines.append(s)
@@ -555,7 +555,7 @@ class Importer:
         self.inject_lines_ivar(child)
         if body:
             self.add_line(child, body)
-        assert g.isString(headline), repr(headline)
+        assert isinstance(headline, str), repr(headline)
         child.h = headline.strip()
         return child
     #@+node:ekr.20161119130337.1: *5* i.cut_stack

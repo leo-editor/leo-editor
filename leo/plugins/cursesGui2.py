@@ -425,7 +425,7 @@ class LeoTreeData(npyscreen.TreeData):
         if native:
             if content is None:
                 self.content = None
-            elif g.isString(content):
+            elif isinstance(content, str):
                 # This is a dummy node, not actually used.
                 assert content == '<HIDDEN>', repr(content)
                 self.content = content
@@ -818,7 +818,7 @@ def trace(*args, **keys):
     # Munge *args into s.
     result = [name] if name else []
     for arg in args:
-        if g.isString(arg):
+        if isinstance(arg, str):
             pass
         elif g.isBytes(arg):
             arg = g.toUnicode(arg)
