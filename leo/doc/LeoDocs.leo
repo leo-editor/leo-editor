@@ -30252,6 +30252,7 @@ For the find-long-lines command:
 @bool max-find-long-lines-length = 110
     
 For docks:
+
 @bool dockable-log-tabs = False
 @string central-dock-widget = outline
 </t>
@@ -30531,9 +30532,8 @@ Matt Wilkie: Whitehorse, Yukon, Canada.
 The following people have made numerous contributions to Leo throughout the years:
 
 Offray Vladimir Luna Cárdenas: Bogotá, Colombia.
-Kent Tenny: Ashland Wisconsin, USA.
+Kent Tenney: Ashland Wisconsin, USA.
 Ville M. Vainio.
-
 
 EKR lives in Madison, Wisconsin, USA
 </t>
@@ -30634,7 +30634,7 @@ git clone --depth=nn --no-single-branch ...
 <t tx="ekr.20190731085747.1">@language rest
 @wrap
 
-How it is possible to specify setings in @file? As I understand every setting should be a single outline.
+How it is possible to specify settings in @file? As I understand every setting should be a single outline.
 
 Vitalije:
     
