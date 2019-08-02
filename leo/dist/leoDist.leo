@@ -181,6 +181,7 @@
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
+<v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104609.1"><vh>Merge git *tag* into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
@@ -1818,6 +1819,8 @@ LeoDist.leo:
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leo-dist.leo.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
@@ -1827,9 +1830,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
 </t>
-<t tx="ekr.20180405171433.4">- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
-- Make sure Leo looks good without myLeoSettings.leo.
+<t tx="ekr.20180405171433.4">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
@@ -1855,12 +1856,14 @@ git push origin x.y-final-rel
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112218.1">Matt: After merge create dev tag that matches static version added to leoversion.py 4 steps ago.  
+<t tx="ekr.20181001112218.1">Matt: After merge create dev tag that matches
+    static version added to leoversion.py earlier.
     #static version = '6.0-b2-devel'
 
 git checkout devel
 git tag -a v6.0-b2-dev -m "Added v6.0-b2-dev tag"
 git push --follow-tags
+update version in leoVersion.py.
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
@@ -2323,7 +2326,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge devel</t>
+- git merge &lt;rel branch&gt;</t>
 <t tx="ekr.20190618104609.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
@@ -2344,10 +2347,13 @@ There is a "Draft New Release" button at the top-right of the page.
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 
-- [Matt] Register Leo at https://pypi.python.org/pypi/leo
+- (Email sent) [Matt] Register Leo at https://pypi.python.org/pypi/leo
 
-- My blog: http://edreamleo.blogspot.com/
-  **Paste source-forge or leo-editor announcement** as text, not html.
+- (Done) My blog: http://edreamleo.blogspot.com/
+  **Paste GitHub announcement**.
+</t>
+<t tx="ekr.20190802115604.1">- Run all unit tests.
+- Run pylint on all files.
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
