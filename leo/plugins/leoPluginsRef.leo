@@ -76,7 +76,6 @@
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>

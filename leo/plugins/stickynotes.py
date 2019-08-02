@@ -230,26 +230,40 @@ if encOK:
             secret = sn_encode(unsecret)
             v.b = secret
 
-        decoded = sn_decode(v.b)
-        if decoded is None:
-            return
+        if v.b:
+            decoded = sn_decode(v.b)
+            if decoded is None:
+                return
+        else:
+            decoded = v.b
         nf = mknote(c,p, focusin=focusin, focusout=focusout)
         nf.setPlainText(decoded)
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
+    def get_AES():
+        if hasattr(AES, 'MODE_EAX'):
+            return AES.new(__ENCKEY[0], AES.MODE_EAX)
+                # #1265: When in doubt, use MODE_EAX.
+                # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
+        # pylint: disable=no-value-for-parameter
+        return AES.new(__ENCKEY[0])
+
     def sn_decode(s):
         try:
-            return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
-        except UnicodeDecodeError:
-            g.es("Decode failed")
+            s1 = base64.b64decode(s)
+            return get_AES().decrypt(s1).decode('utf8').strip()
+        except Exception:
+            g.es("encryption failed")
             __ENCKEY[0] = None
             return None
 
     def sn_encode(s):
-        pad = ' '*(16-len(s)%16)
-        txt = base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8')))
+        s1 = s.encode('utf8')
+        pad = b' '*(16-len(s1)%16)
+        txta = get_AES().encrypt(s1 + pad)
+        txt = base64.b64encode(txta)
         txt = str(txt, 'utf-8')
         wrapped = textwrap.wrap(txt, break_long_words=True)
         return '\n'.join(wrapped)
@@ -262,12 +276,10 @@ if encOK:
         )
         if not ok:
             return
-
         if str(txt).startswith('v0:'):
             txt = QString(txt[3:])
         else:
             txt = g.toUnicode(txt)
-
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()

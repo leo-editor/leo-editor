@@ -102,7 +102,7 @@ import os
 import sqlite3
 from sqlite3 import ProgrammingError
 import traceback
-import types
+# import types
 #@-<< imports >>
 consoleEncoding = None
 #@+<< define usage >>
@@ -251,10 +251,7 @@ def _callerName(n=1, files=False):
         if name == '__init__':
             name = '__init__(%s,line %s)' % (
                 shortFileName(code1.co_filename), code1.co_firstlineno)
-        if files:
-            return '%s:%s' % (shortFileName(code1.co_filename), name)
-        else:
-            return name # The code name
+        return '%s:%s' % (shortFileName(code1.co_filename), name) if files else name
     except ValueError:
         return '' # The stack is not deep enough.
     except Exception:
@@ -300,17 +297,17 @@ def getLastTracebackFileAndLineNumber():
         # IndentationError is a subclass of SyntaxError.
         # Much easier in Python 2.6 and 3.x.
         return val.filename, val.lineno
-    else:
-        # Data is a list of tuples, one per stack entry.
-        # Tupls have the form (filename,lineNumber,functionName,text).
-        data = traceback.extract_tb(tb)
-        if data:
-            item = data[-1] # Get the item at the top of the stack.
-            filename, n, functionName, text = item
-            return filename, n
-        else:
-            # Should never happen.
-            return '<string>', 0
+    #
+    # Data is a list of tuples, one per stack entry.
+    # Tupls have the form (filename,lineNumber,functionName,text).
+    data = traceback.extract_tb(tb)
+    if data:
+        item = data[-1] # Get the item at the top of the stack.
+        filename, n, functionName, text = item
+        return filename, n
+    #
+    # Should never happen.
+    return '<string>', 0
 #@+node:ekr.20110310093050.14293: *5* pdb (codewise)
 def pdb(message=''):
     """Fall into pdb."""
@@ -350,10 +347,9 @@ def shortFileName(fileName, n=None):
     # pylint: disable=invalid-unary-operand-type
     if not fileName:
         return ''
-    elif n is None or n < 1:
+    if n is None or n < 1:
         return os.path.basename(fileName)
-    else:
-        return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
+    return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
@@ -423,32 +419,19 @@ def translateArgs(args, d):
 
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
-    if isPython3:
-        return isinstance(s, bytes)
-    else:
-        return False
+    return isinstance(s, bytes)
 
 def isCallable(obj):
-    if isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
+    return hasattr(obj, '__call__')
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
-    # pylint: disable=no-member
-    if isPython3:
-        return type(s) == type('a') # NOQA
-    else:
-        return type(s) in types.StringTypes
+    return isinstance(s, str)
 
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
-    # pylint: disable=no-member
-    if isPython3:
-        return type(s) == type('a') # NOQA
-    else:
-        return type(s) == types.UnicodeType # NOQA
+    return isinstance(s, str)
+
 #@+node:ekr.20110310093050.14283: *5* isValidEncoding (codewise)
 def isValidEncoding(encoding):
     if not encoding:
@@ -594,6 +577,7 @@ class CodeWise:
                 return self.dbconn.cursor()
             except ProgrammingError:
                 print("No cursor for codewise DB, closed database?")
+        return None
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):
         """ return class id. May create new class """

@@ -180,7 +180,7 @@ class AstFormatter:
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name)
         s = method(node, *args, **keys)
-        assert g.isString(s), type(s)
+        assert isinstance(s, str), type(s)
         return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
     #@+node:ekr.20141012064706.18405: *4* f.ClassDef
@@ -934,7 +934,7 @@ class AstFullTraverser:
         # Visit the tree in token order.
         for z in node.decorator_list:
             self.visit(z)
-        assert g.isString(node.name)
+        assert isinstance(node.name, str)
         self.visit(node.args)
         if getattr(node, 'returns', None): # Python 3.
             self.visit(node.returns)
@@ -2544,7 +2544,7 @@ class HTMLReportTraverser:
         def clean(s):
             return s.replace(' ','').replace('\n','').replace('"','').replace("'",'')
 
-        assert g.isString(node.s)
+        assert isinstance(node.s, str)
         if self.last_doc and clean(self.last_doc) == clean(node.s):
             # Already seen.
             self.last_doc = None
@@ -2784,7 +2784,7 @@ class TokenSync:
     #@+node:ekr.20160225102931.9: *3* ts.dump_token
     def dump_token(self, token, verbose=False):
         '''Dump the token. It is either a string or a 5-tuple.'''
-        if g.isString(token):
+        if isinstance(token, str):
             return token
         t1, t2, t3, t4, t5 = token
         kind = g.toUnicode(token_module.tok_name[t1].lower())

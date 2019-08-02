@@ -1,4 +1,4 @@
-Leo 6.0 beta 1, http://leoeditor.com, is now available on
+Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).

@@ -2350,7 +2350,7 @@ class Commands:
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
-            if g.isString(gnxString):
+            if isinstance(gnxString, str):
                 d[gnxString] = v
                 if 'gnx' in g.app.debug:
                     g.trace(c.shortFileName(), gnxString, v)
@@ -3820,7 +3820,7 @@ class Commands:
             try:
                 op, p, n = z
                 ok = (op in ('insert', 'delete') and
-                    isinstance(p, leoNodes.position) and g.isInt(n))
+                    isinstance(p, leoNodes.position) and isinstance(n, int))
                 if ok:
                     aList2 = d.get(p.v, [])
                     data = n, op

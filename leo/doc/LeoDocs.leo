@@ -590,6 +590,7 @@
 <v t="matt.20180826201749.1"><vh>How to  Pip install from GitHub?</vh></v>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
+<v t="ekr.20190731085740.1"><vh>Tip: use shallow git clones to speed pip install</vh></v>
 </v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
@@ -615,7 +616,9 @@
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
 <v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
+<v t="ekr.20190731085747.1"><vh>How can I customize settings for a particular external file?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
+<v t="ekr.20190620113133.1"><vh>How can I modify an existing theme?</vh></v>
 <v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
 <v t="ekr.20180529064307.1"><vh>How can I run code at startup?</vh></v>
 <v t="ekr.20180619051649.1"><vh>How can I sync settings across .leo files?</vh></v>
@@ -723,6 +726,9 @@
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
+</v>
+<v t="ekr.20190802082825.1"><vh>Vim</vh>
+<v t="ekr.20190622142940.1"><vh>How can I use Leo's bridge in vim?</vh></v>
 </v>
 <v t="ekr.20180529065351.1"><vh>Work flow</vh>
 <v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
@@ -2311,8 +2317,6 @@
 </v>
 <v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
-<v t="ekr.20190620113133.1"><vh>*** How to modify themes</vh></v>
-<v t="ekr.20190622142940.1"><vh>*** How to use Leo's bridge in vim</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30248,10 +30252,11 @@ For the find-long-lines command:
 @bool max-find-long-lines-length = 110
     
 For docks:
+
 @bool dockable-log-tabs = False
 @string central-dock-widget = outline
 </t>
-<t tx="ekr.20190616175944.1">Leo 6.0 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190616175944.1">Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -30397,6 +30402,9 @@ https://github.com/leo-editor/leo-editor/issues/1207
 
 free-layout plugin with docks
 https://github.com/leo-editor/leo-editor/issues/1216
+
+Render widget not visible: Plugins
+https://github.com/leo-editor/leo-editor/issues/1230
 </t>
 <t tx="ekr.20190617012909.1">@command vs @item
 https://github.com/leo-editor/leo-editor/issues/1117
@@ -30420,7 +30428,10 @@ https://github.com/leo-editor/leo-editor/issues/1143
 LeoWapp focus issues
 https://github.com/leo-editor/leo-editor/issues/1146
 </t>
-<t tx="ekr.20190617013257.1">git-diff crash
+<t tx="ekr.20190617013257.1">Problems syntax coloring TeX and LaTeX files
+https://github.com/leo-editor/leo-editor/issues/1088
+
+git-diff crash
 https://github.com/leo-editor/leo-editor/issues/1136
 
 Fixed a serious crasher
@@ -30438,8 +30449,38 @@ https://github.com/leo-editor/leo-editor/issues/1189
 open-outline buglet
 https://github.com/leo-editor/leo-editor/issues/1200
 
+Log pane does not report full commit number
+https://github.com/leo-editor/leo-editor/issues/1209
+
 Never crash during startup
 https://github.com/leo-editor/leo-editor/issues/1215
+
+Fix the ctagscompleter plugin
+https://github.com/leo-editor/leo-editor/issues/1211
+
+Status Bar Won't Accept Style
+https://github.com/leo-editor/leo-editor/issues/1218
+
+vim-mode-*-border settings do not work on Qt 5
+https://github.com/leo-editor/leo-editor/issues/1221
+
+gui=console. delete line command d is not working
+https://github.com/leo-editor/leo-editor/issues/1224
+
+gui=console. Backspace, delete keys not working
+https://github.com/leo-editor/leo-editor/issues/1238
+
+The bookmarks plugin is polluting the .leo file with inappropriate data
+https://github.com/leo-editor/leo-editor/issues/1247
+
+vr-lock gets overwritten
+https://github.com/leo-editor/leo-editor/issues/1256
+
+Hard crash in @contextmenu plugin if file not found
+https://github.com/leo-editor/leo-editor/issues/1257
+
+stickynoteenc traceback
+https://github.com/leo-editor/leo-editor/issues/1265
 
 Fixed misalignment in LeoQtLog.put</t>
 <t tx="ekr.20190617014858.1">Huge speed up of replace-all
@@ -30467,7 +30508,11 @@ https://github.com/leo-editor/leo-editor/issues/1212</t>
 https://github.com/leo-editor/leo-editor/issues/1134
 
 Support colorizing of Lua long brackets
-https://github.com/leo-editor/leo-editor/issues/1175</t>
+https://github.com/leo-editor/leo-editor/issues/1175
+
+Add dock commands to Window Menu
+https://github.com/leo-editor/leo-editor/issues/1261
+</t>
 <t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
 
 Terry Brown: Born in New Zealand, living in Duluth, Minnesota for 22 years.
@@ -30487,18 +30532,12 @@ Matt Wilkie: Whitehorse, Yukon, Canada.
 The following people have made numerous contributions to Leo throughout the years:
 
 Offray Vladimir Luna Cárdenas: Bogotá, Colombia.
-Kent Tenny: Ashland Wisconsin, USA.
+Kent Tenney: Ashland Wisconsin, USA.
 Ville M. Vainio.
-
 
 EKR lives in Madison, Wisconsin, USA
 </t>
-<t tx="ekr.20190620113133.1">@language rest
-@wrap
-
-Here is how I use themes.
-
-In the directory leo-editor/leo/themes are a number of theme files. These
+<t tx="ekr.20190620113133.1">In the directory leo-editor/leo/themes are a number of theme files. These
 can be loaded using the File, Open Outline menu option in Leo. Opening an
 outline automatically loads it. Keep opening outlines until you find one
 you like.
@@ -30512,55 +30551,117 @@ BreezeDarkThemeLocal.leo
 
 Now open your myLeoSettings.leo file.
 
-Add the following to the headline of a new node as a child of your
-@settings node:
-@string theme-name = BreezeDarkThemeLocal
+Add the following to the headline of a new node as a child of your @settings node::
+
+    @string theme-name = BreezeDarkThemeLocal
 
 Now save the file and restart Leo.
 
 You should now be using the theme of your choice. From here you need to
 open the local theme file with Leo. The font sizing and colors are under
 Theme Settings in the tree.
-
 </t>
-<t tx="ekr.20190622142940.1">@language rest
-@wrap
+<t tx="ekr.20190622142940.1">@language python
 
-This script appends the outline headlines, indented, to the current vim buffer:
+This script appends the outline headlines, indented, to the current vim buffer::
 
-@language python
-
-import leo.core.leoBridge as leoBridge
-import vim
-
-controller = leoBridge.controller(
-    gui='nullGui',
-    loadPlugins=True,  # True: attempt to load plugins.
-    readSettings=True,  # True: read standard settings files.
-    silent=True,  # True: don't print signon messages.
-    verbose=False,  # True: print informational messages.
-)
-g = controller.globals()
-c = controller.openLeoFile("/home/tbrown/.leo/del.leo")
-
-def dent(node, result, level=0):
-    result.append('  ' * level + node.h)
-    for child in node.children:
-        dent(child, result, level + 1)
-    return result
-
-result = []
-dent(c.hiddenRootNode, result)
-vim.current.buffer[-1:] = result
-
+    import leo.core.leoBridge as leoBridge
+    import vim
+    
+    controller = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=True,  # True: attempt to load plugins.
+        readSettings=True,  # True: read standard settings files.
+        silent=True,  # True: don't print signon messages.
+        verbose=False,  # True: print informational messages.
+    )
+    g = controller.globals()
+    c = controller.openLeoFile("/home/tbrown/.leo/del.leo")
+    
+    def dent(node, result, level=0):
+        result.append('  ' * level + node.h)
+        for child in node.children:
+            dent(child, result, level + 1)
+        return result
+    
+    result = []
+    dent(c.hiddenRootNode, result)
+    vim.current.buffer[-1:] = result
+    
 @language rest
 
-It can be invoked with
+It can be invoked with::
 
-:py import leodent
+    :py import leodent
 
 assuming it's in a file leodent.py and on the Python path.
 </t>
+<t tx="ekr.20190731085740.1">@language rest
+@wrap
+
+Tip: faster dev pip installs with shallow clones
+
+When running `pip install --editable path/to/leo` the  "Installing build dependencies ..." step can take a loooong time. Apparently this is because it creates a copy of the folder tree including the `.git` folder, which can be quite large (ref). My machine right now: .git is 183 MB, while Leo is only 40 MB.
+
+Solution: periodically create a new leo-editor shallow clone:
+
+cd d:\code
+git clone --depth=100 https://github.com/leo-editor/leo-editor.git d:/code/shallow-leo-editor
+move d:\code\leo-editor d:\code\leo-editor-bloated
+move d:\code\shallow-leo-editor d:\code\leo-editor
+
+At current commit rate:
+
+    depth=100 is 6 months of history and 60mb (.git &amp; Leo together)
+    depth=500 is 2 years and 73 MB
+    depth={infinity} is 11 years and 242 MB
+    
+The command shown only fetches master branch, and checkout of other branches will fail. Two solutions:
+
+# add all remote branch names
+# use 'devel' instead of '*' to get only devel branch
+# quotes are significant
+git remote set-branches origin '*'
+git fetch
+git checkout devel
+
+Or:
+
+# shallow clone each branch
+git clone --depth=nn --no-single-branch ...
+
+</t>
+<t tx="ekr.20190731085747.1">@language rest
+@wrap
+
+How it is possible to specify settings in @file? As I understand every setting should be a single outline.
+
+Vitalije:
+    
+You can use clones. For example::
+    
+    --@settings
+    ----my-shared-settings
+    ------...
+    ----some-specific-settings-for-this-outline
+    ------....
+    
+    --@file my-shared-settings-somewhere.txt
+    ----my-shared-settings
+    
+where `my-shared-settings` node is cloned from the @file subtree.
+
+Quite often I use some script to combine some nodes, process them and generate some output file. And such script I put in a node with the following headline: `@button n-save @key=Ctrl-s`. Then whenever I open this outline and whenever I hit Ctrl-s to save the outline, this script is executed. Of course I put in this script `c.save()` call and on every save my files are regenerated. 
+
+When working for a web I often use Coffeescript, some html template generators like Pug, Sass for generating css files, ... Now all of these command line tools have watching mode where they watch folders for file changes and whenever source file is changed they regenerate the output file. But then you also need to run some packaging tool to bundle all generated files. Instead of watching for file changes, my script bound to Ctrl-s regenerate source files in memory and without saving them execute suitable tool only on changed sources and produced outputs bundle in the final file. This makes the whole process much faster.
+
+Attached to this message is a Leo file that I have extracted from one of my projects. I hope that I didn't miss anything that the script require. 
+
+In the outline you can find build server implemented in Coffeescript. You have to use npm or yarn to install necessary modules for this server to work. Once installed you start server by executing
+`coffee tools/build-server.coffee` and it will start listening on port 8011. The script bound to Ctrl-s will search outline for nodes with the headlines like: @vendor, @pug, @coffee, @bulma and for each found node, it checks if the content of this node and its subtree has changed since last time and if it is, this content is sent to build server which transforms the source and returns result that script writes to output file. 
+
+There is one more thing I use for sharing outlines. There are three commands `set-reference-file`, `update-ref-file` and `read-ref-file`. The first lets you choose a reference file for this outline, i.e. public shared outline. It adds a top level headline `---begin-private-area---` to the outline. In the body of this node is the path to the public Leo file. Everything below this node is private, and above is public. The public file should be added to version control (git, fossil,...) and the private file should be added to ignored files for version control tool. And then in the script bound to Ctrl-s you can add `c.fileCommands.save_ref()`, so every time you save your private Leo file, at the same time is updated the public Leo file. That way they never get out of sync.</t>
+<t tx="ekr.20190802082825.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

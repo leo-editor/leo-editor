@@ -25798,7 +25798,7 @@ https://github.com/leo-editor/leo-editor/issues/690
 <t tx="ekr.20190122052932.8">https://github.com/leo-editor/leo-editor/issues/1023
 </t>
 <t tx="ekr.20190122052932.9">https://github.com/leo-editor/leo-editor/issues/1032</t>
-<t tx="ekr.20190617074238.1">Leo 6.0 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190617074238.1">Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).

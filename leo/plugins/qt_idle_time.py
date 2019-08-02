@@ -81,7 +81,7 @@ class IdleTime:
         '''IdleTime repr.'''
         tag = self.tag
         if tag:
-            return '<IdleTime: %s>' % (tag if g.isString(tag) else repr(tag))
+            return '<IdleTime: %s>' % (tag if isinstance(tag, str) else repr(tag))
         return '<IdleTime: id: %s>' % id(self)
 
     __str__ = __repr__

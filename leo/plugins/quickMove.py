@@ -755,7 +755,7 @@ class quickMove:
         copy / move
         """
 
-        if g.isString(c2):
+        if isinstance(c2, str):
             # c2 is an UNL indicating where to insert
             full_path = c2
             path, unl = full_path.split('#', 1)

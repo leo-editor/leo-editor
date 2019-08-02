@@ -130,7 +130,7 @@ class ChapterController:
         cc = self
         if self.selectChapterLockout:
             return
-        if g.isInt(name):
+        if isinstance(name, int):
             cc.note('PyQt5 chapters not supported')
             return
         chapter = cc.getChapter(name)

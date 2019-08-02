@@ -428,15 +428,6 @@ def contract_rendering_pane(event):
     if g.app.dock:
         return
     vr.contract()
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if vr:
-                # vr.contract()
-            # else:
-                # # Just open the pane.
-                # viewrendered(event)
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event):
@@ -452,12 +443,6 @@ def expand_rendering_pane(event):
     if g.app.dock:
         return
     vr.expand()
-    ###
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if not vr:
-            # vr = viewrendered(event)
-        # if vr:
-            # vr.expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
@@ -514,7 +499,7 @@ def lock_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if not vr.locked():
+    if not vr.locked:
         vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
@@ -865,6 +850,9 @@ if QtWidgets: # NOQA
             '''Update the vr pane. Called at idle time.'''
             pc = self
             p = pc.c.p
+            # #1256.
+            if self.locked:
+                return
             if pc.must_update(keywords):
                 #
                 # Suppress updates until we change nodes.
@@ -1288,7 +1276,9 @@ if QtWidgets: # NOQA
                 define_name='__main__',
                 silent=False,
                 namespace=namespace,
-                raiseFlag=False)
+                raiseFlag=False,
+                runPyflakes=False, # Suppress warnings about pre-defined symbols.
+            )
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):

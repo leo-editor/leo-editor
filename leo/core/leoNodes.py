@@ -98,7 +98,7 @@ class NodeIndices:
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx(self, s, i=0):
         """Create a gnx from its string representation."""
-        if not g.isString(s):
+        if not isinstance(s, str):
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()

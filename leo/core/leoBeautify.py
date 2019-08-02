@@ -746,7 +746,7 @@ class PythonTokenBeautifier:
 
         def to_string(self):
             '''Convert an output token to a string.'''
-            return self.value if g.isString(self.value) else ''
+            return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
         '''A class representing items parse state stack.'''
@@ -1209,14 +1209,14 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self, s):
         '''Add op token to code list.'''
-        assert s and g.isString(s), repr(s)
+        assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('op', s)
         self.blank()
 
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
-        assert s and g.isString(s), repr(s)
+        assert s and isinstance(s, str), repr(s)
         self.clean('blank')
         self.add_token('op', s)
         self.blank()
@@ -1239,7 +1239,7 @@ class PythonTokenBeautifier:
 
     def unary_op(self, s):
         '''Add an operator request to the code list.'''
-        assert s and g.isString(s), repr(s)
+        assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20150531051827.1: *4* ptb.star_op
@@ -1279,14 +1279,14 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
     def word(self, s):
         '''Add a word request to the code list.'''
-        assert s and g.isString(s), repr(s)
+        assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('word', s)
         self.blank()
 
     def word_op(self, s):
         '''Add a word-op request to the code list.'''
-        assert s and g.isString(s), repr(s)
+        assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('word-op', s)
         self.blank()

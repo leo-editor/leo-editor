@@ -11,6 +11,8 @@ include profileLeo.py
 include pylint-leo.bat
 include pylint-leo.py
 include *.nsi
+# obscure pip bugfix https://github.com/pypa/setuptools/issues/1694
+include pyproject.toml
 
 # Exclusions
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b

@@ -1622,7 +1622,7 @@ class RstCommands:
                     writer=writer,
                     writer_name=writer_name,
                     settings_overrides=overrides)
-            if g.isBytes(result):
+            if isinstance(result, bytes):
                 result = g.toUnicode(result)
         except docutils.ApplicationError as error:
             # g.error('Docutils error (%s):' % (error.__class__.__name__))

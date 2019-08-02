@@ -47,7 +47,7 @@ class FreeMindImporter:
         '''
         p = parent.insertAsLastChild()
         attrib_text = element.attrib.get('text','').strip()
-        tag = element.tag if g.isString(element.tag) else ''
+        tag = element.tag if isinstance(element.tag, str) else ''
         text = element.text or ''
         if not tag: text = text.strip()
         p.h = attrib_text or tag or 'Comment'

@@ -1361,7 +1361,7 @@ class GlobalConfigManager:
                         # val = g.objToString(aList, indent=' '*4)
                     else:
                         val = '<%s non-comment lines>' % len(aList)
-                elif g.isString(val) and val.startswith('<?xml'):
+                elif isinstance(val, str) and val.startswith('<?xml'):
                     val = '<xml>'
                 key2 = '@%-6s %s' % (gs.kind, key)
                 yield key2, val, c, letter
@@ -1579,7 +1579,7 @@ class LocalConfigManager:
         data = self.get(setting, "data")
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
-        if g.isString(data):
+        if isinstance(data, str):
             data = [data]
         if data and strip_comments:
             data = [z for z in data if not z.strip().startswith('#')]
@@ -1599,8 +1599,8 @@ class LocalConfigManager:
             # 904: Append local tree abbreviations to the global abbreviations.
             data0 = g.app.config.getOutlineData(setting)
             if data and data0 and data != data0:
-                assert g.isString(data0)
-                assert g.isString(data)
+                assert isinstance(data0, str)
+                assert isinstance(data, str)
                 # We can't merge the data here: they are .leo files!
                 # abbrev.init_tree_abbrev_helper does the merge.
                 data = [data0, data]

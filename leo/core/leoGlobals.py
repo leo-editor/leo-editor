@@ -555,7 +555,7 @@ class FileLikeObject:
     #@+node:ekr.20050404151753.6: *4* write (g.FileLikeObject)
     def write(self, s):
         if s:
-            if g.isBytes(s):
+            if isinstance(s, bytes):
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
     #@-others
@@ -2287,7 +2287,7 @@ class TypedDict:
     # New in Leo 5.7.1
     def get_string_setting(self, key):
         val = self.get_setting(key)
-        return g.toUnicode(val) if val and g.isString(val) else None
+        return g.toUnicode(val) if val and isinstance(val, str) else None
 
     def keys(self):
         return self.d.keys()
@@ -5541,7 +5541,7 @@ def toPythonIndex(s, index):
     '''
     if index is None:
         return 0
-    if g.isInt(index):
+    if isinstance(index, int):
         return index
     if index == '1.0':
         return 0
@@ -5599,10 +5599,10 @@ def join_list(aList, indent='', leading='', sep='', trailing=''):
     if not aList:
         return None
     # These asserts are reasonable.
-    assert g.isString(indent), indent
-    assert g.isString(leading), leading
-    assert g.isString(sep), sep
-    assert g.isString(trailing), trailing
+    assert isinstance(indent, str), indent
+    assert isinstance(leading, str), leading
+    assert isinstance(sep, str), sep
+    assert isinstance(trailing, str), trailing
     if indent or leading or sep or trailing:
         return {
             '_join_list': True, # Indicate that join_list created this dict.
@@ -6617,9 +6617,8 @@ def translateArgs(args, d):
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:
         n += 1
-        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        if g.isString(arg):
+        if isinstance(arg, str):
             arg = toUnicode(arg, console_encoding)
         # Now translate.
         if not isString(arg):
@@ -7195,7 +7194,7 @@ def os_startfile(fname):
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
     # Fix bug 735938: file association crash
-    if path and g.isString(path):
+    if path and isinstance(path, str):
         path = path.replace('\\', os.sep)
         # Yes, this is correct.  All os_path_x functions return Unicode strings.
         return g.toUnicode(path)
@@ -7309,7 +7308,8 @@ def execute_shell_commands(commands, trace=False):
     Execute each shell command in a separate process.
     Wait for each command to complete, except those starting with '&'
     '''
-    if g.isString(commands): commands = [commands]
+    if isinstance(commands, str):
+        commands = [commands]
     for command in commands:
         wait = not command.startswith('&')
         if command.startswith('&'): command = command[1:].strip()
@@ -7985,7 +7985,7 @@ def openUrlHelper(event, url=None):
                     unl = match.group()
                     g.handleUnl(unl, c)
                     return None
-    elif not g.isString(url):
+    elif not isinstance(url, str):
         url = url.toString()
         url = g.toUnicode(url)
             # Fix #571

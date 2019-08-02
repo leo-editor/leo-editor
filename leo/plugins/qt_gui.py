@@ -933,7 +933,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         '''Required to handle syntax coloring.'''
-        if g.isString(size):
+        if isinstance(size, str):
             if size.endswith('pt'):
                 size = size[: -2].strip()
             elif size.endswith('px'):

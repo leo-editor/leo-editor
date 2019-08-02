@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 #@+leo-ver=5-thin
-#@+node:bob.20170311140807.1: * @file babel.py
+#@+node:bob.20170311140807.1: * @file leo_babel/babel.py
 #@@first
 #@@first
 #@@language python

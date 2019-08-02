@@ -10181,7 +10181,7 @@ for s,table in ((s1,table1),(s2,table2)):
 #@+node:ekr.20071113145804.21: *4* @test g.create_temp_file
 theFile,fn = g.create_temp_file()
 assert theFile
-assert g.isString(fn)
+assert isinstance(fn, str)
 #@+node:ekr.20100131180007.5403: *4* @test g.ensureLeadingNewlines
 s = ' \n \n\t\naa bc'
 s2 = 'aa bc'
