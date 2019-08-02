@@ -30401,6 +30401,9 @@ https://github.com/leo-editor/leo-editor/issues/1207
 
 free-layout plugin with docks
 https://github.com/leo-editor/leo-editor/issues/1216
+
+Render widget not visible: Plugins
+https://github.com/leo-editor/leo-editor/issues/1230
 </t>
 <t tx="ekr.20190617012909.1">@command vs @item
 https://github.com/leo-editor/leo-editor/issues/1117
@@ -30424,7 +30427,10 @@ https://github.com/leo-editor/leo-editor/issues/1143
 LeoWapp focus issues
 https://github.com/leo-editor/leo-editor/issues/1146
 </t>
-<t tx="ekr.20190617013257.1">git-diff crash
+<t tx="ekr.20190617013257.1">Problems syntax coloring TeX and LaTeX files
+https://github.com/leo-editor/leo-editor/issues/1088
+
+git-diff crash
 https://github.com/leo-editor/leo-editor/issues/1136
 
 Fixed a serious crasher
@@ -30442,8 +30448,38 @@ https://github.com/leo-editor/leo-editor/issues/1189
 open-outline buglet
 https://github.com/leo-editor/leo-editor/issues/1200
 
+Log pane does not report full commit number
+https://github.com/leo-editor/leo-editor/issues/1209
+
 Never crash during startup
 https://github.com/leo-editor/leo-editor/issues/1215
+
+Fix the ctagscompleter plugin
+https://github.com/leo-editor/leo-editor/issues/1211
+
+Status Bar Won't Accept Style
+https://github.com/leo-editor/leo-editor/issues/1218
+
+vim-mode-*-border settings do not work on Qt 5
+https://github.com/leo-editor/leo-editor/issues/1221
+
+gui=console. delete line command d is not working
+https://github.com/leo-editor/leo-editor/issues/1224
+
+gui=console. Backspace, delete keys not working
+https://github.com/leo-editor/leo-editor/issues/1238
+
+The bookmarks plugin is polluting the .leo file with inappropriate data
+https://github.com/leo-editor/leo-editor/issues/1247
+
+vr-lock gets overwritten
+https://github.com/leo-editor/leo-editor/issues/1256
+
+Hard crash in @contextmenu plugin if file not found
+https://github.com/leo-editor/leo-editor/issues/1257
+
+stickynoteenc traceback
+https://github.com/leo-editor/leo-editor/issues/1265
 
 Fixed misalignment in LeoQtLog.put</t>
 <t tx="ekr.20190617014858.1">Huge speed up of replace-all
@@ -30471,7 +30507,11 @@ https://github.com/leo-editor/leo-editor/issues/1212</t>
 https://github.com/leo-editor/leo-editor/issues/1134
 
 Support colorizing of Lua long brackets
-https://github.com/leo-editor/leo-editor/issues/1175</t>
+https://github.com/leo-editor/leo-editor/issues/1175
+
+Add dock commands to Window Menu
+https://github.com/leo-editor/leo-editor/issues/1261
+</t>
 <t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
 
 Terry Brown: Born in New Zealand, living in Duluth, Minnesota for 22 years.
