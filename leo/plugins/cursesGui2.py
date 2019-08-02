@@ -820,7 +820,7 @@ def trace(*args, **keys):
     for arg in args:
         if isinstance(arg, str):
             pass
-        elif g.isBytes(arg):
+        elif isinstance(arg, bytes):
             arg = g.toUnicode(arg)
         else:
             arg = repr(arg)

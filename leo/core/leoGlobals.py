@@ -555,7 +555,7 @@ class FileLikeObject:
     #@+node:ekr.20050404151753.6: *4* write (g.FileLikeObject)
     def write(self, s):
         if s:
-            if g.isBytes(s):
+            if isinstance(s, bytes):
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
     #@-others
