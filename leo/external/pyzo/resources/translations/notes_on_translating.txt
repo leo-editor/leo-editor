@@ -1,0 +1,65 @@
+Notes on translating
+====================
+
+In short
+--------
+
+Apply the following steps (in the IEP logger shell):
+  
+  * Run lupdate() to update .tr files
+  * Translators run linguist(TheirLanguage) to launch Qt linguist 
+  * Translators write translations (stored in one .tr file per language)
+  * Translators send modified version of .tr file back to us
+  * Run lrelease()
+  
+Alternatively, you can invoke the tools from a system shell (with
+this directory as working directory):
+
+  * Run pylupdate5 -noobsolete -verbose ../../../pyzo.pro
+  * Use linguist or a plain text editor to edit .tr files
+  * Run lrelease ../../../pyzo.pro
+
+The lupdate tool parses the source code of the files specified 
+in iep.pro and detects usages of any "translate()" function call.
+
+
+For translaters
+---------------
+
+We send translaters a .tr file, which they translate using Qt linguist
+and then send back to us.
+
+
+About tooltips
+--------------
+
+I like tooltips. And I think its best to specify them in the same string
+as the text/label that they apply to. In IEP we use the convention that
+a translation string can contain tooltips by writing three colons followed
+by the tooltip text: ``"This is a label ::: This is the tooltip text"``
+
+The iep.translate function returns a string object that contains only
+the label text, but which has an attribute called "tt" that contains
+the tooltip text (or an empty string).
+
+In this way, in places where you do not need a tooltip, things behave as
+normal. In cases where you need a tooltip, things are now easier (especially
+for the translater).
+
+
+From the PyQt website
+---------------------
+
+  * The programmer uses pylupdate4 to create or update a .ts translation 
+    file for each language that the application is to be translated into. 
+    A .ts file is an XML file that contains the strings to be translated 
+    and the corresponding translations that have already been made. 
+    pylupdate4 can be run any number of times during development to update 
+    the .ts files with the latest strings for translation.
+  * The translator uses Qt Linguist to update the .ts files with translations 
+    of the strings. 
+  * The release manager then uses Qt’s lrelease utility to 
+    convert the .ts files to .qm files which are compact binary equivalents 
+    used by the application. If an application cannot find an appropriate .qm 
+    file, or a particular string hasn’t been translated, then the strings used 
+    in the original source code are used instead.
