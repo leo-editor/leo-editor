@@ -9,6 +9,7 @@ import sys
 try:
     import leo.core.leoGlobals as leo_g
     leo_g.pr('pyzo/yotonloader.py')
+        # This doesn't work.
 except Exception:
     leo_g = None
 

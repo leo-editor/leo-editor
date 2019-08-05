@@ -54,7 +54,9 @@ import traceback
 if sys.version < '3':
     raise RuntimeError('Pyzo requires Python 3.x to run.')
     
-# if leo_g: leo_g.pr('pyzo/__init__.py: starts command server')
+if False and leo_g:
+    leo_g.pr('pyzo/__init__.py: starts command server')
+    leo_g.pdb()
 
 # Make each OS find platform plugins etc.
 if hasattr(sys, 'frozen') and sys.frozen:
@@ -70,6 +72,7 @@ if hasattr(sys, 'frozen') and sys.frozen:
 
 # Import yoton as an absolute package
 from pyzo import yotonloader  # noqa
+    # EKR:  This prints: started our command server (!!)
 assert yotonloader
 from pyzo.util import paths
 
@@ -80,7 +83,8 @@ if 1:
     # Causes problems in the pyzo_file_browser plugin, but we can't change this.
     from pyzo.core import commandline
     if commandline.is_our_server_running():
-        print('Started our command server')
+        if False:
+            print('Started our command server', leo_g.callers())
     else:
         # Handle command line args now
         res = commandline.handle_cmd_args()
