@@ -815,7 +815,8 @@ class LeoQtGui(leoGui.LeoGui):
         w_name = w and w.objectName()
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
-        if c.exists and c.vimCommands and not self.active and not g.app.killed:
+        # #1273: add teest on c.vim_mode.
+        if c.exists and c.vim_mode and c.vimCommands and not self.active and not g.app.killed:
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
