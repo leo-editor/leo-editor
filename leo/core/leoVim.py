@@ -2329,7 +2329,9 @@ class VimCommands:
     def on_idle(self, tag, keys):
         '''The idle-time handler for the VimCommands class.'''
         c = keys.get('c')
-        if c and self == c.vimCommands:
+        if c and c.vim_mode and self == c.vimCommands:
+            # #1273: only for vim mode.
+            g.trace('=====')
             # Call set_border only for the presently selected tab.
             try:
                 # Careful: we may not have tabs.
