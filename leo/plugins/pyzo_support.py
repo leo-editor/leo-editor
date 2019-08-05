@@ -26,8 +26,8 @@ import leo.core.leoGlobals as g
 def init():
     print('pyzo_support.py is not a real plugin')
     return False
-#@+node:ekr.20190418161712.1: ** class GlobalPyzoController
-class GlobalPyzoController:
+#@+node:ekr.20190418161712.1: ** class PyzoInterface
+class PyzoInterface:
     '''
     A class representing the singleton running instance of pyzo.
     
@@ -35,20 +35,7 @@ class GlobalPyzoController:
     '''
 
     #@+others
-    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo (to be deleted)
-    def load_pyzo(self):
-        '''Go through pyzo's *entire* startup logic.
-        '''
-        import sys
-        sys.argv = []
-            # Avoid trying to load extra files.
-        try:
-            import pyzo
-        except ImportError:
-            g.es_print('can not import pyzo')
-        pyzo.start()
-        print('\n=====g.app.gui.main_window', g.app.gui.main_window)
-    #@+node:ekr.20190803175344.1: *3* gpc.patch_pyzo
+    #@+node:ekr.20190803175344.1: *3* pyzo_x.patch_pyzo
     def patch_pyzo(self):
         '''
         Called at the end of pyzo.start to embed Leo into pyzo.
