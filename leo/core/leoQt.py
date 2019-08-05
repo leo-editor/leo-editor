@@ -21,8 +21,7 @@ import leo.core.leoGlobals as g
 strict = False
 trace = False
 fail = g.in_bridge
-    # Attempt to fix #1274.  Revert to previous, more reasonable, code.
-    # New for TravisCI tests: allow imports from the Leo Bridge.
+    # #1274: Do *not* allow Qt imports when in the bridge!
 try:
     isQt5 = True
     from PyQt5 import Qt
