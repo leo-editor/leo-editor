@@ -21,6 +21,7 @@ pyzo_support.py:
 # The full license can be found in 'license.txt'.
 #@-<< copyright >>
 import leo.core.leoGlobals as g
+import leo.core.leoBridge as leoBridge
 #@+others
 #@+node:ekr.20190410171905.1: ** init (pyzo_support.py)
 def init():
@@ -55,6 +56,39 @@ class GlobalPyzoController:
         '''
         import pyzo
         g.trace(pyzo)
+    #@-others
+#@+node:ekr.20190805081742.1: ** class PyzoInterface
+class PyzoInterface:
+    '''
+    A class representing the singleton running instance of pyzo.
+    
+    Instantiated in the top-level init() function.
+    '''
+
+    #@+others
+    #@+node:ekr.20190805081451.1: *3* pyzo_x.patch_pyzo
+    def patch_pyzo(self):
+        '''
+        Called at the end of pyzo.start() to embed Leo into pyzo.
+        '''
+        import pyzo
+        if not pyzo:
+            g.es_print('Can not import pyzo')
+            return
+        g.trace() ; print('')
+        bridge = leoBridge.controller(
+            gui='nullGui',
+            loadPlugins=False, 
+                # Essential: some plugins import Qt, which causes this message:
+                    # Qt WebEngine seems to be initialized from a plugin.
+                    # Please set Qt::AA_ShareOpenGLContexts using QCoreApplication::setAttribute
+                    # before constructing QGuiApplication.
+            readSettings=True, # Debatable.
+            verbose=False,
+        )
+        if bridge.isOpen():
+            self.g = bridge.globals()
+            # c = bridge.openLeoFile(path)
     #@-others
 #@-others
 #@-leo
