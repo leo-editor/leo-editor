@@ -20,7 +20,8 @@ Callers are expected to use the *PyQt5* spellings of modules:
 import leo.core.leoGlobals as g
 strict = False
 trace = False
-fail = False
+fail = g.in_bridge
+    # Attempt to fix #1274.  Revert to previous, more reasonable, code.
     # New for TravisCI tests: allow imports from the Leo Bridge.
 try:
     isQt5 = True
