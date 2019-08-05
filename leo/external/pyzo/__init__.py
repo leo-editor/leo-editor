@@ -76,19 +76,21 @@ from pyzo.util import paths
 # If there already is an instance of Pyzo, and the user is trying an
 # Pyzo command, we should send the command to the other process and quit.
 # We do this here, were we have not yet loaded Qt, so we are very light.
-from pyzo.core import commandline
-if commandline.is_our_server_running():
-    print('Started our command server')
-else:
-    # Handle command line args now
-    res = commandline.handle_cmd_args()
-    if res:
-        print(res)
-        sys.exit()
+if 1:
+    # Causes problems in the pyzo_file_browser plugin, but we can't change this.
+    from pyzo.core import commandline
+    if commandline.is_our_server_running():
+        print('Started our command server')
     else:
-        # No args, proceed with starting up
-        print('Our command server is *not* running')
-        print('\nEKR: check permissions for localhost!\n')
+        # Handle command line args now
+        res = commandline.handle_cmd_args()
+        if res:
+            print(res)
+            sys.exit()
+        else:
+            # No args, proceed with starting up
+            print('Our command server is *not* running')
+            print('\nEKR: check permissions for localhost!\n')
 
 from pyzo.util import zon as ssdf  # zon is ssdf-light
 from pyzo.util.qt import QtCore, QtGui, QtWidgets
@@ -123,14 +125,15 @@ if not sys.platform.startswith('darwin'):
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
 # http://pyqt.sourceforge.net/Docs/PyQt5/incompatibilities.html
-def pyzo_excepthook(type, value, tb):
-    out = 'Uncaught Python exception: ' + str(value) + '\n'
-    out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
-    out += '\n'
-    sys.stderr.write(out)
-
-sys.excepthook = pyzo_excepthook
-## Define some functions
+if 0:
+    def pyzo_excepthook(type, value, tb):
+        out = 'Uncaught Python exception: ' + str(value) + '\n'
+        out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
+        out += '\n'
+        sys.stderr.write(out)
+    
+    sys.excepthook = pyzo_excepthook
+    ## Define some functions
 
 # todo: move some stuff out of this module ...
 def getResourceDirs():
