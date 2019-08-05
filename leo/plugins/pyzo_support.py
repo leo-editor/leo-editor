@@ -36,7 +36,7 @@ class GlobalPyzoController:
     '''
 
     #@+others
-    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo (to be deleted)
+    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo
     def load_pyzo(self):
         '''Go through pyzo's *entire* startup logic.
         '''
@@ -48,14 +48,6 @@ class GlobalPyzoController:
         except ImportError:
             g.es_print('can not import pyzo')
         pyzo.start()
-        print('\n=====g.app.gui.main_window', g.app.gui.main_window)
-    #@+node:ekr.20190803175344.1: *3* gpc.patch_pyzo
-    def patch_pyzo(self):
-        '''
-        Called at the end of pyzo.start to embed Leo into pyzo.
-        '''
-        import pyzo
-        g.trace(pyzo)
     #@-others
 #@+node:ekr.20190805081742.1: ** class PyzoInterface
 class PyzoInterface:
