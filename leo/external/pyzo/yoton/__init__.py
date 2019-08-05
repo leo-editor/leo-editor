@@ -15,7 +15,7 @@ Yoton is ...
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('IMPORT pyzo.yoton')
+    leo_g.pr('IMPORT pyzo.yoton')
 except Exception:
     leo_g = None
 # Import stuff from misc and events

@@ -12,7 +12,7 @@ code in it.
 
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo/core/shell.py')
+    leo_g.pr('pyzo/core/shell.py')
 except Exception:
     leo_g = None
 import sys, time

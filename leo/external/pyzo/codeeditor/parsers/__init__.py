@@ -23,7 +23,7 @@ Making a parser requires these things:
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('IMPORT pyzo.codeeditor.parsers')
+    leo_g.pr('IMPORT pyzo.codeeditor.parsers')
 except Exception:
     leo_g = None
 

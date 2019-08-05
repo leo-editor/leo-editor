@@ -2,7 +2,7 @@
 
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo.pyzokernel.interpreter.py')
+    leo_g.pr('pyzo.pyzokernel.interpreter.py')
 except Exception:
     leo_g = None
 

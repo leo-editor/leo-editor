@@ -8,7 +8,7 @@ See pyzokernel/start.py for more information.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('IMPORT pyzo.pyzokernel')
+    leo_g.pr('IMPORT pyzo.pyzokernel')
 except Exception:
     leo_g = None
 

@@ -8,7 +8,7 @@ network.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('IMPORT pyzo.yoton.channels')
+    leo_g.pr('IMPORT pyzo.yoton.channels')
 except Exception:
     leo_g = None
 from yoton.channels.message_types import MessageType, TEXT, BINARY, OBJECT

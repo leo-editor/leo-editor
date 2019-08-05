@@ -5,7 +5,7 @@ Defines the tree widget to display the contents of a selected directory.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo.tools.pyzoFileBrowser.tree.py')
+    leo_g.pr('pyzo.tools.pyzoFileBrowser.tree.py')
 except Exception:
     leo_g = None
 import os

@@ -94,7 +94,7 @@ into account:
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo/codeeditor/base.py')
+    leo_g.pr('pyzo/codeeditor/base.py')
 except Exception:
     leo_g = None
 

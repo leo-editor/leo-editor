@@ -28,7 +28,7 @@ displayed in the statusbar.
 # - pythonpath editor, startupfile editor (or as part of pyzo?)
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('IMPORT pyzo.tools')
+    leo_g.pr('IMPORT pyzo.tools')
 except Exception:
     leo_g = None
     

@@ -9,7 +9,7 @@ function which is also defined here.
 
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo.core.main.py (MainWindow)')
+    leo_g.pr('pyzo.core.main.py (MainWindow)')
 except Exception:
     leo_g = None
 

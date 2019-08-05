@@ -8,7 +8,7 @@ shortcuts.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo/core/menu.py')
+    leo_g.pr('pyzo/core/menu.py')
 except Exception:
     leo_g = None
 import os, sys, re

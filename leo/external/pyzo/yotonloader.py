@@ -8,7 +8,7 @@ import sys
 
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo/yotonloader.py')
+    leo_g.pr('pyzo/yotonloader.py')
 except Exception:
     leo_g = None
 

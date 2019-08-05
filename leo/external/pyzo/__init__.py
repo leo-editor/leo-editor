@@ -70,6 +70,7 @@ if hasattr(sys, 'frozen') and sys.frozen:
 
 # Import yoton as an absolute package
 from pyzo import yotonloader  # noqa
+assert yotonloader
 from pyzo.util import paths
 
 # If there already is an instance of Pyzo, and the user is trying an
@@ -94,6 +95,7 @@ from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
 # Import language/translation tools
 from pyzo.util._locale import translate, setLanguage  # noqa
+assert translate
 # Set environ to let kernel know some stats about us
 os.environ['PYZO_PREFIX'] = sys.prefix
 _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
@@ -114,8 +116,10 @@ class MyApp(QtWidgets.QApplication):
                     sys.exit()
         return QtWidgets.QApplication.event(self, event)
 
+assert MyApp
 if not sys.platform.startswith('darwin'):
     MyApp = QtWidgets.QApplication  # noqa
+    assert MyApp
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
 # http://pyqt.sourceforge.net/Docs/PyQt5/incompatibilities.html
@@ -230,10 +234,12 @@ def saveConfig():
 def start():
     """ Run Pyzo.
     """
-    if leo_g: leo_g.pr('BEGIN pyzo.start: sys.argv:', sys.argv)
+    if leo_g:
+        leo_g.pr('BEGIN pyzo.start: sys.argv:', sys.argv)
 
     # Do some imports
     from pyzo.core import pyzoLogging  # noqa - to start logging asap
+    assert pyzoLogging
     from pyzo.core.main import MainWindow
 
     # Apply users' preferences w.r.t. date representation etc

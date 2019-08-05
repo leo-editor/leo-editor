@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 try:
     import leo.core.leoGlobals as leo_g
-    # leo_g.pr('pyzo.core.codeparser.py')
+    leo_g.pr('pyzo.core.codeparser.py')
 except Exception:
     leo_g = None
 """ Module codeparser
