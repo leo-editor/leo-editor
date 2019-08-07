@@ -3,9 +3,7 @@
 #@+node:ekr.20190410171646.1: * @file pyzo_support.py
 #@@first
 '''
-pyzo_support.py:
-- Support adding pyzo features within Leo.
-- Support embedding Leo into pyzo.
+pyzo_support.py: Will probably be deleted.
 '''
 #@+<< copyright >>
 #@+node:ekr.20190412042616.1: ** << copyright >>
@@ -21,6 +19,7 @@ pyzo_support.py:
 # The full license can be found in 'license.txt'.
 #@-<< copyright >>
 import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20190410171905.1: ** init (pyzo_support.py)
 def init():
@@ -40,8 +39,6 @@ class PyzoInterface:
         '''
         Called at the end of pyzo.start to embed Leo into pyzo.
         '''
-        import pyzo
-        g.trace(pyzo)
     #@-others
 #@-others
 #@-leo
