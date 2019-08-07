@@ -21,6 +21,7 @@ from pyzo.util.qt import QtCore, QtGui, QtWidgets
 import pyzo
 from pyzo.core.compactTabWidget import CompactTabWidget
 from pyzo.core.pyzoLogging import print  # noqa
+assert print
 from pyzo.core.assistant import PyzoAssistant
 from pyzo import translate
 def buildMenus(menuBar):
