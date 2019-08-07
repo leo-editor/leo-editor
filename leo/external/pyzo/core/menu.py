@@ -25,7 +25,8 @@ from pyzo.core.assistant import PyzoAssistant
 from pyzo import translate
 def buildMenus(menuBar):
     """
-    Build all the menus
+    Build all the menus.
+    EKR: Called from MainWindow._populate.
     """
     menus = [   FileMenu(menuBar, translate("menu", "File")),
                 EditMenu(menuBar, translate("menu", "Edit")),

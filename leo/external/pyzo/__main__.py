@@ -56,5 +56,6 @@ except ImportError:
 def main():
     pyzo.start()
         # Defined in pyzo.__init__.
-if False and __name__ == '__main__':
+print('__main__', __name__)
+if __name__ == '__main__':
     main()

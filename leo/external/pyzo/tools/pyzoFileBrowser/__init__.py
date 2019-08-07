@@ -5,7 +5,7 @@ try:
 except Exception:
     leo_g = None
 
-from pyzo import translate
+from leo.external.pyzo import translate ###
 tool_name = translate("pyzoFileBrowser","File Browser")
 tool_summary = "Browse the files in your projects."
 """ File browser tool
@@ -39,9 +39,11 @@ The config consists of three fields:
 """
 import os.path as op
 
-import pyzo
+import leo.external.pyzo as pyzo ###
+assert pyzo
 from pyzo.util import zon as ssdf
 from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
+assert QtCore and QtGui and QtWidgets
 
 from .browser import Browser
 from .utils import cleanpath, isdir

@@ -9,13 +9,13 @@ import sys
 try:
     import leo.core.leoGlobals as leo_g
     leo_g.pr('pyzo/yotonloader.py')
-        # This doesn't work.
 except Exception:
     leo_g = None
 
 # Import yoton
 sys.path.insert(0, os.path.dirname(__file__))
 import yoton  # noqa
+assert yoton
 
 # Reset
 sys.path.pop(0)

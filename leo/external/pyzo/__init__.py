@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # EKR: The frozen version of pyzo does not use pyzo.__main__
+pure = True
+    # EKR: True is files don't execute code, only define vars, classes, functions.
 """
 Pyzo is a cross-platform Python IDE focused on
 interactivity and introspection, which makes it very suitable for
@@ -54,9 +56,7 @@ import traceback
 if sys.version < '3':
     raise RuntimeError('Pyzo requires Python 3.x to run.')
     
-if False and leo_g:
-    leo_g.pr('pyzo/__init__.py: starts command server')
-    leo_g.pdb()
+# if leo_g: leo_g.pr('pyzo/__init__.py: starts command server')
 
 # Make each OS find platform plugins etc.
 if hasattr(sys, 'frozen') and sys.frozen:
@@ -72,29 +72,27 @@ if hasattr(sys, 'frozen') and sys.frozen:
 
 # Import yoton as an absolute package
 from pyzo import yotonloader  # noqa
-    # EKR:  This prints: started our command server (!!)
 assert yotonloader
 from pyzo.util import paths
 
 # If there already is an instance of Pyzo, and the user is trying an
 # Pyzo command, we should send the command to the other process and quit.
 # We do this here, were we have not yet loaded Qt, so we are very light.
-if 1:
-    # Causes problems in the pyzo_file_browser plugin, but we can't change this.
-    from pyzo.core import commandline
-    if commandline.is_our_server_running():
-        if False:
-            print('Started our command server', leo_g.callers())
+
+# Causes problems in the pyzo_file_browser plugin, but we can't change this.
+from pyzo.core import commandline
+if commandline.is_our_server_running():
+    print('Started our command server')
+else:
+    # Handle command line args now
+    res = commandline.handle_cmd_args()
+    if res:
+        print(res)
+        sys.exit()
     else:
-        # Handle command line args now
-        res = commandline.handle_cmd_args()
-        if res:
-            print(res)
-            sys.exit()
-        else:
-            # No args, proceed with starting up
-            print('Our command server is *not* running')
-            print('\nEKR: check permissions for localhost!\n')
+        # No args, proceed with starting up
+        print('Our command server is *not* running')
+        print('\nEKR: check permissions for localhost!\n')
 
 from pyzo.util import zon as ssdf  # zon is ssdf-light
 from pyzo.util.qt import QtCore, QtGui, QtWidgets
@@ -272,14 +270,15 @@ def start():
 
     # EKR: Instantiating MainWindow creates editors,
     #      so we must patch pyzo right here.
-    if leo_g:
-        try:
-            import leo.plugins.pyzo_support as pyzo_support
-            leo_g.pr('\npyzo.start: patching pyzo!\n')
-            leo_x = pyzo_support.PyzoInterface()
-            leo_x.patch_pyzo()
-        except ImportError:
-            leo_g.pr('\nCan not import leo.plugins.pyzo_support')
+    ### Doesn't do anything at present.
+        # if leo_g:
+            # try:
+                # import leo.plugins.pyzo_support as pyzo_support
+                # leo_g.pr('\npyzo.start: patching pyzo!\n')
+                # leo_x = pyzo_support.PyzoInterface()
+                # leo_x.patch_pyzo()
+            # except ImportError:
+                # leo_g.pr('\nCan not import leo.plugins.pyzo_support')
 
     # Create main window, using the selected locale
     MainWindow(None, appLocale)
