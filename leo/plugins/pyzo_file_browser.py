@@ -7,7 +7,7 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 #@+node:ekr.20190805031511.1: ** << pyzo_file_browser imports >>
 def banner(s):
     '''A good trace for imports.'''
-    g.pr('\n===== %s\n' % s)
+    if 1: g.pr('\n===== %s\n' % s)
 
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets # QtGui, QtCore, 
