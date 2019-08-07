@@ -67,9 +67,6 @@ def onCreate(tag, keys):
     dw = c and c.frame and c.frame.top
     if not dw:
         return
-    # Required to instantiate LeoPyzoFileBrowser
-    import pyzo.tools.pyzoFileBrowser as pfb
-    assert pfb
     #
     # Use Leo's main window, not pyzo's main window.
     assert isinstance(dw, QtWidgets.QMainWindow), repr(dw)
@@ -77,6 +74,12 @@ def onCreate(tag, keys):
         # pyzo.MainWindow.__init__ does pyzo.main = self
     #
     # Load the file browser.
-    pyzo.toolManager.loadTool('pyzofilebrowser')
+    tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
+    tm.loadTool(tool_id)
+    # 
+    # Monkey-patch the file browser.
+    fb = tm.getTool(tool_id)
+    assert fb
+    
 #@-others
 #@-leo
