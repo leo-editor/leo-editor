@@ -5,24 +5,34 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 '''
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190805031511.1: ** << pyzo_file_browser imports >>
+def after(s):
+    '''A good trace for imports.'''
+    g.pr('\n===== AFTER %s\n' % s)
+
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets # QtGui, QtCore, 
 import sys
+
 # 0. Crucial.
 pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
 assert g.os_path_exists(pyzo_dir), repr(pyzo_dir)
 sys.path.insert(0, pyzo_dir)
 # 1. Must be first.
+after('1')
 import pyzo
 assert pyzo
+after('pyzo')
 # 2. Must be next.
 import pyzo.core.main as main
+after('pyzo.core.main')
 main.loadIcons()
 main.loadFonts()
 from pyzo.core import menu
+after('pyzo.core.menu')
 assert menu
 # 3. All other imports:
 from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+after('pyzo.tools')
 assert PyzoFileBrowser
 #
 # Instantiate tool manager
@@ -30,6 +40,7 @@ from pyzo.tools import ToolManager
     # tools/__init__.py defines ToolManager.
 pyzo.toolManager = ToolManager()
     # From mainWindow._populate.
+after('2')
 
 if 0: # May be required in overrides.
     import os.path as op
@@ -76,6 +87,7 @@ def onCreate(tag, keys):
     # Load the file browser.
     tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
     tm.loadTool(tool_id)
+    after('3')
     # 
     # Monkey-patch the file browser.
     fb = tm.getTool(tool_id)
