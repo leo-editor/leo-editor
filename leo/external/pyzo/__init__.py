@@ -127,15 +127,15 @@ if not sys.platform.startswith('darwin'):
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
 # http://pyqt.sourceforge.net/Docs/PyQt5/incompatibilities.html
-if 0:
-    def pyzo_excepthook(type, value, tb):
-        out = 'Uncaught Python exception: ' + str(value) + '\n'
-        out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
-        out += '\n'
-        sys.stderr.write(out)
-    
-    sys.excepthook = pyzo_excepthook
-    ## Define some functions
+def pyzo_excepthook(type, value, tb):
+
+    out = 'Uncaught Python exception: ' + str(value) + '\n'
+    out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
+    out += '\n'
+    sys.stderr.write(out)
+
+sys.excepthook = pyzo_excepthook
+## Define some functions
 
 # todo: move some stuff out of this module ...
 def getResourceDirs():

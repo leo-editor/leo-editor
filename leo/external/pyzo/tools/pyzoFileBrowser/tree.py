@@ -334,11 +334,13 @@ class FileItem(BrowserItem):
         # todo: someday we should be able to simply pass the proxy object to the editors
         # so that we can open files on any file system
         path = self.path()
+        leo_g.trace(path)
         if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
-            # Load file
-            pyzo.editors.loadFile(path)
-            # Give focus
-            pyzo.editors.getCurrentEditor().setFocus()
+            if pyzo.editors: ### EKR:Change.
+                # Load file
+                pyzo.editors.loadFile(path)
+                # Give focus
+                pyzo.editors.getCurrentEditor().setFocus()
     def onExpanded(self):
         if self._mode == 'normal':
             # Create task to retrieve high level structure
