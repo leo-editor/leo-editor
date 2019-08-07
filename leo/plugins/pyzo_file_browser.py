@@ -5,9 +5,9 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 '''
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190805031511.1: ** << pyzo_file_browser imports >>
-def after(s):
+def banner(s):
     '''A good trace for imports.'''
-    g.pr('\n===== AFTER %s\n' % s)
+    g.pr('\n===== %s\n' % s)
 
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets # QtGui, QtCore, 
@@ -18,27 +18,27 @@ pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
 assert g.os_path_exists(pyzo_dir), repr(pyzo_dir)
 sys.path.insert(0, pyzo_dir)
 # 1: Must import pyzo first.
-after('1')
+banner('START top-level imports')
 import pyzo
 assert pyzo
-after('pyzo')
+banner('AFTER pyzo')
 # 2: Import main.
 import pyzo.core.main as main
 main.loadIcons()
 main.loadFonts()
-after('pyzo.core.main')
+banner('pyzo.core.main')
 # 3: Import menus.
 from pyzo.core import menu
-after('pyzo.core.menu')
+banner('AFTER pyzo.core.menu')
 assert menu
 # 4: Import tools.
 from pyzo.tools import ToolManager
-after('pyzo.tools')
+banner('AFTER pyzo.tools')
 # 5: Instantiate the singleton tool manager.
 pyzo.toolManager = ToolManager()
     # tools/__init__.py defines ToolManager.
     # From mainWindow._populate.
-after('top-level imports')
+banner('AFTER top-level imports')
 #@-<< pyzo_file_browser imports >>
 
 #@+others
@@ -81,12 +81,11 @@ def onCreate(tag, keys):
     # Load the file browser from the singleton toolManager.
     tm = pyzo.toolManager
     tm.loadTool('pyzofilebrowser')
-    after('onCreate: %s' % c.shortFileName())
+    banner('AFTER onCreate: %s' % c.shortFileName())
     # 
-    # Monkey-patch the file browser.
+    # No need to monkey-patch the file browser.
     if 0:
         fb = tm.getTool('pyzofilebrowser')
         assert fb
-    
 #@-others
 #@-leo
