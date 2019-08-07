@@ -8,11 +8,10 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets # QtGui, QtCore, 
 import sys
-
+# 0. Crucial.
 pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
 assert g.os_path_exists(pyzo_dir), repr(pyzo_dir)
 sys.path.insert(0, pyzo_dir)
-#
 # 1. Must be first.
 import pyzo
 assert pyzo
@@ -22,12 +21,7 @@ main.loadIcons()
 main.loadFonts()
 from pyzo.core import menu
 assert menu
-# 3. All other imports.
-if 0:
-    # Somehow this **interferes** with instantiating the standard file browswer.
-    # Required to instantiate LeoPyzoFileBrowser
-    import pyzoFileBrowser
-    print(pyzoFileBrowser)
+# 3. All other imports:
 from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
 assert PyzoFileBrowser
 #
@@ -37,25 +31,9 @@ from pyzo.tools import ToolManager
 pyzo.toolManager = ToolManager()
     # From mainWindow._populate.
 
-# ===== From pyzo/tools/pyzoFileBrowser.__init__.py
-
 if 0: # May be required in overrides.
     import os.path as op
     assert op
-        # Used in over-ridden PyzoFileBrowser.
-
-# from pyzo.util import zon as ssdf
-# from pyzo.util._locale import translate
-# from .browser import Browser
-# from .utils import cleanpath, isdir
-
-# ===== From pyzo/tools/pyzoFileBrowser/browser.py
-
-# from pyzo import translate
-# from pyzo.util import zon as ssdf
-# from . import proxies
-# from .tree import Tree
-# from .utils import cleanpath, isdir
 #@-<< pyzo_file_browser imports >>
 
 #@+others
@@ -84,11 +62,14 @@ def init():
     return True
 #@+node:ekr.20190805022841.1: *3* onCreate (pyzo_file_browser.py)
 def onCreate(tag, keys):
-    '''TO DO'''
+    '''Create a pyzo file browser in c's outline.'''
     c = keys.get('c')
     dw = c and c.frame and c.frame.top
     if not dw:
         return
+    # Required to instantiate LeoPyzoFileBrowser
+    import pyzo.tools.pyzoFileBrowser as pfb
+    assert pfb
     #
     # Use Leo's main window, not pyzo's main window.
     assert isinstance(dw, QtWidgets.QMainWindow), repr(dw)
@@ -97,6 +78,5 @@ def onCreate(tag, keys):
     #
     # Load the file browser.
     pyzo.toolManager.loadTool('pyzofilebrowser')
-   
 #@-others
 #@-leo
