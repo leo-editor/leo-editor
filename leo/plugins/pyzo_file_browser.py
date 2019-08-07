@@ -29,7 +29,8 @@ main.loadFonts()
 banner('pyzo.core.main')
 # 3: Import menus.
 from pyzo.core import menu
-    # Weird: imports pyzo.core.pyzoLogging.py
+    # Previoiusly this imported pyzo.core.pyzoLogging.py.
+    # Changed menu.py so it no longer does so.
 banner('AFTER pyzo.core.menu')
 assert menu
 # 4: Import tools.
