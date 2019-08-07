@@ -13,41 +13,32 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets # QtGui, QtCore, 
 import sys
 
-# 0. Crucial.
+# 0: Crucial.
 pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
 assert g.os_path_exists(pyzo_dir), repr(pyzo_dir)
 sys.path.insert(0, pyzo_dir)
-# 1. Must be first.
+# 1: Must import pyzo first.
 after('1')
 import pyzo
 assert pyzo
 after('pyzo')
-# 2. Must be next.
+# 2: Import main.
 import pyzo.core.main as main
-after('pyzo.core.main')
 main.loadIcons()
 main.loadFonts()
+after('pyzo.core.main')
+# 3: Import menus.
 from pyzo.core import menu
 after('pyzo.core.menu')
 assert menu
-# 3. All other imports:
-import pyzo.tools
-assert pyzo.tools
-after('pyzo.tools')
-from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-after('pyzo.tools.pyzoFileBrowser')
-assert PyzoFileBrowser
-#
-# Instantiate tool manager
+# 4: Import tools.
 from pyzo.tools import ToolManager
-    # tools/__init__.py defines ToolManager.
+after('pyzo.tools')
+# 5: Instantiate the singleton tool manager.
 pyzo.toolManager = ToolManager()
+    # tools/__init__.py defines ToolManager.
     # From mainWindow._populate.
-after('2')
-
-if 0: # May be required in overrides.
-    import os.path as op
-    assert op
+after('top-level imports')
 #@-<< pyzo_file_browser imports >>
 
 #@+others
@@ -87,8 +78,7 @@ def onCreate(tag, keys):
     pyzo.main = dw
         # pyzo.MainWindow.__init__ does pyzo.main = self
     #
-    # Load the file browser.
-    ### tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
+    # Load the file browser from the singleton toolManager.
     tm = pyzo.toolManager
     tm.loadTool('pyzofilebrowser')
     after('onCreate: %s' % c.shortFileName())
