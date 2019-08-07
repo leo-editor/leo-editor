@@ -36,6 +36,13 @@
 <v t="mhw-debug-1081.20190314004045.1"></v>
 <v t="maphew.20190712112633.1"><vh>Main</vh></v>
 </v>
+<v t="mhw.20190730140115.1"><vh>@button add-desktop-links</vh>
+<v t="mhw.20190730142513.1"><vh>Notes</vh>
+<v t="mhw.20190730140619.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
+<v t="mhw.20190730141446.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
+</v>
+</v>
+<v t="mhw.20190806161400.1"><vh>@button remove-desktop-links</vh></v>
 </v>
 </v>
 <v t="lkj.20190712001203.1"><vh>scripts</vh>
@@ -48,13 +55,6 @@
 </v>
 <v t="lkj.20190711232707.1"><vh>Linux</vh></v>
 <v t="lkj.20190711232711.1"><vh>Mac</vh></v>
-<v t="mhw.20190730140115.1"><vh>@button add-desktop-links</vh>
-<v t="mhw.20190730142513.1"><vh>Notes</vh>
-<v t="mhw.20190730140619.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
-<v t="mhw.20190730141446.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
-</v>
-</v>
-<v t="mhw.20190806161400.1"><vh>@button remove-desktop-links</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -86,7 +86,9 @@ Example of success:
 
 ## All Platforms - Linux, Mac, Windows ##
 
-[add-desktop-links] - Creates launch shortcuts in Desktop and Start Menu 
+[add-desktop-links] - Creates launch shortcuts in desktop and system menu
+
+[remove-desktop-links] - Removes the launch shortcuts
 
 
 ## Windows ## 
@@ -252,6 +254,8 @@ else:
 g.es_print('--- end of script')</t>
 <t tx="maphew.20190712112935.1">These buttons are just convenience wrappers around the `@file` scripts, by cloning the at-file nodes.
 
+Todo: move desktop-links code into external files also (enables running from command line).
+
 </t>
 <t tx="maphew.20190712113401.1"></t>
 <t tx="maphew.20190712113412.1"></t>
@@ -340,7 +344,8 @@ False: (Good for files like unitTest.leo)
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
-<t tx="mhw.20190730140115.1">'''naive implementation of https://github.com/kiwi0fruit/shortcutter'''
+<t tx="mhw.20190730140115.1">'''Create Leo Editor desktop and system menu shortcut links'''
+
 g.es_print("Running add-desktop-links...")
 import sys
 import platform
@@ -428,7 +433,7 @@ passing `activate=False` bypasses creation of .bat file, this is what we need. I
  - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
 
 @c</t>
-<t tx="mhw.20190806161400.1">'''Remove Leo shortcuts from desktop and OS menu.
+<t tx="mhw.20190806161400.1">'''Remove Leo Editor shortcuts from desktop and system menu
 
 The approach is naive:
     first we create links for the current environment, overwriting if already exist
