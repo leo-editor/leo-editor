@@ -87,11 +87,12 @@ def onCreate(tag, keys):
     # Load the file browser.
     tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
     tm.loadTool(tool_id)
-    after('3')
+    after('onCreate: %s' % c.shortFileName())
     # 
     # Monkey-patch the file browser.
-    fb = tm.getTool(tool_id)
-    assert fb
+    if 0:
+        fb = tm.getTool(tool_id)
+        assert fb
     
 #@-others
 #@-leo
