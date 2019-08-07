@@ -97,19 +97,6 @@ def onCreate(tag, keys):
     #
     # Load the file browser.
     pyzo.toolManager.loadTool('pyzofilebrowser')
-    ### Old code:
-        # mw = c.frame.top
-        # dock = mw.createDockWidget(
-            # closeable=True,
-            # moveable=True,
-            # height=100,
-            # name='file browser'
-        # )
-        # mw.leo_docks.append(dock)
-        # w = PyzoFileBrowser(parent=None)
-        # dock.setWidget(w)
-        # area = QtCore.Qt.LeftDockWidgetArea
-        # mw.addDockWidget(area, dock)
-        # w.show()
+   
 #@-others
 #@-leo
