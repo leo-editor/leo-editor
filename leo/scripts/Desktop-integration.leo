@@ -54,6 +54,7 @@
 <v t="mhw.20190730141446.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
 </v>
 </v>
+<v t="mhw.20190806161400.1"><vh>@button remove-desktop-links</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -340,17 +341,11 @@ False: (Good for files like unitTest.leo)
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
 <t tx="mhw.20190730140115.1">'''naive implementation of https://github.com/kiwi0fruit/shortcutter'''
+g.es_print("Running add-desktop-links...")
 import sys
-
-
-
 import platform
 from shortcutter import ShortCutter
 sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
-
-
-
-
 
 leocmd = "leo"
 if platform.system() == 'Windows':
@@ -365,8 +360,6 @@ if desktop:
 
 if menu:
     g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
-    
-
 
 
 @first # -*- coding: utf-8 -*-
@@ -435,5 +428,41 @@ passing `activate=False` bypasses creation of .bat file, this is what we need. I
  - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
 
 @c</t>
+<t tx="mhw.20190806161400.1">'''Remove Leo shortcuts from desktop and OS menu.
+
+The approach is naive:
+    first we create links for the current environment, overwriting if already exist
+    then we remove them
+
+So this won't delete links created from a different Leo directory or source code checkout.
+'''
+g.es_print("Running remove-desktop-links...")
+import os
+import sys
+import platform
+from shortcutter import ShortCutter
+sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+
+leocmd = "leo"
+if platform.system() == 'Windows':
+    leocmd = "leo-messages"
+
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
+term = sc.create_shortcut_to_env_terminal()
+
+if desktop:
+    g.es_print("Removing shortcut: {} - {}".format(desktop[0],desktop[2]))
+    os.remove(desktop[2])
+
+if menu:
+    g.es_print("Removing shortcut: {} - {}".format(menu[0],menu[2]))
+    os.remove(menu[2])
+
+
+@first # -*- coding: utf-8 -*-
+@language python
+@tabwidth -4
+</t>
 </tnodes>
 </leo_file>
