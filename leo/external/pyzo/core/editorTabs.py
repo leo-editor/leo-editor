@@ -908,7 +908,7 @@ class EditorTabs(QtWidgets.QWidget):
 
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self,parent)
-        ### self.setObjectName('EditorTabs') # EKR.
+        ### self.setObjectName('EditorTabs') # EKR:change.
 
         # keep a booking of opened directories
         self._lastpath = ''

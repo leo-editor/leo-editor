@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # EKR: The frozen version of pyzo does not use pyzo.__main__
-pure = True
-    # EKR: True is files don't execute code, only define vars, classes, functions.
 """
 Pyzo is a cross-platform Python IDE focused on
 interactivity and introspection, which makes it very suitable for
@@ -39,7 +37,7 @@ and workspace.
 
 """
 __version__ = '4.6.2'
-import sys
+import sys # EKR:change
 try:
     import leo.core.leoGlobals as leo_g
 except Exception:
@@ -48,7 +46,7 @@ except Exception:
     leo_g = None
 # Instantiate the application
 import os
-# import sys #EKR: imported above.
+# import sys # EKR:change: imported above.
 import locale
 import traceback
 

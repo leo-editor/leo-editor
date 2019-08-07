@@ -35,7 +35,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         QtWidgets.QMainWindow.__init__(self, parent)
         
-        # self.setObjectName('MainWindow') # EKR.
+        # self.setObjectName('MainWindow') # EKR:change.
 
         self._closeflag = 0  # Used during closing/restarting
 
@@ -55,8 +55,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Show splash screen (we need to set our color too)
         w = SplashWidget(self, distro='no distro')
         self.setCentralWidget(w)
-        if 0: # #EKR
-            self.setStyleSheet("QMainWindow { background-color: #268bd2;}") # EKR.
+        if 0: # EKR:change.
+            self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
 
         # Show empty window and disable updates for a while
         self.show()
@@ -121,7 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
             from pyzo.core.kernelbroker import KernelInfo
             pyzo.config.shellConfigs2.append( KernelInfo() )
 
-        # EKR:patch Set background.
+        # EKR:change Set background.
         if True:
             bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
                 # Default: solarized base00

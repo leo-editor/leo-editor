@@ -192,7 +192,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit): # tag:CodeEditor
         cyan    = "#2aa198"
         green   = "#859900"  # noqa
 
-        if 1: # EKR:patch: use a dark theme.
+        if 1: # EKR:change: use a dark theme.
             back1, back2, back3 = base03, base02, base01
             fore1, fore2, fore3, fore4 = base0, base1, base2, base3  # noqa
         else:

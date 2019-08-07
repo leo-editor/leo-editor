@@ -20,10 +20,11 @@ import sys
 
 # Imports that are maybe not used in Pyzo, but are/can be in the tools.
 # Import them now, so they are available in the frozen app.
-import shutil  # noqa
-assert shutil # EKR.
+if 0: # EKR:change
+    import shutil  # noqa
+    assert shutil # EKR.
 
-# EKR: patch. We *are* running a script.
+# EKR:change. We *are* running a script.
 # Add parent directory to sys.path and try again.
 thisDir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.split(thisDir)[0])

@@ -122,8 +122,8 @@ class OutputStreamSplitter:
     def encoding(self):
         return self._original.encoding()
 
-# EKR: *importing* this module starts logging.
-
+    
 # Split now, with no defering
 splitConsole()
 
+# EKR: *importing* this module starts logging.
