@@ -31,8 +31,11 @@ from pyzo.core import menu
 after('pyzo.core.menu')
 assert menu
 # 3. All other imports:
-from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+import pyzo.tools
+assert pyzo.tools
 after('pyzo.tools')
+from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+after('pyzo.tools.pyzoFileBrowser')
 assert PyzoFileBrowser
 #
 # Instantiate tool manager
@@ -85,13 +88,14 @@ def onCreate(tag, keys):
         # pyzo.MainWindow.__init__ does pyzo.main = self
     #
     # Load the file browser.
-    tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
-    tm.loadTool(tool_id)
+    ### tm, tool_id = pyzo.toolManager, 'pyzofilebrowser'
+    tm = pyzo.toolManager
+    tm.loadTool('pyzofilebrowser')
     after('onCreate: %s' % c.shortFileName())
     # 
     # Monkey-patch the file browser.
     if 0:
-        fb = tm.getTool(tool_id)
+        fb = tm.getTool('pyzofilebrowser')
         assert fb
     
 #@-others
