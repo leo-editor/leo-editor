@@ -16,7 +16,8 @@ leocmd = "leo"
 if platform.system() == 'Windows':
     leocmd = "leo-messages"
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", 
+    icon = r"D:\code-maphew\leo-editor\leo\Icons\LeoApp.ico")
 menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
 term = sc.create_shortcut_to_env_terminal()
 
