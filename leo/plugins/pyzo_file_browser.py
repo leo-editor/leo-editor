@@ -33,13 +33,24 @@ from pyzo.core import menu
     # Changed menu.py so it no longer does so.
 banner('AFTER pyzo.core.menu')
 assert menu
-# 4: Import tools.
+#
+# Delayed imports form MainWindow._populate.
+from pyzo.core.editorTabs import EditorTabs
+assert EditorTabs
+from pyzo.core.shellStack import ShellStackWidget
+assert ShellStackWidget
+from pyzo.core import codeparser
+from pyzo.core.history import CommandHistory
 from pyzo.tools import ToolManager
-banner('AFTER pyzo.tools')
-# 5: Instantiate the singleton tool manager.
+banner('After MainWindow._populate imports')
+#
+# Instantiate singleton objects, from MainWindow._populate.
+pyzo.keyMapper = menu.KeyMapper()
+pyzo.command_history = CommandHistory('command_history.py')
 pyzo.toolManager = ToolManager()
-    # tools/__init__.py defines ToolManager.
-    # From mainWindow._populate.
+if pyzo.parser is None:
+    pyzo.parser = codeparser.Parser()
+    pyzo.parser.start()
 banner('AFTER top-level imports')
 #@-<< pyzo_file_browser imports >>
 
@@ -79,10 +90,40 @@ def onCreate(tag, keys):
     assert isinstance(dw, QtWidgets.QMainWindow), repr(dw)
     pyzo.main = dw
         # pyzo.MainWindow.__init__ does pyzo.main = self
+    #@+<< Define patches to dw >>
+    #@+node:ekr.20190808021850.1: *4* << Define patches to dw >>
+    def setMainTitle(self, path=None):
+        pass
+        
+    g.funcToMethod(setMainTitle, dw.__class__, name=None)
+    #@-<< Define patches to dw >>
+    banner('BEFORE onCreate: %s' % c.shortFileName())
+    #
+    # Instantiate pyzo.editors.
+    from pyzo.core.editorTabs import EditorTabs
+    pyzo.editors = EditorTabs(pyzo.main)
     #
     # Load the file browser from the singleton toolManager.
     tm = pyzo.toolManager
-    tm.loadTool('pyzofilebrowser')
+    tool_ids = c.config.getData('pyzo_tool_ids') or [
+        'pyzofilebrowser', # works.
+        # 'pyzohistoryviewer', # works.
+        # 'pyzointeractivehelp', # Works.
+        # 'pyzologger', # Works.
+        # 'pyzowebbrowser', # Works.
+        #
+        # 'pyzosourcestructure', # Requires pyzo.editors and 
+            # File "leo\external\pyzo\tools\pyzoSourceStructure.py", line 100, in __init__
+            # pyzo.editors.currentChanged.connect(self.onEditorsCurrentChanged)
+            # AttributeError: 'NoneType' object has no attribute 'currentChanged'
+        #
+        # 'pyzoworkspace', # Requires pyzo.shells.
+            # File "leo\external\pyzo\tools\pyzoWorkspace.py", line 41, in __init__
+            # pyzo.shells.currentShellChanged.connect(self.onCurrentShellChanged)
+            # AttributeError: 'NoneType' object has no attribute 'currentShellChanged'
+    ]
+    for tool_id in tool_ids:
+        tm.loadTool(tool_id)
     banner('AFTER onCreate: %s' % c.shortFileName())
     # 
     # No need to monkey-patch the file browser.
