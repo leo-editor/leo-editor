@@ -367,8 +367,8 @@ leocmd = "leo"
 if platform.system() == 'Windows':
     leocmd = "leo-messages"
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
 term = sc.create_shortcut_to_env_terminal()
 
 if desktop:

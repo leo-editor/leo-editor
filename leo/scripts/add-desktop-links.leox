@@ -16,8 +16,8 @@ leocmd = "leo"
 if platform.system() == 'Windows':
     leocmd = "leo-messages"
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
 term = sc.create_shortcut_to_env_terminal()
 
 if desktop:
@@ -25,68 +25,5 @@ if desktop:
 
 if menu:
     g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
-#@+node:mhw.20190730142513.1: ** Notes
-#@+at
-# Example straight from docs creates a .lnk file like:
-#     
-#     Name: Terminal at leo-dev
-#     Command: C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
-# 
-# and the bat file:
-#     
-#     @echo off
-#     set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-#     set PYTHONNOUSERSITE=1
-#     call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-#     set "u=chcp 65001 && set PYTHONIOENCODING=utf-8"
-#     set "a=chcp 1252 && set PYTHONIOENCODING="
-#     set "b=set LANG=C.UTF-8 && set PYTHONIOENCODING=utf-8 && "%PROGRAMFILES%\Git\git-bash.exe""
-#     cd /d %USERPROFILE%
-#     cmd /k
-# 
-# ------
-# Using `leo` instead of Python or `Leo Editor`:
-# 
-# C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
-# 
-# Contents:
-#     @language batch
-#     @echo off
-#     set PYTHONNOUSERSITE=1
-#     call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-#     "c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-#     call "c:\tools\miniconda3\Scripts\deactivate.bat"
-# 
-# ----
-# passing `activate=False` bypasses creation of .bat file, this is what we need. It Just Works. :-)
-# 
-#     C:\tools\miniconda3\envs\leo-dev\Scripts\leo-messages.exe
-# 
-# 
-# -----
-# # What's Next
-# 
-#  - Record location of the created shortcuts so they can be removed later with a script
-#  - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
-# 
-#@@c
-#@+node:mhw.20190730140619.1: *3* @@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
-#@@language batch
-@echo off
-set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-set "u=chcp 65001 && set PYTHONIOENCODING=utf-8"
-set "a=chcp 1252 && set PYTHONIOENCODING="
-set "b=set LANG=C.UTF-8 && set PYTHONIOENCODING=utf-8 && "%PROGRAMFILES%\Git\git-bash.exe""
-cd /d %USERPROFILE%
-cmd /k
-#@+node:mhw.20190730141446.1: *3* @@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
-#@@language batch
-@echo off
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-"c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-call "c:\tools\miniconda3\Scripts\deactivate.bat"
 #@-others
 #@-leo
