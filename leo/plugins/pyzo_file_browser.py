@@ -65,11 +65,9 @@ def get_tool_ids(c): # pyzo_file_browser.py
         'pyzointeractivehelp',
         'pyzologger',
         'pyzowebbrowser',
-        #
-        # 'pyzosourcestructure', # Requires pyzo.editors and 
-            # File "leo\external\pyzo\tools\pyzoSourceStructure.py", line 100, in __init__
-            # pyzo.editors.currentChanged.connect(self.onEditorsCurrentChanged)
-            # AttributeError: 'NoneType' object has no attribute 'currentChanged'
+        'pyzosourcestructure',
+            # Partially functional.
+            # Shows *hidden* pyzo editor.
         #
         # 'pyzoworkspace', # Requires pyzo.shells.
             # File "leo\external\pyzo\tools\pyzoWorkspace.py", line 41, in __init__
@@ -88,7 +86,7 @@ def get_tool_ids(c): # pyzo_file_browser.py
         except Exception:
             g.es_print('bad @data pyzo_tool_ids value: %r' % tool_id)
     return result
-#@+node:ekr.20190805022358.1: *3* init (pyzo_file_browser.py)
+#@+node:ekr.20190805022358.1: *3* init
 init_warning_given = False
 
 def init():

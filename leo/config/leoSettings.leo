@@ -11753,6 +11753,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 # pyzosourcestructure
     # Partially functional.
 
+# Not ready yet:
 # pyzoworkspace</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
