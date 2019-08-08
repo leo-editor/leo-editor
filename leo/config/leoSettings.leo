@@ -11750,10 +11750,10 @@ The --init-docks command-line option is the easy way to do this.</t>
 # pyzointeractivehelp
 # pyzologger
 # pyzowebbrowser
+# pyzosourcestructure
+    # Partially functional.
 
-# Not yet...
-# 'pyzosourcestructure'
-# 'pyzoworkspace'</t>
+# pyzoworkspace</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
