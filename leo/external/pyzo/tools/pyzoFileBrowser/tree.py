@@ -336,7 +336,7 @@ class FileItem(BrowserItem):
         path = self.path()
         leo_g.trace(path)
         if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
-            if pyzo.editors: ### EKR:change.
+            if pyzo.editors: # EKR:change.
                 # Load file
                 pyzo.editors.loadFile(path)
                 # Give focus

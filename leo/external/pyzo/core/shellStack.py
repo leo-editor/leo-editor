@@ -326,7 +326,7 @@ class ShellControl(QtWidgets.QToolButton):
         for shell in shells:
             text = shellTitle(shell)
             action = menu.addItem(text, None, self._shellStack.setCurrentWidget, shell)
-                ### EKR: This crashes if we aren't using menus.
+                # EKR: This crashes if we aren't using menus.
             action._shell = shell
             action.setCheckable(True)
             self._shellActions.append(action)

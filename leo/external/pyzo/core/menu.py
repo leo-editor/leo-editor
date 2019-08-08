@@ -20,7 +20,7 @@ from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
 import pyzo
 from pyzo.core.compactTabWidget import CompactTabWidget
-if 0: ### EKR:change: Is this necessary???
+if 0: # EKR:change: Is this necessary???
     from pyzo.core.pyzoLogging import print  # noqa
     assert print
 from pyzo.core.assistant import PyzoAssistant
@@ -572,7 +572,7 @@ class FileMenu(Menu):
             finally:
                 editor.undo()
                 editor.setTextCursor(cursor0)
-# todo: move to matching brace
+    # todo: move to matching brace
 class EditMenu(Menu):
     def build(self):
         icons = pyzo.icons
@@ -677,9 +677,9 @@ class FontMenu(Menu):
         logger = pyzo.toolManager.getTool('pyzologger')
         if logger:
             logger.setFont(pyzo.config.view.fontname)
-# todo: brace matching
-# todo: code folding?
-# todo: maybe move qt theme to settings
+    # todo: brace matching
+    # todo: code folding?
+    # todo: maybe move qt theme to settings
 class ViewMenu(Menu):
     def build(self):
         icons = pyzo.icons
@@ -1752,7 +1752,7 @@ class SettingsMenu(Menu):
         m.setText(unwrapText(text))
         m.setIcon(m.Information)
         m.exec_()
-## Classes to enable editing the key mappings
+    ## Classes to enable editing the key mappings
 class KeyMapModel(QtCore.QAbstractItemModel):
     """ The model to view the structure of the menu and the shortcuts
     currently mapped. """
@@ -1856,7 +1856,7 @@ class KeyMapModel(QtCore.QAbstractItemModel):
         # This is the trick. The internal pointer is the way to establish
         # correspondence between ModelIndex and underlying data.
 
-# Key to string mappings
+    # Key to string mappings
 k = QtCore.Qt
 keymap = {k.Key_Enter:'Enter', k.Key_Return:'Return', k.Key_Escape:'Escape',
     k.Key_Tab:'Tab', k.Key_Backspace:'Backspace', k.Key_Pause:'Pause',

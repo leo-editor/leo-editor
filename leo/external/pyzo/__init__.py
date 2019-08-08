@@ -266,18 +266,6 @@ def start():
     # Choose language, get locale
     appLocale = setLanguage(config.settings.language)
 
-    # EKR: Instantiating MainWindow creates editors,
-    #      so we must patch pyzo right here.
-    ### Doesn't do anything at present.
-        # if leo_g:
-            # try:
-                # import leo.plugins.pyzo_support as pyzo_support
-                # leo_g.pr('\npyzo.start: patching pyzo!\n')
-                # leo_x = pyzo_support.PyzoInterface()
-                # leo_x.patch_pyzo()
-            # except ImportError:
-                # leo_g.pr('\nCan not import leo.plugins.pyzo_support')
-
     # Create main window, using the selected locale
     MainWindow(None, appLocale)
 
