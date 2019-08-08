@@ -156,7 +156,6 @@ class MainWindow(QtWidgets.QMainWindow):
             time.sleep(0.01)
     def _populate(self):
 
-        # MainWindowShim should override this.
         # if leo_g: leo_g.pr('MainWindow._populate')
 
         # Delayed imports
