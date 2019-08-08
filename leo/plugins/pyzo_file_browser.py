@@ -56,6 +56,38 @@ banner('AFTER top-level imports')
 
 #@+others
 #@+node:ekr.20190805032828.1: ** top-level functions
+#@+node:ekr.20190808025414.1: *3* get_tool_ids
+def get_tool_ids(c): # pyzo_file_browser.py
+    '''Return a list of tool id's from c.config.getData.'''
+    valid_ids = [
+        'pyzofilebrowser',
+        'pyzohistoryviewer',
+        'pyzointeractivehelp',
+        'pyzologger',
+        'pyzowebbrowser',
+        #
+        # 'pyzosourcestructure', # Requires pyzo.editors and 
+            # File "leo\external\pyzo\tools\pyzoSourceStructure.py", line 100, in __init__
+            # pyzo.editors.currentChanged.connect(self.onEditorsCurrentChanged)
+            # AttributeError: 'NoneType' object has no attribute 'currentChanged'
+        #
+        # 'pyzoworkspace', # Requires pyzo.shells.
+            # File "leo\external\pyzo\tools\pyzoWorkspace.py", line 41, in __init__
+            # pyzo.shells.currentShellChanged.connect(self.onCurrentShellChanged)
+            # AttributeError: 'NoneType' object has no attribute 'currentShellChanged'
+    ]
+    result = []
+    aList = c.config.getData('pyzo_tool_ids')
+    for tool_id in aList:
+        try:
+            tool_id = tool_id.lower()
+            if tool_id in valid_ids:
+                result.append(tool_id)
+            else:
+                raise ValueError
+        except Exception:
+            g.es_print('bad @data pyzo_tool_ids value: %r' % tool_id)
+    return result
 #@+node:ekr.20190805022358.1: *3* init (pyzo_file_browser.py)
 init_warning_given = False
 
@@ -78,8 +110,8 @@ def init():
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
-#@+node:ekr.20190805022841.1: *3* onCreate (pyzo_file_browser.py)
-def onCreate(tag, keys):
+#@+node:ekr.20190805022841.1: *3* onCreate
+def onCreate(tag, keys): # pyzo_file_browser.py
     '''Create a pyzo file browser in c's outline.'''
     c = keys.get('c')
     dw = c and c.frame and c.frame.top
@@ -103,32 +135,10 @@ def onCreate(tag, keys):
     from pyzo.core.editorTabs import EditorTabs
     pyzo.editors = EditorTabs(pyzo.main)
     #
-    # Load the file browser from the singleton toolManager.
+    # Load all enabled tools from @data pyzo_tool_ids.
     tm = pyzo.toolManager
-    tool_ids = c.config.getData('pyzo_tool_ids') or [
-        'pyzofilebrowser', # works.
-        # 'pyzohistoryviewer', # works.
-        # 'pyzointeractivehelp', # Works.
-        # 'pyzologger', # Works.
-        # 'pyzowebbrowser', # Works.
-        #
-        # 'pyzosourcestructure', # Requires pyzo.editors and 
-            # File "leo\external\pyzo\tools\pyzoSourceStructure.py", line 100, in __init__
-            # pyzo.editors.currentChanged.connect(self.onEditorsCurrentChanged)
-            # AttributeError: 'NoneType' object has no attribute 'currentChanged'
-        #
-        # 'pyzoworkspace', # Requires pyzo.shells.
-            # File "leo\external\pyzo\tools\pyzoWorkspace.py", line 41, in __init__
-            # pyzo.shells.currentShellChanged.connect(self.onCurrentShellChanged)
-            # AttributeError: 'NoneType' object has no attribute 'currentShellChanged'
-    ]
-    for tool_id in tool_ids:
+    for tool_id in get_tool_ids(c):
         tm.loadTool(tool_id)
     banner('AFTER onCreate: %s' % c.shortFileName())
-    # 
-    # No need to monkey-patch the file browser.
-    if 0:
-        fb = tm.getTool('pyzofilebrowser')
-        assert fb
 #@-others
 #@-leo
