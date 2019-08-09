@@ -1,0 +1,40 @@
+#@+leo-ver=5-thin
+#@+node:mhw.20190808083026.1: * @file remove-desktop-links.leox
+#@@language python
+#@@tabwidth -4
+#@+others
+#@+node:mhw.20190808083336.1: ** main
+#@@first
+'''Remove Leo Editor shortcuts from desktop and system menu
+
+The approach is naive:
+    first we create links for the current environment, overwriting if already exist
+    then we remove them
+
+So this won't delete links created from a different Leo directory or source code
+checkout (unless they have same filename).
+'''
+g.es_print("Running remove-desktop-links...")
+import os
+import sys
+import platform
+from shortcutter import ShortCutter
+sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+
+leocmd = "leo"
+if platform.system() == 'Windows':
+    leocmd = "leo-messages"
+
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
+term = sc.create_shortcut_to_env_terminal()
+
+if desktop:
+    g.es_print("Removing shortcut: {} - {}".format(desktop[0],desktop[2]))
+    os.remove(desktop[2])
+
+if menu:
+    g.es_print("Removing shortcut: {} - {}".format(menu[0],menu[2]))
+    os.remove(menu[2])
+#@-others
+#@-leo
