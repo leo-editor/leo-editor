@@ -29,6 +29,9 @@ import threading
     # pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
     # sys.path.insert(0, pyzo_dir)
 #@-<< pyzo_file_browser imports >>
+
+iconprovider = QtWidgets.QFileIconProvider()
+
 #@+others
 #@+node:ekr.20190809093459.1: **  top-level functions
 #@+node:ekr.20190809093459.3: *3* init
@@ -386,10 +389,10 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
         self._leftButtons = []
         self._rightButtons = []
     #@+node:ekr.20190810003404.29: *4* LineEditWithToolButtons.addButtonLeft
-    def addButtonLeft(self, icon=None, willHaveMenu=False):
+    def addButtonLeft(self, icon, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._leftButtons)
     #@+node:ekr.20190810003404.30: *4* LineEditWithToolButtons.addButtonRight
-    def addButtonRight(self, icon=None, willHaveMenu=False):
+    def addButtonRight(self, icon, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._rightButtons)
     #@+node:ekr.20190810003404.31: *4* LineEditWithToolButtons._addButton
     def _addButton(self, icon, willHaveMenu, L):
@@ -397,9 +400,8 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
         button = QtWidgets.QToolButton(self)
         L.append(button)
         # Customize appearance
-        if icon: ### EKR:change: make icon optional.
-            button.setIcon(icon)
-            button.setIconSize(QtCore.QSize(16,16))
+        button.setIcon(icon)
+        button.setIconSize(QtCore.QSize(16,16))
         button.setStyleSheet("QToolButton { border: none; padding: 0px; }")
         #button.setStyleSheet("QToolButton { border: none; padding: 0px; background-color:red;}");
         # Set behavior
@@ -486,7 +488,7 @@ class PathInput(LineEditWithToolButtons):
         LineEditWithToolButtons.__init__(self, parent)
 
         # Create up button
-        self._upBut = self.addButtonLeft(None) ### pyzo.icons.folder_parent)
+        self._upBut = self.addButtonLeft(pyzo_icons.folder_parent)
         self._upBut.clicked.connect(self.dirUp)
 
         # To receive focus events
@@ -578,7 +580,7 @@ class Projects(QtWidgets.QWidget):
 
         # Create star button
         self._but = QtWidgets.QToolButton(self)
-        ### self._but.setIcon( pyzo.icons.star3 )
+        self._but.setIcon(pyzo_icons.star3)
         self._but.setStyleSheet("QToolButton { padding: 0px; }")
         self._but.setIconSize(QtCore.QSize(18,18))
         self._but.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
@@ -622,10 +624,10 @@ class Projects(QtWidgets.QWidget):
         # Select project or not ...
         self._combo.setCurrentIndex(projectIndex)
         if projectIndex:
-            ### self._but.setIcon( pyzo.icons.star2 )
+            self._but.setIcon(pyzo_icons.star2)
             self._but.setMenu(self._menu)
         else:
-            ### self._but.setIcon( pyzo.icons.star3 )
+            self._but.setIcon(pyzo_icons.star3)
             self._but.setMenu(None)
     #@+node:ekr.20190810003404.47: *4* Projects.updateProjectList
     def updateProjectList(self):
@@ -740,7 +742,7 @@ class NameFilter(LineEditWithToolButtons):
         LineEditWithToolButtons.__init__(self, parent)
 
         # Create tool button, and attach the menu
-        self._menuBut = self.addButtonRight() ### pyzo.icons['filter'], True)
+        self._menuBut = self.addButtonRight(pyzo_icons['filter'], True)
         self._menu = QtWidgets.QMenu(self._menuBut)
         self._menu.triggered.connect(self.onMenuTriggered)
         self._menuBut.setMenu(self._menu)
@@ -795,14 +797,14 @@ class SearchFilter(LineEditWithToolButtons):
         LineEditWithToolButtons.__init__(self, parent)
 
         # Create tool button, and attach the menu
-        self._menuBut = self.addButtonRight() ### pyzo.icons['magnifier'], True)
+        self._menuBut = self.addButtonRight(pyzo_icons['magnifier'], True)
         self._menu = QtWidgets.QMenu(self._menuBut)
         self._menu.triggered.connect(self.onMenuTriggered)
         self._menuBut.setMenu(self._menu)
         self.buildMenu()
 
         # Create cancel button
-        self._cancelBut = self.addButtonRight() ### pyzo.icons['cancel'])
+        self._cancelBut = self.addButtonRight(pyzo_icons['cancel'])
         self._cancelBut.setVisible(False)
 
         # Keep track of last value of search (initialized empty)
@@ -1720,7 +1722,7 @@ Defines the tree widget to display the contents of a selected directory.
 MOUNTS = 'drives'
 
 # Create icon provider
-iconprovider = QtWidgets.QFileIconProvider()
+### iconprovider = QtWidgets.QFileIconProvider()
 #@+node:ekr.20190810003404.177: *3* addIconOverlays
 def addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(0,0)):
     """ Create an overlay for an icon.
@@ -1962,9 +1964,8 @@ class DriveItem(BrowserItem):
         # Item is not expandable
     #@+node:ekr.20190810003404.194: *4* DriveItem.setFileIcon
     def setFileIcon(self):
-        pass
         # Use folder icon
-        ### self.setIcon(0, pyzo.icons.drive)
+        self.setIcon(0, pyzo_icons.drive)
     #@+node:ekr.20190810003404.195: *4* DriveItem.onActivated
     def onActivated(self):
         self.treeWidget().setPath(self.path())
@@ -1984,14 +1985,14 @@ class DirItem(BrowserItem):
         self._createDummyItem('Loading contents ...')
     #@+node:ekr.20190810003404.198: *4* DirItem.setFileIcon
     def setFileIcon(self):
-        pass
-            # # Use folder icon
-            # icon = iconprovider.icon(iconprovider.Folder)
-            # overlays = []
-            # if self._starred:
-                # overlays.append(pyzo.icons.bullet_yellow)
-            # icon = addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(-4,0))
-            # self.setIcon(0, icon)
+        
+        # Use folder icon
+        icon = iconprovider.icon(iconprovider.Folder)
+        overlays = []
+        if self._starred:
+            overlays.append(pyzo_icons.bullet_yellow)
+        icon = addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(-4,0))
+        self.setIcon(0, icon)
     #@+node:ekr.20190810003404.199: *4* DirItem.onActivated
     def onActivated(self):
         self.treeWidget().setPath(self.path())
@@ -2045,25 +2046,31 @@ class FileItem(BrowserItem):
             self._createDummyItem('Loading high level structure ...')
     #@+node:ekr.20190810003404.205: *4* FileItem.setFileIcon
     def setFileIcon(self):
-        pass ###
-            # # Create dummy file in pyzo user dir
+
+        # Create dummy file in pyzo user dir
+        ###
             # dummy_filename = op.join(
                 # cleanpath(pyzo.appDataDir), 
                 # 'dummyFiles', 'dummy' + ext(self.path()))
-            # # Create file?
-            # if not op.isfile(dummy_filename):
-                # if not isdir(op.dirname(dummy_filename)):
-                    # os.makedirs(op.dirname(dummy_filename))
-                # f = open(dummy_filename, 'wb')
-                # f.close()
-            # # Use that file
-            # if sys.platform.startswith('linux') and \
-                                        # not QtCore.__file__.startswith('/usr/'):
-                # icon = iconprovider.icon(iconprovider.File)
-            # else:
-                # icon = iconprovider.icon(QtCore.QFileInfo(dummy_filename))
-            # icon = addIconOverlays(icon)
-            # self.setIcon(0, icon)
+        dummy_filename = op.join(
+                cleanpath(appDataDir), 
+                'dummyFiles', 'dummy' + ext(self.path()))
+
+        # Create file?
+        if not op.isfile(dummy_filename):
+            if not isdir(op.dirname(dummy_filename)):
+                os.makedirs(op.dirname(dummy_filename))
+            f = open(dummy_filename, 'wb')
+            f.close()
+
+        # Use that file
+        if sys.platform.startswith('linux') and \
+                                    not QtCore.__file__.startswith('/usr/'):
+            icon = iconprovider.icon(iconprovider.File)
+        else:
+            icon = iconprovider.icon(QtCore.QFileInfo(dummy_filename))
+        icon = addIconOverlays(icon)
+        self.setIcon(0, icon)
     #@+node:ekr.20190810003404.206: *4* FileItem.searchContents
     def searchContents(self, needle, **kwargs):
         self.setHidden(True)
@@ -2743,5 +2750,259 @@ def hasHiddenAttribute(path):
         return bool(attrs & 2)
     except (AttributeError, AssertionError):
         return False
+#@+node:ekr.20190810134710.1: ** Icons
+### pyzo = g.TracingNullObject(tag='pyzo_icons.pyzo')
+### ssdf = g.TracingNullObject(tag='pyzo_icons.ssdf')
+
+#@+node:ekr.20190810142803.1: *3* class PyzoIcons(dict)
+class PyzoIcons(dict): # From zon.py
+
+    '''
+    A dict that allows attribute access.
+    A simplified version of class Dict in zon.py.
+    '''
+    
+    def __getattribute__(self, key):
+        try:
+            return object.__getattribute__(self, key)
+        except AttributeError:
+            if key in self:
+                return self[key]
+            else:
+                raise
+
+    def __setattr__(self, key, val):
+        self[key] = val
+#@+node:ekr.20190810134724.3: *3* loadIcons
+def loadIcons(): # From __main__.py
+    """ Load all icons in the icon dir."""
+    # Get directory containing the icons
+    # EKR:change
+        # iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
+    iconDir = g.os_path_finalize_join(g.app.loadDir, '..',
+        'external', 'pyzo', 'resources', 'icons')
+    g.trace(g.os_path_exists(iconDir), iconDir)
+
+    # Construct other icons
+    dummyIcon = IconArtist().finish()
+    ### pyzo.icons = ssdf.new()
+    pyzo_icons = PyzoIcons() # EKR:change.
+        
+    for fname in os.listdir(iconDir):
+        if fname.endswith('.png'):
+            try:
+                # Short and full name
+                name = fname.split('.')[0]
+                name = name.replace('pyzo_', '')  # discart prefix
+                ffname = os.path.join(iconDir,fname)
+                # Create icon
+                icon = QtGui.QIcon()
+                icon.addFile(ffname, QtCore.QSize(16,16))
+                # Store
+                pyzo_icons[name] = icon
+            except Exception as err:
+                pyzo_icons[name] = dummyIcon
+                print('Could not load icon %s: %s' % (fname, str(err)))
+    ### g.printObj(pyzo_icons, tag='pyzo_icons')
+    return pyzo_icons # EKR:change
+#@+node:ekr.20190810134724.5: *3* class IconArtist
+class IconArtist: # From icons.py
+    """ IconArtist(icon=None)
+
+    Object to draw icons with. Can be instantiated with an existing icon
+    or as a blank icon. Perform operations and then use finish() to
+    obtain the result.
+
+    """
+
+    #@+others
+    #@+node:ekr.20190810134724.6: *4* IconArtist.__init__
+    def __init__(self, icon=None):
+
+        # Get pixmap from given icon (None creates empty pixmap)
+        self._pm = self._getPixmap(icon)
+
+        # Instantiate painter for the pixmap
+        self._painter = QtGui.QPainter()
+        self._painter.begin(self._pm)
+    #@+node:ekr.20190810134724.7: *4* IconArtist.finish
+    def finish(self, icon=None):
+        """ finish()
+        Finish the drawing and return the resulting icon.
+        """
+        self._painter.end()
+        return QtGui.QIcon(self._pm)
+    #@+node:ekr.20190810134724.8: *4* IconArtist._getPixmap
+    def _getPixmap(self, icon):
+
+        # Get icon if given by name
+        if isinstance(icon, str):
+            icon = pyzo_icons[icon]
+
+        # Create pixmap
+        if icon is None:
+            pm = QtGui.QPixmap(16, 16)
+            pm.fill(QtGui.QColor(0,0,0,0))
+            return pm
+        if isinstance(icon, tuple):
+            pm = QtGui.QPixmap(icon[0], icon[1])
+            pm.fill(QtGui.QColor(0,0,0,0))
+            return pm
+        if isinstance(icon, QtGui.QPixmap):
+            return icon
+        if isinstance(icon, QtGui.QIcon):
+            return icon.pixmap(16, 16)
+        raise ValueError('Icon for IconArtis should be icon, pixmap or name.')
+    #@+node:ekr.20190810134724.9: *4* IconArtist.setPenColor
+    def setPenColor(self, color):
+        """ setPenColor(color)
+        Set the color of the pen. Color can be anything that can be passed to
+        Qcolor().
+        """
+        pen = QtGui.QPen()
+        if isinstance(color, tuple):
+            pen.setColor(QtGui.QColor(*color))
+        else:
+            pen.setColor(QtGui.QColor(color))
+        self._painter.setPen(pen)
+    #@+node:ekr.20190810134724.10: *4* IconArtist.addLayer
+    def addLayer(self, overlay, x=0, y=0):
+        """ addOverlay(overlay, x=0, y=0)
+        Add an overlay icon to the icon (add the specified position).
+        """
+        pm = self._getPixmap(overlay)
+        self._painter.drawPixmap(x, y, pm)
+    #@+node:ekr.20190810134724.11: *4* IconArtist.addLine
+    def addLine(self, x1, y1, x2, y2):
+        """ addLine( x1, y1, x2, y2)
+        Add a line to the icon.
+        """
+        self._painter.drawLine(x1, y1, x2, y2)
+    #@+node:ekr.20190810134724.12: *4* IconArtist.addPoint
+    def addPoint(self, x, y):
+        """ addPoint( x, y)
+        Add a point to the icon.
+        """
+        self._painter.drawPoint(x, y)
+    #@+node:ekr.20190810134724.13: *4* IconArtist.addMenuArrow
+    def addMenuArrow(self, strength=100):
+        """ addMenuArrow()
+        Adds a menu arrow to the icon to let the user know the icon
+        is clickable.
+        """
+        x, y = 0, 12
+        a1, a2 = int(strength/2), strength
+        # Zeroth line of 3+2
+        self.setPenColor((0,0,0,a1))
+        self.addPoint(x+0,y-1); self.addPoint(x+4,y-1)
+        self.setPenColor((0,0,0,a2))
+        self.addPoint(x+1,y-1); self.addPoint(x+2,y-1); self.addPoint(x+3,y-1)
+        # First line of 3+2
+        self.setPenColor((0,0,0,a1))
+        self.addPoint(x+0,y+0); self.addPoint(x+4,y+0)
+        self.setPenColor((0,0,0,a2))
+        self.addPoint(x+1,y+0); self.addPoint(x+2,y+0); self.addPoint(x+3,y+0)
+        # Second line of 3
+        self.addPoint(x+1,y+1); self.addPoint(x+2,y+1); self.addPoint(x+3,y+1)
+        # Third line of 1+2
+        self.addPoint(x+2,y+2)
+        self.setPenColor((0,0,0,a1))
+        self.addPoint(x+1,y+2); self.addPoint(x+3,y+2)
+        # Fourth line of 1
+        self.setPenColor((0,0,0,a2))
+        self.addPoint(x+2,y+3)
+# todo: not used; remove me?
+    #@-others
+#@+node:ekr.20190810140343.1: ** Paths & directories
+#@+node:ekr.20190810140352.1: *3* appdata_dir
+def appdata_dir(appname=None, roaming=False, macAsLinux=False):
+    """ appdata_dir(appname=None, roaming=False,  macAsLinux=False)
+    Get the path to the application directory, where applications are allowed
+    to write user specific files (e.g. configurations). For non-user specific
+    data, consider using common_appdata_dir().
+    If appname is given, a subdir is appended (and created if necessary).
+    If roaming is True, will prefer a roaming directory (Windows Vista/7).
+    If macAsLinux is True, will return the Linux-like location on Mac.
+    """
+
+    # Define default user directory
+    userDir = os.path.expanduser('~')
+
+    # Get system app data dir
+    path = None
+    if sys.platform.startswith('win'):
+        path1, path2 = os.getenv('LOCALAPPDATA'), os.getenv('APPDATA')
+        path = (path2 or path1) if roaming else (path1 or path2)
+    elif sys.platform.startswith('darwin') and not macAsLinux:
+        path = os.path.join(userDir, 'Library', 'Application Support')
+    # On Linux and as fallback
+    if not (path and os.path.isdir(path)):
+        path = userDir
+
+    # Maybe we should store things local to the executable (in case of a
+    # portable distro or a frozen application that wants to be portable)
+    prefix = sys.prefix
+    if getattr(sys, 'frozen', None): # See application_dir() function
+        prefix = os.path.abspath(os.path.dirname(sys.executable))
+    for reldir in ('settings', '../settings'):
+        localpath = os.path.abspath(os.path.join(prefix, reldir))
+        if os.path.isdir(localpath):
+            try:
+                open(os.path.join(localpath, 'test.write'), 'wb').close()
+                os.remove(os.path.join(localpath, 'test.write'))
+            except IOError:
+                pass # We cannot write in this directory
+            else:
+                path = localpath
+                break
+
+    # Get path specific for this app
+    if appname:
+        if path == userDir:
+            appname = '.' + appname.lstrip('.') # Make it a hidden directory
+        path = os.path.join(path, appname)
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
+    # Done
+    g.trace(path)
+    return path
+#@+node:ekr.20190810140106.1: *3* getResourceDirs
+def getResourceDirs(): # From pyzo.__init__.py
+    """ getResourceDirs()
+    Get the directories to the resources: (pyzoDir, appDataDir).
+    Also makes sure that the appDataDir has a "tools" directory and
+    a style file.
+    """
+
+    ### Always commented out.
+        #     # Get root of the Pyzo code. If frozen its in a subdir of the app dir
+        #     pyzoDir = paths.application_dir()
+        #     if paths.is_frozen():
+        #         pyzoDir = os.path.join(pyzoDir, 'source')
+
+    ###
+        # pyzoDir = os.path.abspath(os.path.dirname(__file__))
+        # if '.zip' in pyzoDir:
+            # raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
+    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
+
+    # Get where the application data is stored (use old behavior on Mac)
+    appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
+
+    ###
+        # # Create tooldir if necessary
+        # toolDir = os.path.join(appDataDir, 'tools')
+        # if not os.path.isdir(toolDir):
+            # os.mkdir(toolDir)
+
+    g.trace(pyzoDir, appDataDir)
+    return pyzoDir, appDataDir
 #@-others
+
+# Compute standard places.
+pyzoDir, appDataDir = getResourceDirs()
+
+# Load all icons.
+pyzo_icons = loadIcons()
 #@-leo
