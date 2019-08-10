@@ -8,10 +8,7 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190809093446.1: **  << pyzo_file_browser imports >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-
-from PyQt5.QtCore import pyqtSignal ### PyQt5 only!
-Signal = pyqtSignal
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, Signal
 
 import ctypes
 import fnmatch
@@ -2908,7 +2905,7 @@ class IconArtist: # From icons.py
         # Fourth line of 1
         self.setPenColor((0,0,0,a2))
         self.addPoint(x+2,y+3)
-# todo: not used; remove me?
+    # todo: not used; remove me?
     #@-others
 #@+node:ekr.20190810140343.1: ** Paths & directories
 #@+node:ekr.20190810140352.1: *3* appdata_dir
