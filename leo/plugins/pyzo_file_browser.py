@@ -64,6 +64,15 @@ def onCreate(tag, keys):
         return
     banner('BEFORE onCreate: %s' % c.shortFileName())
     ### To do: create the dock in Leo's main window.
+#@+node:ekr.20190810013154.1: ** class FileBrowserConfig
+class FileBrowserConfig:
+    '''A class containing configuration *only* for the file browser.'''
+    
+    def __init__(self):
+        
+        self.expandedDirs = []
+        self.path = None
+        self.starredDirs = []
 #@+node:ekr.20190810003404.2: ** From __init__.py
 """ File browser tool
 
@@ -99,6 +108,7 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
 
         # Get config
+        self.config = FileBrowserConfig()
         ###
             # toolId =  self.__class__.__name__.lower() + '2'
                 # # This is v2 of the file browser
@@ -112,8 +122,8 @@ class PyzoFileBrowser(QtWidgets.QWidget):
                     # self.config[name] = []
 
         # Ensure path in config
-        # if g: g.pr('PyzoFileBrowser.__init__', self.config.__class__)
-        if 'path' not in self.config or not isdir(self.config.path):
+        ### if 'path' not in self.config or not isdir(self.config.path):
+        if not self.config.path:
             self.config.path = op.expanduser('~')
 
         # Check expandedDirs and starredDirs.
@@ -133,12 +143,13 @@ class PyzoFileBrowser(QtWidgets.QWidget):
                     if p.startswith(d.path):
                         expandedDirs.append(p)
                         break
-        self.config.expandedDirs, self.config.starredDirs = expandedDirs, starredDirs
+        self.config.expandedDirs = expandedDirs
+        self.config.starredDirs = starredDirs
 
         # Create browser(s).
         self._browsers = []
         for i in [0]:
-            self._browsers.append( Browser(self, self.config) )
+            self._browsers.append(Browser(self, self.config))
 
         # Layout
         layout = QtWidgets.QVBoxLayout(self)
