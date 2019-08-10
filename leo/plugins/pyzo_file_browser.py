@@ -22,7 +22,7 @@ import sys
 import time
 import threading
 
-# We don't need this because everything will be defined in this plugin.
+# We don't need this because everything is defined in this plugin.
     # pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
     # sys.path.insert(0, pyzo_dir)
 #@-<< pyzo_file_browser imports >>
@@ -30,7 +30,7 @@ import threading
 iconprovider = QtWidgets.QFileIconProvider()
 
 #@+others
-#@+node:ekr.20190809093459.1: **  top-level functions
+#@+node:ekr.20190809093459.1: **  top-level Leo functions
 #@+node:ekr.20190809093459.3: *3* init
 init_warning_given = False
 
@@ -73,12 +73,13 @@ def onCreate(tag, keys):
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     w.show()
-#@+node:ekr.20190810013154.1: ** class FileBrowserConfig
-class FileBrowserConfig:
+#@+node:ekr.20190810013154.1: ** class FileBrowserConfig(dict)
+class FileBrowserConfig(dict):
     '''A class containing configuration *only* for the file browser.'''
     
     def __init__(self):
-        
+    
+        super().__init__()
         self.path = None
         self.expandedDirs = []
         self.nameFilter = None
@@ -308,25 +309,26 @@ class Browser(QtWidgets.QWidget):
         if not path:
             return None
         for d in self.parent().config.starredDirs:
-            if op.normcase(d['path']) == op.normcase(path):
+            ### if op.normcase(d['path']) == op.normcase(path):
+            if op.normcase(d.path) == op.normcase(path): # EKR:change
                 return d
         else:
             return None
-    #@+node:ekr.20190810003404.23: *4* Browser.addStarredDir
+    #@+node:ekr.20190810003404.23: *4* Browser.addStarredDir (To do)
     def addStarredDir(self, path):
         """ Add the given path to the starred directories.
         """
         g.trace(path)
-        ### Not ready yet.
-            # # Create new dict
-            # newProject = ssdf.new()
-            # newProject.path = op.normcase(path) # Normalize case!
-            # newProject.name = op.basename(path)
-            # newProject.addToPythonpath = False
-            # # Add it to the config
-            # self.parent().config.starredDirs.append(newProject)
-            # # Update list
-            # self._projects.updateProjectList()
+       
+        # Create new dict
+        newProject = FileBrowserConfig() ### ssdf.new()
+        newProject.path = op.normcase(path) # Normalize case!
+        newProject.name = op.basename(path)
+        newProject.addToPythonpath = False
+        # Add it to the config
+        self.parent().config.starredDirs.append(newProject)
+        # Update list
+        self._projects.updateProjectList()
     #@+node:ekr.20190810003404.24: *4* Browser.removeStarredDir
     def removeStarredDir(self, path):
         """ Remove the given path from the starred directories.
@@ -665,10 +667,10 @@ class Projects(QtWidgets.QWidget):
         elif action._id == 'name':
             # Open dialog to ask for name
             name = QtWidgets.QInputDialog.getText(self.parent(),
-                                translate('filebrowser', 'Project name'),
-                                translate('filebrowser', 'New project name:'),
-                                text=d['name'],
-                            )
+                translate('filebrowser', 'Project name'),
+                translate('filebrowser', 'New project name:'),
+                text=d['name'],
+            )
             if isinstance(name, tuple):
                 name = name[0] if name[1] else ''
             if name:
@@ -1482,32 +1484,33 @@ class BaseFSProxy(threading.Thread):
         # Process tasks
         pathProxy._processTasks()
 
-    # To overload ...
-    #@+node:ekr.20190810003404.135: *4* BaseFSProxy.listDirs
+    #@+node:ekr.20190810180549.1: *4* BaseFSProxy: To be overloaded
+    # To overload...
+
     def listDirs(self, path):
         raise NotImplemented() # Should rerurn None if it does not exist
-    #@+node:ekr.20190810003404.136: *4* BaseFSProxy.listFiles
+
     def listFiles(self, path):
         raise NotImplemented() # Should rerurn None if it does not exist
-    #@+node:ekr.20190810003404.137: *4* BaseFSProxy.modified
+
     def modified(self, path):
         raise NotImplemented() # Should rerurn None if it does not exist
-    #@+node:ekr.20190810003404.138: *4* BaseFSProxy.fileSize
+
     def fileSize(self, path):
         raise NotImplemented() # Should rerurn None if it does not exist
-    #@+node:ekr.20190810003404.139: *4* BaseFSProxy.read
+
     def read(self, path):
         raise NotImplemented() # Should rerurn None if it does not exist
-    #@+node:ekr.20190810003404.140: *4* BaseFSProxy.write
+
     def write(self, path, bb):
         raise NotImplemented()
-    #@+node:ekr.20190810003404.141: *4* BaseFSProxy.rename
+
     def rename(self, path):
         raise NotImplemented()
-    #@+node:ekr.20190810003404.142: *4* BaseFSProxy.remove
+
     def remove(self, path):
         raise NotImplemented()
-    #@+node:ekr.20190810003404.143: *4* BaseFSProxy.createDir
+
     def createDir(self, path):
         raise NotImplemented()
     #@-others
@@ -2271,7 +2274,6 @@ class Tree(QtWidgets.QTreeWidget):
     up-to-date. The Item classes above are dumb objects.
     """
 
-    # dirChanged = QtCore.Signal(str) # Emitted when user goes into a subdir
     dirChanged = Signal(str) # Emitted when user goes into a subdir
 
     #@+others
