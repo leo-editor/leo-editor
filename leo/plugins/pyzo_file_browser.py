@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20190805022257.1: * @file pyzo_file_browser.py
+#@@first
 '''
 Experimental plugin that adds pyzo's file browser dock to Leo.
 '''
@@ -63,7 +65,6 @@ def onCreate(tag, keys):
     banner('BEFORE onCreate: %s' % c.shortFileName())
     ### To do: create the dock in Leo's main window.
 #@+node:ekr.20190810003404.2: ** From __init__.py
-# -*- coding: utf-8 -*-
 """ File browser tool
 
 A powerfull tool for managing your projects in a lightweight manner.
@@ -192,7 +193,7 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         return QtWidgets.QWidget.closeEvent(self, event)
     #@-others
 #@+node:ekr.20190810005113.1: ** From _locale.py
-""" pyzo.util._locale
+"""
 Module for locale stuff like language and translations.
 """
 #@+node:ekr.20190810005113.5: *3* class Translation(str)
