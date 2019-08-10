@@ -2751,15 +2751,12 @@ def hasHiddenAttribute(path):
     except (AttributeError, AssertionError):
         return False
 #@+node:ekr.20190810134710.1: ** Icons
-### pyzo = g.TracingNullObject(tag='pyzo_icons.pyzo')
-### ssdf = g.TracingNullObject(tag='pyzo_icons.ssdf')
-
 #@+node:ekr.20190810142803.1: *3* class PyzoIcons(dict)
 class PyzoIcons(dict): # From zon.py
 
     '''
     A dict that allows attribute access.
-    A simplified version of class Dict in zon.py.
+    A simplified version of the Dict class in zon.py.
     '''
     
     def __getattribute__(self, key):
