@@ -73,29 +73,7 @@ class FileBrowserConfig:
         self.expandedDirs = []
         self.path = None
         self.starredDirs = []
-#@+node:ekr.20190810003404.2: ** From __init__.py
-""" File browser tool
-
-A powerfull tool for managing your projects in a lightweight manner.
-It has a few file management utilities as well.
-
-Config
-======
-
-The config consists of three fields:
-
-  * list expandedDirs, with each element a directory
-  * list starredDirs, with each element a dict with fields:
-      * str path, the directory that is starred
-      * str name, the name of the project (op.basename(path) by default)
-      * bool addToPythonpath
-  * searchMatchCase, searchRegExp, searchSubDirs
-  * nameFilter
-
-"""
-# tool_name = translate("pyzoFileBrowser","File Browser")
-# tool_summary = "Browse the files in your projects."
-#@+node:ekr.20190810003404.4: *3* class PyzoFileBrowser(QWidget)
+#@+node:ekr.20190810003404.4: ** class PyzoFileBrowser(QWidget)
 class PyzoFileBrowser(QtWidgets.QWidget):
     """ The main tool widget. An instance of this class contains one or
     more Browser instances. If there are more, they can be selected
@@ -103,7 +81,7 @@ class PyzoFileBrowser(QtWidgets.QWidget):
     """
 
     #@+others
-    #@+node:ekr.20190810003404.5: *4* PyzoFileBrowser.__init__
+    #@+node:ekr.20190810003404.5: *3* PyzoFileBrowser.__init__
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -157,19 +135,19 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         layout.addWidget(self._browsers[0])
         layout.setSpacing(0)
         layout.setContentsMargins(4,4,4,4)
-    #@+node:ekr.20190810003404.6: *4* PyzoFileBrowser.path
+    #@+node:ekr.20190810003404.6: *3* PyzoFileBrowser.path
     def path(self):
         """ Get the current path shown by the file browser.
         """
         browser = self._browsers[0]
         return browser._tree.path()
-    #@+node:ekr.20190810003404.7: *4* PyzoFileBrowser.setPath
+    #@+node:ekr.20190810003404.7: *3* PyzoFileBrowser.setPath
     def setPath(self, path):
         """ Set the shown path.
         """
         browser = self._browsers[0]
         browser._tree.setPath(path)
-    #@+node:ekr.20190810003404.8: *4* PyzoFileBrowser.getAddToPythonPath
+    #@+node:ekr.20190810003404.8: *3* PyzoFileBrowser.getAddToPythonPath
     def getAddToPythonPath(self):
         """
         Returns the path to be added to the Python path when starting a shell
@@ -183,7 +161,7 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         if d and d.addToPythonpath:
             return d.path
         return None
-    #@+node:ekr.20190810003404.9: *4* PyzoFileBrowser.getDefaultSavePath
+    #@+node:ekr.20190810003404.9: *3* PyzoFileBrowser.getDefaultSavePath
     def getDefaultSavePath(self):
         """
         Returns the path to be used as default when saving a new file in pyzo.
@@ -196,60 +174,15 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         # Return
         if op.isabs(path) and isdir(path):
             return path
-    #@+node:ekr.20190810003404.10: *4* PyzoFileBrowser.closeEvent
+    #@+node:ekr.20190810003404.10: *3* PyzoFileBrowser.closeEvent
     def closeEvent(self, event):
         # Close all browsers so they can clean up the file system proxies
         for browser in self._browsers:
             browser.close()
         return QtWidgets.QWidget.closeEvent(self, event)
     #@-others
-#@+node:ekr.20190810005113.1: ** From _locale.py
-"""
-Module for locale stuff like language and translations.
-"""
-#@+node:ekr.20190810005113.5: *3* class Translation(str)
-class Translation(str):
-    """
-    Derives from str class.
-    
-    The translate function returns an instance of this class and assigns
-    extra atrributes:
-      * original: the original text passed to the translation
-      * tt: the tooltip text
-      * key: the original text without tooltip (used by menus as a key)
-
-    We adopt a simple system to include tooltip text in the same
-    translation as the label text. By including ":::" in the text, the text
-    after that identifier is considered the tooltip. The text returned by
-    the translate function is always the string without tooltip, but the
-    text object has an attribute "tt" that stores the tooltip text. In this
-    way, if you do not use this feature or do not know about this feature,
-    everything keeps working as expected.
-    """
-    pass
-#@+node:ekr.20190810005113.7: *3* translate
-def translate(context, text, disambiguation=None):
-    """ translate(context, text, disambiguation=None)
-    The translate function used throughout pyzo.
-    """
-    # Get translation and split tooltip
-    newtext = QtCore.QCoreApplication.translate(context, text, disambiguation)
-    s, tt = _splitMainAndTt(newtext)
-    # Create translation object (string with extra attributes)
-    translation = Translation(s)
-    translation.original = text
-    translation.tt = tt
-    translation.key = _splitMainAndTt(text)[0].strip()
-    return translation
-
-#@+node:ekr.20190810005113.6: *4* _splitMainAndTt
-def _splitMainAndTt(s):
-    if ':::' in s:
-        parts = s.split(':::', 1)
-        return parts[0].rstrip(), parts[1].lstrip()
-    else:
-        return s, ''
-#@+node:ekr.20190810003404.11: ** From browser.py
+#@+node:ekr.20190810003404.11: ** Browser
+# From browser.py
 #@+node:ekr.20190810003404.13: *3* class Browser(QWidget)
 class Browser(QtWidgets.QWidget):
     """ A browser consists of an address bar, and tree view, and other
@@ -916,19 +849,13 @@ class SearchFilter(LineEditWithToolButtons):
         # Update
         self.filterChanged.emit()
     #@-others
-#@+node:ekr.20190810003404.96: ** From proxies.py
+#@+node:ekr.20190810003404.154: ** Tasks
 """
-This module defines file system proxies to be used for the file browser.
-For now, there is only one: the native file system. But in time,
-we may add proxies for ftp, S3, remote computing, etc.
-
-This may seem like an awkward way to use the file system, but (with
-small modifications) this approach can probably be used also for
-opening/saving files to any file system that we implement here. This
-will make Pyzo truly powerful for use in remote computing.
-
+Define tasks that can be executed by the file browser.
+These inherit from proxies.Task and implement that specific interface.
 """
-#@+node:ekr.20190810003404.98: *3* class Task
+# From tasks.py
+#@+node:ekr.20190810003404.98: *3*  class Task
 class Task:
     """ Task(**params)
 
@@ -976,6 +903,356 @@ class Task:
             return self._result
     ## Proxy classes for directories and files
     #@-others
+#@+node:ekr.20190810003404.156: *3* class SearchTask(Task)
+class SearchTask(Task):
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190810003404.157: *4* SearchTask.process
+    def process(self, proxy, pattern=None, matchCase=False, regExp=False, **rest):
+
+        # Quick test
+        if not pattern:
+            return
+
+        # Get text
+        text = self._getText(proxy)
+        if not text:
+            return
+
+        # Get search text. Deal with case sensitivity
+        searchText = text
+        if not matchCase:
+            searchText = searchText.lower()
+            pattern = pattern.lower()
+
+        # Search indices
+        if regExp:
+            indices = self._getIndicesRegExp(searchText, pattern)
+        else:
+            indices = self._getIndicesNormal1(searchText, pattern)
+
+        # Return as lines
+        if indices:
+            return self._indicesToLines(text, indices)
+        else:
+            return []
+    #@+node:ekr.20190810003404.158: *4* SearchTask._getText
+    def _getText(self, proxy):
+
+        # Init
+        path = proxy.path()
+        fsProxy = proxy._fsProxy
+
+        # Get file size
+        try:
+            size = fsProxy.fileSize(path)
+        except NotImplementedError:
+            pass
+        size = size or 0
+
+        # Search all Python files. Other files need be < xx bytes
+        if path.lower().endswith('.py') or size < 100*1024:
+            pass
+        else:
+            return None
+
+        # Get text
+        bb = fsProxy.read(path)
+        if bb is None:
+            return
+        try:
+            return bb.decode('utf-8')
+        except UnicodeDecodeError:
+            # todo: right now we only do utf-8
+            return None
+    #@+node:ekr.20190810003404.159: *4* SearchTask._getIndicesRegExp
+    def _getIndicesRegExp(self, text, pattern):
+        indices = []
+        for match in re.finditer(pattern, text, re.MULTILINE | re.UNICODE):
+                indices.append( match.start() )
+        return indices
+    #@+node:ekr.20190810003404.160: *4* SearchTask._getIndicesNormal1
+    def _getIndicesNormal1(self, text, pattern):
+        indices = []
+        i = -1
+        while True:
+            i = text.find(pattern,i+1)
+            if i>=0:
+                indices.append(i)
+            else:
+                break
+        return indices
+    #@+node:ekr.20190810003404.161: *4* SearchTask._getIndicesNormal2
+    def _getIndicesNormal2(self, text, pattern):
+        indices = []
+        i = 0
+        for line in text.splitlines(True):
+            i2 = line.find(pattern)
+            if i2>=0:
+                indices.append(i+i2)
+            i += len(line)
+        return indices
+    #@+node:ekr.20190810003404.162: *4* SearchTask._indicesToLines
+    def _indicesToLines(self, text, indices):
+
+        # Determine line endings
+        LE = self._determineLineEnding(text)
+
+        # Obtain line and line numbers
+        lines = []
+        for i in indices:
+            # Get linenr and index of the line
+            linenr = text.count(LE, 0, i) + 1
+            i1 = text.rfind(LE, 0, i)
+            i2 = text.find(LE, i)
+            # Get line and strip
+            if i1<0:
+                i1 = 0
+            line = text[i1:i2].strip()[:80]
+            # Store
+            lines.append( (linenr, repr(line)) )
+
+        # Set result
+        return lines
+    #@+node:ekr.20190810003404.163: *4* SearchTask._determineLineEnding
+    def _determineLineEnding(self, text):
+        """ function to determine quickly whether LF or CR is used
+        as line endings. Windows endings (CRLF) result in LF
+        (you can split lines with either char).
+        """
+        i = 0
+        LE = '\n'
+        while i < len(text):
+            i += 128
+            LF = text.count('\n', 0, i)
+            CR = text.count('\r', 0, i)
+            if LF or CR:
+                if CR > LF:
+                    LE = '\r'
+                break
+        return LE
+    #@-others
+#@+node:ekr.20190810003404.164: *3* class PeekTask(Task)
+class PeekTask(Task):
+    """ To peek the high level structure of a task.
+    """
+    __slots__ = []
+
+    stringStart = re.compile('("""|\'\'\'|"|\')|#')
+    endProgs = {
+        "'": re.compile(r"(^|[^\\])(\\\\)*'"),
+        '"': re.compile(r'(^|[^\\])(\\\\)*"'),
+        "'''": re.compile(r"(^|[^\\])(\\\\)*'''"),
+        '"""': re.compile(r'(^|[^\\])(\\\\)*"""')
+        }
+
+    definition = re.compile(r'^(def|class)\s*(\w*)')
+
+    #@+others
+    #@+node:ekr.20190810003404.165: *4* PeekTask.process
+    def process(self, proxy):
+        path = proxy.path()
+        fsProxy = proxy._fsProxy
+
+        # Search only Python files
+        if not path.lower().endswith('.py'):
+            return None
+
+        # Get text
+        bb = fsProxy.read(path)
+        if bb is None:
+            return
+        try:
+            text = bb.decode('utf-8')
+            del bb
+        except UnicodeDecodeError:
+            # todo: right now we only do utf-8
+            return
+
+        # Parse
+        return list(self._parseLines(text.splitlines()))
+    #@+node:ekr.20190810003404.166: *4* PeekTask._parseLines
+    def _parseLines(self, lines):
+
+        stringEndProg = None
+
+        linenr = 0
+        for line in lines:
+            linenr += 1
+
+            # If we are in a triple-quoted multi-line string, find the end
+            if stringEndProg is None:
+                pos = 0
+            else:
+                endMatch = stringEndProg.search(line)
+                if endMatch is None:
+                    continue
+                else:
+                    pos = endMatch.end()
+                    stringEndProg = None
+
+            # Now process all tokens
+            while True:
+                match = self.stringStart.search(line, pos)
+
+                if pos == 0: # If we are at the start of the line, see if we have a top-level class or method definition
+                    end = len(line) if match is None else match.start()
+                    definitionMatch = self.definition.search(line[:end])
+                    if definitionMatch is not None:
+                        if definitionMatch.group(1) == 'def':
+                            yield (linenr, 'def ' + definitionMatch.group(2))
+                        else:
+                            yield (linenr, 'class ' + definitionMatch.group(2))
+
+                if match is None:
+                    break # Go to next line
+                if match.group()=="#":
+                    # comment
+                    # yield 'C:'
+                    break # Go to next line
+                else:
+                    endMatch = self.endProgs[match.group()].search(line[match.end():])
+                    if endMatch is None:
+                        if len(match.group()) == 3 or line.endswith('\\'):
+                            # Multi-line string
+                            stringEndProg = self.endProgs[match.group()]
+                            break
+                        else: # incorrect end of single-quoted string
+                            break
+
+                    # yield 'S:' + (match.group() + line[match.end():][:endMatch.end()])
+                    pos = match.end() + endMatch.end()
+    #@-others
+#@+node:ekr.20190810003404.167: *3* class DocstringTask(Task)
+class DocstringTask(Task):
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190810003404.168: *4* DocstringTask.process
+    def process(self, proxy):
+        path = proxy.path()
+        fsProxy = proxy._fsProxy
+
+        # Search only Python files
+        if not path.lower().endswith('.py'):
+            return None
+
+        # Get text
+        bb = fsProxy.read(path)
+        if bb is None:
+            return
+        try:
+            text = bb.decode('utf-8')
+            del bb
+        except UnicodeDecodeError:
+            # todo: right now we only do utf-8
+            return
+
+        # Find docstring
+        lines = []
+        delim = None # Not started, in progress, done
+        count = 0
+        for line in text.splitlines():
+            count += 1
+            if count > 200:
+                break
+            # Try to find a start
+            if not delim:
+                if line.startswith('"""'):
+                    delim = '"""'
+                    line = line.lstrip('"')
+                elif line.startswith("'''"):
+                    delim = "'''"
+                    line = line.lstrip("'")
+            # Try to find an end (may be on the same line as the start)
+            if delim and delim in line:
+                line = line.split(delim, 1)[0]
+                count = 999999999  # Stop; we found the end
+            # Add this line
+            if delim:
+                lines.append(line)
+
+        # Limit number of lines
+        if len(lines) > 16:
+            lines = lines[:16] + ['...']
+        # Make text and strip
+        doc = '\n'.join(lines)
+        doc = doc.strip()
+
+        return doc
+    #@-others
+#@+node:ekr.20190810003404.169: *3* class RenameTask(Task)
+class RenameTask(Task):
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190810003404.170: *4* RenameTask.process
+    def process(self, proxy, newpath=None, removeold=False):
+        path = proxy.path()
+        fsProxy = proxy._fsProxy
+
+        if not newpath:
+            return
+
+        if removeold:
+            # Works for files and dirs
+            fsProxy.rename(path, newpath)
+            # The fsProxy will detect that this file is now deleted
+        else:
+            # Work only for files: duplicate
+            # Read bytes
+            bb = fsProxy.read(path)
+            if bb is None:
+                return
+            # write back with new name
+            fsProxy.write(newpath, bb)
+    #@-others
+#@+node:ekr.20190810003404.171: *3* class CreateTask(Task)
+class CreateTask(Task):
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190810003404.172: *4* CreateTask.process
+    def process(self, proxy, newpath=None, file=True):
+        proxy.path()
+        fsProxy = proxy._fsProxy
+
+        if not newpath:
+            return
+
+        if file:
+            fsProxy.write(newpath, b'')
+        else:
+            fsProxy.createDir(newpath)
+    #@-others
+#@+node:ekr.20190810003404.173: *3* class RemoveTask(Task)
+class RemoveTask(Task):
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190810003404.174: *4* RemoveTask.process
+    def process(self, proxy):
+        path = proxy.path()
+        fsProxy = proxy._fsProxy
+
+        # Remove
+        fsProxy.remove(path)
+        # The fsProxy will detect that this file is now deleted
+    #@-others
+#@+node:ekr.20190810003404.96: ** Proxies
+"""
+This module defines file system proxies to be used for the file browser.
+For now, there is only one: the native file system. But in time,
+we may add proxies for ftp, S3, remote computing, etc.
+
+This may seem like an awkward way to use the file system, but (with
+small modifications) this approach can probably be used also for
+opening/saving files to any file system that we implement here. This
+will make Pyzo truly powerful for use in remote computing.
+
+"""
+# From proxies.py
 #@+node:ekr.20190810003404.103: *3* class PathProxy(QtCore.QObject)
 class PathProxy(QtCore.QObject):
     """ Proxy base class for DirProxy and FileProxy.
@@ -1356,352 +1633,58 @@ class NativeFSProxy(BaseFSProxy):
         if not isdir(path):
             os.makedirs(path)
     #@-others
-#@+node:ekr.20190810003404.154: ** From tasks.py
+#@+node:ekr.20190810005113.1: ** Translation
 """
-Define tasks that can be executed by the file browser.
-These inherit from proxies.Task and implement that specific interface.
+Module for locale stuff like language and translations.
 """
-#@+node:ekr.20190810003404.156: *3* class SearchTask(Task)
-class SearchTask(Task):
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190810003404.157: *4* SearchTask.process
-    def process(self, proxy, pattern=None, matchCase=False, regExp=False, **rest):
-
-        # Quick test
-        if not pattern:
-            return
-
-        # Get text
-        text = self._getText(proxy)
-        if not text:
-            return
-
-        # Get search text. Deal with case sensitivity
-        searchText = text
-        if not matchCase:
-            searchText = searchText.lower()
-            pattern = pattern.lower()
-
-        # Search indices
-        if regExp:
-            indices = self._getIndicesRegExp(searchText, pattern)
-        else:
-            indices = self._getIndicesNormal1(searchText, pattern)
-
-        # Return as lines
-        if indices:
-            return self._indicesToLines(text, indices)
-        else:
-            return []
-    #@+node:ekr.20190810003404.158: *4* SearchTask._getText
-    def _getText(self, proxy):
-
-        # Init
-        path = proxy.path()
-        fsProxy = proxy._fsProxy
-
-        # Get file size
-        try:
-            size = fsProxy.fileSize(path)
-        except NotImplementedError:
-            pass
-        size = size or 0
-
-        # Search all Python files. Other files need be < xx bytes
-        if path.lower().endswith('.py') or size < 100*1024:
-            pass
-        else:
-            return None
-
-        # Get text
-        bb = fsProxy.read(path)
-        if bb is None:
-            return
-        try:
-            return bb.decode('utf-8')
-        except UnicodeDecodeError:
-            # todo: right now we only do utf-8
-            return None
-    #@+node:ekr.20190810003404.159: *4* SearchTask._getIndicesRegExp
-    def _getIndicesRegExp(self, text, pattern):
-        indices = []
-        for match in re.finditer(pattern, text, re.MULTILINE | re.UNICODE):
-                indices.append( match.start() )
-        return indices
-    #@+node:ekr.20190810003404.160: *4* SearchTask._getIndicesNormal1
-    def _getIndicesNormal1(self, text, pattern):
-        indices = []
-        i = -1
-        while True:
-            i = text.find(pattern,i+1)
-            if i>=0:
-                indices.append(i)
-            else:
-                break
-        return indices
-    #@+node:ekr.20190810003404.161: *4* SearchTask._getIndicesNormal2
-    def _getIndicesNormal2(self, text, pattern):
-        indices = []
-        i = 0
-        for line in text.splitlines(True):
-            i2 = line.find(pattern)
-            if i2>=0:
-                indices.append(i+i2)
-            i += len(line)
-        return indices
-    #@+node:ekr.20190810003404.162: *4* SearchTask._indicesToLines
-    def _indicesToLines(self, text, indices):
-
-        # Determine line endings
-        LE = self._determineLineEnding(text)
-
-        # Obtain line and line numbers
-        lines = []
-        for i in indices:
-            # Get linenr and index of the line
-            linenr = text.count(LE, 0, i) + 1
-            i1 = text.rfind(LE, 0, i)
-            i2 = text.find(LE, i)
-            # Get line and strip
-            if i1<0:
-                i1 = 0
-            line = text[i1:i2].strip()[:80]
-            # Store
-            lines.append( (linenr, repr(line)) )
-
-        # Set result
-        return lines
-    #@+node:ekr.20190810003404.163: *4* SearchTask._determineLineEnding
-    def _determineLineEnding(self, text):
-        """ function to determine quickly whether LF or CR is used
-        as line endings. Windows endings (CRLF) result in LF
-        (you can split lines with either char).
-        """
-        i = 0
-        LE = '\n'
-        while i < len(text):
-            i += 128
-            LF = text.count('\n', 0, i)
-            CR = text.count('\r', 0, i)
-            if LF or CR:
-                if CR > LF:
-                    LE = '\r'
-                break
-        return LE
-    #@-others
-#@+node:ekr.20190810003404.164: *3* class PeekTask(Task)
-class PeekTask(Task):
-    """ To peek the high level structure of a task.
+# From _locale.py.
+#@+node:ekr.20190810005113.5: *3* class Translation(str)
+class Translation(str):
     """
-    __slots__ = []
+    Derives from str class.
+    
+    The translate function returns an instance of this class and assigns
+    extra atrributes:
+      * original: the original text passed to the translation
+      * tt: the tooltip text
+      * key: the original text without tooltip (used by menus as a key)
 
-    stringStart = re.compile('("""|\'\'\'|"|\')|#')
-    endProgs = {
-        "'": re.compile(r"(^|[^\\])(\\\\)*'"),
-        '"': re.compile(r'(^|[^\\])(\\\\)*"'),
-        "'''": re.compile(r"(^|[^\\])(\\\\)*'''"),
-        '"""': re.compile(r'(^|[^\\])(\\\\)*"""')
-        }
+    We adopt a simple system to include tooltip text in the same
+    translation as the label text. By including ":::" in the text, the text
+    after that identifier is considered the tooltip. The text returned by
+    the translate function is always the string without tooltip, but the
+    text object has an attribute "tt" that stores the tooltip text. In this
+    way, if you do not use this feature or do not know about this feature,
+    everything keeps working as expected.
+    """
+    pass
+#@+node:ekr.20190810005113.7: *3* translate
+def translate(context, text, disambiguation=None):
+    """ translate(context, text, disambiguation=None)
+    The translate function used throughout pyzo.
+    """
+    # Get translation and split tooltip
+    newtext = QtCore.QCoreApplication.translate(context, text, disambiguation)
+    s, tt = _splitMainAndTt(newtext)
+    # Create translation object (string with extra attributes)
+    translation = Translation(s)
+    translation.original = text
+    translation.tt = tt
+    translation.key = _splitMainAndTt(text)[0].strip()
+    return translation
 
-    definition = re.compile(r'^(def|class)\s*(\w*)')
-
-    #@+others
-    #@+node:ekr.20190810003404.165: *4* PeekTask.process
-    def process(self, proxy):
-        path = proxy.path()
-        fsProxy = proxy._fsProxy
-
-        # Search only Python files
-        if not path.lower().endswith('.py'):
-            return None
-
-        # Get text
-        bb = fsProxy.read(path)
-        if bb is None:
-            return
-        try:
-            text = bb.decode('utf-8')
-            del bb
-        except UnicodeDecodeError:
-            # todo: right now we only do utf-8
-            return
-
-        # Parse
-        return list(self._parseLines(text.splitlines()))
-    #@+node:ekr.20190810003404.166: *4* PeekTask._parseLines
-    def _parseLines(self, lines):
-
-        stringEndProg = None
-
-        linenr = 0
-        for line in lines:
-            linenr += 1
-
-            # If we are in a triple-quoted multi-line string, find the end
-            if stringEndProg is None:
-                pos = 0
-            else:
-                endMatch = stringEndProg.search(line)
-                if endMatch is None:
-                    continue
-                else:
-                    pos = endMatch.end()
-                    stringEndProg = None
-
-            # Now process all tokens
-            while True:
-                match = self.stringStart.search(line, pos)
-
-                if pos == 0: # If we are at the start of the line, see if we have a top-level class or method definition
-                    end = len(line) if match is None else match.start()
-                    definitionMatch = self.definition.search(line[:end])
-                    if definitionMatch is not None:
-                        if definitionMatch.group(1) == 'def':
-                            yield (linenr, 'def ' + definitionMatch.group(2))
-                        else:
-                            yield (linenr, 'class ' + definitionMatch.group(2))
-
-                if match is None:
-                    break # Go to next line
-                if match.group()=="#":
-                    # comment
-                    # yield 'C:'
-                    break # Go to next line
-                else:
-                    endMatch = self.endProgs[match.group()].search(line[match.end():])
-                    if endMatch is None:
-                        if len(match.group()) == 3 or line.endswith('\\'):
-                            # Multi-line string
-                            stringEndProg = self.endProgs[match.group()]
-                            break
-                        else: # incorrect end of single-quoted string
-                            break
-
-                    # yield 'S:' + (match.group() + line[match.end():][:endMatch.end()])
-                    pos = match.end() + endMatch.end()
-    #@-others
-#@+node:ekr.20190810003404.167: *3* class DocstringTask(Task)
-class DocstringTask(Task):
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190810003404.168: *4* DocstringTask.process
-    def process(self, proxy):
-        path = proxy.path()
-        fsProxy = proxy._fsProxy
-
-        # Search only Python files
-        if not path.lower().endswith('.py'):
-            return None
-
-        # Get text
-        bb = fsProxy.read(path)
-        if bb is None:
-            return
-        try:
-            text = bb.decode('utf-8')
-            del bb
-        except UnicodeDecodeError:
-            # todo: right now we only do utf-8
-            return
-
-        # Find docstring
-        lines = []
-        delim = None # Not started, in progress, done
-        count = 0
-        for line in text.splitlines():
-            count += 1
-            if count > 200:
-                break
-            # Try to find a start
-            if not delim:
-                if line.startswith('"""'):
-                    delim = '"""'
-                    line = line.lstrip('"')
-                elif line.startswith("'''"):
-                    delim = "'''"
-                    line = line.lstrip("'")
-            # Try to find an end (may be on the same line as the start)
-            if delim and delim in line:
-                line = line.split(delim, 1)[0]
-                count = 999999999  # Stop; we found the end
-            # Add this line
-            if delim:
-                lines.append(line)
-
-        # Limit number of lines
-        if len(lines) > 16:
-            lines = lines[:16] + ['...']
-        # Make text and strip
-        doc = '\n'.join(lines)
-        doc = doc.strip()
-
-        return doc
-    #@-others
-#@+node:ekr.20190810003404.169: *3* class RenameTask(Task)
-class RenameTask(Task):
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190810003404.170: *4* RenameTask.process
-    def process(self, proxy, newpath=None, removeold=False):
-        path = proxy.path()
-        fsProxy = proxy._fsProxy
-
-        if not newpath:
-            return
-
-        if removeold:
-            # Works for files and dirs
-            fsProxy.rename(path, newpath)
-            # The fsProxy will detect that this file is now deleted
-        else:
-            # Work only for files: duplicate
-            # Read bytes
-            bb = fsProxy.read(path)
-            if bb is None:
-                return
-            # write back with new name
-            fsProxy.write(newpath, bb)
-    #@-others
-#@+node:ekr.20190810003404.171: *3* class CreateTask(Task)
-class CreateTask(Task):
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190810003404.172: *4* CreateTask.process
-    def process(self, proxy, newpath=None, file=True):
-        proxy.path()
-        fsProxy = proxy._fsProxy
-
-        if not newpath:
-            return
-
-        if file:
-            fsProxy.write(newpath, b'')
-        else:
-            fsProxy.createDir(newpath)
-    #@-others
-#@+node:ekr.20190810003404.173: *3* class RemoveTask(Task)
-class RemoveTask(Task):
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190810003404.174: *4* RemoveTask.process
-    def process(self, proxy):
-        path = proxy.path()
-        fsProxy = proxy._fsProxy
-
-        # Remove
-        fsProxy.remove(path)
-        # The fsProxy will detect that this file is now deleted
-    #@-others
-#@+node:ekr.20190810003404.175: ** From tree.py
+#@+node:ekr.20190810005113.6: *4* _splitMainAndTt
+def _splitMainAndTt(s):
+    if ':::' in s:
+        parts = s.split(':::', 1)
+        return parts[0].rstrip(), parts[1].lstrip()
+    else:
+        return s, ''
+#@+node:ekr.20190810003404.175: ** Trees
 """
 Defines the tree widget to display the contents of a selected directory.
 """
+# From trees.py
 
 # How to name the list of drives/mounts (i.e. 'my computer')
 MOUNTS = 'drives'
@@ -2684,7 +2667,8 @@ class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
         if b == QtWidgets.QMessageBox.Yes:
             self._item._proxy.pushTask(RemoveTask())
     #@-others
-#@+node:ekr.20190810003404.270: ** From utils.py
+#@+node:ekr.20190810003404.270: ** Utils
+# From utils.py
 #@+node:ekr.20190810003404.272: *3* cleanpath
 def cleanpath(p):
     return op.normpath(op.expanduser(op.expandvars(p)))
