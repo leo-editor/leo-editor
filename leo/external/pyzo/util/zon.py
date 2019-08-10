@@ -12,12 +12,12 @@ import sys
 import time
 
 # From six.py
-if sys.version_info[0] >= 3:
-    string_types = str,
-    integer_types = int,
-else:
-    string_types = basestring,  # noqa
-    integer_types = (int, long)  # noqa
+# if sys.version_info[0] >= 3:
+string_types = str,
+integer_types = int,
+# else:
+    # string_types = basestring,  # noqa
+    # integer_types = (int, long)  # noqa
 float_types = float,
 
 ## Dict class
@@ -75,10 +75,11 @@ class Dict(_dict):
         names = [k for k in self.keys() if isidentifier(k)]
         return Dict.__reserved_names__ + names
 
-# SSDF compatibility
+
 Struct = Dict
 Struct.__is_ssdf_struct__ = True
 ## Public functions
+# SSDF compatibility
 def isstruct(ob):  # SSDF compatibility
     """ isstruct(ob)
 
@@ -177,6 +178,7 @@ def save(file, d):
     with file:
         file.write(text.encode('utf-8'))
 ## The core
+
 class ReaderWriter(object):
 
     def read(self, text):
