@@ -75,7 +75,7 @@ def onCreate(tag, keys):
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     w.show()
-#@+node:ekr.20190810013154.1: ** class FileBrowserConfig (Dict)
+#@+node:ekr.20190810013154.1: ** class FileBrowserConfig
 class FileBrowserConfig:
     '''A class containing configuration *only* for the file browser.'''
     
@@ -85,9 +85,9 @@ class FileBrowserConfig:
         self.path = None
         self.nameFiler = None
         self.starredDirs = []
-        self.searchMatchCase = None
-        self.searchRegExp = None
-        self.searchSubDirs = None
+        # self.searchMatchCase = None
+        # self.searchRegExp = None
+        # self.searchSubDirs = None
 #@+node:ekr.20190810003404.4: ** class PyzoFileBrowser(QWidget)
 class PyzoFileBrowser(QtWidgets.QWidget):
     """ The main tool widget. An instance of this class contains one or
@@ -842,20 +842,21 @@ class SearchFilter(LineEditWithToolButtons):
         menu = self._menu
         menu.clear()
 
-        map = [ ('searchMatchCase', False, translate("filebrowser", "Match case")),
-                ('searchRegExp', False, translate("filebrowser", "RegExp")),
-                ('searchSubDirs', True, translate("filebrowser", "Search in subdirs"))
-              ]
-
         # Fill menu
-        for option, default, description in map:
+        table = [
+            ('searchMatchCase', False, translate("filebrowser", "Match case")),
+            ('searchRegExp', False, translate("filebrowser", "RegExp")),
+            ('searchSubDirs', True, translate("filebrowser", "Search in subdirs"))
+        ]
+        for option, default, description in table:
             if option is None:
                 menu.addSeparator()
             else:
                 # Make sure the option exists
-                ### if option not in config:
-                ###    config[option] = default
-                if not getattr(config, option):
+                ###
+                    # if option not in config:
+                    #    config[option] = default
+                if not getattr(config, option, None):
                     setattr(config, option, default)
                 # Make action in menu
                 action = menu.addAction(description)
