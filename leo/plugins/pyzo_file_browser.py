@@ -61,8 +61,6 @@ def onCreate(tag, keys):
     if not dw:
         return
 
-    g.trace(c.shortFileName())
-    
     dock = dw.createDockWidget(
         closeable=True,
         moveable=True,
@@ -102,22 +100,10 @@ class PyzoFileBrowser(QtWidgets.QWidget):
 
         # Get config
         self.config = FileBrowserConfig()
-        ###
-            # toolId =  self.__class__.__name__.lower() + '2'
-                # # This is v2 of the file browser
-            # if toolId not in pyzo.config.tools:
-                # pyzo.config.tools[toolId] = ssdf.new()
-            # self.config = pyzo.config.tools[toolId]
-        
-            # # Ensure three main attributes in config
-            # for name in ['expandedDirs', 'starredDirs']:
-                # if name not in self.config:
-                    # self.config[name] = []
 
         # Ensure path in config
-        ### if 'path' not in self.config or not isdir(self.config.path):
-        if not getattr(self.config, 'path', None):
-            setattr(self.config, 'path', op.expanduser('~'))
+        if not self.config.path: # EKR:change
+           self.config.path = op.expanduser('~')
 
         # Check expandedDirs and starredDirs.
         # Make path objects and remove invalid dirs. Also normalize case,
@@ -472,10 +458,6 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
 class PathInput(LineEditWithToolButtons):
     """ Line edit for selecting a path.
     """
-
-    ###
-        # dirChanged = QtCore.Signal(str)  # Emitted when the user changes the path (and is valid)
-        # dirUp = QtCore.Signal()  # Emitted when user presses the up button
     dirChanged = Signal(str)  # Emitted when the user changes the path (and is valid)
     dirUp = Signal()  # Emitted when user presses the up button
 
@@ -559,7 +541,6 @@ class PathInput(LineEditWithToolButtons):
 #@+node:ekr.20190810003404.43: *3* class Projects(QWidget)
 class Projects(QtWidgets.QWidget):
 
-    ### dirChanged = QtCore.Signal(str) # Emitted when the user changes the project
     dirChanged = Signal(str) # Emitted when the user changes the project
 
     #@+others
@@ -730,7 +711,6 @@ class NameFilter(LineEditWithToolButtons):
     """ Combobox to filter by name.
     """
 
-    ### filterChanged = QtCore.Signal()
     filterChanged = Signal()
 
     #@+others
@@ -757,8 +737,7 @@ class NameFilter(LineEditWithToolButtons):
 
         # Ensure the namefilter is in the config and initialize
         config = self.parent().config
-        ###if 'nameFilter' not in config:
-        if not config.nameFilter:
+        if not config.nameFilter: # EKR:change
             config.nameFilter = '!*.pyc'
         self.setText(config.nameFilter)
     #@+node:ekr.20190810003404.54: *4* NameFilter.setText
@@ -785,7 +764,6 @@ class SearchFilter(LineEditWithToolButtons):
     """ Line edit to do a search in the files.
     """
 
-    ### filterChanged = QtCore.Signal()
     filterChanged = Signal()
 
     #@+others
@@ -852,10 +830,7 @@ class SearchFilter(LineEditWithToolButtons):
                 menu.addSeparator()
             else:
                 # Make sure the option exists
-                ###
-                    # if option not in config:
-                    #    config[option] = default
-                if not getattr(config, option, None):
+                if not getattr(config, option, None): # EKR:change
                     setattr(config, option, default)
                 # Make action in menu
                 action = menu.addAction(description)
@@ -1292,11 +1267,7 @@ class PathProxy(QtCore.QObject):
     is no longer needed, use close() to unregister it.
 
     """
-    ###
-        # changed = QtCore.Signal()
-        # deleted = QtCore.Signal()
-        # errored = QtCore.Signal(str) # Or should we pass an error per 'action'?
-        # taskFinished = QtCore.Signal(Task)
+
     changed = Signal()
     deleted = Signal()
     errored = Signal(str) # Or should we pass an error per 'action'?
@@ -1717,9 +1688,6 @@ Defines the tree widget to display the contents of a selected directory.
 
 # How to name the list of drives/mounts (i.e. 'my computer')
 MOUNTS = 'drives'
-
-# Create icon provider
-### iconprovider = QtWidgets.QFileIconProvider()
 #@+node:ekr.20190810003404.177: *3* addIconOverlays
 def addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(0,0)):
     """ Create an overlay for an icon.
@@ -2045,13 +2013,8 @@ class FileItem(BrowserItem):
     def setFileIcon(self):
 
         # Create dummy file in pyzo user dir
-        ###
-            # dummy_filename = op.join(
-                # cleanpath(pyzo.appDataDir), 
-                # 'dummyFiles', 'dummy' + ext(self.path()))
-        dummy_filename = op.join(
-                cleanpath(appDataDir), 
-                'dummyFiles', 'dummy' + ext(self.path()))
+        dummy_filename = op.join(cleanpath(appDataDir), 
+            'dummyFiles', 'dummy' + ext(self.path()))
 
         # Create file?
         if not op.isfile(dummy_filename):
@@ -2501,7 +2464,7 @@ class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
     #@+node:ekr.20190810003404.254: *4* PopupMenu.__init__
     def __init__(self, parent, item):
         
-        super().__init__(parent) ###
+        super().__init__(parent) # EKR:change
         self._item = item
         # pyzo.core.menu.Menu.__init__(self, parent, " ")
     #@+node:ekr.20190810003404.255: *4* PopupMenu.build
@@ -2606,8 +2569,6 @@ class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
     ###
     # def _runNotebook(self):
         # filename = self._item.path()
-        # g.trace(filename)
-        
         # if 0: # Later, never.
         # shell = pyzo.shells.getCurrentShell()
         # if shell is not None:
@@ -2775,11 +2736,9 @@ def loadIcons(): # From __main__.py
         # iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
     iconDir = g.os_path_finalize_join(g.app.loadDir, '..',
         'external', 'pyzo', 'resources', 'icons')
-    g.trace(g.os_path_exists(iconDir), iconDir)
 
     # Construct other icons
     dummyIcon = IconArtist().finish()
-    ### pyzo.icons = ssdf.new()
     pyzo_icons = PyzoIcons() # EKR:change.
         
     for fname in os.listdir(iconDir):
@@ -2797,7 +2756,6 @@ def loadIcons(): # From __main__.py
             except Exception as err:
                 pyzo_icons[name] = dummyIcon
                 print('Could not load icon %s: %s' % (fname, str(err)))
-    ### g.printObj(pyzo_icons, tag='pyzo_icons')
     return pyzo_icons # EKR:change
 #@+node:ekr.20190810134724.5: *3* class IconArtist
 class IconArtist: # From icons.py
@@ -2959,7 +2917,6 @@ def appdata_dir(appname=None, roaming=False, macAsLinux=False):
             os.mkdir(path)
 
     # Done
-    g.trace(path)
     return path
 #@+node:ekr.20190810140106.1: *3* getResourceDirs
 def getResourceDirs(): # From pyzo.__init__.py
@@ -2968,29 +2925,8 @@ def getResourceDirs(): # From pyzo.__init__.py
     Also makes sure that the appDataDir has a "tools" directory and
     a style file.
     """
-
-    ### Always commented out.
-        #     # Get root of the Pyzo code. If frozen its in a subdir of the app dir
-        #     pyzoDir = paths.application_dir()
-        #     if paths.is_frozen():
-        #         pyzoDir = os.path.join(pyzoDir, 'source')
-
-    ###
-        # pyzoDir = os.path.abspath(os.path.dirname(__file__))
-        # if '.zip' in pyzoDir:
-            # raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
-    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
-
-    # Get where the application data is stored (use old behavior on Mac)
+    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external') # EKR:change
     appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
-
-    ###
-        # # Create tooldir if necessary
-        # toolDir = os.path.join(appDataDir, 'tools')
-        # if not os.path.isdir(toolDir):
-            # os.mkdir(toolDir)
-
-    g.trace(pyzoDir, appDataDir)
     return pyzoDir, appDataDir
 #@-others
 
