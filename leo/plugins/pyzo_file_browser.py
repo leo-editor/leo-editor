@@ -81,9 +81,9 @@ class FileBrowserConfig:
     
     def __init__(self):
         
-        self.expandedDirs = []
         self.path = None
-        self.nameFiler = None
+        self.expandedDirs = []
+        self.nameFilter = None
         self.starredDirs = []
         # self.searchMatchCase = None
         # self.searchRegExp = None
@@ -116,8 +116,8 @@ class PyzoFileBrowser(QtWidgets.QWidget):
 
         # Ensure path in config
         ### if 'path' not in self.config or not isdir(self.config.path):
-        if not self.config.path:
-            self.config.path = op.expanduser('~')
+        if not getattr(self.config, 'path', None):
+            setattr(self.config, 'path', op.expanduser('~'))
 
         # Check expandedDirs and starredDirs.
         # Make path objects and remove invalid dirs. Also normalize case,
@@ -759,7 +759,7 @@ class NameFilter(LineEditWithToolButtons):
         # Ensure the namefilter is in the config and initialize
         config = self.parent().config
         ###if 'nameFilter' not in config:
-        if not config.nameFiler:
+        if not config.nameFilter:
             config.nameFilter = '!*.pyc'
         self.setText(config.nameFilter)
     #@+node:ekr.20190810003404.54: *4* NameFilter.setText
