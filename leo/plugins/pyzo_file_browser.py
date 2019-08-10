@@ -10,6 +10,9 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 
+from PyQt5.QtCore import pyqtSignal ### PyQt5 only!
+Signal = pyqtSignal
+
 import ctypes
 import fnmatch
 import os
@@ -28,11 +31,6 @@ import threading
 #@-<< pyzo_file_browser imports >>
 #@+others
 #@+node:ekr.20190809093459.1: **  top-level functions
-#@+node:ekr.20190810004227.1: *3* banner
-def banner(s): # pyzo_file_browser.py
-    '''A good trace for imports.'''
-    if 1:
-        g.pr('\n===== %s\n' % s)
 #@+node:ekr.20190809093459.3: *3* init
 init_warning_given = False
 
@@ -62,9 +60,22 @@ def onCreate(tag, keys):
     dw = c and c.frame and c.frame.top
     if not dw:
         return
-    banner('BEFORE onCreate: %s' % c.shortFileName())
-    ### To do: create the dock in Leo's main window.
-#@+node:ekr.20190810013154.1: ** class FileBrowserConfig
+
+    g.trace(c.shortFileName())
+    
+    dock = dw.createDockWidget(
+        closeable=True,
+        moveable=True,
+        height=100,
+        name='File Browser'
+    )
+    dw.leo_docks.append(dock)
+    w = PyzoFileBrowser(parent=None)
+    dock.setWidget(w)
+    area = QtCore.Qt.LeftDockWidgetArea
+    dw.addDockWidget(area, dock)
+    w.show()
+#@+node:ekr.20190810013154.1: ** class FileBrowserConfig (Dict)
 class FileBrowserConfig:
     '''A class containing configuration *only* for the file browser.'''
     
@@ -72,7 +83,11 @@ class FileBrowserConfig:
         
         self.expandedDirs = []
         self.path = None
+        self.nameFiler = None
         self.starredDirs = []
+        self.searchMatchCase = None
+        self.searchRegExp = None
+        self.searchSubDirs = None
 #@+node:ekr.20190810003404.4: ** class PyzoFileBrowser(QWidget)
 class PyzoFileBrowser(QtWidgets.QWidget):
     """ The main tool widget. An instance of this class contains one or
@@ -371,10 +386,10 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
         self._leftButtons = []
         self._rightButtons = []
     #@+node:ekr.20190810003404.29: *4* LineEditWithToolButtons.addButtonLeft
-    def addButtonLeft(self, icon, willHaveMenu=False):
+    def addButtonLeft(self, icon=None, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._leftButtons)
     #@+node:ekr.20190810003404.30: *4* LineEditWithToolButtons.addButtonRight
-    def addButtonRight(self, icon, willHaveMenu=False):
+    def addButtonRight(self, icon=None, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._rightButtons)
     #@+node:ekr.20190810003404.31: *4* LineEditWithToolButtons._addButton
     def _addButton(self, icon, willHaveMenu, L):
@@ -382,8 +397,9 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
         button = QtWidgets.QToolButton(self)
         L.append(button)
         # Customize appearance
-        button.setIcon(icon)
-        button.setIconSize(QtCore.QSize(16,16))
+        if icon: ### EKR:change: make icon optional.
+            button.setIcon(icon)
+            button.setIconSize(QtCore.QSize(16,16))
         button.setStyleSheet("QToolButton { border: none; padding: 0px; }")
         #button.setStyleSheet("QToolButton { border: none; padding: 0px; background-color:red;}");
         # Set behavior
@@ -458,8 +474,11 @@ class PathInput(LineEditWithToolButtons):
     """ Line edit for selecting a path.
     """
 
-    dirChanged = QtCore.Signal(str)  # Emitted when the user changes the path (and is valid)
-    dirUp = QtCore.Signal()  # Emitted when user presses the up button
+    ###
+        # dirChanged = QtCore.Signal(str)  # Emitted when the user changes the path (and is valid)
+        # dirUp = QtCore.Signal()  # Emitted when user presses the up button
+    dirChanged = Signal(str)  # Emitted when the user changes the path (and is valid)
+    dirUp = Signal()  # Emitted when user presses the up button
 
     #@+others
     #@+node:ekr.20190810003404.37: *4* PathInput.__init__
@@ -467,7 +486,7 @@ class PathInput(LineEditWithToolButtons):
         LineEditWithToolButtons.__init__(self, parent)
 
         # Create up button
-        self._upBut = self.addButtonLeft() ### pyzo.icons.folder_parent)
+        self._upBut = self.addButtonLeft(None) ### pyzo.icons.folder_parent)
         self._upBut.clicked.connect(self.dirUp)
 
         # To receive focus events
@@ -541,7 +560,8 @@ class PathInput(LineEditWithToolButtons):
 #@+node:ekr.20190810003404.43: *3* class Projects(QWidget)
 class Projects(QtWidgets.QWidget):
 
-    dirChanged = QtCore.Signal(str) # Emitted when the user changes the project
+    ### dirChanged = QtCore.Signal(str) # Emitted when the user changes the project
+    dirChanged = Signal(str) # Emitted when the user changes the project
 
     #@+others
     #@+node:ekr.20190810003404.44: *4* Projects.__init__
@@ -711,7 +731,8 @@ class NameFilter(LineEditWithToolButtons):
     """ Combobox to filter by name.
     """
 
-    filterChanged = QtCore.Signal()
+    ### filterChanged = QtCore.Signal()
+    filterChanged = Signal()
 
     #@+others
     #@+node:ekr.20190810003404.53: *4* NameFilter.__init__
@@ -737,7 +758,8 @@ class NameFilter(LineEditWithToolButtons):
 
         # Ensure the namefilter is in the config and initialize
         config = self.parent().config
-        if 'nameFilter' not in config:
+        ###if 'nameFilter' not in config:
+        if not config.nameFiler:
             config.nameFilter = '!*.pyc'
         self.setText(config.nameFilter)
     #@+node:ekr.20190810003404.54: *4* NameFilter.setText
@@ -764,7 +786,8 @@ class SearchFilter(LineEditWithToolButtons):
     """ Line edit to do a search in the files.
     """
 
-    filterChanged = QtCore.Signal()
+    ### filterChanged = QtCore.Signal()
+    filterChanged = Signal()
 
     #@+others
     #@+node:ekr.20190810003404.58: *4* SearchFilter.__init__
@@ -830,13 +853,16 @@ class SearchFilter(LineEditWithToolButtons):
                 menu.addSeparator()
             else:
                 # Make sure the option exists
-                if option not in config:
-                    config[option] = default
+                ### if option not in config:
+                ###    config[option] = default
+                if not getattr(config, option):
+                    setattr(config, option, default)
                 # Make action in menu
                 action = menu.addAction(description)
                 action._option = option
                 action.setCheckable(True)
-                action.setChecked( bool(config[option]) )
+                ### action.setChecked( bool(config[option]) )
+                action.setChecked(bool(getattr(config, option, None)))
     #@+node:ekr.20190810003404.64: *4* SearchFilter.onMenuTriggered
     def onMenuTriggered(self, action):
         config = self.parent().config
@@ -1253,7 +1279,7 @@ will make Pyzo truly powerful for use in remote computing.
 
 """
 # From proxies.py
-#@+node:ekr.20190810003404.103: *3* class PathProxy(QtCore.QObject)
+#@+node:ekr.20190810003404.103: *3*  class PathProxy(QObject)
 class PathProxy(QtCore.QObject):
     """ Proxy base class for DirProxy and FileProxy.
 
@@ -1266,12 +1292,15 @@ class PathProxy(QtCore.QObject):
     is no longer needed, use close() to unregister it.
 
     """
-
-    changed = QtCore.Signal()
-    deleted = QtCore.Signal()
-    errored = QtCore.Signal(str) # Or should we pass an error per 'action'?
-
-    taskFinished = QtCore.Signal(Task)
+    ###
+        # changed = QtCore.Signal()
+        # deleted = QtCore.Signal()
+        # errored = QtCore.Signal(str) # Or should we pass an error per 'action'?
+        # taskFinished = QtCore.Signal(Task)
+    changed = Signal()
+    deleted = Signal()
+    errored = Signal(str) # Or should we pass an error per 'action'?
+    taskFinished = Signal(Task)
 
     #@+others
     #@+node:ekr.20190810003404.104: *4* PathProxy.__init__
@@ -1341,83 +1370,7 @@ class PathProxy(QtCore.QObject):
         for task in finishedTasks:
             self.taskFinished.emit(task)
     #@-others
-#@+node:ekr.20190810003404.112: *3* class DirProxy(PathProxy)
-class DirProxy(PathProxy):
-    """ Proxy object for a directory. Obtain an instance of this class
-    using filesystemProx.dir()
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.113: *4* DirProxy.__init__
-    def __init__(self, *args):
-        PathProxy.__init__(self, *args)
-        self._dirs = set()
-        self._files = set()
-    #@+node:ekr.20190810003404.114: *4* DirProxy.dirs
-    def dirs(self):
-        with self._lock:
-            return set(self._dirs)
-    #@+node:ekr.20190810003404.115: *4* DirProxy.files
-    def files(self):
-        with self._lock:
-            return set(self._files)
-    #@+node:ekr.20190810003404.116: *4* DirProxy._process
-    def _process(self, forceUpdate=False):
-        # Get info
-        dirs = self._fsProxy.listDirs(self._path)
-        files = self._fsProxy.listFiles(self._path)
-        # Is it deleted?
-        if dirs is None or files is None:
-            self.deleted.emit()
-            return
-        # All seems ok. Update if necessary
-        dirs, files = set(dirs), set(files)
-        if (dirs != self._dirs) or (files != self._files):
-            with self._lock:
-                self._dirs, self._files = dirs, files
-            self.changed.emit()
-        elif forceUpdate:
-            self.changed.emit()
-    #@-others
-#@+node:ekr.20190810003404.117: *3* class FileProxy(PathProxy)
-class FileProxy(PathProxy):
-    """ Proxy object for a file. Obtain an instance of this class
-    using filesystemProx.dir()
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.118: *4* FileProxy.__init__
-    def __init__(self, *args):
-        PathProxy.__init__(self, *args)
-        self._modified = 0
-    #@+node:ekr.20190810003404.119: *4* FileProxy.modified
-    def modified(self):
-        with self._lock:
-            return self._modified
-    #@+node:ekr.20190810003404.120: *4* FileProxy._process
-    def _process(self, forceUpdate=False):
-        # Get info
-        modified = self._fsProxy.modified(self._path)
-        # Is it deleted?
-        if modified is None:
-            self.deleted.emit()
-            return
-        # All seems ok. Update if necessary
-        if modified != self._modified:
-            with self._lock:
-                self._modified = modified
-            self.changed.emit()
-        elif forceUpdate:
-            self.changed.emit()
-    #@+node:ekr.20190810003404.121: *4* FileProxy.read
-    def read(self):
-        pass # ?
-    #@+node:ekr.20190810003404.122: *4* FileProxy.save
-    def save(self):
-        pass # ?
-    ## Proxy classes for the file system
-    #@-others
-#@+node:ekr.20190810003404.123: *3* class BaseFSProxy(threading.Thread)
+#@+node:ekr.20190810003404.123: *3*  class BaseFSProxy(threading.Thread)
 class BaseFSProxy(threading.Thread):
     """ Abstract base class for file system proxies.
 
@@ -1587,6 +1540,82 @@ class BaseFSProxy(threading.Thread):
     def createDir(self, path):
         raise NotImplemented()
     #@-others
+#@+node:ekr.20190810003404.112: *3* class DirProxy(PathProxy)
+class DirProxy(PathProxy):
+    """ Proxy object for a directory. Obtain an instance of this class
+    using filesystemProx.dir()
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.113: *4* DirProxy.__init__
+    def __init__(self, *args):
+        PathProxy.__init__(self, *args)
+        self._dirs = set()
+        self._files = set()
+    #@+node:ekr.20190810003404.114: *4* DirProxy.dirs
+    def dirs(self):
+        with self._lock:
+            return set(self._dirs)
+    #@+node:ekr.20190810003404.115: *4* DirProxy.files
+    def files(self):
+        with self._lock:
+            return set(self._files)
+    #@+node:ekr.20190810003404.116: *4* DirProxy._process
+    def _process(self, forceUpdate=False):
+        # Get info
+        dirs = self._fsProxy.listDirs(self._path)
+        files = self._fsProxy.listFiles(self._path)
+        # Is it deleted?
+        if dirs is None or files is None:
+            self.deleted.emit()
+            return
+        # All seems ok. Update if necessary
+        dirs, files = set(dirs), set(files)
+        if (dirs != self._dirs) or (files != self._files):
+            with self._lock:
+                self._dirs, self._files = dirs, files
+            self.changed.emit()
+        elif forceUpdate:
+            self.changed.emit()
+    #@-others
+#@+node:ekr.20190810003404.117: *3* class FileProxy(PathProxy)
+class FileProxy(PathProxy):
+    """ Proxy object for a file. Obtain an instance of this class
+    using filesystemProx.dir()
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.118: *4* FileProxy.__init__
+    def __init__(self, *args):
+        PathProxy.__init__(self, *args)
+        self._modified = 0
+    #@+node:ekr.20190810003404.119: *4* FileProxy.modified
+    def modified(self):
+        with self._lock:
+            return self._modified
+    #@+node:ekr.20190810003404.120: *4* FileProxy._process
+    def _process(self, forceUpdate=False):
+        # Get info
+        modified = self._fsProxy.modified(self._path)
+        # Is it deleted?
+        if modified is None:
+            self.deleted.emit()
+            return
+        # All seems ok. Update if necessary
+        if modified != self._modified:
+            with self._lock:
+                self._modified = modified
+            self.changed.emit()
+        elif forceUpdate:
+            self.changed.emit()
+    #@+node:ekr.20190810003404.121: *4* FileProxy.read
+    def read(self):
+        pass # ?
+    #@+node:ekr.20190810003404.122: *4* FileProxy.save
+    def save(self):
+        pass # ?
+    ## Proxy classes for the file system
+    #@-others
 #@+node:ekr.20190810003404.144: *3* class NativeFSProxy(BaseFSProxy)
 class NativeFSProxy(BaseFSProxy):
     """ File system proxy for the native file system.
@@ -1696,7 +1725,8 @@ def addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(0,0)):
     """ Create an overlay for an icon.
     """
     # Create painter and pixmap
-    pm0 = QtGui.QPixmap(16+offset[0],16)#icon.pixmap(16+offset[0],16+offset[1])
+    pm0 = QtGui.QPixmap(16+offset[0],16)
+        #icon.pixmap(16+offset[0],16+offset[1])
     pm0.fill(QtGui.QColor(0,0,0,0))
     painter = QtGui.QPainter()
     painter.begin(pm0)
@@ -1859,7 +1889,7 @@ def filename2sortkey(name):
         # I cannot see how this could fail, but lets be safe, as it would break so badly
         print('Warning: could not filename2sortkey(%r), please report:\n%s' % (name, str(err)))
         return (e, 999999999, name, -1)
-#@+node:ekr.20190810003404.182: *3* class BrowserItem(QtWidgets.QTreeWidgetItem)
+#@+node:ekr.20190810003404.182: *3* class BrowserItem(QTreeWidgetItem)
 class BrowserItem(QtWidgets.QTreeWidgetItem):
     """ Abstract item in the tree widget.
     """
@@ -2103,7 +2133,7 @@ class FileItem(BrowserItem):
         else:
             BrowserItem.onTaskFinished(self, task)
     #@-others
-#@+node:ekr.20190810003404.212: *3* class SubFileItem(QtWidgets.QTreeWidgetItem)
+#@+node:ekr.20190810003404.212: *3* class SubFileItem(QTreeWidgetItem)
 class SubFileItem(QtWidgets.QTreeWidgetItem):
     """ Tree widget item for search items.
     """
@@ -2133,7 +2163,7 @@ class SubFileItem(QtWidgets.QTreeWidgetItem):
             # # Give focus
             # pyzo.editors.getCurrentEditor().setFocus()
     #@-others
-#@+node:ekr.20190810003404.216: *3* class DocstringItem(QtWidgets.QTreeWidgetItem)
+#@+node:ekr.20190810003404.216: *3* class DocstringItem(QTreeWidgetItem)
 class DocstringItem(QtWidgets.QTreeWidgetItem):
     """ Tree widget item for docstring placeholder items.
     """
@@ -2161,7 +2191,7 @@ class DocstringItem(QtWidgets.QTreeWidgetItem):
         if tree.itemAt(pos) is self:
             QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self._docstring)
     #@-others
-#@+node:ekr.20190810003404.220: *3* class ErrorItem(QtWidgets.QTreeWidgetItem)
+#@+node:ekr.20190810003404.220: *3* class ErrorItem(QTreeWidgetItem)
 class ErrorItem(QtWidgets.QTreeWidgetItem):
     """ Tree widget item for errors and information.
     """
@@ -2266,14 +2296,15 @@ class TemporaryFileItem:
         if isinstance(searchInfoItem, SearchInfoItem):
             searchInfoItem.addFile(bool(result))
     #@-others
-#@+node:ekr.20190810003404.235: *3* class Tree(QtWidgets.QTreeWidget)
+#@+node:ekr.20190810003404.235: *3* class Tree(QTreeWidget)
 class Tree(QtWidgets.QTreeWidget):
     """ Representation of the tree view.
     Instances of this class are responsible for keeping the contents
     up-to-date. The Item classes above are dumb objects.
     """
 
-    dirChanged = QtCore.Signal(str) # Emitted when user goes into a subdir
+    # dirChanged = QtCore.Signal(str) # Emitted when user goes into a subdir
+    dirChanged = Signal(str) # Emitted when user goes into a subdir
 
     #@+others
     #@+node:ekr.20190810003404.236: *4* Tree.__init__
@@ -2459,7 +2490,7 @@ class Tree(QtWidgets.QTreeWidget):
             menu = PopupMenu(self, item)
             menu.popup(self.mapToGlobal(p+QtCore.QPoint(3,3)))
     #@-others
-#@+node:ekr.20190810003404.253: *3* class PopupMenu(pyzo.core.menu.Menu)
+#@+node:ekr.20190810003404.253: *3* class PopupMenu(QMenu)
 class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
     #@+others
     #@+node:ekr.20190810003404.254: *4* PopupMenu.__init__
