@@ -4,97 +4,10 @@ A new module containing (for now) *copies* of icon-related code.
 """
 import leo.core.leoGlobals as leo_g
 assert leo_g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui #, QtWidgets
 import os
+import sys
 
-pyzo = leo_g.TracingNullObject(tag='pyzo_icons.pyzo')
-ssdf = leo_g.TracingNullObject(tag='pyzo_icons.ssdf')
-
-def loadAppIcons(): # From __main__.py
-    """ loadAppIcons()
-    Load the application icons.
-    """
-    # Get directory containing the icons
-    appiconDir =  os.path.join(pyzo.pyzoDir, 'resources', 'appicons')
-
-    # Determine template for filename of the application icon-files.
-    fnameT = 'pyzologo{}.png'
-
-    # Construct application icon. Include a range of resolutions. Note that
-    # Qt somehow does not use the highest possible res on Linux/Gnome(?), even
-    # the logo of qt-designer when alt-tabbing looks a bit ugly.
-    pyzo.icon = QtGui.QIcon()
-    for sze in [16, 32, 48, 64, 128, 256]:
-        fname = os.path.join(appiconDir, fnameT.format(sze))
-        if os.path.isfile(fname):
-            pyzo.icon.addFile(fname, QtCore.QSize(sze, sze))
-
-    # Set as application icon. This one is used as the default for all
-    # windows of the application.
-    QtWidgets.qApp.setWindowIcon(pyzo.icon)
-
-    # Construct another icon to show when the current shell is busy
-    artist = IconArtist(pyzo.icon) # extracts the 16x16 version
-    artist.setPenColor('#0B0')
-    for x in range(11, 16):
-        d = x-11 # runs from 0 to 4
-        artist.addLine(x,6+d,x,15-d)
-    pm = artist.finish().pixmap(16,16)
-    #
-    pyzo.iconRunning = QtGui.QIcon(pyzo.icon)
-    pyzo.iconRunning.addPixmap(pm) # Change only 16x16 icon
-def loadIcons(): # From __main__.py
-    """ loadIcons()
-    Load all icons in the icon dir.
-    """
-    # Get directory containing the icons
-    iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
-
-    # Construct other icons
-    dummyIcon = IconArtist().finish()
-    ### if leo_g: leo_g.trace('loadIcons: dummyIcon: %r' % dummyIcon)
-    pyzo.icons = ssdf.new()
-    for fname in os.listdir(iconDir):
-        if fname.endswith('.png'):
-            try:
-                # Short and full name
-                name = fname.split('.')[0]
-                name = name.replace('pyzo_', '')  # discart prefix
-                ffname = os.path.join(iconDir,fname)
-                # Create icon
-                icon = QtGui.QIcon()
-                icon.addFile(ffname, QtCore.QSize(16,16))
-                # Store
-                pyzo.icons[name] = icon
-                leo_g.trace('icon', icon)
-            except Exception as err:
-                pyzo.icons[name] = dummyIcon
-                print('Could not load icon %s: %s' % (fname, str(err)))
-def loadFonts(): # From __main__.py
-    """ loadFonts()
-    Load all fonts that come with Pyzo.
-    """
-    import pyzo.codeeditor  # we need pyzo and codeeditor namespace here
-
-    # Get directory containing the icons
-    fontDir = os.path.join(pyzo.pyzoDir, 'resources', 'fonts')
-
-    # Get database object
-    db = QtGui.QFontDatabase()
-
-    # Set default font
-    pyzo.codeeditor.Manager.setDefaultFontFamily('DejaVu Sans Mono')
-
-    # Load fonts that are in the fonts directory
-    if os.path.isdir(fontDir):
-        for fname in os.listdir(fontDir):
-            if 'oblique' in fname.lower():  # issue #461
-                continue
-            if os.path.splitext(fname)[1].lower() in ['.otf', '.ttf']:
-                try:
-                    db.addApplicationFont( os.path.join(fontDir, fname) )
-                except Exception as err:
-                    print('Could not load font %s: %s' % (fname, str(err)))
 class IconArtist: # From icons.py
     """ IconArtist(icon=None)
 
@@ -122,7 +35,7 @@ class IconArtist: # From icons.py
 
         # Get icon if given by name
         if isinstance(icon, str):
-            icon = pyzo.icons[icon]
+            icon = pyzo_icons[icon]
 
         # Create pixmap
         if icon is None:
@@ -192,3 +105,135 @@ class IconArtist: # From icons.py
         self.setPenColor((0,0,0,a2))
         self.addPoint(x+2,y+3)
 # todo: not used; remove me?
+class PyzoIcons(dict): # From zon.py
+
+    '''
+    A dict that allows attribute access.
+    A simplified version of the Dict class in zon.py.
+    '''
+    
+    def __getattribute__(self, key):
+        try:
+            return object.__getattribute__(self, key)
+        except AttributeError:
+            if key in self:
+                return self[key]
+            else:
+                raise
+
+    def __setattr__(self, key, val):
+        self[key] = val
+def loadIcons(): # From __main__.py
+    """ Load all icons in the icon dir."""
+    # Get directory containing the icons
+    # EKR:change
+        # iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
+    iconDir = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..',
+        'external', 'pyzo', 'resources', 'icons')
+
+    # Construct other icons
+    dummyIcon = IconArtist().finish()
+    ### pyzo.icons = ssdf.new()
+    pyzo_icons = PyzoIcons() # EKR:change.
+        
+    for fname in os.listdir(iconDir):
+        if fname.endswith('.png'):
+            try:
+                # Short and full name
+                name = fname.split('.')[0]
+                name = name.replace('pyzo_', '')  # discart prefix
+                ffname = os.path.join(iconDir,fname)
+                # Create icon
+                icon = QtGui.QIcon()
+                icon.addFile(ffname, QtCore.QSize(16,16))
+                # Store
+                pyzo_icons[name] = icon
+            except Exception as err:
+                pyzo_icons[name] = dummyIcon
+                print('Could not load icon %s: %s' % (fname, str(err)))
+    return pyzo_icons # EKR:change
+def appdata_dir(appname=None, roaming=False, macAsLinux=False):
+    """ appdata_dir(appname=None, roaming=False,  macAsLinux=False)
+    Get the path to the application directory, where applications are allowed
+    to write user specific files (e.g. configurations). For non-user specific
+    data, consider using common_appdata_dir().
+    If appname is given, a subdir is appended (and created if necessary).
+    If roaming is True, will prefer a roaming directory (Windows Vista/7).
+    If macAsLinux is True, will return the Linux-like location on Mac.
+    """
+
+    # Define default user directory
+    userDir = os.path.expanduser('~')
+
+    # Get system app data dir
+    path = None
+    if sys.platform.startswith('win'):
+        path1, path2 = os.getenv('LOCALAPPDATA'), os.getenv('APPDATA')
+        path = (path2 or path1) if roaming else (path1 or path2)
+    elif sys.platform.startswith('darwin') and not macAsLinux:
+        path = os.path.join(userDir, 'Library', 'Application Support')
+    # On Linux and as fallback
+    if not (path and os.path.isdir(path)):
+        path = userDir
+
+    # Maybe we should store things local to the executable (in case of a
+    # portable distro or a frozen application that wants to be portable)
+    prefix = sys.prefix
+    if getattr(sys, 'frozen', None): # See application_dir() function
+        prefix = os.path.abspath(os.path.dirname(sys.executable))
+    for reldir in ('settings', '../settings'):
+        localpath = os.path.abspath(os.path.join(prefix, reldir))
+        if os.path.isdir(localpath):
+            try:
+                open(os.path.join(localpath, 'test.write'), 'wb').close()
+                os.remove(os.path.join(localpath, 'test.write'))
+            except IOError:
+                pass # We cannot write in this directory
+            else:
+                path = localpath
+                break
+
+    # Get path specific for this app
+    if appname:
+        if path == userDir:
+            appname = '.' + appname.lstrip('.') # Make it a hidden directory
+        path = os.path.join(path, appname)
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
+    # Done
+    return path
+def getResourceDirs(): # From pyzo.__init__.py
+    """ getResourceDirs()
+    Get the directories to the resources: (pyzoDir, appDataDir).
+    Also makes sure that the appDataDir has a "tools" directory and
+    a style file.
+    """
+
+    ### Always commented out.
+        #     # Get root of the Pyzo code. If frozen its in a subdir of the app dir
+        #     pyzoDir = paths.application_dir()
+        #     if paths.is_frozen():
+        #         pyzoDir = os.path.join(pyzoDir, 'source')
+
+    ###
+        # pyzoDir = os.path.abspath(os.path.dirname(__file__))
+        # if '.zip' in pyzoDir:
+            # raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
+    pyzoDir = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..', 'external')
+
+    # Get where the application data is stored (use old behavior on Mac)
+    appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
+
+    ###
+        # # Create tooldir if necessary
+        # toolDir = os.path.join(appDataDir, 'tools')
+        # if not os.path.isdir(toolDir):
+            # os.mkdir(toolDir)
+    return pyzoDir, appDataDir
+
+# Compute standard places.
+pyzoDir, appDataDir = getResourceDirs()
+
+# Load all icons.
+pyzo_icons = loadIcons()
