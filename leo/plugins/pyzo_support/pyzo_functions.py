@@ -9,7 +9,7 @@ import leo.core.leoGlobals as g
 import os
 import sys
 from leo.core.leoQt import QtCore, QtGui # QtWidgets
-import zon as ssdf
+from . import zon as ssdf
 
 #@+others
 #@+node:ekr.20190811123818.2: ** appdata_dir
@@ -72,17 +72,7 @@ def getResourceDirs(): # From pyzo.__init__.py
     a style file.
     """
 
-    ### Always commented out.
-        #     # Get root of the Pyzo code. If frozen its in a subdir of the app dir
-        #     pyzoDir = paths.application_dir()
-        #     if paths.is_frozen():
-        #         pyzoDir = os.path.join(pyzoDir, 'source')
-
-    ###
-        # pyzoDir = os.path.abspath(os.path.dirname(__file__))
-        # if '.zip' in pyzoDir:
-            # raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
-    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo')
+    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo') # EKR:change.
 
     # Get where the application data is stored (use old behavior on Mac)
     appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
@@ -172,6 +162,48 @@ def loadIcons(): # From __main__.py
                 pyzo_icons[name] = dummyIcon
                 print('Could not load icon %s: %s' % (fname, str(err)))
     return pyzo_icons # EKR:change
+#@+node:ekr.20190811174804.3: ** translate
+def translate(context, text, disambiguation=None): # From _locale.py.
+    """ translate(context, text, disambiguation=None)
+    The translate function used throughout pyzo.
+    """
+    # Get translation and split tooltip
+    newtext = QtCore.QCoreApplication.translate(context, text, disambiguation)
+    s, tt = _splitMainAndTt(newtext)
+    # Create translation object (string with extra attributes)
+    translation = Translation(s)
+    translation.original = text
+    translation.tt = tt
+    translation.key = _splitMainAndTt(text)[0].strip()
+    return translation
+
+#@+node:ekr.20190811174804.4: *3* _splitMainAndTt
+def _splitMainAndTt(s):
+    if ':::' in s:
+        parts = s.split(':::', 1)
+        return parts[0].rstrip(), parts[1].lstrip()
+    else:
+        return s, ''
+#@+node:ekr.20190811174804.2: ** class Translation(str)
+class Translation(str):
+    """
+    Derives from str class.
+    
+    The translate function returns an instance of this class and assigns
+    extra atrributes:
+      * original: the original text passed to the translation
+      * tt: the tooltip text
+      * key: the original text without tooltip (used by menus as a key)
+
+    We adopt a simple system to include tooltip text in the same
+    translation as the label text. By including ":::" in the text, the text
+    after that identifier is considered the tooltip. The text returned by
+    the translate function is always the string without tooltip, but the
+    text object has an attribute "tt" that stores the tooltip text. In this
+    way, if you do not use this feature or do not know about this feature,
+    everything keeps working as expected.
+    """
+    pass
 #@+node:ekr.20190811125320.3: ** class IconArtist
 class IconArtist: # From icons.py
     """ IconArtist(icon=None)
@@ -278,7 +310,7 @@ class IconArtist: # From icons.py
         # Fourth line of 1
         self.setPenColor((0,0,0,a2))
         self.addPoint(x+2,y+3)
-# todo: not used; remove me?
+    # todo: not used; remove me?
     #@-others
 #@+node:ekr.20190811125320.12: ** class PyzoIcons(dict)
 class PyzoIcons(dict): # From zon.py
@@ -306,6 +338,9 @@ pyzoDir, appDataDir = getResourceDirs()
 
 # Load icons
 pyzo_icons = loadIcons()
+
+# Create equivalent of pyzo.config
+pyzo_config = loadConfig()
 
 #@@language python
 #@@tabwidth -4

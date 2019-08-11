@@ -10,6 +10,10 @@ Experimental plugin that adds pyzo's file browser dock to Leo.
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, Signal
 
+from .pyzo_support.pyzo_functions import appDataDir, pyzo_icons, pyzo_config
+    # pyzoDir
+from .pyzo_support.pyzo_functions import ssdf, translate
+
 import ctypes
 import fnmatch
 import os
@@ -21,16 +25,6 @@ import subprocess
 import sys
 import time
 import threading
-
-# From zon.py...
-string_types = str,
-integer_types = int,
-float_types = float,
-
-try:  # pragma: no cover
-    from collections import OrderedDict as _dict
-except ImportError:
-    _dict = dict
 
 # We don't need this because everything is defined in this plugin.
     # pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
@@ -53,7 +47,7 @@ def init():
             init_warning_given = True
             print('%s %s' % (__name__, message))
         return False
-
+        
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
     # if not pyzo:
@@ -101,11 +95,10 @@ class PyzoFileBrowser(QtWidgets.QWidget):
             ### Probably don't need or want this:
             toolId =  self.__class__.__name__.lower() + '2'  # This is v2 of the file browser
             if toolId not in pyzo_config.tools:
-                ### pyzo_config.tools[toolId] = ssdf.new()
-                pyzo_config.tools[toolId] = ssdf_new() # EKR:change.
+                pyzo_config.tools[toolId] = ssdf.new() # EKR:change.
             self.config = pyzo_config.tools[toolId]
         else:
-            self.config = ssdf_new() # EKR:change.
+            self.config = ssdf.new()
 
         # Ensure three main attributes in config
         for name in ['expandedDirs', 'starredDirs']:
@@ -193,9 +186,10 @@ class PyzoFileBrowser(QtWidgets.QWidget):
             browser.close()
         return QtWidgets.QWidget.closeEvent(self, event)
     #@-others
-#@+node:ekr.20190810003404.11: ** Browser
+#@+node:ekr.20190811174918.1: ** pyzo classes...
+#@+node:ekr.20190810003404.11: *3* Browser
 # From browser.py
-#@+node:ekr.20190810003404.13: *3* class Browser(QWidget)
+#@+node:ekr.20190810003404.13: *4* class Browser(QWidget)
 class Browser(QtWidgets.QWidget):
     """ A browser consists of an address bar, and tree view, and other
     widets to help browse the file system. The browser object is responsible
@@ -205,7 +199,7 @@ class Browser(QtWidgets.QWidget):
     """
 
     #@+others
-    #@+node:ekr.20190810003404.14: *4* Browser.__init__
+    #@+node:ekr.20190810003404.14: *5* Browser.__init__
     def __init__(self, parent, config, path=None):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -256,7 +250,7 @@ class Browser(QtWidgets.QWidget):
         if path is not None:
             self._tree.SetPath(path)
         self._tree.dirChanged.emit(self._tree.path())
-    #@+node:ekr.20190810003404.15: *4* Browser.getImportWizard
+    #@+node:ekr.20190810003404.15: *5* Browser.getImportWizard
     def getImportWizard(self):
         # Lazy loading
         try:
@@ -267,7 +261,7 @@ class Browser(QtWidgets.QWidget):
             self._importWizard = ImportWizard()
 
             return self._importWizard
-    #@+node:ekr.20190810003404.16: *4* Browser._layout
+    #@+node:ekr.20190810003404.16: *5* Browser._layout
     def _layout(self):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
@@ -283,35 +277,35 @@ class Browser(QtWidgets.QWidget):
         subLayout.addWidget(self._nameFilter, 5)
         subLayout.addWidget(self._searchFilter, 5)
         layout.addLayout(subLayout)
-    #@+node:ekr.20190810003404.17: *4* Browser.closeEvent
+    #@+node:ekr.20190810003404.17: *5* Browser.closeEvent
     def closeEvent(self, event):
         #print('Closing browser, stopping file system proxy')
         super().closeEvent(event)
         self._fsProxy.stop()
-    #@+node:ekr.20190810003404.18: *4* Browser.nameFilter
+    #@+node:ekr.20190810003404.18: *5* Browser.nameFilter
     def nameFilter(self):
         #return self._nameFilter.lineEdit().text()
         return self._nameFilter.text()
-    #@+node:ekr.20190810003404.19: *4* Browser.searchFilter
+    #@+node:ekr.20190810003404.19: *5* Browser.searchFilter
     def searchFilter(self):
         return {'pattern': self._searchFilter.text(),
                 'matchCase': self.config.searchMatchCase,
                 'regExp': self.config.searchRegExp,
                 'subDirs': self.config.searchSubDirs,
                 }
-    #@+node:ekr.20190810003404.20: *4* Browser.expandedDirs
+    #@+node:ekr.20190810003404.20: *5* Browser.expandedDirs
     @property
     def expandedDirs(self):
         """ The list of the expanded directories.
         """
         return self.parent().config.expandedDirs
-    #@+node:ekr.20190810003404.21: *4* Browser.starredDirs
+    #@+node:ekr.20190810003404.21: *5* Browser.starredDirs
     @property
     def starredDirs(self):
         """ A list of the starred directories.
         """
         return [d.path for d in self.parent().config.starredDirs]
-    #@+node:ekr.20190810003404.22: *4* Browser.dictForStarredDir
+    #@+node:ekr.20190810003404.22: *5* Browser.dictForStarredDir
     def dictForStarredDir(self, path):
         """ Return the dict of the starred dir corresponding to
         the given path, or None if no starred dir was found.
@@ -323,12 +317,12 @@ class Browser(QtWidgets.QWidget):
                 return d
         else:
             return None
-    #@+node:ekr.20190810003404.23: *4* Browser.addStarredDir
+    #@+node:ekr.20190810003404.23: *5* Browser.addStarredDir
     def addStarredDir(self, path):
         """ Add the given path to the starred directories.
         """
         # Create new dict
-        newProject = ssdf_new() # EKR:change
+        newProject = ssdf.new()
         newProject.path = op.normcase(path) # Normalize case!
         newProject.name = op.basename(path)
         newProject.addToPythonpath = False
@@ -336,7 +330,7 @@ class Browser(QtWidgets.QWidget):
         self.parent().config.starredDirs.append(newProject)
         # Update list
         self._projects.updateProjectList()
-    #@+node:ekr.20190810003404.24: *4* Browser.removeStarredDir
+    #@+node:ekr.20190810003404.24: *5* Browser.removeStarredDir
     def removeStarredDir(self, path):
         """ Remove the given path from the starred directories.
         The path must exactlty match.
@@ -349,7 +343,7 @@ class Browser(QtWidgets.QWidget):
                 starredDirs.remove(d)
         # Update list
         self._projects.updateProjectList()
-    #@+node:ekr.20190810003404.25: *4* Browser.test
+    #@+node:ekr.20190810003404.25: *5* Browser.test
     def test(self, sort=False):
         items = []
         for i in range(self._tree.topLevelItemCount()):
@@ -363,30 +357,30 @@ class Browser(QtWidgets.QWidget):
 
         for item in items:
             self._tree.addTopLevelItem(item)
-    #@+node:ekr.20190810003404.26: *4* Browser.currentProject
+    #@+node:ekr.20190810003404.26: *5* Browser.currentProject
     def currentProject(self):
         """ Return the ssdf dict for the current project, or None.
         """
         return self._projects.currentDict()
     #@-others
-#@+node:ekr.20190810003404.27: *3* class LineEditWithToolButtons(QLineEdit)
+#@+node:ekr.20190810003404.27: *4* class LineEditWithToolButtons(QLineEdit)
 class LineEditWithToolButtons(QtWidgets.QLineEdit):
     """ Line edit to which tool buttons (with icons) can be attached.
     """
 
     #@+others
-    #@+node:ekr.20190810003404.28: *4* LineEditWithToolButtons.__init__
+    #@+node:ekr.20190810003404.28: *5* LineEditWithToolButtons.__init__
     def __init__(self, parent):
         QtWidgets.QLineEdit.__init__(self, parent)
         self._leftButtons = []
         self._rightButtons = []
-    #@+node:ekr.20190810003404.29: *4* LineEditWithToolButtons.addButtonLeft
+    #@+node:ekr.20190810003404.29: *5* LineEditWithToolButtons.addButtonLeft
     def addButtonLeft(self, icon, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._leftButtons)
-    #@+node:ekr.20190810003404.30: *4* LineEditWithToolButtons.addButtonRight
+    #@+node:ekr.20190810003404.30: *5* LineEditWithToolButtons.addButtonRight
     def addButtonRight(self, icon, willHaveMenu=False):
         return self._addButton(icon, willHaveMenu, self._rightButtons)
-    #@+node:ekr.20190810003404.31: *4* LineEditWithToolButtons._addButton
+    #@+node:ekr.20190810003404.31: *5* LineEditWithToolButtons._addButton
     def _addButton(self, icon, willHaveMenu, L):
         # Create button
         button = QtWidgets.QToolButton(self)
@@ -407,7 +401,7 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
         # Update self
         self._updateGeometry()
         return button
-    #@+node:ekr.20190810003404.32: *4* LineEditWithToolButtons.setButtonVisible
+    #@+node:ekr.20190810003404.32: *5* LineEditWithToolButtons.setButtonVisible
     def setButtonVisible(self, button, visible):
         for but in self._leftButtons:
             if but is button:
@@ -416,15 +410,15 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
             if but is button:
                 but.setVisible(visible)
         self._updateGeometry()
-    #@+node:ekr.20190810003404.33: *4* LineEditWithToolButtons.resizeEvent
+    #@+node:ekr.20190810003404.33: *5* LineEditWithToolButtons.resizeEvent
     def resizeEvent(self, event):
         QtWidgets.QLineEdit.resizeEvent(self, event)
         self._updateGeometry(True)
-    #@+node:ekr.20190810003404.34: *4* LineEditWithToolButtons.showEvent
+    #@+node:ekr.20190810003404.34: *5* LineEditWithToolButtons.showEvent
     def showEvent(self, event):
         QtWidgets.QLineEdit.showEvent(self, event)
         self._updateGeometry()
-    #@+node:ekr.20190810003404.35: *4* LineEditWithToolButtons._updateGeometry
+    #@+node:ekr.20190810003404.35: *5* LineEditWithToolButtons._updateGeometry
     def _updateGeometry(self, light=False):
         if not self.isVisible():
             return
@@ -463,7 +457,7 @@ class LineEditWithToolButtons(QtWidgets.QLineEdit):
             h = max(msz.height(), height + fw*2 + 2)
             self.setMinimumSize(w,h)
     #@-others
-#@+node:ekr.20190810003404.36: *3* class PathInput(LineEditWithToolButtons)
+#@+node:ekr.20190810003404.36: *4* class PathInput(LineEditWithToolButtons)
 class PathInput(LineEditWithToolButtons):
     """ Line edit for selecting a path.
     """
@@ -471,7 +465,7 @@ class PathInput(LineEditWithToolButtons):
     dirUp = Signal()  # Emitted when user presses the up button
 
     #@+others
-    #@+node:ekr.20190810003404.37: *4* PathInput.__init__
+    #@+node:ekr.20190810003404.37: *5* PathInput.__init__
     def __init__(self, parent):
         LineEditWithToolButtons.__init__(self, parent)
 
@@ -497,14 +491,14 @@ class PathInput(LineEditWithToolButtons):
         self.textEdited.connect(self.onTextEdited)
         #self.textChanged.connect(self.onTextEdited)
         #self.cursorPositionChanged.connect(self.onTextEdited)
-    #@+node:ekr.20190810003404.38: *4* PathInput.setPath
+    #@+node:ekr.20190810003404.38: *5* PathInput.setPath
     def setPath(self, path):
         """ Set the path to display. Does nothing if this widget has focus.
         """
         if not self.hasFocus():
             self.setText(path)
             self.checkValid() # Reset style if it was invalid first
-    #@+node:ekr.20190810003404.39: *4* PathInput.checkValid
+    #@+node:ekr.20190810003404.39: *5* PathInput.checkValid
     def checkValid(self):
         # todo: This kind of violates the abstraction of the file system
         # ok for now, but we should find a different approach someday
@@ -519,7 +513,7 @@ class PathInput(LineEditWithToolButtons):
         self.setStyleSheet(ss)
         # Return
         return isvalid
-    #@+node:ekr.20190810003404.40: *4* PathInput.event
+    #@+node:ekr.20190810003404.40: *5* PathInput.event
     def event(self, event):
         # Capture key events to explicitly apply the completion and
         # invoke checking whether the current text is a valid directory.
@@ -531,12 +525,12 @@ class PathInput(LineEditWithToolButtons):
                 self.onTextEdited() # Check if this is a valid dir
                 return True
         return super().event(event)
-    #@+node:ekr.20190810003404.41: *4* PathInput.onTextEdited
+    #@+node:ekr.20190810003404.41: *5* PathInput.onTextEdited
     def onTextEdited(self, dummy=None):
         text = self.text()
         if self.checkValid():
             self.dirChanged.emit(cleanpath(text))
-    #@+node:ekr.20190810003404.42: *4* PathInput.focusOutEvent
+    #@+node:ekr.20190810003404.42: *5* PathInput.focusOutEvent
     def focusOutEvent(self, event=None):
         """ focusOutEvent(event)
         On focusing out, make sure that the set path is correct.
@@ -547,13 +541,13 @@ class PathInput(LineEditWithToolButtons):
         path = self.parent()._tree.path()
         self.setPath(path)
     #@-others
-#@+node:ekr.20190810003404.43: *3* class Projects(QWidget)
+#@+node:ekr.20190810003404.43: *4* class Projects(QWidget)
 class Projects(QtWidgets.QWidget):
 
     dirChanged = Signal(str) # Emitted when the user changes the project
 
     #@+others
-    #@+node:ekr.20190810003404.44: *4* Projects.__init__
+    #@+node:ekr.20190810003404.44: *5* Projects.__init__
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -592,13 +586,13 @@ class Projects(QtWidgets.QWidget):
         layout.addWidget(self._combo)
         layout.setSpacing(2)
         layout.setContentsMargins(0,0,0,0)
-    #@+node:ekr.20190810003404.45: *4* Projects.currentDict
+    #@+node:ekr.20190810003404.45: *5* Projects.currentDict
     def currentDict(self):
         """ Return the current project-dict, or None.
         """
         path = self._combo.itemData(self._combo.currentIndex())
         return self.parent().dictForStarredDir(path)
-    #@+node:ekr.20190810003404.46: *4* Projects.setPath
+    #@+node:ekr.20190810003404.46: *5* Projects.setPath
     def setPath(self, path):
         self._path = path
         # Find project index
@@ -616,7 +610,7 @@ class Projects(QtWidgets.QWidget):
         else:
             self._but.setIcon(pyzo_icons.star3)
             self._but.setMenu(None)
-    #@+node:ekr.20190810003404.47: *4* Projects.updateProjectList
+    #@+node:ekr.20190810003404.47: *5* Projects.updateProjectList
     def updateProjectList(self):
         # Get sorted version of starredDirs
         starredDirs = self.parent().starredDirs
@@ -631,7 +625,7 @@ class Projects(QtWidgets.QWidget):
         else:
             self._combo.addItem(
                 translate('filebrowser', 'Click star to bookmark current dir'), '')
-    #@+node:ekr.20190810003404.48: *4* Projects.buildMenu
+    #@+node:ekr.20190810003404.48: *5* Projects.buildMenu
     def buildMenu(self):
         menu = self._menu
         menu.clear()
@@ -661,7 +655,7 @@ class Projects(QtWidgets.QWidget):
         action = menu.addAction(translate('filebrowser', 'Go to this directory in the current shell'))
         action._id = 'cd'
         action.setCheckable(False)
-    #@+node:ekr.20190810003404.49: *4* Projects.onMenuTriggered
+    #@+node:ekr.20190810003404.49: *5* Projects.onMenuTriggered
     def onMenuTriggered(self, action):
         d = self.currentDict()
         if not d:
@@ -694,7 +688,7 @@ class Projects(QtWidgets.QWidget):
                 # shell = pyzo.shells.getCurrentShell()
                 # if shell:
                     # shell.executeCommand('cd '+d.path+'\n')
-    #@+node:ekr.20190810003404.50: *4* Projects.onButtonPressed
+    #@+node:ekr.20190810003404.50: *5* Projects.onButtonPressed
     def onButtonPressed(self):
         if self._but.menu():
             # The directory is starred and has a menu. The user just
@@ -705,7 +699,7 @@ class Projects(QtWidgets.QWidget):
             self.parent().addStarredDir(self._path)
         # Update
         self.setPath(self._path)
-    #@+node:ekr.20190810003404.51: *4* Projects.onProjectSelect
+    #@+node:ekr.20190810003404.51: *5* Projects.onProjectSelect
     def onProjectSelect(self, index):
         path = self._combo.itemData(index)
         if path:
@@ -715,7 +709,7 @@ class Projects(QtWidgets.QWidget):
             # Dummy item, reset
             self.setPath(self._path)
     #@-others
-#@+node:ekr.20190810003404.52: *3* class NameFilter(LineEditWithToolButtons)
+#@+node:ekr.20190810003404.52: *4* class NameFilter(LineEditWithToolButtons)
 class NameFilter(LineEditWithToolButtons):
     """ Combobox to filter by name.
     """
@@ -723,7 +717,7 @@ class NameFilter(LineEditWithToolButtons):
     filterChanged = Signal()
 
     #@+others
-    #@+node:ekr.20190810003404.53: *4* NameFilter.__init__
+    #@+node:ekr.20190810003404.53: *5* NameFilter.__init__
     def __init__(self, parent):
         LineEditWithToolButtons.__init__(self, parent)
 
@@ -749,7 +743,7 @@ class NameFilter(LineEditWithToolButtons):
         if 'nameFilter' not in config:
             config.nameFilter = '!*.pyc'
         self.setText(config.nameFilter)
-    #@+node:ekr.20190810003404.54: *4* NameFilter.setText
+    #@+node:ekr.20190810003404.54: *5* NameFilter.setText
     def setText(self, value, test=False):
         """ To initialize the name filter.
         """
@@ -757,18 +751,18 @@ class NameFilter(LineEditWithToolButtons):
         if test:
             self.checkFilterValue()
         self._lastValue = value
-    #@+node:ekr.20190810003404.55: *4* NameFilter.checkFilterValue
+    #@+node:ekr.20190810003404.55: *5* NameFilter.checkFilterValue
     def checkFilterValue(self):
         value = self.text()
         if value != self._lastValue:
             self.parent().config.nameFilter = value
             self._lastValue = value
             self.filterChanged.emit()
-    #@+node:ekr.20190810003404.56: *4* NameFilter.onMenuTriggered
+    #@+node:ekr.20190810003404.56: *5* NameFilter.onMenuTriggered
     def onMenuTriggered(self, action):
         self.setText(action.text(), True)
     #@-others
-#@+node:ekr.20190810003404.57: *3* class SearchFilter(LineEditWithToolButtons)
+#@+node:ekr.20190810003404.57: *4* class SearchFilter(LineEditWithToolButtons)
 class SearchFilter(LineEditWithToolButtons):
     """ Line edit to do a search in the files.
     """
@@ -776,7 +770,7 @@ class SearchFilter(LineEditWithToolButtons):
     filterChanged = Signal()
 
     #@+others
-    #@+node:ekr.20190810003404.58: *4* SearchFilter.__init__
+    #@+node:ekr.20190810003404.58: *5* SearchFilter.__init__
     def __init__(self, parent):
         LineEditWithToolButtons.__init__(self, parent)
 
@@ -799,7 +793,7 @@ class SearchFilter(LineEditWithToolButtons):
         self.textChanged.connect(self.updateCancelButton)
         self.editingFinished.connect(self.checkFilterValue)
         self.returnPressed.connect(self.forceFilterChanged)
-    #@+node:ekr.20190810003404.59: *4* SearchFilter.onCancelPressed
+    #@+node:ekr.20190810003404.59: *5* SearchFilter.onCancelPressed
     def onCancelPressed(self):
         """ Clear text or build menu.
         """
@@ -808,21 +802,21 @@ class SearchFilter(LineEditWithToolButtons):
             self.checkFilterValue()
         else:
             self.buildMenu()
-    #@+node:ekr.20190810003404.60: *4* SearchFilter.checkFilterValue
+    #@+node:ekr.20190810003404.60: *5* SearchFilter.checkFilterValue
     def checkFilterValue(self):
         value = self.text()
         if value != self._lastValue:
             self._lastValue = value
             self.filterChanged.emit()
-    #@+node:ekr.20190810003404.61: *4* SearchFilter.forceFilterChanged
+    #@+node:ekr.20190810003404.61: *5* SearchFilter.forceFilterChanged
     def forceFilterChanged(self):
         self._lastValue = self.text()
         self.filterChanged.emit()
-    #@+node:ekr.20190810003404.62: *4* SearchFilter.updateCancelButton
+    #@+node:ekr.20190810003404.62: *5* SearchFilter.updateCancelButton
     def updateCancelButton(self, text):
         visible = bool(self.text())
         self.setButtonVisible(self._cancelBut, visible)
-    #@+node:ekr.20190810003404.63: *4* SearchFilter.buildMenu
+    #@+node:ekr.20190810003404.63: *5* SearchFilter.buildMenu
     def buildMenu(self):
         config = self.parent().config
         menu = self._menu
@@ -850,7 +844,7 @@ class SearchFilter(LineEditWithToolButtons):
                 action.setCheckable(True)
                 ### action.setChecked( bool(config[option]) )
                 action.setChecked(bool(getattr(config, option, None)))
-    #@+node:ekr.20190810003404.64: *4* SearchFilter.onMenuTriggered
+    #@+node:ekr.20190810003404.64: *5* SearchFilter.onMenuTriggered
     def onMenuTriggered(self, action):
         config = self.parent().config
         option = action._option
@@ -862,13 +856,13 @@ class SearchFilter(LineEditWithToolButtons):
         # Update
         self.filterChanged.emit()
     #@-others
-#@+node:ekr.20190810003404.154: ** Tasks
+#@+node:ekr.20190810003404.154: *3* Tasks
 """
 Define tasks that can be executed by the file browser.
 These inherit from proxies.Task and implement that specific interface.
 """
 # From tasks.py
-#@+node:ekr.20190810003404.98: *3*  class Task
+#@+node:ekr.20190810003404.98: *4*  class Task
 class Task:
     """ Task(**params)
 
@@ -882,21 +876,21 @@ class Task:
     __slots__ = ['_params', '_result', '_error']
 
     #@+others
-    #@+node:ekr.20190810003404.99: *4* Task.__init__
+    #@+node:ekr.20190810003404.99: *5* Task.__init__
     def __init__(self, **params):
         if not params:
             params = None
         self._params = params
         self._result = None
         self._error = None
-    #@+node:ekr.20190810003404.100: *4* Task.process
+    #@+node:ekr.20190810003404.100: *5* Task.process
     def process(self, proxy, **params):
         """ process(pathProxy, **params):
         This is the method that represents the task. Overload this to make
         the task do what is intended.
         """
         pass
-    #@+node:ekr.20190810003404.101: *4* Task._run
+    #@+node:ekr.20190810003404.101: *5* Task._run
     def _run(self, proxy):
         """ Run the task. Don't overload or use this.
         """
@@ -906,7 +900,7 @@ class Task:
         except Exception as err:
             self._error = 'Task failed: {}:\n{}'.format(self, str(err))
             print(self._error)
-    #@+node:ekr.20190810003404.102: *4* Task.result
+    #@+node:ekr.20190810003404.102: *5* Task.result
     def result(self):
         """ Get the result. Raises an error if the task failed.
         """
@@ -916,12 +910,12 @@ class Task:
             return self._result
     ## Proxy classes for directories and files
     #@-others
-#@+node:ekr.20190810003404.156: *3* class SearchTask(Task)
+#@+node:ekr.20190810003404.156: *4* class SearchTask(Task)
 class SearchTask(Task):
     __slots__ = []
 
     #@+others
-    #@+node:ekr.20190810003404.157: *4* SearchTask.process
+    #@+node:ekr.20190810003404.157: *5* SearchTask.process
     def process(self, proxy, pattern=None, matchCase=False, regExp=False, **rest):
 
         # Quick test
@@ -950,7 +944,7 @@ class SearchTask(Task):
             return self._indicesToLines(text, indices)
         else:
             return []
-    #@+node:ekr.20190810003404.158: *4* SearchTask._getText
+    #@+node:ekr.20190810003404.158: *5* SearchTask._getText
     def _getText(self, proxy):
 
         # Init
@@ -979,13 +973,13 @@ class SearchTask(Task):
         except UnicodeDecodeError:
             # todo: right now we only do utf-8
             return None
-    #@+node:ekr.20190810003404.159: *4* SearchTask._getIndicesRegExp
+    #@+node:ekr.20190810003404.159: *5* SearchTask._getIndicesRegExp
     def _getIndicesRegExp(self, text, pattern):
         indices = []
         for match in re.finditer(pattern, text, re.MULTILINE | re.UNICODE):
                 indices.append( match.start() )
         return indices
-    #@+node:ekr.20190810003404.160: *4* SearchTask._getIndicesNormal1
+    #@+node:ekr.20190810003404.160: *5* SearchTask._getIndicesNormal1
     def _getIndicesNormal1(self, text, pattern):
         indices = []
         i = -1
@@ -996,7 +990,7 @@ class SearchTask(Task):
             else:
                 break
         return indices
-    #@+node:ekr.20190810003404.161: *4* SearchTask._getIndicesNormal2
+    #@+node:ekr.20190810003404.161: *5* SearchTask._getIndicesNormal2
     def _getIndicesNormal2(self, text, pattern):
         indices = []
         i = 0
@@ -1006,7 +1000,7 @@ class SearchTask(Task):
                 indices.append(i+i2)
             i += len(line)
         return indices
-    #@+node:ekr.20190810003404.162: *4* SearchTask._indicesToLines
+    #@+node:ekr.20190810003404.162: *5* SearchTask._indicesToLines
     def _indicesToLines(self, text, indices):
 
         # Determine line endings
@@ -1028,7 +1022,7 @@ class SearchTask(Task):
 
         # Set result
         return lines
-    #@+node:ekr.20190810003404.163: *4* SearchTask._determineLineEnding
+    #@+node:ekr.20190810003404.163: *5* SearchTask._determineLineEnding
     def _determineLineEnding(self, text):
         """ function to determine quickly whether LF or CR is used
         as line endings. Windows endings (CRLF) result in LF
@@ -1046,7 +1040,7 @@ class SearchTask(Task):
                 break
         return LE
     #@-others
-#@+node:ekr.20190810003404.164: *3* class PeekTask(Task)
+#@+node:ekr.20190810003404.164: *4* class PeekTask(Task)
 class PeekTask(Task):
     """ To peek the high level structure of a task.
     """
@@ -1063,7 +1057,7 @@ class PeekTask(Task):
     definition = re.compile(r'^(def|class)\s*(\w*)')
 
     #@+others
-    #@+node:ekr.20190810003404.165: *4* PeekTask.process
+    #@+node:ekr.20190810003404.165: *5* PeekTask.process
     def process(self, proxy):
         path = proxy.path()
         fsProxy = proxy._fsProxy
@@ -1085,7 +1079,7 @@ class PeekTask(Task):
 
         # Parse
         return list(self._parseLines(text.splitlines()))
-    #@+node:ekr.20190810003404.166: *4* PeekTask._parseLines
+    #@+node:ekr.20190810003404.166: *5* PeekTask._parseLines
     def _parseLines(self, lines):
 
         stringEndProg = None
@@ -1137,12 +1131,12 @@ class PeekTask(Task):
                     # yield 'S:' + (match.group() + line[match.end():][:endMatch.end()])
                     pos = match.end() + endMatch.end()
     #@-others
-#@+node:ekr.20190810003404.167: *3* class DocstringTask(Task)
+#@+node:ekr.20190810003404.167: *4* class DocstringTask(Task)
 class DocstringTask(Task):
     __slots__ = []
 
     #@+others
-    #@+node:ekr.20190810003404.168: *4* DocstringTask.process
+    #@+node:ekr.20190810003404.168: *5* DocstringTask.process
     def process(self, proxy):
         path = proxy.path()
         fsProxy = proxy._fsProxy
@@ -1195,12 +1189,12 @@ class DocstringTask(Task):
 
         return doc
     #@-others
-#@+node:ekr.20190810003404.169: *3* class RenameTask(Task)
+#@+node:ekr.20190810003404.169: *4* class RenameTask(Task)
 class RenameTask(Task):
     __slots__ = []
 
     #@+others
-    #@+node:ekr.20190810003404.170: *4* RenameTask.process
+    #@+node:ekr.20190810003404.170: *5* RenameTask.process
     def process(self, proxy, newpath=None, removeold=False):
         path = proxy.path()
         fsProxy = proxy._fsProxy
@@ -1221,12 +1215,12 @@ class RenameTask(Task):
             # write back with new name
             fsProxy.write(newpath, bb)
     #@-others
-#@+node:ekr.20190810003404.171: *3* class CreateTask(Task)
+#@+node:ekr.20190810003404.171: *4* class CreateTask(Task)
 class CreateTask(Task):
     __slots__ = []
 
     #@+others
-    #@+node:ekr.20190810003404.172: *4* CreateTask.process
+    #@+node:ekr.20190810003404.172: *5* CreateTask.process
     def process(self, proxy, newpath=None, file=True):
         proxy.path()
         fsProxy = proxy._fsProxy
@@ -1239,12 +1233,12 @@ class CreateTask(Task):
         else:
             fsProxy.createDir(newpath)
     #@-others
-#@+node:ekr.20190810003404.173: *3* class RemoveTask(Task)
+#@+node:ekr.20190810003404.173: *4* class RemoveTask(Task)
 class RemoveTask(Task):
     __slots__ = []
 
     #@+others
-    #@+node:ekr.20190810003404.174: *4* RemoveTask.process
+    #@+node:ekr.20190810003404.174: *5* RemoveTask.process
     def process(self, proxy):
         path = proxy.path()
         fsProxy = proxy._fsProxy
@@ -1253,7 +1247,7 @@ class RemoveTask(Task):
         fsProxy.remove(path)
         # The fsProxy will detect that this file is now deleted
     #@-others
-#@+node:ekr.20190810003404.96: ** Proxies
+#@+node:ekr.20190810003404.96: *3* Proxies
 """
 This module defines file system proxies to be used for the file browser.
 For now, there is only one: the native file system. But in time,
@@ -1266,7 +1260,7 @@ will make Pyzo truly powerful for use in remote computing.
 
 """
 # From proxies.py
-#@+node:ekr.20190810003404.103: *3*  class PathProxy(QObject)
+#@+node:ekr.20190810003404.103: *4*  class PathProxy(QObject)
 class PathProxy(QtCore.QObject):
     """ Proxy base class for DirProxy and FileProxy.
 
@@ -1286,7 +1280,7 @@ class PathProxy(QtCore.QObject):
     taskFinished = Signal(Task)
 
     #@+others
-    #@+node:ekr.20190810003404.104: *4* PathProxy.__init__
+    #@+node:ekr.20190810003404.104: *5* PathProxy.__init__
     def __init__(self, fsProxy, path):
         QtCore.QObject.__init__(self)
         self._lock = threading.RLock()
@@ -1296,35 +1290,35 @@ class PathProxy(QtCore.QObject):
         # For tasks
         self._pendingTasks = []
         self._finishedTasks = []
-    #@+node:ekr.20190810003404.105: *4* PathProxy.__repr__
+    #@+node:ekr.20190810003404.105: *5* PathProxy.__repr__
     def __repr__(self):
         return '<{} "{}">'.format(self.__class__.__name__, self._path)
-    #@+node:ekr.20190810003404.106: *4* PathProxy.path
+    #@+node:ekr.20190810003404.106: *5* PathProxy.path
     def path(self):
         """ Get the path of this proxy.
         """
         return self._path
-    #@+node:ekr.20190810003404.107: *4* PathProxy.track
+    #@+node:ekr.20190810003404.107: *5* PathProxy.track
     def track(self):
         """ Start tracking this proxy object in the idle time of the
         FSProxy thread.
         """
         self._fsProxy._track(self)
-    #@+node:ekr.20190810003404.108: *4* PathProxy.push
+    #@+node:ekr.20190810003404.108: *5* PathProxy.push
     def push(self):
         """ Process this proxy object asap; the object is put in the queue
         of the FSProxy, so it is updated as fast as possible.
         """
         self._cancelled = False
         self._fsProxy._push(self)
-    #@+node:ekr.20190810003404.109: *4* PathProxy.cancel
+    #@+node:ekr.20190810003404.109: *5* PathProxy.cancel
     def cancel(self):
         """ Stop tracking this proxy object. Cancel processing if this
         object was in the queue.
         """
         self._fsProxy._unTrack(self)
         self._cancelled = True
-    #@+node:ekr.20190810003404.110: *4* PathProxy.pushTask
+    #@+node:ekr.20190810003404.110: *5* PathProxy.pushTask
     def pushTask(self, task):
         """ pushTask(task)
         Give a task to the proxy to be executed in the FSProxy
@@ -1338,7 +1332,7 @@ class PathProxy(QtCore.QObject):
             self._pendingTasks.append(task)
         if shouldPush:
             self.push()
-    #@+node:ekr.20190810003404.111: *4* PathProxy._processTasks
+    #@+node:ekr.20190810003404.111: *5* PathProxy._processTasks
     def _processTasks(self):
         # Get pending tasks
         with self._lock:
@@ -1353,7 +1347,7 @@ class PathProxy(QtCore.QObject):
         for task in finishedTasks:
             self.taskFinished.emit(task)
     #@-others
-#@+node:ekr.20190810003404.123: *3*  class BaseFSProxy(threading.Thread)
+#@+node:ekr.20190810003404.123: *4*  class BaseFSProxy(threading.Thread)
 class BaseFSProxy(threading.Thread):
     """ Abstract base class for file system proxies.
 
@@ -1382,7 +1376,7 @@ class BaseFSProxy(threading.Thread):
     QUEUE_DELAY = 0.01  # 0.5
 
     #@+others
-    #@+node:ekr.20190810003404.124: *4* BaseFSProxy.__init__
+    #@+node:ekr.20190810003404.124: *5* BaseFSProxy.__init__
     def __init__(self):
         threading.Thread.__init__(self)
         self.setDaemon(True)
@@ -1395,38 +1389,38 @@ class BaseFSProxy(threading.Thread):
         self._pathProxies = set()
         #
         self.start()
-    #@+node:ekr.20190810003404.125: *4* BaseFSProxy._track
+    #@+node:ekr.20190810003404.125: *5* BaseFSProxy._track
     def _track(self, pathProxy):
         # todo: use weak references
         with self._lock:
             self._pathProxies.add(pathProxy)
-    #@+node:ekr.20190810003404.126: *4* BaseFSProxy._unTrack
+    #@+node:ekr.20190810003404.126: *5* BaseFSProxy._unTrack
     def _unTrack(self, pathProxy):
         with self._lock:
             self._pathProxies.discard(pathProxy)
-    #@+node:ekr.20190810003404.127: *4* BaseFSProxy._push
+    #@+node:ekr.20190810003404.127: *5* BaseFSProxy._push
     def _push(self, pathProxy):
         # todo: use weak ref here too?
         self._q.put(pathProxy)
         self._interrupt = True
-    #@+node:ekr.20190810003404.128: *4* BaseFSProxy.stop
+    #@+node:ekr.20190810003404.128: *5* BaseFSProxy.stop
     def stop(self, *, timeout=1.0):
         with self._lock:
             self._exit = True
             self._interrupt = True
             self._pathProxies.clear()
         self.join(timeout)
-    #@+node:ekr.20190810003404.129: *4* BaseFSProxy.dir
+    #@+node:ekr.20190810003404.129: *5* BaseFSProxy.dir
     def dir(self, path):
         """ Convenience function to create a new DirProxy object.
         """
         return DirProxy(self, path)
-    #@+node:ekr.20190810003404.130: *4* BaseFSProxy.file
+    #@+node:ekr.20190810003404.130: *5* BaseFSProxy.file
     def file(self, path):
         """ Convenience function to create a new FileProxy object.
         """
         return FileProxy(self, path)
-    #@+node:ekr.20190810003404.131: *4* BaseFSProxy.run
+    #@+node:ekr.20190810003404.131: *5* BaseFSProxy.run
     def run(self):
 
         try:
@@ -1440,7 +1434,7 @@ class BaseFSProxy(threading.Thread):
 
         except Exception:
             pass  # Interpreter is shutting down
-    #@+node:ekr.20190810003404.132: *4* BaseFSProxy._run
+    #@+node:ekr.20190810003404.132: *5* BaseFSProxy._run
     def _run(self):
 
         last_sleep = time.time()
@@ -1466,7 +1460,7 @@ class BaseFSProxy(threading.Thread):
             except Empty:
                 # Queue empty, check items periodically
                 self._idle()
-    #@+node:ekr.20190810003404.133: *4* BaseFSProxy._idle
+    #@+node:ekr.20190810003404.133: *5* BaseFSProxy._idle
     def _idle(self):
         # Make a copy of the set if item
         with self._lock:
@@ -1476,7 +1470,7 @@ class BaseFSProxy(threading.Thread):
             if self._interrupt:
                 return
             self._processItem(item)
-    #@+node:ekr.20190810003404.134: *4* BaseFSProxy._processItem
+    #@+node:ekr.20190810003404.134: *5* BaseFSProxy._processItem
     def _processItem(self, pathProxy, forceUpdate=False):
 
         # Slow down a bit
@@ -1494,7 +1488,7 @@ class BaseFSProxy(threading.Thread):
         # Process tasks
         pathProxy._processTasks()
 
-    #@+node:ekr.20190810180549.1: *4* BaseFSProxy: To be overloaded
+    #@+node:ekr.20190810180549.1: *5* BaseFSProxy: To be overloaded
     # To overload...
 
     def listDirs(self, path):
@@ -1524,27 +1518,27 @@ class BaseFSProxy(threading.Thread):
     def createDir(self, path):
         raise NotImplemented()
     #@-others
-#@+node:ekr.20190810003404.112: *3* class DirProxy(PathProxy)
+#@+node:ekr.20190810003404.112: *4* class DirProxy(PathProxy)
 class DirProxy(PathProxy):
     """ Proxy object for a directory. Obtain an instance of this class
     using filesystemProx.dir()
     """
 
     #@+others
-    #@+node:ekr.20190810003404.113: *4* DirProxy.__init__
+    #@+node:ekr.20190810003404.113: *5* DirProxy.__init__
     def __init__(self, *args):
         PathProxy.__init__(self, *args)
         self._dirs = set()
         self._files = set()
-    #@+node:ekr.20190810003404.114: *4* DirProxy.dirs
+    #@+node:ekr.20190810003404.114: *5* DirProxy.dirs
     def dirs(self):
         with self._lock:
             return set(self._dirs)
-    #@+node:ekr.20190810003404.115: *4* DirProxy.files
+    #@+node:ekr.20190810003404.115: *5* DirProxy.files
     def files(self):
         with self._lock:
             return set(self._files)
-    #@+node:ekr.20190810003404.116: *4* DirProxy._process
+    #@+node:ekr.20190810003404.116: *5* DirProxy._process
     def _process(self, forceUpdate=False):
         # Get info
         dirs = self._fsProxy.listDirs(self._path)
@@ -1562,22 +1556,22 @@ class DirProxy(PathProxy):
         elif forceUpdate:
             self.changed.emit()
     #@-others
-#@+node:ekr.20190810003404.117: *3* class FileProxy(PathProxy)
+#@+node:ekr.20190810003404.117: *4* class FileProxy(PathProxy)
 class FileProxy(PathProxy):
     """ Proxy object for a file. Obtain an instance of this class
     using filesystemProx.dir()
     """
 
     #@+others
-    #@+node:ekr.20190810003404.118: *4* FileProxy.__init__
+    #@+node:ekr.20190810003404.118: *5* FileProxy.__init__
     def __init__(self, *args):
         PathProxy.__init__(self, *args)
         self._modified = 0
-    #@+node:ekr.20190810003404.119: *4* FileProxy.modified
+    #@+node:ekr.20190810003404.119: *5* FileProxy.modified
     def modified(self):
         with self._lock:
             return self._modified
-    #@+node:ekr.20190810003404.120: *4* FileProxy._process
+    #@+node:ekr.20190810003404.120: *5* FileProxy._process
     def _process(self, forceUpdate=False):
         # Get info
         modified = self._fsProxy.modified(self._path)
@@ -1592,108 +1586,61 @@ class FileProxy(PathProxy):
             self.changed.emit()
         elif forceUpdate:
             self.changed.emit()
-    #@+node:ekr.20190810003404.121: *4* FileProxy.read
+    #@+node:ekr.20190810003404.121: *5* FileProxy.read
     def read(self):
         pass # ?
-    #@+node:ekr.20190810003404.122: *4* FileProxy.save
+    #@+node:ekr.20190810003404.122: *5* FileProxy.save
     def save(self):
         pass # ?
     ## Proxy classes for the file system
     #@-others
-#@+node:ekr.20190810003404.144: *3* class NativeFSProxy(BaseFSProxy)
+#@+node:ekr.20190810003404.144: *4* class NativeFSProxy(BaseFSProxy)
 class NativeFSProxy(BaseFSProxy):
     """ File system proxy for the native file system.
     """
 
     #@+others
-    #@+node:ekr.20190810003404.145: *4* NativeFSProxy.listDirs
+    #@+node:ekr.20190810003404.145: *5* NativeFSProxy.listDirs
     def listDirs(self, path):
         if isdir(path):
             pp = [op.join(path, p) for p in os.listdir(path)]
             return [str(p) for p in pp if isdir(p)]
-    #@+node:ekr.20190810003404.146: *4* NativeFSProxy.listFiles
+    #@+node:ekr.20190810003404.146: *5* NativeFSProxy.listFiles
     def listFiles(self, path):
         if isdir(path):
             pp = [op.join(path, p) for p in os.listdir(path)]
             return [str(p) for p in pp if op.isfile(p)]
-    #@+node:ekr.20190810003404.147: *4* NativeFSProxy.modified
+    #@+node:ekr.20190810003404.147: *5* NativeFSProxy.modified
     def modified(self, path):
         if op.isfile(path):
             return op.getmtime(path)
-    #@+node:ekr.20190810003404.148: *4* NativeFSProxy.fileSize
+    #@+node:ekr.20190810003404.148: *5* NativeFSProxy.fileSize
     def fileSize(self, path):
         if op.isfile(path):
             return op.getsize(path)
-    #@+node:ekr.20190810003404.149: *4* NativeFSProxy.read
+    #@+node:ekr.20190810003404.149: *5* NativeFSProxy.read
     def read(self, path):
         if op.isfile(path):
             return open(path, 'rb').read()
-    #@+node:ekr.20190810003404.150: *4* NativeFSProxy.write
+    #@+node:ekr.20190810003404.150: *5* NativeFSProxy.write
     def write(self, path, bb):
         with open(path, 'wb') as f:
             f.write(bb)
-    #@+node:ekr.20190810003404.151: *4* NativeFSProxy.rename
+    #@+node:ekr.20190810003404.151: *5* NativeFSProxy.rename
     def rename(self, path1, path2):
         os.rename(path1, path2)
-    #@+node:ekr.20190810003404.152: *4* NativeFSProxy.remove
+    #@+node:ekr.20190810003404.152: *5* NativeFSProxy.remove
     def remove(self, path):
         if op.isfile(path):
             os.remove(path)
         elif isdir(path):
             os.rmdir(path)
-    #@+node:ekr.20190810003404.153: *4* NativeFSProxy.createDir
+    #@+node:ekr.20190810003404.153: *5* NativeFSProxy.createDir
     def createDir(self, path):
         if not isdir(path):
             os.makedirs(path)
     #@-others
-#@+node:ekr.20190810005113.1: ** Translation
-"""
-Module for locale stuff like language and translations.
-"""
-# From _locale.py.
-#@+node:ekr.20190810005113.5: *3* class Translation(str)
-class Translation(str):
-    """
-    Derives from str class.
-    
-    The translate function returns an instance of this class and assigns
-    extra atrributes:
-      * original: the original text passed to the translation
-      * tt: the tooltip text
-      * key: the original text without tooltip (used by menus as a key)
-
-    We adopt a simple system to include tooltip text in the same
-    translation as the label text. By including ":::" in the text, the text
-    after that identifier is considered the tooltip. The text returned by
-    the translate function is always the string without tooltip, but the
-    text object has an attribute "tt" that stores the tooltip text. In this
-    way, if you do not use this feature or do not know about this feature,
-    everything keeps working as expected.
-    """
-    pass
-#@+node:ekr.20190810005113.7: *3* translate
-def translate(context, text, disambiguation=None):
-    """ translate(context, text, disambiguation=None)
-    The translate function used throughout pyzo.
-    """
-    # Get translation and split tooltip
-    newtext = QtCore.QCoreApplication.translate(context, text, disambiguation)
-    s, tt = _splitMainAndTt(newtext)
-    # Create translation object (string with extra attributes)
-    translation = Translation(s)
-    translation.original = text
-    translation.tt = tt
-    translation.key = _splitMainAndTt(text)[0].strip()
-    return translation
-
-#@+node:ekr.20190810005113.6: *4* _splitMainAndTt
-def _splitMainAndTt(s):
-    if ':::' in s:
-        parts = s.split(':::', 1)
-        return parts[0].rstrip(), parts[1].lstrip()
-    else:
-        return s, ''
-#@+node:ekr.20190810003404.175: ** Trees
+#@+node:ekr.20190810003404.175: *3* Trees
 """
 Defines the tree widget to display the contents of a selected directory.
 """
@@ -1701,7 +1648,816 @@ Defines the tree widget to display the contents of a selected directory.
 
 # How to name the list of drives/mounts (i.e. 'my computer')
 MOUNTS = 'drives'
-#@+node:ekr.20190810003404.177: *3* addIconOverlays
+#@+node:ekr.20190810003404.182: *4* class BrowserItem(QTreeWidgetItem)
+class BrowserItem(QtWidgets.QTreeWidgetItem):
+    """ Abstract item in the tree widget.
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.183: *5* BrowserItem.__init__
+    def __init__(self, parent, pathProxy, *args):
+        self._proxy = pathProxy
+        QtWidgets.QTreeWidgetItem.__init__(self, parent, [], *args)
+        # Set pathname to show, and icon
+        strippedParentPath = parent.path().rstrip('/\\')
+        if self.path().startswith(strippedParentPath):
+            basename = self.path()[len(strippedParentPath)+1:]
+        else:
+            basename = self.path() #  For mount points
+        self.setText(0, basename)
+        self.setFileIcon()
+        # Setup interface with proxy
+        self._proxy.changed.connect(self.onChanged)
+        self._proxy.deleted.connect(self.onDeleted)
+        self._proxy.errored.connect(self.onErrored)
+        self._proxy.taskFinished.connect(self.onTaskFinished)
+    #@+node:ekr.20190810003404.184: *5* BrowserItem.path
+    def path(self):
+        return self._proxy.path()
+    #@+node:ekr.20190810003404.185: *5* BrowserItem._createDummyItem
+    def _createDummyItem(self, txt):
+        ErrorItem(self, txt)
+        #QtWidgets.QTreeWidgetItem(self, [txt])
+    #@+node:ekr.20190810003404.186: *5* BrowserItem.onDestroyed
+    def onDestroyed(self):
+        self._proxy.cancel()
+    #@+node:ekr.20190810003404.187: *5* BrowserItem.clear
+    def clear(self):
+        """ Clear method that calls onDestroyed on its children.
+        """
+        for i in reversed(range(self.childCount())):
+            item = self.child(i)
+            if hasattr(item, 'onDestroyed'):
+                item.onDestroyed()
+            self.removeChild(item)
+
+    # To overload ...
+    #@+node:ekr.20190810003404.188: *5* BrowserItem.onChanged
+    def onChanged(self):
+        pass
+    #@+node:ekr.20190810003404.189: *5* BrowserItem.onDeleted
+    def onDeleted(self):
+        pass
+    #@+node:ekr.20190810003404.190: *5* BrowserItem.onErrored
+    def onErrored(self, err):
+        self.clear()
+        self._createDummyItem('Error: ' + err)
+    #@+node:ekr.20190810003404.191: *5* BrowserItem.onTaskFinished
+    def onTaskFinished(self, task):
+        # Getting the result raises exception if an error occured.
+        # Which is what we want; so it is visible in the logger shell
+        task.result()
+    #@-others
+#@+node:ekr.20190810003404.192: *4* class DriveItem(BrowserItem)
+class DriveItem(BrowserItem):
+    """ Tree widget item for directories.
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.193: *5* DriveItem.__init__
+    def __init__(self, parent, pathProxy):
+        BrowserItem.__init__(self, parent, pathProxy)
+        # Item is not expandable
+    #@+node:ekr.20190810003404.194: *5* DriveItem.setFileIcon
+    def setFileIcon(self):
+        # Use folder icon
+        self.setIcon(0, pyzo_icons.drive)
+    #@+node:ekr.20190810003404.195: *5* DriveItem.onActivated
+    def onActivated(self):
+        self.treeWidget().setPath(self.path())
+    #@-others
+#@+node:ekr.20190810003404.196: *4* class DirItem(BrowserItem)
+class DirItem(BrowserItem):
+    """ Tree widget item for directories.
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.197: *5* DirItem.__init__
+    def __init__(self, parent, pathProxy, starred=False):
+        self._starred = starred
+        BrowserItem.__init__(self, parent, pathProxy)
+
+        # Create dummy item so that the dir is expandable
+        self._createDummyItem('Loading contents ...')
+    #@+node:ekr.20190810003404.198: *5* DirItem.setFileIcon
+    def setFileIcon(self):
+        
+        # Use folder icon
+        icon = iconprovider.icon(iconprovider.Folder)
+        overlays = []
+        if self._starred:
+            overlays.append(pyzo_icons.bullet_yellow)
+        icon = addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(-4,0))
+        self.setIcon(0, icon)
+    #@+node:ekr.20190810003404.199: *5* DirItem.onActivated
+    def onActivated(self):
+        self.treeWidget().setPath(self.path())
+    #@+node:ekr.20190810003404.200: *5* DirItem.onExpanded
+    def onExpanded(self):
+        # Update list of expanded dirs
+        expandedDirs = self.treeWidget().parent().expandedDirs
+        p = op.normcase(self.path())  # Normalize case!
+        if p not in expandedDirs:
+            expandedDirs.append(p)
+        # Keep track of changes in our contents
+        self._proxy.track()
+        self._proxy.push()
+    #@+node:ekr.20190810003404.201: *5* DirItem.onCollapsed
+    def onCollapsed(self):
+        # Update list of expanded dirs
+        expandedDirs = self.treeWidget().parent().expandedDirs
+        p = op.normcase(self.path())   # Normalize case!
+        while p in expandedDirs:
+            expandedDirs.remove(p)
+        # Stop tracking changes in our contents
+        self._proxy.cancel()
+        # Clear contents and create a single placeholder item
+        self.clear()
+        self._createDummyItem('Loading contents ...')
+
+    # No need to implement onDeleted: the parent will get a changed event.
+    #@+node:ekr.20190810003404.202: *5* DirItem.onChanged
+    def onChanged(self):
+        """ Called when a change in the contents has occured, or when
+        we just activated the proxy. Update our items!
+        """
+        if not self.isExpanded():
+            return
+        tree = self.treeWidget()
+        tree.createItems(self)
+    #@-others
+#@+node:ekr.20190810003404.203: *4* class FileItem(BrowserItem)
+class FileItem(BrowserItem):
+    """ Tree widget item for files.
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.204: *5* FileItem.__init__
+    def __init__(self, parent, pathProxy, mode='normal'):
+        BrowserItem.__init__(self, parent, pathProxy)
+        self._mode = mode
+        self._timeSinceLastDocString = 0
+
+        if self._mode=='normal' and self.path().lower().endswith('.py'):
+            self._createDummyItem('Loading high level structure ...')
+    #@+node:ekr.20190810003404.205: *5* FileItem.setFileIcon
+    def setFileIcon(self):
+
+        # Create dummy file in pyzo user dir
+        dummy_filename = op.join(cleanpath(appDataDir), 
+            'dummyFiles', 'dummy' + ext(self.path()))
+
+        # Create file?
+        if not op.isfile(dummy_filename):
+            if not isdir(op.dirname(dummy_filename)):
+                os.makedirs(op.dirname(dummy_filename))
+            f = open(dummy_filename, 'wb')
+            f.close()
+
+        # Use that file
+        if sys.platform.startswith('linux') and \
+                                    not QtCore.__file__.startswith('/usr/'):
+            icon = iconprovider.icon(iconprovider.File)
+        else:
+            icon = iconprovider.icon(QtCore.QFileInfo(dummy_filename))
+        icon = addIconOverlays(icon)
+        self.setIcon(0, icon)
+    #@+node:ekr.20190810003404.206: *5* FileItem.searchContents
+    def searchContents(self, needle, **kwargs):
+        self.setHidden(True)
+        self._proxy.setSearch(needle, **kwargs)
+    #@+node:ekr.20190810003404.207: *5* FileItem.onActivated
+    def onActivated(self):
+        # todo: someday we should be able to simply pass the proxy object to the editors
+        # so that we can open files on any file system
+        path = self.path()
+        g.trace(path)
+        if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
+            pass
+            ###
+                # # Load file
+                # pyzo.editors.loadFile(path)
+                # # Give focus
+                # pyzo.editors.getCurrentEditor().setFocus()
+    #@+node:ekr.20190810003404.208: *5* FileItem.onExpanded
+    def onExpanded(self):
+        if self._mode == 'normal':
+            # Create task to retrieve high level structure
+            if self.path().lower().endswith('.py'):
+                self._proxy.pushTask(DocstringTask())
+                self._proxy.pushTask(PeekTask())
+    #@+node:ekr.20190810003404.209: *5* FileItem.onCollapsed
+    def onCollapsed(self):
+        if self._mode == 'normal':
+            self.clear()
+            if self.path().lower().endswith('.py'):
+                self._createDummyItem('Loading high level structure ...')
+
+    #     def onClicked(self):
+    #         # Limit sending events to prevent flicker when double clicking
+    #         if time.time() - self._timeSinceLastDocString < 0.5:
+    #             return
+    #         self._timeSinceLastDocString = time.time()
+    #         # Create task
+    #         if self.path().lower().endswith('.py'):
+    #             self._proxy.pushTask(tasks.DocstringTask())
+    #@+node:ekr.20190810003404.210: *5* FileItem.onChanged
+    def onChanged(self):
+        pass
+    #@+node:ekr.20190810003404.211: *5* FileItem.onTaskFinished
+    def onTaskFinished(self, task):
+
+        if isinstance(task, DocstringTask):
+            result = task.result()
+            self.clear()  # Docstring task is done *before* peek task
+            if result:
+                DocstringItem(self, result)
+    #         if isinstance(task, tasks.DocstringTask):
+    #             result = task.result()
+    #             if result:
+    #                 #self.setToolTip(0, result)
+    #                 # Show tooltip *now* if mouse is still over this item
+    #                 tree = self.treeWidget()
+    #                 pos = tree.mapFromGlobal(QtGui.QCursor.pos())
+    #                 if tree.itemAt(pos) is self:
+    #                     QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), result)
+        elif isinstance(task, PeekTask):
+            result = task.result()
+            #self.clear()  # Cleared when docstring task result is received
+            if result:
+                for r in result:
+                    SubFileItem(self, *r)
+            else:
+                self._createDummyItem('No classes or functions found.')
+        else:
+            BrowserItem.onTaskFinished(self, task)
+    #@-others
+#@+node:ekr.20190810003404.212: *4* class SubFileItem(QTreeWidgetItem)
+class SubFileItem(QtWidgets.QTreeWidgetItem):
+    """ Tree widget item for search items.
+    """
+    #@+others
+    #@+node:ekr.20190810003404.213: *5* SubFileItem.__init__
+    def __init__(self, parent, linenr, text, showlinenr=False):
+        QtWidgets.QTreeWidgetItem.__init__(self, parent)
+        self._linenr = linenr
+        if showlinenr:
+            self.setText(0, 'Line %i: %s' % (linenr, text))
+        else:
+            self.setText(0, text)
+    #@+node:ekr.20190810003404.214: *5* SubFileItem.path
+    def path(self):
+        return self.parent().path()
+    #@+node:ekr.20190810003404.215: *5* SubFileItem.onActivated
+    def onActivated(self):
+        path = self.path()
+        if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
+            pass
+            ###
+            # # Load and get editor
+            # fileItem = pyzo.editors.loadFile(path)
+            # editor = fileItem._editor
+            # # Goto line
+            # editor.gotoLine(self._linenr)
+            # # Give focus
+            # pyzo.editors.getCurrentEditor().setFocus()
+    #@-others
+#@+node:ekr.20190810003404.216: *4* class DocstringItem(QTreeWidgetItem)
+class DocstringItem(QtWidgets.QTreeWidgetItem):
+    """ Tree widget item for docstring placeholder items.
+    """
+
+    #@+others
+    #@+node:ekr.20190810003404.217: *5* DocstringItem.__init__
+    def __init__(self, parent, docstring):
+        QtWidgets.QTreeWidgetItem.__init__(self, parent)
+        self._docstring = docstring
+        # Get one-line version of docstring
+        shortText = self._docstring.split('\n',1)[0].strip()
+        if len(shortText) < len(self._docstring):
+            shortText += '...'
+        # Set short version now
+        self.setText(0, 'doc: '+shortText)
+        # Long version is the tooltip
+        self.setToolTip(0, docstring)
+    #@+node:ekr.20190810003404.218: *5* DocstringItem.path
+    def path(self):
+        return self.parent().path()
+    #@+node:ekr.20190810003404.219: *5* DocstringItem.onClicked
+    def onClicked(self):
+        tree = self.treeWidget()
+        pos = tree.mapFromGlobal(QtGui.QCursor.pos())
+        if tree.itemAt(pos) is self:
+            QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self._docstring)
+    #@-others
+#@+node:ekr.20190810003404.220: *4* class ErrorItem(QTreeWidgetItem)
+class ErrorItem(QtWidgets.QTreeWidgetItem):
+    """ Tree widget item for errors and information.
+    """
+    #@+others
+    #@+node:ekr.20190810003404.221: *5* ErrorItem.__init__
+    def __init__(self, parent, info):
+        QtWidgets.QTreeWidgetItem.__init__(self, parent)
+        self.setText(0, info)
+        self.setFlags(QtCore.Qt.NoItemFlags)
+        font = self.font(0)
+        font.setItalic(True)
+        self.setFont(0, font)
+    #@-others
+#@+node:ekr.20190810003404.222: *4* class SearchInfoItem(ErrorItem)
+class SearchInfoItem(ErrorItem):
+    """ Tree widget item that displays info on the search.
+    """
+    #@+others
+    #@+node:ekr.20190810003404.223: *5* SearchInfoItem.__init__
+    def __init__(self, parent):
+        ErrorItem.__init__(self, parent, 'Searching ...')
+        self._totalCount = 0
+        self._checkCount = 0
+        self._hitCount = 0
+    #@+node:ekr.20190810003404.224: *5* SearchInfoItem.increaseTotal
+    def increaseTotal(self, c):
+        self._totalCount += c
+        self.updateCounts()
+    #@+node:ekr.20190810003404.225: *5* SearchInfoItem.addFile
+    def addFile(self, hit):
+        self._checkCount += 1
+        if hit:
+            self._hitCount += 1
+        # Update appearance
+        self.updateCounts()
+    #@+node:ekr.20190810003404.226: *5* SearchInfoItem.updateCounts
+    def updateCounts(self):
+        counts = self._checkCount, self._totalCount, self._hitCount
+        self.setText(0, 'Searched {}/{} files: {} hits'.format(*counts))
+    #@-others
+#@+node:ekr.20190810003404.227: *4* class TemporaryDirItem
+class TemporaryDirItem:
+    """ Created when searching. This object posts a requests for its contents
+    which are then processed, after which this object disbands itself.
+    """
+    __slots__ = ['_tree', '_proxy', '__weakref__']
+
+    #@+others
+    #@+node:ekr.20190810003404.228: *5* TemporaryDirItem.__init__
+    def __init__(self, tree, pathProxy):
+        self._tree = tree
+        self._proxy = pathProxy
+        self._proxy.changed.connect(self.onChanged)
+        # Process asap, but do not track
+        self._proxy.push()
+        # Store ourself
+        tree._temporaryItems.add(self)
+    #@+node:ekr.20190810003404.229: *5* TemporaryDirItem.clear
+    def clear(self):
+        pass  # tree.createItems() calls this ...
+    #@+node:ekr.20190810003404.230: *5* TemporaryDirItem.onChanged
+    def onChanged(self):
+        # Disband
+        self._tree._temporaryItems.discard(self)
+        # Process contents
+        self._tree.createItems(self)
+    #@-others
+#@+node:ekr.20190810003404.231: *4* class TemporaryFileItem
+class TemporaryFileItem:
+    """ Created when searching. This object posts a requests to search
+    its contents which are then processed, after which this object
+    disbands itself, passing the proxy object to a real FileItem if the
+    search had results.
+    """
+    __slots__ = ['_tree', '_proxy', '__weakref__']
+
+    #@+others
+    #@+node:ekr.20190810003404.232: *5* TemporaryFileItem.__init__
+    def __init__(self, tree, pathProxy):
+        self._tree = tree
+        self._proxy = pathProxy
+        self._proxy.taskFinished.connect(self.onSearchResult)
+        # Store ourself
+        tree._temporaryItems.add(self)
+    #@+node:ekr.20190810003404.233: *5* TemporaryFileItem.search
+    def search(self, searchFilter):
+        self._proxy.pushTask(SearchTask(**searchFilter))
+    #@+node:ekr.20190810003404.234: *5* TemporaryFileItem.onSearchResult
+    def onSearchResult(self, task):
+        # Disband now
+        self._tree._temporaryItems.discard(self)
+
+        # Get result. May raise an error
+        result = task.result()
+        # Process contents
+        if result:
+            item = FileItem(self._tree, self._proxy, 'search')  # Search mode
+            for r in result:
+                SubFileItem(item, *r, showlinenr=True)
+        # Update counter
+        searchInfoItem = self._tree.topLevelItem(0)
+        if isinstance(searchInfoItem, SearchInfoItem):
+            searchInfoItem.addFile(bool(result))
+    #@-others
+#@+node:ekr.20190810003404.235: *4* class Tree(QTreeWidget)
+class Tree(QtWidgets.QTreeWidget):
+    """ Representation of the tree view.
+    Instances of this class are responsible for keeping the contents
+    up-to-date. The Item classes above are dumb objects.
+    """
+
+    dirChanged = Signal(str) # Emitted when user goes into a subdir
+
+    #@+others
+    #@+node:ekr.20190810003404.236: *5* Tree.__init__
+    def __init__(self, parent):
+        QtWidgets.QTreeWidget.__init__(self, parent)
+
+        # Initialize
+        self.setMinimumWidth(150)
+        self.setMinimumHeight(150)
+        #
+        self.setColumnCount(1)
+        self.setHeaderHidden(True)
+        self.setIconSize(QtCore.QSize(24,16))
+
+        # Connecy signals
+        self.itemExpanded.connect(self.onItemExpanded)
+        self.itemCollapsed.connect(self.onItemCollapsed)
+        self.itemClicked.connect(self.onItemClicked)
+        self.itemActivated.connect(self.onItemActivated)
+
+        # Variables for restoring the view after updating
+        self._selectedPath = '' # To restore a selection after updating
+        self._selectedScrolling = 0
+
+        # Set of temporary items
+        self._temporaryItems = set()
+
+        # Define context menu
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.contextMenuTriggered)
+
+        # Initialize proxy (this is where the path is stored)
+        self._proxy = None
+    #@+node:ekr.20190810003404.237: *5* Tree.path
+    def path(self):
+        """ Get the current path shown by the treeview.
+        """
+        return self._proxy.path()
+    #@+node:ekr.20190810003404.238: *5* Tree.setPath
+    def setPath(self, path):
+        """ Set the current path shown by the treeview.
+        """
+        # Close old proxy
+        if self._proxy is not None:
+            self._proxy.cancel()
+            self._proxy.changed.disconnect(self.onChanged)
+            self._proxy.deleted.disconnect(self.onDeleted)
+            self._proxy.errored.disconnect(self.onErrored)
+            self.destroyed.disconnect(self._proxy.cancel)
+        # Create new proxy
+        if True:
+            self._proxy = self.parent()._fsProxy.dir(path)
+            self._proxy.changed.connect(self.onChanged)
+            self._proxy.deleted.connect(self.onDeleted)
+            self._proxy.errored.connect(self.onErrored)
+            self.destroyed.connect(self._proxy.cancel)
+        # Activate the proxy, we'll get a call at onChanged() asap.
+        if path.lower() == MOUNTS.lower():
+            self.clear()
+            createMounts(self.parent(), self)
+        else:
+            self._proxy.track()
+            self._proxy.push()
+        # Store dir in config
+        self.parent().config.path = path
+        # Signal that the dir has changed
+        # Note that our contents may not be visible yet.
+        self.dirChanged.emit(self.path())
+    #@+node:ekr.20190810003404.239: *5* Tree.setPathUp
+    def setPathUp(self):
+        """ Go one directory up.
+        """
+        newPath = op.dirname(self.path())
+
+        if op.normcase(newPath) == op.normcase(self.path()):
+            self.setPath(cleanpath(MOUNTS))
+        else:
+            self.setPath(newPath)
+    #@+node:ekr.20190810003404.240: *5* Tree.clear
+    def clear(self):
+        """ Overload the clear method to remove the items in a nice
+        way, alowing the pathProxy instance to be closed correctly.
+        """
+        # Clear temporary (invisible) items
+        for item in self._temporaryItems:
+            item._proxy.cancel()
+        self._temporaryItems.clear()
+        # Clear visible items
+        for i in reversed(range(self.topLevelItemCount())):
+            item = self.topLevelItem(i)
+            if hasattr(item, 'clear'):
+                item.clear()
+            if hasattr(item, 'onDestroyed'):
+                item.onDestroyed()
+        QtWidgets.QTreeWidget.clear(self)
+    #@+node:ekr.20190810003404.241: *5* Tree.mouseDoubleClickEvent
+    def mouseDoubleClickEvent(self, event):
+        """ Bypass expanding an item when double-cliking it.
+        Only activate the item.
+        """
+        item = self.itemAt(event.x(), event.y())
+        if item is not None:
+            self.onItemActivated(item)
+    #@+node:ekr.20190810003404.242: *5* Tree.onChanged
+    def onChanged(self):
+        """ Called when our contents change or when we just changed directories.
+        """
+        self.createItems(self)
+    #@+node:ekr.20190810003404.243: *5* Tree.createItems
+    def createItems(self, parent):
+        """ High level method to create the items of the tree or a DirItem.
+        This method will handle the restoring of state etc.
+        The actual filtering of entries and creation of tree widget items
+        is done in the createItemsFun() function.
+        """
+        # Store state and clear
+        self._storeSelectionState()
+        parent.clear()
+        # Create sub items
+        count = createItemsFun(self.parent(), parent)
+        if not count and isinstance(parent, QtWidgets.QTreeWidgetItem):
+            ErrorItem(parent, 'Empty directory')
+        # Restore state
+        self._restoreSelectionState()
+    #@+node:ekr.20190810003404.244: *5* Tree.onErrored
+    def onErrored(self, err='...'):
+        self.clear()
+        ErrorItem(self, 'Error: ' + err)
+    #@+node:ekr.20190810003404.245: *5* Tree.onDeleted
+    def onDeleted(self):
+        self.setPathUp()
+    #@+node:ekr.20190810003404.246: *5* Tree.onItemExpanded
+    def onItemExpanded(self, item):
+        if hasattr(item, 'onExpanded'):
+            item.onExpanded()
+    #@+node:ekr.20190810003404.247: *5* Tree.onItemCollapsed
+    def onItemCollapsed(self, item):
+        if hasattr(item, 'onCollapsed'):
+            item.onCollapsed()
+    #@+node:ekr.20190810003404.248: *5* Tree.onItemClicked
+    def onItemClicked(self, item):
+        if hasattr(item, 'onClicked'):
+            item.onClicked()
+    #@+node:ekr.20190810003404.249: *5* Tree.onItemActivated
+    def onItemActivated(self, item):
+        """ When an item is "activated", make that the new directory,
+        or open that file.
+        """
+        if hasattr(item, 'onActivated'):
+            item.onActivated()
+    #@+node:ekr.20190810003404.250: *5* Tree._storeSelectionState
+    def _storeSelectionState(self):
+        # Store selection
+        items = self.selectedItems()
+        self._selectedPath = items[0].path() if items else ''
+        # Store scrolling
+        self._selectedScrolling = self.verticalScrollBar().value()
+    #@+node:ekr.20190810003404.251: *5* Tree._restoreSelectionState
+    def _restoreSelectionState(self):
+        # First select the first item
+        # (otherwise the scrolling wont work for some reason)
+        if self.topLevelItemCount():
+            self.setCurrentItem(self.topLevelItem(0))
+        # Restore selection
+        if self._selectedPath:
+            items = self.findItems(op.basename(self._selectedPath), QtCore.Qt.MatchExactly, 0)
+            items = [item for item in items if op.normcase(item.path()) == op.normcase(self._selectedPath)]
+            if items:
+                self.setCurrentItem(items[0])
+        # Restore scrolling
+        self.verticalScrollBar().setValue(self._selectedScrolling)
+        self.verticalScrollBar().setValue(self._selectedScrolling)
+    #@+node:ekr.20190810003404.252: *5* Tree.contextMenuTriggered
+    def contextMenuTriggered(self, p):
+        """ Called when context menu is clicked """
+        # Get item that was clicked on
+        item = self.itemAt(p)
+        if item is None:
+            item = self
+
+        # Create and show menu
+        if isinstance(item, (Tree, FileItem, DirItem)):
+            menu = PopupMenu(self, item)
+            menu.popup(self.mapToGlobal(p+QtCore.QPoint(3,3)))
+    #@-others
+#@+node:ekr.20190810003404.253: *4* class PopupMenu(QMenu)
+class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
+    #@+others
+    #@+node:ekr.20190810003404.254: *5* PopupMenu.__init__
+    def __init__(self, parent, item):
+        
+        super().__init__(parent) # EKR:change
+        self._item = item
+        # pyzo.core.menu.Menu.__init__(self, parent, " ")
+    #@+node:ekr.20190810003404.255: *5* PopupMenu.build
+    def build(self):
+
+        isplat = sys.platform.startswith
+
+        # The star object
+        if isinstance(self._item, DirItem):
+            if self._item._starred:
+                self.addItem(translate("filebrowser", "Unstar this directory"), None, self._star)
+            else:
+                self.addItem(translate("filebrowser", "Star this directory"), None, self._star)
+            self.addSeparator()
+
+        # The pyzo related functions
+        ### Probably will never be used.
+            # if isinstance(self._item, FileItem):
+                # self.addItem(translate("filebrowser", "Open"), None, self._item.onActivated)
+                # if self._item.path().endswith('.py'):
+                    # self.addItem(translate("filebrowser", "Run as script"),
+                        # None, self._runAsScript)
+                # elif self._item.path().endswith('.ipynb'):
+                    # self.addItem(translate("filebrowser", "Run Jupyter notebook"),
+                        # None, self._runNotebook)
+                # else:
+                    # self.addItem(translate("filebrowser", "Import data..."),
+                        # None, self._importData)
+                # self.addSeparator()
+
+        # Create items for open and copy path
+        if isinstance(self._item, (FileItem, DirItem)):
+            if isplat('win') or isplat('darwin') or isplat('linux'):
+                self.addItem(translate("filebrowser", "Open outside Pyzo"),
+                    None, self._openOutsidePyzo)
+            if isplat('darwin'):
+                self.addItem(translate("filebrowser", "Reveal in Finder"),
+                    None, self._showInFinder)
+            if True:
+                self.addItem(translate("filebrowser", "Copy path"),
+                    None, self._copyPath)
+            self.addSeparator()
+
+        # Create items for file management
+        if isinstance(self._item, FileItem):
+            self.addItem(translate("filebrowser", "Rename"), None, self.onRename)
+            self.addItem(translate("filebrowser", "Delete"), None, self.onDelete)
+            #self.addItem(translate("filebrowser", "Duplicate"), None, self.onDuplicate)
+        if isinstance(self._item, (Tree, DirItem)):
+            self.addItem(translate("filebrowser", "Create new file"), None, self.onCreateFile)
+            self.addItem(translate("filebrowser", "Create new directory"), None, self.onCreateDir)
+        if isinstance(self._item, DirItem):
+            self.addSeparator()
+            self.addItem(translate("filebrowser", "Rename"), None, self.onRename)
+            self.addItem(translate("filebrowser", "Delete"), None, self.onDelete)
+    #@+node:ekr.20190810003404.256: *5* PopupMenu._star
+    def _star(self):
+        # Prepare
+        browser = self.parent().parent()
+        path = self._item.path()
+        if self._item._starred:
+            browser.removeStarredDir(path)
+        else:
+            browser.addStarredDir(path)
+        # Refresh
+        self.parent().setPath(self.parent().path())
+    #@+node:ekr.20190810003404.257: *5* PopupMenu._openOutsidePyzo
+    def _openOutsidePyzo(self):
+        path = self._item.path()
+        if sys.platform.startswith('darwin'):
+            subprocess.call(('open', path))
+        elif sys.platform.startswith('win'):
+            if ' ' in path:  # http://stackoverflow.com/a/72796/2271927
+                subprocess.call(('start', '', path), shell=True)
+            else:
+                subprocess.call(('start', path), shell=True)
+        elif sys.platform.startswith('linux'):
+            # xdg-open is available on all Freedesktop.org compliant distros
+            # http://superuser.com/questions/38984/linux-equivalent-command-for-open-command-on-mac-windows
+            subprocess.call(('xdg-open', path))
+    #@+node:ekr.20190810003404.258: *5* PopupMenu._showInFinder
+    def _showInFinder(self):
+        subprocess.call(('open', '-R', self._item.path()))
+    #@+node:ekr.20190810003404.259: *5* PopupMenu._copyPath
+    def _copyPath(self):
+        QtWidgets.qApp.clipboard().setText(self._item.path())
+    #@+node:ekr.20190810003404.260: *5* PopupMenu._runAsScript (not used)
+    ###
+    # def _runAsScript(self):
+        # filename = self._item.path()
+        # shell = pyzo.shells.getCurrentShell()
+        # if shell is not None:
+            # shell.restart(filename)
+        # else:
+            # msg = "No shell to run code in. "
+            # m = QtWidgets.QMessageBox(self)
+            # m.setWindowTitle(translate("menu dialog", "Could not run"))
+            # m.setText("Could not run " + filename + ":\n\n" + msg)
+            # m.setIcon(m.Warning)
+            # m.exec_()
+    #@+node:ekr.20190810003404.261: *5* PopupMenu._runNotebook (not used)
+    ###
+    # def _runNotebook(self):
+        # filename = self._item.path()
+        # if 0: # Later, never.
+        # shell = pyzo.shells.getCurrentShell()
+        # if shell is not None:
+            # shell.restart(filename)
+        # else:
+            # msg = "No shell to run notebook in. "
+            # m = QtWidgets.QMessageBox(self)
+            # m.setWindowTitle(translate("menu dialog", "Could not run notebook"))
+            # m.setText("Could not run " + filename + ":\n\n" + msg)
+            # m.setIcon(m.Warning)
+            # m.exec_()
+    #@+node:ekr.20190810003404.262: *5* PopupMenu._importData
+    def _importData(self):
+        browser = self.parent().parent()
+        wizard = browser.getImportWizard()
+        wizard.open(self._item.path())
+    #@+node:ekr.20190810003404.263: *5* PopupMenu.onDuplicate
+    def onDuplicate(self):
+        return self._duplicateOrRename(False)
+    #@+node:ekr.20190810003404.264: *5* PopupMenu.onRename
+    def onRename(self):
+        return self._duplicateOrRename(True)
+    #@+node:ekr.20190810003404.265: *5* PopupMenu.onCreateFile
+    def onCreateFile(self):
+        self._createDirOrFile(True)
+    #@+node:ekr.20190810003404.266: *5* PopupMenu.onCreateDir
+    def onCreateDir(self):
+        self._createDirOrFile(False)
+    #@+node:ekr.20190810003404.267: *5* PopupMenu._createDirOrFile
+    def _createDirOrFile(self, file=True):
+
+        # Get title and label
+        if file:
+            title = translate("filebrowser", "Create new file")
+            label = translate("filebrowser", "Give the new name for the file")
+        else:
+            title = translate("filebrowser", "Create new directory")
+            label = translate("filebrowser", "Give the name for the new directory")
+
+        # Ask for new filename
+        s = QtWidgets.QInputDialog.getText(self.parent(), title,
+                    label + ':\n%s' % self._item.path(),
+                    QtWidgets.QLineEdit.Normal,
+                    'new name'
+                )
+        if isinstance(s, tuple):
+            s = s[0] if s[1] else ''
+
+        # Push rename task
+        if s:
+            newpath = op.join(self._item.path(), s)
+            task = CreateTask(newpath=newpath, file=file)
+            self._item._proxy.pushTask(task)
+    #@+node:ekr.20190810003404.268: *5* PopupMenu._duplicateOrRename
+    def _duplicateOrRename(self, rename):
+
+        # Get dirname and filename
+        dirname, filename = op.split(self._item.path())
+
+        # Get title and label
+        if rename:
+            title = translate("filebrowser", "Rename")
+            label = translate("filebrowser", "Give the new name for the file")
+        else:
+            title = translate("filebrowser", "Duplicate")
+            label = translate("filebrowser", "Give the name for the new file")
+            filename = 'Copy of ' + filename
+
+        # Ask for new filename
+        s = QtWidgets.QInputDialog.getText(self.parent(), title,
+                    label + ':\n%s' % self._item.path(),
+                    QtWidgets.QLineEdit.Normal,
+                    filename
+                )
+        if isinstance(s, tuple):
+            s = s[0] if s[1] else ''
+
+        # Push rename task
+        if s:
+            newpath = op.join(dirname, s)
+            task = RenameTask(newpath=newpath, removeold=rename)
+            self._item._proxy.pushTask(task)
+    #@+node:ekr.20190810003404.269: *5* PopupMenu.onDelete
+    def onDelete(self):
+        # Ask for new filename
+        b = QtWidgets.QMessageBox.question(self.parent(),
+                    translate("filebrowser", "Delete"),
+                    translate("filebrowser", "Are you sure that you want to delete") +
+                    ':\n%s' % self._item.path(),
+                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel,
+                )
+        # Push delete task
+        if b == QtWidgets.QMessageBox.Yes:
+            self._item._proxy.pushTask(RemoveTask())
+    #@-others
+#@+node:ekr.20190811175010.1: ** pyzo functions...
+#@+node:ekr.20190811174943.1: *3* Tree functions
+# From trees.py
+#@+node:ekr.20190810003404.177: *4* addIconOverlays
 def addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(0,0)):
     """ Create an overlay for an icon.
     """
@@ -1721,7 +2477,7 @@ def addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(0,0)):
     painter.end()
     # Done (return resulting icon)
     return QtGui.QIcon(pm0)
-#@+node:ekr.20190810003404.178: *3* _filterFileByName
+#@+node:ekr.20190810003404.178: *4* _filterFileByName
 def _filterFileByName(basename, filters):
 
     # Init default; return True if there are no filters
@@ -1741,7 +2497,7 @@ def _filterFileByName(basename, filters):
             default = False
 
     return default
-#@+node:ekr.20190810003404.179: *3* createMounts
+#@+node:ekr.20190810003404.179: *4* createMounts
 def createMounts(browser, tree):
     """ Create items for all known mount points (i.e. drives on Windows).
     """
@@ -1752,7 +2508,7 @@ def createMounts(browser, tree):
     for entry in mountPoints:
         entry = cleanpath(entry)
         DriveItem(tree, fsProxy.dir(entry))
-#@+node:ekr.20190810003404.180: *3* createItemsFun
+#@+node:ekr.20190810003404.180: *4* createItemsFun
 def createItemsFun(browser, parent):
     """ Create the tree widget items for a Tree or DirItem.
     """
@@ -1848,7 +2604,7 @@ def createItemsFun(browser, parent):
 
     # Return number of files added
     return len(dirs) + len(files)
-#@+node:ekr.20190810003404.181: *3* filename2sortkey
+#@+node:ekr.20190810003404.181: *4* filename2sortkey
 def filename2sortkey(name):
     """ Convert a file or dir name to a tuple that can be used to
     logically sort them. Sorting first by extension.
@@ -1870,826 +2626,20 @@ def filename2sortkey(name):
         # I cannot see how this could fail, but lets be safe, as it would break so badly
         print('Warning: could not filename2sortkey(%r), please report:\n%s' % (name, str(err)))
         return (e, 999999999, name, -1)
-#@+node:ekr.20190810003404.182: *3* class BrowserItem(QTreeWidgetItem)
-class BrowserItem(QtWidgets.QTreeWidgetItem):
-    """ Abstract item in the tree widget.
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.183: *4* BrowserItem.__init__
-    def __init__(self, parent, pathProxy, *args):
-        self._proxy = pathProxy
-        QtWidgets.QTreeWidgetItem.__init__(self, parent, [], *args)
-        # Set pathname to show, and icon
-        strippedParentPath = parent.path().rstrip('/\\')
-        if self.path().startswith(strippedParentPath):
-            basename = self.path()[len(strippedParentPath)+1:]
-        else:
-            basename = self.path() #  For mount points
-        self.setText(0, basename)
-        self.setFileIcon()
-        # Setup interface with proxy
-        self._proxy.changed.connect(self.onChanged)
-        self._proxy.deleted.connect(self.onDeleted)
-        self._proxy.errored.connect(self.onErrored)
-        self._proxy.taskFinished.connect(self.onTaskFinished)
-    #@+node:ekr.20190810003404.184: *4* BrowserItem.path
-    def path(self):
-        return self._proxy.path()
-    #@+node:ekr.20190810003404.185: *4* BrowserItem._createDummyItem
-    def _createDummyItem(self, txt):
-        ErrorItem(self, txt)
-        #QtWidgets.QTreeWidgetItem(self, [txt])
-    #@+node:ekr.20190810003404.186: *4* BrowserItem.onDestroyed
-    def onDestroyed(self):
-        self._proxy.cancel()
-    #@+node:ekr.20190810003404.187: *4* BrowserItem.clear
-    def clear(self):
-        """ Clear method that calls onDestroyed on its children.
-        """
-        for i in reversed(range(self.childCount())):
-            item = self.child(i)
-            if hasattr(item, 'onDestroyed'):
-                item.onDestroyed()
-            self.removeChild(item)
-
-    # To overload ...
-    #@+node:ekr.20190810003404.188: *4* BrowserItem.onChanged
-    def onChanged(self):
-        pass
-    #@+node:ekr.20190810003404.189: *4* BrowserItem.onDeleted
-    def onDeleted(self):
-        pass
-    #@+node:ekr.20190810003404.190: *4* BrowserItem.onErrored
-    def onErrored(self, err):
-        self.clear()
-        self._createDummyItem('Error: ' + err)
-    #@+node:ekr.20190810003404.191: *4* BrowserItem.onTaskFinished
-    def onTaskFinished(self, task):
-        # Getting the result raises exception if an error occured.
-        # Which is what we want; so it is visible in the logger shell
-        task.result()
-    #@-others
-#@+node:ekr.20190810003404.192: *3* class DriveItem(BrowserItem)
-class DriveItem(BrowserItem):
-    """ Tree widget item for directories.
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.193: *4* DriveItem.__init__
-    def __init__(self, parent, pathProxy):
-        BrowserItem.__init__(self, parent, pathProxy)
-        # Item is not expandable
-    #@+node:ekr.20190810003404.194: *4* DriveItem.setFileIcon
-    def setFileIcon(self):
-        # Use folder icon
-        self.setIcon(0, pyzo_icons.drive)
-    #@+node:ekr.20190810003404.195: *4* DriveItem.onActivated
-    def onActivated(self):
-        self.treeWidget().setPath(self.path())
-    #@-others
-#@+node:ekr.20190810003404.196: *3* class DirItem(BrowserItem)
-class DirItem(BrowserItem):
-    """ Tree widget item for directories.
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.197: *4* DirItem.__init__
-    def __init__(self, parent, pathProxy, starred=False):
-        self._starred = starred
-        BrowserItem.__init__(self, parent, pathProxy)
-
-        # Create dummy item so that the dir is expandable
-        self._createDummyItem('Loading contents ...')
-    #@+node:ekr.20190810003404.198: *4* DirItem.setFileIcon
-    def setFileIcon(self):
-        
-        # Use folder icon
-        icon = iconprovider.icon(iconprovider.Folder)
-        overlays = []
-        if self._starred:
-            overlays.append(pyzo_icons.bullet_yellow)
-        icon = addIconOverlays(icon, *overlays, offset=(8,0), overlay_offset=(-4,0))
-        self.setIcon(0, icon)
-    #@+node:ekr.20190810003404.199: *4* DirItem.onActivated
-    def onActivated(self):
-        self.treeWidget().setPath(self.path())
-    #@+node:ekr.20190810003404.200: *4* DirItem.onExpanded
-    def onExpanded(self):
-        # Update list of expanded dirs
-        expandedDirs = self.treeWidget().parent().expandedDirs
-        p = op.normcase(self.path())  # Normalize case!
-        if p not in expandedDirs:
-            expandedDirs.append(p)
-        # Keep track of changes in our contents
-        self._proxy.track()
-        self._proxy.push()
-    #@+node:ekr.20190810003404.201: *4* DirItem.onCollapsed
-    def onCollapsed(self):
-        # Update list of expanded dirs
-        expandedDirs = self.treeWidget().parent().expandedDirs
-        p = op.normcase(self.path())   # Normalize case!
-        while p in expandedDirs:
-            expandedDirs.remove(p)
-        # Stop tracking changes in our contents
-        self._proxy.cancel()
-        # Clear contents and create a single placeholder item
-        self.clear()
-        self._createDummyItem('Loading contents ...')
-
-    # No need to implement onDeleted: the parent will get a changed event.
-    #@+node:ekr.20190810003404.202: *4* DirItem.onChanged
-    def onChanged(self):
-        """ Called when a change in the contents has occured, or when
-        we just activated the proxy. Update our items!
-        """
-        if not self.isExpanded():
-            return
-        tree = self.treeWidget()
-        tree.createItems(self)
-    #@-others
-#@+node:ekr.20190810003404.203: *3* class FileItem(BrowserItem)
-class FileItem(BrowserItem):
-    """ Tree widget item for files.
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.204: *4* FileItem.__init__
-    def __init__(self, parent, pathProxy, mode='normal'):
-        BrowserItem.__init__(self, parent, pathProxy)
-        self._mode = mode
-        self._timeSinceLastDocString = 0
-
-        if self._mode=='normal' and self.path().lower().endswith('.py'):
-            self._createDummyItem('Loading high level structure ...')
-    #@+node:ekr.20190810003404.205: *4* FileItem.setFileIcon
-    def setFileIcon(self):
-
-        # Create dummy file in pyzo user dir
-        dummy_filename = op.join(cleanpath(appDataDir), 
-            'dummyFiles', 'dummy' + ext(self.path()))
-
-        # Create file?
-        if not op.isfile(dummy_filename):
-            if not isdir(op.dirname(dummy_filename)):
-                os.makedirs(op.dirname(dummy_filename))
-            f = open(dummy_filename, 'wb')
-            f.close()
-
-        # Use that file
-        if sys.platform.startswith('linux') and \
-                                    not QtCore.__file__.startswith('/usr/'):
-            icon = iconprovider.icon(iconprovider.File)
-        else:
-            icon = iconprovider.icon(QtCore.QFileInfo(dummy_filename))
-        icon = addIconOverlays(icon)
-        self.setIcon(0, icon)
-    #@+node:ekr.20190810003404.206: *4* FileItem.searchContents
-    def searchContents(self, needle, **kwargs):
-        self.setHidden(True)
-        self._proxy.setSearch(needle, **kwargs)
-    #@+node:ekr.20190810003404.207: *4* FileItem.onActivated
-    def onActivated(self):
-        # todo: someday we should be able to simply pass the proxy object to the editors
-        # so that we can open files on any file system
-        path = self.path()
-        g.trace(path)
-        if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
-            pass
-            ###
-                # # Load file
-                # pyzo.editors.loadFile(path)
-                # # Give focus
-                # pyzo.editors.getCurrentEditor().setFocus()
-    #@+node:ekr.20190810003404.208: *4* FileItem.onExpanded
-    def onExpanded(self):
-        if self._mode == 'normal':
-            # Create task to retrieve high level structure
-            if self.path().lower().endswith('.py'):
-                self._proxy.pushTask(DocstringTask())
-                self._proxy.pushTask(PeekTask())
-    #@+node:ekr.20190810003404.209: *4* FileItem.onCollapsed
-    def onCollapsed(self):
-        if self._mode == 'normal':
-            self.clear()
-            if self.path().lower().endswith('.py'):
-                self._createDummyItem('Loading high level structure ...')
-
-    #     def onClicked(self):
-    #         # Limit sending events to prevent flicker when double clicking
-    #         if time.time() - self._timeSinceLastDocString < 0.5:
-    #             return
-    #         self._timeSinceLastDocString = time.time()
-    #         # Create task
-    #         if self.path().lower().endswith('.py'):
-    #             self._proxy.pushTask(tasks.DocstringTask())
-    #@+node:ekr.20190810003404.210: *4* FileItem.onChanged
-    def onChanged(self):
-        pass
-    #@+node:ekr.20190810003404.211: *4* FileItem.onTaskFinished
-    def onTaskFinished(self, task):
-
-        if isinstance(task, DocstringTask):
-            result = task.result()
-            self.clear()  # Docstring task is done *before* peek task
-            if result:
-                DocstringItem(self, result)
-    #         if isinstance(task, tasks.DocstringTask):
-    #             result = task.result()
-    #             if result:
-    #                 #self.setToolTip(0, result)
-    #                 # Show tooltip *now* if mouse is still over this item
-    #                 tree = self.treeWidget()
-    #                 pos = tree.mapFromGlobal(QtGui.QCursor.pos())
-    #                 if tree.itemAt(pos) is self:
-    #                     QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), result)
-        elif isinstance(task, PeekTask):
-            result = task.result()
-            #self.clear()  # Cleared when docstring task result is received
-            if result:
-                for r in result:
-                    SubFileItem(self, *r)
-            else:
-                self._createDummyItem('No classes or functions found.')
-        else:
-            BrowserItem.onTaskFinished(self, task)
-    #@-others
-#@+node:ekr.20190810003404.212: *3* class SubFileItem(QTreeWidgetItem)
-class SubFileItem(QtWidgets.QTreeWidgetItem):
-    """ Tree widget item for search items.
-    """
-    #@+others
-    #@+node:ekr.20190810003404.213: *4* SubFileItem.__init__
-    def __init__(self, parent, linenr, text, showlinenr=False):
-        QtWidgets.QTreeWidgetItem.__init__(self, parent)
-        self._linenr = linenr
-        if showlinenr:
-            self.setText(0, 'Line %i: %s' % (linenr, text))
-        else:
-            self.setText(0, text)
-    #@+node:ekr.20190810003404.214: *4* SubFileItem.path
-    def path(self):
-        return self.parent().path()
-    #@+node:ekr.20190810003404.215: *4* SubFileItem.onActivated
-    def onActivated(self):
-        path = self.path()
-        if ext(path) not in ['.pyc','.pyo','.png','.jpg','.ico']:
-            pass
-            ###
-            # # Load and get editor
-            # fileItem = pyzo.editors.loadFile(path)
-            # editor = fileItem._editor
-            # # Goto line
-            # editor.gotoLine(self._linenr)
-            # # Give focus
-            # pyzo.editors.getCurrentEditor().setFocus()
-    #@-others
-#@+node:ekr.20190810003404.216: *3* class DocstringItem(QTreeWidgetItem)
-class DocstringItem(QtWidgets.QTreeWidgetItem):
-    """ Tree widget item for docstring placeholder items.
-    """
-
-    #@+others
-    #@+node:ekr.20190810003404.217: *4* DocstringItem.__init__
-    def __init__(self, parent, docstring):
-        QtWidgets.QTreeWidgetItem.__init__(self, parent)
-        self._docstring = docstring
-        # Get one-line version of docstring
-        shortText = self._docstring.split('\n',1)[0].strip()
-        if len(shortText) < len(self._docstring):
-            shortText += '...'
-        # Set short version now
-        self.setText(0, 'doc: '+shortText)
-        # Long version is the tooltip
-        self.setToolTip(0, docstring)
-    #@+node:ekr.20190810003404.218: *4* DocstringItem.path
-    def path(self):
-        return self.parent().path()
-    #@+node:ekr.20190810003404.219: *4* DocstringItem.onClicked
-    def onClicked(self):
-        tree = self.treeWidget()
-        pos = tree.mapFromGlobal(QtGui.QCursor.pos())
-        if tree.itemAt(pos) is self:
-            QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self._docstring)
-    #@-others
-#@+node:ekr.20190810003404.220: *3* class ErrorItem(QTreeWidgetItem)
-class ErrorItem(QtWidgets.QTreeWidgetItem):
-    """ Tree widget item for errors and information.
-    """
-    #@+others
-    #@+node:ekr.20190810003404.221: *4* ErrorItem.__init__
-    def __init__(self, parent, info):
-        QtWidgets.QTreeWidgetItem.__init__(self, parent)
-        self.setText(0, info)
-        self.setFlags(QtCore.Qt.NoItemFlags)
-        font = self.font(0)
-        font.setItalic(True)
-        self.setFont(0, font)
-    #@-others
-#@+node:ekr.20190810003404.222: *3* class SearchInfoItem(ErrorItem)
-class SearchInfoItem(ErrorItem):
-    """ Tree widget item that displays info on the search.
-    """
-    #@+others
-    #@+node:ekr.20190810003404.223: *4* SearchInfoItem.__init__
-    def __init__(self, parent):
-        ErrorItem.__init__(self, parent, 'Searching ...')
-        self._totalCount = 0
-        self._checkCount = 0
-        self._hitCount = 0
-    #@+node:ekr.20190810003404.224: *4* SearchInfoItem.increaseTotal
-    def increaseTotal(self, c):
-        self._totalCount += c
-        self.updateCounts()
-    #@+node:ekr.20190810003404.225: *4* SearchInfoItem.addFile
-    def addFile(self, hit):
-        self._checkCount += 1
-        if hit:
-            self._hitCount += 1
-        # Update appearance
-        self.updateCounts()
-    #@+node:ekr.20190810003404.226: *4* SearchInfoItem.updateCounts
-    def updateCounts(self):
-        counts = self._checkCount, self._totalCount, self._hitCount
-        self.setText(0, 'Searched {}/{} files: {} hits'.format(*counts))
-    #@-others
-#@+node:ekr.20190810003404.227: *3* class TemporaryDirItem
-class TemporaryDirItem:
-    """ Created when searching. This object posts a requests for its contents
-    which are then processed, after which this object disbands itself.
-    """
-    __slots__ = ['_tree', '_proxy', '__weakref__']
-
-    #@+others
-    #@+node:ekr.20190810003404.228: *4* TemporaryDirItem.__init__
-    def __init__(self, tree, pathProxy):
-        self._tree = tree
-        self._proxy = pathProxy
-        self._proxy.changed.connect(self.onChanged)
-        # Process asap, but do not track
-        self._proxy.push()
-        # Store ourself
-        tree._temporaryItems.add(self)
-    #@+node:ekr.20190810003404.229: *4* TemporaryDirItem.clear
-    def clear(self):
-        pass  # tree.createItems() calls this ...
-    #@+node:ekr.20190810003404.230: *4* TemporaryDirItem.onChanged
-    def onChanged(self):
-        # Disband
-        self._tree._temporaryItems.discard(self)
-        # Process contents
-        self._tree.createItems(self)
-    #@-others
-#@+node:ekr.20190810003404.231: *3* class TemporaryFileItem
-class TemporaryFileItem:
-    """ Created when searching. This object posts a requests to search
-    its contents which are then processed, after which this object
-    disbands itself, passing the proxy object to a real FileItem if the
-    search had results.
-    """
-    __slots__ = ['_tree', '_proxy', '__weakref__']
-
-    #@+others
-    #@+node:ekr.20190810003404.232: *4* TemporaryFileItem.__init__
-    def __init__(self, tree, pathProxy):
-        self._tree = tree
-        self._proxy = pathProxy
-        self._proxy.taskFinished.connect(self.onSearchResult)
-        # Store ourself
-        tree._temporaryItems.add(self)
-    #@+node:ekr.20190810003404.233: *4* TemporaryFileItem.search
-    def search(self, searchFilter):
-        self._proxy.pushTask(SearchTask(**searchFilter))
-    #@+node:ekr.20190810003404.234: *4* TemporaryFileItem.onSearchResult
-    def onSearchResult(self, task):
-        # Disband now
-        self._tree._temporaryItems.discard(self)
-
-        # Get result. May raise an error
-        result = task.result()
-        # Process contents
-        if result:
-            item = FileItem(self._tree, self._proxy, 'search')  # Search mode
-            for r in result:
-                SubFileItem(item, *r, showlinenr=True)
-        # Update counter
-        searchInfoItem = self._tree.topLevelItem(0)
-        if isinstance(searchInfoItem, SearchInfoItem):
-            searchInfoItem.addFile(bool(result))
-    #@-others
-#@+node:ekr.20190810003404.235: *3* class Tree(QTreeWidget)
-class Tree(QtWidgets.QTreeWidget):
-    """ Representation of the tree view.
-    Instances of this class are responsible for keeping the contents
-    up-to-date. The Item classes above are dumb objects.
-    """
-
-    dirChanged = Signal(str) # Emitted when user goes into a subdir
-
-    #@+others
-    #@+node:ekr.20190810003404.236: *4* Tree.__init__
-    def __init__(self, parent):
-        QtWidgets.QTreeWidget.__init__(self, parent)
-
-        # Initialize
-        self.setMinimumWidth(150)
-        self.setMinimumHeight(150)
-        #
-        self.setColumnCount(1)
-        self.setHeaderHidden(True)
-        self.setIconSize(QtCore.QSize(24,16))
-
-        # Connecy signals
-        self.itemExpanded.connect(self.onItemExpanded)
-        self.itemCollapsed.connect(self.onItemCollapsed)
-        self.itemClicked.connect(self.onItemClicked)
-        self.itemActivated.connect(self.onItemActivated)
-
-        # Variables for restoring the view after updating
-        self._selectedPath = '' # To restore a selection after updating
-        self._selectedScrolling = 0
-
-        # Set of temporary items
-        self._temporaryItems = set()
-
-        # Define context menu
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.contextMenuTriggered)
-
-        # Initialize proxy (this is where the path is stored)
-        self._proxy = None
-    #@+node:ekr.20190810003404.237: *4* Tree.path
-    def path(self):
-        """ Get the current path shown by the treeview.
-        """
-        return self._proxy.path()
-    #@+node:ekr.20190810003404.238: *4* Tree.setPath
-    def setPath(self, path):
-        """ Set the current path shown by the treeview.
-        """
-        # Close old proxy
-        if self._proxy is not None:
-            self._proxy.cancel()
-            self._proxy.changed.disconnect(self.onChanged)
-            self._proxy.deleted.disconnect(self.onDeleted)
-            self._proxy.errored.disconnect(self.onErrored)
-            self.destroyed.disconnect(self._proxy.cancel)
-        # Create new proxy
-        if True:
-            self._proxy = self.parent()._fsProxy.dir(path)
-            self._proxy.changed.connect(self.onChanged)
-            self._proxy.deleted.connect(self.onDeleted)
-            self._proxy.errored.connect(self.onErrored)
-            self.destroyed.connect(self._proxy.cancel)
-        # Activate the proxy, we'll get a call at onChanged() asap.
-        if path.lower() == MOUNTS.lower():
-            self.clear()
-            createMounts(self.parent(), self)
-        else:
-            self._proxy.track()
-            self._proxy.push()
-        # Store dir in config
-        self.parent().config.path = path
-        # Signal that the dir has changed
-        # Note that our contents may not be visible yet.
-        self.dirChanged.emit(self.path())
-    #@+node:ekr.20190810003404.239: *4* Tree.setPathUp
-    def setPathUp(self):
-        """ Go one directory up.
-        """
-        newPath = op.dirname(self.path())
-
-        if op.normcase(newPath) == op.normcase(self.path()):
-            self.setPath(cleanpath(MOUNTS))
-        else:
-            self.setPath(newPath)
-    #@+node:ekr.20190810003404.240: *4* Tree.clear
-    def clear(self):
-        """ Overload the clear method to remove the items in a nice
-        way, alowing the pathProxy instance to be closed correctly.
-        """
-        # Clear temporary (invisible) items
-        for item in self._temporaryItems:
-            item._proxy.cancel()
-        self._temporaryItems.clear()
-        # Clear visible items
-        for i in reversed(range(self.topLevelItemCount())):
-            item = self.topLevelItem(i)
-            if hasattr(item, 'clear'):
-                item.clear()
-            if hasattr(item, 'onDestroyed'):
-                item.onDestroyed()
-        QtWidgets.QTreeWidget.clear(self)
-    #@+node:ekr.20190810003404.241: *4* Tree.mouseDoubleClickEvent
-    def mouseDoubleClickEvent(self, event):
-        """ Bypass expanding an item when double-cliking it.
-        Only activate the item.
-        """
-        item = self.itemAt(event.x(), event.y())
-        if item is not None:
-            self.onItemActivated(item)
-    #@+node:ekr.20190810003404.242: *4* Tree.onChanged
-    def onChanged(self):
-        """ Called when our contents change or when we just changed directories.
-        """
-        self.createItems(self)
-    #@+node:ekr.20190810003404.243: *4* Tree.createItems
-    def createItems(self, parent):
-        """ High level method to create the items of the tree or a DirItem.
-        This method will handle the restoring of state etc.
-        The actual filtering of entries and creation of tree widget items
-        is done in the createItemsFun() function.
-        """
-        # Store state and clear
-        self._storeSelectionState()
-        parent.clear()
-        # Create sub items
-        count = createItemsFun(self.parent(), parent)
-        if not count and isinstance(parent, QtWidgets.QTreeWidgetItem):
-            ErrorItem(parent, 'Empty directory')
-        # Restore state
-        self._restoreSelectionState()
-    #@+node:ekr.20190810003404.244: *4* Tree.onErrored
-    def onErrored(self, err='...'):
-        self.clear()
-        ErrorItem(self, 'Error: ' + err)
-    #@+node:ekr.20190810003404.245: *4* Tree.onDeleted
-    def onDeleted(self):
-        self.setPathUp()
-    #@+node:ekr.20190810003404.246: *4* Tree.onItemExpanded
-    def onItemExpanded(self, item):
-        if hasattr(item, 'onExpanded'):
-            item.onExpanded()
-    #@+node:ekr.20190810003404.247: *4* Tree.onItemCollapsed
-    def onItemCollapsed(self, item):
-        if hasattr(item, 'onCollapsed'):
-            item.onCollapsed()
-    #@+node:ekr.20190810003404.248: *4* Tree.onItemClicked
-    def onItemClicked(self, item):
-        if hasattr(item, 'onClicked'):
-            item.onClicked()
-    #@+node:ekr.20190810003404.249: *4* Tree.onItemActivated
-    def onItemActivated(self, item):
-        """ When an item is "activated", make that the new directory,
-        or open that file.
-        """
-        if hasattr(item, 'onActivated'):
-            item.onActivated()
-    #@+node:ekr.20190810003404.250: *4* Tree._storeSelectionState
-    def _storeSelectionState(self):
-        # Store selection
-        items = self.selectedItems()
-        self._selectedPath = items[0].path() if items else ''
-        # Store scrolling
-        self._selectedScrolling = self.verticalScrollBar().value()
-    #@+node:ekr.20190810003404.251: *4* Tree._restoreSelectionState
-    def _restoreSelectionState(self):
-        # First select the first item
-        # (otherwise the scrolling wont work for some reason)
-        if self.topLevelItemCount():
-            self.setCurrentItem(self.topLevelItem(0))
-        # Restore selection
-        if self._selectedPath:
-            items = self.findItems(op.basename(self._selectedPath), QtCore.Qt.MatchExactly, 0)
-            items = [item for item in items if op.normcase(item.path()) == op.normcase(self._selectedPath)]
-            if items:
-                self.setCurrentItem(items[0])
-        # Restore scrolling
-        self.verticalScrollBar().setValue(self._selectedScrolling)
-        self.verticalScrollBar().setValue(self._selectedScrolling)
-    #@+node:ekr.20190810003404.252: *4* Tree.contextMenuTriggered
-    def contextMenuTriggered(self, p):
-        """ Called when context menu is clicked """
-        # Get item that was clicked on
-        item = self.itemAt(p)
-        if item is None:
-            item = self
-
-        # Create and show menu
-        if isinstance(item, (Tree, FileItem, DirItem)):
-            menu = PopupMenu(self, item)
-            menu.popup(self.mapToGlobal(p+QtCore.QPoint(3,3)))
-    #@-others
-#@+node:ekr.20190810003404.253: *3* class PopupMenu(QMenu)
-class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
-    #@+others
-    #@+node:ekr.20190810003404.254: *4* PopupMenu.__init__
-    def __init__(self, parent, item):
-        
-        super().__init__(parent) # EKR:change
-        self._item = item
-        # pyzo.core.menu.Menu.__init__(self, parent, " ")
-    #@+node:ekr.20190810003404.255: *4* PopupMenu.build
-    def build(self):
-
-        isplat = sys.platform.startswith
-
-        # The star object
-        if isinstance(self._item, DirItem):
-            if self._item._starred:
-                self.addItem(translate("filebrowser", "Unstar this directory"), None, self._star)
-            else:
-                self.addItem(translate("filebrowser", "Star this directory"), None, self._star)
-            self.addSeparator()
-
-        # The pyzo related functions
-        ### Probably will never be used.
-            # if isinstance(self._item, FileItem):
-                # self.addItem(translate("filebrowser", "Open"), None, self._item.onActivated)
-                # if self._item.path().endswith('.py'):
-                    # self.addItem(translate("filebrowser", "Run as script"),
-                        # None, self._runAsScript)
-                # elif self._item.path().endswith('.ipynb'):
-                    # self.addItem(translate("filebrowser", "Run Jupyter notebook"),
-                        # None, self._runNotebook)
-                # else:
-                    # self.addItem(translate("filebrowser", "Import data..."),
-                        # None, self._importData)
-                # self.addSeparator()
-
-        # Create items for open and copy path
-        if isinstance(self._item, (FileItem, DirItem)):
-            if isplat('win') or isplat('darwin') or isplat('linux'):
-                self.addItem(translate("filebrowser", "Open outside Pyzo"),
-                    None, self._openOutsidePyzo)
-            if isplat('darwin'):
-                self.addItem(translate("filebrowser", "Reveal in Finder"),
-                    None, self._showInFinder)
-            if True:
-                self.addItem(translate("filebrowser", "Copy path"),
-                    None, self._copyPath)
-            self.addSeparator()
-
-        # Create items for file management
-        if isinstance(self._item, FileItem):
-            self.addItem(translate("filebrowser", "Rename"), None, self.onRename)
-            self.addItem(translate("filebrowser", "Delete"), None, self.onDelete)
-            #self.addItem(translate("filebrowser", "Duplicate"), None, self.onDuplicate)
-        if isinstance(self._item, (Tree, DirItem)):
-            self.addItem(translate("filebrowser", "Create new file"), None, self.onCreateFile)
-            self.addItem(translate("filebrowser", "Create new directory"), None, self.onCreateDir)
-        if isinstance(self._item, DirItem):
-            self.addSeparator()
-            self.addItem(translate("filebrowser", "Rename"), None, self.onRename)
-            self.addItem(translate("filebrowser", "Delete"), None, self.onDelete)
-    #@+node:ekr.20190810003404.256: *4* PopupMenu._star
-    def _star(self):
-        # Prepare
-        browser = self.parent().parent()
-        path = self._item.path()
-        if self._item._starred:
-            browser.removeStarredDir(path)
-        else:
-            browser.addStarredDir(path)
-        # Refresh
-        self.parent().setPath(self.parent().path())
-    #@+node:ekr.20190810003404.257: *4* PopupMenu._openOutsidePyzo
-    def _openOutsidePyzo(self):
-        path = self._item.path()
-        if sys.platform.startswith('darwin'):
-            subprocess.call(('open', path))
-        elif sys.platform.startswith('win'):
-            if ' ' in path:  # http://stackoverflow.com/a/72796/2271927
-                subprocess.call(('start', '', path), shell=True)
-            else:
-                subprocess.call(('start', path), shell=True)
-        elif sys.platform.startswith('linux'):
-            # xdg-open is available on all Freedesktop.org compliant distros
-            # http://superuser.com/questions/38984/linux-equivalent-command-for-open-command-on-mac-windows
-            subprocess.call(('xdg-open', path))
-    #@+node:ekr.20190810003404.258: *4* PopupMenu._showInFinder
-    def _showInFinder(self):
-        subprocess.call(('open', '-R', self._item.path()))
-    #@+node:ekr.20190810003404.259: *4* PopupMenu._copyPath
-    def _copyPath(self):
-        QtWidgets.qApp.clipboard().setText(self._item.path())
-    #@+node:ekr.20190810003404.260: *4* PopupMenu._runAsScript (not used)
-    ###
-    # def _runAsScript(self):
-        # filename = self._item.path()
-        # shell = pyzo.shells.getCurrentShell()
-        # if shell is not None:
-            # shell.restart(filename)
-        # else:
-            # msg = "No shell to run code in. "
-            # m = QtWidgets.QMessageBox(self)
-            # m.setWindowTitle(translate("menu dialog", "Could not run"))
-            # m.setText("Could not run " + filename + ":\n\n" + msg)
-            # m.setIcon(m.Warning)
-            # m.exec_()
-    #@+node:ekr.20190810003404.261: *4* PopupMenu._runNotebook (not used)
-    ###
-    # def _runNotebook(self):
-        # filename = self._item.path()
-        # if 0: # Later, never.
-        # shell = pyzo.shells.getCurrentShell()
-        # if shell is not None:
-            # shell.restart(filename)
-        # else:
-            # msg = "No shell to run notebook in. "
-            # m = QtWidgets.QMessageBox(self)
-            # m.setWindowTitle(translate("menu dialog", "Could not run notebook"))
-            # m.setText("Could not run " + filename + ":\n\n" + msg)
-            # m.setIcon(m.Warning)
-            # m.exec_()
-    #@+node:ekr.20190810003404.262: *4* PopupMenu._importData
-    def _importData(self):
-        browser = self.parent().parent()
-        wizard = browser.getImportWizard()
-        wizard.open(self._item.path())
-    #@+node:ekr.20190810003404.263: *4* PopupMenu.onDuplicate
-    def onDuplicate(self):
-        return self._duplicateOrRename(False)
-    #@+node:ekr.20190810003404.264: *4* PopupMenu.onRename
-    def onRename(self):
-        return self._duplicateOrRename(True)
-    #@+node:ekr.20190810003404.265: *4* PopupMenu.onCreateFile
-    def onCreateFile(self):
-        self._createDirOrFile(True)
-    #@+node:ekr.20190810003404.266: *4* PopupMenu.onCreateDir
-    def onCreateDir(self):
-        self._createDirOrFile(False)
-    #@+node:ekr.20190810003404.267: *4* PopupMenu._createDirOrFile
-    def _createDirOrFile(self, file=True):
-
-        # Get title and label
-        if file:
-            title = translate("filebrowser", "Create new file")
-            label = translate("filebrowser", "Give the new name for the file")
-        else:
-            title = translate("filebrowser", "Create new directory")
-            label = translate("filebrowser", "Give the name for the new directory")
-
-        # Ask for new filename
-        s = QtWidgets.QInputDialog.getText(self.parent(), title,
-                    label + ':\n%s' % self._item.path(),
-                    QtWidgets.QLineEdit.Normal,
-                    'new name'
-                )
-        if isinstance(s, tuple):
-            s = s[0] if s[1] else ''
-
-        # Push rename task
-        if s:
-            newpath = op.join(self._item.path(), s)
-            task = CreateTask(newpath=newpath, file=file)
-            self._item._proxy.pushTask(task)
-    #@+node:ekr.20190810003404.268: *4* PopupMenu._duplicateOrRename
-    def _duplicateOrRename(self, rename):
-
-        # Get dirname and filename
-        dirname, filename = op.split(self._item.path())
-
-        # Get title and label
-        if rename:
-            title = translate("filebrowser", "Rename")
-            label = translate("filebrowser", "Give the new name for the file")
-        else:
-            title = translate("filebrowser", "Duplicate")
-            label = translate("filebrowser", "Give the name for the new file")
-            filename = 'Copy of ' + filename
-
-        # Ask for new filename
-        s = QtWidgets.QInputDialog.getText(self.parent(), title,
-                    label + ':\n%s' % self._item.path(),
-                    QtWidgets.QLineEdit.Normal,
-                    filename
-                )
-        if isinstance(s, tuple):
-            s = s[0] if s[1] else ''
-
-        # Push rename task
-        if s:
-            newpath = op.join(dirname, s)
-            task = RenameTask(newpath=newpath, removeold=rename)
-            self._item._proxy.pushTask(task)
-    #@+node:ekr.20190810003404.269: *4* PopupMenu.onDelete
-    def onDelete(self):
-        # Ask for new filename
-        b = QtWidgets.QMessageBox.question(self.parent(),
-                    translate("filebrowser", "Delete"),
-                    translate("filebrowser", "Are you sure that you want to delete") +
-                    ':\n%s' % self._item.path(),
-                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel,
-                )
-        # Push delete task
-        if b == QtWidgets.QMessageBox.Yes:
-            self._item._proxy.pushTask(RemoveTask())
-    #@-others
-#@+node:ekr.20190810003404.270: ** Utils
+#@+node:ekr.20190810003404.270: *3* Utility functions
 # From utils.py
-#@+node:ekr.20190810003404.272: *3* cleanpath
+#@+node:ekr.20190810003404.272: *4* cleanpath
 def cleanpath(p):
     return op.normpath(op.expanduser(op.expandvars(p)))
-#@+node:ekr.20190810003404.273: *3* isdir
+#@+node:ekr.20190810003404.273: *4* isdir
 def isdir(p):
     # Add os.sep, because trailing spaces seem to be ignored on Windows
     return op.isdir(p + op.sep)
-#@+node:ekr.20190810003404.274: *3* ext
+#@+node:ekr.20190810003404.274: *4* ext
 def ext(p):
     return os.path.splitext(p)[1]
 # todo: also include available remote file systems
-#@+node:ekr.20190810003404.275: *3* getMounts
+#@+node:ekr.20190810003404.275: *4* getMounts
 def getMounts():
     if sys.platform.startswith('win'):
         return getDrivesWin()
@@ -2699,7 +2649,7 @@ def getMounts():
         return ['/'] + [op.join('/media', e) for e in os.listdir('/media')]
     else:
         return '/'
-#@+node:ekr.20190810003404.276: *3* getDrivesWin
+#@+node:ekr.20190810003404.276: *4* getDrivesWin
 def getDrivesWin():
     drives = []
     bitmask = ctypes.windll.kernel32.GetLogicalDrives()
@@ -2708,7 +2658,7 @@ def getDrivesWin():
             drives.append(letter)
         bitmask >>= 1
     return [drive+':\\' for drive in drives]
-#@+node:ekr.20190810003404.277: *3* hasHiddenAttribute
+#@+node:ekr.20190810003404.277: *4* hasHiddenAttribute
 def hasHiddenAttribute(path):
     """ Test (on Windows) whether a file should be hidden.
     """
@@ -2720,753 +2670,7 @@ def hasHiddenAttribute(path):
         return bool(attrs & 2)
     except (AttributeError, AssertionError):
         return False
-#@+node:ekr.20190811001224.1: ** z in pyzo_icons.py
-#@+node:ekr.20190810134710.1: *3* Icons
-#@+node:ekr.20190810142803.1: *4* class PyzoIcons(dict)
-class PyzoIcons(dict): # From zon.py
-
-    '''
-    A dict that allows attribute access.
-    A simplified version of the Dict class in zon.py.
-    '''
-    
-    def __getattribute__(self, key):
-        try:
-            return object.__getattribute__(self, key)
-        except AttributeError:
-            if key in self:
-                return self[key]
-            else:
-                raise
-
-    def __setattr__(self, key, val):
-        self[key] = val
-#@+node:ekr.20190810134724.3: *4* loadIcons
-def loadIcons(): # From __main__.py
-    """ Load all icons in the icon dir."""
-    # Get directory containing the icons
-    # EKR:change
-        # iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
-    iconDir = g.os_path_finalize_join(g.app.loadDir, '..',
-        'external', 'pyzo', 'resources', 'icons')
-
-    # Construct other icons
-    dummyIcon = IconArtist().finish()
-    pyzo_icons = PyzoIcons() # EKR:change.
-        
-    for fname in os.listdir(iconDir):
-        if fname.endswith('.png'):
-            try:
-                # Short and full name
-                name = fname.split('.')[0]
-                name = name.replace('pyzo_', '')  # discart prefix
-                ffname = os.path.join(iconDir,fname)
-                # Create icon
-                icon = QtGui.QIcon()
-                icon.addFile(ffname, QtCore.QSize(16,16))
-                # Store
-                pyzo_icons[name] = icon
-            except Exception as err:
-                pyzo_icons[name] = dummyIcon
-                print('Could not load icon %s: %s' % (fname, str(err)))
-    return pyzo_icons # EKR:change
-#@+node:ekr.20190810134724.5: *4* class IconArtist
-class IconArtist: # From icons.py
-    """ IconArtist(icon=None)
-
-    Object to draw icons with. Can be instantiated with an existing icon
-    or as a blank icon. Perform operations and then use finish() to
-    obtain the result.
-
-    """
-
-    #@+others
-    #@+node:ekr.20190810134724.6: *5* IconArtist.__init__
-    def __init__(self, icon=None):
-
-        # Get pixmap from given icon (None creates empty pixmap)
-        self._pm = self._getPixmap(icon)
-
-        # Instantiate painter for the pixmap
-        self._painter = QtGui.QPainter()
-        self._painter.begin(self._pm)
-    #@+node:ekr.20190810134724.7: *5* IconArtist.finish
-    def finish(self, icon=None):
-        """ finish()
-        Finish the drawing and return the resulting icon.
-        """
-        self._painter.end()
-        return QtGui.QIcon(self._pm)
-    #@+node:ekr.20190810134724.8: *5* IconArtist._getPixmap
-    def _getPixmap(self, icon):
-
-        # Get icon if given by name
-        if isinstance(icon, str):
-            icon = pyzo_icons[icon]
-
-        # Create pixmap
-        if icon is None:
-            pm = QtGui.QPixmap(16, 16)
-            pm.fill(QtGui.QColor(0,0,0,0))
-            return pm
-        if isinstance(icon, tuple):
-            pm = QtGui.QPixmap(icon[0], icon[1])
-            pm.fill(QtGui.QColor(0,0,0,0))
-            return pm
-        if isinstance(icon, QtGui.QPixmap):
-            return icon
-        if isinstance(icon, QtGui.QIcon):
-            return icon.pixmap(16, 16)
-        raise ValueError('Icon for IconArtis should be icon, pixmap or name.')
-    #@+node:ekr.20190810134724.9: *5* IconArtist.setPenColor
-    def setPenColor(self, color):
-        """ setPenColor(color)
-        Set the color of the pen. Color can be anything that can be passed to
-        Qcolor().
-        """
-        pen = QtGui.QPen()
-        if isinstance(color, tuple):
-            pen.setColor(QtGui.QColor(*color))
-        else:
-            pen.setColor(QtGui.QColor(color))
-        self._painter.setPen(pen)
-    #@+node:ekr.20190810134724.10: *5* IconArtist.addLayer
-    def addLayer(self, overlay, x=0, y=0):
-        """ addOverlay(overlay, x=0, y=0)
-        Add an overlay icon to the icon (add the specified position).
-        """
-        pm = self._getPixmap(overlay)
-        self._painter.drawPixmap(x, y, pm)
-    #@+node:ekr.20190810134724.11: *5* IconArtist.addLine
-    def addLine(self, x1, y1, x2, y2):
-        """ addLine( x1, y1, x2, y2)
-        Add a line to the icon.
-        """
-        self._painter.drawLine(x1, y1, x2, y2)
-    #@+node:ekr.20190810134724.12: *5* IconArtist.addPoint
-    def addPoint(self, x, y):
-        """ addPoint( x, y)
-        Add a point to the icon.
-        """
-        self._painter.drawPoint(x, y)
-    #@+node:ekr.20190810134724.13: *5* IconArtist.addMenuArrow
-    def addMenuArrow(self, strength=100):
-        """ addMenuArrow()
-        Adds a menu arrow to the icon to let the user know the icon
-        is clickable.
-        """
-        x, y = 0, 12
-        a1, a2 = int(strength/2), strength
-        # Zeroth line of 3+2
-        self.setPenColor((0,0,0,a1))
-        self.addPoint(x+0,y-1); self.addPoint(x+4,y-1)
-        self.setPenColor((0,0,0,a2))
-        self.addPoint(x+1,y-1); self.addPoint(x+2,y-1); self.addPoint(x+3,y-1)
-        # First line of 3+2
-        self.setPenColor((0,0,0,a1))
-        self.addPoint(x+0,y+0); self.addPoint(x+4,y+0)
-        self.setPenColor((0,0,0,a2))
-        self.addPoint(x+1,y+0); self.addPoint(x+2,y+0); self.addPoint(x+3,y+0)
-        # Second line of 3
-        self.addPoint(x+1,y+1); self.addPoint(x+2,y+1); self.addPoint(x+3,y+1)
-        # Third line of 1+2
-        self.addPoint(x+2,y+2)
-        self.setPenColor((0,0,0,a1))
-        self.addPoint(x+1,y+2); self.addPoint(x+3,y+2)
-        # Fourth line of 1
-        self.setPenColor((0,0,0,a2))
-        self.addPoint(x+2,y+3)
-    # todo: not used; remove me?
-    #@-others
-#@+node:ekr.20190810140343.1: *3* Paths & directories
-#@+node:ekr.20190810140352.1: *4* appdata_dir
-def appdata_dir(appname=None, roaming=False, macAsLinux=False):
-    """ appdata_dir(appname=None, roaming=False,  macAsLinux=False)
-    Get the path to the application directory, where applications are allowed
-    to write user specific files (e.g. configurations). For non-user specific
-    data, consider using common_appdata_dir().
-    If appname is given, a subdir is appended (and created if necessary).
-    If roaming is True, will prefer a roaming directory (Windows Vista/7).
-    If macAsLinux is True, will return the Linux-like location on Mac.
-    """
-
-    # Define default user directory
-    userDir = os.path.expanduser('~')
-
-    # Get system app data dir
-    path = None
-    if sys.platform.startswith('win'):
-        path1, path2 = os.getenv('LOCALAPPDATA'), os.getenv('APPDATA')
-        path = (path2 or path1) if roaming else (path1 or path2)
-    elif sys.platform.startswith('darwin') and not macAsLinux:
-        path = os.path.join(userDir, 'Library', 'Application Support')
-    # On Linux and as fallback
-    if not (path and os.path.isdir(path)):
-        path = userDir
-
-    # Maybe we should store things local to the executable (in case of a
-    # portable distro or a frozen application that wants to be portable)
-    prefix = sys.prefix
-    if getattr(sys, 'frozen', None): # See application_dir() function
-        prefix = os.path.abspath(os.path.dirname(sys.executable))
-    for reldir in ('settings', '../settings'):
-        localpath = os.path.abspath(os.path.join(prefix, reldir))
-        if os.path.isdir(localpath):
-            try:
-                open(os.path.join(localpath, 'test.write'), 'wb').close()
-                os.remove(os.path.join(localpath, 'test.write'))
-            except IOError:
-                pass # We cannot write in this directory
-            else:
-                path = localpath
-                break
-
-    # Get path specific for this app
-    if appname:
-        if path == userDir:
-            appname = '.' + appname.lstrip('.') # Make it a hidden directory
-        path = os.path.join(path, appname)
-        if not os.path.isdir(path):
-            os.mkdir(path)
-
-    # Done
-    return path
-#@+node:ekr.20190810140106.1: *4* getResourceDirs
-def getResourceDirs(): # From pyzo.__init__.py
-    """ getResourceDirs()
-    Get the directories to the resources: (pyzoDir, appDataDir).
-    Also makes sure that the appDataDir has a "tools" directory and
-    a style file.
-    """
-    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo') # EKR:change
-    appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
-    return pyzoDir, appDataDir
-#@+node:ekr.20190811001325.1: ** z in pyzo_config.py
-#@+node:ekr.20190811003632.1: *3* from zon.py
-#@+node:ekr.20190811002957.3: *4* isidentifier
-def isidentifier(s):
-    # http://stackoverflow.com/questions/2544972/
-    if not isinstance(s, str):
-        return False
-    return re.match(r'^\w+$', s, re.UNICODE) and re.match(r'^[0-9]', s) is None
-#@+node:ekr.20190811002957.4: *4* class Dict(_dict)
-class Dict(_dict):
-    """ A dict in which the items can be get/set as attributes.
-    """
-
-    __reserved_names__ = dir(_dict())  # Also from OrderedDict
-    __pure_names__ = dir(dict())
-    __slots__ = []
-
-    #@+others
-    #@+node:ekr.20190811002957.5: *5* Dict.__repr__
-    def __repr__(self):
-        identifier_items = []
-        nonidentifier_items = []
-        for key, val in self.items():
-            if isidentifier(key):
-                identifier_items.append('%s=%r' % (key, val))
-            else:
-                nonidentifier_items.append('(%r, %r)' % (key, val))
-        if nonidentifier_items:
-            return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
-                                       ', '.join(identifier_items))
-        else:
-            return 'Dict(%s)' % (', '.join(identifier_items))
-    #@+node:ekr.20190811002957.6: *5* Dict.__getattribute__
-    def __getattribute__(self, key):
-        try:
-            return object.__getattribute__(self, key)
-        except AttributeError:
-            if key in self:
-                return self[key]
-            else:
-                raise
-    #@+node:ekr.20190811002957.7: *5* Dict.__setattr__
-    def __setattr__(self, key, val):
-        if key in Dict.__reserved_names__:
-            # Either let OrderedDict do its work, or disallow
-            if key not in Dict.__pure_names__:
-                return _dict.__setattr__(self, key, val)
-            else:
-                raise AttributeError('Reserved name, this key can only ' +
-                                     'be set via ``d[%r] = X``' % key)
-        else:
-            # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
-            self[key] = val
-    #@+node:ekr.20190811002957.8: *5* Dict.__dir__
-    def __dir__(self):
-        names = [k for k in self.keys() if isidentifier(k)]
-        return Dict.__reserved_names__ + names
-
-    #@-others
-
-# EKR:change
-    # Struct = Dict
-    # Struct.__is_ssdf_struct__ = True
-ssdf_Struct = Dict
-ssdf_Struct.__is_ssdf_struct__ = True
-    
-## Public functions
-#@+node:ekr.20190811002957.9: *4* SSDF compatibility
-# SSDF compatibility
-#@+node:ekr.20190811002957.10: *5* isstruct
-def isstruct(ob):  # SSDF compatibility
-    """ isstruct(ob)
-
-    Returns whether the given object is an SSDF struct.
-    """
-    if hasattr(ob, '__is_ssdf_struct__'):
-        return bool(ob.__is_ssdf_struct__)
-    else:
-        return False
-#@+node:ekr.20190811002957.11: *5* new
-def new():
-    """ new()
-
-    Create a new Dict object. The same as "Dict()".
-    """
-    return Dict()
-
-ssdf_new = new
-#@+node:ekr.20190811002957.12: *5* clear & ssdf_clear
-def clear(d):  # SSDF compatibility
-    """ clear(d)
-
-    Clear all elements of the given Dict object.
-    """
-    d.clear()
-
-ssdf_clear = clear
-#@+node:ekr.20190811002957.13: *5* copy
-def copy(object):
-    """ copy(objec)
-
-    Return a deep copy the given object. The object and its children
-    should be dict-compatible data types. Note that dicts are converted
-    to Dict and tuples to lists.
-    """
-    if isstruct(object) or isinstance(object, dict):
-        newObject = Dict()
-        for key in object:
-            val = object[key]
-            newObject[key] = copy(val)
-        return newObject
-    elif isinstance(object, (tuple, list)):
-        return [copy(ob) for ob in object]
-    else:
-        return object  # immutable
-#@+node:ekr.20190811002957.14: *5* count
-def count(object, cache=None):
-    """ count(object):
-
-    Count the number of elements in the given object. An element is
-    defined as one of the 6 datatypes supported by ZON (dict,
-    tuple/list, string, int, float, None).
-    """
-    cache = cache or []
-    if isstruct(object) or isinstance(object, (dict, list)):
-        if id(object) in cache:
-            raise RuntimeError('recursion!')
-        cache.append(id(object))
-    n = 1
-    if isstruct(object) or isinstance(object, dict):
-        for key in object:
-            val = object[key]
-            n += count(val, cache)
-    elif isinstance(object, (tuple, list)):
-        for val in object:
-            n += count(val, cache)
-    return n
-#@+node:ekr.20190811002957.15: *5* loads
-def loads(text):
-    """ loads(text)
-
-    Load a Dict from the given Unicode) string in ZON syntax.
-    """
-    if not isinstance(text, string_types):
-        raise ValueError('zon.loads() expects a string.')
-    reader = ReaderWriter()
-    return reader.read(text)
-#@+node:ekr.20190811002957.16: *5* load & ssdf_load
-def load(file_):
-    """ load(filename)
-
-    Load a Dict from the given file or filename.
-    """
-    if isinstance(file_, string_types):
-        file = open(file_, 'rb')
-    text = file.read().decode('utf-8')
-    return loads(text)
-
-ssdf_load = load
-#@+node:ekr.20190811002957.17: *5* saves
-def saves(d):
-    """ saves(d)
-
-    Serialize the given dict to a (Unicode) string.
-    """
-    if not (isstruct(d) or isinstance(d, dict)):
-        raise ValueError('ssdf.saves() expects a dict.')
-    writer = ReaderWriter()
-    text = writer.save(d)
-    return text
-#@+node:ekr.20190811002957.18: *5* save
-def save(file, d):
-    """ save(file, d)
-
-    Serialize the given dict to the given file or filename.
-    """
-    text = saves(d)
-    if isinstance(file, string_types):
-        file = open(file, 'wb')
-    with file:
-        file.write(text.encode('utf-8'))
-#@+node:ekr.20190811002957.19: *4* class ReaderWriter(object)
-## The core
-
-class ReaderWriter(object):
-
-    #@+others
-    #@+node:ekr.20190811002957.20: *5* ReaderWriter.read
-    def read(self, text):
-
-        indent = 0
-        root = Dict()
-        container_stack = [(0, root)]
-        new_container = None
-
-        for i, line in enumerate(text.splitlines()):
-            linenr = i + 1
-
-            # Strip line
-            line2 = line.lstrip()
-
-            # Skip comments and empty lines
-            if not line2 or line2[0] == '#':
-                continue
-
-            # Find the indentation
-            prev_indent = indent
-            indent = len(line) - len(line2)
-            if indent == prev_indent:
-                pass
-            elif indent < prev_indent:
-                while container_stack[-1][0] > indent:
-                    container_stack.pop(-1)
-                if container_stack[-1][0] != indent:
-                    print('ZON: Ignoring wrong dedentation at %i' % linenr)
-            elif indent > prev_indent and new_container is not None:
-                container_stack.append((indent, new_container))
-                new_container = None
-            else:
-                print('ZON: Ignoring wrong indentation at %i' % linenr)
-                indent = prev_indent
-
-            # Split name and data using a regular expression
-            m = re.search("^\w+? *?=", line2)
-            if m:
-                i = m.end(0)
-                name = line2[:i-1].strip()
-                data = line2[i:].lstrip()
-            else:
-                name = None
-                data = line2
-
-            # Get value
-            value = self.to_object(data, linenr)
-
-            # Store the value
-            _indent, current_container = container_stack[-1]
-            if isinstance(current_container, dict):
-                if name:
-                    current_container[name] = value
-                else:
-                    print('ZON: unnamed item in dict on line %i' % linenr)
-            elif isinstance(current_container, list):
-                if name:
-                    print('ZON: named item in list on line %i' % linenr)
-                else:
-                    current_container.append(value)
-            else:
-                raise RuntimeError('Invalid container %r' % current_container)
-
-            # Prepare for next round
-            if isinstance(value, (dict, list)):
-                new_container = value
-
-        return root
-    #@+node:ekr.20190811002957.21: *5* ReaderWriter.save
-    def save(self, d):
-
-        pyver = '%i.%i.%i' % sys.version_info[:3]
-        ct = time.asctime()
-        lines = []
-        lines.append('# -*- coding: utf-8 -*-')
-        lines.append('# This Zoof Object Notation (ZON) file was')
-        lines.append('# created from Python %s on %s.\n' % (pyver, ct))
-        lines.append('')
-        lines.extend(self.from_dict(d, -2)[1:])
-
-        return '\r\n'.join(lines)
-        # todo: pop toplevel dict
-    #@+node:ekr.20190811002957.22: *5* ReaderWriter.from_object
-    def from_object(self, name, value, indent):
-
-        # Get object's data
-        if value is None:
-            data = 'Null'
-        elif isinstance(value, integer_types):
-            data = self.from_int(value)
-        elif isinstance(value, float_types):
-            data = self.from_float(value)
-        elif isinstance(value, bool):
-            data = self.from_int(int(value))
-        elif isinstance(value, string_types):
-            data = self.from_unicode(value)
-        elif isinstance(value, dict):
-            data = self.from_dict(value, indent)
-        elif isinstance(value, (list, tuple)):
-            data = self.from_list(value, indent)
-        else:
-            # We do not know
-            data = 'Null'
-            tmp = repr(value)
-            if len(tmp) > 64:
-                tmp = tmp[:64] + '...'
-            if name is not None:
-                print("ZON: %s is unknown object: %s" %  (name, tmp))
-            else:
-                print("ZON: unknown object: %s" % tmp)
-
-        # Finish line (or first line)
-        if isinstance(data, string_types):
-            data = [data]
-        if name:
-            data[0] = '%s%s = %s' % (' ' * indent, name, data[0])
-        else:
-            data[0] = '%s%s' % (' ' * indent, data[0])
-
-        return data
-    #@+node:ekr.20190811002957.23: *5* ReaderWriter.to_object
-    def to_object(self, data, linenr):
-
-        data = data.lstrip()
-
-        # Determine what type of object we're dealing with by reading
-        # like a human.
-        if not data:
-            print('ZON: no value specified at line %i.' % linenr)
-        elif data[0] in '-.0123456789':
-            return self.to_int_or_float(data, linenr)
-        elif data[0] == "'":
-            return self.to_unicode(data, linenr)
-        elif data.startswith('dict:'):
-            return self.to_dict(data, linenr)
-        elif data.startswith('list:') or data[0] == '[':
-            return self.to_list(data, linenr)
-        elif data.startswith('Null') or data.startswith('None'):
-            return None
-        else:
-            print("ZON: invalid type on line %i." % linenr)
-            return None
-    #@+node:ekr.20190811002957.24: *5* ReaderWriter.to_int_or_float
-    def to_int_or_float(self, data, linenr):
-        line = data.partition('#')[0]
-        try:
-            return int(line)
-        except ValueError:
-            try:
-                return float(line)
-            except ValueError:
-                print("ZON: could not parse number on line %i." % linenr)
-                return None
-    #@+node:ekr.20190811002957.25: *5* ReaderWriter.from_int
-    def from_int(self, value):
-        return repr(int(value)).rstrip('L')
-    #@+node:ekr.20190811002957.26: *5* ReaderWriter.from_float
-    def from_float(self, value):
-        # Use general specifier with a very high precision.
-        # Any spurious zeros are automatically removed. The precision
-        # should be sufficient such that any numbers saved and loaded
-        # back will have the exact same value again.
-        # see e.g. http://bugs.python.org/issue1580
-        return repr(float(value))  # '%0.17g' % value
-    #@+node:ekr.20190811002957.27: *5* ReaderWriter.from_unicode
-    def from_unicode(self, value):
-        value = value.replace('\\', '\\\\')
-        value = value.replace('\n','\\n')
-        value = value.replace('\r','\\r')
-        value = value.replace('\x0b', '\\x0b').replace('\x0c', '\\x0c')
-        value = value.replace("'", "\\'")
-        return "'" + value + "'"
-    #@+node:ekr.20190811002957.28: *5* ReaderWriter.to_unicode
-    def to_unicode(self, data, linenr):
-        # Encode double slashes
-        line = data.replace('\\\\','0x07') # temp
-
-        # Find string using a regular expression
-        m = re.search("'.*?[^\\\\]'|''", line)
-        if not m:
-            print("ZON: string not ended correctly on line %i." % linenr)
-            return None # return not-a-string
-        else:
-            line = m.group(0)[1:-1]
-
-        # Decode stuff
-        line = line.replace('\\n','\n')
-        line = line.replace('\\r','\r')
-        line = line.replace('\\x0b', '\x0b').replace('\\x0c', '\x0c')
-        line = line.replace("\\'","'")
-        line = line.replace('0x07','\\')
-        return line
-    #@+node:ekr.20190811002957.29: *5* ReaderWriter.from_dict
-    def from_dict(self, value, indent):
-        lines = ["dict:"]
-        # Process children
-        for key, val in value.items():
-            # Skip all the builtin stuff
-            if key.startswith("__"):
-                continue
-            # Skip methods, or anything else we can call
-            if hasattr(val, '__call__'):
-                continue  # Note: py3.x does not have function callable
-            # Add!
-            lines.extend(self.from_object(key, val, indent+2))
-        return lines
-    #@+node:ekr.20190811002957.30: *5* ReaderWriter.to_dict
-    def to_dict(self, data, linenr):
-        return Dict()
-    #@+node:ekr.20190811002957.31: *5* ReaderWriter.from_list
-    def from_list(self, value, indent):
-        # Collect subdata and check whether this is a "small list"
-        isSmallList = True
-        allowedTypes = integer_types + float_types + string_types
-        subItems = []
-        for element in value:
-            if not isinstance(element, allowedTypes):
-                isSmallList = False
-            subdata = self.from_object(None, element, 0)  # No indent
-            subItems.extend(subdata)
-        isSmallList = isSmallList and len(subItems) < 256
-
-        # Return data
-        if isSmallList:
-            return '[%s]' % (', '.join(subItems))
-        else:
-            data = ["list:"]
-            ind = ' ' * (indent + 2)
-            for item in subItems:
-                data.append(ind + item)
-            return data
-    #@+node:ekr.20190811002957.32: *5* ReaderWriter.to_list
-    def to_list(self, data, linenr):
-        value = []
-        if data[0] == 'l': # list:
-            return list()
-        else:
-            i0 = 1
-            pieces = []
-            inString = False
-            escapeThis = False
-            line = data
-            for i in range(1,len(line)):
-                if inString:
-                    # Detect how to get out
-                    if escapeThis:
-                        escapeThis = False
-                        continue
-                    elif line[i] == "\\":
-                        escapeThis = True
-                    elif line[i] == "'":
-                        inString = False
-                else:
-                    # Detect going in a string, break, or end
-                    if line[i] == "'":
-                        inString = True
-                    elif line[i] == ",":
-                        pieces.append(line[i0:i])
-                        i0 = i+1
-                    elif line[i] == "]":
-                        piece = line[i0:i]
-                        if piece.strip(): # Do not add if empty
-                            pieces.append(piece)
-                        break
-            else:
-                print("ZON: short list not closed right on line %i." % linenr)
-
-            # Cut in pieces and process each piece
-            value = []
-            for piece in pieces:
-                v = self.to_object(piece, linenr)
-                value.append(v)
-            return value
-    #@-others
-#@+node:ekr.20190811003649.1: *3* from pyzo.__init__.py
-## Define some functions
-
-# todo: move some stuff out of this module ...
-#@+node:ekr.20190811003647.4: *4* loadConfig
-def loadConfig(defaultsOnly=False):
-    """ loadConfig(defaultsOnly=False)
-    Load default and site-wide configuration file(s) and that of the user (if it exists).
-    Any missing fields in the user config are set to the defaults.
-    """
-
-    # Function to insert names from one config in another
-    def replaceFields(base, new):
-        for key in new:
-            if key in base and isinstance(base[key], ssdf_Struct):
-                replaceFields(base[key], new[key])
-            else:
-                base[key] = new[key]
-                
-    config = ssdf_new()
-
-    # Reset our pyzo.config structure
-    ssdf_clear(config) # EKR:change.
-
-    # Load default and inject in the pyzo.config
-    fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
-    defaultConfig = ssdf_load(fname) # EKR:change
-    replaceFields(config, defaultConfig)
-
-    # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
-    if sys.platform == 'darwin':
-        config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
-
-    # Load site-wide config if it exists and inject in pyzo.config
-    fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
-    if os.path.isfile(fname):
-        try:
-            siteConfig = ssdf_load(fname) # EKR:change
-            replaceFields(config, siteConfig) # EKR:change
-        except Exception:
-            t = 'Error while reading config file %r, maybe its corrupt?'
-            print(t % fname)
-            raise
-
-    # Load user config and inject in pyzo.config
-    fname = os.path.join(appDataDir, "config.ssdf")
-    if os.path.isfile(fname):
-        try:
-            userConfig = ssdf_load(fname) # EKR:change
-            replaceFields(config, userConfig)
-        except Exception:
-            t = 'Error while reading config file %r, maybe its corrupt?'
-            print(t % fname)
-            raise
-    return config
 #@-others
-
-# Compute standard places.
-pyzoDir, appDataDir = getResourceDirs()
-
-# Load all icons.
-pyzo_icons = loadIcons()
-
-# From pyzo.start
-pyzo_config = loadConfig()
 
 #@@language python
 #@@tabwidth -4
