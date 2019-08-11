@@ -395,7 +395,7 @@ class LeoApp:
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            "rust": "c",
+            #"rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -512,6 +512,7 @@ class LeoApp:
             "rex":      "objectrexx",
             "rhtml":    "rhtml",
             "rib":      "rib",
+            "rs":       "rust", # EKR: 2019/08/11
             "sas":      "sas",
             "scala":    "scala",
             "scm":      "scheme",
@@ -881,6 +882,7 @@ class LeoApp:
             "rib"           : "rib",
             "rst"           : "rest",
             "ruby"          : "rb", # thyrsus 2008-11-05
+            "rust"          : "rs", # EKR: 2019/08/11
             "sas"           : "sas",
             "scala"         : "scala",
             "scheme"        : "scm",
