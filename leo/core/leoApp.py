@@ -395,7 +395,7 @@ class LeoApp:
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            "rust": "c",
+            #"rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -879,6 +879,7 @@ class LeoApp:
             "rebol"         : "r", # jason 2003-07-03
             "rhtml"         : "rhtml",
             "rib"           : "rib",
+            "rs"            : "rust",
             "rst"           : "rest",
             "ruby"          : "rb", # thyrsus 2008-11-05
             "sas"           : "sas",
