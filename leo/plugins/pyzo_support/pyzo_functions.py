@@ -6,9 +6,9 @@
 """pyzo_functions.py: functions from pyzo's startup logic."""
 
 import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore, QtGui # QtWidgets
 import os
 import sys
-from leo.core.leoQt import QtCore, QtGui # QtWidgets
 from . import zon as ssdf
 
 #@+others
