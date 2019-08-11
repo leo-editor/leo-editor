@@ -512,6 +512,7 @@ class LeoApp:
             "rex":      "objectrexx",
             "rhtml":    "rhtml",
             "rib":      "rib",
+            "rs":       "rust", # EKR: 2019/08/11
             "sas":      "sas",
             "scala":    "scala",
             "scm":      "scheme",
@@ -879,9 +880,9 @@ class LeoApp:
             "rebol"         : "r", # jason 2003-07-03
             "rhtml"         : "rhtml",
             "rib"           : "rib",
-            "rs"            : "rust",
             "rst"           : "rest",
             "ruby"          : "rb", # thyrsus 2008-11-05
+            "rust"          : "rs", # EKR: 2019/08/11
             "sas"           : "sas",
             "scala"         : "scala",
             "scheme"        : "scm",
