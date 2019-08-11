@@ -3467,4 +3467,7 @@ pyzo_icons = loadIcons()
 
 # From pyzo.start
 pyzo_config = loadConfig()
+
+#@@language python
+#@@tabwidth -4
 #@-leo
