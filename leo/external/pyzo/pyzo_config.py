@@ -1,31 +1,27 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2016, Almar Klein
 """
-Reading and saving Zoof Object Notation files. ZON is like JSON, but a
-more Pythonic format. It's just about 500 lines of code.
+A new module containing (for now) *copies* of config-related code.
+"""
 
-This format is a spin-off from the SSDF format, it is fully compatible,
-except that ZON does not support numpy arrays.
-"""
+import leo.core.leoGlobals as leo_g
+assert leo_g
+# from leo.core.leoQt import QtCore, QtGui #, QtWidgets
+import os
 import re
 import sys
 import time
 
-# From six.py
-# if sys.version_info[0] >= 3:
+# From zon.py...
+# pylint: disable=trailing-comma-tuple
 string_types = str,
 integer_types = int,
-# else:
-    # string_types = basestring,  # noqa
-    # integer_types = (int, long)  # noqa
 float_types = float,
-
-## Dict class
 
 try:  # pragma: no cover
     from collections import OrderedDict as _dict
 except ImportError:
     _dict = dict
+    
 def isidentifier(s):
     # http://stackoverflow.com/questions/2544972/
     if not isinstance(s, str):
@@ -50,35 +46,37 @@ class Dict(_dict):
         if nonidentifier_items:
             return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
                                        ', '.join(identifier_items))
-        else:
-            return 'Dict(%s)' % (', '.join(identifier_items))
+        return 'Dict(%s)' % (', '.join(identifier_items))
     def __getattribute__(self, key):
+        # pylint: disable=inconsistent-return-statements
         try:
             return object.__getattribute__(self, key)
         except AttributeError:
             if key in self:
                 return self[key]
-            else:
-                raise
-    def __setattr__(self, key, val):
-        if key in Dict.__reserved_names__:
-            # Either let OrderedDict do its work, or disallow
-            if key not in Dict.__pure_names__:
-                return _dict.__setattr__(self, key, val)
-            else:
-                raise AttributeError('Reserved name, this key can only ' +
-                                     'be set via ``d[%r] = X``' % key)
-        else:
-            # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
-            self[key] = val
+            raise
     def __dir__(self):
         names = [k for k in self.keys() if isidentifier(k)]
         return Dict.__reserved_names__ + names
 
+    def __setattr__(self, key, val):
 
-Struct = Dict
-Struct.__is_ssdf_struct__ = True
+        if key in Dict.__reserved_names__:
+            # Either let OrderedDict do its work, or disallow
+            if key not in Dict.__pure_names__:
+                return _dict.__setattr__(self, key, val)
+            raise AttributeError('Reserved name, this key can only ' +
+                                     'be set via ``d[%r] = X``' % key)
+        # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+        self[key] = val
+        return None # EKR: change.
 
+# EKR:change
+    # Struct = Dict
+    # Struct.__is_ssdf_struct__ = True
+ssdf_Struct = Dict
+ssdf_Struct.__is_ssdf_struct__ = True
+    
 ## Public functions
 # SSDF compatibility
 def isstruct(ob):  # SSDF compatibility
@@ -88,20 +86,23 @@ def isstruct(ob):  # SSDF compatibility
     """
     if hasattr(ob, '__is_ssdf_struct__'):
         return bool(ob.__is_ssdf_struct__)
-    else:
-        return False
+    return False
 def new():
     """ new()
 
     Create a new Dict object. The same as "Dict()".
     """
     return Dict()
+
+ssdf_new = new
 def clear(d):  # SSDF compatibility
     """ clear(d)
 
     Clear all elements of the given Dict object.
     """
     d.clear()
+
+ssdf_clear = clear
 def copy(object):
     """ copy(objec)
 
@@ -115,10 +116,9 @@ def copy(object):
             val = object[key]
             newObject[key] = copy(val)
         return newObject
-    elif isinstance(object, (tuple, list)):
+    if isinstance(object, (tuple, list)):
         return [copy(ob) for ob in object]
-    else:
-        return object  # immutable
+    return object  # immutable
 def count(object, cache=None):
     """ count(object):
 
@@ -149,15 +149,17 @@ def loads(text):
         raise ValueError('zon.loads() expects a string.')
     reader = ReaderWriter()
     return reader.read(text)
-def load(file):
+def load(file_):
     """ load(filename)
 
     Load a Dict from the given file or filename.
     """
-    if isinstance(file, string_types):
-        file = open(file, 'rb')
+    if isinstance(file_, string_types):
+        file = open(file_, 'rb')
     text = file.read().decode('utf-8')
     return loads(text)
+
+ssdf_load = load
 def saves(d):
     """ saves(d)
 
@@ -180,7 +182,7 @@ def save(file, d):
         file.write(text.encode('utf-8'))
 ## The core
 
-class ReaderWriter(object):
+class ReaderWriter():
 
     def read(self, text):
 
@@ -217,7 +219,7 @@ class ReaderWriter(object):
                 indent = prev_indent
 
             # Split name and data using a regular expression
-            m = re.search("^\w+? *?=", line2)
+            m = re.search(r"^\w+? *?=", line2) # EKR:change
             if m:
                 i = m.end(0)
                 name = line2[:i-1].strip()
@@ -307,19 +309,19 @@ class ReaderWriter(object):
         # like a human.
         if not data:
             print('ZON: no value specified at line %i.' % linenr)
-        elif data[0] in '-.0123456789':
+            return None
+        if data[0] in '-.0123456789':
             return self.to_int_or_float(data, linenr)
-        elif data[0] == "'":
+        if data[0] == "'":
             return self.to_unicode(data, linenr)
-        elif data.startswith('dict:'):
+        if data.startswith('dict:'):
             return self.to_dict(data, linenr)
-        elif data.startswith('list:') or data[0] == '[':
+        if data.startswith('list:') or data[0] == '[':
             return self.to_list(data, linenr)
-        elif data.startswith('Null') or data.startswith('None'):
+        if data.startswith('Null') or data.startswith('None'):
             return None
-        else:
-            print("ZON: invalid type on line %i." % linenr)
-            return None
+        print("ZON: invalid type on line %i." % linenr)
+        return None
     def to_int_or_float(self, data, linenr):
         line = data.partition('#')[0]
         try:
@@ -355,10 +357,8 @@ class ReaderWriter(object):
         if not m:
             print("ZON: string not ended correctly on line %i." % linenr)
             return None # return not-a-string
-        else:
-            line = m.group(0)[1:-1]
-
         # Decode stuff
+        line = m.group(0)[1:-1]
         line = line.replace('\\n','\n')
         line = line.replace('\\r','\r')
         line = line.replace('\\x0b', '\x0b').replace('\\x0c', '\x0c')
@@ -395,50 +395,183 @@ class ReaderWriter(object):
         # Return data
         if isSmallList:
             return '[%s]' % (', '.join(subItems))
-        else:
-            data = ["list:"]
-            ind = ' ' * (indent + 2)
-            for item in subItems:
-                data.append(ind + item)
-            return data
+        data = ["list:"]
+        ind = ' ' * (indent + 2)
+        for item in subItems:
+            data.append(ind + item)
+        return data
     def to_list(self, data, linenr):
         value = []
         if data[0] == 'l': # list:
             return list()
-        else:
-            i0 = 1
-            pieces = []
-            inString = False
-            escapeThis = False
-            line = data
-            for i in range(1,len(line)):
-                if inString:
-                    # Detect how to get out
-                    if escapeThis:
-                        escapeThis = False
-                        continue
-                    elif line[i] == "\\":
-                        escapeThis = True
-                    elif line[i] == "'":
-                        inString = False
-                else:
-                    # Detect going in a string, break, or end
-                    if line[i] == "'":
-                        inString = True
-                    elif line[i] == ",":
-                        pieces.append(line[i0:i])
-                        i0 = i+1
-                    elif line[i] == "]":
-                        piece = line[i0:i]
-                        if piece.strip(): # Do not add if empty
-                            pieces.append(piece)
-                        break
+       
+        i0 = 1
+        pieces = []
+        inString = False
+        escapeThis = False
+        line = data
+        for i in range(1,len(line)):
+            if inString:
+                # Detect how to get out
+                if escapeThis:
+                    escapeThis = False
+                    continue
+                elif line[i] == "\\":
+                    escapeThis = True
+                elif line[i] == "'":
+                    inString = False
             else:
-                print("ZON: short list not closed right on line %i." % linenr)
+                # Detect going in a string, break, or end
+                if line[i] == "'":
+                    inString = True
+                elif line[i] == ",":
+                    pieces.append(line[i0:i])
+                    i0 = i+1
+                elif line[i] == "]":
+                    piece = line[i0:i]
+                    if piece.strip(): # Do not add if empty
+                        pieces.append(piece)
+                    break
+        else:
+            print("ZON: short list not closed right on line %i." % linenr)
 
-            # Cut in pieces and process each piece
-            value = []
-            for piece in pieces:
-                v = self.to_object(piece, linenr)
-                value.append(v)
-            return value
+        # Cut in pieces and process each piece
+        value = []
+        for piece in pieces:
+            v = self.to_object(piece, linenr)
+            value.append(v)
+        return value
+## Define some functions
+
+# todo: move some stuff out of this module ...
+def loadConfig(defaultsOnly=False):
+    """ loadConfig(defaultsOnly=False)
+    Load default and site-wide configuration file(s) and that of the user (if it exists).
+    Any missing fields in the user config are set to the defaults.
+    """
+
+    # Function to insert names from one config in another
+    def replaceFields(base, new):
+        for key in new:
+            if key in base and isinstance(base[key], ssdf_Struct):
+                replaceFields(base[key], new[key])
+            else:
+                base[key] = new[key]
+                
+    config = ssdf_new()
+
+    # Reset our pyzo.config structure
+    ssdf_clear(config) # EKR:change.
+
+    # Load default and inject in the pyzo.config
+    fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
+    defaultConfig = ssdf_load(fname) # EKR:change
+    replaceFields(config, defaultConfig)
+
+    # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
+    if sys.platform == 'darwin':
+        config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
+
+    # Load site-wide config if it exists and inject in pyzo.config
+    fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
+    if os.path.isfile(fname):
+        try:
+            siteConfig = ssdf_load(fname) # EKR:change
+            replaceFields(config, siteConfig) # EKR:change
+        except Exception:
+            t = 'Error while reading config file %r, maybe its corrupt?'
+            print(t % fname)
+            raise
+
+    # Load user config and inject in pyzo.config
+    fname = os.path.join(appDataDir, "config.ssdf")
+    if os.path.isfile(fname):
+        try:
+            userConfig = ssdf_load(fname) # EKR:change
+            replaceFields(config, userConfig)
+        except Exception:
+            t = 'Error while reading config file %r, maybe its corrupt?'
+            print(t % fname)
+            raise
+    return config
+def appdata_dir(appname=None, roaming=False, macAsLinux=False):
+    """ appdata_dir(appname=None, roaming=False,  macAsLinux=False)
+    Get the path to the application directory, where applications are allowed
+    to write user specific files (e.g. configurations). For non-user specific
+    data, consider using common_appdata_dir().
+    If appname is given, a subdir is appended (and created if necessary).
+    If roaming is True, will prefer a roaming directory (Windows Vista/7).
+    If macAsLinux is True, will return the Linux-like location on Mac.
+    """
+
+    # Define default user directory
+    userDir = os.path.expanduser('~')
+
+    # Get system app data dir
+    path = None
+    if sys.platform.startswith('win'):
+        path1, path2 = os.getenv('LOCALAPPDATA'), os.getenv('APPDATA')
+        path = (path2 or path1) if roaming else (path1 or path2)
+    elif sys.platform.startswith('darwin') and not macAsLinux:
+        path = os.path.join(userDir, 'Library', 'Application Support')
+    # On Linux and as fallback
+    if not (path and os.path.isdir(path)):
+        path = userDir
+
+    # Maybe we should store things local to the executable (in case of a
+    # portable distro or a frozen application that wants to be portable)
+    prefix = sys.prefix
+    if getattr(sys, 'frozen', None): # See application_dir() function
+        prefix = os.path.abspath(os.path.dirname(sys.executable))
+    for reldir in ('settings', '../settings'):
+        localpath = os.path.abspath(os.path.join(prefix, reldir))
+        if os.path.isdir(localpath):
+            try:
+                open(os.path.join(localpath, 'test.write'), 'wb').close()
+                os.remove(os.path.join(localpath, 'test.write'))
+            except IOError:
+                pass # We cannot write in this directory
+            else:
+                path = localpath
+                break
+
+    # Get path specific for this app
+    if appname:
+        if path == userDir:
+            appname = '.' + appname.lstrip('.') # Make it a hidden directory
+        path = os.path.join(path, appname)
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
+    # Done
+    return path
+def getResourceDirs(): # From pyzo.__init__.py
+    """ getResourceDirs()
+    Get the directories to the resources: (pyzoDir, appDataDir).
+    Also makes sure that the appDataDir has a "tools" directory and
+    a style file.
+    """
+
+    ### Always commented out.
+        #     # Get root of the Pyzo code. If frozen its in a subdir of the app dir
+        #     pyzoDir = paths.application_dir()
+        #     if paths.is_frozen():
+        #         pyzoDir = os.path.join(pyzoDir, 'source')
+
+    ###
+        # pyzoDir = os.path.abspath(os.path.dirname(__file__))
+        # if '.zip' in pyzoDir:
+            # raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
+    pyzoDir = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..', 'external')
+
+    # Get where the application data is stored (use old behavior on Mac)
+    appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
+
+    ###
+        # # Create tooldir if necessary
+        # toolDir = os.path.join(appDataDir, 'tools')
+        # if not os.path.isdir(toolDir):
+            # os.mkdir(toolDir)
+    return pyzoDir, appDataDir
+
+pyzoDir, appDataDir = getResourceDirs()

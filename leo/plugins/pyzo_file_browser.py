@@ -22,6 +22,16 @@ import sys
 import time
 import threading
 
+# From zon.py...
+string_types = str,
+integer_types = int,
+float_types = float,
+
+try:  # pragma: no cover
+    from collections import OrderedDict as _dict
+except ImportError:
+    _dict = dict
+
 # We don't need this because everything is defined in this plugin.
     # pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
     # sys.path.insert(0, pyzo_dir)
@@ -73,20 +83,6 @@ def onCreate(tag, keys):
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     w.show()
-#@+node:ekr.20190810013154.1: ** class FileBrowserConfig(dict)
-class FileBrowserConfig(dict):
-    '''A class containing configuration *only* for the file browser.'''
-    
-    def __init__(self):
-    
-        super().__init__()
-        self.path = None
-        self.expandedDirs = []
-        self.nameFilter = None
-        self.starredDirs = []
-        # self.searchMatchCase = None
-        # self.searchRegExp = None
-        # self.searchSubDirs = None
 #@+node:ekr.20190810003404.4: ** class PyzoFileBrowser(QWidget)
 class PyzoFileBrowser(QtWidgets.QWidget):
     """ The main tool widget. An instance of this class contains one or
@@ -95,16 +91,31 @@ class PyzoFileBrowser(QtWidgets.QWidget):
     """
 
     #@+others
-    #@+node:ekr.20190810003404.5: *3* PyzoFileBrowser.__init__
+    #@+node:ekr.20190811001655.1: *3* PyzoFileBrowser.__init__
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
 
         # Get config
-        self.config = FileBrowserConfig()
+        # EKR:change  pyzo.config ==> pyzo_config
+        if 0:
+            ### Probably don't need or want this:
+            toolId =  self.__class__.__name__.lower() + '2'  # This is v2 of the file browser
+            if toolId not in pyzo_config.tools:
+                ### pyzo_config.tools[toolId] = ssdf.new()
+                pyzo_config.tools[toolId] = ssdf_new() # EKR:change.
+            self.config = pyzo_config.tools[toolId]
+        else:
+            self.config = ssdf_new() # EKR:change.
+
+        # Ensure three main attributes in config
+        for name in ['expandedDirs', 'starredDirs']:
+            if name not in self.config:
+                self.config[name] = []
 
         # Ensure path in config
-        if not self.config.path: # EKR:change
-           self.config.path = op.expanduser('~')
+        # if leo_g: leo_g.pr('PyzoFileBrowser.__init__', self.config.__class__)
+        if 'path' not in self.config or not isdir(self.config.path):
+            self.config.path = op.expanduser('~')
 
         # Check expandedDirs and starredDirs.
         # Make path objects and remove invalid dirs. Also normalize case,
@@ -123,13 +134,12 @@ class PyzoFileBrowser(QtWidgets.QWidget):
                     if p.startswith(d.path):
                         expandedDirs.append(p)
                         break
-        self.config.expandedDirs = expandedDirs
-        self.config.starredDirs = starredDirs
+        self.config.expandedDirs, self.config.starredDirs = expandedDirs, starredDirs
 
         # Create browser(s).
         self._browsers = []
         for i in [0]:
-            self._browsers.append(Browser(self, self.config))
+            self._browsers.append( Browser(self, self.config) )
 
         # Layout
         layout = QtWidgets.QVBoxLayout(self)
@@ -309,19 +319,16 @@ class Browser(QtWidgets.QWidget):
         if not path:
             return None
         for d in self.parent().config.starredDirs:
-            ### if op.normcase(d['path']) == op.normcase(path):
-            if op.normcase(d.path) == op.normcase(path): # EKR:change
+            if op.normcase(d['path']) == op.normcase(path):
                 return d
         else:
             return None
-    #@+node:ekr.20190810003404.23: *4* Browser.addStarredDir (To do)
+    #@+node:ekr.20190810003404.23: *4* Browser.addStarredDir
     def addStarredDir(self, path):
         """ Add the given path to the starred directories.
         """
-        g.trace(path)
-       
         # Create new dict
-        newProject = FileBrowserConfig() ### ssdf.new()
+        newProject = ssdf_new() # EKR:change
         newProject.path = op.normcase(path) # Normalize case!
         newProject.name = op.basename(path)
         newProject.addToPythonpath = False
@@ -739,7 +746,7 @@ class NameFilter(LineEditWithToolButtons):
 
         # Ensure the namefilter is in the config and initialize
         config = self.parent().config
-        if not config.nameFilter: # EKR:change
+        if 'nameFilter' not in config:
             config.nameFilter = '!*.pyc'
         self.setText(config.nameFilter)
     #@+node:ekr.20190810003404.54: *4* NameFilter.setText
@@ -832,8 +839,11 @@ class SearchFilter(LineEditWithToolButtons):
                 menu.addSeparator()
             else:
                 # Make sure the option exists
-                if not getattr(config, option, None): # EKR:change
-                    setattr(config, option, default)
+                if option not in config:
+                    config[option] = default
+                ### New code: not needed if we use full ssdf config.
+                    # if not getattr(config, option, None): # EKR:change
+                        # setattr(config, option, default)
                 # Make action in menu
                 action = menu.addAction(description)
                 action._option = option
@@ -2710,8 +2720,9 @@ def hasHiddenAttribute(path):
         return bool(attrs & 2)
     except (AttributeError, AssertionError):
         return False
-#@+node:ekr.20190810134710.1: ** Icons
-#@+node:ekr.20190810142803.1: *3* class PyzoIcons(dict)
+#@+node:ekr.20190811001224.1: ** z in pyzo_icons.py
+#@+node:ekr.20190810134710.1: *3* Icons
+#@+node:ekr.20190810142803.1: *4* class PyzoIcons(dict)
 class PyzoIcons(dict): # From zon.py
 
     '''
@@ -2730,7 +2741,7 @@ class PyzoIcons(dict): # From zon.py
 
     def __setattr__(self, key, val):
         self[key] = val
-#@+node:ekr.20190810134724.3: *3* loadIcons
+#@+node:ekr.20190810134724.3: *4* loadIcons
 def loadIcons(): # From __main__.py
     """ Load all icons in the icon dir."""
     # Get directory containing the icons
@@ -2759,7 +2770,7 @@ def loadIcons(): # From __main__.py
                 pyzo_icons[name] = dummyIcon
                 print('Could not load icon %s: %s' % (fname, str(err)))
     return pyzo_icons # EKR:change
-#@+node:ekr.20190810134724.5: *3* class IconArtist
+#@+node:ekr.20190810134724.5: *4* class IconArtist
 class IconArtist: # From icons.py
     """ IconArtist(icon=None)
 
@@ -2770,7 +2781,7 @@ class IconArtist: # From icons.py
     """
 
     #@+others
-    #@+node:ekr.20190810134724.6: *4* IconArtist.__init__
+    #@+node:ekr.20190810134724.6: *5* IconArtist.__init__
     def __init__(self, icon=None):
 
         # Get pixmap from given icon (None creates empty pixmap)
@@ -2779,14 +2790,14 @@ class IconArtist: # From icons.py
         # Instantiate painter for the pixmap
         self._painter = QtGui.QPainter()
         self._painter.begin(self._pm)
-    #@+node:ekr.20190810134724.7: *4* IconArtist.finish
+    #@+node:ekr.20190810134724.7: *5* IconArtist.finish
     def finish(self, icon=None):
         """ finish()
         Finish the drawing and return the resulting icon.
         """
         self._painter.end()
         return QtGui.QIcon(self._pm)
-    #@+node:ekr.20190810134724.8: *4* IconArtist._getPixmap
+    #@+node:ekr.20190810134724.8: *5* IconArtist._getPixmap
     def _getPixmap(self, icon):
 
         # Get icon if given by name
@@ -2807,7 +2818,7 @@ class IconArtist: # From icons.py
         if isinstance(icon, QtGui.QIcon):
             return icon.pixmap(16, 16)
         raise ValueError('Icon for IconArtis should be icon, pixmap or name.')
-    #@+node:ekr.20190810134724.9: *4* IconArtist.setPenColor
+    #@+node:ekr.20190810134724.9: *5* IconArtist.setPenColor
     def setPenColor(self, color):
         """ setPenColor(color)
         Set the color of the pen. Color can be anything that can be passed to
@@ -2819,26 +2830,26 @@ class IconArtist: # From icons.py
         else:
             pen.setColor(QtGui.QColor(color))
         self._painter.setPen(pen)
-    #@+node:ekr.20190810134724.10: *4* IconArtist.addLayer
+    #@+node:ekr.20190810134724.10: *5* IconArtist.addLayer
     def addLayer(self, overlay, x=0, y=0):
         """ addOverlay(overlay, x=0, y=0)
         Add an overlay icon to the icon (add the specified position).
         """
         pm = self._getPixmap(overlay)
         self._painter.drawPixmap(x, y, pm)
-    #@+node:ekr.20190810134724.11: *4* IconArtist.addLine
+    #@+node:ekr.20190810134724.11: *5* IconArtist.addLine
     def addLine(self, x1, y1, x2, y2):
         """ addLine( x1, y1, x2, y2)
         Add a line to the icon.
         """
         self._painter.drawLine(x1, y1, x2, y2)
-    #@+node:ekr.20190810134724.12: *4* IconArtist.addPoint
+    #@+node:ekr.20190810134724.12: *5* IconArtist.addPoint
     def addPoint(self, x, y):
         """ addPoint( x, y)
         Add a point to the icon.
         """
         self._painter.drawPoint(x, y)
-    #@+node:ekr.20190810134724.13: *4* IconArtist.addMenuArrow
+    #@+node:ekr.20190810134724.13: *5* IconArtist.addMenuArrow
     def addMenuArrow(self, strength=100):
         """ addMenuArrow()
         Adds a menu arrow to the icon to let the user know the icon
@@ -2867,8 +2878,8 @@ class IconArtist: # From icons.py
         self.addPoint(x+2,y+3)
     # todo: not used; remove me?
     #@-others
-#@+node:ekr.20190810140343.1: ** Paths & directories
-#@+node:ekr.20190810140352.1: *3* appdata_dir
+#@+node:ekr.20190810140343.1: *3* Paths & directories
+#@+node:ekr.20190810140352.1: *4* appdata_dir
 def appdata_dir(appname=None, roaming=False, macAsLinux=False):
     """ appdata_dir(appname=None, roaming=False,  macAsLinux=False)
     Get the path to the application directory, where applications are allowed
@@ -2920,16 +2931,532 @@ def appdata_dir(appname=None, roaming=False, macAsLinux=False):
 
     # Done
     return path
-#@+node:ekr.20190810140106.1: *3* getResourceDirs
+#@+node:ekr.20190810140106.1: *4* getResourceDirs
 def getResourceDirs(): # From pyzo.__init__.py
     """ getResourceDirs()
     Get the directories to the resources: (pyzoDir, appDataDir).
     Also makes sure that the appDataDir has a "tools" directory and
     a style file.
     """
-    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external') # EKR:change
+    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo') # EKR:change
     appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
     return pyzoDir, appDataDir
+#@+node:ekr.20190811001325.1: ** z in pyzo_config.py
+#@+node:ekr.20190811003632.1: *3* from zon.py
+#@+node:ekr.20190811002957.3: *4* isidentifier
+def isidentifier(s):
+    # http://stackoverflow.com/questions/2544972/
+    if not isinstance(s, str):
+        return False
+    return re.match(r'^\w+$', s, re.UNICODE) and re.match(r'^[0-9]', s) is None
+#@+node:ekr.20190811002957.4: *4* class Dict(_dict)
+class Dict(_dict):
+    """ A dict in which the items can be get/set as attributes.
+    """
+
+    __reserved_names__ = dir(_dict())  # Also from OrderedDict
+    __pure_names__ = dir(dict())
+    __slots__ = []
+
+    #@+others
+    #@+node:ekr.20190811002957.5: *5* Dict.__repr__
+    def __repr__(self):
+        identifier_items = []
+        nonidentifier_items = []
+        for key, val in self.items():
+            if isidentifier(key):
+                identifier_items.append('%s=%r' % (key, val))
+            else:
+                nonidentifier_items.append('(%r, %r)' % (key, val))
+        if nonidentifier_items:
+            return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
+                                       ', '.join(identifier_items))
+        else:
+            return 'Dict(%s)' % (', '.join(identifier_items))
+    #@+node:ekr.20190811002957.6: *5* Dict.__getattribute__
+    def __getattribute__(self, key):
+        try:
+            return object.__getattribute__(self, key)
+        except AttributeError:
+            if key in self:
+                return self[key]
+            else:
+                raise
+    #@+node:ekr.20190811002957.7: *5* Dict.__setattr__
+    def __setattr__(self, key, val):
+        if key in Dict.__reserved_names__:
+            # Either let OrderedDict do its work, or disallow
+            if key not in Dict.__pure_names__:
+                return _dict.__setattr__(self, key, val)
+            else:
+                raise AttributeError('Reserved name, this key can only ' +
+                                     'be set via ``d[%r] = X``' % key)
+        else:
+            # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+            self[key] = val
+    #@+node:ekr.20190811002957.8: *5* Dict.__dir__
+    def __dir__(self):
+        names = [k for k in self.keys() if isidentifier(k)]
+        return Dict.__reserved_names__ + names
+
+    #@-others
+
+# EKR:change
+    # Struct = Dict
+    # Struct.__is_ssdf_struct__ = True
+ssdf_Struct = Dict
+ssdf_Struct.__is_ssdf_struct__ = True
+    
+## Public functions
+#@+node:ekr.20190811002957.9: *4* SSDF compatibility
+# SSDF compatibility
+#@+node:ekr.20190811002957.10: *5* isstruct
+def isstruct(ob):  # SSDF compatibility
+    """ isstruct(ob)
+
+    Returns whether the given object is an SSDF struct.
+    """
+    if hasattr(ob, '__is_ssdf_struct__'):
+        return bool(ob.__is_ssdf_struct__)
+    else:
+        return False
+#@+node:ekr.20190811002957.11: *5* new
+def new():
+    """ new()
+
+    Create a new Dict object. The same as "Dict()".
+    """
+    return Dict()
+
+ssdf_new = new
+#@+node:ekr.20190811002957.12: *5* clear & ssdf_clear
+def clear(d):  # SSDF compatibility
+    """ clear(d)
+
+    Clear all elements of the given Dict object.
+    """
+    d.clear()
+
+ssdf_clear = clear
+#@+node:ekr.20190811002957.13: *5* copy
+def copy(object):
+    """ copy(objec)
+
+    Return a deep copy the given object. The object and its children
+    should be dict-compatible data types. Note that dicts are converted
+    to Dict and tuples to lists.
+    """
+    if isstruct(object) or isinstance(object, dict):
+        newObject = Dict()
+        for key in object:
+            val = object[key]
+            newObject[key] = copy(val)
+        return newObject
+    elif isinstance(object, (tuple, list)):
+        return [copy(ob) for ob in object]
+    else:
+        return object  # immutable
+#@+node:ekr.20190811002957.14: *5* count
+def count(object, cache=None):
+    """ count(object):
+
+    Count the number of elements in the given object. An element is
+    defined as one of the 6 datatypes supported by ZON (dict,
+    tuple/list, string, int, float, None).
+    """
+    cache = cache or []
+    if isstruct(object) or isinstance(object, (dict, list)):
+        if id(object) in cache:
+            raise RuntimeError('recursion!')
+        cache.append(id(object))
+    n = 1
+    if isstruct(object) or isinstance(object, dict):
+        for key in object:
+            val = object[key]
+            n += count(val, cache)
+    elif isinstance(object, (tuple, list)):
+        for val in object:
+            n += count(val, cache)
+    return n
+#@+node:ekr.20190811002957.15: *5* loads
+def loads(text):
+    """ loads(text)
+
+    Load a Dict from the given Unicode) string in ZON syntax.
+    """
+    if not isinstance(text, string_types):
+        raise ValueError('zon.loads() expects a string.')
+    reader = ReaderWriter()
+    return reader.read(text)
+#@+node:ekr.20190811002957.16: *5* load & ssdf_load
+def load(file_):
+    """ load(filename)
+
+    Load a Dict from the given file or filename.
+    """
+    if isinstance(file_, string_types):
+        file = open(file_, 'rb')
+    text = file.read().decode('utf-8')
+    return loads(text)
+
+ssdf_load = load
+#@+node:ekr.20190811002957.17: *5* saves
+def saves(d):
+    """ saves(d)
+
+    Serialize the given dict to a (Unicode) string.
+    """
+    if not (isstruct(d) or isinstance(d, dict)):
+        raise ValueError('ssdf.saves() expects a dict.')
+    writer = ReaderWriter()
+    text = writer.save(d)
+    return text
+#@+node:ekr.20190811002957.18: *5* save
+def save(file, d):
+    """ save(file, d)
+
+    Serialize the given dict to the given file or filename.
+    """
+    text = saves(d)
+    if isinstance(file, string_types):
+        file = open(file, 'wb')
+    with file:
+        file.write(text.encode('utf-8'))
+#@+node:ekr.20190811002957.19: *4* class ReaderWriter(object)
+## The core
+
+class ReaderWriter(object):
+
+    #@+others
+    #@+node:ekr.20190811002957.20: *5* ReaderWriter.read
+    def read(self, text):
+
+        indent = 0
+        root = Dict()
+        container_stack = [(0, root)]
+        new_container = None
+
+        for i, line in enumerate(text.splitlines()):
+            linenr = i + 1
+
+            # Strip line
+            line2 = line.lstrip()
+
+            # Skip comments and empty lines
+            if not line2 or line2[0] == '#':
+                continue
+
+            # Find the indentation
+            prev_indent = indent
+            indent = len(line) - len(line2)
+            if indent == prev_indent:
+                pass
+            elif indent < prev_indent:
+                while container_stack[-1][0] > indent:
+                    container_stack.pop(-1)
+                if container_stack[-1][0] != indent:
+                    print('ZON: Ignoring wrong dedentation at %i' % linenr)
+            elif indent > prev_indent and new_container is not None:
+                container_stack.append((indent, new_container))
+                new_container = None
+            else:
+                print('ZON: Ignoring wrong indentation at %i' % linenr)
+                indent = prev_indent
+
+            # Split name and data using a regular expression
+            m = re.search("^\w+? *?=", line2)
+            if m:
+                i = m.end(0)
+                name = line2[:i-1].strip()
+                data = line2[i:].lstrip()
+            else:
+                name = None
+                data = line2
+
+            # Get value
+            value = self.to_object(data, linenr)
+
+            # Store the value
+            _indent, current_container = container_stack[-1]
+            if isinstance(current_container, dict):
+                if name:
+                    current_container[name] = value
+                else:
+                    print('ZON: unnamed item in dict on line %i' % linenr)
+            elif isinstance(current_container, list):
+                if name:
+                    print('ZON: named item in list on line %i' % linenr)
+                else:
+                    current_container.append(value)
+            else:
+                raise RuntimeError('Invalid container %r' % current_container)
+
+            # Prepare for next round
+            if isinstance(value, (dict, list)):
+                new_container = value
+
+        return root
+    #@+node:ekr.20190811002957.21: *5* ReaderWriter.save
+    def save(self, d):
+
+        pyver = '%i.%i.%i' % sys.version_info[:3]
+        ct = time.asctime()
+        lines = []
+        lines.append('# -*- coding: utf-8 -*-')
+        lines.append('# This Zoof Object Notation (ZON) file was')
+        lines.append('# created from Python %s on %s.\n' % (pyver, ct))
+        lines.append('')
+        lines.extend(self.from_dict(d, -2)[1:])
+
+        return '\r\n'.join(lines)
+        # todo: pop toplevel dict
+    #@+node:ekr.20190811002957.22: *5* ReaderWriter.from_object
+    def from_object(self, name, value, indent):
+
+        # Get object's data
+        if value is None:
+            data = 'Null'
+        elif isinstance(value, integer_types):
+            data = self.from_int(value)
+        elif isinstance(value, float_types):
+            data = self.from_float(value)
+        elif isinstance(value, bool):
+            data = self.from_int(int(value))
+        elif isinstance(value, string_types):
+            data = self.from_unicode(value)
+        elif isinstance(value, dict):
+            data = self.from_dict(value, indent)
+        elif isinstance(value, (list, tuple)):
+            data = self.from_list(value, indent)
+        else:
+            # We do not know
+            data = 'Null'
+            tmp = repr(value)
+            if len(tmp) > 64:
+                tmp = tmp[:64] + '...'
+            if name is not None:
+                print("ZON: %s is unknown object: %s" %  (name, tmp))
+            else:
+                print("ZON: unknown object: %s" % tmp)
+
+        # Finish line (or first line)
+        if isinstance(data, string_types):
+            data = [data]
+        if name:
+            data[0] = '%s%s = %s' % (' ' * indent, name, data[0])
+        else:
+            data[0] = '%s%s' % (' ' * indent, data[0])
+
+        return data
+    #@+node:ekr.20190811002957.23: *5* ReaderWriter.to_object
+    def to_object(self, data, linenr):
+
+        data = data.lstrip()
+
+        # Determine what type of object we're dealing with by reading
+        # like a human.
+        if not data:
+            print('ZON: no value specified at line %i.' % linenr)
+        elif data[0] in '-.0123456789':
+            return self.to_int_or_float(data, linenr)
+        elif data[0] == "'":
+            return self.to_unicode(data, linenr)
+        elif data.startswith('dict:'):
+            return self.to_dict(data, linenr)
+        elif data.startswith('list:') or data[0] == '[':
+            return self.to_list(data, linenr)
+        elif data.startswith('Null') or data.startswith('None'):
+            return None
+        else:
+            print("ZON: invalid type on line %i." % linenr)
+            return None
+    #@+node:ekr.20190811002957.24: *5* ReaderWriter.to_int_or_float
+    def to_int_or_float(self, data, linenr):
+        line = data.partition('#')[0]
+        try:
+            return int(line)
+        except ValueError:
+            try:
+                return float(line)
+            except ValueError:
+                print("ZON: could not parse number on line %i." % linenr)
+                return None
+    #@+node:ekr.20190811002957.25: *5* ReaderWriter.from_int
+    def from_int(self, value):
+        return repr(int(value)).rstrip('L')
+    #@+node:ekr.20190811002957.26: *5* ReaderWriter.from_float
+    def from_float(self, value):
+        # Use general specifier with a very high precision.
+        # Any spurious zeros are automatically removed. The precision
+        # should be sufficient such that any numbers saved and loaded
+        # back will have the exact same value again.
+        # see e.g. http://bugs.python.org/issue1580
+        return repr(float(value))  # '%0.17g' % value
+    #@+node:ekr.20190811002957.27: *5* ReaderWriter.from_unicode
+    def from_unicode(self, value):
+        value = value.replace('\\', '\\\\')
+        value = value.replace('\n','\\n')
+        value = value.replace('\r','\\r')
+        value = value.replace('\x0b', '\\x0b').replace('\x0c', '\\x0c')
+        value = value.replace("'", "\\'")
+        return "'" + value + "'"
+    #@+node:ekr.20190811002957.28: *5* ReaderWriter.to_unicode
+    def to_unicode(self, data, linenr):
+        # Encode double slashes
+        line = data.replace('\\\\','0x07') # temp
+
+        # Find string using a regular expression
+        m = re.search("'.*?[^\\\\]'|''", line)
+        if not m:
+            print("ZON: string not ended correctly on line %i." % linenr)
+            return None # return not-a-string
+        else:
+            line = m.group(0)[1:-1]
+
+        # Decode stuff
+        line = line.replace('\\n','\n')
+        line = line.replace('\\r','\r')
+        line = line.replace('\\x0b', '\x0b').replace('\\x0c', '\x0c')
+        line = line.replace("\\'","'")
+        line = line.replace('0x07','\\')
+        return line
+    #@+node:ekr.20190811002957.29: *5* ReaderWriter.from_dict
+    def from_dict(self, value, indent):
+        lines = ["dict:"]
+        # Process children
+        for key, val in value.items():
+            # Skip all the builtin stuff
+            if key.startswith("__"):
+                continue
+            # Skip methods, or anything else we can call
+            if hasattr(val, '__call__'):
+                continue  # Note: py3.x does not have function callable
+            # Add!
+            lines.extend(self.from_object(key, val, indent+2))
+        return lines
+    #@+node:ekr.20190811002957.30: *5* ReaderWriter.to_dict
+    def to_dict(self, data, linenr):
+        return Dict()
+    #@+node:ekr.20190811002957.31: *5* ReaderWriter.from_list
+    def from_list(self, value, indent):
+        # Collect subdata and check whether this is a "small list"
+        isSmallList = True
+        allowedTypes = integer_types + float_types + string_types
+        subItems = []
+        for element in value:
+            if not isinstance(element, allowedTypes):
+                isSmallList = False
+            subdata = self.from_object(None, element, 0)  # No indent
+            subItems.extend(subdata)
+        isSmallList = isSmallList and len(subItems) < 256
+
+        # Return data
+        if isSmallList:
+            return '[%s]' % (', '.join(subItems))
+        else:
+            data = ["list:"]
+            ind = ' ' * (indent + 2)
+            for item in subItems:
+                data.append(ind + item)
+            return data
+    #@+node:ekr.20190811002957.32: *5* ReaderWriter.to_list
+    def to_list(self, data, linenr):
+        value = []
+        if data[0] == 'l': # list:
+            return list()
+        else:
+            i0 = 1
+            pieces = []
+            inString = False
+            escapeThis = False
+            line = data
+            for i in range(1,len(line)):
+                if inString:
+                    # Detect how to get out
+                    if escapeThis:
+                        escapeThis = False
+                        continue
+                    elif line[i] == "\\":
+                        escapeThis = True
+                    elif line[i] == "'":
+                        inString = False
+                else:
+                    # Detect going in a string, break, or end
+                    if line[i] == "'":
+                        inString = True
+                    elif line[i] == ",":
+                        pieces.append(line[i0:i])
+                        i0 = i+1
+                    elif line[i] == "]":
+                        piece = line[i0:i]
+                        if piece.strip(): # Do not add if empty
+                            pieces.append(piece)
+                        break
+            else:
+                print("ZON: short list not closed right on line %i." % linenr)
+
+            # Cut in pieces and process each piece
+            value = []
+            for piece in pieces:
+                v = self.to_object(piece, linenr)
+                value.append(v)
+            return value
+    #@-others
+#@+node:ekr.20190811003649.1: *3* from pyzo.__init__.py
+## Define some functions
+
+# todo: move some stuff out of this module ...
+#@+node:ekr.20190811003647.4: *4* loadConfig
+def loadConfig(defaultsOnly=False):
+    """ loadConfig(defaultsOnly=False)
+    Load default and site-wide configuration file(s) and that of the user (if it exists).
+    Any missing fields in the user config are set to the defaults.
+    """
+
+    # Function to insert names from one config in another
+    def replaceFields(base, new):
+        for key in new:
+            if key in base and isinstance(base[key], ssdf_Struct):
+                replaceFields(base[key], new[key])
+            else:
+                base[key] = new[key]
+                
+    config = ssdf_new()
+
+    # Reset our pyzo.config structure
+    ssdf_clear(config) # EKR:change.
+
+    # Load default and inject in the pyzo.config
+    fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
+    defaultConfig = ssdf_load(fname) # EKR:change
+    replaceFields(config, defaultConfig)
+
+    # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
+    if sys.platform == 'darwin':
+        config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
+
+    # Load site-wide config if it exists and inject in pyzo.config
+    fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
+    if os.path.isfile(fname):
+        try:
+            siteConfig = ssdf_load(fname) # EKR:change
+            replaceFields(config, siteConfig) # EKR:change
+        except Exception:
+            t = 'Error while reading config file %r, maybe its corrupt?'
+            print(t % fname)
+            raise
+
+    # Load user config and inject in pyzo.config
+    fname = os.path.join(appDataDir, "config.ssdf")
+    if os.path.isfile(fname):
+        try:
+            userConfig = ssdf_load(fname) # EKR:change
+            replaceFields(config, userConfig)
+        except Exception:
+            t = 'Error while reading config file %r, maybe its corrupt?'
+            print(t % fname)
+            raise
+    return config
 #@-others
 
 # Compute standard places.
@@ -2937,4 +3464,7 @@ pyzoDir, appDataDir = getResourceDirs()
 
 # Load all icons.
 pyzo_icons = loadIcons()
+
+# From pyzo.start
+pyzo_config = loadConfig()
 #@-leo
