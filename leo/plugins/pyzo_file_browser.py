@@ -85,7 +85,7 @@ class PyzoFileBrowser(QtWidgets.QWidget):
     """
 
     #@+others
-    #@+node:ekr.20190811001655.1: *3* PyzoFileBrowser.__init__
+    #@+node:ekr.20190811001655.1: *3* PyzoFileBrowser.__init__ (changed)
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -835,15 +835,13 @@ class SearchFilter(LineEditWithToolButtons):
                 # Make sure the option exists
                 if option not in config:
                     config[option] = default
-                ### New code: not needed if we use full ssdf config.
-                    # if not getattr(config, option, None): # EKR:change
-                        # setattr(config, option, default)
                 # Make action in menu
                 action = menu.addAction(description)
                 action._option = option
                 action.setCheckable(True)
-                ### action.setChecked( bool(config[option]) )
-                action.setChecked(bool(getattr(config, option, None)))
+                action.setChecked( bool(config[option]) )
+                    ### New code, no longer needed: EKR:change
+                    ### action.setChecked(bool(getattr(config, option, None)))
     #@+node:ekr.20190810003404.64: *5* SearchFilter.onMenuTriggered
     def onMenuTriggered(self, action):
         config = self.parent().config
@@ -2254,9 +2252,9 @@ class PopupMenu(QtWidgets.QMenu): ### pyzo.core.menu.Menu):
     #@+node:ekr.20190810003404.254: *5* PopupMenu.__init__
     def __init__(self, parent, item):
         
-        super().__init__(parent) # EKR:change
         self._item = item
         # pyzo.core.menu.Menu.__init__(self, parent, " ")
+        super().__init__(parent) # EKR:change
     #@+node:ekr.20190810003404.255: *5* PopupMenu.build
     def build(self):
 
