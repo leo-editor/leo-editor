@@ -1,0 +1,23 @@
+### Project coordination
+
+Almar Klein
+
+
+### Development
+
+Over 25 contributors: https://github.com/pyzo/pyzo/graphs/contributors
+
+
+### Packaging / Distribution
+
+Ghislain Vaillant
+Ismaël Lachheb
+
+
+### Translators
+
+Hector Mtz-Seara Monné - Spanish and Catalan
+Laurent Signac - French
+Diogo Costa - Portuguese
+Gerd Schmitt - German
+George Volkov - Russian
