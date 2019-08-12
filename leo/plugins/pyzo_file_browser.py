@@ -5,43 +5,27 @@
 """Experimental plugin that adds pyzo's file browser dock to Leo."""
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190809093446.1: **  << pyzo_file_browser imports >>
+def banner(message):
+    print('')
+    print(message)
+    print('')
+
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtCore #, QtGui, QtWidgets, Signal
-# import os
-import sys
 #
 # Must patch sys.path here.
+import sys
 plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
-
+#
 # Start pyzo, de-fanged.
 import pyzo
 pyzo.start_pyzo_in_leo()
-
+#
 # Import the file browser.
+banner('START import: pyzo.tools')
 from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-print(PyzoFileBrowser)
-
-### Old code
-    # from .pyzo_support.pyzo_functions import appDataDir, pyzo_icons, pyzo_config # pyzoDir
-    # from .pyzo_support.pyzo_functions import ssdf, translate
-
-    # import ctypes
-    # import fnmatch
-    # import os
-    # import os.path as op
-    # from queue import Queue, Empty
-    # import re
-    # import string
-    # import subprocess
-    # import sys
-    # import time
-    # import threading
-
-    # We don't need this because everything is defined in this plugin.
-        # pyzo_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'external')
-        # sys.path.insert(0, pyzo_dir)
+banner('START import: pyzo.tools')
 #@-<< pyzo_file_browser imports >>
 #@+others
 #@+node:ekr.20190809093459.1: **  top-level Leo functions
@@ -70,6 +54,7 @@ def init():
 #@+node:ekr.20190809093459.4: *3* onCreate
 def onCreate(tag, keys):
     '''pyzo_file_browser.py: Create a pyzo file browser in c's outline.'''
+    from leo.core.leoQt import QtCore
     c = keys.get('c')
     dw = c and c.frame and c.frame.top
     if not dw:

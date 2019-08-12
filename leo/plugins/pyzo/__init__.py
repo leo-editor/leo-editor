@@ -127,6 +127,10 @@ if not sys.platform.startswith('darwin'):
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
 # http://pyqt.sourceforge.net/Docs/PyQt5/incompatibilities.html
+def banner(message): #EKR:change-new.
+    print('')
+    print(message)
+    print('')
 def pyzo_excepthook(type, value, tb):
 
     out = 'Uncaught Python exception: ' + str(value) + '\n'
@@ -277,8 +281,7 @@ def start():
 def start_pyzo_in_leo():
     """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
     """
-    if leo_g:
-        leo_g.pr('BEGIN pyzo.start_pyzo_in_leo')
+    banner('BEGIN pyzo.start_pyzo_in_leo')
 
     # EKR:change-startup.
         # Do some imports
@@ -321,7 +324,7 @@ def start_pyzo_in_leo():
         # # Enter the main loop
         # QtWidgets.qApp.exec_()
 
-    if leo_g: leo_g.pr('END pyzo.start_pyzo_in_leo\n')
+    banner('END pyzo.start_pyzo_in_leo\n')
 ## Init
 
 # List of names that are later overriden (in main.py)
