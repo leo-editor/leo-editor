@@ -11,7 +11,6 @@ def banner(message):
     print('')
 
 import leo.core.leoGlobals as g
-assert g
 #
 # Must patch sys.path here.
 import sys
