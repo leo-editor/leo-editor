@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # EKR: The frozen version of pyzo does not use pyzo.__main__
 """
@@ -37,6 +35,7 @@ and workspace.
 
 """
 __version__ = '4.6.2'
+
 import sys # EKR:change
 try:
     import leo.core.leoGlobals as leo_g
@@ -44,6 +43,9 @@ except Exception:
     # This gets trapped by the frozen import logic.
     # Print statements or calls to pdb.set_trace are futile.
     leo_g = None
+    
+### leo_g.printObj(sys.path, tag="pyzo.__init__: sys.path")
+
 # Instantiate the application
 import os
 # import sys # EKR:change: imported above.
@@ -272,6 +274,54 @@ def start():
     # Enter the main loop
     if leo_g: leo_g.pr('END pyzo.start\n')
     QtWidgets.qApp.exec_()
+def start_pyzo_in_leo():
+    """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
+    """
+    if leo_g:
+        leo_g.pr('BEGIN pyzo.start_pyzo_in_leo')
+
+    # EKR:change-startup.
+        # Do some imports
+        # from pyzo.core import pyzoLogging  # noqa - to start logging asap
+        # assert pyzoLogging
+        # from pyzo.core.main import MainWindow
+    import pyzo.core.main as main # EKR:change-startup.
+    main.loadIcons()
+    main.loadFonts()
+    
+    # EKR: Required by PyzoFileBrowser tool, and probably lots of others.
+    import pyzo.core.menu as menu
+    assert menu
+
+    # Apply users' preferences w.r.t. date representation etc
+    # this is required for e.g. strftime("%c")
+    # Just using '' does not seem to work on OSX. Thus this odd loop.
+        # locale.setlocale(locale.LC_ALL, "")
+    for x in ('', 'C', 'en_US', 'en_US.utf8', 'en_US.UTF-8'):
+        try:
+            locale.setlocale(locale.LC_ALL, x)
+            break
+        except locale.Error:
+            pass
+
+    # Set to be aware of the systems native colors, fonts, etc.
+    QtWidgets.QApplication.setDesktopSettingsAware(True)
+    
+    # EKR:change-startup.
+    
+        # # Instantiate the application.
+        # QtWidgets.qApp = MyApp(sys.argv)  # QtWidgets.QApplication([])
+    
+        # # Choose language, get locale
+        # appLocale = setLanguage(config.settings.language)
+    
+        # # Create main window, using the selected locale
+        # MainWindow(None, appLocale)
+    
+        # # Enter the main loop
+        # QtWidgets.qApp.exec_()
+
+    if leo_g: leo_g.pr('END pyzo.start_pyzo_in_leo\n')
 ## Init
 
 # List of names that are later overriden (in main.py)
@@ -294,3 +344,4 @@ loadConfig()
 
 # Init default style name (set in main.restorePyzoState())
 defaultQtStyleName = ''
+

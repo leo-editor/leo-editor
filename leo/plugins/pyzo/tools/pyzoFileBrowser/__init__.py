@@ -58,10 +58,13 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
 
         # Get config
-        toolId =  self.__class__.__name__.lower() + '2'  # This is v2 of the file browser
-        if toolId not in pyzo.config.tools:
-            pyzo.config.tools[toolId] = ssdf.new()
-        self.config = pyzo.config.tools[toolId]
+        # EKR:change-tool
+        self.config = ssdf.new()
+        ### Probably don't need or want this:
+            # toolId =  self.__class__.__name__.lower() + '2'  # This is v2 of the file browser
+            # if toolId not in pyzo.config.tools:
+                # pyzo.config.tools[toolId] = ssdf.new()
+            # self.config = pyzo.config.tools[toolId]
 
         # Ensure three main attributes in config
         for name in ['expandedDirs', 'starredDirs']:

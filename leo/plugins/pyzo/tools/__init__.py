@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ Package tools of pyzo
 
 A tool consists of a module which contains a class. The id of a tool is its
@@ -26,18 +25,19 @@ displayed in the statusbar.
 # - snipet manager
 # - file browser
 # - pythonpath editor, startupfile editor (or as part of pyzo?)
+
 try:
     import leo.core.leoGlobals as leo_g
     leo_g.pr('IMPORT pyzo.tools')
 except Exception:
     leo_g = None
-    
+
 import os, sys, imp
 
 import pyzo
-from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
+from pyzo.util.qt import QtCore, QtWidgets  # noqa: QtGui
 from pyzo.util import zon as ssdf
-from pyzo import translate
+# from pyzo import translate
 
 class ToolDockWidget(QtWidgets.QDockWidget):
     """ A dock widget that holds a tool.
