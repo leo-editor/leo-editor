@@ -90,12 +90,12 @@ class PyzoFileBrowser(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
 
         # Get config
-        # EKR:change  pyzo.config ==> pyzo_config
+        # EKR:change-config  pyzo.config ==> pyzo_config
         if 0:
             ### Probably don't need or want this:
             toolId =  self.__class__.__name__.lower() + '2'  # This is v2 of the file browser
             if toolId not in pyzo_config.tools:
-                pyzo_config.tools[toolId] = ssdf.new() # EKR:change.
+                pyzo_config.tools[toolId] = ssdf.new()
             self.config = pyzo_config.tools[toolId]
         else:
             self.config = ssdf.new()
@@ -840,8 +840,6 @@ class SearchFilter(LineEditWithToolButtons):
                 action._option = option
                 action.setCheckable(True)
                 action.setChecked( bool(config[option]) )
-                    ### New code, no longer needed: EKR:change
-                    ### action.setChecked(bool(getattr(config, option, None)))
     #@+node:ekr.20190810003404.64: *5* SearchFilter.onMenuTriggered
     def onMenuTriggered(self, action):
         config = self.parent().config

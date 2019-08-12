@@ -221,7 +221,7 @@ def getResourceDirs(): # From pyzo.__init__.py
     a style file.
     """
 
-    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo') # EKR:change.
+    pyzoDir = g.os_path_finalize_join(g.app.loadDir, '..', 'external', 'pyzo') # EKR:change-dir.
 
     # Get where the application data is stored (use old behavior on Mac)
     appDataDir = appdata_dir('pyzo', roaming=True, macAsLinux=True)
@@ -293,7 +293,7 @@ def loadIcons(): # From __main__.py
     # Construct other icons
     dummyIcon = IconArtist().finish()
     ### pyzo.icons = ssdf.new()
-    pyzo_icons = ssdf.new() # EKR:change
+    pyzo_icons = ssdf.new() # EKR:change-config
         
     for fname in os.listdir(iconDir):
         if fname.endswith('.png'):

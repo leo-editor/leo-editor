@@ -230,7 +230,7 @@ class ReaderWriter:
                 indent = prev_indent
 
             # Split name and data using a regular expression
-            m = re.search(r"^\w+? *?=", line2) # EKR:change
+            m = re.search(r"^\w+? *?=", line2) # EKR:change-bug
             if m:
                 i = m.end(0)
                 name = line2[:i-1].strip()
