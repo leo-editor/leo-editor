@@ -20,6 +20,7 @@ sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
 import pyzo
+# pylint: disable=no-member
 pyzo.start_pyzo_in_leo()
 #
 # Import the file browser.
