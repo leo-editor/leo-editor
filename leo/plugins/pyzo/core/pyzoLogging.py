@@ -122,7 +122,7 @@ class OutputStreamSplitter:
     def encoding(self):
         return self._original.encoding()
 
-    
+
 # Split now, with no defering
 splitConsole()
 
