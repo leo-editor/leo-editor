@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20190805022257.1: * @file pyzo_file_browser.py
 #@@first
-"""Experimental plugin that adds pyzo's file browser dock to Leo."""
+"""pyzo_file_browser.py: Experimental plugin that adds pyzo's file browser dock to Leo."""
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190809093446.1: **  << pyzo_file_browser imports >>
 def banner(message):
