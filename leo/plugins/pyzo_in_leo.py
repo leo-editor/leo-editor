@@ -41,7 +41,7 @@ def init(): # pyzo_in_leo.py
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
 #@+node:ekr.20190814050859.1: ** load_all_docks
-def load_all_docks(c, pyzo):
+def load_all_docks(c):
     
     main_window = c.frame.top
     from pyzo.core.main import callLater
@@ -104,10 +104,10 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     c = keys.get('c')
     if not c and c.frame:
         return
-    start_pyzo_in_leo(c, pyzo)
-    load_all_docks(c, pyzo)
+    start_pyzo_in_leo(c)
+    load_all_docks(c)
 #@+node:ekr.20190812074048.1: ** start_pyzo_in_leo
-def start_pyzo_in_leo(c, pyzo): # pyzo_in_leo.py
+def start_pyzo_in_leo(c): # pyzo_in_leo.py
     """Init pyzo in Leo."""
     main_window = c.frame.top
     print('\nBEGIN start_pyzo_in_leo\n')
