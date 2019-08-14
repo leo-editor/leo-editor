@@ -281,6 +281,7 @@ def start():
 def start_pyzo_in_leo(c, pyzo):
     """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
     """
+    main_window = c.frame.top
     banner('BEGIN pyzo.start_pyzo_in_leo')
     
     # EKR:change-startup.
@@ -288,8 +289,16 @@ def start_pyzo_in_leo(c, pyzo):
         # from pyzo.core import pyzoLogging  # noqa - to start logging asap
         # assert pyzoLogging
         # from pyzo.core.main import MainWindow
+        
+    # From _populate
+    from pyzo.core.editorTabs import EditorTabs
+    from pyzo.core.shellStack import ShellStackWidget
+    from pyzo.core import codeparser
+    from pyzo.core.history import CommandHistory
+    # from pyzo.tools import ToolManager
 
-    import pyzo.core.main as main # EKR:change-startup.
+    # From MainWindow.__init__.
+    import pyzo.core.main as main
     main.loadIcons()
     main.loadFonts()
 
@@ -301,19 +310,22 @@ def start_pyzo_in_leo(c, pyzo):
     import pyzo.core.menu as menu
     pyzo.keyMapper = menu.KeyMapper()
     
-    # From _populate..
-    from pyzo.core.history import CommandHistory
+    # From _populate.
+    ### from pyzo.core.history import CommandHistory
     pyzo.command_history = CommandHistory('command_history.py')
 
-    # From _populate..
-    from pyzo.core.editorTabs import EditorTabs
-    pyzo.editors = EditorTabs(c.frame.top) # was self (MainWindow)
+    # From _populate.
+    ### from pyzo.core.editorTabs import EditorTabs
+    pyzo.editors = EditorTabs(main_window) # was self, a MainWindow.
     
-    # From _populate
-    from pyzo.core import codeparser
+    # From _populate.
+    ###from pyzo.core import codeparser
     if pyzo.parser is None:
         pyzo.parser = codeparser.Parser()
         pyzo.parser.start()
+        
+    # From _populate.
+    pyzo.shells = ShellStackWidget(main_window) # was self, a MainWindow.
         
     # From pyzo.start...
     # Apply users' preferences w.r.t. date representation etc

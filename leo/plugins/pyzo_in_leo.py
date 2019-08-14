@@ -55,15 +55,14 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     # pylint: disable=no-member
     pyzo.start_pyzo_in_leo(c, pyzo)
     #
-    # Import the widget classes.
-    banner("START onCreate imports")
+    # Import the widget classes *after* calling start_pyzo_in_leo.
     from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
     from pyzo.tools.pyzoHistoryViewer import PyzoHistoryViewer
     from pyzo.tools.pyzoInteractiveHelp import PyzoInteractiveHelp
     from pyzo.tools.pyzoLogger import PyzoLogger
     from pyzo.tools.pyzoSourceStructure import PyzoSourceStructure
     from pyzo.tools.pyzoWebBrowser import PyzoWebBrowser
-    # from pyzo.tools.pyzoWorkspace import PyzoWorkspace
+    from pyzo.tools.pyzoWorkspace import PyzoWorkspace
     banner("END onCreate imports")
     #
     # Make the docks.
@@ -72,12 +71,11 @@ def onCreate(tag, keys): # pyzo_in_leo.py
         ("History Viewer", PyzoHistoryViewer),
         ("Interactive Help", PyzoInteractiveHelp),
         ("Logger", PyzoLogger),
-        ("Web Browser", PyzoWebBrowser),
-        # These use pyzo.editors...
         ("Source Structure", PyzoSourceStructure),
-        # ("Workspace", PyzoWorkspace),
-             # pyzo.shells.currentShellChanged.connect(self.onCurrentShellChanged)
-             # AttributeError: 'NoneType' object has no attribute 'currentShellChanged'
+            # Uses pyzo.editors.
+        ("Web Browser", PyzoWebBrowser),
+        ("Workspace", PyzoWorkspace),
+            # Uses pyzo.editors and pyzo.shells.
     )
     for name, widget_class in table:
         make_dock(c, name=name, widget=widget_class(parent=None))
