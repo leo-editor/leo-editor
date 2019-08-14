@@ -375,12 +375,11 @@ def load_all_docks(c, pyzo):
     dock = QtWidgets.QDockWidget(main_window)
     main_window._shellDock = dock ### Experimental.
         ### self._shellDock = dock
-    dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
-    ###
-        # if pyzo.config.settings.allowFloatingShell:
-            # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
-        # else:
-            # dock.setFeatures(dock.DockWidgetMovable)
+    dock.setFeatures(
+        dock.DockWidgetMovable
+        | dock.DockWidgetFloatable
+        | dock.DockWidgetClosable # Experimental.
+    )
     dock.setObjectName('shells')
     dock.setWindowTitle('Shells')
     ### self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
