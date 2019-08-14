@@ -20,8 +20,7 @@ sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
 import pyzo
-# pylint: disable=no-member
-pyzo.start_pyzo_in_leo()
+#
 #@-<< pyzo_in_leo imports >>
 #@+others
 #@+node:ekr.20190813161639.3: **  top-level Leo functions (pyzo_in_leo.py)
@@ -53,13 +52,32 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     c = keys.get('c')
     if not c and c.frame:
         return
+    # pylint: disable=no-member
+    pyzo.start_pyzo_in_leo(c, pyzo)
     #
     # Import the widget classes.
+    banner("START onCreate imports")
     from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+    from pyzo.tools.pyzoHistoryViewer import PyzoHistoryViewer
+    from pyzo.tools.pyzoInteractiveHelp import PyzoInteractiveHelp
+    from pyzo.tools.pyzoLogger import PyzoLogger
+    from pyzo.tools.pyzoSourceStructure import PyzoSourceStructure
+    from pyzo.tools.pyzoWebBrowser import PyzoWebBrowser
+    # from pyzo.tools.pyzoWorkspace import PyzoWorkspace
+    banner("END onCreate imports")
     #
     # Make the docks.
     table = (
-        ('File Browser', PyzoFileBrowser),
+        ("File Browser", PyzoFileBrowser),
+        ("History Viewer", PyzoHistoryViewer),
+        ("Interactive Help", PyzoInteractiveHelp),
+        ("Logger", PyzoLogger),
+        ("Web Browser", PyzoWebBrowser),
+        # These use pyzo.editors...
+        ("Source Structure", PyzoSourceStructure),
+        # ("Workspace", PyzoWorkspace),
+             # pyzo.shells.currentShellChanged.connect(self.onCurrentShellChanged)
+             # AttributeError: 'NoneType' object has no attribute 'currentShellChanged'
     )
     for name, widget_class in table:
         make_dock(c, name=name, widget=widget_class(parent=None))

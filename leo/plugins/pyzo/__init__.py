@@ -278,28 +278,45 @@ def start():
     # Enter the main loop
     if leo_g: leo_g.pr('END pyzo.start\n')
     QtWidgets.qApp.exec_()
-def start_pyzo_in_leo():
+def start_pyzo_in_leo(c, pyzo):
     """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
     """
     banner('BEGIN pyzo.start_pyzo_in_leo')
-
+    
     # EKR:change-startup.
         # Do some imports
         # from pyzo.core import pyzoLogging  # noqa - to start logging asap
         # assert pyzoLogging
         # from pyzo.core.main import MainWindow
+
     import pyzo.core.main as main # EKR:change-startup.
     main.loadIcons()
     main.loadFonts()
-    
-    # EKR: Required by PyzoFileBrowser tool, and probably lots of others.
-    import pyzo.core.menu as menu
-    assert menu
 
+    # From MainWindow.__init__.
+    pyzo.main = main
+    pyzo.main.setMainTitle = leo_g.TracingNullObject(tag='pyzo.main.setMainTitle')
+    
+    # From _populate.
+    import pyzo.core.menu as menu
+    pyzo.keyMapper = menu.KeyMapper()
+    
+    # From _populate..
+    from pyzo.core.history import CommandHistory
+    pyzo.command_history = CommandHistory('command_history.py')
+
+    # From _populate..
+    from pyzo.core.editorTabs import EditorTabs
+    pyzo.editors = EditorTabs(c.frame.top) # was self (MainWindow)
+    
+    # From _populate
+    from pyzo.core import codeparser
+    if pyzo.parser is None:
+        pyzo.parser = codeparser.Parser()
+        pyzo.parser.start()
+        
+    # From pyzo.start...
     # Apply users' preferences w.r.t. date representation etc
-    # this is required for e.g. strftime("%c")
-    # Just using '' does not seem to work on OSX. Thus this odd loop.
-        # locale.setlocale(locale.LC_ALL, "")
     for x in ('', 'C', 'en_US', 'en_US.utf8', 'en_US.UTF-8'):
         try:
             locale.setlocale(locale.LC_ALL, x)
@@ -310,7 +327,7 @@ def start_pyzo_in_leo():
     # Set to be aware of the systems native colors, fonts, etc.
     QtWidgets.QApplication.setDesktopSettingsAware(True)
     
-    # EKR:change-startup.
+    # EKR: From pyzo.start: not needed.
     
         # # Instantiate the application.
         # QtWidgets.qApp = MyApp(sys.argv)  # QtWidgets.QApplication([])
