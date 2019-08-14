@@ -91,7 +91,7 @@ else:
         sys.exit()
     else:
         # No args, proceed with starting up
-        print('Our command server is *not* running')
+        print('\nOur command server is *not* running')
         print('\nEKR: check permissions for localhost!\n')
 
 from pyzo.util import zon as ssdf  # zon is ssdf-light

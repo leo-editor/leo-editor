@@ -15,8 +15,8 @@ plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
-sys.argv = sys.argv[:1]
-g.trace(sys.argv)
+# sys.argv = sys.argv[:1]
+# g.trace(sys.argv)
 import pyzo
 #@-<< pyzo_in_leo imports >>
 #@+others
@@ -47,7 +47,7 @@ def load_all_docks(c):
     
     main_window = c.frame.top
     from pyzo.core.main import callLater
-    print('\nLOADING TOOLS\n')
+    print('\nSTART loading tools\n')
     table = (
         'PyzoFileBrowser',
         'PyzoHistoryViewer',
@@ -75,8 +75,9 @@ def load_all_docks(c):
     #
     # Populate the Shell.
     # Create the default shell when returning to the event queue
-    if 1:
+    if 0: ### Not ready yet.
         callLater(pyzo.shells.addShell)
+    print('\nEND loading tools\n')
 
 #@+node:ekr.20190813161921.1: ** make_dock (not used)
 def make_dock(c, name, widget): # pyzo_in_leo.py
