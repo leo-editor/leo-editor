@@ -351,7 +351,9 @@ def start_pyzo_in_leo(c, pyzo):
         # QtWidgets.qApp.exec_()
 
     print('\nEND pyzo.start_pyzo_in_leo\n')
-def load_all_docks(pyzo):
+def load_all_docks(c, pyzo):
+    
+    main_window = c.frame.top
     
     print('\nLOADING TOOLS\n')
     table = (
@@ -366,6 +368,23 @@ def load_all_docks(pyzo):
     for tool_id in table:
         pyzo.toolManager.loadTool(tool_id)
             # Put a floatable dock on the right.
+            
+    # From _populate
+    # Create floater for shell
+    
+    dock = QtWidgets.QDockWidget(main_window)
+    main_window._shellDock = dock ### Experimental.
+        ### self._shellDock = dock
+    dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
+    ###
+        # if pyzo.config.settings.allowFloatingShell:
+            # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
+        # else:
+            # dock.setFeatures(dock.DockWidgetMovable)
+    dock.setObjectName('shells')
+    dock.setWindowTitle('Shells')
+    ### self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+    main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 ## Init
 
 # List of names that are later overriden (in main.py)

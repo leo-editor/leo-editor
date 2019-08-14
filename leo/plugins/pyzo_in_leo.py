@@ -50,7 +50,7 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     # pylint: disable=no-member.
         # pylint doesn't know where pyzo is defined.
     pyzo.start_pyzo_in_leo(c, pyzo)
-    pyzo.load_all_docks(pyzo)
+    pyzo.load_all_docks(c, pyzo)
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""

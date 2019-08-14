@@ -15,11 +15,13 @@ except Exception:
 import time
 import webbrowser
 from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
+assert QtCore and QtGui and QtWidgets # EKR:change.
 
 import pyzo
 from pyzo import translate
 from pyzo.core.shell import PythonShell
 from pyzo.core.pyzoLogging import print  # noqa
+assert print # EKR:change
 from pyzo.core.menu import ShellTabContextMenu, ShellButtonMenu
 from pyzo.core.icons import ShellIconMaker
 
