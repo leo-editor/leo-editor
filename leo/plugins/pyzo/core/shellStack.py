@@ -88,7 +88,7 @@ class ShellStackWidget(QtWidgets.QWidget):
         
         if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
         
-        # EKR:change (init this here.)
+        ### EKR:change. Init this here. It may not be necessary when full init happens.
         self._debugActions = []
 
         # create toolbar
