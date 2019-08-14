@@ -357,6 +357,9 @@ False: (Good for files like unitTest.leo)
 <t tx="mhw.20190808082948.1"></t>
 <t tx="mhw.20190808083214.1">'''Create Leo Editor desktop and system menu shortcut links'''
 
+import leo
+import leo.core.leoGlobals as g
+
 g.es_print("Running add-desktop-links...")
 import sys
 import platform
@@ -379,7 +382,8 @@ if menu:
     g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
     g.es_print(menu)
 if term:
-    g.es_print(term)</t>
+    g.es_print(term)
+</t>
 <t tx="mhw.20190808083336.1">'''Remove Leo Editor shortcuts from desktop and system menu
 
 The approach is naive:

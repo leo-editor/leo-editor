@@ -6,6 +6,9 @@
 #@+node:mhw.20190808083214.1: ** main
 '''Create Leo Editor desktop and system menu shortcut links'''
 
+import leo
+import leo.core.leoGlobals as g
+
 g.es_print("Running add-desktop-links...")
 import sys
 import platform
