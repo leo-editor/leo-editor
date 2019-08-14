@@ -6,6 +6,7 @@
 #@+<< pyzo_in_leo imports >>
 #@+node:ekr.20190813161639.2: **  << pyzo_in_leo imports >>
 import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
 #
 # Must patch sys.path here.
 import sys
@@ -49,13 +50,11 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     # pylint: disable=no-member.
         # pylint doesn't know where pyzo is defined.
     pyzo.start_pyzo_in_leo(c, pyzo)
+    pyzo.load_all_docks(pyzo)
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
-    from leo.core.leoQt import QtCore
     dw = c.frame.top
-    if not c:
-        return
     dock = dw.createDockWidget(
         closeable=True,
         moveable=True,

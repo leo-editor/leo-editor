@@ -5,12 +5,8 @@
 """pyzo_file_browser.py: Experimental plugin that adds pyzo's file browser dock to Leo."""
 #@+<< pyzo_file_browser imports >>
 #@+node:ekr.20190809093446.1: **  << pyzo_file_browser imports >>
-def banner(message):
-    print('')
-    print(message)
-    print('')
-
 import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
 #
 # Must patch sys.path here.
 import sys
@@ -20,20 +16,15 @@ sys.path.insert(0, plugins_dir)
 # Start pyzo, de-fanged.
 import pyzo
 # pylint: disable=no-member
-pyzo.start_pyzo_in_leo()
-#
-# Import the file browser.
-banner('START import: pyzo.tools')
-from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-banner('START import: pyzo.tools')
+
 #@-<< pyzo_file_browser imports >>
 #@+others
 #@+node:ekr.20190809093459.1: **  top-level Leo functions
 #@+node:ekr.20190809093459.3: *3* init
 init_warning_given = False
 
-def init():
-    '''pyzo_file_browser.py: Return True if this plugin can be loaded.'''
+def init(): # pyzo_file_browser.py
+    '''Return True if this plugin can be loaded.'''
     
     def oops(message):
         global init_warning_given
@@ -52,26 +43,33 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
 #@+node:ekr.20190809093459.4: *3* onCreate
-def onCreate(tag, keys):
-    '''pyzo_file_browser.py: Create a pyzo file browser in c's outline.'''
-    from leo.core.leoQt import QtCore
+def onCreate(tag, keys): # pyzo_file_browser.py
+    '''Create a pyzo file browser in c's outline.'''
     c = keys.get('c')
     dw = c and c.frame and c.frame.top
     if not dw:
         return
-
+    pyzo.start_pyzo_in_leo(c, pyzo)
+    from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+    make_dock(c,
+        name="File Browser",
+        widget=PyzoFileBrowser(parent=None),
+    )
+#@+node:ekr.20190814050007.1: *3* make_dock
+def make_dock(c, name, widget): # pyzo_file_browser.py
+    """Create a dock with the given name and widget in c's main window."""
+    dw = c.frame.top
     dock = dw.createDockWidget(
         closeable=True,
         moveable=True,
         height=100,
-        name='File Browser'
+        name=name,
     )
     dw.leo_docks.append(dock)
-    w = PyzoFileBrowser(parent=None)
-    dock.setWidget(w)
+    dock.setWidget(widget)
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
-    w.show()
+    widget.show()
 #@-others
 #@@language python
 #@@tabwidth -4

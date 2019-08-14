@@ -279,8 +279,7 @@ def start():
     if leo_g: leo_g.pr('END pyzo.start\n')
     QtWidgets.qApp.exec_()
 def start_pyzo_in_leo(c, pyzo):
-    """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
-    """
+    """Init pyzo in Leo."""
     main_window = c.frame.top
     print('\nBEGIN pyzo.start_pyzo_in_leo\n')
     
@@ -350,9 +349,11 @@ def start_pyzo_in_leo(c, pyzo):
     
         # # Enter the main loop
         # QtWidgets.qApp.exec_()
-        
-    print('\nLOADING TOOLS: pyzo.start_pyzo_in_leo\n')
-        
+
+    print('\nEND pyzo.start_pyzo_in_leo\n')
+def load_all_docks(pyzo):
+    
+    print('\nLOADING TOOLS\n')
     table = (
         'PyzoFileBrowser',
         'PyzoHistoryViewer',
@@ -365,8 +366,6 @@ def start_pyzo_in_leo(c, pyzo):
     for tool_id in table:
         pyzo.toolManager.loadTool(tool_id)
             # Put a floatable dock on the right.
-
-    print('\nEND pyzo.start_pyzo_in_leo\n')
 ## Init
 
 # List of names that are later overriden (in main.py)
