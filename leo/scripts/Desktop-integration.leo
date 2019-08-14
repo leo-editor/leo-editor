@@ -378,12 +378,11 @@ term = sc.create_shortcut_to_env_terminal()
 
 if desktop:
     g.es_print("Created shortcut: {} - {}".format(desktop[0],desktop[2]))
-    g.es_print(desktop)
 if menu:
     g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
-    g.es_print(menu)
 if term:
-    g.es_print(term)
+    g.es_print("Created shortcut: terminal   - {}".format(term))
+
 </t>
 <t tx="mhw.20190808083336.1">'''Remove Leo Editor shortcuts from desktop and system menu
 
