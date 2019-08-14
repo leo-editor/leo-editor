@@ -290,12 +290,12 @@ def start_pyzo_in_leo(c, pyzo):
         # assert pyzoLogging
         # from pyzo.core.main import MainWindow
         
-    # From _populate
+    # From _populate: delayed imports
     from pyzo.core.editorTabs import EditorTabs
     from pyzo.core.shellStack import ShellStackWidget
     from pyzo.core import codeparser
     from pyzo.core.history import CommandHistory
-    # from pyzo.tools import ToolManager
+    from pyzo.tools import ToolManager
 
     # From MainWindow.__init__.
     import pyzo.core.main as main
@@ -306,20 +306,21 @@ def start_pyzo_in_leo(c, pyzo):
     pyzo.main = main
     pyzo.main.setMainTitle = leo_g.TracingNullObject(tag='pyzo.main.setMainTitle')
     
+    # From _populate
+    pyzo.toolManager = ToolManager()
+    
     # From _populate.
     import pyzo.core.menu as menu
+        # New import.
     pyzo.keyMapper = menu.KeyMapper()
     
     # From _populate.
-    ### from pyzo.core.history import CommandHistory
     pyzo.command_history = CommandHistory('command_history.py')
 
     # From _populate.
-    ### from pyzo.core.editorTabs import EditorTabs
     pyzo.editors = EditorTabs(main_window) # was self, a MainWindow.
     
     # From _populate.
-    ###from pyzo.core import codeparser
     if pyzo.parser is None:
         pyzo.parser = codeparser.Parser()
         pyzo.parser.start()
@@ -352,6 +353,15 @@ def start_pyzo_in_leo(c, pyzo):
     
         # # Enter the main loop
         # QtWidgets.qApp.exec_()
+        
+    # From _populate:
+        # Load tools
+        # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
+            # pyzo.toolManager.loadTool('pyzosourcestructure')
+            # pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
+        # elif pyzo.config.state.loadedTools:
+            # for toolId in pyzo.config.state.loadedTools:
+                # pyzo.toolManager.loadTool(toolId)
 
     banner('END pyzo.start_pyzo_in_leo\n')
 ## Init

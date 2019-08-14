@@ -55,7 +55,7 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     # pylint: disable=no-member
     pyzo.start_pyzo_in_leo(c, pyzo)
     #
-    # Import the widget classes *after* calling start_pyzo_in_leo.
+    # Import the dock classes last.
     from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
     from pyzo.tools.pyzoHistoryViewer import PyzoHistoryViewer
     from pyzo.tools.pyzoInteractiveHelp import PyzoInteractiveHelp
