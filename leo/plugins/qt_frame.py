@@ -30,7 +30,7 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
-floatable_docks = False
+floatable_docks = True
     # True: allow QDockWidgets to float.
 
 #@+others
