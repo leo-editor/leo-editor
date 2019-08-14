@@ -55,6 +55,9 @@ class LeoQtGui(leoGui.LeoGui):
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
             # For c.idle_focus_helper and activate/deactivate events.
+        #
+        # Set to be aware of the systems native colors, fonts, etc.
+        QtWidgets.QApplication.setDesktopSettingsAware(True)
         # Create objects...
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.reloadSettings()

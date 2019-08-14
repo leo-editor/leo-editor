@@ -73,23 +73,16 @@ def load_all_docks(c):
     #
     # Populate the Shell.
     # Create the default shell when returning to the event queue
-    if 0: # Crashes:
-        callLater(pyzo.shells.addShell)
+    callLater(pyzo.shells.addShell)
         
-        # Uncaught Python exception: 'NoneType' object has no attribute 'addItem'
-        # File "...plugins\pyzo\core\shellStack.py", line 330, in updateShellMenu
-        # action = menu.addItem(text, None, self._shellStack.setCurrentWidget, shell)
-        
-        # Uncaught Python exception: 'ShellStackWidget' object has no attribute '_debugActions'
-        # File "plugins\pyzo\core\shellStack.py", line 192, in onShellDebugStateChange
-        # for action in self._debugActions:
+       
 #@+node:ekr.20190813161921.1: ** make_dock (not used)
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
     dw = c.frame.top
     dock = dw.createDockWidget(
         closeable=True,
-        moveable=True,
+        moveable=True, # Implies floatable.
         height=100,
         name=name,
     )
@@ -126,6 +119,7 @@ def start_pyzo_in_leo(c): # pyzo_in_leo.py
     import pyzo.core.main as main
     main.loadIcons()
     main.loadFonts()
+    main.loadAppIcons()
 
     # From MainWindow.__init__.
     pyzo.main = main_window

@@ -87,6 +87,9 @@ class ShellStackWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         
         if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
+        
+        # EKR:change (init this here.)
+        self._debugActions = []
 
         # create toolbar
         self._toolbar = QtWidgets.QToolBar(self)
@@ -133,15 +136,17 @@ class ShellStackWidget(QtWidgets.QWidget):
         if show:
             self._interpreterhelp.detect()
     def addShell(self, shellInfo=None):
-        """ addShell()
-        Add a shell to the widget. """
-        # if leo_g: leo_g.pr('ShellStackWidget.addShell')
+        """Add a shell to the widget. """
+        #leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
+        #
         # Create shell and add to stack
         shell = PythonShell(self, shellInfo)
         self._stack.addWidget(shell)
+        #
         # Bind to signals
         shell.stateChanged.connect(self.onShellStateChange)
         shell.debugStateChanged.connect(self.onShellDebugStateChange)
+        #
         # Select it and focus on it (invokes onCurrentChanged)
         self._stack.setCurrentWidget(shell)
         shell.setFocus()
@@ -166,6 +171,8 @@ class ShellStackWidget(QtWidgets.QWidget):
         """ Called when the shell state changes, and is called
         by onCurrentChanged. Sets the mainwindow's icon if busy.
         """
+        
+        # leo_g.pr('ShellStackWidget.onShellStateChange', repr(pyzo.main))
 
         # Keep shell button and its menu up-to-date
         self._shellButton.updateShellMenu(shell)
@@ -189,10 +196,12 @@ class ShellStackWidget(QtWidgets.QWidget):
             if shell and shell._debugState:
                 info = shell._debugState
                 self._debugmode = info['debugmode']
-                for action in self._debugActions:
-                    action.setEnabled(self._debugmode==2)
-                self._debugActions[-1].setEnabled(self._debugmode>0)  # Stop
-                self._dbs.setTrace(shell._debugState)
+                ### EKR:change: add guard.
+                if self._debugActions:
+                    for action in self._debugActions:
+                        action.setEnabled(self._debugmode==2)
+                    self._debugActions[-1].setEnabled(self._debugmode>0)  # Stop
+                    self._dbs.setTrace(shell._debugState)
             else:
                 for action in self._debugActions:
                     action.setEnabled(False)
@@ -302,6 +311,8 @@ class ShellControl(QtWidgets.QToolButton):
         menu item.
         """
         menu = self.menu()
+        if not menu: ### EKR:change.
+            return
 
         # Get shells now active
         currentShell = self._shellStack.currentWidget()
