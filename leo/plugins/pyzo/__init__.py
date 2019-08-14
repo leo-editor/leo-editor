@@ -368,13 +368,10 @@ def load_all_docks(c, pyzo):
     for tool_id in table:
         pyzo.toolManager.loadTool(tool_id)
             # Put a floatable dock on the right.
-            
-    # From _populate
-    # Create floater for shell
-    
+    #
+    # From _populate: Create floater for shell
     dock = QtWidgets.QDockWidget(main_window)
     main_window._shellDock = dock ### Experimental.
-        ### self._shellDock = dock
     dock.setFeatures(
         dock.DockWidgetMovable
         | dock.DockWidgetFloatable
@@ -382,7 +379,6 @@ def load_all_docks(c, pyzo):
     )
     dock.setObjectName('shells')
     dock.setWindowTitle('Shells')
-    ### self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
     main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 ## Init
 
