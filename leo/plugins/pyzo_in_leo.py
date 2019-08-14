@@ -47,9 +47,8 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     if not c and c.frame:
         return
     # pylint: disable=no-member.
-        # pylint doesn't know where pyzo is actually defined.
+        # pylint doesn't know where pyzo is defined.
     pyzo.start_pyzo_in_leo(c, pyzo)
-
 #@-others
 #@@language python
 #@@tabwidth -4
