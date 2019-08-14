@@ -4,7 +4,6 @@
 #@@tabwidth -4
 #@+others
 #@+node:mhw.20190808083336.1: ** main
-#@@first
 '''Remove Leo Editor shortcuts from desktop and system menu
 
 The approach is naive:
@@ -14,6 +13,8 @@ The approach is naive:
 So this won't delete links created from a different Leo directory or source code
 checkout (unless they have same filename).
 '''
+import leo.core.leoGlobals as g
+
 g.es_print("Running remove-desktop-links...")
 import os
 import sys

@@ -357,8 +357,9 @@ False: (Good for files like unitTest.leo)
 <t tx="mhw.20190808082948.1"></t>
 <t tx="mhw.20190808083214.1">'''Create Leo Editor desktop and system menu shortcut links'''
 
-import leo
 import leo.core.leoGlobals as g
+
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, '../../Icons/LeoApp.ico'))
 
 g.es_print("Running add-desktop-links...")
 import sys
@@ -370,9 +371,9 @@ leocmd = "leo"
 if platform.system() == 'Windows':
     leocmd = "leo-messages"
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", 
-    icon = r"D:\code-maphew\leo-editor\leo\Icons\LeoApp.ico")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon="bad/path")
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor",
+    icon=iconpath)
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon=iconpath)
 term = sc.create_shortcut_to_env_terminal()
 
 if desktop:
@@ -393,6 +394,8 @@ The approach is naive:
 So this won't delete links created from a different Leo directory or source code
 checkout (unless they have same filename).
 '''
+import leo.core.leoGlobals as g
+
 g.es_print("Running remove-desktop-links...")
 import os
 import sys
