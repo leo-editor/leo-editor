@@ -86,7 +86,7 @@ class ShellStackWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
         
-        # if leo_g: leo_g.pr('ShellStackWidget.__init__')
+        if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
 
         # create toolbar
         self._toolbar = QtWidgets.QToolBar(self)
@@ -273,7 +273,7 @@ class ShellControl(QtWidgets.QToolButton):
     def __init__(self, parent, shellStack):
         QtWidgets.QToolButton.__init__(self, parent)
         
-        # if leo_g: leo_g.pr('ShellControl.__init__', shellStack)
+        print('\nShellControl.__init__: parent:', repr(parent))
 
         # Store reference of shell stack
         self._shellStack = shellStack
