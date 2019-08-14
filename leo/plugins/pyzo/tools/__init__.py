@@ -37,7 +37,8 @@ import os, sys, imp
 import pyzo
 from pyzo.util.qt import QtCore, QtWidgets  # noqa: QtGui
 from pyzo.util import zon as ssdf
-# from pyzo import translate
+from pyzo import translate
+assert translate
 
 class ToolDockWidget(QtWidgets.QDockWidget):
     """ A dock widget that holds a tool.

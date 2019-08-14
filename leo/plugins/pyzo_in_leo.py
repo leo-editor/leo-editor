@@ -54,31 +54,46 @@ def onCreate(tag, keys): # pyzo_in_leo.py
         return
     # pylint: disable=no-member
     pyzo.start_pyzo_in_leo(c, pyzo)
-    #
-    # Import the dock classes last.
-    from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-    from pyzo.tools.pyzoHistoryViewer import PyzoHistoryViewer
-    from pyzo.tools.pyzoInteractiveHelp import PyzoInteractiveHelp
-    from pyzo.tools.pyzoLogger import PyzoLogger
-    from pyzo.tools.pyzoSourceStructure import PyzoSourceStructure
-    from pyzo.tools.pyzoWebBrowser import PyzoWebBrowser
-    from pyzo.tools.pyzoWorkspace import PyzoWorkspace
-    banner("END onCreate imports")
-    #
-    # Make the docks.
-    table = (
-        ("File Browser", PyzoFileBrowser),
-        ("History Viewer", PyzoHistoryViewer),
-        ("Interactive Help", PyzoInteractiveHelp),
-        ("Logger", PyzoLogger),
-        ("Source Structure", PyzoSourceStructure),
-            # Uses pyzo.editors.
-        ("Web Browser", PyzoWebBrowser),
-        ("Workspace", PyzoWorkspace),
-            # Uses pyzo.editors and pyzo.shells.
-    )
-    for name, widget_class in table:
-        make_dock(c, name=name, widget=widget_class(parent=None))
+    if 1:
+        table = (
+            'PyzoFileBrowser',
+            'PyzoHistoryViewer',
+            'PyzoInteractiveHelp',
+            'PyzoLogger',
+            'PyzoSourceStructure',
+            'PyzoWebBrowser',
+            'PyzoWorkspace',
+        )
+        for tool_id in table:
+            pyzo.toolManager.loadTool(tool_id)
+                # This puts the dock on the right.
+    else:
+        #
+        # Import the dock classes last.
+        from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+        from pyzo.tools.pyzoHistoryViewer import PyzoHistoryViewer
+        from pyzo.tools.pyzoInteractiveHelp import PyzoInteractiveHelp
+        from pyzo.tools.pyzoLogger import PyzoLogger
+        from pyzo.tools.pyzoSourceStructure import PyzoSourceStructure
+        from pyzo.tools.pyzoWebBrowser import PyzoWebBrowser
+        from pyzo.tools.pyzoWorkspace import PyzoWorkspace
+        banner("END onCreate imports")
+        #
+        # Make the docks.
+        table = (
+            ("File Browser", PyzoFileBrowser),
+            ("History Viewer", PyzoHistoryViewer),
+            ("Interactive Help", PyzoInteractiveHelp),
+            ("Logger", PyzoLogger),
+            ("Source Structure", PyzoSourceStructure),
+                # Uses pyzo.editors.
+            ("Web Browser", PyzoWebBrowser),
+            ("Workspace", PyzoWorkspace),
+                # Uses pyzo.editors and pyzo.shells.
+        )
+        for name, widget_class in table:
+            make_dock(c, name=name, widget=widget_class(parent=None))
+                # This puts the dock on the left.
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""

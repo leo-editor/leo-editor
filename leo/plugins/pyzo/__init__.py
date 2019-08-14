@@ -284,11 +284,8 @@ def start_pyzo_in_leo(c, pyzo):
     main_window = c.frame.top
     banner('BEGIN pyzo.start_pyzo_in_leo')
     
-    # EKR:change-startup.
-        # Do some imports
+    # ?? Don't start logging here.
         # from pyzo.core import pyzoLogging  # noqa - to start logging asap
-        # assert pyzoLogging
-        # from pyzo.core.main import MainWindow
         
     # From _populate: delayed imports
     from pyzo.core.editorTabs import EditorTabs
