@@ -15,6 +15,8 @@ plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
+sys.argv = sys.argv[:1]
+g.trace(sys.argv)
 import pyzo
 #@-<< pyzo_in_leo imports >>
 #@+others
@@ -73,9 +75,9 @@ def load_all_docks(c):
     #
     # Populate the Shell.
     # Create the default shell when returning to the event queue
-    callLater(pyzo.shells.addShell)
-        
-       
+    if 1:
+        callLater(pyzo.shells.addShell)
+
 #@+node:ekr.20190813161921.1: ** make_dock (not used)
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""

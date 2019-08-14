@@ -282,7 +282,7 @@ class ShellControl(QtWidgets.QToolButton):
     def __init__(self, parent, shellStack):
         QtWidgets.QToolButton.__init__(self, parent)
         
-        print('\nShellControl.__init__: parent:', repr(parent))
+        # print('\nShellControl.__init__: parent:', repr(parent))
 
         # Store reference of shell stack
         self._shellStack = shellStack

@@ -22,6 +22,7 @@ from pyzo.codeeditor import Manager
 from pyzo.core.menu import EditorContextMenu
 from pyzo.core.baseTextCtrl import BaseTextCtrl, normalizePath
 from pyzo.core.pyzoLogging import print  # noqa
+assert print
 import pyzo
 
 #
@@ -673,25 +674,27 @@ class PyzoEditor(BaseTextCtrl):
         else:
             # Otherwise we finish it ourselves
             aco.finish()
-if __name__=="__main__":
-    # Do some stubbing to run this module as a unit separate from pyzo
-    # TODO: untangle pyzo from this module where possible
-    class DummyParser:
-        def parseThis(self, x):
-            pass
-    pyzo.parser = DummyParser()
-    EditorContextMenu = QtWidgets.QMenu  # noqa
-    app = QtWidgets.QApplication([])
-    win = PyzoEditor(None)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+C"), win).activated.connect(win.copy)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+X"), win).activated.connect(win.cut)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+V"), win).activated.connect(win.paste)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+V"), win).activated.connect(win.pasteAndSelect)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Z"), win).activated.connect(win.undo)
-    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Y"), win).activated.connect(win.redo)
 
-    tmp = "foo(bar)\nfor bar in range(5):\n  print bar\n"
-    tmp += "\nclass aap:\n  def monkey(self):\n    pass\n\n"
-    win.setPlainText(tmp)
-    win.show()
-    app.exec_()
+### Don't allow this.
+    # if __name__=="__main__":
+        # # Do some stubbing to run this module as a unit separate from pyzo
+        # # TODO: untangle pyzo from this module where possible
+        # class DummyParser:
+            # def parseThis(self, x):
+                # pass
+        # pyzo.parser = DummyParser()
+        # EditorContextMenu = QtWidgets.QMenu  # noqa
+        # app = QtWidgets.QApplication([])
+        # win = PyzoEditor(None)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+C"), win).activated.connect(win.copy)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+X"), win).activated.connect(win.cut)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+V"), win).activated.connect(win.paste)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+V"), win).activated.connect(win.pasteAndSelect)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Z"), win).activated.connect(win.undo)
+        # QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Y"), win).activated.connect(win.redo)
+    
+        # tmp = "foo(bar)\nfor bar in range(5):\n  print bar\n"
+        # tmp += "\nclass aap:\n  def monkey(self):\n    pass\n\n"
+        # win.setPlainText(tmp)
+        # win.show()
+        # app.exec_()

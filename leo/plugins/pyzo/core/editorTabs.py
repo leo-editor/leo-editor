@@ -1425,7 +1425,11 @@ class EditorTabs(QtWidgets.QWidget):
         """
         
         # if leo_g: leo_g.printObj(pyzo.config.settings)
-
+        
+        if 1: ### Don't open the pyzo file.
+            self.newFile()
+            return
+        
         # Restore opened editors
         if pyzo.config.state.editorState2:
             ok = self._setCurrentOpenFilesAsSsdfList(pyzo.config.state.editorState2)
