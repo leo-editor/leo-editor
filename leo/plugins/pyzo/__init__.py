@@ -282,9 +282,9 @@ def start_pyzo_in_leo(c, pyzo):
     """Init pyzo in Leo, without instantiating editors, shells, or any other gui elements.
     """
     main_window = c.frame.top
-    banner('BEGIN pyzo.start_pyzo_in_leo')
+    print('\nBEGIN pyzo.start_pyzo_in_leo\n')
     
-    # ?? Don't start logging here.
+    # ?? Don't start logging here ??
         # from pyzo.core import pyzoLogging  # noqa - to start logging asap
         
     # From _populate: delayed imports
@@ -351,16 +351,22 @@ def start_pyzo_in_leo(c, pyzo):
         # # Enter the main loop
         # QtWidgets.qApp.exec_()
         
-    # From _populate:
-        # Load tools
-        # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
-            # pyzo.toolManager.loadTool('pyzosourcestructure')
-            # pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
-        # elif pyzo.config.state.loadedTools:
-            # for toolId in pyzo.config.state.loadedTools:
-                # pyzo.toolManager.loadTool(toolId)
+    print('\nLOADING TOOLS: pyzo.start_pyzo_in_leo\n')
+        
+    table = (
+        'PyzoFileBrowser',
+        'PyzoHistoryViewer',
+        'PyzoInteractiveHelp',
+        'PyzoLogger',
+        'PyzoSourceStructure',
+        'PyzoWebBrowser',
+        'PyzoWorkspace',
+    )
+    for tool_id in table:
+        pyzo.toolManager.loadTool(tool_id)
+            # Put a floatable dock on the right.
 
-    banner('END pyzo.start_pyzo_in_leo\n')
+    print('\nEND pyzo.start_pyzo_in_leo\n')
 ## Init
 
 # List of names that are later overriden (in main.py)
