@@ -303,7 +303,7 @@ def start_pyzo_in_leo(c, pyzo):
     main.loadFonts()
 
     # From MainWindow.__init__.
-    pyzo.main = main
+    pyzo.main = main_window
     pyzo.main.setMainTitle = leo_g.TracingNullObject(tag='pyzo.main.setMainTitle')
     
     # From _populate
