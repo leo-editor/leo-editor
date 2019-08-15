@@ -77,6 +77,8 @@ def load_all_docks(c):
     # Create the default shell when returning to the event queue
     if 0: ### Not ready yet.
         callLater(pyzo.shells.addShell)
+        # 1. This causes problem exiting Leo.
+        # 2. Does not populate the shell.
     print('\nEND loading tools\n')
 
 #@+node:ekr.20190813161921.1: ** make_dock (not used)
