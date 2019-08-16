@@ -3,21 +3,21 @@
 #@+node:ekr.20190813161639.1: * @file pyzo_in_leo.py
 #@@first
 """pyzo_in_leo.py: Experimental plugin that adds all of pyzo's features to Leo."""
-#@+<< pyzo_in_leo imports >>
-#@+node:ekr.20190813161639.2: **  << pyzo_in_leo imports >>
+#
+# Easy imports...
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 import locale
 import sys
 import threading
 #
-# Must patch sys.path here.
+# Patch sys.path first.
 plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
 import pyzo
-#@-<< pyzo_in_leo imports >>
+
 #@+others
 #@+node:ekr.20190813161639.4: ** init
 init_warning_given = False
