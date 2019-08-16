@@ -16,8 +16,6 @@ plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
-sys.argv = sys.argv[:1]
-    # Avoid problems when multiple copies of Leo are open.
 import pyzo
 #@-<< pyzo_in_leo imports >>
 #@+others
@@ -425,7 +423,10 @@ def main_window_populate(c):
 #@+node:ekr.20190816131934.1: *3* my_app_ctor
 def my_app_ctor(c, argv):
     """Simulate MyApp.__init__()."""
-    pass
+    
+    # EKR:change.
+    sys.argv = sys.argv[:1]
+        # Avoid problems when multiple copies of Leo are open.
     
     # The MyApp class only defines this:
     
