@@ -137,7 +137,7 @@ class ShellStackWidget(QtWidgets.QWidget):
             self._interpreterhelp.detect()
     def addShell(self, shellInfo=None):
         """Add a shell to the widget. """
-        #leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
+        leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
         #
         # Create shell and add to stack
         shell = PythonShell(self, shellInfo)
