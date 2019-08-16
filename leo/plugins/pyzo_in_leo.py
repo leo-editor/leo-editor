@@ -74,11 +74,15 @@ def make_dock(c, name, widget): # pyzo_in_leo.py
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     widget.show()
-#@+node:ekr.20190816163917.1: ** make_patches & functions
-def make_patches(c):
-    """Make needed patches in c's code."""
+#@+node:ekr.20190816163917.1: ** make_early/late_patches & functions
+def make_early_patches(c):
+    """Make early patches in c's code."""
     dw = c.frame.top
     g.funcToMethod(closeEvent, dw.__class__)
+    
+def make_late_patches(c):
+    """Make early patches in c's code."""
+    pass
 #@+node:ekr.20190816163728.1: *3* function: closeEvent
 def closeEvent(self, event):
     """A monkey-patched version of MainWindow.closeEvent."""
@@ -147,8 +151,9 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
     c = keys.get('c')
     if c and c.frame:
-        make_patches(c)
+        make_early_patches(c)
         pyzo_start(c)
+        make_late_patches(c)
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start(c):
     """A copy of pyzo.start, adapted for Leo."""
