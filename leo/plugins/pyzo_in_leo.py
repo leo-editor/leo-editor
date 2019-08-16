@@ -436,7 +436,7 @@ def menu_build_menus(c):
     
     # EKR:change-new import
     from pyzo import translate
-    from pyzo.core.menu import ShellMenu, RunMenu, HelpMenu
+    from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
     
     # EKR:change
     menuBar = self.menuBar()
@@ -444,7 +444,7 @@ def menu_build_menus(c):
     menus = [
         # FileMenu(menuBar, translate("menu", "File")),
         # EditMenu(menuBar, translate("menu", "Edit")),
-        # ViewMenu(menuBar, translate("menu", "View")),
+        ViewMenu(menuBar, translate("menu", "View")),
         # SettingsMenu(menuBar, translate("menu", "Settings")),
         ShellMenu(menuBar, translate("menu", "Shell")),
         RunMenu(menuBar, translate("menu", "Run")),
