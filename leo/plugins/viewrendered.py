@@ -1405,29 +1405,31 @@ if QtWidgets: # NOQA
             '''Return the proper rendering kind for node p.'''
             c = self.c
             
-            def head_language(p):
+            def get_language(p):
+                """
+                Return the language in effect at position p.
+                Headline directives over-ride normal Leo directives in body text.
+                """
                 h = p.h
+                # First, look for headline directives.
                 if h.startswith('@'):
                     i = g.skip_id(h, 1, chars='-')
                     word = h[1: i].lower().strip()
                     if word in self.dispatch_dict:
                         return word
-                return None
-
-            # Honor @language in p and all p's ancestors.
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p, use_default=False)
-                # Fix #344: don't use c.target_language as a default.
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in self.dispatch_dict:
-                return language
-            # #1287: Honor explicit headlines in p and all p's ancestors.
-            for parent in p.self_and_parents_iter():
-                language = head_language(parent)
-                if language:
+                # Look for @language directives.
+                # Warning: (see #344): don't use c.target_language as a default.
+                colorizer = c.frame.body.colorizer
+                return colorizer.findFirstValidAtLanguageDirective(p.copy())
+            #
+            #  #1287: Honor both kind of directives node by node.
+            for p in p.self_and_parents(p):
+                language = get_language(p)
+                if got_markdown and language in ('md', 'markdown'):
+                    return language
+                if got_docutils and language in ('rest', 'rst'):
+                    return language
+                if language and language in self.dispatch_dict:
                     return language
             return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
