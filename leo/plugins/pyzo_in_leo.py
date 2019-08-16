@@ -6,7 +6,7 @@
 #
 # Easy imports...
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import locale
 import sys
 import threading
@@ -404,11 +404,13 @@ def main_window_populate(c):
             # pyzo.status = None
             # self.setStatusBar(None)
 
+    # EKR:change-menu.
     # Create menu
     from pyzo.core import menu
     pyzo.keyMapper = menu.KeyMapper()
-    menu.buildMenus(self.menuBar())
-        # EKR: this builds top-level menuse, and other menus.
+    menu_build_menus(c)
+        # menu.buildMenus(self.menuBar())
+            # # EKR: this builds top-level menuse, and other menus.
     
     # Add the context menu to the editor
     pyzo.editors.addContextMenu()
@@ -425,6 +427,60 @@ def main_window_populate(c):
                 # pyzo.toolManager.loadTool(toolId)
             
     if trace: print('END main_window_populate\n')
+#@+node:ekr.20190816170034.1: *3* menu_build_menus
+def menu_build_menus(c):
+    """Build only the desired menus, in a top-level Pyzo menu."""
+
+    # EKR:change.
+    self = c.frame.top
+    
+    # EKR:change-new import
+    from pyzo import translate
+    from pyzo.core.menu import ShellMenu, RunMenu, HelpMenu
+    
+    # EKR:change
+    menuBar = self.menuBar()
+        # menu.buildMenus(self.menuBar())
+    menus = [
+        # FileMenu(menuBar, translate("menu", "File")),
+        # EditMenu(menuBar, translate("menu", "Edit")),
+        # ViewMenu(menuBar, translate("menu", "View")),
+        # SettingsMenu(menuBar, translate("menu", "Settings")),
+        ShellMenu(menuBar, translate("menu", "Shell")),
+        RunMenu(menuBar, translate("menu", "Run")),
+        RunMenu(menuBar, translate("menu", "Tools")),
+        HelpMenu(menuBar, translate("menu", "Help")),
+    ]
+    menuBar._menumap = {}
+    menuBar._menus = menus
+    for menu in menuBar._menus:
+        menuBar.addMenu(menu)
+        menuName = menu.__class__.__name__.lower().split('menu')[0]
+        menuBar._menumap[menuName] = menu
+
+    # Enable tooltips
+    def onHover(action):
+        # This ugly bit of code makes sure that the tooltip is refreshed
+        # (thus raised above the submenu). This happens only once and after
+        # ths submenu has become visible.
+        if action.menu():
+            if not hasattr(menuBar, '_lastAction'):
+                menuBar._lastAction = None
+                menuBar._haveRaisedTooltip = False
+            if action is menuBar._lastAction:
+                if ((not menuBar._haveRaisedTooltip) and
+                            action.menu().isVisible()):
+                    QtWidgets.QToolTip.hideText()
+                    menuBar._haveRaisedTooltip = True
+            else:
+                menuBar._lastAction = action
+                menuBar._haveRaisedTooltip = False
+        # Set tooltip
+        tt = action.statusTip()
+        if hasattr(action, '_shortcutsText'):
+            tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
+        QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
+    menuBar.hovered.connect(onHover)
 #@+node:ekr.20190816131934.1: *3* my_app_ctor
 def my_app_ctor(c, argv):
     """Simulate MyApp.__init__()."""
