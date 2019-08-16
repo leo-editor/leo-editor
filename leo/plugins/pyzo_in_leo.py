@@ -9,6 +9,7 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 import locale
 import sys
+import threading
 #
 # Must patch sys.path here.
 plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
@@ -20,6 +21,69 @@ sys.argv = sys.argv[:1]
 import pyzo
 #@-<< pyzo_in_leo imports >>
 #@+others
+#@+node:ekr.20190816163728.1: ** closeEvent
+def closeEvent(self, event):
+    """A monkey-patched version of MainWindow.closeEvent."""
+    trace = True
+    # pylint: disable=no-member, not-an-iterable
+        # Pylint gets confused by monkey-patches.
+    if trace: print('PATCHED MainWindow.closeEvent')
+    
+    # EKR:change-new imports
+    from pyzo.core import commandline
+
+    # Are we restaring?
+    # restarting = time.time() - self._closeflag < 1.0
+
+    # EKR:change-no-confi
+    # Save settings
+        # pyzo.saveConfig()
+        # pyzo.command_history.save()
+
+    # Stop command server
+    commandline.stop_our_server()
+
+    # Proceed with closing...
+    pyzo.editors.closeAll()
+    
+    # EKR:change.
+        # # Force the close.
+        # if not result:
+            # self._closeflag = False
+            # event.ignore()
+            # return
+        # self._closeflag = True
+
+    # Proceed with closing shells
+    pyzo.localKernelManager.terminateAll()
+    
+    for shell in pyzo.shells:
+        shell._context.close()
+
+    # EKR:change-no-config
+    # Close tools
+    ### How to get c???
+    ### close_all_pyzo_tools(c)
+        # for toolname in pyzo.toolManager.getLoadedTools():
+            # tool = pyzo.toolManager.getTool(toolname)
+            # tool.close()
+
+    # Stop all threads (this should really only be daemon threads)
+        # import threading
+    for thread in threading.enumerate():
+        if hasattr(thread, 'stop'):
+            try:
+                thread.stop(0.1)
+            except Exception:
+                pass
+
+    # Proceed as normal
+    QtWidgets.QMainWindow.closeEvent(self, event)
+
+    # EKR:change. Don't exit Leo!
+        # if sys.version_info >= (3,3,0): # and not restarting:
+            # if hasattr(os, '_exit'):
+                # os._exit(0)
 #@+node:ekr.20190813161639.4: ** init
 init_warning_given = False
 
@@ -75,13 +139,17 @@ def make_dock(c, name, widget): # pyzo_in_leo.py
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     widget.show()
+#@+node:ekr.20190816163917.1: ** make_patches
+def make_patches(c):
+    """Make needed patches in c's code."""
+    dw = c.frame.top
+    g.funcToMethod(closeEvent, dw.__class__)
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
     c = keys.get('c')
-    ### if not c and c.frame:
-    ###    return
     if c and c.frame:
+        make_patches(c)
         pyzo_start(c)
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start(c):
@@ -337,6 +405,7 @@ def main_window_populate(c):
     from pyzo.core import menu
     pyzo.keyMapper = menu.KeyMapper()
     menu.buildMenus(self.menuBar())
+        # EKR: this builds top-level menuse, and other menus.
     
     # Add the context menu to the editor
     pyzo.editors.addContextMenu()
@@ -353,7 +422,7 @@ def main_window_populate(c):
                 # pyzo.toolManager.loadTool(toolId)
             
     if trace: print('END main_window_populate\n')
-#@+node:ekr.20190816131934.1: *3* pyzo_MyApp
+#@+node:ekr.20190816131934.1: *3* my_app_ctor
 def my_app_ctor(c, argv):
     """Simulate MyApp.__init__()."""
     pass
