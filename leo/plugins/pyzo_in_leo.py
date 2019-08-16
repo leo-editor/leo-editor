@@ -19,7 +19,67 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 #@-<< pyzo_in_leo imports >>
 #@+others
-#@+node:ekr.20190816163728.1: ** closeEvent
+#@+node:ekr.20190813161639.4: ** init
+init_warning_given = False
+
+def init(): # pyzo_in_leo.py
+    '''Return True if this plugin can be loaded.'''
+    
+    def oops(message):
+        global init_warning_given
+        if not init_warning_given:
+            init_warning_given = True
+            print('%s %s' % (__name__, message))
+        return False
+        
+    if g.app.gui.guiName() != "qt":
+        return oops('requires Qt gui')
+    # if not pyzo:
+        # return oops('requires pyzo')
+    if not g.app.dock:
+        return oops('is incompatible with --no-dock')
+    g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame', onCreate)
+    return True
+#@+node:ekr.20190814050859.1: ** load_all_docks
+def load_all_docks(c):
+
+    trace = True
+    if trace: print('\nSTART load_all_docks\n')
+    table = (
+        'PyzoFileBrowser',
+        'PyzoHistoryViewer',
+        'PyzoInteractiveHelp',
+        'PyzoLogger',
+        'PyzoSourceStructure',
+        'PyzoWebBrowser',
+        'PyzoWorkspace',
+    )
+    for tool_id in table:
+        pyzo.toolManager.loadTool(tool_id)
+            # Put a floatable dock on the right.
+    if trace: print('\nEND load_all_docks\n')
+#@+node:ekr.20190813161921.1: ** make_dock (not used)
+def make_dock(c, name, widget): # pyzo_in_leo.py
+    """Create a dock with the given name and widget in c's main window."""
+    dw = c.frame.top
+    dock = dw.createDockWidget(
+        closeable=True,
+        moveable=True, # Implies floatable.
+        height=100,
+        name=name,
+    )
+    dw.leo_docks.append(dock)
+    dock.setWidget(widget)
+    area = QtCore.Qt.LeftDockWidgetArea
+    dw.addDockWidget(area, dock)
+    widget.show()
+#@+node:ekr.20190816163917.1: ** make_patches & functions
+def make_patches(c):
+    """Make needed patches in c's code."""
+    dw = c.frame.top
+    g.funcToMethod(closeEvent, dw.__class__)
+#@+node:ekr.20190816163728.1: *3* function: closeEvent
 def closeEvent(self, event):
     """A monkey-patched version of MainWindow.closeEvent."""
     trace = True
@@ -82,66 +142,6 @@ def closeEvent(self, event):
         # if sys.version_info >= (3,3,0): # and not restarting:
             # if hasattr(os, '_exit'):
                 # os._exit(0)
-#@+node:ekr.20190813161639.4: ** init
-init_warning_given = False
-
-def init(): # pyzo_in_leo.py
-    '''Return True if this plugin can be loaded.'''
-    
-    def oops(message):
-        global init_warning_given
-        if not init_warning_given:
-            init_warning_given = True
-            print('%s %s' % (__name__, message))
-        return False
-        
-    if g.app.gui.guiName() != "qt":
-        return oops('requires Qt gui')
-    # if not pyzo:
-        # return oops('requires pyzo')
-    if not g.app.dock:
-        return oops('is incompatible with --no-dock')
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    return True
-#@+node:ekr.20190814050859.1: ** load_all_docks
-def load_all_docks(c):
-
-    trace = True
-    if trace: print('\nSTART load_all_docks\n')
-    table = (
-        'PyzoFileBrowser',
-        'PyzoHistoryViewer',
-        'PyzoInteractiveHelp',
-        'PyzoLogger',
-        'PyzoSourceStructure',
-        'PyzoWebBrowser',
-        'PyzoWorkspace',
-    )
-    for tool_id in table:
-        pyzo.toolManager.loadTool(tool_id)
-            # Put a floatable dock on the right.
-    if trace: print('\nEND load_all_docks\n')
-#@+node:ekr.20190813161921.1: ** make_dock (not used)
-def make_dock(c, name, widget): # pyzo_in_leo.py
-    """Create a dock with the given name and widget in c's main window."""
-    dw = c.frame.top
-    dock = dw.createDockWidget(
-        closeable=True,
-        moveable=True, # Implies floatable.
-        height=100,
-        name=name,
-    )
-    dw.leo_docks.append(dock)
-    dock.setWidget(widget)
-    area = QtCore.Qt.LeftDockWidgetArea
-    dw.addDockWidget(area, dock)
-    widget.show()
-#@+node:ekr.20190816163917.1: ** make_patches
-def make_patches(c):
-    """Make needed patches in c's code."""
-    dw = c.frame.top
-    g.funcToMethod(closeEvent, dw.__class__)
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
