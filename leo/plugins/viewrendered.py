@@ -1403,13 +1403,18 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            c, h, pc = self.c, p.h, self
-            if h.startswith('@'):
-                i = g.skip_id(h, 1, chars='-')
-                word = h[1: i].lower().strip()
-                if word in pc.dispatch_dict:
-                    return word
-            # 2016/03/25: Honor @language
+            c = self.c
+            
+            def head_language(p):
+                h = p.h
+                if h.startswith('@'):
+                    i = g.skip_id(h, 1, chars='-')
+                    word = h[1: i].lower().strip()
+                    if word in self.dispatch_dict:
+                        return word
+                return None
+
+            # Honor @language in p and all p's ancestors.
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p, use_default=False)
                 # Fix #344: don't use c.target_language as a default.
@@ -1417,9 +1422,13 @@ if QtWidgets: # NOQA
                 return language
             if got_docutils and language in ('rest', 'rst'):
                 return language
-            if language and language in pc.dispatch_dict:
+            if language and language in self.dispatch_dict:
                 return language
-            # To do: look at ancestors, or uA's.
+            # #1287: Honor explicit headlines in p and all p's ancestors.
+            for parent in p.self_and_parents_iter():
+                language = head_language(parent)
+                if language:
+                    return language
             return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
