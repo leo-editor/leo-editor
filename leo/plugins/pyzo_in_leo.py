@@ -59,7 +59,7 @@ def load_all_docks(c):
         pyzo.toolManager.loadTool(tool_id)
             # Put a floatable dock on the right.
     if trace: print('\nEND load_all_docks\n')
-#@+node:ekr.20190813161921.1: ** make_dock (not used)
+#@+node:ekr.20190813161921.1: ** make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
     dw = c.frame.top
@@ -202,7 +202,7 @@ def main_window_ctor(c):
     trace = True
     if trace: print('\nBEGIN main_window_ctor\n')
     
-    # EKR:change-new imports
+    # EKR:change. New imports
     import pyzo.core.main as main
     from pyzo.core import commandline
     
@@ -365,6 +365,9 @@ def main_window_populate(c):
 
     # Create editor stack and make the central widget
     pyzo.editors = EditorTabs(self)
+    
+    # EKR:change. Create an Editors dock.
+    make_dock(c, 'Editors', pyzo.editors)
     
     # EKR:change: don't to this!
         # self.setCentralWidget(pyzo.editors)
