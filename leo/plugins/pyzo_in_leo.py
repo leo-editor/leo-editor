@@ -74,15 +74,14 @@ def make_dock(c, name, widget): # pyzo_in_leo.py
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     widget.show()
-#@+node:ekr.20190816163917.1: ** make_early/late_patches & functions
-def make_early_patches(c):
-    """Make early patches in c's code."""
-    dw = c.frame.top
-    g.funcToMethod(closeEvent, dw.__class__)
-    
-def make_late_patches(c):
-    """Make early patches in c's code."""
-    pass
+#@+node:ekr.20190813161639.5: ** onCreate
+def onCreate(tag, keys): # pyzo_in_leo.py
+    '''Create pyzo docks in Leo's own main window'''
+    c = keys.get('c')
+    if c and c.frame:
+        pyzo_start(c)
+
+#@+node:ekr.20190816194046.1: ** patched functions
 #@+node:ekr.20190816163728.1: *3* function: closeEvent
 def closeEvent(self, event):
     """A monkey-patched version of MainWindow.closeEvent."""
@@ -150,14 +149,6 @@ def closeEvent(self, event):
 def setShortcut(self, action):
     """A monkey-patched version of KeyMapper.setShortcut."""
     pass
-#@+node:ekr.20190813161639.5: ** onCreate
-def onCreate(tag, keys): # pyzo_in_leo.py
-    '''Create pyzo docks in Leo's own main window'''
-    c = keys.get('c')
-    if c and c.frame:
-        make_early_patches(c)
-        pyzo_start(c)
-        make_late_patches(c)
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start(c):
     """A copy of pyzo.start, adapted for Leo."""
@@ -200,6 +191,9 @@ def pyzo_start(c):
     # EKR:change.
         # Enter the main loop
         # QtWidgets.qApp.exec_()
+        
+    # EKR:change. Patch MainWindow.closeEvent.
+    g.funcToMethod(closeEvent, c.frame.top.__class__)
 
     if trace: print('END pyzo_start\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
@@ -412,7 +406,6 @@ def main_window_populate(c):
     pyzo.keyMapper = menu.KeyMapper()
     
     # EKR:change: disable pyzo.keyMapper.setShortcut.
-    # Disable pyzo.keyMapper.setShortcut.
     g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
 
     # EKR:change
