@@ -189,9 +189,11 @@ def load_all_docks(c):
     )
     for tool_id in table:
         tm.loadTool(tool_id)
-    if not c.mFileName:
-        for tool_id in table:
-            tm.closeTool(tool_id)
+        
+    # This doesn't work:
+        # if not c.mFileName:
+            # for tool_id in table:
+                # tm.closeTool(tool_id)
 
     # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
