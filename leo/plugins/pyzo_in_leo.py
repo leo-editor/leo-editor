@@ -113,39 +113,6 @@ def init(): # pyzo_in_leo.py
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
-#@+node:ekr.20190814050859.1: ** load_all_docks
-def load_all_docks(c):
-
-    trace = True
-    if trace: print('\nSTART load_all_docks\n')
-    table = (
-        'PyzoFileBrowser',
-        'PyzoHistoryViewer',
-        'PyzoInteractiveHelp',
-        'PyzoLogger',
-        'PyzoSourceStructure',
-        'PyzoWebBrowser',
-        'PyzoWorkspace',
-    )
-    for tool_id in table:
-        pyzo.toolManager.loadTool(tool_id)
-            # Put a floatable dock on the right.
-    if trace: print('\nEND load_all_docks\n')
-#@+node:ekr.20190813161921.1: ** make_dock
-def make_dock(c, name, widget): # pyzo_in_leo.py
-    """Create a dock with the given name and widget in c's main window."""
-    dw = c.frame.top
-    dock = dw.createDockWidget(
-        closeable=True,
-        moveable=True, # Implies floatable.
-        height=100,
-        name=name,
-    )
-    dw.leo_docks.append(dock)
-    dock.setWidget(widget)
-    area = QtCore.Qt.LeftDockWidgetArea
-    dw.addDockWidget(area, dock)
-    widget.show()
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
@@ -210,6 +177,24 @@ def pyzo_start(c):
     ### g.funcToMethod(closeEvent, c.frame.top.__class__)
 
     if trace: print('END pyzo_start\n')
+#@+node:ekr.20190814050859.1: *3* load_all_docks
+def load_all_docks(c):
+
+    trace = True
+    if trace: print('\nSTART load_all_docks\n')
+    table = (
+        'PyzoFileBrowser',
+        'PyzoHistoryViewer',
+        'PyzoInteractiveHelp',
+        'PyzoLogger',
+        'PyzoSourceStructure',
+        'PyzoWebBrowser',
+        'PyzoWorkspace',
+    )
+    for tool_id in table:
+        pyzo.toolManager.loadTool(tool_id)
+            # Put a floatable dock on the right.
+    if trace: print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
 def main_window_ctor(c):
     """
@@ -452,6 +437,21 @@ def main_window_populate(c):
                 # pyzo.toolManager.loadTool(toolId)
             
     if trace: print('END main_window_populate\n')
+#@+node:ekr.20190813161921.1: *3* make_dock
+def make_dock(c, name, widget): # pyzo_in_leo.py
+    """Create a dock with the given name and widget in c's main window."""
+    dw = c.frame.top
+    dock = dw.createDockWidget(
+        closeable=True,
+        moveable=True, # Implies floatable.
+        height=100,
+        name=name,
+    )
+    dw.leo_docks.append(dock)
+    dock.setWidget(widget)
+    area = QtCore.Qt.LeftDockWidgetArea
+    dw.addDockWidget(area, dock)
+    widget.show()
 #@+node:ekr.20190816170034.1: *3* menu_build_menus
 def menu_build_menus(c):
     """
