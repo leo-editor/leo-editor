@@ -135,7 +135,7 @@ def pyzo_start(c):
     """
     trace = True
     
-    if trace: print('\nBEGIN start_pyzo_in_leo\n')
+    if trace: print('\nBEGIN pyzo_start\n')
 
     # Do some imports
     from pyzo.core import pyzoLogging  # to start logging asap
