@@ -2,7 +2,7 @@
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.yoton.misc.py')
+    # leo_g.pr('pyzo.yoton.misc.py')
 except Exception:
     leo_g = None
 

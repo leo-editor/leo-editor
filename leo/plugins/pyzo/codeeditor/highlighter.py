@@ -9,7 +9,7 @@ check out indentation.
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.codeeditor.highlighter.py')
+    # leo_g.pr('pyzo.codeeditor.highlighter.py')
 except Exception:
     leo_g = None
 

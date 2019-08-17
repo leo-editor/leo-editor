@@ -33,7 +33,7 @@ reqp-introspect (OBJECT): To query information from the kernel (and for interrup
 """
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo/pyzokernel/start.py')
+    # leo_g.pr('pyzo/pyzokernel/start.py')
 except Exception:
     leo_g = None
 

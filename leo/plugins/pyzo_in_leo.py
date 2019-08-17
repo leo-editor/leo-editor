@@ -29,10 +29,8 @@ def close_handler():
     This code is based on MainWindow.closeEvent.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-    trace = True
-    # pylint: disable=no-member, not-an-iterable
-        # Pylint gets confused by monkey-patches.
-    if trace: print('\ng.app.pyzo_close_event\n')
+
+    # print('\ng.app.pyzo_close_event\n')
     
     # EKR:change-new imports
     from pyzo.core import commandline
@@ -60,7 +58,9 @@ def close_handler():
         # self._closeflag = True
 
     # Proceed with closing shells
-    pyzo.localKernelManager.terminateAll()
+    if 1:
+        # pylint: disable=no-member
+        pyzo.localKernelManager.terminateAll()
     
     for shell in pyzo.shells:
         shell._context.close()
@@ -133,9 +133,8 @@ def pyzo_start(c):
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-    trace = True
     
-    if trace: print('\nBEGIN pyzo_start\n')
+    # print('\nBEGIN pyzo_start\n')
 
     # Do some imports
     from pyzo.core import pyzoLogging  # to start logging asap
@@ -176,12 +175,11 @@ def pyzo_start(c):
     # EKR:change. Patch MainWindow.closeEvent.
     ### g.funcToMethod(closeEvent, c.frame.top.__class__)
 
-    if trace: print('END pyzo_start\n')
+    # print('END pyzo_start\n')
 #@+node:ekr.20190814050859.1: *3* load_all_docks
 def load_all_docks(c):
 
-    trace = True
-    if trace: print('\nSTART load_all_docks\n')
+    # print('\nSTART load_all_docks\n')
     table = (
         'PyzoFileBrowser',
         'PyzoHistoryViewer',
@@ -194,7 +192,7 @@ def load_all_docks(c):
     for tool_id in table:
         pyzo.toolManager.loadTool(tool_id)
             # Put a floatable dock on the right.
-    if trace: print('\nEND load_all_docks\n')
+    # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
 def main_window_ctor(c):
     """
@@ -203,8 +201,8 @@ def main_window_ctor(c):
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-    trace = True
-    if trace: print('\nBEGIN main_window_ctor\n')
+
+    # print('\nBEGIN main_window_ctor\n')
     
     # EKR:change. New imports
     import pyzo.core.main as main
@@ -334,7 +332,7 @@ def main_window_ctor(c):
     # Handle any actions
     commandline.handle_cmd_args()
     
-    if trace: print('END main_window_ctor\n')
+    # print('END main_window_ctor\n')
 #@+node:ekr.20190816132847.1: *3* main_window_populate
 def main_window_populate(c):
     """
@@ -343,8 +341,8 @@ def main_window_populate(c):
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-    trace = True
-    if trace: print('\nBEGIN main_window_populate\n')
+
+    # print('\nBEGIN main_window_populate\n')
 
     # EKR:change
     self = c.frame.top
@@ -436,7 +434,7 @@ def main_window_populate(c):
             # for toolId in pyzo.config.state.loadedTools:
                 # pyzo.toolManager.loadTool(toolId)
             
-    if trace: print('END main_window_populate\n')
+    # print('END main_window_populate\n')
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""

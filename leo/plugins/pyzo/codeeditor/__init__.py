@@ -5,7 +5,7 @@ A full featured code editor component based on QPlainTextEdit.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('IMPORT pyzo.codeeditor')
+    # leo_g.pr('IMPORT pyzo.codeeditor')
 except Exception:
     leo_g = None
 from .manager import Manager

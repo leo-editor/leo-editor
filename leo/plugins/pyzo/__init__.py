@@ -243,8 +243,7 @@ def saveConfig():
 def start():
     """ Run Pyzo.
     """
-    if leo_g:
-        leo_g.pr('BEGIN pyzo.start: sys.argv:', sys.argv)
+    if leo_g: leo_g.pr('BEGIN pyzo.start: sys.argv:', sys.argv)
 
     # Do some imports
     from pyzo.core import pyzoLogging  # noqa - to start logging asap

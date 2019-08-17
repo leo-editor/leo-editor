@@ -8,7 +8,7 @@ and a dialog to edit the shell configurations.
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.core.shellStack.py')
+    # leo_g.pr('pyzo.core.shellStack.py')
 except Exception:
     leo_g = None
 
@@ -86,7 +86,7 @@ class ShellStackWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
         
-        if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
+        # if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
         
         ### EKR:change. Init this here. It may not be necessary when full init happens.
         self._debugActions = []
@@ -137,7 +137,7 @@ class ShellStackWidget(QtWidgets.QWidget):
             self._interpreterhelp.detect()
     def addShell(self, shellInfo=None):
         """Add a shell to the widget. """
-        leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
+        # leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
         #
         # Create shell and add to stack
         shell = PythonShell(self, shellInfo)

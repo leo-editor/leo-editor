@@ -9,7 +9,7 @@ function which is also defined here.
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.core.main.py (MainWindow)')
+    # leo_g.pr('pyzo.core.main.py (MainWindow)')
 except Exception:
     leo_g = None
 
@@ -128,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
             try:
                 self.setStyleSheet("background: %s" % bg) 
             except Exception:
-                if leo_g: leo_g.pr('oops: MainWindow.__init__')
+                print('oops: MainWindow.__init__')
 
         # Focus on editor
         e = pyzo.editors.getCurrentEditor()
@@ -356,7 +356,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         """ Override close event handler. """
         
-        if leo_g: leo_g.pr('ORIGINAL MainWindow.closeEvent')
+        print('ORIGINAL MainWindow.closeEvent')
 
         # Are we restaring?
         restarting = time.time() - self._closeflag < 1.0

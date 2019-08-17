@@ -3,7 +3,7 @@
 """EKR:change-startup. Add leo/plugins/pyzo to sys.path and import pyzo."""
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.__main__.py')
+    # leo_g.pr('pyzo.__main__.py')
 except Exception:
     leo_g.pr('FAIL: import leo_g')
     leo_g = None

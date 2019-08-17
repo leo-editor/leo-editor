@@ -9,7 +9,7 @@ that show information to the user in a very effective, yet subtle manner.
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.core.icons.py')
+    # leo_g.pr('pyzo.core.icons.py')
 except Exception:
     leo_g = None
 

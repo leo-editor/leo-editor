@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('IMPORT pyzo.tools.pyzoFileBrowser')
+    # leo_g.pr('IMPORT pyzo.tools.pyzoFileBrowser')
 except Exception:
     leo_g = None
 

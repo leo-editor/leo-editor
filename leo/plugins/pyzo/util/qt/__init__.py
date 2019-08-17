@@ -61,7 +61,7 @@ packages::
 """
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('IMPORT pyzo.util.qt')
+    # leo_g.pr('IMPORT pyzo.util.qt')
 except Exception:
     leo_g = None
 import os

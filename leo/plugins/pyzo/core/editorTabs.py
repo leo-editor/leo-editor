@@ -11,7 +11,7 @@ It also has a find/replace widget that is at the bottom of the editor.
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo/core/editorTabs.py')
+    # leo_g.pr('pyzo/core/editorTabs.py')
 except Exception:
     leo_g = None
 

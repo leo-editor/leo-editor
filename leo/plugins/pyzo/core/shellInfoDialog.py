@@ -2,7 +2,7 @@
 
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo.core.shellInfoDialog.py')
+    # leo_g.pr('pyzo.core.shellInfoDialog.py')
 except Exception:
     leo_g = None
 """ Module shellInfoDialog

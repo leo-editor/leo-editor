@@ -7,7 +7,7 @@ file loading/saving /reloading stuff.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo/core/editor.py')
+    # leo_g.pr('pyzo/core/editor.py')
 except Exception:
     leo_g = None
 
@@ -159,7 +159,7 @@ def createEditor(parent, filename=None):
     If filename is None, an new/unsaved/temp file is created.
     """
     
-    if leo_g: leo_g.pr('editor.py function.createEditor: %r' % filename)
+    # if leo_g: leo_g.pr('editor.py function.createEditor: %r' % filename)
 
     if filename is None:
         # Increase counter

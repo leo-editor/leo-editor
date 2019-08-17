@@ -5,7 +5,7 @@ This module implements the interface between Pyzo and the kernel.
 """
 try:
     import leo.core.leoGlobals as leo_g
-    leo_g.pr('pyzo/core/kernelbroker.py')
+    # leo_g.pr('pyzo/core/kernelbroker.py')
 except Exception:
     leo_g = None
 
