@@ -368,10 +368,7 @@ def main_window_populate(c):
     
     # EKR:change. Create an Editors dock.
     make_dock(c, 'Editors', pyzo.editors)
-    
-    # EKR:change: don't to this!
         # self.setCentralWidget(pyzo.editors)
-            # EKR: QMainWindow.setCentralWidget
 
     # Create floater for shell
     self._shellDock = dock = QtWidgets.QDockWidget(self)
