@@ -434,18 +434,26 @@ def menu_build_menus(c):
     # EKR:change.
     self = c.frame.top
     
-    # EKR:change-new import
+    # EKR:change-new imports.
     from pyzo import translate
+    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
+        # Testing.
     from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
+        # Permanent.
     
     # EKR:change
     menuBar = self.menuBar()
         # menu.buildMenus(self.menuBar())
+        
+    # EKR:change. Create a top-level Pyzo menu.
+    pyzoMenu = menuBar.addMenu("Pyzo")
     menus = [
-        # FileMenu(menuBar, translate("menu", "File")),
-        # EditMenu(menuBar, translate("menu", "Edit")),
+        # Testing only...
+        FileMenu(menuBar, translate("menu", "File")),
+        EditMenu(menuBar, translate("menu", "Edit")),
+        SettingsMenu(menuBar, translate("menu", "Settings")),
+        # Permanent...
         ViewMenu(menuBar, translate("menu", "View")),
-        # SettingsMenu(menuBar, translate("menu", "Settings")),
         ShellMenu(menuBar, translate("menu", "Shell")),
         RunMenu(menuBar, translate("menu", "Run")),
         RunMenu(menuBar, translate("menu", "Tools")),
@@ -454,7 +462,8 @@ def menu_build_menus(c):
     menuBar._menumap = {}
     menuBar._menus = menus
     for menu in menuBar._menus:
-        menuBar.addMenu(menu)
+        pyzoMenu.addMenu(menu)
+            # menuBar.addMenu(menu)
         menuName = menu.__class__.__name__.lower().split('menu')[0]
         menuBar._menumap[menuName] = menu
 
