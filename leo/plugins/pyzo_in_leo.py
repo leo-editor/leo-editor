@@ -171,15 +171,13 @@ def pyzo_start(c):
     # EKR:change.
         # Enter the main loop
         # QtWidgets.qApp.exec_()
-        
-    # EKR:change. Patch MainWindow.closeEvent.
-    ### g.funcToMethod(closeEvent, c.frame.top.__class__)
 
     # print('END pyzo_start\n')
 #@+node:ekr.20190814050859.1: *3* load_all_docks
 def load_all_docks(c):
 
     # print('\nSTART load_all_docks\n')
+    tm = pyzo.toolManager
     table = (
         'PyzoFileBrowser',
         'PyzoHistoryViewer',
@@ -190,8 +188,11 @@ def load_all_docks(c):
         'PyzoWorkspace',
     )
     for tool_id in table:
-        pyzo.toolManager.loadTool(tool_id)
-            # Put a floatable dock on the right.
+        tm.loadTool(tool_id)
+    if not c.mFileName:
+        for tool_id in table:
+            tm.closeTool(tool_id)
+
     # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
 def main_window_ctor(c):
@@ -381,7 +382,11 @@ def main_window_populate(c):
     self._shellDock = dock = QtWidgets.QDockWidget(self)
     
     # EKR:change.
-    dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
+    dock.setFeatures(
+        dock.DockWidgetMovable |
+        dock.DockWidgetFloatable |
+        dock.DockWidgetClosable # EKR:change.
+    )
         # if pyzo.config.settings.allowFloatingShell:
             # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
         # else:
