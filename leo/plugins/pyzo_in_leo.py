@@ -19,76 +19,20 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 
 #@+others
-#@+node:ekr.20190813161639.4: ** init
-init_warning_given = False
-
-def init(): # pyzo_in_leo.py
-    '''Return True if this plugin can be loaded.'''
+#@+node:ekr.20190816163728.1: ** close_handler
+def close_handler():
+    """
+    Shut down pyzo.
     
-    def oops(message):
-        global init_warning_given
-        if not init_warning_given:
-            init_warning_given = True
-            print('%s %s' % (__name__, message))
-        return False
-        
-    if g.app.gui.guiName() != "qt":
-        return oops('requires Qt gui')
-    # if not pyzo:
-        # return oops('requires pyzo')
-    if not g.app.dock:
-        return oops('is incompatible with --no-dock')
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    return True
-#@+node:ekr.20190814050859.1: ** load_all_docks
-def load_all_docks(c):
-
-    trace = True
-    if trace: print('\nSTART load_all_docks\n')
-    table = (
-        'PyzoFileBrowser',
-        'PyzoHistoryViewer',
-        'PyzoInteractiveHelp',
-        'PyzoLogger',
-        'PyzoSourceStructure',
-        'PyzoWebBrowser',
-        'PyzoWorkspace',
-    )
-    for tool_id in table:
-        pyzo.toolManager.loadTool(tool_id)
-            # Put a floatable dock on the right.
-    if trace: print('\nEND load_all_docks\n')
-#@+node:ekr.20190813161921.1: ** make_dock
-def make_dock(c, name, widget): # pyzo_in_leo.py
-    """Create a dock with the given name and widget in c's main window."""
-    dw = c.frame.top
-    dock = dw.createDockWidget(
-        closeable=True,
-        moveable=True, # Implies floatable.
-        height=100,
-        name=name,
-    )
-    dw.leo_docks.append(dock)
-    dock.setWidget(widget)
-    area = QtCore.Qt.LeftDockWidgetArea
-    dw.addDockWidget(area, dock)
-    widget.show()
-#@+node:ekr.20190813161639.5: ** onCreate
-def onCreate(tag, keys): # pyzo_in_leo.py
-    '''Create pyzo docks in Leo's own main window'''
-    c = keys.get('c')
-    if c and c.frame:
-        pyzo_start(c)
-
-#@+node:ekr.20190816194046.1: ** patched functions
-#@+node:ekr.20190816163728.1: *3* function: closeEvent
-def closeEvent(self, event):
-    """A monkey-patched version of MainWindow.closeEvent."""
+    Called by Leo's shutdown logic when *all* outlines have been closed.
+    
+    This code is based on MainWindow.closeEvent.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
     trace = True
     # pylint: disable=no-member, not-an-iterable
         # Pylint gets confused by monkey-patches.
-    if trace: print('PATCHED MainWindow.closeEvent')
+    if trace: print('\ng.app.pyzo_close_event\n')
     
     # EKR:change-new imports
     from pyzo.core import commandline
@@ -138,20 +82,90 @@ def closeEvent(self, event):
             except Exception:
                 pass
 
-    # Proceed as normal
-    QtWidgets.QMainWindow.closeEvent(self, event)
-
+    # EKR:change. Not needed.
+        # Proceed as normal
+        # QtWidgets.QMainWindow.closeEvent(self, event)
     # EKR:change. Don't exit Leo!
         # if sys.version_info >= (3,3,0): # and not restarting:
             # if hasattr(os, '_exit'):
                 # os._exit(0)
+#@+node:ekr.20190813161639.4: ** init
+init_warning_given = False
+
+def init(): # pyzo_in_leo.py
+    '''Return True if this plugin can be loaded.'''
+    
+    def oops(message):
+        global init_warning_given
+        if not init_warning_given:
+            init_warning_given = True
+            print('%s %s' % (__name__, message))
+        return False
+        
+    if g.app.gui.guiName() != "qt":
+        return oops('requires Qt gui')
+    # if not pyzo:
+        # return oops('requires pyzo')
+    if not g.app.dock:
+        return oops('is incompatible with --no-dock')
+    g.plugin_signon(__name__)
+    g.app.pyzo_close_handler = close_handler
+        # LeoApp.finishQuit calls this late in Leo's shutdown logic.
+    g.registerHandler('after-create-leo-frame', onCreate)
+    return True
+#@+node:ekr.20190814050859.1: ** load_all_docks
+def load_all_docks(c):
+
+    trace = True
+    if trace: print('\nSTART load_all_docks\n')
+    table = (
+        'PyzoFileBrowser',
+        'PyzoHistoryViewer',
+        'PyzoInteractiveHelp',
+        'PyzoLogger',
+        'PyzoSourceStructure',
+        'PyzoWebBrowser',
+        'PyzoWorkspace',
+    )
+    for tool_id in table:
+        pyzo.toolManager.loadTool(tool_id)
+            # Put a floatable dock on the right.
+    if trace: print('\nEND load_all_docks\n')
+#@+node:ekr.20190813161921.1: ** make_dock
+def make_dock(c, name, widget): # pyzo_in_leo.py
+    """Create a dock with the given name and widget in c's main window."""
+    dw = c.frame.top
+    dock = dw.createDockWidget(
+        closeable=True,
+        moveable=True, # Implies floatable.
+        height=100,
+        name=name,
+    )
+    dw.leo_docks.append(dock)
+    dock.setWidget(widget)
+    area = QtCore.Qt.LeftDockWidgetArea
+    dw.addDockWidget(area, dock)
+    widget.show()
+#@+node:ekr.20190813161639.5: ** onCreate
+def onCreate(tag, keys): # pyzo_in_leo.py
+    '''Create pyzo docks in Leo's own main window'''
+    c = keys.get('c')
+    if c and c.frame:
+        pyzo_start(c)
+
+#@+node:ekr.20190816194046.1: ** patched functions
 #@+node:ekr.20190816193033.1: *3* function: setShortcut
 def setShortcut(self, action):
-    """A monkey-patched version of KeyMapper.setShortcut."""
+    """A do-nothing version of KeyMapper.setShortcut."""
     pass
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start(c):
-    """A copy of pyzo.start, adapted for Leo."""
+    """
+    A copy of pyzo.start, adapted for Leo.
+    
+    This code is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
     trace = True
     
     if trace: print('\nBEGIN start_pyzo_in_leo\n')
@@ -193,12 +207,17 @@ def pyzo_start(c):
         # QtWidgets.qApp.exec_()
         
     # EKR:change. Patch MainWindow.closeEvent.
-    g.funcToMethod(closeEvent, c.frame.top.__class__)
+    ### g.funcToMethod(closeEvent, c.frame.top.__class__)
 
     if trace: print('END pyzo_start\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
 def main_window_ctor(c):
-    """Simulate MainWindow.__init__()."""
+    """
+    Simulate MainWindow.__init__().
+    
+    This code is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
     trace = True
     if trace: print('\nBEGIN main_window_ctor\n')
     
@@ -333,7 +352,12 @@ def main_window_ctor(c):
     if trace: print('END main_window_ctor\n')
 #@+node:ekr.20190816132847.1: *3* main_window_populate
 def main_window_populate(c):
-    """Simulate MainWindow._populate()."""
+    """
+    Simulate MainWindow._populate().
+    
+    This code is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
     trace = True
     if trace: print('\nBEGIN main_window_populate\n')
 
@@ -434,6 +458,7 @@ def menu_build_menus(c):
     Build only the desired menus, in a top-level Pyzo menu.
     
     Based on menu.buildMenus function in pyzo/core/menu.py.
+    Copyright (C) 2013-2019 by Almar Klein.
     """
 
     # EKR:change.
@@ -498,8 +523,13 @@ def menu_build_menus(c):
     menuBar.hovered.connect(onHover)
 #@+node:ekr.20190816131934.1: *3* my_app_ctor
 def my_app_ctor(c, argv):
-    """Simulate MyApp.__init__()."""
+    """
+    Simulate MyApp.__init__().
     
+    This code is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
+
     # EKR:change.
     sys.argv = sys.argv[:1]
         # Avoid problems when multiple copies of Leo are open.

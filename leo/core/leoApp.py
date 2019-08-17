@@ -1381,8 +1381,8 @@ class LeoApp:
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
-        if hasattr(g.app, 'global_pyzo_controller'):
-            g.app.global_pyzo_controller.close_pyzo()
+        if hasattr(g.app, 'pyzo_close_handler'):
+            g.app.pyzo_close_handler()
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
