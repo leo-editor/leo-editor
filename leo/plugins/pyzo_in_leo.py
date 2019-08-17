@@ -412,7 +412,6 @@ def main_window_populate(c):
     menu_build_menus(c)
         # Create menu
         # menu.buildMenus(self.menuBar())
-            # # EKR: this builds top-level menuse, and other menus.
     
     # Add the context menu to the editor
     pyzo.editors.addContextMenu()
