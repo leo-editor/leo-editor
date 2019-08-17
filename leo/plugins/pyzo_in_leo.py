@@ -146,6 +146,10 @@ def closeEvent(self, event):
         # if sys.version_info >= (3,3,0): # and not restarting:
             # if hasattr(os, '_exit'):
                 # os._exit(0)
+#@+node:ekr.20190816193033.1: *3* function: setShortcut
+def setShortcut(self, action):
+    """A monkey-patched version of KeyMapper.setShortcut."""
+    pass
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
@@ -335,7 +339,7 @@ def main_window_ctor(c):
     if trace: print('END main_window_ctor\n')
 #@+node:ekr.20190816132847.1: *3* main_window_populate
 def main_window_populate(c):
-    """Simulate MainWindow_populate"""
+    """Simulate MainWindow._populate()."""
     trace = True
     if trace: print('\nBEGIN main_window_populate\n')
 
@@ -404,11 +408,16 @@ def main_window_populate(c):
             # pyzo.status = None
             # self.setStatusBar(None)
 
-    # EKR:change-menu.
-    # Create menu
     from pyzo.core import menu
     pyzo.keyMapper = menu.KeyMapper()
+    
+    # EKR:change: disable pyzo.keyMapper.setShortcut.
+    # Disable pyzo.keyMapper.setShortcut.
+    g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
+
+    # EKR:change
     menu_build_menus(c)
+        # Create menu
         # menu.buildMenus(self.menuBar())
             # # EKR: this builds top-level menuse, and other menus.
     
@@ -429,7 +438,11 @@ def main_window_populate(c):
     if trace: print('END main_window_populate\n')
 #@+node:ekr.20190816170034.1: *3* menu_build_menus
 def menu_build_menus(c):
-    """Build only the desired menus, in a top-level Pyzo menu."""
+    """
+    Build only the desired menus, in a top-level Pyzo menu.
+    
+    Based on menu.buildMenus function in pyzo/core/menu.py.
+    """
 
     # EKR:change.
     self = c.frame.top
@@ -489,6 +502,7 @@ def menu_build_menus(c):
         if hasattr(action, '_shortcutsText'):
             tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
         QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
+
     menuBar.hovered.connect(onHover)
 #@+node:ekr.20190816131934.1: *3* my_app_ctor
 def my_app_ctor(c, argv):
