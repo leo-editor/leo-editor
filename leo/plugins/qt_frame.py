@@ -4809,7 +4809,7 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (makes DynamicWindow)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c

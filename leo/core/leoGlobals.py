@@ -22,7 +22,7 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-new_gui = True
+new_gui = False
     # True: rewrite Leo's gui per #1289.
 #@-<< global switches >>
 #@+<< imports >>

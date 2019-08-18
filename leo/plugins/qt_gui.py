@@ -41,7 +41,7 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp)
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
         super().__init__('qt')
@@ -130,12 +130,26 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.new_gui:
-            self.frameFactory = g.TracingNullObject(tag='qt_gui.frameFactory')
-            c = g.TracingNullObject(ivars='frame', tag='DynamicWindow.c')
-            c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
-            c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
-            w = qt_frame.DynamicWindow(c=c)
-            w.show()
+            ### self.frameFactory = g.TracingNullObject(tag='qt_gui.frameFactory')
+            if 0: # minimal app:
+                window = QtWidgets.QMainWindow()
+                g.app.main_window = window # To retain the window.
+                window.setGeometry(50, 50, 500, 300)
+                label = QtWidgets.QLabel('Hello World!', parent=window)
+                label.show()
+                window.show()
+            else:
+                #
+                # Create stubs for the DynamicWindow.
+                c = g.TracingNullObject(ivars='frame', tag='DynamicWindow.c')
+                c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
+                c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
+                dw = qt_frame.DynamicWindow(c=c)
+                g.app.main_window = dw # To retain the window.
+                QtWidgets.QMainWindow.setGeometry(dw, QtCore.QRect(50, 50, 500, 300))
+                label = QtWidgets.QLabel('dw.Label!', parent=dw)
+                label.show()
+                dw.show()
             return ###
         # #1171:
         self.frameFactory = qt_frame.TabbedFrameFactory()
