@@ -34,17 +34,25 @@ floatable_docks = True
     # True: allow QDockWidgets to float.
 
 #@+others
-#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
+#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     '''
     A class representing all parts of the main Qt window.
 
-    **Important**: when using tabs, the LeoTabbedTopLevel widget
-    is the top-level window, **not** this QMainWindow!
-
-    c.frame.top is a DynamicWindow object.
-    c.frame.top.parent is a TabbedFrameFactory
-    c.frame.top.leo_master is a LeoTabbedTopLevel
+    **Important**:
+        
+    Legacy: when using tabs, the LeoTabbedTopLevel widget
+            is the top-level window, **not** this QMainWindow!
+            
+        c.frame.top is a DynamicWindow object.
+        c.frame.top.parent is a TabbedFrameFactory
+        c.frame.top.leo_master is a LeoTabbedTopLevel
+    
+    # 1289: DynamicWindow is the singleton main window.
+    
+        c.frame.top is a DynamicWindow object.
+        c.frame.top.parent = None ?
+        c.frame.top.leo_master = None ?
 
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
@@ -1559,7 +1567,7 @@ class FindTabManager:
         if find.minibuffer_mode:
             find.showFindOptionsInStatusArea()
     #@-others
-#@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QtWidgets.QTabWidget)
+#@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
@@ -2376,30 +2384,33 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate(self):
-
-        f = self
+        
+        if g.new_gui:
+            self.menu = g.TracingNullObject('qt_gui.menu')
+            g.trace('Not ready yet')
+            return
         c = self.c
         assert c
-        f.top = g.app.gui.frameFactory.createFrame(f)
-        f.createIconBar() # A base class method.
-        f.createSplitterComponents()
-        f.createStatusLine() # A base class method.
-        f.createFirstTreeNode() # Call the base-class method.
-        f.menu = LeoQtMenu(c, f, label='top-level-menu')
-        g.app.windowList.append(f)
-        f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        self.top = g.app.gui.frameFactory.createFrame(self)
+        self.createIconBar() # A base class method.
+        self.createSplitterComponents()
+        self.createStatusLine() # A base class method.
+        self.createFirstTreeNode() # Call the base-class method.
+        self.menu = LeoQtMenu(c, self, label='top-level-menu')
+        g.app.windowList.append(self)
+        self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
         
-        c, f = self.c, self
-        f.tree = qt_tree.LeoQtTree(c, f)
-        f.log = LeoQtLog(f, None)
-        f.body = LeoQtBody(f, None)
+        c = self.c
+        self.tree = qt_tree.LeoQtTree(c, self)
+        self.log = LeoQtLog(self, None)
+        self.body = LeoQtBody(self, None)
         if g.app.dock:
             return 
-        f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
-        f.resizePanesToRatio(ratio, secondary_ratio)
+        self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
+        self.resizePanesToRatio(ratio, secondary_ratio)
 
     #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
     def setQtStyle(self):

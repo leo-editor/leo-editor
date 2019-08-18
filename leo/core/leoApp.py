@@ -2452,6 +2452,8 @@ class LoadManager:
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
+        if g.new_gui:
+            return True ### Testing.
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
@@ -3193,6 +3195,11 @@ class LoadManager:
             c.sqlite_connection = theFile
         # Enable the log.
         g.app.unlockLog()
+        if g.new_gui:
+            g.trace('=====', g.callers())
+            g.trace('===== c', repr(c))
+            g.trace('===== c.frame', repr(c.frame))
+            g.trace('===== c.frame.log', repr(c.frame.log))
         c.frame.log.enable(True)
         # Phase 2: Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)

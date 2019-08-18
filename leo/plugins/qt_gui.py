@@ -129,6 +129,14 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
+        if g.new_gui:
+            self.frameFactory = g.TracingNullObject(tag='qt_gui.frameFactory')
+            c = g.TracingNullObject(ivars='frame', tag='DynamicWindow.c')
+            c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
+            c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
+            w = qt_frame.DynamicWindow(c=c)
+            w.show()
+            return ###
         # #1171:
         self.frameFactory = qt_frame.TabbedFrameFactory()
         

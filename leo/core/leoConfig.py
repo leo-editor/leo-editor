@@ -1705,7 +1705,10 @@ class LocalConfigManager:
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            g.trace('no menu: %s' % (commandName))
+            if g.new_gui:
+                pass
+            else:
+                g.trace('no menu: %s' % (commandName))
             return None, []
         if d:
             assert g.isTypedDictOfLists(d), d
