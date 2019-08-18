@@ -2059,14 +2059,19 @@ class NullObject:
     
 tracing_tags = {}
     # Keys are id's, values are tags.
+tracing_vars = {}
+    # Keys are id's, values are names of ivars.
     
 tracing_signatures = {}
     # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
 
 class TracingNullObject:
     '''Tracing NullObject.'''
-    def __init__(self, tag, *args, **kwargs):
+    def __init__(self, tag, ivars=None, *args, **kwargs):
         tracing_tags [id(self)] = tag
+        if isinstance(ivars, str):
+            ivars = [ivars]
+        tracing_vars [id(self)] = ivars or []
         if 0:
             suppress = ('tree item',)
             if tag not in suppress:
@@ -2079,18 +2084,22 @@ class TracingNullObject:
                     print('%30s' % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     def __str__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     #
     # Attribute access...
     def __delattr__(self, attr):
         return self
     def __getattr__(self, attr):
         null_object_print_attr(id(self), attr)
+        if attr in tracing_vars.get(id(self), []):
+            return getattr(self, attr, None)
         return self
     def __setattr__(self, attr, val):
-        g.null_object_print(id(self), '__setattr__')
+        g.null_object_print(id(self), '__setattr__', attr, val)
+        if attr in tracing_vars.get(id(self), []):
+            object.__setattr__(self, attr, val)
         return self
     #
     # All other methods...
