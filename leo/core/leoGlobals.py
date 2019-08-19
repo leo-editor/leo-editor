@@ -24,6 +24,7 @@ in_bridge = False
     # This tells leoApp to load a null Gui.
 new_gui = False
     # True: rewrite Leo's gui per #1289.
+    # Set by --new-gui command-line option.
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)

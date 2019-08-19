@@ -2881,6 +2881,7 @@ class LoadManager:
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
+        add_bool('--new-gui',       'temp: use new qt gui')
         add_bool('--no-dock',       'use legacy look & feel')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
@@ -2988,6 +2989,9 @@ class LoadManager:
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
+        # --new-gui ### Temporary
+        g.new_gui = bool(options.new_gui)
+        print('g.new_gui: %s\n' % g.new_gui)
         # --no-dock:
         # #1171: retain --no-dock indefinitely.
         if options.no_dock:
