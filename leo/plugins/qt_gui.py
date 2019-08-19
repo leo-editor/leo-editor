@@ -52,6 +52,8 @@ class LeoQtGui(leoGui.LeoGui):
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
         self.mGuiName = 'qt'
+        self.main_window = None
+            # The *singleton* QMainWindow.
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
             # For c.idle_focus_helper and activate/deactivate events.
@@ -128,34 +130,39 @@ class LeoQtGui(leoGui.LeoGui):
             not g.app.silentMode and
             not g.unitTesting
         ):
+            g.trace('===== Create Splash Screen')
             self.splashScreen = self.createSplashScreen()
         if g.new_gui:
-            ### self.frameFactory = g.TracingNullObject(tag='qt_gui.frameFactory')
-            if 0: # minimal app:
-                window = QtWidgets.QMainWindow()
-                g.app.main_window = window # To retain the window.
-                window.setGeometry(50, 50, 500, 300)
-                label = QtWidgets.QLabel('Hello World!', parent=window)
-                label.show()
-                window.show()
-            else:
-                #
-                # Create stubs for the DynamicWindow.
-                c = g.TracingNullObject(ivars='frame', tag='DynamicWindow.c')
-                c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
-                c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
-                dw = qt_frame.DynamicWindow(c=c)
-                g.app.main_window = dw # To retain the window.
-                QtWidgets.QMainWindow.setGeometry(dw, QtCore.QRect(50, 50, 500, 300))
-                label = QtWidgets.QLabel('dw.Label!', parent=dw)
-                label.show()
-                dw.show()
-            return ###
-        # #1171:
-        self.frameFactory = qt_frame.TabbedFrameFactory()
+            self.make_new_main_window()
+        else:
+            # #1171:
+            self.frameFactory = qt_frame.TabbedFrameFactory()
         
     def reloadSettings(self):
         pass
+    #@+node:ekr.20190819072045.1: *4* qt_gui.make_new_main_window
+    def make_new_main_window(self):
+
+        #
+        # Create stubs for the DynamicWindow.
+        c = g.NullObject(ivars='frame', tag='DynamicWindow.c')
+        c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
+        c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
+        #
+        # Create main window.
+        dw = qt_frame.DynamicWindow(c=c)
+        self.main_window = dw
+            # Create a permanent reference.
+        dw.construct(master=None)
+        dw.show()
+            
+        ### minimal app:
+            # window = QtWidgets.QMainWindow()
+            # g.app.main_window = window # To retain the window.
+            # window.setGeometry(50, 50, 500, 300)
+            # label = QtWidgets.QLabel('Hello World!', parent=window)
+            # label.show()
+            # window.show()
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
 
@@ -1389,6 +1396,7 @@ class LeoQtGui(leoGui.LeoGui):
                     QtCore.QThread.msleep(10)
                     splash.repaint()
                     break
+        g.trace(name, repr(splash))
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self):
@@ -1427,10 +1435,12 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
     if isQt5:
-        pass # Not ready yet.
+        ### To do: https://doc.qt.io/qt-5/qsignalspy.html
+        from PyQt5.QtTest import QSignalSpy
+        assert QSignalSpy
     else:
+        # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
         _oldConnect = QtCore.QObject.connect
         _oldDisconnect = QtCore.QObject.disconnect
         _oldEmit = QtCore.QObject.emit
