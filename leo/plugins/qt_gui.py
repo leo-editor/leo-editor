@@ -274,25 +274,22 @@ class LeoQtGui(leoGui.LeoGui):
             (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
         ]
         for make_dock, height, area, name, creator in table:
+            dock = None
             w = creator(parent=None)
-            if not make_dock:
-                setattr(self, '%s_dock' % (name), None)
-                continue
-            dock = self.createDockWidget(
-                closeable=name != central_widget,
-                moveable=name != central_widget,
-                height=0,
-                name=name)
-            dock.setWidget(w)
+            if make_dock:
+                is_central = name == central_widget
+                dock = self.createDockWidget(
+                    closeable=not is_central,
+                    moveable=not is_central,
+                    height=height,
+                    name=name)
+                dock.setWidget(w)
+                if is_central:
+                    main_window.setCentralWidget(dock)
+                else:
+                    main_window.addDockWidget(area, dock)
             # Remember the dock.
             setattr(self, '%s_dock' % (name), dock)
-            if name == central_widget:
-                main_window.setCentralWidget(dock)
-                    # Important: the central widget should be a dock.
-            else:
-                main_window.addDockWidget(area, dock)
-        
-       
     #@+node:ekr.20190819090632.1: *5* qt_gui.createBodyPane
     def createBodyPane(self, parent):
         '''
@@ -479,94 +476,6 @@ class LeoQtGui(leoGui.LeoGui):
         w.setHeaderHidden(False)
         w.setObjectName(name)
         return w
-    #@+node:ekr.20190819091957.1: *5* Utils...
-    #@+node:ekr.20190819094016.1: *6* qt_gui.createButton
-    def createButton(self, parent, name, label):
-        w = QtWidgets.QPushButton(parent)
-        w.setObjectName(name)
-        w.setText(label)
-        return w
-    #@+node:ekr.20190819091950.1: *6* qt_gui.createDockWidget
-    ### dock_names = []
-
-    def createDockWidget(self, closeable, moveable, height, name):
-        '''Make a new docwidget in Leo's QMainWindow.'''
-        dock = QtWidgets.QDockWidget(parent=self.main_window)
-            # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
-        if moveable:
-            features |= dock.DockWidgetMovable
-            features |= dock.DockWidgetFloatable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        ### This check not so important with singleton docks.
-            # if name in self.dock_names:
-                # g.es_print('\nDuplicate dock name: %s' % key)
-            # self.dock_names.append(name)
-        dock.setObjectName('dock.%s' % name)
-        dock.setWindowTitle(name.capitalize())
-        dock.show() # Essential!
-        return dock
-    #@+node:ekr.20190819091122.1: *6* qt_gui.createFrame
-    def createFrame(self, parent, name,
-        hPolicy=None, vPolicy=None,
-        lineWidth=1,
-        shadow=QtWidgets.QFrame.Plain,
-        shape=QtWidgets.QFrame.NoFrame,
-    ):
-        '''Create a Qt Frame.'''
-        w = QtWidgets.QFrame(parent)
-        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
-        w.setFrameShape(shape)
-        w.setFrameShadow(shadow)
-        w.setLineWidth(lineWidth)
-        w.setObjectName(name)
-        return w
-    #@+node:ekr.20190819091851.1: *6* qt_gui.createGrid
-    def createGrid(self, parent, name, margin=0, spacing=0):
-        w = QtWidgets.QGridLayout(parent)
-        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
-        w.setSpacing(spacing)
-        w.setObjectName(name)
-        return w
-    #@+node:ekr.20190819093830.1: *6* qt_gui.createHLayout & createVLayout
-    def createHLayout(self, parent, name, margin=0, spacing=0):
-        hLayout = QtWidgets.QHBoxLayout(parent)
-        hLayout.setObjectName(name)
-        hLayout.setSpacing(spacing)
-        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
-        return hLayout
-
-    def createVLayout(self, parent, name, margin=0, spacing=0):
-        vLayout = QtWidgets.QVBoxLayout(parent)
-        vLayout.setObjectName(name)
-        vLayout.setSpacing(spacing)
-        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
-        return vLayout
-    #@+node:ekr.20190819094302.1: *6* qt_gui.createLabel
-    def createLabel(self, parent, name, label):
-        w = QtWidgets.QLabel(parent)
-        w.setObjectName(name)
-        w.setText(label)
-        return w
-    #@+node:ekr.20190819092523.1: *6* qt_gui.createTabWidget
-    def createTabWidget(self, parent, name, hPolicy=None, vPolicy=None):
-        w = QtWidgets.QTabWidget(parent)
-        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
-        w.setObjectName(name)
-        return w
-    #@+node:ekr.20190819091214.1: *6* qt_gui.setSizePolicy
-    def setSizePolicy(self, widget, kind1=None, kind2=None):
-        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
-        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
-        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            widget.sizePolicy().hasHeightForWidth())
-        widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window
     def make_main_window(self):
         '''Make a QMainWindow.'''
@@ -1820,6 +1729,88 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
+    #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
+    #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
+    def createButton(self, parent, name, label):
+        w = QtWidgets.QPushButton(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819091950.1: *4* qt_gui.createDockWidget
+    def createDockWidget(self, closeable, moveable, height, name):
+        '''Make a new dock widget in the main window'''
+        dock = QtWidgets.QDockWidget(parent=self.main_window)
+            # The parent must be a QMainWindow.
+        features = dock.NoDockWidgetFeatures
+        if moveable:
+            features |= dock.DockWidgetMovable
+            features |= dock.DockWidgetFloatable
+        if closeable:
+            features |= dock.DockWidgetClosable
+        dock.setFeatures(features)
+        dock.setMinimumHeight(height)
+        dock.setObjectName('dock.%s' % name)
+        dock.setWindowTitle(name.capitalize())
+        dock.show() # Essential!
+        return dock
+    #@+node:ekr.20190819091122.1: *4* qt_gui.createFrame
+    def createFrame(self, parent, name,
+        hPolicy=None, vPolicy=None,
+        lineWidth=1,
+        shadow=QtWidgets.QFrame.Plain,
+        shape=QtWidgets.QFrame.NoFrame,
+    ):
+        '''Create a Qt Frame.'''
+        w = QtWidgets.QFrame(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091851.1: *4* qt_gui.createGrid
+    def createGrid(self, parent, name, margin=0, spacing=0):
+        w = QtWidgets.QGridLayout(parent)
+        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+        w.setSpacing(spacing)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819093830.1: *4* qt_gui.createHLayout & createVLayout
+    def createHLayout(self, parent, name, margin=0, spacing=0):
+        hLayout = QtWidgets.QHBoxLayout(parent)
+        hLayout.setObjectName(name)
+        hLayout.setSpacing(spacing)
+        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return hLayout
+
+    def createVLayout(self, parent, name, margin=0, spacing=0):
+        vLayout = QtWidgets.QVBoxLayout(parent)
+        vLayout.setObjectName(name)
+        vLayout.setSpacing(spacing)
+        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return vLayout
+    #@+node:ekr.20190819094302.1: *4* qt_gui.createLabel
+    def createLabel(self, parent, name, label):
+        w = QtWidgets.QLabel(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819092523.1: *4* qt_gui.createTabWidget
+    def createTabWidget(self, parent, name, hPolicy=None, vPolicy=None):
+        w = QtWidgets.QTabWidget(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
+    def setSizePolicy(self, widget, kind1=None, kind2=None):
+        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
+        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
+        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            widget.sizePolicy().hasHeightForWidth())
+        widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20140825042850.18411: *3* qt_gui.Utils...
     #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
     def isTextWidget(self, w):
