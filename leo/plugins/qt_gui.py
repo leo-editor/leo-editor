@@ -130,39 +130,450 @@ class LeoQtGui(leoGui.LeoGui):
             not g.app.silentMode and
             not g.unitTesting
         ):
-            g.trace('===== Create Splash Screen')
             self.splashScreen = self.createSplashScreen()
         if g.new_gui:
-            self.make_new_main_window()
+            self.main_window = self.make_main_window()
+            self.make_all_docks()
+            self.create_menu_bar()
+            self.create_mini_buffer()
+            self.create_status_bar()
         else:
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
         
     def reloadSettings(self):
         pass
-    #@+node:ekr.20190819072045.1: *4* qt_gui.make_new_main_window
-    def make_new_main_window(self):
+    #@+node:ekr.20190819100416.1: *4* gt_gui.create_mini_buffer & helper
+    def create_mini_buffer(self):
+        
+        main_window = self.main_window
+        toolbar = QtWidgets.QToolBar(main_window)
+        toolbar.setObjectName('minibuffer-toolbar')
+        toolbar.setWindowTitle('Minibuffer')
+        main_window.addToolBar(QtCore.Qt.BottomToolBarArea, toolbar)
+        w = self.create_mini_buffer_helper(toolbar)
+        toolbar.addWidget(w)
+    #@+node:ekr.20190819094937.1: *5* qt_gui.create_mini_buffer_helper
+    def create_mini_buffer_helper(self, parent):
+        '''Create the widgets for Leo's minibuffer area.'''
+        ### dw = self # For VisLineEdit
+        # Create widgets.
+        frame = self.createFrame(parent, 'minibufferFrame',
+            hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
+            vPolicy=QtWidgets.QSizePolicy.Fixed)
+        frame.setMinimumSize(QtCore.QSize(100, 0))
+        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
+        class VisLineEdit(QtWidgets.QLineEdit):
+            """In case user has hidden minibuffer with gui-minibuffer-hide"""
+
+            def focusInEvent(self, event):
+                self.parent().show()
+                if g.app.dock:
+                    # Ensure the Tabs dock is visible, for completions.
+                    dock = getattr(g.app.gui, 'tabs_dock', None)
+                    if dock:
+                        dock.raise_()
+                        parent.raise_()
+                super().focusInEvent(event)
+                    # Call the base class method.
+
+            def focusOutEvent(self, event):
+                self.store_selection()
+                super().focusOutEvent(event)
+
+            def restore_selection(self):
+                w = self
+                i, j, ins = self._sel_and_insert
+                if i == j:
+                    w.setCursorPosition(i)
+                else:
+                    length = j - i
+                    # Set selection is a QLineEditMethod
+                    if ins < j:
+                        w.setSelection(j, -length)
+                    else:
+                        w.setSelection(i, length)
+
+            def store_selection(self):
+                w = self
+                ins = w.cursorPosition()
+                if w.hasSelectedText():
+                    i = w.selectionStart()
+                    s = w.selectedText()
+                    j = i + len(s)
+                else:
+                    i = j = ins
+                w._sel_and_insert = (i, j, ins)
+
+        lineEdit = VisLineEdit(frame)
+        lineEdit._sel_and_insert = (0, 0, 0)
+        lineEdit.setObjectName('lineEdit') # name important.
+        # Pack.
+        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        hLayout.addWidget(label)
+        hLayout.addWidget(lineEdit)
+        if g.app.dock:
+            # Parent is a QDockWidget.
+            pass
+        else:
+            self.verticalLayout.addWidget(frame)
+        label.setBuddy(lineEdit)
+            # Transfers focus request from label to lineEdit.
         #
-        # Create stubs for the DynamicWindow.
-        c = g.NullObject(ivars='frame', tag='DynamicWindow.c')
-        c.frame = g.TracingNullObject(ivars='log', tag='DynamicWindow.c.frame')
-        c.frame.log = g.TracingNullObject(tag='DynamicWindow.c.frame.log')
+        # Official ivars.
+        self.lineEdit = lineEdit
+        # self.leo_minibuffer_frame = frame
+        # self.leo_minibuffer_layout = layout
+        return frame
+    #@+node:ekr.20190819100216.1: *4* qt_gui.create_menu_bar
+    def create_menu_bar(self):
+        '''Create Leo's menu bar.'''
+        main_window = self.main_window
+        w = QtWidgets.QMenuBar(main_window)
+        w.setObjectName("menubar")
+        #### w.setNativeMenuBar(platform.system() == 'Darwin')
+        w.setNativeMenuBar('darwin' in sys.platform.lower())
+        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
+        main_window.setMenuBar(w)
+        # Official ivars.
+        ### self.leo_menubar = w
+    #@+node:ekr.20190819095504.1: *4* qt_gui.create_status_bar
+    def create_status_bar(self):
+        '''Create the widgets and ivars for Leo's status area.'''
+        main_window = self.main_window
+        w = QtWidgets.QStatusBar(parent=main_window)
+        w.setObjectName("statusbar")
+        main_window.setStatusBar(w)
+        # Official ivars.
+        ### self.statusBar = w
+    #@+node:ekr.20190819085724.1: *4* qt_gui.make_all_docks & helpers
+    def make_all_docks(self):
+        '''Create all the dock widgets.'''
+        main_window = self.main_window
+        assert main_window
+        ### c = self.leo_c
         #
-        # Create main window.
-        dw = qt_frame.DynamicWindow(c=c)
-        self.main_window = dw
-            # Create a permanent reference.
-        dw.construct(master=None)
-        dw.show()
-            
-        ### minimal app:
-            # window = QtWidgets.QMainWindow()
-            # g.app.main_window = window # To retain the window.
-            # window.setGeometry(50, 50, 500, 300)
-            # label = QtWidgets.QLabel('Hello World!', parent=window)
-            # label.show()
-            # window.show()
+        # Compute constants.
+        Qt = QtCore.Qt
+        # bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
+        bottom = Qt.BottomDockWidgetArea
+        lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+        # g.placate_pyflakes(bottom, lt, rt, top)
+        #
+        # Create all the docks.
+        central_widget = 'outline' #, g.app.get_central_widget(c)
+        ### dockable = c.config.getBool('dockable-log-tabs', default=False)
+        dockable = False ### For now.
+        table = [
+            (True, 100, lt, 'outline', self.createOutlineDock),
+            (True, 100, bottom, 'body', self.createBodyPane),
+            (True, 20, rt, 'tabs', self.createTabsDock),
+            (dockable, 20, rt, 'find', self.createFindDockOrTab),
+            (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
+        ]
+        for make_dock, height, area, name, creator in table:
+            w = creator(parent=None)
+            if not make_dock:
+                setattr(self, '%s_dock' % (name), None)
+                continue
+            dock = self.createDockWidget(
+                closeable=name != central_widget,
+                moveable=name != central_widget,
+                height=0,
+                name=name)
+            dock.setWidget(w)
+            # Remember the dock.
+            setattr(self, '%s_dock' % (name), dock)
+            if name == central_widget:
+                main_window.setCentralWidget(dock)
+                    # Important: the central widget should be a dock.
+            else:
+                main_window.addDockWidget(area, dock)
+        
+       
+    #@+node:ekr.20190819090632.1: *5* qt_gui.createBodyPane
+    def createBodyPane(self, parent):
+        '''
+        Create the *pane* for the body, but does not create the actual QTextBrowser.
+        parent is None when --dock is in effect.
+        '''
+        if 1:
+            return QtWidgets.QFrame(parent=parent)
+        #
+        # Create widgets.
+        #
+        # bodyFrame has a VGridLayout.
+        bodyFrame = self.createFrame(parent, 'bodyFrame')
+        grid = self.createGrid(bodyFrame, 'bodyGrid')
+        #
+        # innerFrame has a VBoxLayout.
+        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+        box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
+        #
+        # Pack the body alone or *within* a LeoLineTextWidget.
+        body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
+        if self.use_gutter:
+            c = g.TraceingNullObject(tag='c')
+            lineWidget = qt_text.LeoLineTextWidget(c, body)
+            box.addWidget(lineWidget)
+        else:
+            box.addWidget(body)
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Official ivars
+        # self.richTextEdit = body
+        # self.leo_body_frame = bodyFrame
+        # self.leo_body_inner_frame = innerFrame
+        return bodyFrame
+    #@+node:ekr.20190819085949.2: *5* qt_gui.createFindDockOrTab
+    def createFindDockOrTab(self, parent):
+        '''Create a Find dock or tab in the Log pane.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create widgets.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
+        findScrollArea = QtWidgets.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
+        #
+        # For LeoFind.finishCreate.
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        #
+        # Create a tab in the log Dock, if necessary.
+        ### if not c.config.getBool('dockable-log-tabs', default=False):
+        if True: ### Temp.
+            self.tabWidget.addTab(findScrollArea, 'Find')
+        return findScrollArea
+    #@+node:ekr.20190819085949.3: *5* qt_gui.createOutlineDock
+    def createOutlineDock(self, parent):
+        '''Create the widgets and ivars for Leo's outline.'''
+        # Create widgets.
+        treeFrame = self.createFrame(parent, 'outlineFrame',
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred)
+        treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
+        grid = self.createGrid(treeFrame, 'outlineGrid')
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
+        innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
+        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        # Official ivars...
+        self.treeWidget = treeWidget
+        return treeFrame
+    #@+node:ekr.20190819092902.1: *5* qt_gui.createRawSpellTab
+    def createRawSpellTab(self, parent):
+        # dw = self
+        vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
+        spellFrame = self.createFrame(parent, 'spellFrame')
+        vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
+        grid = self.createGrid(None, 'spellGrid', spacing=2)
+        table = (
+            ('Add', 'Add', 2, 1),
+            ('Find', 'Find', 2, 0),
+            ('Change', 'Change', 3, 0),
+            ('FindChange', 'Change,Find', 3, 1),
+            ('Ignore', 'Ignore', 4, 0),
+            ('Hide', 'Hide', 4, 1),
+        )
+        for(ivar, label, row, col) in table:
+            name = 'spell_%s_button' % label
+            button = self.createButton(spellFrame, name, label)
+            grid.addWidget(button, row, col)
+            ### Not ready yet.
+                # func = getattr(self, 'do_leo_spell_btn_%s' % ivar)
+                # button.clicked.connect(func)
+            # This name is significant.
+            setattr(self, 'leo_spell_btn_%s' % (ivar), button)
+        self.leo_spell_btn_Hide.setCheckable(False)
+        spacerItem = QtWidgets.QSpacerItem(20, 40,
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        grid.addItem(spacerItem, 5, 0, 1, 1)
+        listBox = QtWidgets.QListWidget(spellFrame)
+        self.setSizePolicy(listBox,
+            kind1=QtWidgets.QSizePolicy.MinimumExpanding,
+            kind2=QtWidgets.QSizePolicy.Expanding)
+        listBox.setMinimumSize(QtCore.QSize(0, 0))
+        listBox.setMaximumSize(QtCore.QSize(150, 150))
+        listBox.setObjectName("leo_spell_listBox")
+        grid.addWidget(listBox, 1, 0, 1, 2)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20,
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        grid.addItem(spacerItem1, 2, 2, 1, 1)
+        lab = self.createLabel(spellFrame, 'spellLabel', 'spellLabel')
+        grid.addWidget(lab, 0, 0, 1, 2)
+        vLayout2.addLayout(grid)
+        vLayout.addWidget(spellFrame)
+        ### listBox.itemDoubleClicked.connect(self.do_leo_spell_btn_FindChange)
+        ### Not yet.
+            # # Official ivars.
+            # self.spellFrame = spellFrame
+            # self.spellGrid = grid
+            # self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
+            # self.leo_spell_listBox = listBox # Must exist
+            # self.leo_spell_label = lab # Must exist (!!)
+    #@+node:ekr.20190819085949.4: *5* qt_gui.createSpellDockOrTab
+    def createSpellDockOrTab(self, parent):
+        '''Create a Spell dock  or tab in the Log pane.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create an outer widget.
+        spellTab = QtWidgets.QWidget()
+        spellTab.setObjectName('docked.spellTab')
+        #
+        # Create the contents.
+        self.createRawSpellTab(spellTab)
+            ### Renamed from createSpellTab.
+        #
+        # Create the Spell tab in the Log dock, if necessary.
+        ### if not c.config.getBool('dockable-log-tabs', default=False):
+        if True: ### Temp?
+            tabWidget = self.tabWidget
+            tabWidget.addTab(spellTab, 'Spell')
+            tabWidget.setCurrentIndex(1)
+        return spellTab
+    #@+node:ekr.20190819085949.6: *5* qt_gui.createTabsDock
+    def createTabsDock(self, parent):
+        '''Create the Tabs dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create the log contents
+        logFrame = self.createFrame(None, 'logFrame',
+            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred,
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack. This *is* required.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame
+    #@+node:ekr.20190819091420.1: *5* qt_gui.createTreeWidget
+    def createTreeWidget(self, parent, name):
+        
+        from leo.plugins.qt_frame import LeoQTreeWidget
+        ### c = self.leo_c
+        c = g.TracingNullObject(tag='qt_gui.leo_c')
+        w = LeoQTreeWidget(c, parent)
+        self.setSizePolicy(w)
+        # 12/01/07: add new config setting.
+        ### multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
+        if True: ###multiple_selection:
+            w.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+            w.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        else:
+            w.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+            w.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        w.setHeaderHidden(False)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091957.1: *5* Utils...
+    #@+node:ekr.20190819094016.1: *6* qt_gui.createButton
+    def createButton(self, parent, name, label):
+        w = QtWidgets.QPushButton(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819091950.1: *6* qt_gui.createDockWidget
+    ### dock_names = []
+
+    def createDockWidget(self, closeable, moveable, height, name):
+        '''Make a new docwidget in Leo's QMainWindow.'''
+        dock = QtWidgets.QDockWidget(parent=self.main_window)
+            # The parent must be a QMainWindow.
+        features = dock.NoDockWidgetFeatures
+        if moveable:
+            features |= dock.DockWidgetMovable
+            features |= dock.DockWidgetFloatable
+        if closeable:
+            features |= dock.DockWidgetClosable
+        dock.setFeatures(features)
+        dock.setMinimumHeight(height)
+        ### This check not so important with singleton docks.
+            # if name in self.dock_names:
+                # g.es_print('\nDuplicate dock name: %s' % key)
+            # self.dock_names.append(name)
+        dock.setObjectName('dock.%s' % name)
+        dock.setWindowTitle(name.capitalize())
+        dock.show() # Essential!
+        return dock
+    #@+node:ekr.20190819091122.1: *6* qt_gui.createFrame
+    def createFrame(self, parent, name,
+        hPolicy=None, vPolicy=None,
+        lineWidth=1,
+        shadow=QtWidgets.QFrame.Plain,
+        shape=QtWidgets.QFrame.NoFrame,
+    ):
+        '''Create a Qt Frame.'''
+        w = QtWidgets.QFrame(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091851.1: *6* qt_gui.createGrid
+    def createGrid(self, parent, name, margin=0, spacing=0):
+        w = QtWidgets.QGridLayout(parent)
+        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+        w.setSpacing(spacing)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819093830.1: *6* qt_gui.createHLayout & createVLayout
+    def createHLayout(self, parent, name, margin=0, spacing=0):
+        hLayout = QtWidgets.QHBoxLayout(parent)
+        hLayout.setObjectName(name)
+        hLayout.setSpacing(spacing)
+        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return hLayout
+
+    def createVLayout(self, parent, name, margin=0, spacing=0):
+        vLayout = QtWidgets.QVBoxLayout(parent)
+        vLayout.setObjectName(name)
+        vLayout.setSpacing(spacing)
+        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return vLayout
+    #@+node:ekr.20190819094302.1: *6* qt_gui.createLabel
+    def createLabel(self, parent, name, label):
+        w = QtWidgets.QLabel(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819092523.1: *6* qt_gui.createTabWidget
+    def createTabWidget(self, parent, name, hPolicy=None, vPolicy=None):
+        w = QtWidgets.QTabWidget(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091214.1: *6* qt_gui.setSizePolicy
+    def setSizePolicy(self, widget, kind1=None, kind2=None):
+        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
+        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
+        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            widget.sizePolicy().hasHeightForWidth())
+        widget.setSizePolicy(sizePolicy)
+    #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window
+    def make_main_window(self):
+        '''Make a QMainWindow.'''
+        window = QtWidgets.QMainWindow()
+        window.setGeometry(50, 50, 500, 300)
+        window.show()
+        return window
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
 
@@ -308,6 +719,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(self, c, spellHandler, tabName):
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
+
     #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run a qt About Leo dialog."""
@@ -1396,7 +1808,6 @@ class LeoQtGui(leoGui.LeoGui):
                     QtCore.QThread.msleep(10)
                     splash.repaint()
                     break
-        g.trace(name, repr(splash))
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self):
