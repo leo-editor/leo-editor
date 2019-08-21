@@ -2485,10 +2485,13 @@ class LoadManager:
         fileName = lm.files[0] if lm.files else None
         c = c1
         # For qt gui, select the first-loaded tab.
-        if hasattr(g.app.gui, 'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                factory.setTabForCommander(c)
+        if g.new_gui:
+            pass ###
+        else:
+            if hasattr(g.app.gui, 'frameFactory'):
+                factory = g.app.gui.frameFactory
+                if factory and hasattr(factory, 'setTabForCommander'):
+                    factory.setTabForCommander(c)
         if not c:
             return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.

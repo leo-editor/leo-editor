@@ -193,7 +193,7 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         trace = 'size' in g.app.debug
@@ -213,6 +213,8 @@ class FastRead:
         #
         # #1189: Must be done *after* restoring geometry.
         #        Was done in TabbedFrameFactory.createMaster.
+        if g.new_gui:
+            return ### Leo's window size should be set elsewhere.
         frameFactory = getattr(g.app.gui, 'frameFactory', None)
         if not frameFactory:
             return

@@ -42,7 +42,7 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp)
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp) (changed)
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
         super().__init__('qt')
@@ -141,6 +141,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
+                # This creates commands *only*.
         
     def reloadSettings(self):
         pass
