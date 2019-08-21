@@ -1739,7 +1739,7 @@ class AtFile:
             # Only @c and @code end a doc part.
             if not status.in_code:
                 at.putEndDocLine()
-            at.putDirective(s, i)
+            at.putDirective(s, i, p)
             status.in_code = True
         elif kind == at.allDirective:
             if status.in_code:
@@ -1783,7 +1783,7 @@ class AtFile:
             ):
                 status.at_warning_given = True
                 at.error('@comment and @delims in node %s' % p.h)
-            at.putDirective(s, i)
+            at.putDirective(s, i, p)
         else:
             at.error('putBody: can not happen: unknown directive kind: %s' % kind)
     #@+node:ekr.20041005105605.164: *5* writing code lines...
@@ -2540,7 +2540,7 @@ class AtFile:
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
     #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
-    def putDirective(self, s, i):
+    def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.
 
@@ -2559,11 +2559,19 @@ class AtFile:
         elif g.match_word(s, k, "@comment"):
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
-            self.putSentinel("@@last")
-                # Convert to an verbatim line _without_ anything else.
+            # #1297.
+            if g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@last")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
-            self.putSentinel("@@first")
-                # Convert to an verbatim line _without_ anything else.
+            # #1297.
+            if g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@first")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @first directive in %r' % p.h)
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
@@ -3120,7 +3128,7 @@ class FastAtRead:
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, start, test=False):
+    def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -3437,7 +3445,10 @@ class FastAtRead:
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                 else:
-                    g.trace('too many @first lines')
+                    g.trace('\ntoo many @first lines: %s' %  path)
+                    print('@first is valid only at the start of @<file> nodes\n')
+                    g.printObj(first_lines, tag='first_lines')
+                    g.printObj(lines[start:i+2], tag='lines[start:i+2]')
                 continue
             m = last_pat.match(line)
             if m:
@@ -3598,7 +3609,7 @@ class FastAtRead:
         root.v._deleteAllChildren()
         delims, first_lines, start_i = data
         self.scan_lines(
-            delims, first_lines, lines, start_i)
+            delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.clock()
             g.trace('%5.3f sec. %s' % ((t2-t1), path))
