@@ -3120,7 +3120,7 @@ class FastAtRead:
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, start, test=False):
+    def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -3437,7 +3437,10 @@ class FastAtRead:
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                 else:
-                    g.trace('too many @first lines')
+                    g.trace('\ntoo many @first lines: %s' %  path)
+                    print('@first is valid only at the start of @<file> nodes\n')
+                    g.printObj(first_lines, tag='first_lines')
+                    g.printObj(lines[start:i+2], tag='lines[start:i+2]')
                 continue
             m = last_pat.match(line)
             if m:
@@ -3598,7 +3601,7 @@ class FastAtRead:
         root.v._deleteAllChildren()
         delims, first_lines, start_i = data
         self.scan_lines(
-            delims, first_lines, lines, start_i)
+            delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.clock()
             g.trace('%5.3f sec. %s' % ((t2-t1), path))
