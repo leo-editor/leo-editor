@@ -2539,7 +2539,7 @@ class AtFile:
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
+    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper (changed)
     def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.
@@ -2560,14 +2560,14 @@ class AtFile:
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
             # #1297.
-            if g.unitTesting or p.isAnyAtFileNode():
+            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@last")
                     # Convert to an verbatim line _without_ anything else.
             else:
                 at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
             # #1297.
-            if g.unitTesting or p.isAnyAtFileNode():
+            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@first")
                     # Convert to an verbatim line _without_ anything else.
             else:

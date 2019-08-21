@@ -7487,7 +7487,7 @@ def findTopLevelNode(c, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:EKR.20040614071102.1: *3* g.getScript & helpers
+#@+node:EKR.20040614071102.1: *3* g.getScript & helpers (changed)
 def getScript(c, p,
     useSelectedText=True,
     forcePythonSentinels=True,
@@ -7529,14 +7529,20 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     if not s.strip():
         return ''
     at = c.atFileCommands
-    g.app.scriptDict["script1"] = s
-    # Important: converts unicode to utf-8 encoded strings.
-    script = at.stringToString(p.copy(), s,
-        forcePythonSentinels=forcePythonSentinels,
-        sentinels=useSentinels)
-    script = script.replace("\r\n", "\n") # Use brute force.
-    # Important, the script is an **encoded string**, not a unicode string.
-    g.app.scriptDict["script2"] = script
+    old_in_script = g.app.inScript
+    try:
+        # #1297: set inScript flags.
+        g.app.inScript = g.inScript = True
+        g.app.scriptDict["script1"] = s
+        # Important: converts unicode to utf-8 encoded strings.
+        script = at.stringToString(p.copy(), s,
+            forcePythonSentinels=forcePythonSentinels,
+            sentinels=useSentinels)
+        script = script.replace("\r\n", "\n") # Use brute force.
+            # Important, the script is an **encoded string**, not a unicode string.
+        g.app.scriptDict["script2"] = script
+    finally:
+        g.app.inScript = g.inScript = old_in_script
     return script
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
 def extractExecutableString(c, p, s):
