@@ -23,6 +23,7 @@ if 1:
     import leo.plugins.qt_commands as qt_commands
     assert qt_commands
 #@-<< imports >>
+# < < new_gui: commands for tabs > >
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
@@ -1122,7 +1123,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819135820.1: *3* qt_gui.Main Window
+    #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
     #@+node:ekr.20190819085724.1: *4* qt_gui.make_all_docks & helpers
     def make_all_docks(self):
         '''Create all the dock widgets.'''
@@ -1239,9 +1240,10 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_dock
     def create_outlines_dock(self, parent):
         '''Create the widgets and ivars for Leo's outline.'''
-        tabbed_widget = QtWidgets.QTabWidget(parent)
-        tabbed_widget.setObjectName('tree-tabs')
-        return tabbed_widget
+        w = QtWidgets.QTabWidget(parent)
+        w.setObjectName('tree-tabs')
+        self.outline_tab = w
+        return w
         # # Create widgets.
         # treeFrame = self.createFrame(parent, 'outlineFrame',
             # vPolicy=QtWidgets.QSizePolicy.Expanding)
