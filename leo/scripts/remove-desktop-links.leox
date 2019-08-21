@@ -4,7 +4,6 @@
 #@@tabwidth -4
 #@+others
 #@+node:mhw.20190808083336.1: ** main
-#@@first
 '''Remove Leo Editor shortcuts from desktop and system menu
 
 The approach is naive:
