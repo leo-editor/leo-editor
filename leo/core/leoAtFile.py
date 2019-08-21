@@ -1739,7 +1739,7 @@ class AtFile:
             # Only @c and @code end a doc part.
             if not status.in_code:
                 at.putEndDocLine()
-            at.putDirective(s, i)
+            at.putDirective(s, i, p)
             status.in_code = True
         elif kind == at.allDirective:
             if status.in_code:
@@ -1783,7 +1783,7 @@ class AtFile:
             ):
                 status.at_warning_given = True
                 at.error('@comment and @delims in node %s' % p.h)
-            at.putDirective(s, i)
+            at.putDirective(s, i, p)
         else:
             at.error('putBody: can not happen: unknown directive kind: %s' % kind)
     #@+node:ekr.20041005105605.164: *5* writing code lines...
@@ -2540,7 +2540,7 @@ class AtFile:
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
     #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
-    def putDirective(self, s, i):
+    def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.
 
@@ -2559,11 +2559,19 @@ class AtFile:
         elif g.match_word(s, k, "@comment"):
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
-            self.putSentinel("@@last")
-                # Convert to an verbatim line _without_ anything else.
+            # #1297.
+            if g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@last")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
-            self.putSentinel("@@first")
-                # Convert to an verbatim line _without_ anything else.
+            # #1297.
+            if g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@first")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @first directive in %r' % p.h)
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
