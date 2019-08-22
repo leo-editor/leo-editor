@@ -2485,7 +2485,7 @@ class LoadManager:
         c = c1
         # For qt gui, select the first-loaded tab.
         if g.new_gui:
-            pass ###
+            pass
         else:
             if hasattr(g.app.gui, 'frameFactory'):
                 factory = g.app.gui.frameFactory
@@ -3200,8 +3200,6 @@ class LoadManager:
             c.sqlite_connection = theFile
         # Enable the log.
         g.app.unlockLog()
-        if g.new_gui:
-            g.trace(c.shortFileName())
         c.frame.log.enable(True)
         # Phase 2: Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)

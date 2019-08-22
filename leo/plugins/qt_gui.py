@@ -138,7 +138,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
             self.make_all_global_docks()
-                # All the other work is done later!
+                # qtFrame.finishCreate does all the other work.
         else:
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -1376,6 +1376,9 @@ class LeoQtGui(leoGui.LeoGui):
                     g.app.ipk.run_script(file_name=c.p.h,script=script)
 
         ipk.kernelApp.start()
+    #@+node:ekr.20190822173112.1: *3* qt_gui.select_tab(new, to do)
+    def select_tab(self, c):
+        g.trace(repr(c.shortFileName()))
     #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, to do)
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
@@ -1397,6 +1400,11 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
     def setTabText(self, title):
         g.trace(title)
+    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
+    def set_top_geometry(self, w, h, x, y):
+        """Set the geometry of the main window."""
+        g.trace(w, h, x, y)
+        self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):

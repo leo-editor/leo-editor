@@ -1322,7 +1322,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def select(self, c):
         '''Select the window or tab for c.'''
         # Called from the save commands.
-        self.leo_master.select(c)
+        if g.new_gui:
+            g.app.gui.select_tab(c)
+        else:
+            self.leo_master.select(c)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qt gui.'''
@@ -2387,7 +2390,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         if g.new_gui:
             self.top = g.app.gui.create_outline_frame(c)
-                ### Instantiates a DynamicWindow.
+                # Instantiates a DynamicWindow.
         else:
             self.top = g.app.gui.frameFactory.createFrame(self)
         self.createIconBar() # A base class method.

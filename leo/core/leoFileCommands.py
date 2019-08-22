@@ -207,19 +207,30 @@ class FastRead:
         x, y = d.get('left'), d.get('top')
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
-        c.frame.setTopGeometry(w, h, x, y)
-        r1, r2 = d.get('r1'), d.get('r2')
-        c.frame.resizePanesToRatio(r1, r2)
+        ### Done below
+            # c.frame.setTopGeometry(w, h, x, y)
+            # r1, r2 = d.get('r1'), d.get('r2')
+            # c.frame.resizePanesToRatio(r1, r2)
         #
         # #1189: Must be done *after* restoring geometry.
         #        Was done in TabbedFrameFactory.createMaster.
         if g.new_gui:
-            return ### Leo's window size should be set elsewhere.
-        frameFactory = getattr(g.app.gui, 'frameFactory', None)
-        if not frameFactory:
-            return
+            mf = getattr(g.app.gui, 'main_window', None)
+            if not mf:
+                return
+            g.app.gui.set_top_geometry(w, h, x, y)
+            r1, r2 = d.get('r1'), d.get('r2')
+            c.frame.resizePanesToRatio(r1, r2)
+        else:
+
+            c.frame.setTopGeometry(w, h, x, y)
+            r1, r2 = d.get('r1'), d.get('r2')
+            c.frame.resizePanesToRatio(r1, r2)
+            frameFactory = getattr(g.app.gui, 'frameFactory', None)
+            if not frameFactory:
+                return
+            mf = frameFactory.masterFrame
         if trace: g.trace('sizing screen')
-        mf = frameFactory.masterFrame
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:
