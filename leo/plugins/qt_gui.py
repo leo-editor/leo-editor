@@ -1130,81 +1130,6 @@ class LeoQtGui(leoGui.LeoGui):
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
-    #@+node:ekr.20190819135946.14: *4* qt_gui.create_mini_buffer_helper
-    def create_mini_buffer_helper(self, parent):
-        '''Create the widgets for Leo's minibuffer area.'''
-        ### dw = self # For VisLineEdit
-        # Create widgets.
-        frame = self.createFrame(parent, 'minibufferFrame',
-            hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
-            vPolicy=QtWidgets.QSizePolicy.Fixed)
-        frame.setMinimumSize(QtCore.QSize(100, 0))
-        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
-
-        class VisLineEdit(QtWidgets.QLineEdit):
-            """In case user has hidden minibuffer with gui-minibuffer-hide"""
-
-            def focusInEvent(self, event):
-                self.parent().show()
-                if g.app.dock:
-                    # Ensure the Tabs dock is visible, for completions.
-                    dock = getattr(g.app.gui, 'tabs_dock', None)
-                    if dock:
-                        dock.raise_()
-                        parent.raise_()
-                super().focusInEvent(event)
-                    # Call the base class method.
-
-            def focusOutEvent(self, event):
-                self.store_selection()
-                super().focusOutEvent(event)
-
-            def restore_selection(self):
-                w = self
-                i, j, ins = self._sel_and_insert
-                if i == j:
-                    w.setCursorPosition(i)
-                else:
-                    length = j - i
-                    # Set selection is a QLineEditMethod
-                    if ins < j:
-                        w.setSelection(j, -length)
-                    else:
-                        w.setSelection(i, length)
-
-            def store_selection(self):
-                w = self
-                ins = w.cursorPosition()
-                if w.hasSelectedText():
-                    i = w.selectionStart()
-                    s = w.selectedText()
-                    j = i + len(s)
-                else:
-                    i = j = ins
-                w._sel_and_insert = (i, j, ins)
-
-        lineEdit = VisLineEdit(frame)
-        lineEdit._sel_and_insert = (0, 0, 0)
-        lineEdit.setObjectName('lineEdit') # name important.
-        # Pack.
-        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
-        hLayout.setContentsMargins(3, 2, 2, 0)
-        hLayout.addWidget(label)
-        hLayout.addWidget(lineEdit)
-        if g.app.dock:
-            # Parent is a QDockWidget.
-            pass
-        else:
-            # pylint: disable=no-member
-            self.verticalLayout.addWidget(frame)
-        label.setBuddy(lineEdit)
-            # Transfers focus request from label to lineEdit.
-        #
-        # Official ivars.
-        self.lineEdit = lineEdit
-        # self.leo_minibuffer_frame = frame
-        # self.leo_minibuffer_layout = layout
-        return frame
     #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new)
     def create_outline_frame(self, c):
         """Create a new frame in the Outlines Dock"""
@@ -1248,40 +1173,6 @@ class LeoQtGui(leoGui.LeoGui):
         # # Official ivars...
         # self.treeWidget = treeWidget
         # return treeFrame
-    #@+node:ekr.20190819090632.1: *4* qt_gui.createBodyPane
-    def createBodyPane(self, parent):
-        '''
-        Create the *pane* for the body, but does not create the actual QTextBrowser.
-        parent is None when --dock is in effect.
-        '''
-        if 1:
-            return QtWidgets.QFrame(parent=parent)
-        #
-        # Create widgets.
-        #
-        # bodyFrame has a VGridLayout.
-        bodyFrame = self.createFrame(parent, 'bodyFrame')
-        grid = self.createGrid(bodyFrame, 'bodyGrid')
-        #
-        # innerFrame has a VBoxLayout.
-        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
-        #
-        # Pack the body alone or *within* a LeoLineTextWidget.
-        body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
-        if self.use_gutter:
-            c = g.TracingNullObject(tag='c')
-            lineWidget = qt_text.LeoLineTextWidget(c, body)
-            box.addWidget(lineWidget)
-        else:
-            box.addWidget(body)
-        grid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
-        # Official ivars
-        # self.richTextEdit = body
-        # self.leo_body_frame = bodyFrame
-        # self.leo_body_inner_frame = innerFrame
-        return bodyFrame
     #@+node:ekr.20190819085949.2: *4* qt_gui.createFindDockOrTab
     def createFindDockOrTab(self, parent):
         '''Create a Find dock or tab in the Log pane.'''
@@ -1531,20 +1422,23 @@ class LeoQtGui(leoGui.LeoGui):
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
         g.trace(changed, c.shortFileName())
-        if 0: ### Not ready yet
-            dw = c.frame.top # A DynamicWindow
-            i = self.indexOf(dw)
-            if i < 0: return
-            s = self.tabText(i)
-            if len(s) > 2:
-                if changed:
-                    if not s.startswith('* '):
-                        title = "* " + s
-                        self.setTabText(i, title)
-                else:
-                    if s.startswith('* '):
-                        title = s[2:]
-                        self.setTabText(i, title)
+        # if 0: ### Not ready yet
+            # dw = c.frame.top # A DynamicWindow
+            # i = self.indexOf(dw)
+            # if i < 0: return
+            # s = self.tabText(i)
+            # if len(s) > 2:
+                # if changed:
+                    # if not s.startswith('* '):
+                        # title = "* " + s
+                        # self.setTabText(i, title)
+                # else:
+                    # if s.startswith('* '):
+                        # title = s[2:]
+                        # self.setTabText(i, title)
+    #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
+    def setTabText(self, title):
+        g.trace(title)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
