@@ -46,7 +46,7 @@
 <v t="chris.20180313181652.22"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
 <v t="chris.20180313181652.23"><vh>@color log_note_color = @solarized-blue</vh></v>
 <v t="chris.20180313181652.24"><vh>@color log_orange_color = @solarized-orange</vh></v>
-<v t="chris.20180313181652.25"><vh>@color log_red_color = @solarized-red</vh></v>
+<v t="chris.20180313181652.25"><vh>@color log_red_color = #ff0000</vh></v>
 <v t="chris.20180313181652.26"><vh>@color log_violet_color = @solarized-violet</vh></v>
 <v t="chris.20180313181652.27"><vh>@color log_warning_color_= @solarized-red</vh></v>
 <v t="chris.20180313181652.28"><vh>@color log_white_color = @solarized-white</vh></v>
@@ -103,12 +103,12 @@
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
 <v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180313181652.73"><vh>@string font-size-body = 18px</vh></v>
-<v t="chris.20180313181652.74"><vh>@string font-size-log = 17px</vh></v>
-<v t="chris.20180313181652.75"><vh>@string font-size-tree = 18px</vh></v>
-<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 16px</vh></v>
-<v t="chris.20180315130317.1"><vh>@string font-size-menu = 16px</vh></v>
-<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 16px</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 17px</vh></v>
+<v t="chris.20180313181652.74"><vh>@string font-size-log = 16px</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 16px</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 15px</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 15px</vh></v>
+<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 15px</vh></v>
 </v>
 <v t="chris.20180313181652.79"><vh>Plugins settings</vh>
 <v t="chris.20180313181652.80"><vh>bookmarks</vh>
@@ -1881,41 +1881,23 @@ Solarized orange    #cb4b16</t>
 <t tx="chris.20180313181652.4">@language python
 
 table = (
-    '#EFEBE9', '#D7CCC8', '#BCAAA4', '#A1887F', '#8D6E63', '#795548', '#6D4C41', '#5D4037', '#4E342E', '#3E2723', '#E8F5E9', '#C8E6C9', '#A5D6A7', '#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32', '#1B5E20', '#B9F6CA', '#69F0AE', '#00E676', '#00C853'
+    '#EFEBE9', '#A1887F', '#FFFFFF', '#472F29', '#5D4037', '#2C211D', '#D9A648', '#1B5E20', '#8D6E63', '#6D4C41',
 )
 for s in table:
     g.es(s, color=s)
     
 
 
-
-
-# Brown 50 #EFEBE9
-# 100 #D7CCC8
-# 200 #BCAAA4
-# 300 #A1887F
-# 400 #8D6E63
-# 500 #795548
-# 600 #6D4C41
-# 700 #5D4037
-# 800 #4E342E
-# 900 #3E2723
-
-# Green 50 #E8F5E9
-# 100 #C8E6C9
-# 200 #A5D6A7
-# 300 #81C784
-# 400 #66BB6A
-# 500 #4CAF50
-# 600 #43A047
-# 700 #388E3C
-# 800 #2E7D32
-# 900 #1B5E20
-# A100 #B9F6CA
-# A200 #69F0AE
-# A400 #00E676
-# A700 #00C853
-
+# dark-base0 = #EFEBE9
+# @color dark-base1 = #A1887F
+# dark-base2 = #ffffff
+# dark-base3 = #472F29
+# dark-base4 = #5D4037
+# dark-base5 = #2C211D
+# dark-base6 = #D9A648
+# dark-base7 = #1B5E20
+# dark-base8 = #8D6E63
+# dark-base9 = #6D4C41
 
 
 </t>
@@ -2618,6 +2600,28 @@ background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
 stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
 }
 
+QLabel
+{
+border-width: 1px;
+padding: 4px;
+border-style: solid;
+border-color: @dark-base1;
+border-radius: 5px;
+background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
+}
+
+LeoQComboBox
+{
+border-width: 1px;
+padding: 4px;
+border-style: solid;
+border-color: @dark-base1;
+border-radius: 5px;
+background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
+}
+
 QPushButton:hover
 {
 border-width: 1px;
@@ -2652,7 +2656,7 @@ border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
+stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5) 
 }
 
 QDockWidget::close-button, QDockWidget::float-button {
@@ -2694,6 +2698,7 @@ QWidget#qt_scrollarea_viewport {
 <t tx="chris.20190619152603.9">QMenuBar
 {
 background-color: @dark-base3;
+spacing: 2px;
 color: @dark-base0;
 font-size: @font-size-menubar;
 }
@@ -2728,19 +2733,21 @@ stop:0 @dark-base5, stop: 0.2 @dark-base9, stop:1 @dark-base1)
 
 QMenuBar::item:pressed
 {
-    border: 0.1ex solid @dark-base4;
-    background-color: @dark-base6;
-    color: @dark-base0;
-    margin-bottom: -0.1ex;
-    padding-bottom: 0.1ex;
+border: 0.1ex solid @dark-base4;
+background-color: @dark-base6;
+color: @dark-base0;
+margin-bottom: -0.1ex;
+padding-bottom: 0.1ex;
 }
 
 QMenu
 {
-    border: 2px solid @dark-base4;
-    color: @dark-base0;
-    font-size: @font-size-menu;
-    padding: 4px;
+spacing: 1px;
+border: 1px solid @dark-base4;
+color: @dark-base0;
+font-size: @font-size-menu;
+padding: 0px;
+background: @dark-base1;
 }
 
 QMenu::icon
@@ -2750,9 +2757,10 @@ QMenu::icon
 
 QMenu::item
 {
-border-width: 2px;
+padding: 0px;
+border-width: 1px;
 border-style: solid;
-border-color: @dark-base3;
+border-color: @dark-base1;
 border-radius: 5px;
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
 stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
@@ -2770,7 +2778,7 @@ stop:0 @dark-base5, stop: 0.2 @dark-base9, stop:1 @dark-base1)
 
 QMenu::separator
 {
-    height: 2px;
+    height: 1px;
     background: @dark-base6;
     margin-left: 1ex;
     margin-right: 0.5ex;
@@ -2920,7 +2928,7 @@ border-radius: 5px;
 </t>
 <t tx="chris.20190621143531.1"></t>
 <t tx="chris.20190621143635.1"></t>
-<t tx="ekr.20180312111155.1">A dark theme based on the Breeze Dark Theme for Leo and supporting material from Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy.
+<t tx="ekr.20180312111155.1">A dark theme based on the Breeze Dark Theme for Leo with supporting material from Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy.
 
 
 
