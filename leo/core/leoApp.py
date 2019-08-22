@@ -2448,7 +2448,7 @@ class LoadManager:
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers (to do)
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
@@ -2811,7 +2811,7 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
@@ -3172,7 +3172,7 @@ class LoadManager:
         if c:
             g.app.restoreWindowState(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (to do)
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
         '''Read the local file whose full path is fn using the given gui.
         fn may be a Leo file (including .leo or zipped file) or an external file.
@@ -3191,7 +3191,6 @@ class LoadManager:
         # Create the a commander for the .leo file.
         # Important.  The settings don't matter for pre-reads!
         # For second read, the settings for the file are *exactly* previousSettings.
-        if g.new_gui: g.pdb()
         c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
         # Open the file, if possible.
         g.doHook('open0')
@@ -3202,10 +3201,12 @@ class LoadManager:
         # Enable the log.
         g.app.unlockLog()
         if g.new_gui:
-            g.trace('=====', g.callers())
-            g.trace('===== c', repr(c))
-            g.trace('===== c.frame', repr(c.frame))
-            g.trace('===== c.frame.log', repr(c.frame.log))
+            g.trace(c.shortFileName())
+            ###
+                # g.trace('=====', g.callers())
+                # g.trace('===== c', repr(c))
+                # g.trace('===== c.frame', repr(c.frame))
+                # g.trace('===== c.frame.log', repr(c.frame.log))
         c.frame.log.enable(True)
         # Phase 2: Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)

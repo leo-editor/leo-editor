@@ -133,6 +133,11 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.new_gui:
+            self.leoFrames = {}
+                # Keys are DynamicWindows, values are frames.
+            self.alwaysShowTabs = True
+                # # Set to true to workaround a problem
+                # # setting the window title when tabs are shown.
             self.main_window = self.make_main_window()
             self.make_all_docks()
             self.create_menu_bar()
@@ -1151,7 +1156,7 @@ class LeoQtGui(leoGui.LeoGui):
         ### dockable = c.config.getBool('dockable-log-tabs', default=False)
         dockable = False ### For now.
         table = [
-            (True, 100, lt, 'outlines', self.create_outlines_dock),
+            (True, 100, lt, 'outlines', self.create_outlines_tab),
             (True, 100, bottom, 'body', self.createBodyPane),
             (True, 20, rt, 'tabs', self.createTabsDock),
             (dockable, 20, rt, 'find', self.createFindDockOrTab),
@@ -1245,8 +1250,37 @@ class LeoQtGui(leoGui.LeoGui):
         # Official ivars...
         self.treeWidget = treeWidget
         return treeFrame
-    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_dock
-    def create_outlines_dock(self, parent):
+    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new, TEST)
+    def create_outline_frame(self, c):
+        """Create a new frame in the Outlines Dock"""
+        ### From frameFactory.createFrame(leoFrame)
+        ### tabw = self.masterFrame
+        assert c
+        assert c.frame
+        tabw = self.outline_tab
+        dw = qt_frame.DynamicWindow(c, tabw)
+        self.leoFrames[dw] = c.frame ### leoFrame
+            # was a TabbedFrameFactory ivar.
+        # Shorten the title.
+        title = g.os_path_basename(c.mFileName) if c.mFileName else c.frame.title ### leoFrame.title
+        ### tip = leoFrame.title
+        tip = c.frame.title
+        dw.setWindowTitle(tip)
+        idx = tabw.addTab(dw, title)
+        if tip: tabw.setTabToolTip(idx, tip)
+        dw.construct(master=tabw)
+        tabw.setCurrentIndex(idx)
+        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+        #
+        # Work around the problem with missing dirty indicator
+        # by always showing the tab.
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+        dw.show()
+        tabw.show()
+        return dw
+    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_tab (new)
+    def create_outlines_tab(self, parent):
         '''Create the widgets and ivars for Leo's outline.'''
         w = QtWidgets.QTabWidget(parent)
         w.setObjectName('tree-tabs')
@@ -1644,6 +1678,24 @@ class LeoQtGui(leoGui.LeoGui):
                     g.app.ipk.run_script(file_name=c.p.h,script=script)
 
         ipk.kernelApp.start()
+    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, to do)
+    def setChanged(self, c, changed):
+        # Find the tab corresponding to c.
+        g.trace(changed, c.shortFileName())
+        if 0: ### Not ready yet
+            dw = c.frame.top # A DynamicWindow
+            i = self.indexOf(dw)
+            if i < 0: return
+            s = self.tabText(i)
+            if len(s) > 2:
+                if changed:
+                    if not s.startswith('* '):
+                        title = "* " + s
+                        self.setTabText(i, title)
+                else:
+                    if s.startswith('* '):
+                        title = s[2:]
+                        self.setTabText(i, title)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):

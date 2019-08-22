@@ -2382,16 +2382,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (to do)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
     def finishCreate(self):
-        
-        if g.new_gui:
-            self.menu = g.TracingNullObject('qt_gui.menu')
-            g.trace('Not ready yet')
-            return
+        """Finish creating the outline's frame."""
+        # Called from app.newCommander, Commands.__init__
         c = self.c
         assert c
-        self.top = g.app.gui.frameFactory.createFrame(self)
+        if g.new_gui:
+            self.top = g.app.gui.create_outline_frame(c)
+        else:
+            self.top = g.app.gui.frameFactory.createFrame(self)
         self.createIconBar() # A base class method.
         self.createSplitterComponents()
         self.createStatusLine() # A base class method.
@@ -4809,7 +4809,7 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (makes DynamicWindow)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (legacy: makes DynamicWindow)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
@@ -4835,7 +4835,7 @@ class TabbedFrameFactory:
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (legacy) (move into new tabw code)
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         g.app.gui.attachLeoIcon(mf)

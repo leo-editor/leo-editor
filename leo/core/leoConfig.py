@@ -1699,7 +1699,7 @@ class LocalConfigManager:
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         assert d is None
         return None
-    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
+    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (changed)
     no_menu_dict = {}
         # Keys are file names.
 
