@@ -3202,11 +3202,6 @@ class LoadManager:
         g.app.unlockLog()
         if g.new_gui:
             g.trace(c.shortFileName())
-            ###
-                # g.trace('=====', g.callers())
-                # g.trace('===== c', repr(c))
-                # g.trace('===== c.frame', repr(c.frame))
-                # g.trace('===== c.frame.log', repr(c.frame.log))
         c.frame.log.enable(True)
         # Phase 2: Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)

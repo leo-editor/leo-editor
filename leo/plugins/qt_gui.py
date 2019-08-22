@@ -136,14 +136,13 @@ class LeoQtGui(leoGui.LeoGui):
             self.leoFrames = {}
                 # Keys are DynamicWindows, values are frames.
             self.main_window = self.make_main_window()
-            self.make_outlines_dock()
-            # All the other work is done later!
-            # self.create_status_bar()
+            self.outlines_dock = self.make_outlines_dock()
+                # All the other work is done later!
         else:
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
                 # This creates commands *only*.
-            ### Sets these ivars:
+            # Sets these ivars:
                 # self.leoFrames = {}
                     # Keys are DynamicWindows, values are frames.
                 # self.masterFrame = None
@@ -1130,11 +1129,10 @@ class LeoQtGui(leoGui.LeoGui):
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
-    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new)
+    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new: instantiates DynamicWindow)
     def create_outline_frame(self, c):
         """Create a new frame in the Outlines Dock"""
         assert c and c.frame
-        g.trace(c.shortFileName())
         tabw = self.outline_tab
         dw = qt_frame.DynamicWindow(c, tabw)
         self.leoFrames[dw] = c.frame
@@ -1160,40 +1158,6 @@ class LeoQtGui(leoGui.LeoGui):
         w.setObjectName('tree-tabs')
         self.outline_tab = w
         return w
-        # # Create widgets.
-        # treeFrame = self.createFrame(parent, 'outlineFrame',
-            # vPolicy=QtWidgets.QSizePolicy.Expanding)
-        # innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
-            # hPolicy=QtWidgets.QSizePolicy.Preferred)
-        # treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
-        # grid = self.createGrid(treeFrame, 'outlineGrid')
-        # grid.addWidget(innerFrame, 0, 0, 1, 1)
-        # innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
-        # innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-        # # Official ivars...
-        # self.treeWidget = treeWidget
-        # return treeFrame
-    #@+node:ekr.20190819085949.2: *4* qt_gui.createFindDockOrTab
-    def createFindDockOrTab(self, parent):
-        '''Create a Find dock or tab in the Log pane.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Create widgets.
-        findTab = QtWidgets.QWidget()
-        findTab.setObjectName('findTab')
-        findScrollArea = QtWidgets.QScrollArea()
-        findScrollArea.setObjectName('findScrollArea')
-        #
-        # For LeoFind.finishCreate.
-        self.findScrollArea = findScrollArea
-        self.findTab = findTab
-        #
-        # Create a tab in the log Dock, if necessary.
-        ### if not c.config.getBool('dockable-log-tabs', default=False):
-        if True: ### Temp.
-            self.tabWidget.addTab(findScrollArea, 'Find')
-        return findScrollArea
     #@+node:ekr.20190819085949.6: *4* qt_gui.createTabsDock
     def createTabsDock(self, parent):
         '''Create the Tabs dock.'''
@@ -1217,26 +1181,6 @@ class LeoQtGui(leoGui.LeoGui):
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
         return logFrame
-    #@+node:ekr.20190819091420.1: *4* qt_gui.createTreeWidget
-    def createTreeWidget(self, parent, name):
-        
-        from leo.plugins.qt_frame import LeoQTreeWidget
-        ### c = self.leo_c
-        c = g.TracingNullObject(tag='qt_gui.leo_c')
-        w = LeoQTreeWidget(c, parent)
-        self.setSizePolicy(w)
-        # 12/01/07: add new config setting.
-        ### multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
-        if True: ###multiple_selection:
-            w.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-            w.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        else:
-            w.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-            w.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
-        w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        w.setHeaderHidden(False)
-        w.setObjectName(name)
-        return w
     #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window (new)
     def make_main_window(self):
         '''Make a QMainWindow.'''
@@ -1247,7 +1191,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
     def make_outlines_dock(self):
         """Create the Outlines dock."""
-        ### Like make_all_docks
         main_window = self.main_window
         ### For now, make it the central widget.
         is_central = True
@@ -1264,8 +1207,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             area = QtCore.Qt.BottomDockWidgetArea
             main_window.addDockWidget(area, dock)
-        # Remember the dock.
-        setattr(self, '%s_dock' % (name), dock)
+        return dock
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,

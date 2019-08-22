@@ -164,10 +164,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # None for non-tabbed windows.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
-        if g.app.dock:
-            self.createMainWindow()
-        else:
-            main_splitter, secondary_splitter = self.createMainWindow()
+        main_splitter, secondary_splitter = self.createMainWindow()
+        ### Huh???
+            # if g.app.dock:
+                # self.createMainWindow()
+            # else:
+                # main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.iconBar.setObjectName('icon-bar')
             # Required for QMainWindow.saveState().
@@ -214,7 +216,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createAllDockWidgets()
             # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
-            return None
+            return None, None
         #
         # Legacy code: will not go away.
         self.createCentralWidget()
@@ -2382,7 +2384,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed TO DO)
     def finishCreate(self):
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
@@ -2390,6 +2392,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         if g.new_gui:
             self.top = g.app.gui.create_outline_frame(c)
+                ### Instantiates a DynamicWindow.
         else:
             self.top = g.app.gui.frameFactory.createFrame(self)
         self.createIconBar() # A base class method.
@@ -3350,6 +3353,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
+        g.trace('===== (LeoQtLog)', repr(c.shortFileName()))
         #
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
