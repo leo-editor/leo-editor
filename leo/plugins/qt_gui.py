@@ -135,9 +135,6 @@ class LeoQtGui(leoGui.LeoGui):
         if g.new_gui:
             self.leoFrames = {}
                 # Keys are DynamicWindows, values are frames.
-            self.alwaysShowTabs = True
-                # # Set to true to workaround a problem
-                # # setting the window title when tabs are shown.
             self.main_window = self.make_main_window()
             self.make_outlines_dock()
             # All the other work is done later!
@@ -147,11 +144,8 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = qt_frame.TabbedFrameFactory()
                 # This creates commands *only*.
             ### Sets these ivars:
-                # self.alwaysShowTabs = True
-                    # # Set to true to workaround a problem
-                    # # setting the window title when tabs are shown.
                 # self.leoFrames = {}
-                    # # Keys are DynamicWindows, values are frames.
+                    # Keys are DynamicWindows, values are frames.
                 # self.masterFrame = None
         
     def reloadSettings(self):
@@ -1213,7 +1207,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new)
     def create_outline_frame(self, c):
         """Create a new frame in the Outlines Dock"""
-        ### From frameFactory.createFrame(leoFrame)
         assert c and c.frame
         g.trace(c.shortFileName())
         tabw = self.outline_tab
@@ -1229,7 +1222,7 @@ class LeoQtGui(leoGui.LeoGui):
         tabw.setCurrentIndex(idx)
         g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
         # Work around the problem with missing dirty indicator by always showing the tab.
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.tabBar().setVisible(True)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         dw.show()
         tabw.show()
