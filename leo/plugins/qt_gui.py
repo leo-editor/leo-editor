@@ -137,6 +137,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # Keys are DynamicWindows, values are frames.
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
+            self.make_all_global_docks()
                 # All the other work is done later!
         else:
             # #1171:
@@ -788,6 +789,89 @@ class LeoQtGui(leoGui.LeoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
+    #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
+    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new: creates DW)
+    def create_outline_frame(self, c):
+        """Create a new frame in the Outlines Dock"""
+        assert c and c.frame
+        tabw = self.outline_tab
+        dw = qt_frame.DynamicWindow(c, tabw)
+        self.leoFrames[dw] = c.frame
+        # Shorten the title.
+        title = g.os_path_basename(c.mFileName) if c.mFileName else c.frame.title
+        tip = c.frame.title
+        dw.setWindowTitle(tip)
+        idx = tabw.addTab(dw, title)
+        if tip: tabw.setTabToolTip(idx, tip)
+        dw.construct(master=tabw)
+        tabw.setCurrentIndex(idx)
+        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+        # Work around the problem with missing dirty indicator by always showing the tab.
+        tabw.tabBar().setVisible(True)
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+        dw.show()
+        tabw.show()
+        return dw
+    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_tab (new)
+    def create_outlines_tab(self, parent):
+        '''Create the widgets and ivars for Leo's outline.'''
+        w = QtWidgets.QTabWidget(parent)
+        w.setObjectName('tree-tabs')
+        self.outline_tab = w
+        return w
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
+    def create_dock_widget(self, closeable, moveable, height, name):
+        '''Make a new dock widget in the main window'''
+        dock = QtWidgets.QDockWidget(parent=self.main_window)
+            # The parent must be a QMainWindow.
+        features = dock.NoDockWidgetFeatures
+        if moveable:
+            features |= dock.DockWidgetMovable
+            features |= dock.DockWidgetFloatable
+        if closeable:
+            features |= dock.DockWidgetClosable
+        dock.setFeatures(features)
+        dock.setMinimumHeight(height)
+        dock.setObjectName('dock.%s' % name)
+        dock.setWindowTitle(name.capitalize())
+        dock.show() # Essential!
+        return dock
+    #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
+    def make_all_global_docks(self):
+        
+        Qt = QtCore.Qt
+        lt_area, rt_area = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+        table = (
+            ("Test1", lt_area, "blue"),
+            ("Test2", rt_area, "yellow"),
+        )
+        for name, area, color in table:
+            dock = self.create_dock_widget(closeable=True, moveable=True, height=100, name=name)
+            dock.setStyleSheet("background: %s;" % color)
+            w = QtWidgets.QFrame()
+            dock.setWidget(w)
+            self.main_window.addDockWidget(area, dock)
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
+    def make_outlines_dock(self):
+        """Create the Outlines dock."""
+        main_window = self.main_window
+        ### For now, make it the central widget.
+        is_central = True
+        w = self.create_outlines_tab(parent=None)
+        dock = self.create_dock_widget(
+            closeable=not is_central,
+            moveable=not is_central,
+            height=100,
+            name="Leo Outlines")
+        g.trace(dock)
+        dock.setStyleSheet("background: red;")
+        dock.setWidget(w)
+        if is_central:
+            main_window.setCentralWidget(dock)
+        else:
+            area = QtCore.Qt.BottomDockWidgetArea
+            main_window.addDockWidget(area, dock)
+        return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
     # deactivated_name = ''
@@ -1128,60 +1212,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
-    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new: creates DW)
-    def create_outline_frame(self, c):
-        """Create a new frame in the Outlines Dock"""
-        assert c and c.frame
-        tabw = self.outline_tab
-        dw = qt_frame.DynamicWindow(c, tabw)
-        self.leoFrames[dw] = c.frame
-        # Shorten the title.
-        title = g.os_path_basename(c.mFileName) if c.mFileName else c.frame.title
-        tip = c.frame.title
-        dw.setWindowTitle(tip)
-        idx = tabw.addTab(dw, title)
-        if tip: tabw.setTabToolTip(idx, tip)
-        dw.construct(master=tabw)
-        tabw.setCurrentIndex(idx)
-        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-        # Work around the problem with missing dirty indicator by always showing the tab.
-        tabw.tabBar().setVisible(True)
-        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        dw.show()
-        tabw.show()
-        return dw
-    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_tab (new)
-    def create_outlines_tab(self, parent):
-        '''Create the widgets and ivars for Leo's outline.'''
-        w = QtWidgets.QTabWidget(parent)
-        w.setObjectName('tree-tabs')
-        self.outline_tab = w
-        return w
-    #@+node:ekr.20190819085949.6: *4* qt_gui.createTabsDock
-    def createTabsDock(self, parent):
-        '''Create the Tabs dock.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Create the log contents
-        logFrame = self.createFrame(None, 'logFrame',
-            vPolicy=QtWidgets.QSizePolicy.Minimum)
-        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred,
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
-        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        #
-        # Pack. This *is* required.
-        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
-        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-        outerGrid = self.createGrid(logFrame, 'logGrid')
-        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
-        # Official ivars
-        self.tabWidget = tabWidget # Used by LeoQtLog.
-        return logFrame
-    #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window (new)
+    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
     def make_main_window(self):
         '''Make a QMainWindow.'''
         window = QtWidgets.QMainWindow()
@@ -1189,26 +1220,6 @@ class LeoQtGui(leoGui.LeoGui):
             ###
         window.show()
         return window
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
-    def make_outlines_dock(self):
-        """Create the Outlines dock."""
-        main_window = self.main_window
-        ### For now, make it the central widget.
-        is_central = True
-        height, name = 100, 'Outlines'
-        w = self.create_outlines_tab(parent=None)
-        dock = self.createDockWidget(
-            closeable=not is_central,
-            moveable=not is_central,
-            height=height,
-            name=name)
-        dock.setWidget(w)
-        if is_central:
-            main_window.setCentralWidget(dock)
-        else:
-            area = QtCore.Qt.BottomDockWidgetArea
-            main_window.addDockWidget(area, dock)
-        return dock
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,
@@ -1584,23 +1595,6 @@ class LeoQtGui(leoGui.LeoGui):
         w.setObjectName(name)
         w.setText(label)
         return w
-    #@+node:ekr.20190819091950.1: *4* qt_gui.createDockWidget
-    def createDockWidget(self, closeable, moveable, height, name):
-        '''Make a new dock widget in the main window'''
-        dock = QtWidgets.QDockWidget(parent=self.main_window)
-            # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
-        if moveable:
-            features |= dock.DockWidgetMovable
-            features |= dock.DockWidgetFloatable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        dock.setObjectName('dock.%s' % name)
-        dock.setWindowTitle(name.capitalize())
-        dock.show() # Essential!
-        return dock
     #@+node:ekr.20190819091122.1: *4* qt_gui.createFrame
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,

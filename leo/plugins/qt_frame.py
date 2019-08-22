@@ -747,7 +747,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
         return logFrame
-    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (not legacy)
+    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock
     def createTabsDock(self, parent):
         '''Create the Tabs dock.'''
         assert g.app.dock
@@ -2379,7 +2379,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed, TO DO)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
     def finishCreate(self):
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
