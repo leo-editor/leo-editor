@@ -85,7 +85,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.show()
             else:
                 self.iconBar.hide()
-    #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
+    #@+node:ekr.20110605121601.18172: *3* dw.do_leo_spell_btn_*
     def doSpellBtn(self, btn):
         '''Execute btn, a button handler.'''
         # Make *sure* this never crashes.

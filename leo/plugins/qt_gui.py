@@ -1195,6 +1195,7 @@ class LeoQtGui(leoGui.LeoGui):
             # Parent is a QDockWidget.
             pass
         else:
+            # pylint: disable=no-member
             self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
             # Transfers focus request from label to lineEdit.
@@ -1302,78 +1303,6 @@ class LeoQtGui(leoGui.LeoGui):
         if True: ### Temp.
             self.tabWidget.addTab(findScrollArea, 'Find')
         return findScrollArea
-    #@+node:ekr.20190819092902.1: *4* qt_gui.createRawSpellTab
-    def createRawSpellTab(self, parent):
-        # dw = self
-        vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
-        spellFrame = self.createFrame(parent, 'spellFrame')
-        vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
-        grid = self.createGrid(None, 'spellGrid', spacing=2)
-        table = (
-            ('Add', 'Add', 2, 1),
-            ('Find', 'Find', 2, 0),
-            ('Change', 'Change', 3, 0),
-            ('FindChange', 'Change,Find', 3, 1),
-            ('Ignore', 'Ignore', 4, 0),
-            ('Hide', 'Hide', 4, 1),
-        )
-        for(ivar, label, row, col) in table:
-            name = 'spell_%s_button' % label
-            button = self.createButton(spellFrame, name, label)
-            grid.addWidget(button, row, col)
-            ### Not ready yet.
-                # func = getattr(self, 'do_leo_spell_btn_%s' % ivar)
-                # button.clicked.connect(func)
-            # This name is significant.
-            setattr(self, 'leo_spell_btn_%s' % (ivar), button)
-        self.leo_spell_btn_Hide.setCheckable(False)
-        spacerItem = QtWidgets.QSpacerItem(20, 40,
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        grid.addItem(spacerItem, 5, 0, 1, 1)
-        listBox = QtWidgets.QListWidget(spellFrame)
-        self.setSizePolicy(listBox,
-            kind1=QtWidgets.QSizePolicy.MinimumExpanding,
-            kind2=QtWidgets.QSizePolicy.Expanding)
-        listBox.setMinimumSize(QtCore.QSize(0, 0))
-        listBox.setMaximumSize(QtCore.QSize(150, 150))
-        listBox.setObjectName("leo_spell_listBox")
-        grid.addWidget(listBox, 1, 0, 1, 2)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20,
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        grid.addItem(spacerItem1, 2, 2, 1, 1)
-        lab = self.createLabel(spellFrame, 'spellLabel', 'spellLabel')
-        grid.addWidget(lab, 0, 0, 1, 2)
-        vLayout2.addLayout(grid)
-        vLayout.addWidget(spellFrame)
-        ### listBox.itemDoubleClicked.connect(self.do_leo_spell_btn_FindChange)
-        ### Not yet.
-            # # Official ivars.
-            # self.spellFrame = spellFrame
-            # self.spellGrid = grid
-            # self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
-            # self.leo_spell_listBox = listBox # Must exist
-            # self.leo_spell_label = lab # Must exist (!!)
-    #@+node:ekr.20190819085949.4: *4* qt_gui.createSpellDockOrTab
-    def createSpellDockOrTab(self, parent):
-        '''Create a Spell dock  or tab in the Log pane.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Create an outer widget.
-        spellTab = QtWidgets.QWidget()
-        spellTab.setObjectName('docked.spellTab')
-        #
-        # Create the contents.
-        self.createRawSpellTab(spellTab)
-            ### Renamed from createSpellTab.
-        #
-        # Create the Spell tab in the Log dock, if necessary.
-        ### if not c.config.getBool('dockable-log-tabs', default=False):
-        if True: ### Temp?
-            tabWidget = self.tabWidget
-            tabWidget.addTab(spellTab, 'Spell')
-            tabWidget.setCurrentIndex(1)
-        return spellTab
     #@+node:ekr.20190819085949.6: *4* qt_gui.createTabsDock
     def createTabsDock(self, parent):
         '''Create the Tabs dock.'''
