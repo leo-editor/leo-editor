@@ -2452,8 +2452,6 @@ class LoadManager:
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
-        if g.new_gui:
-            return True ### Testing.
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
@@ -2479,6 +2477,7 @@ class LoadManager:
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
+                # Calls LM.loadLocalFile.
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
@@ -3173,7 +3172,7 @@ class LoadManager:
         if c:
             g.app.restoreWindowState(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (not called???)
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (to do)
     def openFileByName(self, fn, gui, old_c, previousSettings):
         '''Read the local file whose full path is fn using the given gui.
         fn may be a Leo file (including .leo or zipped file) or an external file.
@@ -3192,8 +3191,8 @@ class LoadManager:
         # Create the a commander for the .leo file.
         # Important.  The settings don't matter for pre-reads!
         # For second read, the settings for the file are *exactly* previousSettings.
-        c = g.app.newCommander(fileName=fn, gui=gui,
-            previousSettings=previousSettings)
+        if g.new_gui: g.pdb()
+        c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)

@@ -142,6 +142,13 @@ class LeoQtGui(leoGui.LeoGui):
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
                 # This creates commands *only*.
+            ### Sets these ivars:
+                # self.alwaysShowTabs = True
+                    # # Set to true to workaround a problem
+                    # # setting the window title when tabs are shown.
+                # self.leoFrames = {}
+                    # # Keys are DynamicWindows, values are frames.
+                # self.masterFrame = None
         
     def reloadSettings(self):
         pass
