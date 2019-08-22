@@ -2448,7 +2448,7 @@ class LoadManager:
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers (to do)
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
@@ -3173,7 +3173,7 @@ class LoadManager:
         if c:
             g.app.restoreWindowState(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (not called???)
     def openFileByName(self, fn, gui, old_c, previousSettings):
         '''Read the local file whose full path is fn using the given gui.
         fn may be a Leo file (including .leo or zipped file) or an external file.

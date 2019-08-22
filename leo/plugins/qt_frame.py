@@ -2382,7 +2382,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (to do)
     def finishCreate(self):
         
         if g.new_gui:
