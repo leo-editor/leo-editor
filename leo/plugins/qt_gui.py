@@ -139,10 +139,9 @@ class LeoQtGui(leoGui.LeoGui):
                 # # Set to true to workaround a problem
                 # # setting the window title when tabs are shown.
             self.main_window = self.make_main_window()
-            self.make_all_docks()
-            self.create_menu_bar()
-            self.create_mini_buffer()
-            self.create_status_bar()
+            self.make_outlines_dock()
+            # All the other work is done later!
+            # self.create_status_bar()
         else:
             # #1171:
             self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -1137,48 +1136,124 @@ class LeoQtGui(leoGui.LeoGui):
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
-    #@+node:ekr.20190819085724.1: *4* qt_gui.make_all_docks & helpers
-    def make_all_docks(self):
-        '''Create all the dock widgets.'''
-        main_window = self.main_window
-        assert main_window
-        ### c = self.leo_c
-        #
-        # Compute constants.
-        Qt = QtCore.Qt
-        # bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
-        bottom = Qt.BottomDockWidgetArea
-        lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
-        # g.placate_pyflakes(bottom, lt, rt, top)
-        #
-        # Create all the docks.
-        central_widget = 'outlines' #, g.app.get_central_widget(c)
-        ### dockable = c.config.getBool('dockable-log-tabs', default=False)
-        dockable = False ### For now.
-        table = [
-            (True, 100, lt, 'outlines', self.create_outlines_tab),
-            (True, 100, bottom, 'body', self.createBodyPane),
-            (True, 20, rt, 'tabs', self.createTabsDock),
-            (dockable, 20, rt, 'find', self.createFindDockOrTab),
-            (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
-        ]
-        for make_dock, height, area, name, creator in table:
-            dock = None
-            w = creator(parent=None)
-            if make_dock:
-                is_central = name == central_widget
-                dock = self.createDockWidget(
-                    closeable=not is_central,
-                    moveable=not is_central,
-                    height=height,
-                    name=name)
-                dock.setWidget(w)
-                if is_central:
-                    main_window.setCentralWidget(dock)
+    #@+node:ekr.20190819135946.14: *4* qt_gui.create_mini_buffer_helper
+    def create_mini_buffer_helper(self, parent):
+        '''Create the widgets for Leo's minibuffer area.'''
+        ### dw = self # For VisLineEdit
+        # Create widgets.
+        frame = self.createFrame(parent, 'minibufferFrame',
+            hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
+            vPolicy=QtWidgets.QSizePolicy.Fixed)
+        frame.setMinimumSize(QtCore.QSize(100, 0))
+        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
+
+        class VisLineEdit(QtWidgets.QLineEdit):
+            """In case user has hidden minibuffer with gui-minibuffer-hide"""
+
+            def focusInEvent(self, event):
+                self.parent().show()
+                if g.app.dock:
+                    # Ensure the Tabs dock is visible, for completions.
+                    dock = getattr(g.app.gui, 'tabs_dock', None)
+                    if dock:
+                        dock.raise_()
+                        parent.raise_()
+                super().focusInEvent(event)
+                    # Call the base class method.
+
+            def focusOutEvent(self, event):
+                self.store_selection()
+                super().focusOutEvent(event)
+
+            def restore_selection(self):
+                w = self
+                i, j, ins = self._sel_and_insert
+                if i == j:
+                    w.setCursorPosition(i)
                 else:
-                    main_window.addDockWidget(area, dock)
-            # Remember the dock.
-            setattr(self, '%s_dock' % (name), dock)
+                    length = j - i
+                    # Set selection is a QLineEditMethod
+                    if ins < j:
+                        w.setSelection(j, -length)
+                    else:
+                        w.setSelection(i, length)
+
+            def store_selection(self):
+                w = self
+                ins = w.cursorPosition()
+                if w.hasSelectedText():
+                    i = w.selectionStart()
+                    s = w.selectedText()
+                    j = i + len(s)
+                else:
+                    i = j = ins
+                w._sel_and_insert = (i, j, ins)
+
+        lineEdit = VisLineEdit(frame)
+        lineEdit._sel_and_insert = (0, 0, 0)
+        lineEdit.setObjectName('lineEdit') # name important.
+        # Pack.
+        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        hLayout.addWidget(label)
+        hLayout.addWidget(lineEdit)
+        if g.app.dock:
+            # Parent is a QDockWidget.
+            pass
+        else:
+            self.verticalLayout.addWidget(frame)
+        label.setBuddy(lineEdit)
+            # Transfers focus request from label to lineEdit.
+        #
+        # Official ivars.
+        self.lineEdit = lineEdit
+        # self.leo_minibuffer_frame = frame
+        # self.leo_minibuffer_layout = layout
+        return frame
+    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new)
+    def create_outline_frame(self, c):
+        """Create a new frame in the Outlines Dock"""
+        ### From frameFactory.createFrame(leoFrame)
+        assert c and c.frame
+        g.trace(c.shortFileName())
+        tabw = self.outline_tab
+        dw = qt_frame.DynamicWindow(c, tabw)
+        self.leoFrames[dw] = c.frame
+        # Shorten the title.
+        title = g.os_path_basename(c.mFileName) if c.mFileName else c.frame.title
+        tip = c.frame.title
+        dw.setWindowTitle(tip)
+        idx = tabw.addTab(dw, title)
+        if tip: tabw.setTabToolTip(idx, tip)
+        dw.construct(master=tabw)
+        tabw.setCurrentIndex(idx)
+        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+        # Work around the problem with missing dirty indicator by always showing the tab.
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+        dw.show()
+        tabw.show()
+        return dw
+    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_tab (new)
+    def create_outlines_tab(self, parent):
+        '''Create the widgets and ivars for Leo's outline.'''
+        w = QtWidgets.QTabWidget(parent)
+        w.setObjectName('tree-tabs')
+        self.outline_tab = w
+        return w
+        # # Create widgets.
+        # treeFrame = self.createFrame(parent, 'outlineFrame',
+            # vPolicy=QtWidgets.QSizePolicy.Expanding)
+        # innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
+            # hPolicy=QtWidgets.QSizePolicy.Preferred)
+        # treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
+        # grid = self.createGrid(treeFrame, 'outlineGrid')
+        # grid.addWidget(innerFrame, 0, 0, 1, 1)
+        # innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
+        # innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        # # Official ivars...
+        # self.treeWidget = treeWidget
+        # return treeFrame
     #@+node:ekr.20190819090632.1: *4* qt_gui.createBodyPane
     def createBodyPane(self, parent):
         '''
@@ -1201,7 +1276,7 @@ class LeoQtGui(leoGui.LeoGui):
         # Pack the body alone or *within* a LeoLineTextWidget.
         body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
         if self.use_gutter:
-            c = g.TraceingNullObject(tag='c')
+            c = g.TracingNullObject(tag='c')
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             box.addWidget(lineWidget)
         else:
@@ -1234,71 +1309,6 @@ class LeoQtGui(leoGui.LeoGui):
         if True: ### Temp.
             self.tabWidget.addTab(findScrollArea, 'Find')
         return findScrollArea
-    #@+node:ekr.20190819085949.3: *4* qt_gui.createOutlineDock (not used)
-    def createOutlineDock(self, parent):
-        '''Create the widgets and ivars for Leo's outline.'''
-        # Create widgets.
-        treeFrame = self.createFrame(parent, 'outlineFrame',
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
-        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred)
-        treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
-        grid = self.createGrid(treeFrame, 'outlineGrid')
-        grid.addWidget(innerFrame, 0, 0, 1, 1)
-        innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
-        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-        # Official ivars...
-        self.treeWidget = treeWidget
-        return treeFrame
-    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new, TEST)
-    def create_outline_frame(self, c):
-        """Create a new frame in the Outlines Dock"""
-        ### From frameFactory.createFrame(leoFrame)
-        ### tabw = self.masterFrame
-        assert c
-        assert c.frame
-        tabw = self.outline_tab
-        dw = qt_frame.DynamicWindow(c, tabw)
-        self.leoFrames[dw] = c.frame ### leoFrame
-            # was a TabbedFrameFactory ivar.
-        # Shorten the title.
-        title = g.os_path_basename(c.mFileName) if c.mFileName else c.frame.title ### leoFrame.title
-        ### tip = leoFrame.title
-        tip = c.frame.title
-        dw.setWindowTitle(tip)
-        idx = tabw.addTab(dw, title)
-        if tip: tabw.setTabToolTip(idx, tip)
-        dw.construct(master=tabw)
-        tabw.setCurrentIndex(idx)
-        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-        #
-        # Work around the problem with missing dirty indicator
-        # by always showing the tab.
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        dw.show()
-        tabw.show()
-        return dw
-    #@+node:ekr.20190819135417.1: *4* qt_gui.create_outlines_tab (new)
-    def create_outlines_tab(self, parent):
-        '''Create the widgets and ivars for Leo's outline.'''
-        w = QtWidgets.QTabWidget(parent)
-        w.setObjectName('tree-tabs')
-        self.outline_tab = w
-        return w
-        # # Create widgets.
-        # treeFrame = self.createFrame(parent, 'outlineFrame',
-            # vPolicy=QtWidgets.QSizePolicy.Expanding)
-        # innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
-            # hPolicy=QtWidgets.QSizePolicy.Preferred)
-        # treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
-        # grid = self.createGrid(treeFrame, 'outlineGrid')
-        # grid.addWidget(innerFrame, 0, 0, 1, 1)
-        # innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
-        # innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-        # # Official ivars...
-        # self.treeWidget = treeWidget
-        # return treeFrame
     #@+node:ekr.20190819092902.1: *4* qt_gui.createRawSpellTab
     def createRawSpellTab(self, parent):
         # dw = self
@@ -1414,118 +1424,35 @@ class LeoQtGui(leoGui.LeoGui):
         w.setHeaderHidden(False)
         w.setObjectName(name)
         return w
-    #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window
+    #@+node:ekr.20190819072045.1: *4* qt_gui.make_main_window (new)
     def make_main_window(self):
         '''Make a QMainWindow.'''
         window = QtWidgets.QMainWindow()
         window.setGeometry(50, 50, 500, 300)
         window.show()
         return window
-    #@+node:ekr.20190819135946.13: *4* gt_gui.create_mini_buffer & helper
-    def create_mini_buffer(self):
-        
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
+    def make_outlines_dock(self):
+        """Create the Outlines dock."""
+        ### Like make_all_docks
         main_window = self.main_window
-        toolbar = QtWidgets.QToolBar(main_window)
-        toolbar.setObjectName('minibuffer-toolbar')
-        toolbar.setWindowTitle('Minibuffer')
-        main_window.addToolBar(QtCore.Qt.BottomToolBarArea, toolbar)
-        w = self.create_mini_buffer_helper(toolbar)
-        toolbar.addWidget(w)
-    #@+node:ekr.20190819135946.14: *4* qt_gui.create_mini_buffer_helper
-    def create_mini_buffer_helper(self, parent):
-        '''Create the widgets for Leo's minibuffer area.'''
-        ### dw = self # For VisLineEdit
-        # Create widgets.
-        frame = self.createFrame(parent, 'minibufferFrame',
-            hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
-            vPolicy=QtWidgets.QSizePolicy.Fixed)
-        frame.setMinimumSize(QtCore.QSize(100, 0))
-        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
-
-        class VisLineEdit(QtWidgets.QLineEdit):
-            """In case user has hidden minibuffer with gui-minibuffer-hide"""
-
-            def focusInEvent(self, event):
-                self.parent().show()
-                if g.app.dock:
-                    # Ensure the Tabs dock is visible, for completions.
-                    dock = getattr(g.app.gui, 'tabs_dock', None)
-                    if dock:
-                        dock.raise_()
-                        parent.raise_()
-                super().focusInEvent(event)
-                    # Call the base class method.
-
-            def focusOutEvent(self, event):
-                self.store_selection()
-                super().focusOutEvent(event)
-
-            def restore_selection(self):
-                w = self
-                i, j, ins = self._sel_and_insert
-                if i == j:
-                    w.setCursorPosition(i)
-                else:
-                    length = j - i
-                    # Set selection is a QLineEditMethod
-                    if ins < j:
-                        w.setSelection(j, -length)
-                    else:
-                        w.setSelection(i, length)
-
-            def store_selection(self):
-                w = self
-                ins = w.cursorPosition()
-                if w.hasSelectedText():
-                    i = w.selectionStart()
-                    s = w.selectedText()
-                    j = i + len(s)
-                else:
-                    i = j = ins
-                w._sel_and_insert = (i, j, ins)
-
-        lineEdit = VisLineEdit(frame)
-        lineEdit._sel_and_insert = (0, 0, 0)
-        lineEdit.setObjectName('lineEdit') # name important.
-        # Pack.
-        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
-        hLayout.setContentsMargins(3, 2, 2, 0)
-        hLayout.addWidget(label)
-        hLayout.addWidget(lineEdit)
-        if g.app.dock:
-            # Parent is a QDockWidget.
-            pass
+        ### For now, make it the central widget.
+        is_central = True
+        height, name = 100, 'Outlines'
+        w = self.create_outlines_tab(parent=None)
+        dock = self.createDockWidget(
+            closeable=not is_central,
+            moveable=not is_central,
+            height=height,
+            name=name)
+        dock.setWidget(w)
+        if is_central:
+            main_window.setCentralWidget(dock)
         else:
-            self.verticalLayout.addWidget(frame)
-        label.setBuddy(lineEdit)
-            # Transfers focus request from label to lineEdit.
-        #
-        # Official ivars.
-        self.lineEdit = lineEdit
-        # self.leo_minibuffer_frame = frame
-        # self.leo_minibuffer_layout = layout
-        return frame
-    #@+node:ekr.20190819135946.15: *4* qt_gui.create_menu_bar
-    def create_menu_bar(self):
-        '''Create Leo's menu bar.'''
-        main_window = self.main_window
-        w = QtWidgets.QMenuBar(main_window)
-        w.setObjectName("menubar")
-        #### w.setNativeMenuBar(platform.system() == 'Darwin')
-        w.setNativeMenuBar('darwin' in sys.platform.lower())
-        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
-        main_window.setMenuBar(w)
-        # Official ivars.
-        ### self.leo_menubar = w
-    #@+node:ekr.20190819135946.16: *4* qt_gui.create_status_bar
-    def create_status_bar(self):
-        '''Create the widgets and ivars for Leo's status area.'''
-        main_window = self.main_window
-        w = QtWidgets.QStatusBar(parent=main_window)
-        w.setObjectName("statusbar")
-        main_window.setStatusBar(w)
-        # Official ivars.
-        ### self.statusBar = w
+            area = QtCore.Qt.BottomDockWidgetArea
+            main_window.addDockWidget(area, dock)
+        # Remember the dock.
+        setattr(self, '%s_dock' % (name), dock)
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,
