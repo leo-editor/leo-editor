@@ -1129,7 +1129,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819135820.1: *3* qt_gui.main window & docks
-    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new: instantiates DynamicWindow)
+    #@+node:ekr.20190822103219.1: *4* qt_gui.create_outline_frame (new: creates DW)
     def create_outline_frame(self, c):
         """Create a new frame in the Outlines Dock"""
         assert c and c.frame
@@ -1186,6 +1186,7 @@ class LeoQtGui(leoGui.LeoGui):
         '''Make a QMainWindow.'''
         window = QtWidgets.QMainWindow()
         window.setGeometry(50, 50, 500, 300)
+            ###
         window.show()
         return window
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)

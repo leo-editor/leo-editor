@@ -165,11 +165,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
-        ### Huh???
-            # if g.app.dock:
-                # self.createMainWindow()
-            # else:
-                # main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.iconBar.setObjectName('icon-bar')
             # Required for QMainWindow.saveState().
@@ -2384,7 +2379,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed TO DO)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed, TO DO)
     def finishCreate(self):
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
