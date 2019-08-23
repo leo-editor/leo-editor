@@ -122,7 +122,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create the new dock.
         c = self.leo_c
         self.added_bodies += 1
-        dock = self.createDockWidget(
+        dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
             height=100,
@@ -294,7 +294,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Scintilla only.
             body.recolorWidget(p, wrapper)
         return parent_frame, wrapper
-    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
+    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets (changed)
     def createAllDockWidgets(self):
         '''Create all the dock widgets.'''
         c = self.leo_c
@@ -306,7 +306,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         g.placate_pyflakes(bottom, lt, rt, top)
         #
         # Create all the docks.
-        central_widget = g.app.get_central_widget(c)
+        if g.new_gui:
+            central_widget = None
+        else:
+            central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
@@ -320,7 +323,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if not make_dock:
                 setattr(self, '%s_dock' % (name), None)
                 continue
-            dock = self.createDockWidget(
+            dock = g.app.gui.create_dock_widget(
                 closeable=name != central_widget,
                 moveable=name != central_widget,
                 height=0,
@@ -783,33 +786,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setName(w, name)
         w.setText(self.tr(label))
         return w
-    #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
-    dock_names = []
-
-    def createDockWidget(self, closeable, moveable, height, name):
-        '''Make a new docwidget in Leo's QMainWindow.'''
-        c = self.leo_c
-        dock = QtWidgets.QDockWidget(self)
-            # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
-        if moveable:
-            features |= dock.DockWidgetMovable
-        if moveable and floatable_docks:
-            features |= dock.DockWidgetFloatable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        # An important check.
-        key = '%s.%s:%s' % (id(c), c.shortFileName(),name)
-        if key in self.dock_names:
-            g.es_print('\nDuplicate dock name: %s' % key)
-        else:
-            self.dock_names.append(key)
-        dock.setObjectName('dock.%s' % name)
-        dock.setWindowTitle(name.capitalize())
-        dock.show() # Essential!
-        return dock
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
@@ -3613,7 +3589,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
-                dock = dw.createDockWidget(
+                dock = g.app.gui.create_dock_widget(
                     closeable=True, moveable=True, height=200, name=tabName)
                         # #1207: all plugins docks should be closeable.
                 dock.setWidget(contents)

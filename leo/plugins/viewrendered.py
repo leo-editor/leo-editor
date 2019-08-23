@@ -750,7 +750,7 @@ if QtWidgets: # NOQA
                 external_dock and g.app.init_docks or
                 g.app.get_central_widget(c) == 'body'
             )
-            self.leo_dock = dock = dw.createDockWidget(
+            self.leo_dock = dock = g.app.gui.create_dock_widget(
                 closeable=True, moveable=moveable, height=50, name='Render')
             if moveable:
                 #
