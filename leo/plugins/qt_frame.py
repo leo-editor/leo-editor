@@ -4786,7 +4786,7 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (makes dw)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
@@ -4811,28 +4811,31 @@ class TabbedFrameFactory:
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (changed)
     def createMaster(self):
-        mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
+        
+        window = self.masterFrame = LeoTabbedTopLevel(factory=self)
         if g.new_gui:
-            window = g.app.gui.main_window
+           pass
         else:
-            window = mf
-        g.app.gui.attachLeoIcon(window)
-        tabbar = mf.tabBar()
+            g.app.gui.attachLeoIcon(window)
+        tabbar = window.tabBar()
         try:
             tabbar.setTabsClosable(True)
             tabbar.tabCloseRequested.connect(self.slotCloseRequest)
         except AttributeError:
             pass # Qt 4.4 does not support setTabsClosable
-        mf.currentChanged.connect(self.slotCurrentChanged)
+        window.currentChanged.connect(self.slotCurrentChanged)
         if 'size' in g.app.debug:
             g.trace('minimized: %s, maximized: %s fullscreen: %s' % (
                 g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
         #
         # #1189: We *can* (and should) minimize here, to eliminate flash.
-        if g.app.start_minimized:
-            window.showMinimized()
+        if g.new_gui:
+            pass
+        else:
+            if g.app.start_minimized:
+                window.showMinimized()
     #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """

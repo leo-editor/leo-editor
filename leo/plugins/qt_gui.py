@@ -133,22 +133,11 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.new_gui:
-            self.leoFrames = {}
-                # Keys are DynamicWindows, values are frames.
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
-            self.frameFactory = qt_frame.TabbedFrameFactory()
-                ### New.
             self.make_all_global_docks()
-                # qtFrame.finishCreate does all the other work.
-        else:
-            # #1171:
-            self.frameFactory = qt_frame.TabbedFrameFactory()
-                # This creates commands *only*.
-            # Sets these ivars:
-                # self.leoFrames = {}
-                    # Keys are DynamicWindows, values are frames.
-                # self.masterFrame = None
+        self.frameFactory = qt_frame.TabbedFrameFactory()
+            # qtFrame.finishCreate does all the other work.
         
     def reloadSettings(self):
         pass
@@ -1197,6 +1186,9 @@ class LeoQtGui(leoGui.LeoGui):
         # Don't show right away. Doing so causes flash.
             # window.setGeometry(50, 50, 500, 300)
             # window.show()
+        self.attachLeoIcon(window)
+        if g.app.start_minimized:
+            window.showMinimized()
         return window
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
