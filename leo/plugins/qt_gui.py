@@ -835,16 +835,14 @@ class LeoQtGui(leoGui.LeoGui):
         The dock's widget will be set later.
         """
         main_window = self.main_window
-        ### For now, make it the central widget.
+        # For now, make it the central widget.
         is_central = True
-        ### self.outline_tab = w = self.create_outlines_tab(parent=None)
-        ### self.outline_tab = tabw = QtWidgets.QTabWidget(parent)
         dock = self.create_dock_widget(
             closeable=not is_central,
             moveable=not is_central,
             height=100,
             name="Leo Outlines")
-        dock.setStyleSheet("background: red;")
+        ### dock.setStyleSheet("background: red;")
         ### dock.setWidget(w)
         if is_central:
             main_window.setCentralWidget(dock)
@@ -1194,11 +1192,11 @@ class LeoQtGui(leoGui.LeoGui):
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
     def make_main_window(self):
-        '''Make a QMainWindow.'''
+        '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
         window = QtWidgets.QMainWindow()
-        window.setGeometry(50, 50, 500, 300)
-            ###
-        window.show()
+        # Don't show right away. Doing so causes flash.
+            # window.setGeometry(50, 50, 500, 300)
+            # window.show()
         return window
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,

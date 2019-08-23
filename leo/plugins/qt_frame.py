@@ -2362,10 +2362,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         assert c
         frameFactory = g.app.gui.frameFactory
-        if g.new_gui:
-            dock = g.app.gui.outlines_dock
-            if frameFactory.masterFrame is None:
-                frameFactory.createMaster()
+        if not frameFactory.masterFrame:
+            frameFactory.createMaster()
+            if g.new_gui:
+                dock = g.app.gui.outlines_dock
                 dock.setWidget(frameFactory.masterFrame)
         self.top = frameFactory.createFrame(leoFrame=self)
         self.createIconBar() # A base class method.
@@ -4790,8 +4790,6 @@ class TabbedFrameFactory:
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
-        if self.masterFrame is None:
-            self.createMaster()
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
@@ -4816,7 +4814,11 @@ class TabbedFrameFactory:
     #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
-        g.app.gui.attachLeoIcon(mf)
+        if g.new_gui:
+            window = g.app.gui.main_window
+        else:
+            window = mf
+        g.app.gui.attachLeoIcon(window)
         tabbar = mf.tabBar()
         try:
             tabbar.setTabsClosable(True)
@@ -4830,7 +4832,7 @@ class TabbedFrameFactory:
         #
         # #1189: We *can* (and should) minimize here, to eliminate flash.
         if g.app.start_minimized:
-            mf.showMinimized()
+            window.showMinimized()
     #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
