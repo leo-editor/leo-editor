@@ -2038,16 +2038,32 @@ def startTracer(limit=0, trace=False, verbose=False):
 #@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
 #@@nobeautify
 
+tracing_tags = {}
+    # Keys are id's, values are tags.
+tracing_vars = {}
+    # Keys are id's, values are names of ivars.
+tracing_signatures = {}
+    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
+
 class NullObject:
     """An object that does nothing, and does it very well."""
-    def __init__(self, *args, **keys): pass
+    def __init__(self, ivars=None, *args, **kwargs):
+        if isinstance(ivars, str):
+            ivars = [ivars]
+        tracing_vars [id(self)] = ivars or []
     def __call__(self, *args, **keys): return self
     def __repr__(self): return "NullObject"
     def __str__(self): return "NullObject"
     # Attribute access...
     def __delattr__(self, attr): return self
-    def __getattr__(self, attr): return self
-    def __setattr__(self, attr, val): return self
+    def __getattr__(self, attr):
+        if attr in tracing_vars.get(id(self), []):
+            return getattr(self, attr, None)
+        return self
+    def __setattr__(self, attr, val):
+        if attr in tracing_vars.get(id(self), []):
+            object.__setattr__(self, attr, val)
+        return self
     # Container methods..
     def __bool__(self): return False
     def __contains__(self, item): return False
@@ -2057,16 +2073,14 @@ class NullObject:
     # Iteration methods: 
     def __next__(self): raise StopIteration
     
-tracing_tags = {}
-    # Keys are id's, values are tags.
-    
-tracing_signatures = {}
-    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
 
 class TracingNullObject:
     '''Tracing NullObject.'''
-    def __init__(self, tag, *args, **kwargs):
+    def __init__(self, tag, ivars=None, *args, **kwargs):
         tracing_tags [id(self)] = tag
+        if isinstance(ivars, str):
+            ivars = [ivars]
+        tracing_vars [id(self)] = ivars or []
         if 0:
             suppress = ('tree item',)
             if tag not in suppress:
@@ -2079,18 +2093,22 @@ class TracingNullObject:
                     print('%30s' % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     def __str__(self):
-        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     #
     # Attribute access...
     def __delattr__(self, attr):
         return self
     def __getattr__(self, attr):
         null_object_print_attr(id(self), attr)
+        if attr in tracing_vars.get(id(self), []):
+            return getattr(self, attr, None)
         return self
     def __setattr__(self, attr, val):
-        g.null_object_print(id(self), '__setattr__')
+        g.null_object_print(id(self), '__setattr__', attr, val)
+        if attr in tracing_vars.get(id(self), []):
+            object.__setattr__(self, attr, val)
         return self
     #
     # All other methods...
@@ -5067,7 +5085,7 @@ def getGitVersion(directory=None):
     '''Return a tuple (author, build, date) from the git log, or None.'''
     #
     # -n: Get only the last log.
-    trace = 'startup' in g.app.debug
+    trace = 'git' in g.app.debug
     try:
         s = subprocess.check_output(
             'git log -n 1 --date=iso', 

@@ -110,7 +110,7 @@ setup_requires = []
     # setup_requires no longer needed with PEP-518 and pip >v10
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'PyQt5>=5.12; python_version >= "3.0"', # v5.12+ to close #1217
+    'PyQt5>=5.12; python_version >= "3.6"', # v5.12+ to close #1217
     'PyQtWebEngine', # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'docutils', # used by Sphinx, rST plugin
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
