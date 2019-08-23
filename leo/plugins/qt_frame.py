@@ -306,10 +306,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         g.placate_pyflakes(bottom, lt, rt, top)
         #
         # Create all the docks.
-        if g.new_gui:
-            central_widget = None
-        else:
-            central_widget = g.app.get_central_widget(c)
+        central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
             (True, 100, lt, 'outline', self.createOutlineDock),
@@ -2364,11 +2361,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Called from app.newCommander, Commands.__init__
         c = self.c
         assert c
+        frameFactory = g.app.gui.frameFactory
         if g.new_gui:
-            self.top = g.app.gui.create_outline_frame(c)
-                # Instantiates a DynamicWindow.
-        else:
-            self.top = g.app.gui.frameFactory.createFrame(self)
+            dock = g.app.gui.outlines_dock
+            if frameFactory.masterFrame is None:
+                frameFactory.createMaster()
+                dock.setWidget(frameFactory.masterFrame)
+        self.top = frameFactory.createFrame(leoFrame=self)
         self.createIconBar() # A base class method.
         self.createSplitterComponents()
         self.createStatusLine() # A base class method.
@@ -4787,7 +4786,7 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (legacy: makes DynamicWindow)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (makes dw)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
@@ -4801,7 +4800,8 @@ class TabbedFrameFactory:
         tip = leoFrame.title
         dw.setWindowTitle(tip)
         idx = tabw.addTab(dw, title)
-        if tip: tabw.setTabToolTip(idx, tip)
+        if tip:
+            tabw.setTabToolTip(idx, tip)
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
         g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
@@ -4813,7 +4813,7 @@ class TabbedFrameFactory:
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (legacy) (move into new tabw code)
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         g.app.gui.attachLeoIcon(mf)
