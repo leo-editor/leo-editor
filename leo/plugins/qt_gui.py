@@ -847,8 +847,8 @@ class LeoQtGui(leoGui.LeoGui):
         if g.app.sessionManager and g.app.loaded_session:
             g.app.sessionManager.save_snapshot()
         for c in g.app.commanders():
-            res = c.exists and g.app.closeLeoWindow(c.frame)
-            if not res:
+            allow = c.exists and g.app.closeLeoWindow(c.frame)
+            if not allow:
                 noclose = True
         if noclose:
             event.ignore()
@@ -1193,7 +1193,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
+    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new) & helper
     def make_main_window(self):
         '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
         window = QtWidgets.QMainWindow()
@@ -1205,7 +1205,19 @@ class LeoQtGui(leoGui.LeoGui):
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.
+        self.runAtIdle(self.set_main_window_style_sheet)
+            # No StyleSheetManager exists yet.
         return window
+        
+    def set_main_window_style_sheet(self):
+        """Style the main window, using the first .leo file."""
+        commanders = g.app.commanders()
+        if commanders:
+            c = commanders[0]
+            ssm = c.styleSheetManager
+            ssm.set_style_sheets(w=self.main_window)
+        else:
+            g.trace("No open commanders!")
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,
@@ -1366,10 +1378,10 @@ class LeoQtGui(leoGui.LeoGui):
         """Set the geometry of the main window."""
         g.trace(w, h, x, y)
         self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
-    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, to do)
+    #@+node:ekr.20190822105332.1: *3* ----- qt_gui.setChanged (new, to do)
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
-        g.trace(changed, c.shortFileName())
+        g.trace('(qt_gui: TO DO)', changed, c.shortFileName())
         # if 0: ### Not ready yet
             # dw = c.frame.top # A DynamicWindow
             # i = self.indexOf(dw)

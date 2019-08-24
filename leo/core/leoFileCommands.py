@@ -1242,7 +1242,6 @@ class FileCommands:
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         trace = 'cache' in g.app.debug
         c = self.c
-        g.trace('=====', g.callers())
         self.put("<globals/>\n")
         if not c.mFileName:
             return
