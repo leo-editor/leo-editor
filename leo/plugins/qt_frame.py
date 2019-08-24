@@ -3212,7 +3212,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
     def get_window_info(self):
         '''Return the geometry of the top window.'''
-        if getattr(self.top, 'leo_master', None):
+        if g.new_gui:
+            f = g.app.gui.main_window
+        elif getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
         else:
             f = self.top
@@ -3221,7 +3223,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         x, y = topLeft.x(), topLeft.y()
         w, h = rect.width(), rect.height()
         if 'size' in g.app.debug:
-            g.trace(w, h, x, y)
+            g.trace('\n', w, h, x, y)
         return w, h, x, y
 
     #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
