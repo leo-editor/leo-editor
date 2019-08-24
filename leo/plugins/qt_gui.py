@@ -1381,23 +1381,8 @@ class LeoQtGui(leoGui.LeoGui):
         self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, test)
     def setChanged(self, c, changed):
-        # Find the tab corresponding to c.
-        ### g.trace('(qt_gui)', changed, c.shortFileName(), g.callers())
         tabw = self.frameFactory.masterFrame
-        dw = c.frame.top # A DynamicWindow
-        i = tabw.indexOf(dw)
-        if i < 0: return
-        s = tabw.tabText(i)
-        if len(s) <= 2:
-            return
-        if changed:
-            if not s.startswith('* '):
-                title = "* " + s
-                tabw.setTabText(i, title)
-        else:
-            if s.startswith('* '):
-                title = s[2:]
-                tabw.setTabText(i, title)
+        tabw.setChanged(c, changed)
     #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
     def setTabText(self, title):
         g.trace(title)
