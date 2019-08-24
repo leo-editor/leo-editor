@@ -1379,7 +1379,7 @@ class LeoQtGui(leoGui.LeoGui):
         if 'size' in g.app.debug:
             g.trace('(qt_gui)', w, h, x, y)
         self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
-    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, test)
+    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new)
     def setChanged(self, c, changed):
         tabw = self.frameFactory.masterFrame
         tabw.setChanged(c, changed)
