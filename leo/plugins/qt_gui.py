@@ -1376,9 +1376,10 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
     def set_top_geometry(self, w, h, x, y):
         """Set the geometry of the main window."""
-        g.trace(w, h, x, y)
+        if 'size' in g.app.debug:
+            g.trace('(qt_gui)', w, h, x, y)
         self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
-    #@+node:ekr.20190822105332.1: *3* ----- qt_gui.setChanged (new, to do)
+    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, to do)
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
         g.trace('(qt_gui: TO DO)', changed, c.shortFileName())
