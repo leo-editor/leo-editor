@@ -1225,7 +1225,7 @@ class FileCommands:
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (changed)
+    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         trace = 'cache' in g.app.debug
