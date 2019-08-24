@@ -1431,7 +1431,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* u.undo
+    #@+node:ekr.20031218072017.2039: *3* u.undo (changed)
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
