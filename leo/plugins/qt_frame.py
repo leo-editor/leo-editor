@@ -1544,8 +1544,12 @@ class FindTabManager:
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
-    #@+node:ekr.20131115120119.17390: *3* __init__ (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
     def __init__(self, *args, **kwargs):
+        
+        #
+        # Called from frameFactory.createMaster.
+        #
         self.factory = kwargs.get('factory')
         if self.factory:
             del kwargs['factory']
@@ -1578,13 +1582,13 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
-    #@+node:ekr.20180123082452.1: *3* new_outline (LeoBaseTabWidget)
+    #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
     def new_outline(self, index):
         '''Open a new outline tab.'''
         w = self.widget(index)
         c = w.leo_c
         c.new()
-    #@+node:ekr.20131115120119.17391: *3* detach (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
     def detach(self, index):
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
@@ -1602,7 +1606,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             w.move(20, 20)
                 # Windows (XP and 7) put the windows title bar off screen.
         return w
-    #@+node:ekr.20131115120119.17392: *3* tile (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17392: *3* qt_base_tab.tile
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
         w = self.widget(index)
@@ -1628,21 +1632,22 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             window.move(x, y)
             w.resize(ww, wh / 2)
             w.move(x, y + fh / 2)
-    #@+node:ekr.20131115120119.17393: *3* reattach_all (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17393: *3* qt_base_tab.reattach_all
     def reattach_all(self):
         """reattach all detached tabs"""
         for name, w in self.detached:
             self.addTab(w, name)
             self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
-    #@+node:ekr.20131115120119.17394: *3* delete (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
     def delete(self, w):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20131115120119.17395: *3* setChanged (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
+        g.trace('(qt_base_tab)', changed, c.shortFileName())
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         if i < 0: return
@@ -1656,7 +1661,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 if s.startswith('* '):
                     title = s[2:]
                     self.setTabText(i, title)
-    #@+node:ekr.20131115120119.17396: *3* setTabName (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17396: *3* qt_base_tab.setTabName
     def setTabName(self, c, fileName):
         '''Set the tab name for c's tab to fileName.'''
         # Find the tab corresponding to c.
@@ -1664,11 +1669,11 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i > -1:
             self.setTabText(i, g.shortFileName(fileName))
-    #@+node:ekr.20131115120119.17397: *3* closeEvent (leoTabbedTopLevel) (changed)
+    #@+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent (changed)
     def closeEvent(self, event):
         """Handle a close event."""
         g.app.gui.close_event(event)
-    #@+node:ekr.20131115120119.17398: *3* select (leoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17398: *3* qt_base_tab.select (leoTabbedTopLevel)
     def select(self, c):
         '''Select the tab for c.'''
         dw = c.frame.top # A DynamicWindow

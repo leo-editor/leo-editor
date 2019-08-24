@@ -1462,7 +1462,8 @@ class Undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        if u.oldChanged is None: u.oldChanged = True
+        if u.oldChanged is None:
+            u.oldChanged = False # 2019/08/24: Was True!
         c.setChanged(u.oldChanged)
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()
