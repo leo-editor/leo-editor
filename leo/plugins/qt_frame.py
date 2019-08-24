@@ -1664,19 +1664,10 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i > -1:
             self.setTabText(i, g.shortFileName(fileName))
-    #@+node:ekr.20131115120119.17397: *3* closeEvent (leoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17397: *3* closeEvent (leoTabbedTopLevel) (changed)
     def closeEvent(self, event):
-        noclose = False
-        if g.app.sessionManager and g.app.loaded_session:
-            g.app.sessionManager.save_snapshot()
-        for c in g.app.commanders():
-            res = c.exists and g.app.closeLeoWindow(c.frame)
-            if not res:
-                noclose = True
-        if noclose:
-            event.ignore()
-        else:
-            event.accept()
+        """Handle a close event."""
+        g.app.gui.close_event(event)
     #@+node:ekr.20131115120119.17398: *3* select (leoTabbedTopLevel)
     def select(self, c):
         '''Select the tab for c.'''
@@ -3328,7 +3319,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
-        g.trace('===== (LeoQtLog)', repr(c.shortFileName()))
+        ### g.trace('===== (LeoQtLog)', repr(c.shortFileName()))
         #
         # Create the log tab as the leftmost tab.
         log.createTab('Log')

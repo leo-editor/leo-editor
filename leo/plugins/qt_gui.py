@@ -840,6 +840,20 @@ class LeoQtGui(leoGui.LeoGui):
             main_window.addDockWidget(area, dock)
         return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
+    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (new)
+    def close_event(self, event):
+        
+        noclose = False
+        if g.app.sessionManager and g.app.loaded_session:
+            g.app.sessionManager.save_snapshot()
+        for c in g.app.commanders():
+            res = c.exists and g.app.closeLeoWindow(c.frame)
+            if not res:
+                noclose = True
+        if noclose:
+            event.ignore()
+        else:
+            event.accept()
     #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
     # deactivated_name = ''
     deactivated_widget = None
@@ -868,7 +882,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # self.active = False
                 # c.k.keyboardQuit(setFocus=False)
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
+    #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent(self, event, c, obj, tag):
@@ -1183,30 +1197,14 @@ class LeoQtGui(leoGui.LeoGui):
     def make_main_window(self):
         '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
         window = QtWidgets.QMainWindow()
-        # Don't show right away. Doing so causes flash.
-            # window.setGeometry(50, 50, 500, 300)
+        # Calling window.show() causes flash.
             # window.show()
         self.attachLeoIcon(window)
         if g.app.start_minimized:
             window.showMinimized()
-            
-        #
         # Monkey-patch
-        def closeEvent(event):
-            g.trace('=====', repr(g.app.sessionManager), repr(g.app.loaded_session))
-            noclose = False
-            if g.app.sessionManager and g.app.loaded_session:
-                g.app.sessionManager.save_snapshot()
-            for c in g.app.commanders():
-                res = c.exists and g.app.closeLeoWindow(c.frame)
-                if not res:
-                    noclose = True
-            if noclose:
-                event.ignore()
-            else:
-                event.accept()
-                
-        window.closeEvent = closeEvent
+        window.closeEvent = self.close_event
+            # Use self: g.app.gui does not exist yet.
         return window
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
@@ -1363,6 +1361,11 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822173112.1: *3* qt_gui.select_tab(new, to do)
     def select_tab(self, c):
         g.trace(repr(c.shortFileName()))
+    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
+    def set_top_geometry(self, w, h, x, y):
+        """Set the geometry of the main window."""
+        g.trace(w, h, x, y)
+        self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new, to do)
     def setChanged(self, c, changed):
         # Find the tab corresponding to c.
@@ -1384,11 +1387,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
     def setTabText(self, title):
         g.trace(title)
-    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
-    def set_top_geometry(self, w, h, x, y):
-        """Set the geometry of the main window."""
-        g.trace(w, h, x, y)
-        self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
