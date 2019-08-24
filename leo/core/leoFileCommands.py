@@ -222,7 +222,6 @@ class FastRead:
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
         else:
-
             c.frame.setTopGeometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
@@ -1242,6 +1241,7 @@ class FileCommands:
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
+        g.trace('=====', g.callers())
         self.put("<globals/>\n")
         if c.mFileName:
             c.db ['body_outline_ratio'] = str(c.frame.ratio)

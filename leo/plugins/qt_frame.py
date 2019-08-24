@@ -4815,11 +4815,11 @@ class TabbedFrameFactory:
     def createMaster(self):
         
         window = self.masterFrame = LeoTabbedTopLevel(factory=self)
+        tabbar = window.tabBar()
         if g.new_gui:
            pass
         else:
             g.app.gui.attachLeoIcon(window)
-        tabbar = window.tabBar()
         try:
             tabbar.setTabsClosable(True)
             tabbar.tabCloseRequested.connect(self.slotCloseRequest)

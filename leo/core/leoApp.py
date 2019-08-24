@@ -1464,6 +1464,7 @@ class LeoApp:
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile(self, fn, force=False):
         '''Forget the open file, so that is no longer considered open.'''
+        g.trace(fn, g.callers())
         trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:

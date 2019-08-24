@@ -1189,6 +1189,24 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(window)
         if g.app.start_minimized:
             window.showMinimized()
+            
+        #
+        # Monkey-patch
+        def closeEvent(event):
+            g.trace('=====', repr(g.app.sessionManager), repr(g.app.loaded_session))
+            noclose = False
+            if g.app.sessionManager and g.app.loaded_session:
+                g.app.sessionManager.save_snapshot()
+            for c in g.app.commanders():
+                res = c.exists and g.app.closeLeoWindow(c.frame)
+                if not res:
+                    noclose = True
+            if noclose:
+                event.ignore()
+            else:
+                event.accept()
+                
+        window.closeEvent = closeEvent
         return window
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
