@@ -1372,6 +1372,7 @@ class LeoQtGui(leoGui.LeoGui):
         ipk.kernelApp.start()
     #@+node:ekr.20190822173112.1: *3* qt_gui.select_tab(new, to do)
     def select_tab(self, c):
+        ### To do???
         g.trace(repr(c.shortFileName()))
     #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
     def set_top_geometry(self, w, h, x, y):
@@ -1385,6 +1386,7 @@ class LeoQtGui(leoGui.LeoGui):
         tabw.setChanged(c, changed)
     #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
     def setTabText(self, title):
+        ### To do???
         g.trace(title)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
