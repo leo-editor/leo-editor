@@ -1646,8 +1646,8 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.detached = [i for i in self.detached if i[1] != w]
     #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged
     def setChanged(self, c, changed):
+        """Set the changed indicator in c's tab."""
         # Find the tab corresponding to c.
-        g.trace('(qt_base_tab)', changed, c.shortFileName())
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         if i < 0: return
