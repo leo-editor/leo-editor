@@ -2539,7 +2539,7 @@ class AtFile:
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper (changed)
+    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
     def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.

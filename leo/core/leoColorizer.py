@@ -2871,7 +2871,7 @@ class QScintillaColorizer(BaseColorizer):
                 pass
                 # Not an error. Not all lexers have all styles.
                     # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
-    #@+node:ekr.20170128031840.1: *3* qsc.init (new)
+    #@+node:ekr.20170128031840.1: *3* qsc.init
     def init(self, p):
         '''QScintillaColorizer.init'''
         self.updateSyntaxColorer(p)

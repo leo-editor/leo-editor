@@ -2771,7 +2771,7 @@ def enable_gc_debug(event=None):
         # gc.DEBUG_INSTANCES |
         # gc.DEBUG_OBJECTS |
         gc.DEBUG_SAVEALL)
-#@+node:ekr.20190609113810.1: *4* g.GetRepresentativeObjects (new)
+#@+node:ekr.20190609113810.1: *4* g.GetRepresentativeObjects
 def getRepresentativeLiveObjects():
     '''
     Return a dict.
@@ -3722,7 +3722,7 @@ def getBaseDirectory(c):
             os.chdir(base)
         return base # base need not exist yet.
     return "" # No relative base given.
-#@+node:ekr.20170223093758.1: *3* g.getEncodingAt (New in Leo 5.5)
+#@+node:ekr.20170223093758.1: *3* g.getEncodingAt
 def getEncodingAt(p, s=None):
     '''
     Return the encoding in effect at p and/or for string s.
@@ -7494,7 +7494,7 @@ def findTopLevelNode(c, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:EKR.20040614071102.1: *3* g.getScript & helpers (changed)
+#@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c, p,
     useSelectedText=True,
     forcePythonSentinels=True,
@@ -7525,7 +7525,7 @@ def getScript(c, p,
         g.es_exception()
         script = ''
     return script
-#@+node:ekr.20170228082641.1: *4* g.composeScript (new in Leo 5.5)
+#@+node:ekr.20170228082641.1: *4* g.composeScript
 def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     '''Compose a script from p.b.'''
     # This causes too many special cases.

@@ -1765,7 +1765,7 @@ class LocalConfigManager:
             if path.endswith(fn.lower()):
                 return False
         return True
-    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile (new)
+    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile
     def isLocalSettingsFile(self):
         '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
         c = self.c
@@ -1774,7 +1774,7 @@ class LocalConfigManager:
             if fn.endswith(fn2.lower()):
                 return False
         return True
-    #@+node:ekr.20120224140548.10528: *4* c.exists (new)
+    #@+node:ekr.20120224140548.10528: *4* c.exists
     def exists(self, c, setting, kind):
         '''Return true if a setting of the given kind exists, even if it is None.'''
         d = self.settingsDict

@@ -1427,7 +1427,7 @@ class Position:
         p2.v.iconVal = 0
         p2._linkAsNthChild(p, n)
         return p2
-    #@+node:ekr.20130923111858.11572: *4* p.insertBefore (new in Leo 4.11)
+    #@+node:ekr.20130923111858.11572: *4* p.insertBefore
     def insertBefore(self):
         '''Inserts a new position before self.
 
@@ -1630,7 +1630,7 @@ class Position:
     nosentinels = property(
         __get_nosentinels, # __set_nosentinels
         doc="position property returning the body text without sentinels")
-    #@+node:ekr.20160129073222.1: *4* p.u Property (new)
+    #@+node:ekr.20160129073222.1: *4* p.u Property
     def __get_u(self):
         p = self
         return p.v.u
