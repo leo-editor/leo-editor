@@ -1193,7 +1193,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new) & helper
+    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
     def make_main_window(self):
         '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
         window = QtWidgets.QMainWindow()
