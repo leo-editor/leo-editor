@@ -1380,10 +1380,6 @@ class LeoQtGui(leoGui.LeoGui):
     def setChanged(self, c, changed):
         tabw = self.frameFactory.masterFrame
         tabw.setChanged(c, changed)
-    #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, remove??)
-    def setTabText(self, title):
-        ### To do???
-        g.trace(title)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
