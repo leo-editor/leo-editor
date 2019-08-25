@@ -1416,7 +1416,7 @@ class FileCommands:
             # Fix #1018: scan *all* nodes.
             self.setCachedBits()
         self.put("</vnodes>\n")
-    #@+node:ekr.20190328160622.1: *6* fc.setCachedBits (changed)
+    #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
     def setCachedBits(self):
         '''
         Set the cached expanded and marked bits for *all* nodes.

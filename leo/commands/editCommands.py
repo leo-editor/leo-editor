@@ -2466,7 +2466,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setSelectionRange(i1, i)
             return i1, i
         return 0, 0
-    #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection (new)
+    #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection
     @cmd('finish-of-line')
     def finishOfLine(self, event):
         '''Move the cursor to the last character of the line.'''
@@ -2848,7 +2848,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i = min(i, len(s))
         if i > ins:
             self.moveToHelper(event, i, extend)
-    #@+node:ekr.20170707072644.1: *4* ec.startOfLine/ExtendSelection (new)
+    #@+node:ekr.20170707072644.1: *4* ec.startOfLine/ExtendSelection
     @cmd('start-of-line')
     def startOfLine(self, event):
         '''Move the cursor to first non-blank character of the line.'''

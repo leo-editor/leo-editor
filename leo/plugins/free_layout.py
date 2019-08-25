@@ -183,7 +183,7 @@ class FreeLayoutController:
                     return w
                 w = w.parent()
         return None
-    #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter (changed)
+    #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
         '''Return the top splitter of c.frame.top.'''
         # Careful: we could be unit testing.

@@ -844,7 +844,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # else:
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter (changed)
+    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 

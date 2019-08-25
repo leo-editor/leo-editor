@@ -83,7 +83,7 @@ class GoToCommands:
             return p, offset, True
         self.fail(lines, n, root)
         return None, -1, False
-    #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line (new)
+    #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line
     def node_offset_to_file_line(self, target_offset, target_p, root):
         '''
         Given a zero-based target_offset within target_p.b, return the line
@@ -277,7 +277,7 @@ class GoToCommands:
         if delims1:
             return delims1, None
         return delims2, delims3
-    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels (changed)
+    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root):
         '''
         root is an @<file> node.
