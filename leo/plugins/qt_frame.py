@@ -38,21 +38,10 @@ floatable_docks = True
 class DynamicWindow(QtWidgets.QMainWindow):
     '''
     A class representing all parts of the main Qt window.
-
-    **Important**:
-        
-    Legacy: when using tabs, the LeoTabbedTopLevel widget
-            is the top-level window, **not** this QMainWindow!
-            
-        c.frame.top is a DynamicWindow object.
-        c.frame.top.parent is a TabbedFrameFactory
-        c.frame.top.leo_master is a LeoTabbedTopLevel
     
-    # 1289: DynamicWindow is the singleton main window.
-    
-        c.frame.top is a DynamicWindow object.
-        c.frame.top.parent = None ?
-        c.frame.top.leo_master = None ?
+    c.frame.top is a DynamicWindow.
+    c.frame.top.leo_master is a LeoTabbedTopLevel.
+    c.frame.top.parent() is a QStackedWidget()
 
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
@@ -1295,10 +1284,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def select(self, c):
         '''Select the window or tab for c.'''
         # Called from the save commands.
-        if g.new_gui:
-            g.app.gui.select_tab(c)
-        else:
-            self.leo_master.select(c)
+        self.leo_master.select(c)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qt gui.'''

@@ -1370,10 +1370,6 @@ class LeoQtGui(leoGui.LeoGui):
                     g.app.ipk.run_script(file_name=c.p.h,script=script)
 
         ipk.kernelApp.start()
-    #@+node:ekr.20190822173112.1: *3* qt_gui.select_tab(new, to do)
-    def select_tab(self, c):
-        ### To do???
-        g.trace(repr(c.shortFileName()))
     #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
     def set_top_geometry(self, w, h, x, y):
         """Set the geometry of the main window."""
@@ -1384,7 +1380,7 @@ class LeoQtGui(leoGui.LeoGui):
     def setChanged(self, c, changed):
         tabw = self.frameFactory.masterFrame
         tabw.setChanged(c, changed)
-    #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, to do)
+    #@+node:ekr.20190822121332.1: *3* qt_gui.setTabText(new, remove??)
     def setTabText(self, title):
         ### To do???
         g.trace(title)
