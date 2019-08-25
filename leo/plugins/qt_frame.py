@@ -1644,7 +1644,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged
+    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged (changed)
     def setChanged(self, c, changed):
         """Set the changed indicator in c's tab."""
         # Find the tab corresponding to c.
