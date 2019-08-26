@@ -2560,14 +2560,14 @@ class AtFile:
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
             # #1297.
-            if g.unitTesting or p.isAnyAtFileNode():
+            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@last")
                     # Convert to an verbatim line _without_ anything else.
             else:
                 at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
             # #1297.
-            if g.unitTesting or p.isAnyAtFileNode():
+            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@first")
                     # Convert to an verbatim line _without_ anything else.
             else:

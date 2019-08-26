@@ -455,13 +455,13 @@ class AstFormatter:
 
     def do_Repr(self, node):
         return 'repr(%s)' % self.visit(node.value)
-    #@+node:ekr.20160523101929.1: *4* f.Set (new)
+    #@+node:ekr.20160523101929.1: *4* f.Set
     # Set(expr* elts)
 
     def do_Set(self, node):
         for z in node.elts:
             self.visit(z)
-    #@+node:ekr.20160523102226.1: *4* f.SetComp (new)
+    #@+node:ekr.20160523102226.1: *4* f.SetComp
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
@@ -1122,7 +1122,7 @@ class AstFullTraverser:
         for i in range(len(node.keys)):
             self.visit(node.keys[i])
             self.visit(node.values[i])
-    #@+node:ekr.20160523094910.1: *4* ft.DictComp (new)
+    #@+node:ekr.20160523094910.1: *4* ft.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
@@ -1219,14 +1219,14 @@ class AstFullTraverser:
 
     def do_Repr(self, node):
         self.visit(node.value)
-    #@+node:ekr.20160523094939.1: *4* ft.Set (new)
+    #@+node:ekr.20160523094939.1: *4* ft.Set
     # Set(expr* elts)
 
     def do_Set(self, node):
         for z in node.elts:
             self.visit(z)
 
-    #@+node:ekr.20160523095142.1: *4* ft.SetComp (new)
+    #@+node:ekr.20160523095142.1: *4* ft.SetComp
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
@@ -2125,7 +2125,7 @@ class HTMLReportTraverser:
         self.clean_comma()
         self.gen('}')
         # self.end_span('dict')
-    #@+node:ekr.20160523104330.1: *4* rt.DictComp (new)
+    #@+node:ekr.20160523104330.1: *4* rt.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
@@ -2217,11 +2217,11 @@ class HTMLReportTraverser:
     def do_Expr(self, node):
 
         self.div_node('expr', node.value)
-    #@+node:ekr.20160523103429.1: *4* rf.Expression (New)
+    #@+node:ekr.20160523103429.1: *4* rf.Expression
     def do_Expression(self, node):
         '''An inner expression: do not indent.'''
         return '%s' % self.visit(node.body)
-    #@+node:ekr.20160523103751.1: *4* rt.ExtSlice (New)
+    #@+node:ekr.20160523103751.1: *4* rt.ExtSlice
     def do_ExtSlice(self, node):
         return ':'.join([self.visit(z) for z in node.dims])
     #@+node:ekr.20150722204300.68: *4* rt.For & AsyncFor (Python 3)
@@ -2503,13 +2503,13 @@ class HTMLReportTraverser:
         if node.value:
             self.visit(node.value)
         self.end_div('statement')
-    #@+node:ekr.20160523104433.1: *4* rt.Set (new)
+    #@+node:ekr.20160523104433.1: *4* rt.Set
     # Set(expr* elts)
 
     def do_Set(self, node):
         for z in node.elts:
             self.visit(z)
-    #@+node:ekr.20160523104454.1: *4* rt.SetComp (new)
+    #@+node:ekr.20160523104454.1: *4* rt.SetComp
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):

@@ -2581,7 +2581,7 @@ class LoadManager:
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon() # Set app.signon/signon1 for commanders.
-    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
+    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers
     def createAllImporetersData(self):
         '''
         New in Leo 5.5:
@@ -2914,7 +2914,7 @@ class LoadManager:
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
-    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption (changed)
+    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
     def doGuiOption(self, options):
         gui = options.gui
         if gui:

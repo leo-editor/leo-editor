@@ -1946,7 +1946,7 @@ class KeyHandlerClass:
         self.overwrite_mode_fg_color = getColor('overwrite-mode-fg-color') or fg
         self.unselected_body_bg_color = getColor('unselected-body-bg-color') or bg
         self.unselected_body_fg_color = getColor('unselected-body-fg-color') or bg
-    #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
+    #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction
     def setDefaultEditingAction(self):
         k = self; c = k.c
         action = c.config.getString('default-editing-state') or 'insert'
