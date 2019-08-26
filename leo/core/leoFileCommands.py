@@ -214,7 +214,7 @@ class FastRead:
         #
         # #1189: Must be done *after* restoring geometry.
         #        Was done in TabbedFrameFactory.createMaster.
-        if g.new_gui:
+        if g.app.use_global_docks:
             mf = getattr(g.app.gui, 'main_window', None)
             if not mf:
                 return

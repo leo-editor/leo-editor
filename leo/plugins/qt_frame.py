@@ -2346,7 +2346,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         frameFactory = g.app.gui.frameFactory
         if not frameFactory.masterFrame:
             frameFactory.createMaster()
-            if g.new_gui:
+            if g.app.use_global_docks:
                 dock = g.app.gui.outlines_dock
                 dock.setWidget(frameFactory.masterFrame)
         self.top = frameFactory.createFrame(leoFrame=self)
@@ -3194,7 +3194,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
     def get_window_info(self):
         '''Return the geometry of the top window.'''
-        if g.new_gui:
+        if g.app.use_global_docks:
             f = g.app.gui.main_window
         elif getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
@@ -4800,7 +4800,7 @@ class TabbedFrameFactory:
         
         window = self.masterFrame = LeoTabbedTopLevel(factory=self)
         tabbar = window.tabBar()
-        if g.new_gui:
+        if g.app.use_global_docks:
            pass
         else:
             g.app.gui.attachLeoIcon(window)
@@ -4815,7 +4815,7 @@ class TabbedFrameFactory:
                 g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
         #
         # #1189: We *can* (and should) minimize here, to eliminate flash.
-        if g.new_gui:
+        if g.app.use_global_docks:
             pass
         else:
             if g.app.start_minimized:

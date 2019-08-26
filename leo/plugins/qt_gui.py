@@ -131,7 +131,7 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-        if g.new_gui:
+        if g.app.use_global_docks:
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
             self.make_all_global_docks()
