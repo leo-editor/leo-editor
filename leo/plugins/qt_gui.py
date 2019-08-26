@@ -800,7 +800,7 @@ class LeoQtGui(leoGui.LeoGui):
         return dock
     #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
     def make_all_global_docks(self):
-        
+        """Make four global docks for testing."""
         Qt = QtCore.Qt
         bottom_area, top_area = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt_area, rt_area = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
