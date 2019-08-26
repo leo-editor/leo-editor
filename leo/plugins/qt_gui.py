@@ -23,7 +23,6 @@ if 1:
     import leo.plugins.qt_commands as qt_commands
     assert qt_commands
 #@-<< imports >>
-# < < new_gui: commands for tabs > >
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
@@ -1376,10 +1375,6 @@ class LeoQtGui(leoGui.LeoGui):
         if 'size' in g.app.debug:
             g.trace('(qt_gui)', w, h, x, y)
         self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
-    #@+node:ekr.20190822105332.1: *3* qt_gui.setChanged (new)
-    def setChanged(self, c, changed):
-        tabw = self.frameFactory.masterFrame
-        tabw.setChanged(c, changed)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
