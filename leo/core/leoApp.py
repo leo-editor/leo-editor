@@ -1375,6 +1375,7 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
+            g.app.saveGlobalWindowState() ### New.
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1637,6 +1638,49 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState
+    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (new)
+    def restoreGlobalWindowState(self):
+        '''
+        Restore the layout of global dock widgets and toolbars.
+        '''
+        #
+        # Note for #1189: The windows has already been improperly resized
+        #                 by the time this method is called.
+        trace = True or any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
+            return
+        main_window = getattr(g.app.gui, 'main_window', None)
+        if not main_window:
+            if trace: g.trace('no main window')
+            return
+        #
+        # Support --init-docks.
+        # #1196. Let Qt use it's own notion of a default layout.
+        #        This should work regardless of the central widget.
+        if g.app.init_docks:
+            if trace: g.trace('--init-docks')
+            return
+        table = (
+            # Restore the actual window state.
+            ('globalWindowState:', main_window.restoreState),
+            #
+            # The window geometry has already been restored.
+            # ('windowGeometry:' , main_window.restoreGeometry),
+        )
+        for key, method in table:
+            val = self.db.get(key)
+            if val:
+                if trace: g.trace('found key: %s' % key)
+                try:
+                    val = base64.decodebytes(val.encode('ascii'))
+                        # Elegant pyzo code.
+                    method(val)
+                    return
+                except Exception as err:
+                    g.trace('bad value: %s %s' % (key, err))
+            # This is not an error.
+            elif trace: g.trace('missing key: %s' % key)
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     def restoreWindowState(self, c):
         '''
@@ -1645,7 +1689,7 @@ class LeoApp:
         Use the per-file state of the first loaded .leo file, or the global state.
         '''
         #
-        # Note for #1189: The windows has already been improperly resized
+        # Note for #1189: The window has already been improperly resized
         #                 by the time this method is called.
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         tag = 'app.restoreWindowState:'
@@ -1710,6 +1754,38 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
+    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (new)
+    def saveGlobalWindowState(self):
+        """
+        Save the window geometry and layout of dock widgets and toolbars
+        for Leo's *global* QMainWindow.
+        
+        Called by g.app.finishQuit. 
+        """
+        trace = True or any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
+            return
+        main_window = getattr(g.app.gui, 'main_window', None)
+        if not main_window:
+            if trace: g.trace('no main window')
+            return
+        table = (
+            # Save a default *global* state, for *all* outline files.
+            ('globalWindowState:', main_window.saveState),
+            # Do not save/restore window geometry. That is done elsewhere.
+            # ('windowGeometry' %  , main_window.saveGeometry),
+        )
+        for key, method in table:
+            # This is pyzo code...
+            val = method()
+                # Method is a QMainWindow method.
+            try:
+                val = bytes(val) # PyQt4
+            except Exception:
+                val = bytes().join(val) # PySide
+            if trace: g.trace('set key: %s' % key)
+            g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         '''
@@ -2425,6 +2501,7 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
+        g.app.restoreGlobalWindowState() ### New
         g.es('') # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
