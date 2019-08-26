@@ -1367,7 +1367,7 @@ class LeoApp:
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit (changed)
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         assert self == g.app, repr(g.app)
@@ -1646,7 +1646,7 @@ class LeoApp:
         #
         # Note for #1189: The windows has already been improperly resized
         #                 by the time this method is called.
-        trace = True or any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -1661,36 +1661,28 @@ class LeoApp:
         if g.app.init_docks:
             if trace: g.trace('--init-docks')
             return
-        table = (
-            # Restore the actual window state.
-            ('globalWindowState:', main_window.restoreState),
-            #
-            # The window geometry has already been restored.
-            # ('windowGeometry:' , main_window.restoreGeometry),
-        )
-        for key, method in table:
-            val = self.db.get(key)
-            if val:
-                if trace: g.trace('found key: %s' % key)
-                try:
-                    val = base64.decodebytes(val.encode('ascii'))
-                        # Elegant pyzo code.
-                    method(val)
-                    return
-                except Exception as err:
-                    g.trace('bad value: %s %s' % (key, err))
-            # This is not an error.
-            elif trace: g.trace('missing key: %s' % key)
+        key = 'globalWindowState:'
+        val = self.db.get(key)
+        if val:
+            if trace: g.trace('found key: %s' % key)
+            try:
+                val = base64.decodebytes(val.encode('ascii'))
+                    # Elegant pyzo code.
+                main_window.restoreState(val)
+                return
+            except Exception as err:
+                g.trace('bad value: %s %s' % (key, err))
+                return
+        # This is not an error.
+        if trace: g.trace('missing key: %s' % key)
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     def restoreWindowState(self, c):
-        '''
-        Restore the layout of dock widgets and toolbars.
+        """
+        Restore the layout of dock widgets and toolbars, using the per-file
+        state of the first loaded .leo file, or the global state.
         
-        Use the per-file state of the first loaded .leo file, or the global state.
-        '''
-        #
-        # Note for #1189: The window has already been improperly resized
-        #                 by the time this method is called.
+        Note: The window's position or size has already been restored.
+        """
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         tag = 'app.restoreWindowState:'
         if not g.app.dock:
@@ -1705,8 +1697,7 @@ class LeoApp:
         # #1196. Let Qt use it's own notion of a default layout.
         #        This should work regardless of the central widget.
         if g.app.init_docks:
-            if trace:
-                g.trace('using qt default layout')
+            if trace: g.trace('using qt default layout')
             return
         sfn = c.shortFileName()
         table = (
@@ -1714,9 +1705,6 @@ class LeoApp:
             ('windowState:%s' % (c.fileName()), dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
-            #
-            # The window geometry has already been restored.
-            # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
         )
         for key, method in table:
             val = self.db.get(key)
@@ -1762,7 +1750,7 @@ class LeoApp:
         
         Called by g.app.finishQuit. 
         """
-        trace = True or any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -1770,22 +1758,34 @@ class LeoApp:
         if not main_window:
             if trace: g.trace('no main window')
             return
-        table = (
-            # Save a default *global* state, for *all* outline files.
-            ('globalWindowState:', main_window.saveState),
-            # Do not save/restore window geometry. That is done elsewhere.
-            # ('windowGeometry' %  , main_window.saveGeometry),
-        )
-        for key, method in table:
-            # This is pyzo code...
-            val = method()
-                # Method is a QMainWindow method.
-            try:
-                val = bytes(val) # PyQt4
-            except Exception:
-                val = bytes().join(val) # PySide
-            if trace: g.trace('set key: %s' % key)
-            g.app.db [key] = base64.encodebytes(val).decode('ascii')
+        #
+        # Save the state
+        key = 'globalWindowState:'
+        val = main_window.saveState()
+            # Method is a QMainWindow method.
+        try:
+            val = bytes(val) # PyQt4
+        except Exception:
+            val = bytes().join(val) # PySide
+        if trace: g.trace('set key: %s' % key)
+        g.app.db [key] = base64.encodebytes(val).decode('ascii')
+        ###
+            # table = (
+                # # Save a default *global* state, for *all* outline files.
+                # ('globalWindowState:', main_window.saveState),
+                # # Do not save/restore window geometry. That is done elsewhere.
+                # # ('windowGeometry' %  , main_window.saveGeometry),
+            # )
+            # for key, method in table:
+                # # This is pyzo code...
+                # val = method()
+                    # # Method is a QMainWindow method.
+                # try:
+                    # val = bytes(val) # PyQt4
+                # except Exception:
+                    # val = bytes().join(val) # PySide
+                # if trace: g.trace('set key: %s' % key)
+                # g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         '''
@@ -2463,7 +2463,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
+    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers (changed)
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
