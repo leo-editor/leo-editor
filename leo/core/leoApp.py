@@ -1377,7 +1377,7 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.saveGlobalWindowState() ### New.
+            g.app.saveGlobalWindowState()
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1771,23 +1771,6 @@ class LeoApp:
             val = bytes().join(val) # PySide
         if trace: g.trace('set key: %s' % key)
         g.app.db [key] = base64.encodebytes(val).decode('ascii')
-        ###
-            # table = (
-                # # Save a default *global* state, for *all* outline files.
-                # ('globalWindowState:', main_window.saveState),
-                # # Do not save/restore window geometry. That is done elsewhere.
-                # # ('windowGeometry' %  , main_window.saveGeometry),
-            # )
-            # for key, method in table:
-                # # This is pyzo code...
-                # val = method()
-                    # # Method is a QMainWindow method.
-                # try:
-                    # val = bytes(val) # PyQt4
-                # except Exception:
-                    # val = bytes().join(val) # PySide
-                # if trace: g.trace('set key: %s' % key)
-                # g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         '''
@@ -2503,7 +2486,7 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
-        g.app.restoreGlobalWindowState() ### New
+        g.app.restoreGlobalWindowState()
         g.es('') # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()

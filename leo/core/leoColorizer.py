@@ -1256,17 +1256,6 @@ class JEditColorizer(BaseJEditColorizer):
     def match_blanks(self, s, i):
         # Use Qt code to show invisibles.
         return 0
-        ### Old code...
-            # if not self.showInvisibles:
-                # return 0
-            # j = i; n = len(s)
-            # while j < n and s[j] == ' ':
-                # j += 1
-            # if j > i:
-                # self.colorRangeWithTag(s, i, j, 'blank')
-                # return j - i
-            # else:
-                # return 0
     #@+node:ekr.20110605121601.18602: *5* jedit.match_doc_part & restarter
     def match_doc_part(self, s, i):
         '''

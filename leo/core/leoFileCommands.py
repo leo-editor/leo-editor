@@ -207,10 +207,6 @@ class FastRead:
         x, y = d.get('left'), d.get('top')
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
-        ### Done below
-            # c.frame.setTopGeometry(w, h, x, y)
-            # r1, r2 = d.get('r1'), d.get('r2')
-            # c.frame.resizePanesToRatio(r1, r2)
         #
         # #1189: Must be done *after* restoring geometry.
         #        Was done in TabbedFrameFactory.createMaster.

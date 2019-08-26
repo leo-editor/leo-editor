@@ -830,8 +830,6 @@ class LeoQtGui(leoGui.LeoGui):
             moveable=not is_central,
             height=100,
             name="Leo Outlines")
-        ### dock.setStyleSheet("background: red;")
-        ### dock.setWidget(w)
         if is_central:
             main_window.setCentralWidget(dock)
         else:
