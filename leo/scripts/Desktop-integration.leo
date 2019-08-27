@@ -46,6 +46,7 @@
 </v>
 <v t="lkj.20190712001203.1"><vh>scripts</vh>
 <v t="mhw.20190808082948.1"><vh>Any</vh>
+<v t="mhw.20190827134123.1"><vh>@file add-desktop-links-pyshort.leox</vh></v>
 <v t="mhw.20190808083008.1"><vh>@file add-desktop-links.leox</vh></v>
 <v t="mhw.20190808083026.1"><vh>@file remove-desktop-links.leox</vh></v>
 </v>
