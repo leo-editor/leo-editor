@@ -1273,7 +1273,7 @@ class Undoer:
         newSel = u.newSel
         p = u.p.copy()
         u.groupCount += 1
-        bunch = u.beads[u.bead]; count = 0
+        bunch = u.beads[u.bead+1]; count = 0
         if not hasattr(bunch, 'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
             g.trace(bunch)
