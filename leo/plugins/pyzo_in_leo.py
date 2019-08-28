@@ -447,7 +447,7 @@ def main_window_populate(c):
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
-    g.trace(name, g.callers())
+    # Called from main_window_populate.
     dw = c.frame.top
     dock = g.app.gui.create_dock_widget(
         closeable=True,
