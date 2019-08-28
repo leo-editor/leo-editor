@@ -108,6 +108,8 @@ def init(): # pyzo_in_leo.py
         # return oops('requires pyzo')
     if not g.app.dock:
         return oops('is incompatible with --no-dock')
+    if not g.app.use_global_docks:
+        return oops('requires --global-docks')
     g.plugin_signon(__name__)
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
@@ -445,8 +447,9 @@ def main_window_populate(c):
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
+    g.trace(name, g.callers())
     dw = c.frame.top
-    dock = dw.createDockWidget(
+    dock = g.app.gui.create_dock_widget(
         closeable=True,
         moveable=True, # Implies floatable.
         height=100,
