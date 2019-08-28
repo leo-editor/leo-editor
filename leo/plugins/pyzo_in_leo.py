@@ -122,8 +122,7 @@ def init(): # pyzo_in_leo.py
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
     pyzo_start()
-#@+node:ekr.20190816194046.1: ** patched functions
-#@+node:ekr.20190816193033.1: *3* function: setShortcut
+#@+node:ekr.20190816193033.1: ** patched: setShortcut
 def setShortcut(self, action):
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
@@ -189,16 +188,9 @@ def load_all_docks():
         'PyzoWebBrowser',
         'PyzoWorkspace',
     )
-    #
-    # ToolManager.loadTool creates docks in pyzo.main,
-    # so temporarily switch pyzo.main.
-    old_main = pyzo.main
-    try:
-        pyzo.main = g.app.gui.main_window
-        for tool_id in table:
-            tm.loadTool(tool_id)
-    finally:
-        pyzo.main = old_main
+    assert pyzo.main == g.app.gui.main_window
+    for tool_id in table:
+        tm.loadTool(tool_id)
 
     # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor

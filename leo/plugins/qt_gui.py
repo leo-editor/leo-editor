@@ -1198,6 +1198,7 @@ class LeoQtGui(leoGui.LeoGui):
     def make_main_window(self):
         '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
         window = QtWidgets.QMainWindow()
+        window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() causes flash.
             # window.show()
         self.attachLeoIcon(window)
