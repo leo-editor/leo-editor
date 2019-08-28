@@ -19,7 +19,7 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 
 #@+others
-#@+node:ekr.20190816163728.1: ** close_handler
+#@+node:ekr.20190816163728.1: ** close_handler (to do)
 def close_handler():
     """
     Shut down pyzo.
@@ -323,7 +323,7 @@ def main_window_ctor(c):
             # from pyzo.core.kernelbroker import KernelInfo
             # pyzo.config.shellConfigs2.append( KernelInfo() )
     from pyzo.core.kernelbroker import KernelInfo
-        ### pyzo.config.shellConfigs2.append( KernelInfo() )
+        # pyzo.config.shellConfigs2.append( KernelInfo() )
     pyzo.config.shellConfigs2 = [KernelInfo()]
 
     # EKR:change Set background.

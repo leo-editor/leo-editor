@@ -356,7 +356,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         """ Override close event handler. """
         
-        ### Replaced by the close_handler function.
+        # Replaced by the close_handler function.
         
         leo_g.pr('ORIGINAL MainWindow.closeEvent')
 
