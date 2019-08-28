@@ -233,10 +233,8 @@ class FastRead:
             mf.showMaximized()
         elif g.app.start_fullscreen:
             mf.showFullScreen()
-        elif g.app.use_global_docks:
-            mf.show() ###
         else:
-            mf.show() ### Original.
+            mf.show()
     #@+node:ekr.20180708060437.1: *6* fast.getGlobalData
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
