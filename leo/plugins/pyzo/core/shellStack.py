@@ -86,10 +86,7 @@ class ShellStackWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
         
-        # if leo_g: leo_g.pr('\nShellStackWidget.__init__\n')
-        
-        ### EKR:change. Init this here. It may not be necessary when full init happens.
-        self._debugActions = []
+        # if leo_g: leo_g.pr('\nShellStackWidget.__init__', leo_g.callers())
 
         # create toolbar
         self._toolbar = QtWidgets.QToolBar(self)
@@ -137,7 +134,8 @@ class ShellStackWidget(QtWidgets.QWidget):
             self._interpreterhelp.detect()
     def addShell(self, shellInfo=None):
         """Add a shell to the widget. """
-        # leo_g.pr('ShellStackWidget.addShell', repr(pyzo.main))
+        # g = leo_g
+        # g.pr('ShellStackWidget.addShell', repr(pyzo.main))
         #
         # Create shell and add to stack
         shell = PythonShell(self, shellInfo)
@@ -282,7 +280,7 @@ class ShellControl(QtWidgets.QToolButton):
     def __init__(self, parent, shellStack):
         QtWidgets.QToolButton.__init__(self, parent)
         
-        # print('\nShellControl.__init__: parent:', repr(parent))
+        # print('\nShellControl.__init__: parent:', repr(parent), leo_g.callers())
 
         # Store reference of shell stack
         self._shellStack = shellStack

@@ -125,7 +125,7 @@ def onCreate(tag, keys): # pyzo_in_leo.py
 #@+node:ekr.20190816194046.1: ** patched functions
 #@+node:ekr.20190816193033.1: *3* function: setShortcut
 def setShortcut(self, action):
-    """A do-nothing version of KeyMapper.setShortcut."""
+    """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start(c):
@@ -189,13 +189,16 @@ def load_all_docks(c):
         'PyzoWebBrowser',
         'PyzoWorkspace',
     )
-    for tool_id in table:
-        tm.loadTool(tool_id)
-        
-    # This doesn't work:
-        # if not c.mFileName:
-            # for tool_id in table:
-                # tm.closeTool(tool_id)
+    #
+    # ToolManager.loadTool creates docks in pyzo.main,
+    # so temporarily switch pyzo.main.
+    old_main = pyzo.main
+    try:
+        pyzo.main = g.app.gui.main_window
+        for tool_id in table:
+            tm.loadTool(tool_id)
+    finally:
+        pyzo.main = old_main
 
     # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
@@ -255,7 +258,7 @@ def main_window_ctor(c):
         # if locale:
             # self.setLocale(locale)
   
-    # Store myself
+    # Set pyzo.main.
     pyzo.main = self # Same as c.frame.top.
     
     # EKR:change-Add do-nothing methods.
@@ -346,7 +349,6 @@ def main_window_populate(c):
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-
     # print('\nBEGIN main_window_populate\n')
 
     # EKR:change
@@ -383,21 +385,25 @@ def main_window_populate(c):
         # self.setCentralWidget(pyzo.editors)
 
     # Create floater for shell
-    self._shellDock = dock = QtWidgets.QDockWidget(self)
-    
-    # EKR:change.
-    dock.setFeatures(
-        dock.DockWidgetMovable |
-        dock.DockWidgetFloatable |
-        dock.DockWidgetClosable # EKR:change.
+    # EKR:change: use a global *Leo* dock
+    self._shellDock = dock = g.app.gui.create_dock_widget(
+        closeable=True,
+        moveable=True,
+        height=50,
+        name='Shells',
     )
+    ### Old code
+        # self._shellDock = dock = QtWidgets.QDockWidget(self)
         # if pyzo.config.settings.allowFloatingShell:
             # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
         # else:
             # dock.setFeatures(dock.DockWidgetMovable)
     dock.setObjectName('shells')
-    dock.setWindowTitle('Shells')
-    self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+        # dock.setWindowTitle('Shells')
+    
+    # EKR:change: Make the dock a *global* dock.
+    g.app.gui.main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+        # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
     pyzo.shells = ShellStackWidget(self)
@@ -421,7 +427,7 @@ def main_window_populate(c):
     from pyzo.core import menu
     pyzo.keyMapper = menu.KeyMapper()
     
-    # EKR:change: disable pyzo.keyMapper.setShortcut.
+    # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
     g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
 
     # EKR:change
@@ -448,17 +454,17 @@ def main_window_populate(c):
 def make_dock(c, name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
     # Called from main_window_populate.
-    dw = c.frame.top
+    main_window = g.app.gui.main_window
     dock = g.app.gui.create_dock_widget(
         closeable=True,
         moveable=True, # Implies floatable.
         height=100,
         name=name,
     )
-    dw.leo_docks.append(dock)
+    ### main_window.leo_docks.append(dock)
     dock.setWidget(widget)
     area = QtCore.Qt.LeftDockWidgetArea
-    dw.addDockWidget(area, dock)
+    main_window.addDockWidget(area, dock)
     widget.show()
 #@+node:ekr.20190816170034.1: *3* menu_build_menus
 def menu_build_menus(c):

@@ -286,6 +286,7 @@ class ToolManager(QtCore.QObject):
     def loadTool(self, toolId, splitWith=None):
         """ Load a tool by creating a dock widget containing the tool widget.
         """
+        # leo_g.trace('toolId', toolId)
 
         # A tool id should always be lower case
         toolId = toolId.lower()

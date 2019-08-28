@@ -129,10 +129,11 @@ class PyzoWebBrowser(QtWidgets.QFrame):
         # Init config
         toolId =  self.__class__.__name__.lower()
         
-        if 1: # EKR:-change: make sure self._config exists.
-            from pyzo.util import zon as ssdf
-            if not hasattr(pyzo.config.tools, toolId):
-                pyzo.config.tools[toolId] = ssdf.new()
+        ### No longer needed.
+            # # EKR:-change: make sure self._config exists.
+            # from pyzo.util import zon as ssdf
+            # if not hasattr(pyzo.config.tools, toolId):
+                # pyzo.config.tools[toolId] = ssdf.new()
             
         self._config = pyzo.config.tools[toolId]
         if not hasattr(self._config, 'zoomFactor'):
