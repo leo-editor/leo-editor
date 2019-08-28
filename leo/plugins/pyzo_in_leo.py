@@ -177,7 +177,6 @@ def pyzo_start():
 #@+node:ekr.20190814050859.1: *3* load_all_docks
 def load_all_docks():
 
-    # print('\nSTART load_all_docks\n')
     tm = pyzo.toolManager
     table = (
         'PyzoFileBrowser',
@@ -191,14 +190,12 @@ def load_all_docks():
     assert pyzo.main == g.app.gui.main_window
     for tool_id in table:
         tm.loadTool(tool_id)
-
-    # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
 def main_window_ctor():
     """
     Simulate MainWindow.__init__().
     
-    This code is based on pyzo.
+    This code, included commented-out code, is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
 
@@ -338,7 +335,7 @@ def main_window_populate():
     """
     Simulate MainWindow._populate().
     
-    This code is based on pyzo.
+    This code, included commented-out code, is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
     # print('\nBEGIN main_window_populate\n')
@@ -533,7 +530,7 @@ def my_app_ctor(argv):
     """
     Simulate MyApp.__init__().
     
-    This code is based on pyzo.
+    This code, included commented-out code, is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
 
