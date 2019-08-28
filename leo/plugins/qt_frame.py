@@ -3191,7 +3191,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top and self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
 
-    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
+    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info (changed)
     def get_window_info(self):
         '''Return the geometry of the top window.'''
         if g.app.use_global_docks:
@@ -4792,8 +4792,9 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        dw.show()
-        tabw.show()
+        if g.app.use_global_docks:
+            dw.show()
+            tabw.show()
         return dw
     #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (changed)
     def createMaster(self):
