@@ -137,7 +137,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.app.use_global_docks:
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
-            self.make_all_global_docks()
+            # self.make_all_global_docks()
         self.frameFactory = qt_frame.TabbedFrameFactory()
             # qtFrame.finishCreate does all the other work.
         
@@ -798,7 +798,8 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName('dock.%s' % name.lower())
         dock.setWindowTitle(name.capitalize())
-        dock.show() # Essential!
+        if g.app.use_global_docks:
+            dock.show() # Essential!
         return dock
     #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
     def make_all_global_docks(self):
