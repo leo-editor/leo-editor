@@ -123,11 +123,6 @@ def init(): # pyzo_in_leo.py
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
     pyzo_start()
-    ###
-        # c = keys.get('c')
-        # if c and c.frame:
-            # pyzo_start(c)
-    
 #@+node:ekr.20190816194046.1: ** patched functions
 #@+node:ekr.20190816193033.1: *3* function: setShortcut
 def setShortcut(self, action):
@@ -223,8 +218,7 @@ def main_window_ctor():
     from pyzo.core import commandline
     
     # EKR:change
-    ### self = c.frame.top
-    self = g.app.gui.main_window ### Experimental
+    self = g.app.gui.main_window
     # EKR:change.
         # QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -358,10 +352,7 @@ def main_window_populate():
     """
     # print('\nBEGIN main_window_populate\n')
 
-    # EKR:change
-    ### self = c.frame.top
-    self = None ### Experimental.
-    ### c = None ### Experimental.
+    # EKR:change: Don't use self *anywhere* here.
     
     # EKR:change-new imports
     from pyzo.core.main import callLater
@@ -387,7 +378,8 @@ def main_window_populate():
         pyzo.parser.start()
 
     # Create editor stack and make the central widget
-    pyzo.editors = EditorTabs(self)
+    # EKR:change. Use None, not self.
+    pyzo.editors = EditorTabs(None)
     
     # EKR:change. Create an Editors dock.
     make_dock('Editors', pyzo.editors)
@@ -416,7 +408,8 @@ def main_window_populate():
         # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
-    pyzo.shells = ShellStackWidget(self)
+    # EKR:change. Use None, not self.
+    pyzo.shells = ShellStackWidget(None)
     dock.setWidget(pyzo.shells)
 
     # Initialize command history
