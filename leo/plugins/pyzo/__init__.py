@@ -44,7 +44,7 @@ except Exception:
     # Print statements or calls to pdb.set_trace are futile.
     leo_g = None
     
-### leo_g.printObj(sys.path, tag="pyzo.__init__: sys.path")
+# leo_g.printObj(sys.path, tag="pyzo.__init__: sys.path")
 
 # Instantiate the application
 import os

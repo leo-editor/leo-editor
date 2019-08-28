@@ -356,7 +356,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         """ Override close event handler. """
         
-        print('ORIGINAL MainWindow.closeEvent')
+        ### Replaced by the close_handler function.
+        
+        leo_g.pr('ORIGINAL MainWindow.closeEvent')
 
         # Are we restaring?
         restarting = time.time() - self._closeflag < 1.0
@@ -497,7 +499,7 @@ def loadIcons():
 
     # Construct other icons
     dummyIcon = IconArtist().finish()
-    ### if leo_g: leo_g.trace('loadIcons: dummyIcon: %r' % dummyIcon)
+    # if leo_g: leo_g.trace('loadIcons: dummyIcon: %r' % dummyIcon)
     pyzo.icons = ssdf.new()
     for fname in os.listdir(iconDir):
         if fname.endswith('.png'):

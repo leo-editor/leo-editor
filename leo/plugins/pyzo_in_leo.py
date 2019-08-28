@@ -30,7 +30,7 @@ def close_handler():
     Copyright (C) 2013-2019 by Almar Klein.
     """
 
-    # print('\ng.app.pyzo_close_event\n')
+    print('\ng.app.pyzo_close_event\n')
     
     # EKR:change-new imports
     from pyzo.core import commandline
@@ -111,6 +111,8 @@ def init(): # pyzo_in_leo.py
     if not g.app.use_global_docks:
         return oops('requires --global-docks')
     g.plugin_signon(__name__)
+    #
+    # This replaces MainWindow.closeEvent.
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.registerHandler('after-create-leo-frame', onCreate)
@@ -321,7 +323,7 @@ def main_window_ctor(c):
             # from pyzo.core.kernelbroker import KernelInfo
             # pyzo.config.shellConfigs2.append( KernelInfo() )
     from pyzo.core.kernelbroker import KernelInfo
-    ### pyzo.config.shellConfigs2.append( KernelInfo() )
+        ### pyzo.config.shellConfigs2.append( KernelInfo() )
     pyzo.config.shellConfigs2 = [KernelInfo()]
 
     # EKR:change Set background.
@@ -392,7 +394,7 @@ def main_window_populate(c):
         height=50,
         name='Shells',
     )
-    ### Old code
+    # Old code
         # self._shellDock = dock = QtWidgets.QDockWidget(self)
         # if pyzo.config.settings.allowFloatingShell:
             # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
@@ -461,7 +463,6 @@ def make_dock(c, name, widget): # pyzo_in_leo.py
         height=100,
         name=name,
     )
-    ### main_window.leo_docks.append(dock)
     dock.setWidget(widget)
     area = QtCore.Qt.LeftDockWidgetArea
     main_window.addDockWidget(area, dock)
