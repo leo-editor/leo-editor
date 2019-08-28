@@ -750,7 +750,7 @@ if QtWidgets: # NOQA
                 external_dock and g.app.init_docks or
                 g.app.get_central_widget(c) == 'body'
             )
-            self.leo_dock = dock = dw.createDockWidget(
+            self.leo_dock = dock = g.app.gui.create_dock_widget(
                 closeable=True, moveable=moveable, height=50, name='Render')
             if moveable:
                 #
@@ -1403,23 +1403,34 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            c, h, pc = self.c, p.h, self
-            if h.startswith('@'):
-                i = g.skip_id(h, 1, chars='-')
-                word = h[1: i].lower().strip()
-                if word in pc.dispatch_dict:
-                    return word
-            # 2016/03/25: Honor @language
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p, use_default=False)
-                # Fix #344: don't use c.target_language as a default.
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in pc.dispatch_dict:
-                return language
-            # To do: look at ancestors, or uA's.
+            c = self.c
+            
+            def get_language(p):
+                """
+                Return the language in effect at position p.
+                Headline directives over-ride normal Leo directives in body text.
+                """
+                h = p.h
+                # First, look for headline directives.
+                if h.startswith('@'):
+                    i = g.skip_id(h, 1, chars='-')
+                    word = h[1: i].lower().strip()
+                    if word in self.dispatch_dict:
+                        return word
+                # Look for @language directives.
+                # Warning: (see #344): don't use c.target_language as a default.
+                colorizer = c.frame.body.colorizer
+                return colorizer.findFirstValidAtLanguageDirective(p.copy())
+            #
+            #  #1287: Honor both kind of directives node by node.
+            for p in p.self_and_parents(p):
+                language = get_language(p)
+                if got_markdown and language in ('md', 'markdown'):
+                    return language
+                if got_docutils and language in ('rest', 'rst'):
+                    return language
+                if language and language in self.dispatch_dict:
+                    return language
             return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):

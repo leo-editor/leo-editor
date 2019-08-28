@@ -132,6 +132,8 @@ class LeoApp:
             # The name of a setting to trace, or None.
         self.translateToUpperCase = False
             # Never set to True.
+        self.use_global_docks = False
+            # True when --global-docks is in effect.
         self.useIpython = False
             # True: add support for IPython.
         self.use_psyco = False
@@ -1367,7 +1369,7 @@ class LeoApp:
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit (changed)
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         assert self == g.app, repr(g.app)
@@ -1375,6 +1377,7 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
+            g.app.saveGlobalWindowState()
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1637,16 +1640,51 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState
-    #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
-    def restoreWindowState(self, c):
+    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (new)
+    def restoreGlobalWindowState(self):
         '''
-        Restore the layout of dock widgets and toolbars.
-        
-        Use the per-file state of the first loaded .leo file, or the global state.
+        Restore the layout of global dock widgets and toolbars.
         '''
         #
         # Note for #1189: The windows has already been improperly resized
         #                 by the time this method is called.
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
+            return
+        main_window = getattr(g.app.gui, 'main_window', None)
+        if not main_window:
+            if trace: g.trace('no main window')
+            return
+        #
+        # Support --init-docks.
+        # #1196. Let Qt use it's own notion of a default layout.
+        #        This should work regardless of the central widget.
+        if g.app.init_docks:
+            if trace: g.trace('--init-docks')
+            return
+        key = 'globalWindowState:'
+        val = self.db.get(key)
+        if val:
+            if trace: g.trace('found key: %s' % key)
+            try:
+                val = base64.decodebytes(val.encode('ascii'))
+                    # Elegant pyzo code.
+                main_window.restoreState(val)
+                return
+            except Exception as err:
+                g.trace('bad value: %s %s' % (key, err))
+                return
+        # This is not an error.
+        if trace: g.trace('missing key: %s' % key)
+    #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
+    def restoreWindowState(self, c):
+        """
+        Restore the layout of dock widgets and toolbars, using the per-file
+        state of the first loaded .leo file, or the global state.
+        
+        Note: The window's position or size has already been restored.
+        """
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         tag = 'app.restoreWindowState:'
         if not g.app.dock:
@@ -1661,8 +1699,7 @@ class LeoApp:
         # #1196. Let Qt use it's own notion of a default layout.
         #        This should work regardless of the central widget.
         if g.app.init_docks:
-            if trace:
-                g.trace('using qt default layout')
+            if trace: g.trace('using qt default layout')
             return
         sfn = c.shortFileName()
         table = (
@@ -1670,9 +1707,6 @@ class LeoApp:
             ('windowState:%s' % (c.fileName()), dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
-            #
-            # The window geometry has already been restored.
-            # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
         )
         for key, method in table:
             val = self.db.get(key)
@@ -1710,6 +1744,33 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
+    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (new)
+    def saveGlobalWindowState(self):
+        """
+        Save the window geometry and layout of dock widgets and toolbars
+        for Leo's *global* QMainWindow.
+        
+        Called by g.app.finishQuit. 
+        """
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
+            return
+        main_window = getattr(g.app.gui, 'main_window', None)
+        if not main_window:
+            if trace: g.trace('no main window')
+            return
+        #
+        # Save the state
+        key = 'globalWindowState:'
+        val = main_window.saveState()
+            # Method is a QMainWindow method.
+        try:
+            val = bytes(val) # PyQt4
+        except Exception:
+            val = bytes().join(val) # PySide
+        if trace: g.trace('set key: %s' % key)
+        g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         '''
@@ -2387,7 +2448,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
+    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers (changed)
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
@@ -2425,6 +2486,7 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
+        g.app.restoreGlobalWindowState()
         g.es('') # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
@@ -2477,16 +2539,20 @@ class LoadManager:
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
+                # Calls LM.loadLocalFile.
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
         c = c1
         # For qt gui, select the first-loaded tab.
-        if hasattr(g.app.gui, 'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                factory.setTabForCommander(c)
+        if g.app.use_global_docks:
+            pass
+        else:
+            if hasattr(g.app.gui, 'frameFactory'):
+                factory = g.app.gui.frameFactory
+                if factory and hasattr(factory, 'setTabForCommander'):
+                    factory.setTabForCommander(c)
         if not c:
             return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
@@ -2581,7 +2647,7 @@ class LoadManager:
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon() # Set app.signon/signon1 for commanders.
-    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
+    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers
     def createAllImporetersData(self):
         '''
         New in Leo 5.5:
@@ -2807,7 +2873,7 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
@@ -2818,7 +2884,7 @@ class LoadManager:
             '--session-restore',
             '--session-save',
         )
-        trace_m='''cache,coloring,dock,drawing,events,focus,gnx,ipython,
+        trace_m='''cache,coloring,dock,drawing,events,focus,git,gnx,ipython,
           keys,plugins,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
@@ -2874,6 +2940,7 @@ class LoadManager:
         add_bool('--init-docks',    'put docks in default positions')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
+        add_bool('--global-docks',  'use global docks')
         add_other('--gui',          'gui to use (qt/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
@@ -2914,7 +2981,7 @@ class LoadManager:
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
-    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption (changed)
+    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
     def doGuiOption(self, options):
         gui = options.gui
         if gui:
@@ -2976,6 +3043,9 @@ class LoadManager:
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
+         # --global-docks
+        g.app.use_global_docks = bool(options.global_docks)
+        print('--global-docks: %s\n' % g.app.use_global_docks)
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3183,8 +3253,7 @@ class LoadManager:
         # Create the a commander for the .leo file.
         # Important.  The settings don't matter for pre-reads!
         # For second read, the settings for the file are *exactly* previousSettings.
-        c = g.app.newCommander(fileName=fn, gui=gui,
-            previousSettings=previousSettings)
+        c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)

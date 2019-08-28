@@ -1273,7 +1273,7 @@ class Undoer:
         newSel = u.newSel
         p = u.p.copy()
         u.groupCount += 1
-        bunch = u.beads[u.bead]; count = 0
+        bunch = u.beads[u.bead+1]; count = 0
         if not hasattr(bunch, 'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
             g.trace(bunch)
@@ -1431,7 +1431,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* u.undo
+    #@+node:ekr.20031218072017.2039: *3* u.undo (changed)
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
@@ -1462,7 +1462,8 @@ class Undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        if u.oldChanged is None: u.oldChanged = True
+        if u.oldChanged is None:
+            u.oldChanged = False # 2019/08/24: Was True!
         c.setChanged(u.oldChanged)
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()

@@ -41,7 +41,7 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp) (changed)
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
         super().__init__('qt')
@@ -52,6 +52,8 @@ class LeoQtGui(leoGui.LeoGui):
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
         self.mGuiName = 'qt'
+        self.main_window = None
+            # The *singleton* QMainWindow.
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
             # For c.idle_focus_helper and activate/deactivate events.
@@ -132,8 +134,12 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-        # #1171:
+        if g.app.use_global_docks:
+            self.main_window = self.make_main_window()
+            self.outlines_dock = self.make_outlines_dock()
+            self.make_all_global_docks()
         self.frameFactory = qt_frame.TabbedFrameFactory()
+            # qtFrame.finishCreate does all the other work.
         
     def reloadSettings(self):
         pass
@@ -282,6 +288,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(self, c, spellHandler, tabName):
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
+
     #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run a qt About Leo dialog."""
@@ -775,7 +782,78 @@ class LeoQtGui(leoGui.LeoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
+    #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
+    def create_dock_widget(self, closeable, moveable, height, name):
+        '''Make a new dock widget in the main window'''
+        dock = QtWidgets.QDockWidget(parent=self.main_window)
+            # The parent must be a QMainWindow.
+        features = dock.NoDockWidgetFeatures
+        if moveable:
+            features |= dock.DockWidgetMovable
+            features |= dock.DockWidgetFloatable
+        if closeable:
+            features |= dock.DockWidgetClosable
+        dock.setFeatures(features)
+        dock.setMinimumHeight(height)
+        dock.setObjectName('dock.%s' % name.lower())
+        dock.setWindowTitle(name.capitalize())
+        dock.show() # Essential!
+        return dock
+    #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
+    def make_all_global_docks(self):
+        """Make four global docks for testing."""
+        Qt = QtCore.Qt
+        bottom_area, top_area = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
+        lt_area, rt_area = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+        table = (
+            ("Test1", lt_area, "blue"),
+            ("Test2", rt_area, "yellow"),
+            ("Test3", top_area, "green"),
+            ("Test4", bottom_area, "pink"),
+        )
+        for name, area, color in table:
+            dock = self.create_dock_widget(
+                closeable=True, moveable=True, height=100, name=name)
+            dock.setStyleSheet("background: %s;" % color)
+            w = QtWidgets.QFrame()
+            dock.setWidget(w)
+            self.main_window.addDockWidget(area, dock)
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
+    def make_outlines_dock(self):
+        """
+        Create the top-level Outlines dock.
+        The dock's widget will be set later.
+        """
+        main_window = self.main_window
+        # For now, make it the central widget.
+        is_central = True
+        dock = self.create_dock_widget(
+            closeable=not is_central,
+            moveable=not is_central,
+            height=100,
+            name="Leo Outlines")
+        if is_central:
+            main_window.setCentralWidget(dock)
+        else:
+            area = QtCore.Qt.BottomDockWidgetArea
+            main_window.addDockWidget(area, dock)
+        return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
+    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (new)
+    def close_event(self, event):
+        
+        noclose = False
+        if g.app.sessionManager and g.app.loaded_session:
+            g.app.sessionManager.save_snapshot()
+        for c in g.app.commanders():
+            allow = c.exists and g.app.closeLeoWindow(c.frame)
+            if not allow:
+                noclose = True
+        if noclose:
+            event.ignore()
+        else:
+            event.accept()
     #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
     # deactivated_name = ''
     deactivated_widget = None
@@ -804,7 +882,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # self.active = False
                 # c.k.keyboardQuit(setFocus=False)
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
+    #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent(self, event, c, obj, tag):
@@ -847,7 +925,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # else:
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter (changed)
+    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 
@@ -1115,6 +1193,31 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
+    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
+    def make_main_window(self):
+        '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
+        window = QtWidgets.QMainWindow()
+        # Calling window.show() causes flash.
+            # window.show()
+        self.attachLeoIcon(window)
+        if g.app.start_minimized:
+            window.showMinimized()
+        # Monkey-patch
+        window.closeEvent = self.close_event
+            # Use self: g.app.gui does not exist yet.
+        self.runAtIdle(self.set_main_window_style_sheet)
+            # No StyleSheetManager exists yet.
+        return window
+        
+    def set_main_window_style_sheet(self):
+        """Style the main window, using the first .leo file."""
+        commanders = g.app.commanders()
+        if commanders:
+            c = commanders[0]
+            ssm = c.styleSheetManager
+            ssm.set_style_sheets(w=self.main_window)
+        else:
+            g.trace("No open commanders!")
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,
@@ -1267,6 +1370,12 @@ class LeoQtGui(leoGui.LeoGui):
                     g.app.ipk.run_script(file_name=c.p.h,script=script)
 
         ipk.kernelApp.start()
+    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
+    def set_top_geometry(self, w, h, x, y):
+        """Set the geometry of the main window."""
+        if 'size' in g.app.debug:
+            g.trace('(qt_gui)', w, h, x, y)
+        self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
@@ -1408,10 +1517,12 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
     if isQt5:
-        pass # Not ready yet.
+        ### To do: https://doc.qt.io/qt-5/qsignalspy.html
+        from PyQt5.QtTest import QSignalSpy
+        assert QSignalSpy
     else:
+        # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
         _oldConnect = QtCore.QObject.connect
         _oldDisconnect = QtCore.QObject.disconnect
         _oldEmit = QtCore.QObject.emit
@@ -1460,6 +1571,71 @@ class LeoQtGui(leoGui.LeoGui):
                 self._oldEmit(self, *args)
 
             QtCore.QObject.emit = new_emit
+    #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
+    #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
+    def createButton(self, parent, name, label):
+        w = QtWidgets.QPushButton(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819091122.1: *4* qt_gui.createFrame
+    def createFrame(self, parent, name,
+        hPolicy=None, vPolicy=None,
+        lineWidth=1,
+        shadow=QtWidgets.QFrame.Plain,
+        shape=QtWidgets.QFrame.NoFrame,
+    ):
+        '''Create a Qt Frame.'''
+        w = QtWidgets.QFrame(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091851.1: *4* qt_gui.createGrid
+    def createGrid(self, parent, name, margin=0, spacing=0):
+        w = QtWidgets.QGridLayout(parent)
+        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+        w.setSpacing(spacing)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819093830.1: *4* qt_gui.createHLayout & createVLayout
+    def createHLayout(self, parent, name, margin=0, spacing=0):
+        hLayout = QtWidgets.QHBoxLayout(parent)
+        hLayout.setObjectName(name)
+        hLayout.setSpacing(spacing)
+        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return hLayout
+
+    def createVLayout(self, parent, name, margin=0, spacing=0):
+        vLayout = QtWidgets.QVBoxLayout(parent)
+        vLayout.setObjectName(name)
+        vLayout.setSpacing(spacing)
+        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        return vLayout
+    #@+node:ekr.20190819094302.1: *4* qt_gui.createLabel
+    def createLabel(self, parent, name, label):
+        w = QtWidgets.QLabel(parent)
+        w.setObjectName(name)
+        w.setText(label)
+        return w
+    #@+node:ekr.20190819092523.1: *4* qt_gui.createTabWidget
+    def createTabWidget(self, parent, name, hPolicy=None, vPolicy=None):
+        w = QtWidgets.QTabWidget(parent)
+        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setObjectName(name)
+        return w
+    #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
+    def setSizePolicy(self, widget, kind1=None, kind2=None):
+        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
+        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
+        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            widget.sizePolicy().hasHeightForWidth())
+        widget.setSizePolicy(sizePolicy)
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
 class StyleClassManager:

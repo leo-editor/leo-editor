@@ -3589,7 +3589,7 @@ def cycle_all_focus(self, event=None):
     '''Cycle all focus'''
     event = VimEvent(c=self.c, char='', stroke='', w=self.colon_w)
     self.do('cycle-all-focus', event=event)
-#@+node:ekr.20110605121601.18462: *3* class SDIFrameFactory
+#@+node:ekr.20110605121601.18462: *3* class SDIFrameFactory (not used)
 class SDIFrameFactory:
     """
     Top-level frame builder for Qt Gui without tabs.
@@ -3597,7 +3597,7 @@ class SDIFrameFactory:
     This only deals with Qt level widgets, not Leo wrappers
     """
     @others
-#@+node:ekr.20110605121601.18463: *4* createFrame (SDIFrameFactory)
+#@+node:ekr.20110605121601.18463: *4* createFrame (SDIFrameFactory) (not used)
 def createFrame(self, leoFrame):
     c = leoFrame.c
     dw = DynamicWindow(c)

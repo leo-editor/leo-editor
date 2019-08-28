@@ -106,7 +106,7 @@ class SessionManager:
         '''
         Save a snapshot of the present session to the leo.session file.
 
-        Called automatically during shutdown when --session-save is in effect.
+        Called automatically during shutdown when no files were given on the command line.
         '''
         if self.path:
             session = self.get_session()

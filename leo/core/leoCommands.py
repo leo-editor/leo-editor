@@ -1184,7 +1184,7 @@ class Commands:
             if not c.isChanged():
                 c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2989: *5* c.setChanged
+    #@+node:ekr.20031218072017.2989: *5* c.setChanged (no longer changed)
     def setChanged(self, changedFlag=True, redrawFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
         c = self
@@ -1208,8 +1208,8 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            # Call LeoTabbedTopLevel.setChanged.
             master.setChanged(c, changedFlag)
+                # Call LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2:
             if changedFlag:
@@ -2358,7 +2358,7 @@ class Commands:
                 g.internalError('no gnx for vnode: %s' % (v))
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
-    #@+node:ekr.20180510104805.1: *4* c.diff_file (new)
+    #@+node:ekr.20180510104805.1: *4* c.diff_file
     def diff_file(self, fn, rev1='HEAD', rev2='', directory=None):
         '''
         Create an outline describing the git diffs for all files changed
@@ -2383,7 +2383,7 @@ class Commands:
             rev1=rev1,
             rev2=rev2,
         )
-    #@+node:ekr.20180510103923.1: *4* c.diff_two_branches (new)
+    #@+node:ekr.20180510103923.1: *4* c.diff_two_branches
     def diff_two_branches(self, branch1, branch2, fn, directory=None):
         '''
         Create an outline describing the git diffs for all files changed
@@ -2396,7 +2396,7 @@ class Commands:
             directory=directory,
             fn=fn,
         )
-    #@+node:ekr.20180510105125.1: *4* c.git_diff (new)
+    #@+node:ekr.20180510105125.1: *4* c.git_diff
     def git_diff(self, rev1='HEAD', rev2='', directory=None):
         
         import leo.commands.editFileCommands as efc
@@ -2696,7 +2696,7 @@ class Commands:
             
     recolor_now = recolor
     #@+node:ekr.20080514131122.14: *5* c.redrawing...
-    #@+node:ekr.20170808014610.1: *6* c.enable/disable_redraw (New in Leo 5.6)
+    #@+node:ekr.20170808014610.1: *6* c.enable/disable_redraw
     def disable_redraw(self):
         '''Disable all redrawing until enabled.'''
         c = self
