@@ -67,8 +67,7 @@ def close_handler():
 
     # EKR:change-no-config
     # Close tools
-    ### How to get c???
-    ### close_all_pyzo_tools(c)
+    ### close_all_pyzo_tools()
         # for toolname in pyzo.toolManager.getLoadedTools():
             # tool = pyzo.toolManager.getTool(toolname)
             # tool.close()
@@ -218,7 +217,7 @@ def main_window_ctor():
     from pyzo.core import commandline
     
     # EKR:change
-    self = g.app.gui.main_window
+    self = main_window = g.app.gui.main_window
     # EKR:change.
         # QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -260,7 +259,7 @@ def main_window_ctor():
             # self.setLocale(locale)
   
     # Set pyzo.main.
-    pyzo.main = self # Same as c.frame.top.
+    pyzo.main = main_window
     
     # EKR:change-Add do-nothing methods.
     pyzo.main.setMainTitle = g.TracingNullObject(tag='pyzo.main.setMainTitle()')
@@ -455,7 +454,7 @@ def main_window_populate():
     # print('END main_window_populate\n')
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(name, widget): # pyzo_in_leo.py
-    """Create a dock with the given name and widget in c's main window."""
+    """Create a dock with the given name and widget the global main window."""
     # Called from main_window_populate.
     main_window = g.app.gui.main_window
     dock = g.app.gui.create_dock_widget(
@@ -478,8 +477,7 @@ def menu_build_menus():
     """
 
     # EKR:change.
-    ### self = c.frame.top
-    self = g.app.gui.main_window ### Experimental.
+    self = g.app.gui.main_window
     
     # EKR:change-new imports.
     from pyzo import translate
