@@ -122,17 +122,19 @@ def init(): # pyzo_in_leo.py
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
-    c = keys.get('c')
-    if c and c.frame:
-        pyzo_start(c)
-
+    pyzo_start()
+    ###
+        # c = keys.get('c')
+        # if c and c.frame:
+            # pyzo_start(c)
+    
 #@+node:ekr.20190816194046.1: ** patched functions
 #@+node:ekr.20190816193033.1: *3* function: setShortcut
 def setShortcut(self, action):
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
-def pyzo_start(c):
+def pyzo_start():
     """
     A copy of pyzo.start, adapted for Leo.
     
@@ -164,7 +166,7 @@ def pyzo_start(c):
     # EKR:change.
     # Instantiate the application.
         # QtWidgets.qApp = MyApp(sys.argv)
-    my_app_ctor(c, sys.argv)
+    my_app_ctor(sys.argv)
 
     # EKR:change.
         # # Choose language, get locale
@@ -172,7 +174,7 @@ def pyzo_start(c):
     # EKR:change.
     # Create main window, using the selected locale
         # MainWindow(None, appLocale)
-    main_window_ctor(c)
+    main_window_ctor()
 
     # EKR:change.
         # Enter the main loop
@@ -183,7 +185,6 @@ def pyzo_start(c):
 def load_all_docks():
 
     # print('\nSTART load_all_docks\n')
-    g.trace('=====', g.callers())
     tm = pyzo.toolManager
     table = (
         'PyzoFileBrowser',
@@ -207,7 +208,7 @@ def load_all_docks():
 
     # print('\nEND load_all_docks\n')
 #@+node:ekr.20190816131753.1: *3* main_window_ctor
-def main_window_ctor(c):
+def main_window_ctor():
     """
     Simulate MainWindow.__init__().
     
@@ -222,7 +223,8 @@ def main_window_ctor(c):
     from pyzo.core import commandline
     
     # EKR:change
-    self = c.frame.top
+    ### self = c.frame.top
+    self = g.app.gui.main_window ### Experimental
     # EKR:change.
         # QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -299,7 +301,7 @@ def main_window_ctor(c):
             # time.sleep(0.05)
     # EKR:change.
     # Populate the window (imports more code)
-    main_window_populate(c)
+    main_window_populate()
         # self._populate()
 
     # EKR:change.
@@ -347,7 +349,7 @@ def main_window_ctor(c):
     
     # print('END main_window_ctor\n')
 #@+node:ekr.20190816132847.1: *3* main_window_populate
-def main_window_populate(c):
+def main_window_populate():
     """
     Simulate MainWindow._populate().
     
@@ -357,7 +359,9 @@ def main_window_populate(c):
     # print('\nBEGIN main_window_populate\n')
 
     # EKR:change
-    self = c.frame.top
+    ### self = c.frame.top
+    self = None ### Experimental.
+    ### c = None ### Experimental.
     
     # EKR:change-new imports
     from pyzo.core.main import callLater
@@ -386,12 +390,13 @@ def main_window_populate(c):
     pyzo.editors = EditorTabs(self)
     
     # EKR:change. Create an Editors dock.
-    make_dock(c, 'Editors', pyzo.editors)
+    make_dock('Editors', pyzo.editors)
         # self.setCentralWidget(pyzo.editors)
 
     # Create floater for shell
     # EKR:change: use a global *Leo* dock
-    self._shellDock = dock = g.app.gui.create_dock_widget(
+    ### self._shellDock = dock = g.app.gui.create_dock_widget(
+    dock = g.app.gui.create_dock_widget(
         closeable=True,
         moveable=True,
         height=50,
@@ -436,7 +441,7 @@ def main_window_populate(c):
     g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
 
     # EKR:change
-    menu_build_menus(c)
+    menu_build_menus()
         # Create menu
         # menu.buildMenus(self.menuBar())
     
@@ -456,7 +461,7 @@ def main_window_populate(c):
             
     # print('END main_window_populate\n')
 #@+node:ekr.20190813161921.1: *3* make_dock
-def make_dock(c, name, widget): # pyzo_in_leo.py
+def make_dock(name, widget): # pyzo_in_leo.py
     """Create a dock with the given name and widget in c's main window."""
     # Called from main_window_populate.
     main_window = g.app.gui.main_window
@@ -471,7 +476,7 @@ def make_dock(c, name, widget): # pyzo_in_leo.py
     main_window.addDockWidget(area, dock)
     widget.show()
 #@+node:ekr.20190816170034.1: *3* menu_build_menus
-def menu_build_menus(c):
+def menu_build_menus():
     """
     Build only the desired menus, in a top-level Pyzo menu.
     
@@ -480,7 +485,8 @@ def menu_build_menus(c):
     """
 
     # EKR:change.
-    self = c.frame.top
+    ### self = c.frame.top
+    self = g.app.gui.main_window ### Experimental.
     
     # EKR:change-new imports.
     from pyzo import translate
@@ -540,7 +546,7 @@ def menu_build_menus(c):
 
     menuBar.hovered.connect(onHover)
 #@+node:ekr.20190816131934.1: *3* my_app_ctor
-def my_app_ctor(c, argv):
+def my_app_ctor(argv):
     """
     Simulate MyApp.__init__().
     
