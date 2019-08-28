@@ -115,7 +115,9 @@ def init(): # pyzo_in_leo.py
     # This replaces MainWindow.closeEvent.
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
-    g.registerHandler('after-create-leo-frame', onCreate)
+    # Init pyzo only once!
+    g.registerHandler('start2', onCreate)
+    
     return True
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
@@ -178,9 +180,10 @@ def pyzo_start(c):
 
     # print('END pyzo_start\n')
 #@+node:ekr.20190814050859.1: *3* load_all_docks
-def load_all_docks(c):
+def load_all_docks():
 
     # print('\nSTART load_all_docks\n')
+    g.trace('=====', g.callers())
     tm = pyzo.toolManager
     table = (
         'PyzoFileBrowser',
@@ -442,7 +445,7 @@ def main_window_populate(c):
     pyzo.shells.addContextMenu()
     
     # EKR:change
-    load_all_docks(c)
+    load_all_docks()
         # # Load tools
         # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
             # pyzo.toolManager.loadTool('pyzosourcestructure')
