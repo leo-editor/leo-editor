@@ -45,6 +45,7 @@ def blacken_node(event):
     else:
         g.es_print('can not import black')
 #@+node:ekr.20190729105252.1: *3* blacken-tree
+@g.command('blacken')
 @g.command('blacken-tree')
 def blacken_tree(event):
     '''
@@ -254,7 +255,7 @@ class BlackCommand:
     class Chunk:
         '''
         A class containing lines.
-        These lines are blacken only if the blacken flag is True.
+        These lines are blackened only if the blacken flag is True.
         '''
 
         def __init__(self, blacken, lines):
