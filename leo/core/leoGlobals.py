@@ -83,6 +83,7 @@ globalDirectiveList = [
     'markup',
     'nobeautify',
     'nocolor-node', 'nocolor', 'noheader', 'nowrap',
+    'nopyflakes', # Leo 6.1.
     'nosearch', # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
     'raw', 'root-code', 'root-doc', 'root', 'silent',
