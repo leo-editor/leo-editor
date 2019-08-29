@@ -367,7 +367,6 @@ class PyflakesCommand:
                 )
                 errors = api.check(s, sfn, r)
                 total_errors += errors
-                if errors: g.trace(g.callers())
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
     def check_script(self, p, script):
