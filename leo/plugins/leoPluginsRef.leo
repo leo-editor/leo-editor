@@ -380,7 +380,7 @@
 <v t="ekr.20190812072047.15"><vh>@clean __main__.py</vh>
 <v t="ekr.20190812072047.17"><vh>main</vh></v>
 </v>
-<v t="ekr.20190812072047.19"><vh>@path codeeditor</vh>
+<v t="ekr.20190812072047.19"><vh>pyzo/codeeditor</vh>
 <v t="ekr.20190812072047.20"><vh>@clean base.py</vh>
 <v t="ekr.20190812072047.21"><vh>Declarations</vh></v>
 <v t="ekr.20190812072047.22"><vh>class CodeEditorBase(QtWidgets.QPlainTextEdit)</vh>
@@ -428,7 +428,6 @@
 </v>
 </v>
 <v t="ekr.20190812072047.61"><vh>@clean manager.py</vh>
-<v t="ekr.20190812072047.62"><vh>Declarations</vh></v>
 <v t="ekr.20190812072047.63"><vh>class Manager</vh>
 <v t="ekr.20190812072047.64"><vh>Manager._collectParsers</vh></v>
 <v t="ekr.20190812072047.65"><vh>Manager.getParserNames</vh></v>
@@ -507,7 +506,7 @@
 <v t="ekr.20190812072047.127"><vh>Declarations</vh></v>
 <v t="ekr.20190812072047.128"><vh>class CodeEditor</vh></v>
 </v>
-<v t="ekr.20190812072047.130"><vh>@path extensions</vh>
+<v t="ekr.20190812072047.130"><vh>codeeditor/extensions</vh>
 <v t="ekr.20190812072047.131"><vh>@clean appearance.py</vh>
 <v t="ekr.20190812072047.132"><vh>Declarations</vh></v>
 <v t="ekr.20190812072047.133"><vh>class HighlightMatchingOccurrences(object)</vh>
@@ -718,7 +717,7 @@
 </v>
 <v t="ekr.20190812072048.59"><vh>@clean __init__.py</vh></v>
 </v>
-<v t="ekr.20190812072048.61"><vh>@path parsers</vh>
+<v t="ekr.20190812072048.61"><vh>codeeditor/parsers</vh>
 <v t="ekr.20190812072048.62"><vh>@clean cython_parser.py</vh>
 <v t="ekr.20190812072048.63"><vh>Declarations</vh></v>
 <v t="ekr.20190812072048.64"><vh>class CythonParser(PythonParser)</vh>
@@ -809,7 +808,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190812072048.138"><vh>@path core</vh>
+<v t="ekr.20190812072048.138"><vh>pyzo/core</vh>
 <v t="ekr.20190812072048.139"><vh>@clean about.py</vh>
 <v t="ekr.20190812072048.140"><vh>Declarations</vh></v>
 <v t="ekr.20190812072048.141"><vh>class AboutDialog(QtWidgets.QDialog)</vh>
@@ -1629,7 +1628,7 @@
 <v t="ekr.20190812072049.180"><vh>Declarations</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072049.182"><vh>@path pyzokernel</vh>
+<v t="ekr.20190812072049.182"><vh>pyzo/pyzokernel</vh>
 <v t="ekr.20190812072049.183"><vh>@clean debug.py</vh>
 <v t="ekr.20190812072049.184"><vh>Declarations</vh></v>
 <v t="ekr.20190812072049.185"><vh>class Debugger(bdb.Bdb)</vh>
@@ -1847,7 +1846,7 @@
 <v t="ekr.20190812072049.368"><vh>printDirect</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072049.370"><vh>@path resources</vh>
+<v t="ekr.20190812072049.370"><vh>pyzo/resources</vh>
 <v t="ekr.20190812072049.371"><vh>@clean tutorial.py</vh>
 <v t="ekr.20190812072049.372"><vh>Declarations</vh></v>
 <v t="ekr.20190812072049.373"><vh>getNumber</vh></v>
@@ -1855,7 +1854,7 @@
 <v t="ekr.20190812072049.375"><vh>bar</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072049.381"><vh>@path tools</vh>
+<v t="ekr.20190812072049.381"><vh>pyzo/tools</vh>
 <v t="ekr.20190812072049.474"><vh>@clean __init__.py</vh>
 <v t="ekr.20190812081316.1"><vh>&lt;&lt; tools/__init__ docstring &gt;&gt;</vh></v>
 <v t="ekr.20190812072049.476"><vh>class ToolDockWidget(QtWidgets.QDockWidget)</vh>
@@ -1991,7 +1990,7 @@
 <v t="ekr.20190812072049.473"><vh>PyzoWorkspace.onOptionMenuTiggered</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072049.497"><vh>@path pyzoFileBrowser</vh>
+<v t="ekr.20190812072049.497"><vh>tools/pyzoFileBrowser</vh>
 <v t="ekr.20190812072050.183"><vh>@clean __init__.py</vh>
 <v t="ekr.20190812072050.184"><vh>Declarations</vh></v>
 <v t="ekr.20190812072050.185"><vh>class PyzoFileBrowser(QtWidgets.QWidget)</vh>
@@ -2312,7 +2311,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190812072050.193"><vh>@path util</vh>
+<v t="ekr.20190812072050.193"><vh>pyzo/util</vh>
 <v t="ekr.20190812072050.194"><vh>@clean bootstrapconda.py</vh>
 <v t="ekr.20190812072050.195"><vh>Declarations</vh></v>
 <v t="ekr.20190812072050.196"><vh>check_for_conda_env</vh></v>
@@ -2429,7 +2428,7 @@
 <v t="ekr.20190812072050.294"><vh>@clean __init__.py</vh>
 <v t="ekr.20190812072050.295"><vh>Declarations</vh></v>
 </v>
-<v t="ekr.20190812072050.297"><vh>@path interpreters</vh>
+<v t="ekr.20190812072050.297"><vh>util/interpreters</vh>
 <v t="ekr.20190812072050.298"><vh>@clean inwinreg.py</vh>
 <v t="ekr.20190812072050.299"><vh>Declarations</vh></v>
 <v t="ekr.20190812072050.300"><vh>class PythonInReg</vh>
@@ -2478,7 +2477,7 @@
 <v t="ekr.20190812072050.339"><vh>_get_interpreters_relative</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072050.341"><vh>@path qt</vh>
+<v t="ekr.20190812072050.341"><vh>util/qt</vh>
 <v t="ekr.20190812072050.342"><vh>@clean QtCore.py</vh>
 <v t="ekr.20190812072050.343"><vh>Declarations</vh></v>
 </v>
@@ -2505,7 +2504,7 @@
 <v t="ekr.20190812072050.358"><vh>class PythonQtError(Exception)</vh></v>
 <v t="ekr.20190812072050.359"><vh>class PythonQtWarning(Warning)</vh></v>
 </v>
-<v t="ekr.20190812072050.361"><vh>@path _patch</vh>
+<v t="ekr.20190812072050.361"><vh>util/qt/_patch</vh>
 <v t="ekr.20190812072050.362"><vh>@clean qcombobox.py</vh>
 <v t="ekr.20190812072050.363"><vh>patch_qcombobox</vh></v>
 </v>
@@ -2517,7 +2516,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190812072050.369"><vh>@path yoton</vh>
+<v t="ekr.20190812072050.369"><vh>pyzo/yoton</vh>
 <v t="ekr.20190812072050.370"><vh>@clean clientserver.py</vh>
 <v t="ekr.20190812072050.371"><vh>Declarations</vh></v>
 <v t="ekr.20190812072050.372"><vh>class RequestServer(threading.Thread)</vh>
@@ -2744,7 +2743,7 @@
 <v t="ekr.20190812072050.563"><vh>SimpleSocket.recv</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072051.2"><vh>@path channels</vh>
+<v t="ekr.20190812072051.2"><vh>yoton/channels</vh>
 <v t="ekr.20190812072051.3"><vh>@clean channels_base.py</vh>
 <v t="ekr.20190812072051.4"><vh>Declarations</vh></v>
 <v t="ekr.20190812072051.5"><vh>class BaseChannel(object)</vh>
@@ -2908,7 +2907,7 @@
 <v t="ekr.20190812072051.142"><vh>Declarations</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072051.144"><vh>@path tests</vh>
+<v t="ekr.20190812072051.144"><vh>yoton/tests</vh>
 <v t="ekr.20190812072051.145"><vh>@clean count_lines_of_code.py</vh>
 <v t="ekr.20190812072051.146"><vh>Declarations</vh></v>
 <v t="ekr.20190812072051.147"><vh>count_lines</vh></v>
@@ -5847,7 +5846,7 @@ def textCharFormat(self):
             self._textCharFormat.setFontItalic(True)
     return self._textCharFormat
 </t>
-<t tx="ekr.20190812072047.111">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.111">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
 @others
 @language python
@@ -6074,9 +6073,12 @@ def reshapeText(cls, text, lw):
             # This single word covers more than one line
             self._flush()
 </t>
-<t tx="ekr.20190812072047.124">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.124">@path pyzo/codeeditor/
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+""" This script runs a test for the code editor component.
+"""
+
 @others
 if __name__=='__main__':
 
@@ -6114,10 +6116,7 @@ if __name__=='__main__':
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072047.125">""" This script runs a test for the code editor component.
-"""
-
-import os, sys
+<t tx="ekr.20190812072047.125">import os, sys
 from qt import QtGui, QtCore, QtWidgets
 Qt = QtCore.Qt
 
@@ -6127,7 +6126,7 @@ os.chdir('..')
 sys.path.insert(0,'.')
 from codeeditor import CodeEditor
 </t>
-<t tx="ekr.20190812072047.126">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.126">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
 # flake8: noqa
 @others
@@ -6237,17 +6236,17 @@ from .extensions.calltip import Calltip
         ssdf.save( os.path.join(appDataDir, "config.ssdf"), config )
 </t>
 <t tx="ekr.20190812072047.130"></t>
-<t tx="ekr.20190812072047.131">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/extensions/
+<t tx="ekr.20190812072047.131">@path pyzo/codeeditor/extensions/
 # -*- coding: utf-8 -*-
+"""
+Code editor extensions that change its appearance
+"""
+
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072047.132">"""
-Code editor extensions that change its appearance
-"""
-
-from ..qt import QtGui,QtCore, QtWidgets
+<t tx="ekr.20190812072047.132">from ..qt import QtGui,QtCore, QtWidgets
 Qt = QtCore.Qt
 
 from ..misc import ce_option
@@ -6466,7 +6465,7 @@ def setHighlightMatchingOccurrences(self,value):
 <t tx="ekr.20190812072047.149">class _MatchResult :
     @others
 </t>
-<t tx="ekr.20190812072047.15">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/
+<t tx="ekr.20190812072047.15">@path pyzo/
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """EKR:change-startup. Add leo/plugins/pyzo to sys.path and import pyzo."""
@@ -7209,8 +7208,9 @@ def showLineEndings(self):
     self.addLeftMargin(LineNumbers, self.getLineNumberAreaWidth)
 </t>
 <t tx="ekr.20190812072047.2"># These are the actual pyzo sources,
-# unmodified except for traces added by EKR.</t>
-<t tx="ekr.20190812072047.20">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+# unmodified except for traces added by EKR.
+</t>
+<t tx="ekr.20190812072047.20">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
 @others
 @language python
@@ -7696,10 +7696,10 @@ def setWrap(self,value):
     else:
         option.setWrapMode(option.NoWrap)
     self.document().setDefaultTextOption(option)
-\\-4.# todo: move this bit to base class?
-\\-4.# This functionality embedded in the highlighter and even has a designated
-\\-4.# subpackage. I feel that it should be a part of the base editor.
-\\-4.# Note: if we do this, remove the hasattr call in the highlighter.
+# todo: move this bit to base class?
+# This functionality embedded in the highlighter and even has a designated
+# subpackage. I feel that it should be a part of the base editor.
+# Note: if we do this, remove the hasattr call in the highlighter.
 </t>
 <t tx="ekr.20190812072047.229">class SyntaxHighlighting(object): # tag:CodeEditor
     """ Notes on syntax highlighting.
@@ -7877,13 +7877,13 @@ def setParser(self, parserName=''):
     # Restyle, use setStyle for lazy updating
     self.setStyle()
 </t>
-<t tx="ekr.20190812072047.232">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/extensions/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072047.232">@path pyzo/codeeditor/extensions/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072047.233">"""
+<t tx="ekr.20190812072047.233"># -*- coding: utf-8 -*-
+"""
 Code editor extensions that provides autocompleter functionality
 """
 
@@ -7904,7 +7904,7 @@ import keyword
         return None
     else:
         return QtCore.QStringListModel.data(self, index, role)
-\\-4.# todo: use keywords from the parser
+# todo: use keywords from the parser
 </t>
 <t tx="ekr.20190812072047.236">class AutoCompletion(object): # tag:CodeEditor
     @others
@@ -8139,7 +8139,7 @@ import keyword
     self.fontChanged.emit()
     return font
 </t>
-<t tx="ekr.20190812072047.3">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/
+<t tx="ekr.20190812072047.3">@path pyzo/
 @others
 @language python
 @tabwidth -4
@@ -8574,9 +8574,7 @@ sys.path.pop(0)
     assert des is not None
     self._leftmargins.append((des, func))
 </t>
-<t tx="ekr.20190812072047.5">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/
-@first #!/usr/bin/env python3
-@first # -*- coding: utf-8 -*-
+<t tx="ekr.20190812072047.5">@path pyzo/
 
 # EKR: The frozen version of pyzo does not use pyzo.__main__
 &lt;&lt; pyzo.__init__ docstring &gt;&gt;
@@ -8636,13 +8634,13 @@ __version__ = '4.6.2'
     cursor.setPosition(end_pos, QtGui.QTextCursor.KeepAnchor)
     self.setTextCursor(cursor)
 </t>
-<t tx="ekr.20190812072047.53">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072047.53">@path pyzo/codeeditor/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072047.54">""" Module highlighter
+<t tx="ekr.20190812072047.54"># -*- coding: utf-8 -*-
+""" Module highlighter
 
 Defines the highlighter class for the base code editor class. It will do
 the styling when syntax highlighting is enabled. If it is not, will only
@@ -8673,8 +8671,8 @@ from .misc import ustr
     self.indentation = None
     self.fullUnderlineFormat = None
     self.tokens = []
-\\-4.# The highlighter should be part of the base class, because
-\\-4.# some extensions rely on them (e.g. the indent guuides).
+# The highlighter should be part of the base class, because
+# some extensions rely on them (e.g. the indent guuides).
 </t>
 <t tx="ekr.20190812072047.57">class Highlighter(QtGui.QSyntaxHighlighter):
 
@@ -8782,13 +8780,9 @@ from .misc import ustr
         # amount of tabs or spaces
         bd.indentation = len(leadingWhitespace)
 </t>
-<t tx="ekr.20190812072047.61">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.61">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072047.62">""" Module manager
+""" Module manager
 
 This module contains a static class that can be used for some
 management tasks.
@@ -8801,6 +8795,9 @@ from .qt import QtGui, QtCore, QtWidgets  # noqa
 Qt = QtCore.Qt
 
 from . import parsers
+@others
+@language python
+@tabwidth -4
 </t>
 <t tx="ekr.20190812072047.63">class Manager:
     """ Manager
@@ -9142,9 +9139,9 @@ def defaultFont(cls):
     # Done
     return QtGui.QFont(family, size)
 
-\\-4.# Init
+# Init
 </t>
-<t tx="ekr.20190812072047.76">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.76">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
 @others
 @language python
@@ -9254,7 +9251,7 @@ DEFAULT_OPTION_NONE = '_+_just some absurd value_+_'
 # Create callback event handler instance and insert function in Pyzo namespace
 _callbackEventHandler = _CallbackEventHandler()
 </t>
-<t tx="ekr.20190812072047.84">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.84">@path pyzo/codeeditor/
 # This is the one place where codeeditor depends on Pyzo itself
 @others
 @language python
@@ -9262,13 +9259,9 @@ _callbackEventHandler = _CallbackEventHandler()
 </t>
 <t tx="ekr.20190812072047.85">from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
 </t>
-<t tx="ekr.20190812072047.86">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/
+<t tx="ekr.20190812072047.86">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072047.87">""" Modyule style
+""" Modyule style
 
 Provides basic functionaliy for styling.
 
@@ -9281,7 +9274,11 @@ instances. These have a name, description and default format, which
 makes it easy to build a UI to allow the user to change the syle.
 
 """
-from .qt import QtGui, QtCore
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190812072047.87">from .qt import QtGui, QtCore
 Qt = QtCore.Qt
 </t>
 <t tx="ekr.20190812072047.88">class StyleElementDescription:
@@ -9434,8 +9431,7 @@ def defaultFormat(self):
     else:
         self.__updateAutocompleterPrefix()
 </t>
-<t tx="ekr.20190812072048.10">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/extensions/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.10">@path pyzo/codeeditor/extensions/
 @others
 @language python
 @tabwidth -4
@@ -9508,7 +9504,8 @@ def description(self):
     """ Anything that is not a string or comment. """
     defaultStyle = 'fore:#000'
 </t>
-<t tx="ekr.20190812072048.11">"""
+<t tx="ekr.20190812072048.11"># -*- coding: utf-8 -*-
+"""
 Code editor extensions that change its behaviour (i.e. how it reacts to keys)
 """
 
@@ -9570,13 +9567,13 @@ from ..parsers import BlockState
     """ Closing parenthesis (and square and curly brackets). """
     defaultStyle = ''
 </t>
-<t tx="ekr.20190812072048.121">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.121">@path pyzo/codeeditor/parsers/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.122">""" Subpackage parsers
+<t tx="ekr.20190812072048.122"># -*- coding: utf-8 -*-
+""" Subpackage parsers
 
 This subpackage contains all the syntax parsers for the
 different languages.
@@ -9644,7 +9641,7 @@ def info(self):
     """
     return self._info
 
-\\-4.# Base parser class (needs to be defined before importing parser modules)
+# Base parser class (needs to be defined before importing parser modules)
 </t>
 <t tx="ekr.20190812072048.127">class Parser(object):
     """ Base parser class.
@@ -9790,17 +9787,17 @@ from . import (     python_parser,  # noqa
     else:
         return False
 
-\\-4.## Import parsers statically
-\\-4.# We could load the parser dynamically from the source files in the
-\\-4.# directory, but this takes quite some effort to get righ when apps
-\\-4.# are frozen. This is doable (I do it in Visvis) but it requires the
-\\-4.# user to specify the parser modules by hand when freezing an app.
-\\-4.#
-\\-4.# In summary: it takes a lot of trouble, which can be avoided by just
-\\-4.# listing all parsers here.
+## Import parsers statically
+# We could load the parser dynamically from the source files in the
+# directory, but this takes quite some effort to get righ when apps
+# are frozen. This is doable (I do it in Visvis) but it requires the
+# user to specify the parser modules by hand when freezing an app.
+#
+# In summary: it takes a lot of trouble, which can be avoided by just
+# listing all parsers here.
 </t>
 <t tx="ekr.20190812072048.138"></t>
-<t tx="ekr.20190812072048.139">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
+<t tx="ekr.20190812072048.139">@path pyzo/core/
 
 @others
 @language python
@@ -9993,7 +9990,7 @@ if __name__ == '__main__':
     font.setPointSize(int(font.pointSize()*0.9))
     label.setFont(font)
 </t>
-<t tx="ekr.20190812072048.147">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
+<t tx="ekr.20190812072048.147">@path pyzo/core/
 # -*- coding: utf-8 -*-
 # Author: Windel Bouwman
 @others
@@ -10283,13 +10280,13 @@ if __name__ == '__main__':
     query = QtHelp.QHelpSearchQuery(QtHelp.QHelpSearchQuery.DEFAULT, [name])
     self._searchEngine.search([query])
 </t>
-<t tx="ekr.20190812072048.167">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.167">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.168">try:
+<t tx="ekr.20190812072048.168"># -*- coding: utf-8 -*-
+try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo/core/baseTextCtrl.py')
 except Exception:
@@ -10948,13 +10945,13 @@ if __name__=="__main__":
             break
     return baseName
 </t>
-<t tx="ekr.20190812072048.203">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.203">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.204">try:
+<t tx="ekr.20190812072048.204"># -*- coding: utf-8 -*-
+try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.core.codeparser.py')
 except Exception:
@@ -11576,7 +11573,7 @@ defPattern += r'\((.*?)\)' # The SIGNATURE
 
     # Return result
     return Result(root, importList, job.editorId)
-\\-4.## Helper classes and functions
+## Helper classes and functions
 
 </t>
 <t tx="ekr.20190812072048.223">class FictiveObject:
@@ -11735,8 +11732,7 @@ class ThisShouldNotBeVisibleEither():
 
     @others
 </t>
-<t tx="ekr.20190812072048.230">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.230">@path pyzo/core/
 @others
 if sys.platform.startswith('win'):
     _try_start_server = not is_pyzo_server_running()
@@ -11755,7 +11751,8 @@ except OSError as err:
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.231">""" Module to deal with command line arguments.
+<t tx="ekr.20190812072048.231"># -*- coding: utf-8 -*-
+""" Module to deal with command line arguments.
 
 In specific, this allows doing "pyzo some_file.py" and the file will be
 opened in an existing pyzo window (if available) or a new pyzo process
@@ -11917,8 +11914,7 @@ ADDRESS = 'localhost:pyzoserver'
 # Should we start the server?
 _try_start_server = True
 </t>
-<t tx="ekr.20190812072048.239">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.239">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
@@ -11937,7 +11933,8 @@ _try_start_server = True
     return textBeforeCursor.lstrip() == '' #If we trim it and it is empty, it's all whitespace
 
 </t>
-<t tx="ekr.20190812072048.240">""" compact tab widget class
+<t tx="ekr.20190812072048.240"># -*- coding: utf-8 -*-
+""" compact tab widget class
 
 See docs of the tab widget.
 
@@ -12497,13 +12494,13 @@ if __name__ == '__main__':
     """
     return self.tabBar().tabText(i)
 </t>
-<t tx="ekr.20190812072048.266">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.266">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.267">""" Module editor
+<t tx="ekr.20190812072048.267"># -*- coding: utf-8 -*-
+""" Module editor
 
 Defines the PyzoEditor class which is used to edit documents.
 This module/class also implements all the relatively low level
@@ -13301,13 +13298,13 @@ def setAutoIndent(self,value):
         # Otherwise we finish it ourselves
         aco.finish()
 </t>
-<t tx="ekr.20190812072048.301">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.301">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.302">""" EditorTabs class
+<t tx="ekr.20190812072048.302"># -*- coding: utf-8 -*-
+""" EditorTabs class
 
 Replaces the earlier EditorStack class.
 
@@ -13504,7 +13501,7 @@ def pinned(self):
     when closing all files.
     """
     return self._pinned
-\\-4.# todo: when this works with the new editor, put in own module.
+# todo: when this works with the new editor, put in own module.
 </t>
 <t tx="ekr.20190812072048.313">class FindReplaceWidget(QtWidgets.QFrame):
     """ A widget to find and replace text. """
@@ -15031,7 +15028,7 @@ def __ensureCursorBeforeAnchor(cls, cursor):
     # we're good to go closing
     return True
 </t>
-<t tx="ekr.20190812072048.377">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
+<t tx="ekr.20190812072048.377">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
@@ -15210,13 +15207,13 @@ from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
             commands.append(c)
     return commands
 </t>
-<t tx="ekr.20190812072048.388">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.388">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.389">""" Icons module
+<t tx="ekr.20190812072048.389"># -*- coding: utf-8 -*-
+""" Icons module
 
 Defines functionality for creating icons by composing different overlays
 and also by directly drawing into the pixmap. This allows making icons
@@ -15348,7 +15345,7 @@ import pyzo
     # Fourth line of 1
     self.setPenColor((0,0,0,a2))
     self.addPoint(x+2,y+3)
-\\-4.# todo: not used; remove me?
+# todo: not used; remove me?
 </t>
 <t tx="ekr.20190812072048.399">class TabCloseButton(QtWidgets.QToolButton):
     """ TabCloseButton
@@ -15456,7 +15453,7 @@ import pyzo
         pm = self._createCrossPixmap(240)
     # Set
     return QtGui.QIcon(pm)
-\\-4.# todo: not used; remove me?
+# todo: not used; remove me?
 </t>
 <t tx="ekr.20190812072048.407">class ToolButtonWithMenuIndication(QtWidgets.QToolButton):
     """ ToolButtonWithMenuIndication
@@ -16078,13 +16075,13 @@ import pyzo
     # Done
     self.setIcon(artist.finish())
 </t>
-<t tx="ekr.20190812072048.447">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.447">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.448">""" Module kernelBroker
+<t tx="ekr.20190812072048.448"># -*- coding: utf-8 -*-
+""" Module kernelBroker
 
 This module implements the interface between Pyzo and the kernel.
 """
@@ -16485,8 +16482,7 @@ if EXE_DIR.endswith('.app/Contents/MacOS'):
     # Reset some variables
     self._pending_restart = None
 </t>
-<t tx="ekr.20190812072048.46">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/extensions/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.46">@path pyzo/codeeditor/extensions/
 @others
 @language python
 @tabwidth -4
@@ -16694,7 +16690,8 @@ if EXE_DIR.endswith('.app/Contents/MacOS'):
     else:
         self.terminate('for restart')
 </t>
-<t tx="ekr.20190812072048.47">from ..qt import QtCore, QtGui, QtWidgets  # noqa
+<t tx="ekr.20190812072048.47"># -*- coding: utf-8 -*-
+from ..qt import QtCore, QtGui, QtWidgets  # noqa
 Qt = QtCore.Qt
 </t>
 <t tx="ekr.20190812072048.470">class KernelTerminator:
@@ -16906,13 +16903,13 @@ Qt = QtCore.Qt
         # Clean up
         kernel._reset(True)
 </t>
-<t tx="ekr.20190812072048.484">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.484">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.485">""" Module main
+<t tx="ekr.20190812072048.485"># -*- coding: utf-8 -*-
+""" Module main
 
 This module contains the main frame. Implements the main window.
 Also adds some variables to the pyzo namespace, such as the callLater
@@ -17594,7 +17591,7 @@ pyzo.screenshotExample = screenshotExample
     # Act a bit like a tooltip
     self.hide()
 </t>
-<t tx="ekr.20190812072048.510">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
+<t tx="ekr.20190812072048.510">@path pyzo/core/
 # -*- coding: utf-8 -*-
 
 @others
@@ -18892,7 +18889,7 @@ from pyzo import translate
 <t tx="ekr.20190812072048.589">def _updateShells(self):
     pass
 </t>
-<t tx="ekr.20190812072048.59">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/extensions/
+<t tx="ekr.20190812072048.59">@path pyzo/codeeditor/extensions/
 # Extra line, so perfect import will work.
 @language python
 @tabwidth -4
@@ -19381,7 +19378,7 @@ from pyzo import translate
     self.onToolInstanceChange() # Build initial menu
     pyzo.toolManager.toolInstanceChange.connect(self.onToolInstanceChange)
 </t>
-<t tx="ekr.20190812072048.62">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
+<t tx="ekr.20190812072048.62">@path pyzo/codeeditor/parsers/
 # -*- coding: utf-8 -*-
 
 # Import tokens in module namespace
@@ -19934,8 +19931,7 @@ keymap = {k.Key_Enter:'Enter', k.Key_Return:'Return', k.Key_Escape:'Escape',
 
     @others
 </t>
-<t tx="ekr.20190812072048.66">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.66">@path pyzo/codeeditor/parsers/
 @others
 @language python
 @tabwidth -4
@@ -20136,7 +20132,8 @@ keymap = {k.Key_Enter:'Enter', k.Key_Return:'Return', k.Key_Escape:'Escape',
     if index.column():
         self.popupItem(index.internalPointer(), index.column())
 </t>
-<t tx="ekr.20190812072048.67">import re
+<t tx="ekr.20190812072048.67"># -*- coding: utf-8 -*-
+import re
 from . import Parser, BlockState, text_type
 from .tokens import ALPHANUM
 
@@ -20404,13 +20401,13 @@ if __name__=='__main__':
     # Done
     return tokens
 </t>
-<t tx="ekr.20190812072048.75">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.75">@path pyzo/codeeditor/parsers/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.76">import re
+<t tx="ekr.20190812072048.76"># -*- coding: utf-8 -*-
+import re
 from . import Parser, BlockState, text_type
 from .tokens import ALPHANUM
 from ..misc import ustr
@@ -20841,13 +20838,13 @@ endProgs = {
     _builtins = python3Builtins
     _instance = python3Instance
 </t>
-<t tx="ekr.20190812072048.86">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.86">@path pyzo/codeeditor/parsers/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.87">from . import Parser, BlockState, text_type
+<t tx="ekr.20190812072048.87"># -*- coding: utf-8 -*-
+from . import Parser, BlockState, text_type
 
 # Import tokens in module namespace
 from .tokens import (CommentToken, StringToken,
@@ -21010,13 +21007,13 @@ from .tokens import (CommentToken, StringToken,
     _keywords = ['module', 'type', 'import', 'func', 'table', 'memory',
                  'global', 'export', 'start', 'element', 'data']
 </t>
-<t tx="ekr.20190812072048.93">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/codeeditor/parsers/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072048.93">@path pyzo/codeeditor/parsers/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072048.94">""" Module tokens
+<t tx="ekr.20190812072048.94"># -*- coding: utf-8 -*-
+""" Module tokens
 
 Defines the base Token class and a few generic tokens.
 Tokens are used by parsers to identify for groups of characters
@@ -21063,8 +21060,7 @@ from ..misc import ustr
 <t tx="ekr.20190812072048.99">def __repr__(self):
     return repr('%s:%s' % (self.name, self))
 </t>
-<t tx="ekr.20190812072049.1">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.1">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
@@ -21377,7 +21373,7 @@ splitConsole()
         return ''
     else:
         return value
-\\-4.## The dialog class and container with tabs
+## The dialog class and container with tabs
 </t>
 <t tx="ekr.20190812072049.124">class ShellInfoTab(QtWidgets.QScrollArea):
 
@@ -21609,13 +21605,13 @@ splitConsole()
         w = self._tabs.widget(i)
         pyzo.config.shellConfigs2.append( w.getInfo() )
 </t>
-<t tx="ekr.20190812072049.135">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.135">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.136">""" Module shellStack
+<t tx="ekr.20190812072049.136"># -*- coding: utf-8 -*-
+""" Module shellStack
 
 Implements the stack of shells. Also implements the nifty debug button
 and a dialog to edit the shell configurations.
@@ -22379,13 +22375,13 @@ def closed(self):
         shell.closeShell()
     shells.addShell(pyzo.config.shellConfigs2[0])
 </t>
-<t tx="ekr.20190812072049.171">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.171">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.172">""" Module splash
+<t tx="ekr.20190812072049.172"># -*- coding: utf-8 -*-
+""" Module splash
 
 Defines splash window shown during startup.
 
@@ -22501,8 +22497,7 @@ if __name__ == '__main__':
     iconImage = iconImage.replace(os.path.sep, '/') # Fix for Windows
     self.setStyleSheet(STYLESHEET % iconImage)
 </t>
-<t tx="ekr.20190812072049.179">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.179">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
@@ -22510,7 +22505,8 @@ if __name__ == '__main__':
 <t tx="ekr.20190812072049.18">def close(self):
     return self._original.close()
 </t>
-<t tx="ekr.20190812072049.180">""" Package core - the core of Pyzo.
+<t tx="ekr.20190812072049.180"># -*- coding: utf-8 -*-
+""" Package core - the core of Pyzo.
 """
 try:
     import leo.core.leoGlobals as leo_g
@@ -22519,13 +22515,13 @@ except Exception:
     leo_g = None
 </t>
 <t tx="ekr.20190812072049.182"></t>
-<t tx="ekr.20190812072049.183">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.183">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.184">import os
+<t tx="ekr.20190812072049.184"># -*- coding: utf-8 -*-
+import os
 import sys
 import time
 import bdb
@@ -22625,7 +22621,7 @@ import traceback
     return self._original.encoding()
 
 
-\\-4.# Split now, with no defering
+# Split now, with no defering
 </t>
 <t tx="ekr.20190812072049.190">def stopinteraction(self):
     """ Stop the interaction loop.
@@ -22772,7 +22768,8 @@ import traceback
     if True: #self.bp_commands(frame):  from pdb
         self.interaction(frame, None)
 </t>
-<t tx="ekr.20190812072049.2">""" Module logging
+<t tx="ekr.20190812072049.2"># -*- coding: utf-8 -*-
+""" Module logging
 
 Functionality for logging in pyzo.
 """
@@ -22797,8 +22794,7 @@ try:
 except AttributeError:
     sys.ps2 = "... "
 </t>
-<t tx="ekr.20190812072049.20">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.20">@path pyzo/core/
 @others
 @language python
 @tabwidth -4
@@ -22989,7 +22985,8 @@ except AttributeError:
         self.set_continue()
         self.stopinteraction()
 </t>
-<t tx="ekr.20190812072049.21">""" Module shell
+<t tx="ekr.20190812072049.21"># -*- coding: utf-8 -*-
+""" Module shell
 
 Defines the shell to be used in pyzo.
 This is done in a few inheritance steps:
@@ -23077,13 +23074,13 @@ MAXBLOCKCOUNT = pyzo.config.advanced.shellMaxLines
     interpreter = sys._pyzoInterpreter
     interpreter.guiApp.process_events()
 </t>
-<t tx="ekr.20190812072049.214">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.214">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.215">"""
+<t tx="ekr.20190812072049.215"># -*- coding: utf-8 -*-
+"""
 Module to integrate GUI event loops in the Pyzo interpreter.
 
 This specifies classes that all have the same interface. Each class
@@ -23776,14 +23773,14 @@ pyzo.localKernelManager = Kernelmanager(public=False)
     while gtk.events_pending():
         gtk.main_iteration(False)
 </t>
-<t tx="ekr.20190812072049.263">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-#!/usr/bin/env python
-# coding: utf-8
+<t tx="ekr.20190812072049.263">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.264">"""
+<t tx="ekr.20190812072049.264">#!/usr/bin/env python
+# coding: utf-8
+"""
 Support for creating GUI apps and starting event loops.
 
 IPython's GUI integration allows interative plotting and GUI usage in IPython
@@ -23929,7 +23926,7 @@ so you don't have to depend on IPython.
 # gtk
 #-----------------------------------------------------------------------------
 </t>
-<t tx="ekr.20190812072049.271">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
+<t tx="ekr.20190812072049.271">@path pyzo/pyzokernel/
 # -*- coding: utf-8 -*-
 
 @others
@@ -25289,8 +25286,7 @@ original_print = print
 #         traceback._extract_tb = traceback.extract_tb
 #         traceback.extract_tb = extract_tb
 </t>
-<t tx="ekr.20190812072049.309">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.309">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
@@ -25305,7 +25301,8 @@ original_print = print
     else:
         self.setReadOnly(False)
 </t>
-<t tx="ekr.20190812072049.310">import sys
+<t tx="ekr.20190812072049.310"># -*- coding: utf-8 -*-
+import sys
 import yoton
 import inspect  # noqa - used in eval()
 
@@ -25718,13 +25715,13 @@ except ImportError:
     """
     sys.stdin._channel.close()
 </t>
-<t tx="ekr.20190812072049.321">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.321">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.322">"""
+<t tx="ekr.20190812072049.322"># -*- coding: utf-8 -*-
+"""
 Magic commands for the Pyzo kernel.
 No need to use printDirect here, magic commands are just like normal Python
 commands, in the sense that they print something etc.
@@ -26416,7 +26413,7 @@ TIMEIT_MESSAGE = """Time execution duration. Usage:
 
     return ''
 </t>
-<t tx="ekr.20190812072049.346">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
+<t tx="ekr.20190812072049.346">@path pyzo/pyzokernel/
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013, Almar Klein
 
@@ -26494,13 +26491,13 @@ import subprocess
     """
     pip_command_exe(sys.executable, *args)
 </t>
-<t tx="ekr.20190812072049.352">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.352">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.353">""" pyzokernel/start.py
+<t tx="ekr.20190812072049.353"># -*- coding: utf-8 -*-
+""" pyzokernel/start.py
 
 Starting script for remote processes in pyzo.
 This script connects to the pyzo ide using the yoton interface
@@ -26663,7 +26660,7 @@ finally:
     except Exception:
         pass
 </t>
-<t tx="ekr.20190812072049.355">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
+<t tx="ekr.20190812072049.355">@path pyzo/pyzokernel/
 #-----------------------------------------------------------------------------
 #  Copyright (C) 2013 Min RK
 #
@@ -26899,13 +26896,13 @@ __all__ = [
     "nope_scope",
 ]
 </t>
-<t tx="ekr.20190812072049.366">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/pyzokernel/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.366">@path pyzo/pyzokernel/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.367">"""
+<t tx="ekr.20190812072049.367"># -*- coding: utf-8 -*-
+"""
 The pyzokernel package contains the code for the Pyzo kernel process.
 This kernel is designed to be relatively lightweight; i.e. most of
 the work is done by the IDE.
@@ -26934,7 +26931,7 @@ import sys
     pass
 </t>
 <t tx="ekr.20190812072049.370"></t>
-<t tx="ekr.20190812072049.371">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/resources/
+<t tx="ekr.20190812072049.371">@path pyzo/resources/
 ## Introduction
 @others
 @language python
@@ -27140,13 +27137,13 @@ all files that have the extension pyc.
 ## Key handlers
 </t>
 <t tx="ekr.20190812072049.381"></t>
-<t tx="ekr.20190812072049.382">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.382">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.383">"""
+<t tx="ekr.20190812072049.383"># -*- coding: utf-8 -*-
+"""
 This file provides the pyzo history viewer. It contains two main components: the
 History class, which is a Qt model, and the PyzoHistoryViewer, which is a Qt view
 """
@@ -27382,13 +27379,13 @@ if __name__ == '__main__':
         shell.executeCommand(text + '\n')
         # Do not update history? Was this intended?
 </t>
-<t tx="ekr.20190812072049.395">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.395">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.396">import sys, re
+<t tx="ekr.20190812072049.396"># -*- coding: utf-8 -*-
+import sys, re
 
 from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
 import pyzo
@@ -27763,13 +27760,13 @@ and when double clicking on a name.
     # Done formatting
     return ''.join(lines3)
 </t>
-<t tx="ekr.20190812072049.408">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.408">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.409">import sys, os, code
+<t tx="ekr.20190812072049.409"># -*- coding: utf-8 -*-
+import sys, os, code
 
 import pyzo
 from pyzo.core.shell import BaseShell
@@ -27875,13 +27872,13 @@ tool_summary = "Logs messages, warnings and errors within Pyzo."
     # Done
     aco.finish()
 </t>
-<t tx="ekr.20190812072049.415">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.415">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.416">import pyzo
+<t tx="ekr.20190812072049.416"># -*- coding: utf-8 -*-
+import pyzo
 from pyzo.util.qt import QtCore, QtGui, QtWidgets
 from pyzo import translate
 
@@ -28212,13 +28209,13 @@ tool_summary = "Shows the structure of your source code."
 <t tx="ekr.20190812072049.43">def dragMoveEvent(self, event):
     self.dragEnterEvent(event)
 </t>
-<t tx="ekr.20190812072049.430">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.430">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.431">import urllib.request, urllib.parse
+<t tx="ekr.20190812072049.431"># -*- coding: utf-8 -*-
+import urllib.request, urllib.parse
 
 from pyzo.util.qt import QtCore, QtWidgets
 imported_qtwebkit = True
@@ -28512,13 +28509,13 @@ default_bookmarks = [
     self.ensureCursorAtEditLine()
     self.ensureCursorVisible()
 </t>
-<t tx="ekr.20190812072049.450">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.450">@path pyzo/tools/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072049.451">import pyzo
+<t tx="ekr.20190812072049.451"># -*- coding: utf-8 -*-
+import pyzo
 from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
 tool_name = pyzo.translate("pyzoWorkspace","Workspace")
@@ -28914,8 +28911,7 @@ tool_summary = "Lists the variables in the current shell's namespace."
     # Update
     self._tree.fillWorkspace()
 </t>
-<t tx="ekr.20190812072049.474">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/
-@first # -*- coding: utf-8 -*-
+<t tx="ekr.20190812072049.474">@path pyzo/tools/
 &lt;&lt; tools/__init__ docstring &gt;&gt;
 
 try:
@@ -29338,7 +29334,7 @@ assert translate
     return tmp
 </t>
 <t tx="ekr.20190812072049.497"></t>
-<t tx="ekr.20190812072049.498">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072049.498">@path pyzo/tools/pyzoFileBrowser/
 @others
 @language python
 @tabwidth -4
@@ -30236,7 +30232,7 @@ def starredDirs(self):
     # Update
     self.filterChanged.emit()
 </t>
-<t tx="ekr.20190812072049.552">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072049.552">@path pyzo/tools/pyzoFileBrowser/
 @others
 @language python
 @tabwidth -4
@@ -31441,7 +31437,7 @@ def closed(self):
     self.setTextCursor(cursor)
     self.ensureCursorVisible()
 </t>
-<t tx="ekr.20190812072049.77">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/core/
+<t tx="ekr.20190812072049.77">@path pyzo/core/
 # -*- coding: utf-8 -*-
 
 @others
@@ -31646,7 +31642,7 @@ from pyzo import translate
     # remove the value at once
     self._bufferedValue = ''
 </t>
-<t tx="ekr.20190812072050.1">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072050.1">@path pyzo/tools/pyzoFileBrowser/
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013 Almar Klein
 @others
@@ -32423,7 +32419,7 @@ from pyzo import translate
     if b == QtWidgets.QMessageBox.Yes:
         self._item._proxy.pushTask(tasks.RemoveTask())
 </t>
-<t tx="ekr.20190812072050.175">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072050.175">@path pyzo/tools/pyzoFileBrowser/
 @others
 @language python
 @tabwidth -4
@@ -32481,13 +32477,13 @@ import os.path as op
     except (AttributeError, AssertionError):
         return False
 </t>
-<t tx="ekr.20190812072050.183">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.183">@path pyzo/tools/pyzoFileBrowser/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.184">try:
+<t tx="ekr.20190812072050.184"># -*- coding: utf-8 -*-
+try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('IMPORT pyzo.tools.pyzoFileBrowser')
 except Exception:
@@ -32648,7 +32644,7 @@ from .utils import cleanpath, isdir
     return QtWidgets.QWidget.closeEvent(self, event)
 </t>
 <t tx="ekr.20190812072050.193"></t>
-<t tx="ekr.20190812072050.194">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
+<t tx="ekr.20190812072050.194">@path pyzo/util/
 @others
 @language python
 @tabwidth -4
@@ -33181,7 +33177,7 @@ if __name__ == '__main__':
 
     @others
 </t>
-<t tx="ekr.20190812072050.220">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
+<t tx="ekr.20190812072050.220">@path pyzo/util/
 # -*- coding: utf-8 -*-
 # Copyright (c) 2016, Almar Klein, Rob Reilink
 #
@@ -33464,8 +33460,7 @@ import os, sys
     PathProxy.__init__(self, *args)
     self._modified = 0
 </t>
-<t tx="ekr.20190812072050.230">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.230">@path pyzo/util/
 @others
 if __name__ == '__main__':
     w = PyzoWizard(None)
@@ -33474,7 +33469,8 @@ if __name__ == '__main__':
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.231">""" pyzowizard module
+<t tx="ekr.20190812072050.231"># -*- coding: utf-8 -*-
+""" pyzowizard module
 
 Implements a wizard to help new users get familiar with pyzo.
 
@@ -33879,7 +33875,7 @@ from pyzo.util._locale import LANGUAGES, LANGUAGE_SYNONYMS, setLanguage
 #         print(fname)
 #         vv.imwrite(fname, im[::2,::2,:])
 </t>
-<t tx="ekr.20190812072050.252">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
+<t tx="ekr.20190812072050.252">@path pyzo/util/
 # -*- coding: utf-8 -*-
 # Copyright (C) 2016, Almar Klein
 @others
@@ -34092,7 +34088,7 @@ Struct.__is_ssdf_struct__ = True
 </t>
 <t tx="ekr.20190812072050.27">def save(self):
     pass # ?
-\\-4.## Proxy classes for the file system
+## Proxy classes for the file system
 </t>
 <t tx="ekr.20190812072050.270">def read(self, text):
 
@@ -34397,8 +34393,7 @@ import os
             value.append(v)
         return value
 </t>
-<t tx="ekr.20190812072050.283">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.283">@path pyzo/util/
 @others
 if __name__ == '__main__':
     # Print names of translator files
@@ -34410,7 +34405,8 @@ if __name__ == '__main__':
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.284">""" pyzo.util._locale
+<t tx="ekr.20190812072050.284"># -*- coding: utf-8 -*-
+""" pyzo.util._locale
 Module for locale stuff like language and translations.
 """
 
@@ -34686,7 +34682,7 @@ To update a language:
     else:
         print(output)
 </t>
-<t tx="ekr.20190812072050.294">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/
+<t tx="ekr.20190812072050.294">@path pyzo/util/
 # Extra line, so perfect import will work.
 @others
 @language python
@@ -34699,7 +34695,7 @@ except Exception:
     leo_g = None
 </t>
 <t tx="ekr.20190812072050.297"></t>
-<t tx="ekr.20190812072050.298">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/interpreters/
+<t tx="ekr.20190812072050.298">@path pyzo/util/interpreters/
 # -*- coding: utf-8 -*-
 # Copyright (c) 2016, Almar Klein
 @others
@@ -35007,7 +35003,7 @@ PATH_KEY = "PythonPath"
         raise RuntimeError('Could not register Python version %s at %s.'
                                     % (version, installPath))
 </t>
-<t tx="ekr.20190812072050.315">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/interpreters/
+<t tx="ekr.20190812072050.315">@path pyzo/util/interpreters/
 @others
 @language python
 @tabwidth -4
@@ -35158,7 +35154,7 @@ def version_info(self):
     tversion = tversion.strip('.')
     return tuple( [int(a) for a in tversion.split('.') if a] )
 </t>
-<t tx="ekr.20190812072050.331">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/interpreters/
+<t tx="ekr.20190812072050.331">@path pyzo/util/interpreters/
 # -*- coding: utf-8 -*-
 # Copyright (c) 2016, Almar Klein
 @others
@@ -35362,7 +35358,7 @@ from .. import paths
     return DirProxy(self, path)
 </t>
 <t tx="ekr.20190812072050.341"></t>
-<t tx="ekr.20190812072050.342">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.342">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35467,7 +35463,7 @@ Provides QtCore classes and functions.
 
 from . import PYQT5, PYSIDE2, PYQT4, PYSIDE, PythonQtError
 </t>
-<t tx="ekr.20190812072050.344">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.344">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35628,7 +35624,7 @@ import warnings
 
 from . import PYQT5, PYQT4, PYSIDE, PYSIDE2, PythonQtError
 </t>
-<t tx="ekr.20190812072050.346">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.346">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2009- The Spyder Development Team
@@ -35657,7 +35653,7 @@ from . import PYQT4
 from . import PYSIDE
 from . import PYSIDE2
 </t>
-<t tx="ekr.20190812072050.348">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.348">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2009- The Spyder Development Team
@@ -35694,7 +35690,7 @@ from . import PYQT5, PYQT4,PYSIDE2, PYSIDE, PythonQtError
     """
     return FileProxy(self, path)
 </t>
-<t tx="ekr.20190812072050.350">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.350">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35831,7 +35827,7 @@ from ._patch.qcombobox import patch_qcombobox
 from ._patch.qheaderview import introduce_renamed_methods_qheaderview
 
 </t>
-<t tx="ekr.20190812072050.352">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.352">@path pyzo/util/qt/
 @others
 if PYQT5:
 
@@ -36063,7 +36059,7 @@ else:
 from . import PYSIDE, PYSIDE2, PYQT4, PYQT5
 from .QtWidgets import QComboBox
 </t>
-<t tx="ekr.20190812072050.354">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.354">@path pyzo/util/qt/
 @others
 @language python
 @tabwidth -4
@@ -36071,7 +36067,7 @@ from .QtWidgets import QComboBox
 <t tx="ekr.20190812072050.355">version_info = (1, 5, 0, 'dev0')
 __version__ = '.'.join(map(str, version_info))
 </t>
-<t tx="ekr.20190812072050.356">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/
+<t tx="ekr.20190812072050.356">@path pyzo/util/qt/
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2009- The Spyder Development Team
@@ -36277,7 +36273,7 @@ PYQT4 = PYSIDE = PYSIDE2 = False
         pass  # Interpreter is shutting down
 </t>
 <t tx="ekr.20190812072050.361"></t>
-<t tx="ekr.20190812072050.362">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/_patch/
+<t tx="ekr.20190812072050.362">@path pyzo/util/qt/_patch/
 # The code below, as well as the associated test were adapted from
 # qt-helpers, which was released under a 3-Clause BSD license:
 #
@@ -36383,7 +36379,7 @@ PYQT4 = PYSIDE = PYSIDE2 = False
     QComboBox.itemData = itemData
     QComboBox.findData = findData
 </t>
-<t tx="ekr.20190812072050.364">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/_patch/
+<t tx="ekr.20190812072050.364">@path pyzo/util/qt/_patch/
 # -*- coding: utf-8 -*-
 #
 # Copyright © The Spyder Development Team
@@ -36477,7 +36473,7 @@ PYQT4 = PYSIDE = PYSIDE2 = False
         _setResizeMode(self, *args)
     QHeaderView.setResizeMode = setResizeMode
 </t>
-<t tx="ekr.20190812072050.367">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/util/qt/_patch/
+<t tx="ekr.20190812072050.367">@path pyzo/util/qt/_patch/
 # Extra line, so perfect import will work.
 @language python
 @tabwidth -4
@@ -36509,8 +36505,7 @@ PYQT4 = PYSIDE = PYSIDE2 = False
             # Queue empty, check items periodically
             self._idle()
 </t>
-<t tx="ekr.20190812072050.370">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.370">@path pyzo/yoton/
 @others
 if __name__ == '__main__':
 
@@ -36529,7 +36524,8 @@ if __name__ == '__main__':
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.371">""" yoton.clientserver.py
+<t tx="ekr.20190812072050.371"># -*- coding: utf-8 -*-
+""" yoton.clientserver.py
 
 Yoton comes with a small framework to setup a request-reply pattern
 using a client-server model (over a non-persistent connection),
@@ -36833,13 +36829,13 @@ from yoton.core import send_all, recv_all
     # Done
     return reply
 </t>
-<t tx="ekr.20190812072050.384">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.384">@path pyzo/yoton/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.385">import os
+<t tx="ekr.20190812072050.385"># -*- coding: utf-8 -*-
+import os
 import threading
 
 import yoton
@@ -37247,7 +37243,7 @@ def name():
 
     finally:
         self._lock.release()
-\\-4.## More ideas for connections
+## More ideas for connections
 
 </t>
 <t tx="ekr.20190812072050.416">class InterConnection(Connection):
@@ -37274,7 +37270,7 @@ def name():
     """
     pass
 </t>
-<t tx="ekr.20190812072050.418">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
+<t tx="ekr.20190812072050.418">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
 # flake8: noqa
 @others
@@ -37311,13 +37307,13 @@ from yoton.connection import STATUS_CONNECTED, STATUS_CLOSING
     pass
     # todo: implement me
 </t>
-<t tx="ekr.20190812072050.421">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.421">@path pyzo/yoton/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.422">import os
+<t tx="ekr.20190812072050.422"># -*- coding: utf-8 -*-
+import os
 import sys
 import time
 import socket
@@ -38041,13 +38037,13 @@ SOCKET_BUFFERS_SIZE = 10*1024
     # Return combined data of multiple rounds
     return bytes().join(parts)
 </t>
-<t tx="ekr.20190812072050.452">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.452">@path pyzo/yoton/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.453">""" Module yoton.context
+<t tx="ekr.20190812072050.453"># -*- coding: utf-8 -*-
+""" Module yoton.context
 
 Defines the context class.
 
@@ -38584,13 +38580,13 @@ def id(self):
     else:
         print('Yoton: Received unknown context message: '+message)
 </t>
-<t tx="ekr.20190812072050.471">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072050.471">@path pyzo/yoton/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072050.472">import sys
+<t tx="ekr.20190812072050.472"># -*- coding: utf-8 -*-
+import sys
 import time
 import struct
 import socket
@@ -38888,9 +38884,9 @@ def from_header(cls, header):
     else:
         return None, None
 
-\\-4.# Constant Package instances (source_seq represents the signal)
+# Constant Package instances (source_seq represents the signal)
 </t>
-<t tx="ekr.20190812072050.482">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
+<t tx="ekr.20190812072050.482">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
 
 # This code is loosely based on the event system of Visvis and on the
@@ -39253,10 +39249,10 @@ theTimerThread.start()
             else:
                 self._timers.pop() # Pop
 
-\\-4.# Instantiate and start the single timer thread
-\\-4.# We can do this as long as we do not wait for the threat, and the threat
-\\-4.# does not do any imports:
-\\-4.# http://docs.python.org/library/threading.html#importing-in-threaded-code
+# Instantiate and start the single timer thread
+# We can do this as long as we do not wait for the threat, and the threat
+# does not do any imports:
+# http://docs.python.org/library/threading.html#importing-in-threaded-code
 </t>
 <t tx="ekr.20190812072050.509">class Timer(Signal):
     """ Timer(interval=1.0, oneshot=True)
@@ -39542,9 +39538,9 @@ app = YotonApplication()
     YotonApplication._embedding_callback1 = callback
     YotonApplication._embedding_callback2 = callback
 
-\\-4.# Instantiate an application object
+# Instantiate an application object
 </t>
-<t tx="ekr.20190812072050.526">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
+<t tx="ekr.20190812072050.526">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
 
 @others
@@ -40155,7 +40151,7 @@ pass
     finally:
         self._condition.release()
 </t>
-<t tx="ekr.20190812072050.558">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/
+<t tx="ekr.20190812072050.558">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
 # flake8: noqa
 @others
@@ -40268,7 +40264,7 @@ __version__ = '2.2'
     if not isdir(path):
         os.makedirs(path)
 </t>
-<t tx="ekr.20190812072050.59">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072050.59">@path pyzo/tools/pyzoFileBrowser/
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013 Almar Klein
 @others
@@ -40447,7 +40443,7 @@ from . import proxies
         raise Exception(self._error)
     else:
         return self._result
-\\-4.## Proxy classes for directories and files
+## Proxy classes for directories and files
 </t>
 <t tx="ekr.20190812072050.70">def process(self, proxy):
     path = proxy.path()
@@ -40655,7 +40651,7 @@ from . import proxies
 
     @others
 </t>
-<t tx="ekr.20190812072050.80">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/tools/pyzoFileBrowser/
+<t tx="ekr.20190812072050.80">@path pyzo/tools/pyzoFileBrowser/
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013 Almar Klein
 @others
@@ -40979,13 +40975,13 @@ iconprovider = QtWidgets.QFileIconProvider()
     else:
         return None
 </t>
-<t tx="ekr.20190812072051.100">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.100">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072051.101">""" Module yoton.channels.channels_state
+<t tx="ekr.20190812072051.101"># -*- coding: utf-8 -*-
+""" Module yoton.channels.channels_state
 
 Defines the channel class for state.
 
@@ -41134,13 +41130,13 @@ from yoton.channels import BaseChannel
     """
     return self._current_package
 </t>
-<t tx="ekr.20190812072051.111">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.111">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072051.112">""" Module yoton.channels.message_types
+<t tx="ekr.20190812072051.112"># -*- coding: utf-8 -*-
+""" Module yoton.channels.message_types
 
 Defines a few basic message_types for the channels. A MessageType object
 defines how a message of that type should be converted to bytes and
@@ -41321,7 +41317,7 @@ _TYPE_DICT = ord('d')
     else:
         return None
 
-\\-4.# Formats
+# Formats
 </t>
 <t tx="ekr.20190812072051.129">class Packer:
 
@@ -41487,9 +41483,9 @@ if __name__ == '__main__':
     else:
         raise ValueError("Unsupported type: %s" % repr(object_type))
 
-\\-4.# Define constants
+# Define constants
 </t>
-<t tx="ekr.20190812072051.141">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
+<t tx="ekr.20190812072051.141">@path pyzo/yoton/channels/
 # -*- coding: utf-8 -*-
 # flake8: noqa
 @others
@@ -41515,7 +41511,7 @@ from yoton.channels.channels_state import StateChannel
 from yoton.channels.channels_file import FileWrapper
 </t>
 <t tx="ekr.20190812072051.144"></t>
-<t tx="ekr.20190812072051.145">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.145">@path pyzo/yoton/tests/
 @others
 if __name__ == '__main__':
 
@@ -41579,7 +41575,7 @@ if __name__ == '__main__':
     # Done
     return count1, count2, count3, count4
 </t>
-<t tx="ekr.20190812072051.148">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.148">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 # This example demponstrates simple req rep.
 #
@@ -41640,7 +41636,7 @@ ct2.connect('publichost:test')
         raise ValueError('I do not like 2.')
     return item - 1
 
-\\-4.# Create a context and a rep channel
+# Create a context and a rep channel
 </t>
 <t tx="ekr.20190812072051.152">def reply_handler(future):
 
@@ -41671,7 +41667,7 @@ new_future.add_done_callback(reply_handler)
 # Enter event loop
 yoton.start_event_loop()
 </t>
-<t tx="ekr.20190812072051.153">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.153">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 # This example demponstrates simple pub sub.
 #
@@ -41729,7 +41725,7 @@ yoton.call_later(pub.send, 6, 'almost done')
 # Enter event loop
 yoton.start_event_loop()
 </t>
-<t tx="ekr.20190812072051.156">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.156">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 # This example illustrates a simple pub/sub pattern.
 # This example can be run in one go or in two parts running in
@@ -41777,7 +41773,7 @@ c1r = c1._receivingThread
 c2s = c2._sendingThread
 c2r = c2._receivingThread
 </t>
-<t tx="ekr.20190812072051.158">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.158">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 # This example creates three contexts that are connected in a row.
 # A message is send at the first and received at the last.
@@ -41831,7 +41827,7 @@ print(s.recv())
 # all channels. Note that PubChannels never emit this signal as they
 # catch status messages from the SubChannel by overloading _recv_package().
 </t>
-<t tx="ekr.20190812072051.160">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.160">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 
 # This example defines a message type and sends such a message over pub/sub.
@@ -41874,7 +41870,7 @@ verbosity = 0
 <t tx="ekr.20190812072051.165">def message_type_name(self):
     return 'num'
 
-\\-4.# Create context, a channel, and connect
+# Create context, a channel, and connect
 </t>
 <t tx="ekr.20190812072051.166">class NumberMessageType(yoton.MessageType):
     @others
@@ -41894,7 +41890,7 @@ print(sub.recv())
 <t tx="ekr.20190812072051.169">def message_type_name(self):
     return 'num'
 
-\\-4.# Create a context, a channel, and connect
+# Create a context, a channel, and connect
 </t>
 <t tx="ekr.20190812072051.17">@property
 def received(self):
@@ -41908,7 +41904,7 @@ def received(self):
 
 ## Properties
 </t>
-<t tx="ekr.20190812072051.170">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.170">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 # This example demponstrates simple req rep.
 # This example can be run in one go or in two parts running in
@@ -41952,9 +41948,9 @@ print(req.add(3,4).result(1))
 <t tx="ekr.20190812072051.173">def add(self, item1, item2):
     return item1 + item2
 
-\\-4.# Create a context and a rep channel
+# Create a context and a rep channel
 </t>
-<t tx="ekr.20190812072051.174">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.174">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 
 @others
@@ -42003,7 +41999,7 @@ ct5.connect('localhost:split4')
 
 # Create channels
 </t>
-<t tx="ekr.20190812072051.176">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.176">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
 
 ## Connect two context
@@ -42089,7 +42085,7 @@ yoton.call_later(pub1.send, 2.5, 'stop')
 # Go!
 yoton.start_event_loop()
 </t>
-<t tx="ekr.20190812072051.179">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.179">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42162,7 +42158,7 @@ for r in R:
     for nr in nrs:
         print('  from %s received %i' % (nr, nrs[nr]))
 </t>
-<t tx="ekr.20190812072051.186">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.186">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42190,7 +42186,7 @@ for i in range(5):
     print('iter', i)
     connect_test()
 </t>
-<t tx="ekr.20190812072051.189">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.189">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42345,7 +42341,7 @@ for a in [a1, a2]:
 
 # vv.screenshot('c:/almar/projects/yoton_performance.jpg', fig)
 </t>
-<t tx="ekr.20190812072051.193">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.193">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42640,7 +42636,7 @@ def slot_outgoing(self):
     # Enter event loop
     yoton.start_event_loop()
 </t>
-<t tx="ekr.20190812072051.205">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.205">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42658,7 +42654,7 @@ print( time.time()-t0 )
 # For channels.py, this results in pyzo closing the connection because
 # the other side seems unresponsive.
 </t>
-<t tx="ekr.20190812072051.207">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/tests/
+<t tx="ekr.20190812072051.207">@path pyzo/yoton/tests/
 @others
 @language python
 @tabwidth -4
@@ -42712,13 +42708,13 @@ def slot_incoming(self):
     """
     return self._slot_in
 </t>
-<t tx="ekr.20190812072051.22">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.22">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072051.23">""" Module yoton.channels.file
+<t tx="ekr.20190812072051.23"># -*- coding: utf-8 -*-
+""" Module yoton.channels.file
 
 Defines a class that can be used to wrap a channel to give it
 a file like interface.
@@ -42803,8 +42799,7 @@ def closed(self):
     """
     self._channel._context.flush()
 </t>
-<t tx="ekr.20190812072051.3">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.3">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
@@ -42913,13 +42908,13 @@ softspace = property(_get_softspace, _set_softspace, None, '')
     """
     return self._isatty
 </t>
-<t tx="ekr.20190812072051.38">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.38">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190812072051.39">""" Module yoton.channels.channels_pubsub
+<t tx="ekr.20190812072051.39"># -*- coding: utf-8 -*-
+""" Module yoton.channels.channels_pubsub
 
 Defines the channel classes for the pub/sub pattern.
 
@@ -42934,7 +42929,8 @@ QUEUE_NULL = 0
 QUEUE_OK = 1
 QUEUE_FULL = 2
 </t>
-<t tx="ekr.20190812072051.4">""" Module yoton.channels.channels_base
+<t tx="ekr.20190812072051.4"># -*- coding: utf-8 -*-
+""" Module yoton.channels.channels_base
 
 Defines the base channel class and the MessageType class.
 
@@ -43359,8 +43355,7 @@ from yoton.channels.message_types import MessageType, TEXT
     else:
         return None
 </t>
-<t tx="ekr.20190812072051.59">@path C:/leo.repo/leo-editor/leo/plugins/pyzo/yoton/channels/
-# -*- coding: utf-8 -*-
+<t tx="ekr.20190812072051.59">@path pyzo/yoton/channels/
 @others
 @language python
 @tabwidth -4
@@ -43407,7 +43402,8 @@ from yoton.channels.message_types import MessageType, TEXT
     # Init slots
     self._init_slots(slot_base)
 </t>
-<t tx="ekr.20190812072051.60">""" Module yoton.channels.channels_reqprep
+<t tx="ekr.20190812072051.60"># -*- coding: utf-8 -*-
+""" Module yoton.channels.channels_reqprep
 
 Defines the channel classes for the req/rep pattern.
 
@@ -44397,7 +44393,8 @@ and workspace.
 * Matlab-style *cell notation* to mark code sections (by starting a line
   with '##').
 
-"""</t>
+"""
+</t>
 <t tx="ekr.20190812074328.1">
 import sys # EKR:change
 try:
@@ -44489,7 +44486,8 @@ config = ssdf.new()
 loadConfig()
 
 # Init default style name (set in main.restorePyzoState())
-defaultQtStyleName = ''</t>
+defaultQtStyleName = ''
+</t>
 <t tx="ekr.20190812081316.1">""" Package tools of pyzo
 
 A tool consists of a module which contains a class. The id of a tool is its
@@ -44516,7 +44514,8 @@ displayed in the statusbar.
 # - source tree
 # - snipet manager
 # - file browser
-# - pythonpath editor, startupfile editor (or as part of pyzo?)</t>
+# - pythonpath editor, startupfile editor (or as part of pyzo?)
+</t>
 <t tx="ekr.20190812090629.1">def banner(message): #EKR:change-new.
     print('')
     print(message)
