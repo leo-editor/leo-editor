@@ -1,23 +1,30 @@
 #@+leo-ver=5-thin
 #@+node:mhw.20190827134123.1: * @file add-desktop-links-pyshort.leox
-'''See if pyshortcuts module is a good solution for Desktop and Menu Links (#1243)
+'''Create Leo Editor desktop shortcut link
+  Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
 '''
-import leo.core.leoGlobals as g
-iconpath = g.os_path_realpath(g.os_path_join(g.__file__, '../../Icons/LeoApp.ico'))
-
-g.es_print("PYSHORT Running add-desktop-links...")
 
 import shutil
 import platform
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
+
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, '../../Icons/LeoApp.ico'))
+
+g.es_print("Running add-desktop-links...")
+
 leocmd = shutil.which('leo')
 if platform.system() == 'Windows':
     leocmd = shutil.which('leo-messages')
 
-from pyshortcuts import make_shortcut
-scut = make_shortcut(leocmd, name='MyApp', icon=iconpath)
+scut = make_shortcut(leocmd, name='Leo Editor', icon=iconpath)
 
-from pprint import pprint
-g.es_print(pprint(vars(scut)))
+g.es_print("Created shortcut: {} - {}".format(scut.name, scut.target))
+
+if debug:
+    from pprint import pprint
+    g.es_print(pprint(vars(scut)))
 
 #@@language python
 #@@tabwidth -4
