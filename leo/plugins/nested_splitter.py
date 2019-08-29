@@ -74,7 +74,7 @@ if QtWidgets:
             super().__init__(*args, **kargs)
             if window_title:
                 self.setWindowTitle(window_title)
-        #@+node:tbrown.20120418121002.25714: *3* closeEvent
+        #@+node:tbrown.20120418121002.25714: *3* closeEvent (NestedSplitterTopLevel)
         def closeEvent(self, event):
             """A top-level NestedSplitter window has been closed, check all the
             panes for widgets which must be preserved, and move any found

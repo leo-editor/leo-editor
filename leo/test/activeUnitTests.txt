@@ -26205,6 +26205,45 @@ after
 #@+node:ekr.20190210103111.5: *7* selection
 2.0
 2.0
+#@+node:bpt.20190825074247.1: *4* @test undo/redoGroup
+# This test exposed a bug with redoGroup c.undoer.bead index off-by-one
+# The first c.pasteOutline() is there to setup the test cases, but it also serves
+# an important hidden purpose of adding undo state to the undo stack. Due
+# to the wrap-around nature of python index = -1, the original redoGroup code
+# worked fine when the undo group is the first one on the undo stack.
+# There are several commands which use undoGroup. The convertAllBlanks
+# was arbitrarily chosen to expose the bug.
+c.undoer.clearUndoState()
+original = p.copy().moveToFirstChild()
+c.selectPosition(original)
+c.copyOutline()
+# Do and undo
+c.pasteOutline()
+do_and_undo = original.copy().moveToNext()
+do_and_undo.h = "do and undo"
+c.convertAllBlanks()
+c.undoer.undo()
+assert original.b == do_and_undo.b, "Undo should restore to original"
+# Do
+c.pasteOutline()
+do = do_and_undo.copy().moveToNext()
+do.h = "do"
+c.convertAllBlanks()
+# Do, undo, redo
+c.pasteOutline()
+do_undo_redo = do.copy().moveToNext()
+do_undo_redo.h = "do, undo, redo"
+c.convertAllBlanks()
+c.undoer.undo()
+c.undoer.redo()
+assert do.b == do_undo_redo.b, "Redo should do the operation again"
+#@+node:bpt.20190825074316.1: *5* original
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')

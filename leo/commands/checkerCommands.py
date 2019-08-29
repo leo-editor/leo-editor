@@ -549,25 +549,28 @@ class PyflakesCommand:
             else:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, log_flag, paths, pyflakes_errors_only, roots=None):
+    def check_all(self, log_flag, pyflakes_errors_only, roots):
         '''Run pyflakes on all files in paths.'''
         try:
             from pyflakes import api, reporter
         except Exception: # ModuleNotFoundError
             return True # Pretend all is fine.
         total_errors = 0
-        # pylint: disable=cell-var-from-loop
-        for fn_n, fn in enumerate(sorted(paths)):
-            # Report the file name.
+        for i, root in enumerate(roots):
+            fn = self.finalize(root)
             sfn = g.shortFileName(fn)
+            # #1306: nopyflakes
+            if any([z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)]):
+                continue
+            # Report the file name.
             s = g.readFileIntoEncodedString(fn)
             if s and s.strip():
                 if not pyflakes_errors_only:
                     g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
                 r = reporter.Reporter(
-                    errorStream=self.LogStream(fn_n, roots),
-                    warningStream=self.LogStream(fn_n, roots),
+                    errorStream=self.LogStream(i, roots),
+                    warningStream=self.LogStream(i, roots),
                 )
                 errors = api.check(s, sfn, r)
                 total_errors += errors
@@ -579,6 +582,11 @@ class PyflakesCommand:
             from pyflakes import api, reporter
         except Exception: # ModuleNotFoundError
             return True # Pretend all is fine.
+        # #1306: nopyflakes
+        lines = g.splitLines(p.b)
+        for line in lines:
+            if line.strip().startswith('@nopyflakes'):
+                return True
         r = reporter.Reporter(
             errorStream=self.LogStream(),
             warningStream=self.LogStream(),
@@ -618,17 +626,16 @@ class PyflakesCommand:
             sys.path.append(leo_path)
         t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if root:
-            paths = [self.finalize(z) for z in roots]
+        if roots:
             # These messages are important for clarity.
             log_flag = not force
-            total_errors = self.check_all(log_flag, paths, pyflakes_errors_only, roots=roots)
+            total_errors = self.check_all(log_flag, pyflakes_errors_only, roots)
             if total_errors > 0:
                 g.es('ERROR: pyflakes: %s error%s' % (
                     total_errors, g.plural(total_errors)))
             elif force:
                 g.es('OK: pyflakes: %s file%s in %s' % (
-                    len(paths), g.plural(paths), g.timeSince(t1)))
+                    len(roots), g.plural(roots), g.timeSince(t1)))
             elif not pyflakes_errors_only:
                 g.es('OK: pyflakes')
             ok = total_errors == 0

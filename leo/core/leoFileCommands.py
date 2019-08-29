@@ -193,7 +193,7 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         trace = 'size' in g.app.debug
@@ -207,17 +207,25 @@ class FastRead:
         x, y = d.get('left'), d.get('top')
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
-        c.frame.setTopGeometry(w, h, x, y)
-        r1, r2 = d.get('r1'), d.get('r2')
-        c.frame.resizePanesToRatio(r1, r2)
         #
         # #1189: Must be done *after* restoring geometry.
         #        Was done in TabbedFrameFactory.createMaster.
-        frameFactory = getattr(g.app.gui, 'frameFactory', None)
-        if not frameFactory:
-            return
+        if g.app.use_global_docks:
+            mf = getattr(g.app.gui, 'main_window', None)
+            if not mf:
+                return
+            g.app.gui.set_top_geometry(w, h, x, y)
+            r1, r2 = d.get('r1'), d.get('r2')
+            c.frame.resizePanesToRatio(r1, r2)
+        else:
+            c.frame.setTopGeometry(w, h, x, y)
+            r1, r2 = d.get('r1'), d.get('r2')
+            c.frame.resizePanesToRatio(r1, r2)
+            frameFactory = getattr(g.app.gui, 'frameFactory', None)
+            if not frameFactory:
+                return
+            mf = frameFactory.masterFrame
         if trace: g.trace('sizing screen')
-        mf = frameFactory.masterFrame
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:
@@ -1225,16 +1233,21 @@ class FileCommands:
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals
+    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
+        trace = 'cache' in g.app.debug
         c = self.c
         self.put("<globals/>\n")
-        if c.mFileName:
-            c.db ['body_outline_ratio'] = str(c.frame.ratio)
-            c.db ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
-            w, h, l, t = c.frame.get_window_info()
-            c.db ['window_position'] = str(t), str(l), str(h), str(w)
+        if not c.mFileName:
+            return
+        c.db ['body_outline_ratio'] = str(c.frame.ratio)
+        c.db ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
+        w, h, l, t = c.frame.get_window_info()
+        c.db ['window_position'] = str(t), str(l), str(h), str(w)
+        if trace:
+            g.trace('\nset c.db for %s' % c.shortFileName())
+            print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0 # Always zero in Leo2.
@@ -1417,13 +1430,22 @@ class FileCommands:
         Set the cached expanded and marked bits for *all* nodes.
         Also cache the current position.
         '''
+        trace = 'cache' in g.app.debug
         c = self.c
+        if not c.mFileName:
+            return # New.
         current = [str(z) for z in self.currentPosition.archivedPosition()]
         expanded = [v.gnx for v in c.all_unique_nodes() if v.isExpanded()]
         marked = [v.gnx for v in c.all_unique_nodes() if v.isMarked()]
         c.db ['expanded'] = ','.join(expanded)
         c.db ['marked'] = ','.join(marked)
         c.db ['current_position'] = ','.join(current)
+        if trace:
+            g.trace('\nset c.db for %s' % c.shortFileName())
+            print('expanded:', expanded)
+            print('marked:', marked)
+            print('current_position:', current)
+            print('')
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
         '''Put the **properly encoded** <?xml> element.'''

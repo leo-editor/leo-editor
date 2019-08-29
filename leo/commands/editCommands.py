@@ -2466,7 +2466,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setSelectionRange(i1, i)
             return i1, i
         return 0, 0
-    #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection (new)
+    #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection
     @cmd('finish-of-line')
     def finishOfLine(self, event):
         '''Move the cursor to the last character of the line.'''
@@ -2848,7 +2848,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i = min(i, len(s))
         if i > ins:
             self.moveToHelper(event, i, extend)
-    #@+node:ekr.20170707072644.1: *4* ec.startOfLine/ExtendSelection (new)
+    #@+node:ekr.20170707072644.1: *4* ec.startOfLine/ExtendSelection
     @cmd('start-of-line')
     def startOfLine(self, event):
         '''Move the cursor to first non-blank character of the line.'''
@@ -3554,25 +3554,40 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('clear-node-uas')
     def clearNodeUas(self, event=None):
         '''Clear the uA's in the selected VNode.'''
-        if self.c.p:
-            self.c.p.v.u = {}
-
+        c = self.c
+        p = c and c.p
+        if p and p.v.u:
+            p.v.u = {}
+            # #1276.
+            p.v.setDirty()
+            c.setChanged()
+            c.redraw()
+            
     @cmd('clear-all-uas')
     def clearAllUas(self, event=None):
         '''Clear all uAs in the entire outline.'''
-        for v in self.c.all_unique_nodes():
-            v.u = {}
-    #@+node:ekr.20150514063305.350: *4* ec.printUas & printAllUas
+        c = self.c
+        # #1276.
+        changed = False
+        for p in self.c.all_unique_positions():
+            if p.v.u:
+                p.v.u = {}
+                p.v.setDirty()
+                changed = True
+        if changed:
+            c.setChanged()
+            c.redraw()
+    #@+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
-    def printAllUas(self, event=None):
+    def showAllUas(self, event=None):
         '''Print all uA's in the outline.'''
         g.es_print('Dump of uAs...')
         for v in self.c.all_unique_nodes():
             if v.u:
-                self.printUas(v=v)
+                self.showNodeUas(v=v)
 
     @cmd('show-node-uas')
-    def printUas(self, event=None, v=None):
+    def showNodeUas(self, event=None, v=None):
         '''Print the uA's in the selected node.'''
         c = self.c
         if v:
@@ -3603,7 +3618,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         val = k.arg
         d = c.p.v.u
         d[self.uaName] = val
-        self.printUas()
+        self.showNodeUas()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()

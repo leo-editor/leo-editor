@@ -1256,17 +1256,6 @@ class JEditColorizer(BaseJEditColorizer):
     def match_blanks(self, s, i):
         # Use Qt code to show invisibles.
         return 0
-        ### Old code...
-            # if not self.showInvisibles:
-                # return 0
-            # j = i; n = len(s)
-            # while j < n and s[j] == ' ':
-                # j += 1
-            # if j > i:
-                # self.colorRangeWithTag(s, i, j, 'blank')
-                # return j - i
-            # else:
-                # return 0
     #@+node:ekr.20110605121601.18602: *5* jedit.match_doc_part & restarter
     def match_doc_part(self, s, i):
         '''
@@ -1762,7 +1751,7 @@ class JEditColorizer(BaseJEditColorizer):
                 # A hack to handle continued strings. Should work for most languages.
                 # Prepend "dots" to the kind, as a flag to setTag.
                 dots = j > len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
-                dots = dots and self.language not in ('lisp', 'elisp')
+                dots = dots and self.language not in ('lisp', 'elisp', 'rust')
                 if dots:
                     kind = 'dots'+kind
                 # A match
@@ -2871,7 +2860,7 @@ class QScintillaColorizer(BaseColorizer):
                 pass
                 # Not an error. Not all lexers have all styles.
                     # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
-    #@+node:ekr.20170128031840.1: *3* qsc.init (new)
+    #@+node:ekr.20170128031840.1: *3* qsc.init
     def init(self, p):
         '''QScintillaColorizer.init'''
         self.updateSyntaxColorer(p)

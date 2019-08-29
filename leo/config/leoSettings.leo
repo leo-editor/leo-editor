@@ -634,9 +634,10 @@
 </v>
 </v>
 <v t="ekr.20190613024818.1"><vh>Docks</vh>
-<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 <v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
 <v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
+<v t="ekr.20190808031525.1"><vh>@data pyzo_tool_ids</vh></v>
+<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
@@ -2286,7 +2287,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20170509104949.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11743,6 +11743,18 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190724173715.1"></t>
 <t tx="ekr.20190724173724.1"></t>
 <t tx="ekr.20190724173733.1"></t>
+<t tx="ekr.20190808031525.1"># Valid ids are:
+
+# pyzofilebrowser
+# pyzohistoryviewer
+# pyzointeractivehelp
+# pyzologger
+# pyzowebbrowser
+# pyzosourcestructure
+    # Partially functional.
+
+# Not ready yet:
+# pyzoworkspace</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

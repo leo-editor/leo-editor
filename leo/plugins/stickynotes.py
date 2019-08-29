@@ -621,7 +621,7 @@ class Tabula(QMainWindow):
         self.notes[gnx] = n
         n.show()
         return n
-    #@+node:ekr.20101114061906.5442: *4* closeEvent
+    #@+node:ekr.20101114061906.5442: *4* closeEvent (Tabula)
     def closeEvent(self,event):
 
         self.save_states()

@@ -36,9 +36,19 @@
 <v t="mhw-debug-1081.20190314004045.1"></v>
 <v t="maphew.20190712112633.1"><vh>Main</vh></v>
 </v>
+<v t="mhw.20190730140115.1"><vh>@button add-desktop-links</vh>
+<v t="mhw.20190808083214.1"><vh>main</vh></v>
+</v>
+<v t="mhw.20190806161400.1"><vh>@button remove-desktop-links</vh>
+<v t="mhw.20190808083336.1"><vh>main</vh></v>
+</v>
 </v>
 </v>
 <v t="lkj.20190712001203.1"><vh>scripts</vh>
+<v t="mhw.20190808082948.1"><vh>Any</vh>
+<v t="mhw.20190808083008.1"><vh>@file add-desktop-links.leox</vh></v>
+<v t="mhw.20190808083026.1"><vh>@file remove-desktop-links.leox</vh></v>
+</v>
 <v t="mhw-debug-1081.20190310203401.1"><vh>Windows</vh>
 <v t="maphew.20130611235500.2658"><vh>@file register-leo.leox</vh></v>
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
@@ -48,12 +58,6 @@
 </v>
 <v t="lkj.20190711232707.1"><vh>Linux</vh></v>
 <v t="lkj.20190711232711.1"><vh>Mac</vh></v>
-<v t="mhw.20190730140115.1"><vh>@button add-desktop-links</vh>
-<v t="mhw.20190730142513.1"><vh>Notes</vh>
-<v t="mhw.20190730140619.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat</vh></v>
-<v t="mhw.20190730141446.1"><vh>@@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat</vh></v>
-</v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -85,7 +89,9 @@ Example of success:
 
 ## All Platforms - Linux, Mac, Windows ##
 
-[add-desktop-links] - Creates launch shortcuts in Desktop and Start Menu 
+[add-desktop-links] - Creates launch shortcuts in desktop and system menu
+
+[remove-desktop-links] - Removes the launch shortcuts
 
 
 ## Windows ## 
@@ -93,7 +99,6 @@ Example of success:
 [Register-leo] - Creates registry keys for Leo file type and .leo file association. Afterwards .leo files will show Leo icon and double-clicking them will open in Leo Editor.
 
 [Unregister-leo] - Removes the above
-
 </t>
 <t tx="lkj.20190712001203.1"></t>
 <t tx="maphew.20130509185752.1607">def register_leo(pyexe, launchLeo, icon):
@@ -251,6 +256,8 @@ else:
 g.es_print('--- end of script')</t>
 <t tx="maphew.20190712112935.1">These buttons are just convenience wrappers around the `@file` scripts, by cloning the at-file nodes.
 
+Todo: move desktop-links code into external files also (enables running from command line).
+
 </t>
 <t tx="maphew.20190712113401.1"></t>
 <t tx="maphew.20190712113412.1"></t>
@@ -339,18 +346,22 @@ False: (Good for files like unitTest.leo)
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
-<t tx="mhw.20190730140115.1">'''naive implementation of https://github.com/kiwi0fruit/shortcutter'''
+<t tx="mhw.20190730140115.1">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="mhw.20190806161400.1">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="mhw.20190808082948.1"></t>
+<t tx="mhw.20190808083214.1">'''Create Leo Editor desktop and system menu shortcut links'''
+
+g.es_print("Running add-desktop-links...")
 import sys
-
-
-
 import platform
 from shortcutter import ShortCutter
 sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
-
-
-
-
 
 leocmd = "leo"
 if platform.system() == 'Windows':
@@ -365,75 +376,38 @@ if desktop:
 
 if menu:
     g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
-    
-
-
-
-@first # -*- coding: utf-8 -*-
-@language python
-@tabwidth -4
 </t>
-<t tx="mhw.20190730140619.1">@language batch
-@echo off
-set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-set "u=chcp 65001 &amp;&amp; set PYTHONIOENCODING=utf-8"
-set "a=chcp 1252 &amp;&amp; set PYTHONIOENCODING="
-set "b=set LANG=C.UTF-8 &amp;&amp; set PYTHONIOENCODING=utf-8 &amp;&amp; "%PROGRAMFILES%\Git\git-bash.exe""
-cd /d %USERPROFILE%
-cmd /k
+<t tx="mhw.20190808083336.1">'''Remove Leo Editor shortcuts from desktop and system menu
+
+The approach is naive:
+    first we create links for the current environment, overwriting if already exist
+    then we remove them
+
+So this won't delete links created from a different Leo directory or source code
+checkout (unless they have same filename).
+'''
+g.es_print("Running remove-desktop-links...")
+import os
+import sys
+import platform
+from shortcutter import ShortCutter
+sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+
+leocmd = "leo"
+if platform.system() == 'Windows':
+    leocmd = "leo-messages"
+
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
+menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
+term = sc.create_shortcut_to_env_terminal()
+
+if desktop:
+    g.es_print("Removing shortcut: {} - {}".format(desktop[0],desktop[2]))
+    os.remove(desktop[2])
+
+if menu:
+    g.es_print("Removing shortcut: {} - {}".format(menu[0],menu[2]))
+    os.remove(menu[2])
 </t>
-<t tx="mhw.20190730141446.1">@language batch
-@echo off
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-"c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-call "c:\tools\miniconda3\Scripts\deactivate.bat"
-</t>
-<t tx="mhw.20190730142513.1">@
-Example straight from docs creates a .lnk file like:
-    
-    Name: Terminal at leo-dev
-    Command: C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
-
-and the bat file:
-    
-    @echo off
-    set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-    set PYTHONNOUSERSITE=1
-    call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-    set "u=chcp 65001 &amp;&amp; set PYTHONIOENCODING=utf-8"
-    set "a=chcp 1252 &amp;&amp; set PYTHONIOENCODING="
-    set "b=set LANG=C.UTF-8 &amp;&amp; set PYTHONIOENCODING=utf-8 &amp;&amp; "%PROGRAMFILES%\Git\git-bash.exe""
-    cd /d %USERPROFILE%
-    cmd /k
-
-------
-Using `leo` instead of Python or `Leo Editor`:
-
-C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
-
-Contents:
-    @language batch
-    @echo off
-    set PYTHONNOUSERSITE=1
-    call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-    "c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-    call "c:\tools\miniconda3\Scripts\deactivate.bat"
-
-----
-passing `activate=False` bypasses creation of .bat file, this is what we need. It Just Works. :-)
-
-    C:\tools\miniconda3\envs\leo-dev\Scripts\leo-messages.exe
-
-
------
-# What's Next
-
- - Record location of the created shortcuts so they can be removed later with a script
- - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
-
-@c</t>
 </tnodes>
 </leo_file>

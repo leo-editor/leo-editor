@@ -1700,12 +1700,17 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (changed)
+    no_menu_dict = {}
+        # Keys are file names.
+
     def getShortcut(self, commandName):
         '''Return rawKey,accel for shortcutName'''
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            g.trace('no menu: %s' % (commandName))
+            if c not in self.no_menu_dict:
+                self.no_menu_dict[c] = True
+                g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
             return None, []
         if d:
             assert g.isTypedDictOfLists(d), d
@@ -1760,7 +1765,7 @@ class LocalConfigManager:
             if path.endswith(fn.lower()):
                 return False
         return True
-    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile (new)
+    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile
     def isLocalSettingsFile(self):
         '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
         c = self.c
@@ -1769,7 +1774,7 @@ class LocalConfigManager:
             if fn.endswith(fn2.lower()):
                 return False
         return True
-    #@+node:ekr.20120224140548.10528: *4* c.exists (new)
+    #@+node:ekr.20120224140548.10528: *4* c.exists
     def exists(self, c, setting, kind):
         '''Return true if a setting of the given kind exists, even if it is None.'''
         d = self.settingsDict
