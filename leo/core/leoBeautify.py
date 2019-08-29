@@ -1079,43 +1079,6 @@ class PythonTokenBeautifier:
             # Retain the token (intention) for debugging.
             self.add_token('blank-lines', n)
             self.line_indent()
-    #@+node:ekr.20190729013033.1: *4* ptb.break_line (new)
-    def break_line(self):
-        
-        i = len(self.code_list) - 1
-        tok0 = self.code_list[i]
-        assert tok0.value in ')]}'
-        tok1_value = { ')': '(', ']': '[', '{': '}'}.get(tok0.value)
-        ### g.trace('=====', tok1_value, tok0.value)
-        level = 0
-        while i >= 0:
-            tok = self.code_list[i]
-            if tok.value == tok0.value:
-                level += 1
-            elif tok.value == tok1_value:
-                level -= 1
-                if level == 0:
-                    ###
-                        # g.printObj(self.code_list[i:])
-                        # print(''.join([z.to_string() for z in self.code_list[i:]]))
-                    while i >= 0:
-                        tok = self.code_list[i]
-                        if tok.kind == 'file-start':
-                            break
-                        if tok.kind == 'line-end':
-                            i += 1
-                            break
-                        i -= 1
-                    else:
-                        i = 0 # should not happen.
-                    if 0:
-                        g.printObj(self.code_list[i:])
-                        line = ''.join([z.to_string() for z in self.code_list[i:]])
-                        print(len(line), repr(line))
-                    return
-            i -= 1
-        print('----- not found', tok0.kind)
-        g.printObj(self.code_list)
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -1203,9 +1166,6 @@ class PythonTokenBeautifier:
         else:
             self.clean('blank')
         self.add_token('rt', s)
-        ### Experimental.
-        if break_lines and self.paren_level == 0:
-            self.break_line()
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self, s):
         '''Add op token to code list.'''
