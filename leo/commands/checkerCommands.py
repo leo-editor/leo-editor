@@ -6,6 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import leo.core.leoGlobals as g
+from leo.core.leoBeautify import should_beautify
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
@@ -334,6 +335,8 @@ class BlackCommand:
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p, diff_flag):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
+        if not should_beautify(p):
+            return
         self.total += 1
         c = self.c
         body = p.b.rstrip()+'\n'
