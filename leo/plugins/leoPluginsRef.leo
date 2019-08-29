@@ -718,10 +718,23 @@
 <v t="ekr.20190812072048.59"><vh>@clean __init__.py</vh></v>
 </v>
 <v t="ekr.20190812072048.61"><vh>codeeditor/parsers</vh>
-<v t="ekr.20190812072048.62"><vh>@clean cython_parser.py</vh>
-<v t="ekr.20190812072048.63"><vh>Declarations</vh></v>
-<v t="ekr.20190812072048.64"><vh>class CythonParser(PythonParser)</vh>
-<v t="ekr.20190812072048.65"><vh>CythonParser._identifierState</vh></v>
+<v t="ekr.20190812072048.121"><vh>@clean __init__.py</vh>
+<v t="ekr.20190812072048.122"><vh>Declarations</vh></v>
+<v t="ekr.20190812072048.123"><vh>class BlockState(object)</vh>
+<v t="ekr.20190812072048.124"><vh>BlockState.__init__</vh></v>
+<v t="ekr.20190812072048.125"><vh>BlockState.state</vh></v>
+<v t="ekr.20190812072048.126"><vh>BlockState.info</vh></v>
+</v>
+<v t="ekr.20190812072048.127"><vh>class Parser(object)</vh>
+<v t="ekr.20190812072048.128"><vh>Parser.parseLine</vh></v>
+<v t="ekr.20190812072048.129"><vh>Parser.name</vh></v>
+<v t="ekr.20190812072048.130"><vh>Parser.__repr__</vh></v>
+<v t="ekr.20190812072048.131"><vh>Parser.keywords</vh></v>
+<v t="ekr.20190812072048.132"><vh>Parser.filenameExtensions</vh></v>
+<v t="ekr.20190812072048.133"><vh>Parser.shebangKeywords</vh></v>
+<v t="ekr.20190812072048.134"><vh>Parser.getStyleElementDescriptions</vh></v>
+<v t="ekr.20190812072048.135"><vh>Parser.getUsedTokens</vh></v>
+<v t="ekr.20190812072048.136"><vh>Parser._isTodoItem</vh></v>
 </v>
 </v>
 <v t="ekr.20190812072048.66"><vh>@clean c_parser.py</vh>
@@ -733,6 +746,12 @@
 <v t="ekr.20190812072048.72"><vh>CParser._findEndOfComment</vh></v>
 <v t="ekr.20190812072048.73"><vh>CParser._findEndOfString</vh></v>
 <v t="ekr.20190812072048.74"><vh>CParser._findNextToken</vh></v>
+</v>
+</v>
+<v t="ekr.20190812072048.62"><vh>@clean cython_parser.py</vh>
+<v t="ekr.20190812072048.63"><vh>Declarations</vh></v>
+<v t="ekr.20190812072048.64"><vh>class CythonParser(PythonParser)</vh>
+<v t="ekr.20190812072048.65"><vh>CythonParser._identifierState</vh></v>
 </v>
 </v>
 <v t="ekr.20190812072048.75"><vh>@clean python_parser.py</vh>
@@ -786,25 +805,6 @@
 <v t="ekr.20190812072048.118"><vh>class ParenthesisToken(TextToken)</vh></v>
 <v t="ekr.20190812072048.119"><vh>class OpenParenToken(ParenthesisToken)</vh></v>
 <v t="ekr.20190812072048.120"><vh>class CloseParenToken(ParenthesisToken)</vh></v>
-</v>
-<v t="ekr.20190812072048.121"><vh>@clean __init__.py</vh>
-<v t="ekr.20190812072048.122"><vh>Declarations</vh></v>
-<v t="ekr.20190812072048.123"><vh>class BlockState(object)</vh>
-<v t="ekr.20190812072048.124"><vh>BlockState.__init__</vh></v>
-<v t="ekr.20190812072048.125"><vh>BlockState.state</vh></v>
-<v t="ekr.20190812072048.126"><vh>BlockState.info</vh></v>
-</v>
-<v t="ekr.20190812072048.127"><vh>class Parser(object)</vh>
-<v t="ekr.20190812072048.128"><vh>Parser.parseLine</vh></v>
-<v t="ekr.20190812072048.129"><vh>Parser.name</vh></v>
-<v t="ekr.20190812072048.130"><vh>Parser.__repr__</vh></v>
-<v t="ekr.20190812072048.131"><vh>Parser.keywords</vh></v>
-<v t="ekr.20190812072048.132"><vh>Parser.filenameExtensions</vh></v>
-<v t="ekr.20190812072048.133"><vh>Parser.shebangKeywords</vh></v>
-<v t="ekr.20190812072048.134"><vh>Parser.getStyleElementDescriptions</vh></v>
-<v t="ekr.20190812072048.135"><vh>Parser.getUsedTokens</vh></v>
-<v t="ekr.20190812072048.136"><vh>Parser._isTodoItem</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -1629,6 +1629,22 @@
 </v>
 </v>
 <v t="ekr.20190812072049.182"><vh>pyzo/pyzokernel</vh>
+<v t="ekr.20190812072049.366"><vh>@clean __init__.py</vh>
+<v t="ekr.20190812072049.367"><vh>Declarations</vh></v>
+<v t="ekr.20190812072049.368"><vh>printDirect</vh></v>
+</v>
+<v t="ekr.20190812072049.355"><vh>@clean _nope.py</vh>
+<v t="ekr.20190812072049.356"><vh>Declarations</vh></v>
+<v t="ekr.20190812072049.357"><vh>_utf8</vh></v>
+<v t="ekr.20190812072049.358"><vh>n</vh></v>
+<v t="ekr.20190812072049.359"><vh>C</vh></v>
+<v t="ekr.20190812072049.360"><vh>beginActivityWithOptions</vh></v>
+<v t="ekr.20190812072049.361"><vh>endActivity</vh></v>
+<v t="ekr.20190812072049.362"><vh>nope</vh></v>
+<v t="ekr.20190812072049.363"><vh>nap</vh></v>
+<v t="ekr.20190812072049.364"><vh>napping_allowed</vh></v>
+<v t="ekr.20190812072049.365"><vh>nope_scope</vh></v>
+</v>
 <v t="ekr.20190812072049.183"><vh>@clean debug.py</vh>
 <v t="ekr.20190812072049.184"><vh>Declarations</vh></v>
 <v t="ekr.20190812072049.185"><vh>class Debugger(bdb.Bdb)</vh>
@@ -1828,22 +1844,6 @@
 <v t="ekr.20190812072049.352"><vh>@clean start.py</vh>
 <v t="ekr.20190812072049.353"><vh>Declarations</vh></v>
 <v t="ekr.20190812072049.354"><vh>pyzo_excepthook</vh></v>
-</v>
-<v t="ekr.20190812072049.355"><vh>@clean _nope.py</vh>
-<v t="ekr.20190812072049.356"><vh>Declarations</vh></v>
-<v t="ekr.20190812072049.357"><vh>_utf8</vh></v>
-<v t="ekr.20190812072049.358"><vh>n</vh></v>
-<v t="ekr.20190812072049.359"><vh>C</vh></v>
-<v t="ekr.20190812072049.360"><vh>beginActivityWithOptions</vh></v>
-<v t="ekr.20190812072049.361"><vh>endActivity</vh></v>
-<v t="ekr.20190812072049.362"><vh>nope</vh></v>
-<v t="ekr.20190812072049.363"><vh>nap</vh></v>
-<v t="ekr.20190812072049.364"><vh>napping_allowed</vh></v>
-<v t="ekr.20190812072049.365"><vh>nope_scope</vh></v>
-</v>
-<v t="ekr.20190812072049.366"><vh>@clean __init__.py</vh>
-<v t="ekr.20190812072049.367"><vh>Declarations</vh></v>
-<v t="ekr.20190812072049.368"><vh>printDirect</vh></v>
 </v>
 </v>
 <v t="ekr.20190812072049.370"><vh>pyzo/resources</vh>
@@ -2517,6 +2517,14 @@
 </v>
 </v>
 <v t="ekr.20190812072050.369"><vh>pyzo/yoton</vh>
+<v t="ekr.20190812072050.558"><vh>@clean __init__.py</vh>
+<v t="ekr.20190812072050.559"><vh>Declarations</vh></v>
+<v t="ekr.20190812072050.560"><vh>class SimpleSocket(Context)</vh>
+<v t="ekr.20190812072050.561"><vh>SimpleSocket.__init__</vh></v>
+<v t="ekr.20190812072050.562"><vh>SimpleSocket.send</vh></v>
+<v t="ekr.20190812072050.563"><vh>SimpleSocket.recv</vh></v>
+</v>
+</v>
 <v t="ekr.20190812072050.370"><vh>@clean clientserver.py</vh>
 <v t="ekr.20190812072050.371"><vh>Declarations</vh></v>
 <v t="ekr.20190812072050.372"><vh>class RequestServer(threading.Thread)</vh>
@@ -2735,14 +2743,6 @@
 <v t="ekr.20190812072050.557"><vh>TinyPackageQueue.clear</vh></v>
 </v>
 </v>
-<v t="ekr.20190812072050.558"><vh>@clean __init__.py</vh>
-<v t="ekr.20190812072050.559"><vh>Declarations</vh></v>
-<v t="ekr.20190812072050.560"><vh>class SimpleSocket(Context)</vh>
-<v t="ekr.20190812072050.561"><vh>SimpleSocket.__init__</vh></v>
-<v t="ekr.20190812072050.562"><vh>SimpleSocket.send</vh></v>
-<v t="ekr.20190812072050.563"><vh>SimpleSocket.recv</vh></v>
-</v>
-</v>
 <v t="ekr.20190812072051.2"><vh>yoton/channels</vh>
 <v t="ekr.20190812072051.3"><vh>@clean channels_base.py</vh>
 <v t="ekr.20190812072051.4"><vh>Declarations</vh></v>
@@ -2913,11 +2913,14 @@
 <v t="ekr.20190812072051.147"><vh>count_lines</vh></v>
 </v>
 <v t="ekr.20190812072051.148"><vh>@clean event_driven1.py</vh>
-<v t="ekr.20190812072051.149"><vh>Declarations</vh></v>
+<v t="ekr.20190829074237.1"><vh>&lt;&lt; define class Reducer &gt;&gt;</vh>
 <v t="ekr.20190812072051.150"><vh>class Reducer(yoton.RepChannel)</vh>
 <v t="ekr.20190812072051.151"><vh>Reducer.reduce</vh></v>
 </v>
+</v>
+<v t="ekr.20190829074429.1"><vh>&lt;&lt; define reply_handler &gt;&gt;</vh>
 <v t="ekr.20190812072051.152"><vh>reply_handler</vh></v>
+</v>
 </v>
 <v t="ekr.20190812072051.153"><vh>@clean event_driven2.py</vh>
 <v t="ekr.20190812072051.154"><vh>Declarations</vh></v>
@@ -2930,20 +2933,22 @@
 <v t="ekr.20190812072051.159"><vh>Declarations</vh></v>
 </v>
 <v t="ekr.20190812072051.160"><vh>@clean message_type.py</vh>
-<v t="ekr.20190812072051.161"><vh>Declarations</vh></v>
+<v t="ekr.20190829074722.1"><vh>&lt;&lt; class NumberMessageType 1&gt;&gt;</vh>
 <v t="ekr.20190812072051.162"><vh>class NumberMessageType(yoton.MessageType)</vh>
 <v t="ekr.20190812072051.163"><vh>NumberMessageType.message_from_bytes</vh></v>
 <v t="ekr.20190812072051.164"><vh>NumberMessageType.message_to_bytes</vh></v>
 <v t="ekr.20190812072051.165"><vh>NumberMessageType.message_type_name</vh></v>
 </v>
-<v t="ekr.20190812072051.166"><vh>class NumberMessageType(yoton.MessageType)</vh>
-<v t="ekr.20190812072051.167"><vh>NumberMessageType.message_from_bytes</vh></v>
-<v t="ekr.20190812072051.168"><vh>NumberMessageType.message_to_bytes</vh></v>
-<v t="ekr.20190812072051.169"><vh>NumberMessageType.message_type_name</vh></v>
+</v>
+<v t="ekr.20190829074851.1"><vh>&lt;&lt; class NumberMessageType 2&gt;&gt;</vh>
+<v t="ekr.20190829074851.2"><vh>class NumberMessageType(yoton.MessageType)</vh>
+<v t="ekr.20190829074851.3"><vh>NumberMessageType.message_from_bytes</vh></v>
+<v t="ekr.20190829074851.4"><vh>NumberMessageType.message_to_bytes</vh></v>
+<v t="ekr.20190829074851.5"><vh>NumberMessageType.message_type_name</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20190812072051.170"><vh>@clean reqrep.py</vh>
-<v t="ekr.20190812072051.171"><vh>Declarations</vh></v>
 <v t="ekr.20190812072051.172"><vh>class Adder(yoton.RepChannel)</vh>
 <v t="ekr.20190812072051.173"><vh>Adder.add</vh></v>
 </v>
@@ -6129,6 +6134,7 @@ from codeeditor import CodeEditor
 <t tx="ekr.20190812072047.126">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
 # flake8: noqa
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -7208,10 +7214,12 @@ def showLineEndings(self):
     self.addLeftMargin(LineNumbers, self.getLineNumberAreaWidth)
 </t>
 <t tx="ekr.20190812072047.2"># These are the actual pyzo sources,
-# unmodified except for traces added by EKR.
+# unmodified except for traces added, and @nopyflakes directives.
+
 </t>
 <t tx="ekr.20190812072047.20">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -7696,12 +7704,12 @@ def setWrap(self,value):
     else:
         option.setWrapMode(option.NoWrap)
     self.document().setDefaultTextOption(option)
-# todo: move this bit to base class?
+</t>
+<t tx="ekr.20190812072047.229"># todo: move this bit to base class?
 # This functionality embedded in the highlighter and even has a designated
 # subpackage. I feel that it should be a part of the base editor.
 # Note: if we do this, remove the hasattr call in the highlighter.
-</t>
-<t tx="ekr.20190812072047.229">class SyntaxHighlighting(object): # tag:CodeEditor
+class SyntaxHighlighting(object): # tag:CodeEditor
     """ Notes on syntax highlighting.
 
     The syntax highlighting/parsing is performed using three "components".
@@ -7892,9 +7900,9 @@ Qt = QtCore.Qt
 
 import keyword
 
-#TODO: use this CompletionListModel to style the completion suggestions (class names, method names, keywords etc)
 </t>
-<t tx="ekr.20190812072047.234">class CompletionListModel(QtCore.QStringListModel):
+<t tx="ekr.20190812072047.234">#TODO: use this CompletionListModel to style the completion suggestions (class names, method names, keywords etc)
+class CompletionListModel(QtCore.QStringListModel):
     @others
 </t>
 <t tx="ekr.20190812072047.235">def data(self, index, role):
@@ -7904,9 +7912,9 @@ import keyword
         return None
     else:
         return QtCore.QStringListModel.data(self, index, role)
-# todo: use keywords from the parser
 </t>
-<t tx="ekr.20190812072047.236">class AutoCompletion(object): # tag:CodeEditor
+<t tx="ekr.20190812072047.236"># todo: use keywords from the parser
+class AutoCompletion(object): # tag:CodeEditor
     @others
 </t>
 <t tx="ekr.20190812072047.237">def __init__(self,*args, **kwds):
@@ -8671,10 +8679,10 @@ from .misc import ustr
     self.indentation = None
     self.fullUnderlineFormat = None
     self.tokens = []
-# The highlighter should be part of the base class, because
-# some extensions rely on them (e.g. the indent guuides).
 </t>
-<t tx="ekr.20190812072047.57">class Highlighter(QtGui.QSyntaxHighlighter):
+<t tx="ekr.20190812072047.57"># The highlighter should be part of the base class, because
+# some extensions rely on them (e.g. the indent guuides).
+class Highlighter(QtGui.QSyntaxHighlighter):
 
     @others
 </t>
@@ -8782,6 +8790,7 @@ from .misc import ustr
 </t>
 <t tx="ekr.20190812072047.61">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
+@nopyflakes
 """ Module manager
 
 This module contains a static class that can be used for some
@@ -8864,6 +8873,7 @@ from . import parsers
 #         print(parserModules)
 
     @others
+# Init
 try:
     Manager._collectParsers()
 except Exception as why:
@@ -9139,10 +9149,10 @@ def defaultFont(cls):
     # Done
     return QtGui.QFont(family, size)
 
-# Init
 </t>
 <t tx="ekr.20190812072047.76">@path pyzo/codeeditor/
 # -*- coding: utf-8 -*-
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -9256,6 +9266,7 @@ _callbackEventHandler = _CallbackEventHandler()
 @others
 @language python
 @tabwidth -4
+@nopyflakes
 </t>
 <t tx="ekr.20190812072047.85">from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
 </t>
@@ -9432,6 +9443,7 @@ def defaultFormat(self):
         self.__updateAutocompleterPrefix()
 </t>
 <t tx="ekr.20190812072048.10">@path pyzo/codeeditor/extensions/
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -9568,7 +9580,21 @@ from ..parsers import BlockState
     defaultStyle = ''
 </t>
 <t tx="ekr.20190812072048.121">@path pyzo/codeeditor/parsers/
+@nopyflakes
 @others
+## Import parsers statically
+# We could load the parser dynamically from the source files in the
+# directory, but this takes quite some effort to get righ when apps
+# are frozen. This is doable (I do it in Visvis) but it requires the
+# user to specify the parser modules by hand when freezing an app.
+#
+# In summary: it takes a lot of trouble, which can be avoided by just
+# listing all parsers here.
+from . import (     python_parser,  # noqa
+                    cython_parser,  # noqa
+                    c_parser,  # noqa
+                    s_expr_parser,  # noqa
+              )
 @language python
 @tabwidth -4
 </t>
@@ -9641,9 +9667,9 @@ def info(self):
     """
     return self._info
 
-# Base parser class (needs to be defined before importing parser modules)
 </t>
-<t tx="ekr.20190812072048.127">class Parser(object):
+<t tx="ekr.20190812072048.127"># Base parser class (needs to be defined before importing parser modules)
+class Parser(object):
     """ Base parser class.
     All parsers should inherit from this class.
     This base class generates a 'TextToken' for each line
@@ -9653,11 +9679,6 @@ def info(self):
     _keywords = []
 
     @others
-from . import (     python_parser,  # noqa
-                    cython_parser,  # noqa
-                    c_parser,  # noqa
-                    s_expr_parser,  # noqa
-              )
 </t>
 <t tx="ekr.20190812072048.128">def parseLine(self, line, previousState=0):
     """ parseLine(line, previousState=0)
@@ -9787,14 +9808,6 @@ from . import (     python_parser,  # noqa
     else:
         return False
 
-## Import parsers statically
-# We could load the parser dynamically from the source files in the
-# directory, but this takes quite some effort to get righ when apps
-# are frozen. This is doable (I do it in Visvis) but it requires the
-# user to specify the parser modules by hand when freezing an app.
-#
-# In summary: it takes a lot of trouble, which can be avoided by just
-# listing all parsers here.
 </t>
 <t tx="ekr.20190812072048.138"></t>
 <t tx="ekr.20190812072048.139">@path pyzo/core/
@@ -11573,10 +11586,10 @@ defPattern += r'\((.*?)\)' # The SIGNATURE
 
     # Return result
     return Result(root, importList, job.editorId)
-## Helper classes and functions
-
 </t>
-<t tx="ekr.20190812072048.223">class FictiveObject:
+<t tx="ekr.20190812072048.223">## Helper classes and functions
+
+class FictiveObject:
     """ An un-instantiated object.
     type can be class, def, import, cell, todo
     extra stuff:
@@ -11918,6 +11931,7 @@ _try_start_server = True
 @others
 @language python
 @tabwidth -4
+@nopyflakes
 </t>
 <t tx="ekr.20190812072048.24">def __cursorIsInLeadingWhitespace(self,cursor = None):
     """
@@ -13501,9 +13515,9 @@ def pinned(self):
     when closing all files.
     """
     return self._pinned
-# todo: when this works with the new editor, put in own module.
 </t>
-<t tx="ekr.20190812072048.313">class FindReplaceWidget(QtWidgets.QFrame):
+<t tx="ekr.20190812072048.313"># todo: when this works with the new editor, put in own module.
+class FindReplaceWidget(QtWidgets.QFrame):
     """ A widget to find and replace text. """
 
     @others
@@ -15032,7 +15046,7 @@ def __ensureCursorBeforeAnchor(cls, cursor):
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072048.378">import os
 import datetime
 
@@ -15345,9 +15359,9 @@ import pyzo
     # Fourth line of 1
     self.setPenColor((0,0,0,a2))
     self.addPoint(x+2,y+3)
-# todo: not used; remove me?
 </t>
-<t tx="ekr.20190812072048.399">class TabCloseButton(QtWidgets.QToolButton):
+<t tx="ekr.20190812072048.399"># todo: not used; remove me?
+class TabCloseButton(QtWidgets.QToolButton):
     """ TabCloseButton
 
     This class implements a very compact close button to be used in tabs.
@@ -15453,9 +15467,9 @@ import pyzo
         pm = self._createCrossPixmap(240)
     # Set
     return QtGui.QIcon(pm)
-# todo: not used; remove me?
 </t>
-<t tx="ekr.20190812072048.407">class ToolButtonWithMenuIndication(QtWidgets.QToolButton):
+<t tx="ekr.20190812072048.407"># todo: not used; remove me?
+class ToolButtonWithMenuIndication(QtWidgets.QToolButton):
     """ ToolButtonWithMenuIndication
 
     Tool button that wraps the icon in a slightly larger icon that
@@ -16483,6 +16497,7 @@ if EXE_DIR.endswith('.app/Contents/MacOS'):
     self._pending_restart = None
 </t>
 <t tx="ekr.20190812072048.46">@path pyzo/codeeditor/extensions/
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -18891,6 +18906,7 @@ from pyzo import translate
 </t>
 <t tx="ekr.20190812072048.59">@path pyzo/codeeditor/extensions/
 # Extra line, so perfect import will work.
+@nopyflakes
 @language python
 @tabwidth -4
 </t>
@@ -20839,6 +20855,7 @@ endProgs = {
     _instance = python3Instance
 </t>
 <t tx="ekr.20190812072048.86">@path pyzo/codeeditor/parsers/
+@nopyflakes
 @others
 @language python
 @tabwidth -4
@@ -21347,6 +21364,8 @@ from ..misc import ustr
     """
 
     @others
+
+# Split now, with no defering
 splitConsole()
 
 # EKR: *importing* this module starts logging.
@@ -21373,9 +21392,9 @@ splitConsole()
         return ''
     else:
         return value
-## The dialog class and container with tabs
 </t>
-<t tx="ekr.20190812072049.124">class ShellInfoTab(QtWidgets.QScrollArea):
+<t tx="ekr.20190812072049.124">## The dialog class and container with tabs
+class ShellInfoTab(QtWidgets.QScrollArea):
 
     INFO_KEYS = [   translate('shell', 'name ::: The name of this configuration.'),
                     translate('shell', 'exe ::: The Python executable.'),
@@ -22379,7 +22398,7 @@ def closed(self):
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.172"># -*- coding: utf-8 -*-
 """ Module splash
 
@@ -22620,8 +22639,6 @@ import traceback
 <t tx="ekr.20190812072049.19">def encoding(self):
     return self._original.encoding()
 
-
-# Split now, with no defering
 </t>
 <t tx="ekr.20190812072049.190">def stopinteraction(self):
     """ Stop the interaction loop.
@@ -23078,7 +23095,7 @@ MAXBLOCKCOUNT = pyzo.config.advanced.shellMaxLines
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.215"># -*- coding: utf-8 -*-
 """
 Module to integrate GUI event loops in the Pyzo interpreter.
@@ -23928,11 +23945,10 @@ so you don't have to depend on IPython.
 </t>
 <t tx="ekr.20190812072049.271">@path pyzo/pyzokernel/
 # -*- coding: utf-8 -*-
-
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.272">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.pyzokernel.interpreter.py')
@@ -25290,7 +25306,7 @@ original_print = print
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.31">def onCursorPositionChanged(self):
     #If the end of the selection (or just the cursor if there is no selection)
     #is before the beginning of the line. make the document read-only
@@ -25719,7 +25735,7 @@ except ImportError:
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.322"># -*- coding: utf-8 -*-
 """
 Magic commands for the Pyzo kernel.
@@ -26900,7 +26916,7 @@ __all__ = [
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.367"># -*- coding: utf-8 -*-
 """
 The pyzokernel package contains the code for the Pyzo kernel process.
@@ -26936,7 +26952,7 @@ import sys
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.372">"""
 Welcome to the tutorial for Pyzo! This tutorial should get you
 familiarized with Pyzo in just a few minutes. If you feel this tutorial
@@ -27141,7 +27157,7 @@ all files that have the extension pyc.
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.383"># -*- coding: utf-8 -*-
 """
 This file provides the pyzo history viewer. It contains two main components: the
@@ -27383,7 +27399,7 @@ if __name__ == '__main__':
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.396"># -*- coding: utf-8 -*-
 import sys, re
 
@@ -31439,11 +31455,10 @@ def closed(self):
 </t>
 <t tx="ekr.20190812072049.77">@path pyzo/core/
 # -*- coding: utf-8 -*-
-
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072049.78">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.core.shellInfoDialog.py')
@@ -33186,7 +33201,7 @@ if __name__ == '__main__':
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.221">""" Module paths
 
 Get paths to useful directories in a cross platform manner. The functions
@@ -34088,7 +34103,6 @@ Struct.__is_ssdf_struct__ = True
 </t>
 <t tx="ekr.20190812072050.27">def save(self):
     pass # ?
-## Proxy classes for the file system
 </t>
 <t tx="ekr.20190812072050.270">def read(self, text):
 
@@ -34296,7 +34310,8 @@ Struct.__is_ssdf_struct__ = True
         lines.extend(self.from_object(key, val, indent+2))
     return lines
 </t>
-<t tx="ekr.20190812072050.28">class BaseFSProxy(threading.Thread):
+<t tx="ekr.20190812072050.28">## Proxy classes for the file system
+class BaseFSProxy(threading.Thread):
     """ Abstract base class for file system proxies.
 
     The file system proxy defines an interface that subclasses can implement
@@ -35359,6 +35374,7 @@ from .. import paths
 </t>
 <t tx="ekr.20190812072050.341"></t>
 <t tx="ekr.20190812072050.342">@path pyzo/util/qt/
+@nopyflakes
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35464,6 +35480,7 @@ Provides QtCore classes and functions.
 from . import PYQT5, PYSIDE2, PYQT4, PYSIDE, PythonQtError
 </t>
 <t tx="ekr.20190812072050.344">@path pyzo/util/qt/
+@nopyflakes
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35643,7 +35660,7 @@ elif PYSIDE:
     from PySide.QtHelp import *
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.347">"""QtHelp Wrapper."""
 
 import warnings
@@ -35660,7 +35677,6 @@ from . import PYSIDE2
 #
 # Licensed under the terms of the MIT License
 # (see LICENSE.txt for details)
-
 @others
 if PYQT5:
     from PyQt5.QtPrintSupport import *
@@ -35678,7 +35694,7 @@ else:
     raise PythonQtError('No Qt bindings could be found')
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.349">"""
 Provides QtPrintSupport classes and functions.
 """
@@ -35691,6 +35707,7 @@ from . import PYQT5, PYQT4,PYSIDE2, PYSIDE, PythonQtError
     return FileProxy(self, path)
 </t>
 <t tx="ekr.20190812072050.350">@path pyzo/util/qt/
+@nopyflakes
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2014-2015 Colin Duquesnoy
@@ -35828,6 +35845,7 @@ from ._patch.qheaderview import introduce_renamed_methods_qheaderview
 
 </t>
 <t tx="ekr.20190812072050.352">@path pyzo/util/qt/
+@nopyflakes
 @others
 if PYQT5:
 
@@ -36068,6 +36086,7 @@ from .QtWidgets import QComboBox
 __version__ = '.'.join(map(str, version_info))
 </t>
 <t tx="ekr.20190812072050.356">@path pyzo/util/qt/
+@nopyflakes
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2009- The Spyder Development Team
@@ -36274,6 +36293,7 @@ PYQT4 = PYSIDE = PYSIDE2 = False
 </t>
 <t tx="ekr.20190812072050.361"></t>
 <t tx="ekr.20190812072050.362">@path pyzo/util/qt/_patch/
+@nopyflakes
 # The code below, as well as the associated test were adapted from
 # qt-helpers, which was released under a 3-Clause BSD license:
 #
@@ -37243,10 +37263,10 @@ def name():
 
     finally:
         self._lock.release()
-## More ideas for connections
-
 </t>
-<t tx="ekr.20190812072050.416">class InterConnection(Connection):
+<t tx="ekr.20190812072050.416">## More ideas for connections
+
+class InterConnection(Connection):
     """ InterConnection(context, hostname, port, name='')
 
     Not implemented.
@@ -37276,7 +37296,7 @@ def name():
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.419">import sys
 import time
 
@@ -37311,7 +37331,7 @@ from yoton.connection import STATUS_CONNECTED, STATUS_CLOSING
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.422"># -*- coding: utf-8 -*-
 import os
 import sys
@@ -38824,6 +38844,7 @@ CONTROL_BYTES = struct.unpack('&lt;Q', 'YOTON   '.encode('utf-8'))[0]
                     '_recv_seq']
 
     @others
+# Constant Package instances (source_seq represents the signal)
 PACKAGE_HEARTBEAT   = Package(bytes(), SLOT_DUMMY, 0, 0, 0, 0, 0)
 PACKAGE_CLOSE       = Package(bytes(), SLOT_DUMMY, 0, 1, 0, 0, 0)
 </t>
@@ -38884,7 +38905,6 @@ def from_header(cls, header):
     else:
         return None, None
 
-# Constant Package instances (source_seq represents the signal)
 </t>
 <t tx="ekr.20190812072050.482">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
@@ -38897,6 +38917,8 @@ def from_header(cls, header):
 # thread safe. And we need thread safety!
 
 @others
+# Instantiate an application object
+app = YotonApplication()
 @language python
 @tabwidth -4
 </t>
@@ -39162,6 +39184,10 @@ def type(self):
     the registered objects must be sorted each time an object is added.
     """
     @others
+# Instantiate and start the single timer thread
+# We can do this as long as we do not wait for the threat, and the threat
+# does not do any imports:
+# http://docs.python.org/library/threading.html#importing-in-threaded-code
 theTimerThread = TheTimerThread()
 theTimerThread.start()
 </t>
@@ -39249,10 +39275,6 @@ theTimerThread.start()
             else:
                 self._timers.pop() # Pop
 
-# Instantiate and start the single timer thread
-# We can do this as long as we do not wait for the threat, and the threat
-# does not do any imports:
-# http://docs.python.org/library/threading.html#importing-in-threaded-code
 </t>
 <t tx="ekr.20190812072050.509">class Timer(Signal):
     """ Timer(interval=1.0, oneshot=True)
@@ -39390,7 +39412,7 @@ def running(self):
     _embedding_callback2 = None # Used in post_event
 
     @others
-app = YotonApplication()
+
 </t>
 <t tx="ekr.20190812072050.518">def call_later(self, func, timeout=0.0, *args, **kwargs):
     """ call_later(func, timeout=0.0, *args, **kwargs)
@@ -39537,16 +39559,13 @@ app = YotonApplication()
     """
     YotonApplication._embedding_callback1 = callback
     YotonApplication._embedding_callback2 = callback
-
-# Instantiate an application object
 </t>
 <t tx="ekr.20190812072050.526">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
-
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.527">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.yoton.misc.py')
@@ -40157,7 +40176,7 @@ pass
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072050.559">"""
 Yoton is a Python package that provides a simple interface
 to communicate between two or more processes.
@@ -40443,7 +40462,6 @@ from . import proxies
         raise Exception(self._error)
     else:
         return self._result
-## Proxy classes for directories and files
 </t>
 <t tx="ekr.20190812072050.70">def process(self, proxy):
     path = proxy.path()
@@ -40630,7 +40648,8 @@ from . import proxies
     fsProxy.remove(path)
     # The fsProxy will detect that this file is now deleted
 </t>
-<t tx="ekr.20190812072050.8">class PathProxy(QtCore.QObject):
+<t tx="ekr.20190812072050.8">## Proxy classes for directories and files
+class PathProxy(QtCore.QObject):
     """ Proxy base class for DirProxy and FileProxy.
 
     A proxy object is used to get information on a path (folder
@@ -41131,11 +41150,7 @@ from yoton.channels import BaseChannel
     return self._current_package
 </t>
 <t tx="ekr.20190812072051.111">@path pyzo/yoton/channels/
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072051.112"># -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """ Module yoton.channels.message_types
 
 Defines a few basic message_types for the channels. A MessageType object
@@ -41147,7 +41162,30 @@ the xdrrpc Python module by Rob Reilink and Windel Bouwman.
 
 """
 
-import sys
+@others
+
+# Define constants
+TEXT = TextMessageType()
+BINARY = BinaryMessageType()
+OBJECT = ObjectMessageType()
+
+if __name__ == '__main__':
+    # Test
+
+    s = {}
+    s['foo'] = 3
+    s['bar'] = 9
+    s['empty'] = []
+    s[(2,'aa',3)] = ['pretty', ('nice', 'eh'), 4]
+
+    bb = OBJECT.message_to_bytes(s)
+    s2 = OBJECT.message_from_bytes(bb)
+    print(s)
+    print(s2)
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190812072051.112">import sys
 import struct
 from yoton.misc import bytes, basestring, long
 
@@ -41287,20 +41325,6 @@ else:
     """
 
     @others
-_FMT_TYPE = '&lt;B'
-_FMT_BOOL = '&lt;B'
-_FMT_INT = '&lt;q'
-_FMT_FLOAT = '&lt;d'
-
-# Types
-_TYPE_NONE = ord('n')
-_TYPE_BOOL = ord('b')
-_TYPE_INT = ord('i')
-_TYPE_FLOAT = ord('f')
-_TYPE_STRING = ord('s')
-_TYPE_LIST = ord('l')
-_TYPE_TUPLE = ord('t')
-_TYPE_DICT = ord('d')
 </t>
 <t tx="ekr.20190812072051.126">def message_type_name(self):
     return 'obj'
@@ -41317,9 +41341,23 @@ _TYPE_DICT = ord('d')
     else:
         return None
 
-# Formats
 </t>
-<t tx="ekr.20190812072051.129">class Packer:
+<t tx="ekr.20190812072051.129"># Formats
+_FMT_TYPE = '&lt;B'
+_FMT_BOOL = '&lt;B'
+_FMT_INT = '&lt;q'
+_FMT_FLOAT = '&lt;d'
+
+# Types
+_TYPE_NONE = ord('n')
+_TYPE_BOOL = ord('b')
+_TYPE_INT = ord('i')
+_TYPE_FLOAT = ord('f')
+_TYPE_STRING = ord('s')
+_TYPE_LIST = ord('l')
+_TYPE_TUPLE = ord('t')
+_TYPE_DICT = ord('d')
+class Packer:
 
     # Note that while xdrlib uses StringIO/BytesIO, this approach using
     # a list is actually faster.
@@ -41393,23 +41431,6 @@ _TYPE_DICT = ord('d')
 <t tx="ekr.20190812072051.135">class Unpacker:
 
     @others
-TEXT = TextMessageType()
-BINARY = BinaryMessageType()
-OBJECT = ObjectMessageType()
-
-if __name__ == '__main__':
-    # Test
-
-    s = {}
-    s['foo'] = 3
-    s['bar'] = 9
-    s['empty'] = []
-    s[(2,'aa',3)] = ['pretty', ('nice', 'eh'), 4]
-
-    bb = OBJECT.message_to_bytes(s)
-    s2 = OBJECT.message_from_bytes(bb)
-    print(s)
-    print(s2)
 </t>
 <t tx="ekr.20190812072051.136">def __init__(self, data):
     self._buf = data
@@ -41482,8 +41503,6 @@ if __name__ == '__main__':
         return object
     else:
         raise ValueError("Unsupported type: %s" % repr(object_type))
-
-# Define constants
 </t>
 <t tx="ekr.20190812072051.141">@path pyzo/yoton/channels/
 # -*- coding: utf-8 -*-
@@ -41491,7 +41510,7 @@ if __name__ == '__main__':
 @others
 @language python
 @tabwidth -4
-</t>
+@nopyflakes</t>
 <t tx="ekr.20190812072051.142">"""
 The channel classes represent the mechanism for the user to send
 messages into the network and receive messages from it. A channel
@@ -41584,31 +41603,12 @@ if __name__ == '__main__':
 
 ## ========== One end
 
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072051.149">import yoton
+import yoton
 verbosity = 0
 
-# Create a replier class by subclassing RepChannel
-</t>
-<t tx="ekr.20190812072051.15">def _maybe_emit_received(self):
-    """ _maybe_emit_received()
+&lt;&lt; define class Reducer &gt;&gt;
 
-    We want to emit a signal, but in such a way that multiple
-    arriving packages result in a single emit. This methods
-    only posts an event if it has not been done, or if the previous
-    event has been handled.
-
-    """
-    if not self._posted_received_event:
-        self._posted_received_event = True
-        event = yoton.events.Event(self._emit_received)
-        yoton.app.post_event(event)
-</t>
-<t tx="ekr.20190812072051.150">class Reducer(yoton.RepChannel):
-    @others
+# Create a context and a rep channel
 ct1 = yoton.Context(verbose=verbosity)
 rep = Reducer(ct1, 'reduce')
 
@@ -41630,13 +41630,32 @@ req = yoton.ReqChannel(ct2, 'reduce')
 ct2.connect('publichost:test')
 
 # Create reply handler and bind it
+&lt;&lt; define reply_handler &gt;&gt;
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190812072051.15">def _maybe_emit_received(self):
+    """ _maybe_emit_received()
+
+    We want to emit a signal, but in such a way that multiple
+    arriving packages result in a single emit. This methods
+    only posts an event if it has not been done, or if the previous
+    event has been handled.
+
+    """
+    if not self._posted_received_event:
+        self._posted_received_event = True
+        event = yoton.events.Event(self._emit_received)
+        yoton.app.post_event(event)
+</t>
+<t tx="ekr.20190812072051.150"># Create a replier class by subclassing RepChannel
+class Reducer(yoton.RepChannel):
+    @others
 </t>
 <t tx="ekr.20190812072051.151">def reduce(self, item):
     if item == 2:
         raise ValueError('I do not like 2.')
     return item - 1
-
-# Create a context and a rep channel
 </t>
 <t tx="ekr.20190812072051.152">def reply_handler(future):
 
@@ -41836,17 +41855,12 @@ print(s.recv())
 
 ## ========== One end
 
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072051.161">import yoton
+import yoton
 verbosity = 0
 
-# Create custom message type. (should be defined at both ends)
-</t>
-<t tx="ekr.20190812072051.162">class NumberMessageType(yoton.MessageType):
-    @others
+&lt;&lt; class NumberMessageType 1 &gt;&gt;
+
+# Create context, a channel, and connect
 ct1 = yoton.Context(verbose=verbosity)
 pub = yoton.PubChannel(ct1, 'numbers', NumberMessageType)
 ct1.bind('publichost:test')
@@ -41859,7 +41873,21 @@ pub.send(42.9)
 import yoton
 verbosity = 0
 
-# Create custom message type. (should be defined at both ends)
+&lt;&lt; class NumberMessageType 2 &gt;&gt;
+# Create a context, a channel, and connect
+ct2 = yoton.Context(verbose=verbosity)
+sub = yoton.SubChannel(ct2, 'numbers', NumberMessageType)
+ct2.connect('publichost:test')
+
+# Duplicate a string and a number
+print(sub.recv())
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190812072051.162"># Create custom message type. (should be defined at both ends)
+class NumberMessageType(yoton.MessageType):
+    @others
 </t>
 <t tx="ekr.20190812072051.163">def message_from_bytes(self, bb):
     return float(bb.decode('utf-8'))
@@ -41869,28 +41897,6 @@ verbosity = 0
 </t>
 <t tx="ekr.20190812072051.165">def message_type_name(self):
     return 'num'
-
-# Create context, a channel, and connect
-</t>
-<t tx="ekr.20190812072051.166">class NumberMessageType(yoton.MessageType):
-    @others
-ct2 = yoton.Context(verbose=verbosity)
-sub = yoton.SubChannel(ct2, 'numbers', NumberMessageType)
-ct2.connect('publichost:test')
-
-# Duplicate a string and a number
-print(sub.recv())
-</t>
-<t tx="ekr.20190812072051.167">def message_from_bytes(self, bb):
-    return float(bb)
-</t>
-<t tx="ekr.20190812072051.168">def message_to_bytes(self, number):
-    return str(number).encode('utf-8')
-</t>
-<t tx="ekr.20190812072051.169">def message_type_name(self):
-    return 'num'
-
-# Create a context, a channel, and connect
 </t>
 <t tx="ekr.20190812072051.17">@property
 def received(self):
@@ -41912,16 +41918,11 @@ def received(self):
 
 ## ========== One end
 
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190812072051.171">import yoton
+import yoton
 verbosity = 0
-# Create a replier class by subclassing RepChannel
-</t>
-<t tx="ekr.20190812072051.172">class Adder(yoton.RepChannel):
-    @others
+@others
+
+# Create a context and a rep channel
 ct1 = yoton.Context(verbose=verbosity)
 rep = Adder(ct1, 'duplicate')
 
@@ -41944,11 +41945,15 @@ ct2.connect('publichost:test')
 # Duplicate a string
 print(req.add('foo', 'bar').result(1))
 print(req.add(3,4).result(1))
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190812072051.172"># Create a replier class by subclassing RepChannel
+class Adder(yoton.RepChannel):
+    @others
 </t>
 <t tx="ekr.20190812072051.173">def add(self, item1, item2):
     return item1 + item2
-
-# Create a context and a rep channel
 </t>
 <t tx="ekr.20190812072051.174">@path pyzo/yoton/tests/
 # -*- coding: utf-8 -*-
@@ -44535,6 +44540,28 @@ displayed in the statusbar.
     area = QtCore.Qt.LeftDockWidgetArea
     dw.addDockWidget(area, dock)
     widget.show()
+</t>
+<t tx="ekr.20190829074237.1">@others
+</t>
+<t tx="ekr.20190829074429.1">@others
+</t>
+<t tx="ekr.20190829074722.1">@others
+</t>
+<t tx="ekr.20190829074851.1">@others
+</t>
+<t tx="ekr.20190829074851.2"># Create custom message type. (should be defined at both ends)
+class NumberMessageType(yoton.MessageType):
+    @others
+</t>
+<t tx="ekr.20190829074851.3">def message_from_bytes(self, bb):
+    return float(bb)
+</t>
+<t tx="ekr.20190829074851.4">def message_to_bytes(self, number):
+    return str(number).encode('utf-8')
+</t>
+<t tx="ekr.20190829074851.5">def message_type_name(self):
+    return 'num'
+
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
