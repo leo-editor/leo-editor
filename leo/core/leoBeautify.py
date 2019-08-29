@@ -368,7 +368,7 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
 def should_beautify(p):
     '''
     Return True if @beautify is in effect for node p.
-    Ambiguous @beautify
+    Ambiguous directives have no effect.
     '''
     for p2 in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p2)
