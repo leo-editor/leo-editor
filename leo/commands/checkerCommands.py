@@ -31,6 +31,33 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20190829163640.1: *3* blacken-diff-node
+@g.command('blacken-diff-node')
+def blacken_diff_node(event):
+    '''
+    Run black on all nodes of the selected node.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_node(c.p, diff_flag=True)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190829163652.1: *3* blacken-diff-tree
+@g.command('blacken-diff-tree')
+def blacken_diff_tree(event):
+    '''
+    Run black on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_tree(c.p, diff_flag=True)
+    else:
+        g.es_print('can not import black')
 #@+node:ekr.20190725155006.1: *3* blacken-node
 @g.command('blacken-node')
 def blacken_node(event):
@@ -41,11 +68,10 @@ def blacken_node(event):
     if not c:
         return
     if black:
-        BlackCommand(c).blacken_node(c.p)
+        BlackCommand(c).blacken_node(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
 #@+node:ekr.20190729105252.1: *3* blacken-tree
-@g.command('blacken')
 @g.command('blacken-tree')
 def blacken_tree(event):
     '''
@@ -56,7 +82,7 @@ def blacken_tree(event):
     if not c:
         return
     if black:
-        BlackCommand(c).blacken_tree(c.p)
+        BlackCommand(c).blacken_tree(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
@@ -191,12 +217,6 @@ def find_missing_docstrings(event):
         len(found), g.plural(len(found)),
         (time.clock() - t1)))
         
-#@+node:ekr.20161026092059.1: *3* kill-pylint
-@g.command('kill-pylint')
-@g.command('pylint-kill')
-def kill_pylint(event):
-    '''Kill any running pylint processes and clear the queue.'''
-    g.app.backgroundProcessManager.kill('pylint')
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -212,18 +232,12 @@ def flake8_command(event):
             Flake8Command(c).run()
         else:
             g.es_print('can not import flake8')
-#@+node:ekr.20150514125218.7: *3* pylint command
-@g.command('pylint')
-def pylint_command(event):
-    '''
-    Run pylint on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    c = event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        PylintCommand(c).run()
+#@+node:ekr.20161026092059.1: *3* kill-pylint
+@g.command('kill-pylint')
+@g.command('pylint-kill')
+def kill_pylint(event):
+    '''Kill any running pylint processes and clear the queue.'''
+    g.app.backgroundProcessManager.kill('pylint')
 #@+node:ekr.20160516072613.1: *3* pyflakes command
 @g.command('pyflakes')
 def pyflakes_command(event):
@@ -239,6 +253,18 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
+#@+node:ekr.20150514125218.7: *3* pylint command
+@g.command('pylint')
+def pylint_command(event):
+    '''
+    Run pylint on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        PylintCommand(c).run()
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
     '''A class to run black on all Python @<file> nodes in c.p's tree.'''
@@ -248,7 +274,8 @@ class BlackCommand:
         self.c = c
         self.mode = black.FileMode()
         self.wrapper = c.frame.body.wrapper
-        # self.mode.line_length = 79
+        self.mode.line_length = c.config.getInt("black-line-length") or 88
+        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=True)
 
     #@+others
     #@+node:ekr.20190726022420.1: *3* class Chunk
@@ -262,7 +289,7 @@ class BlackCommand:
             self.blacken = blacken
             self.lines = lines
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
-    def blacken_node(self, root):
+    def blacken_node(self, root, diff_flag):
         '''Run black on all Python @<file> nodes in root's tree.'''
         c = self.c
         if not black or not root:
@@ -270,7 +297,7 @@ class BlackCommand:
         t1 = time.clock()
         self.changed, self.errors, self.total = 0, 0, 0
         self.undo_type = 'blacken-node'
-        self.blacken_node_helper(root)
+        self.blacken_node_helper(root, diff_flag)
         t2 = time.clock()
         print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
             self.total, g.plural(self.total),
@@ -279,7 +306,7 @@ class BlackCommand:
         if self.changed:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
-    def blacken_tree(self, root):
+    def blacken_tree(self, root, diff_flag):
         '''Run black on all Python @<file> nodes in root's tree.'''
         c = self.c
         if not black or not root:
@@ -288,18 +315,11 @@ class BlackCommand:
         self.changed, self.errors, self.total = 0, 0, 0
         undo_type = 'blacken-tree'
         bunch = c.undoer.beforeChangeTree(root)
-        ### Not so useful
-            # roots = g.findRootsWithPredicate(c, root, predicate=None)
-            # if roots:
-                # for root in roots:
-                    # print('')
-                    # print(root.h)
-                    # for p in root.self_and_subtree():
-                        # self.blacken_node_helper(p)
         # Blacken *only* the selected tree.
         changed = False
         for p in root.self_and_subtree():
-            changed |= self.blacken_node_helper(p)
+            if self.blacken_node_helper(p, diff_flag):
+                changed = True
         if changed:
             c.setChanged(True)
             c.undoer.afterChangeTree(root, undo_type, bunch)
@@ -312,9 +332,8 @@ class BlackCommand:
             if not c.changed: c.setChanged(True)
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
-    def blacken_node_helper(self, p):
+    def blacken_node_helper(self, p, diff_flag):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
-        trace = False and not g.unitTesting
         self.total += 1
         c = self.c
         body = p.b.rstrip()+'\n'
@@ -336,11 +355,14 @@ class BlackCommand:
         result = ''.join(result).rstrip()+'\n'
         if result == body:
             return False
-        self.changed += 1
-        if trace:
-            print('===== changed', p.h)
+        if g.unitTesting:
+            return False
+        if diff_flag:
+            print('=====', p.h)
             print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+            return False
         # Update p.b and set undo params.
+        self.changed += 1
         p.b = result
         c.frame.body.updateEditors()
         p.v.contentModified()
