@@ -353,10 +353,8 @@ class PyflakesCommand:
             fn = self.finalize(root)
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
-            lines = g.splitLines(root.b)
-            for line in lines:
-                if line.strip().startswith('@nopyflakes'):
-                    return total_errors
+            if any([z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)]):
+                continue
             # Report the file name.
             s = g.readFileIntoEncodedString(fn)
             if s and s.strip():
@@ -369,6 +367,7 @@ class PyflakesCommand:
                 )
                 errors = api.check(s, sfn, r)
                 total_errors += errors
+                if errors: g.trace(g.callers())
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
     def check_script(self, p, script):
@@ -421,7 +420,7 @@ class PyflakesCommand:
             sys.path.append(leo_path)
         t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if root:
+        if roots:
             # These messages are important for clarity.
             log_flag = not force
             total_errors = self.check_all(log_flag, pyflakes_errors_only, roots)
