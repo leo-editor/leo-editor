@@ -351,10 +351,10 @@ class BlackCommand:
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
         trace = 'black' in g.app.debug and not g.unitTesting
         if not should_beautify(p):
-            return
+            return False
         c = self.c
         self.total += 1
-        self.language = g.findLanguageDirectives(self.c, p)
+        self.language = g.findLanguageDirectives(c, p)
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
         try:
@@ -398,7 +398,7 @@ class BlackCommand:
             print('%3s: %r' % (i, line))
         print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
-    c_pat = re.compile('^\s*@c\s*\n')
+    c_pat = re.compile(r'^\s*@c\s*\n')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
     ref_pat = re.compile(r'.*\<\<.*\>\>')
     doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
