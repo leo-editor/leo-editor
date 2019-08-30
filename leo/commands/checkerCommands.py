@@ -348,7 +348,7 @@ class BlackCommand:
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
     def blacken_node_helper(self, p, check_flag, diff_flag):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
-        trace = False
+        trace = 'black' in g.app.debug and not g.unitTesting
         if not should_beautify(p):
             return
         c = self.c
@@ -356,21 +356,21 @@ class BlackCommand:
         self.language = g.findLanguageDirectives(self.c, p)
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
-        if trace:
-            g.printObj(body2, tag='after-replace-leo-constructs')
         try:
             body3 = black.format_str(body2, mode=self.mode)
         except Exception:
             self.errors += 1
             print('\n===== error', p.h, '\n')
             g.es_print_exception()
-            g.printObj(body2)
-            return False
-        result = self.restore_leo_constructs(body3)
-        if check_flag:
+            self.dump_lines(body2, 'after-replace-leo-constructs')
             return False
         if trace:
-            g.printObj(g.splitLines(result), tag='after-restore-leo-constructs')
+            self.dump_lines(body2, 'after-replace-leo-constructs')
+        result = self.restore_leo_constructs(body3)
+        # if trace:
+            # self.dump_lines(result, 'after-restore-leo-constructs')
+        if check_flag:
+            return False
         if result == body:
             return False
         if g.unitTesting:
@@ -385,10 +385,17 @@ class BlackCommand:
         c.frame.body.updateEditors()
         p.v.contentModified()
         c.undoer.setUndoTypingParams(p, 'blacken-node',
-            oldText=body, newText=result) ###, oldSel=None, newSel=None, oldYview=None)
+            oldText=body, newText=result)
         if not p.v.isDirty():
             p.v.setDirty()
         return True
+    #@+node:ekr.20190830045147.1: *4* black.dump_lines
+    def dump_lines(self, s, tag):
+        """Dump all lines in s, with line numbers."""
+        print('\n%s...\n' % tag)
+        for i, line in enumerate(g.splitLines(s)):
+            print('%3s: %r' % (i, line))
+        print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
     c_pat = re.compile('^\s*@c\s*\n')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
