@@ -32,6 +32,20 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20190830043650.1: *3* blacken-check-tree
+@g.command('blkc')
+@g.command('blacken-check-tree')
+def blacken_check_tree(event):
+    '''
+    Run black on all nodes of the selected tree, reporting only errors.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_tree(c.p, diff_flag=False, check_flag=True)
+    else:
+        g.es_print('can not import black')
 #@+node:ekr.20190829163640.1: *3* blacken-diff-node
 @g.command('blacken-diff-node')
 def blacken_diff_node(event):
@@ -46,6 +60,7 @@ def blacken_diff_node(event):
     else:
         g.es_print('can not import black')
 #@+node:ekr.20190829163652.1: *3* blacken-diff-tree
+@g.command('blkd')
 @g.command('blacken-diff-tree')
 def blacken_diff_tree(event):
     '''
@@ -73,6 +88,7 @@ def blacken_node(event):
     else:
         g.es_print('can not import black')
 #@+node:ekr.20190729105252.1: *3* blacken-tree
+@g.command('blk')
 @g.command('blacken-tree')
 def blacken_tree(event):
     '''
@@ -281,13 +297,13 @@ class BlackCommand:
         self.mode = black.FileMode()
         self.wrapper = c.frame.body.wrapper
         self.mode.line_length = c.config.getInt("black-line-length") or 88
-        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=True)
+        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
         
         # self.mode.target_versions = set(black.PY36_VERSIONS)
 
     #@+others
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
-    def blacken_node(self, root, diff_flag):
+    def blacken_node(self, root, diff_flag, check_flag=False):
         '''Run black on all Python @<file> nodes in root's tree.'''
         c = self.c
         if not black or not root:
@@ -295,7 +311,7 @@ class BlackCommand:
         t1 = time.clock()
         self.changed, self.errors, self.total = 0, 0, 0
         self.undo_type = 'blacken-node'
-        self.blacken_node_helper(root, diff_flag)
+        self.blacken_node_helper(root, check_flag, diff_flag)
         t2 = time.clock()
         print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
             self.total, g.plural(self.total),
@@ -304,7 +320,7 @@ class BlackCommand:
         if self.changed:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
-    def blacken_tree(self, root, diff_flag):
+    def blacken_tree(self, root, diff_flag, check_flag=False):
         '''Run black on all Python @<file> nodes in root's tree.'''
         c = self.c
         if not black or not root:
@@ -316,7 +332,7 @@ class BlackCommand:
         # Blacken *only* the selected tree.
         changed = False
         for p in root.self_and_subtree():
-            if self.blacken_node_helper(p, diff_flag):
+            if self.blacken_node_helper(p, check_flag, diff_flag):
                 changed = True
         if changed:
             c.setChanged(True)
@@ -330,7 +346,7 @@ class BlackCommand:
             if not c.changed: c.setChanged(True)
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
-    def blacken_node_helper(self, p, diff_flag):
+    def blacken_node_helper(self, p, check_flag, diff_flag):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
         trace = False
         if not should_beautify(p):
@@ -351,6 +367,8 @@ class BlackCommand:
             g.printObj(body2)
             return False
         result = self.restore_leo_constructs(body3)
+        if check_flag:
+            return False
         if trace:
             g.printObj(g.splitLines(result), tag='after-restore-leo-constructs')
         if result == body:
