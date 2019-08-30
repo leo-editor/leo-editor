@@ -271,6 +271,10 @@ class LeoQtEventFilter(QtCore.QObject):
             qt.Key_Shift: 'Key_Shift',
             qt.Key_NumLock: 'Num_Lock',
                 # 868.
+            qt.Key_Super_L: 'Key_Super_L',
+            qt.Key_Super_R: 'Key_Super_R',
+            qt.Key_Hyper_L: 'Key_Hyper_L',
+            qt.Key_Hyper_R: 'Key_Hyper_R',
         }
         if d.get(keynum):
             if 0: # Allow bare modifier key.
