@@ -286,7 +286,8 @@ def pylint_command(event):
 class BlackCommand:
     '''A class to run black on all Python @<file> nodes in c.p's tree.'''
     
-    tag1 = "# black-tag1:::"
+    # tag1 must be executable, and can't be pass.
+    tag1 = "if xxx: print('') # black-tag1:::"
     tag2 = ":::black-tag2"
     tag3 = "# black-tag3:::"
 
