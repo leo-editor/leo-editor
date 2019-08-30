@@ -269,27 +269,23 @@ def pylint_command(event):
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
     '''A class to run black on all Python @<file> nodes in c.p's tree.'''
+    
+    tag1 = "# black-tag1:::"
+    tag2 = ":::black-tag2"
+    tag3 = "# black-tag3:::"
 
     def __init__(self, c):
         '''ctor for PyflakesCommand class.'''
         self.c = c
+        self.language = None
         self.mode = black.FileMode()
         self.wrapper = c.frame.body.wrapper
         self.mode.line_length = c.config.getInt("black-line-length") or 88
         self.mode.string_normalization = c.config.getBool("black-string-normalization", default=True)
+        
         # self.mode.target_versions = set(black.PY36_VERSIONS)
 
     #@+others
-    #@+node:ekr.20190726022420.1: *3* class Chunk
-    class Chunk:
-        '''
-        A class containing lines.
-        These lines are blackened only if the blacken flag is True.
-        '''
-
-        def __init__(self, blacken, lines):
-            self.blacken = blacken
-            self.lines = lines
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
     def blacken_node(self, root, diff_flag):
         '''Run black on all Python @<file> nodes in root's tree.'''
@@ -333,31 +329,30 @@ class BlackCommand:
         if self.changed:
             if not c.changed: c.setChanged(True)
             c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
     def blacken_node_helper(self, p, diff_flag):
         '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
+        trace = False
         if not should_beautify(p):
             return
-        self.total += 1
         c = self.c
+        self.total += 1
+        self.language = g.findLanguageDirectives(self.c, p)
         body = p.b.rstrip()+'\n'
-        chunks = self.make_chunks(p)
-        for chunk in chunks:
-            if chunk.blacken:
-                s = ''.join(chunk.lines)
-                try:
-                    s2 = black.format_str(s, mode=self.mode)
-                    chunk.lines = g.splitLines(s2)
-                except Exception:
-                    self.errors += 1
-                    print('\n===== error', p.h, '\n')
-                    g.es_print_exception()
-                    g.printObj(chunk.lines)
-        # Join the chunks.
-        result = []
-        for chunk in chunks:
-            result.extend(chunk.lines)
-        result = ''.join(result).rstrip()+'\n'
+        body2 = self.replace_leo_constructs(body)
+        if trace:
+            g.printObj(body2, tag='after-replace-leo-constructs')
+        try:
+            body3 = black.format_str(body2, mode=self.mode)
+        except Exception:
+            self.errors += 1
+            print('\n===== error', p.h, '\n')
+            g.es_print_exception()
+            g.printObj(body2)
+            return False
+        result = self.restore_leo_constructs(body3)
+        if trace:
+            g.printObj(g.splitLines(result), tag='after-restore-leo-constructs')
         if result == body:
             return False
         if g.unitTesting:
@@ -376,68 +371,64 @@ class BlackCommand:
         if not p.v.isDirty():
             p.v.setDirty()
         return True
-    #@+node:ekr.20190726021203.1: *3* black.make_chunks & helpers
-    c_pat = re.compile('^@c\b')
+    #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
+    c_pat = re.compile('^\s*@c\s*\n')
     dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
     ref_pat = re.compile(r'.*\<\<.*\>\>')
-    doc_pat = re.compile(r'^(@\s+|@doc\s+)')
+    doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
     lang_pat = re.compile(r'@language\s+(\w+)')
 
-    def make_chunks(self, p):
-        '''Split p.b into chunks that separate Leo constructs from plain python text.'''
-        language = g.findLanguageDirectives(self.c, p)
-        self.blacken = self.in_python = language == 'python'
-        self.chunks, self.chunk_lines, self.in_doc = [], [], False
-        for line in g.splitLines(p.b):
+    def replace_leo_constructs(self, s):
+        """Replace Leo constructs with special lines."""
+        in_python = self.language == 'python'
+        in_doc, result = False, []
+        for line in g.splitLines(s):
+            # @language...
             m = self.lang_pat.match(line)
             if m:
-                self.in_python = m.group(1).lower() == 'python'
-                self.add_raw_line(line)
-            elif self.in_python:
-                self.do_python_line(line)
-            else:
-                self.add_raw_line(line)
-        # End the last chunk.
-        if self.chunk_lines:
-            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
-        return self.chunks
-    #@+node:ekr.20190729102343.1: *4* black.add_blackend/raw_line
-    def add_blackened_line(self, line):
-        '''Add line to a blackened chunk, ending the previous non-blackened chunk if need be.'''
-        if not self.blacken and self.chunk_lines:
-            # End a chunk of non-blackened lines.
-            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
-            self.chunk_lines = []
-        self.blacken = True
-        self.chunk_lines.append(line)
+                in_python = m.group(1).lower() == 'python'
+                result.append(line)
+                continue
+            # Non-python line...
+            if not in_python:
+                result.append(line)
+                continue
+            # Handle all Leo constructs
+            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
+                m = pat.match(line)
+                if m:
+                    ### g.trace('=====', repr(line), pat)
+                    if pat == self.doc_pat:
+                        in_doc = True
+                        result.append(self.tag3 + line)
+                    elif pat == self.c_pat:
+                        in_doc = False
+                        result.append(self.tag3 + line)
+                    else:
+                        lws = g.get_leading_ws(line)
+                        result.append(lws + self.tag1 + line.rstrip() + self.tag2 + '\n')
+                    break
+            else: # Not a Leo consruct.
+                if in_doc:
+                    result.append(self.tag3 + line)
+                else:
+                    result.append(line)
+        return ''.join(result)
         
-    def add_raw_line(self, line):
-        '''Add line to a non-blackened chunk, ending the previous blackened chunk if need be.'''
-        if self.blacken and self.chunk_lines:
-            # End a chunk of blackened lines.
-            self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
-            self.chunk_lines = []
-        self.blacken = False
-        self.chunk_lines.append(line)
-    #@+node:ekr.20190729102345.1: *4* black.do_python_line
-    def do_python_line(self, line):
-        
-        for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
-            m = pat.match(line)
+    #@+node:ekr.20190829212936.1: *4* black.restore_leo_constructs
+    tag1_pat = re.compile(r'\s*%s(.+)%s' % (tag1, tag2))
+
+    def restore_leo_constructs(self, s):
+        """Restore all Leo constructs from the tags."""
+        result = []
+        for line in g.splitLines(s):
+            m = self.tag1_pat.match(line)
             if m:
-                self.add_raw_line(line)
-                if pat == self.doc_pat:
-                    self.in_doc = True
-                if pat == self.c_pat:
-                    self.chunks.append(self.Chunk(self.blacken, self.chunk_lines))
-                    self.in_doc = False
-                    self.blacken = True
-                    self.chunk_lines = []
-                return
-        if self.in_doc:
-            self.add_raw_line(line)
-        else:
-            self.add_blackened_line(line)
+                line = m.group(1)+'\n'
+            elif line.strip().startswith(self.tag3):
+                line = line.lstrip()[len(self.tag3):]
+            result.append(line)
+        return ''.join(result)
     #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
