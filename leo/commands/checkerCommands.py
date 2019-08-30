@@ -405,7 +405,7 @@ class BlackCommand:
             m = self.lang_pat.match(line)
             if m:
                 in_python = m.group(1).lower() == 'python'
-                result.append(line)
+                result.append(self.tag3 + line)
                 continue
             # Non-python line...
             if not in_python:
