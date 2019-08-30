@@ -2,12 +2,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
 #@@first
+#@@nobeautify # black chokes on a section reference within a list.
 '''Save and show tips to the user.'''
 import random
 import leo.core.leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
+#@@beautify
 class TipManager:
     '''A class to manage user tips.'''
     
@@ -33,6 +35,7 @@ class TipManager:
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
+#@@beautify
 class UserTip:
     '''A User Tip.'''
     
@@ -47,6 +50,7 @@ class UserTip:
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
+#@@beautify
 def make_tips(c):
     '''
     A script to make entries in the global tips array.
@@ -118,6 +122,7 @@ UserTip(
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
+#@@beautify
 def make_tip_nodes(c):
     '''Create a list of all tips as the last top-level node.'''
     global tips
@@ -642,6 +647,7 @@ Note: myLeoSettings.leo can define common @command nodes that apply to all outli
 
 """),
 #@-others
+#@@beautify
 #@-<< define tips >>
 ]
 #@@language python
