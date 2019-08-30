@@ -3069,30 +3069,17 @@ def findTabWidthDirectives(c, p):
                 if w == 0: w = None
     return w
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-g_language_pat = re.compile(r'(^@language)', re.MULTILINE)
+g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
 
 def findLanguageDirectives(c, p):
     '''Return the language in effect at position p.'''
     if c is None:
         return None # c may be None for testing.
-    if c.target_language:
-        language = c.target_language.lower()
-    else:
-        language = 'python'
-    found = False
     for p in p.self_and_parents(copy=False):
-        if found: break
         for s in p.h, p.b:
-            if found: break
-            anIter = g_language_pat.finditer(s)
-            for m in anIter:
-                word = m.group(0)
-                i = m.start(0)
-                j = i + len(word)
-                k = g.skip_line(s, j)
-                language = s[j: k].strip()
-                found = True
-    return language
+            for m in g_language_pat.finditer(s):
+                return m.group(1)
+    return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
