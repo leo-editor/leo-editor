@@ -67,6 +67,7 @@ else:
         from PyQt4.QtCore import QUrl
         from PyQt4.QtCore import pyqtSignal as Signal
         assert QUrl # for pyflakes.
+        assert Signal # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
