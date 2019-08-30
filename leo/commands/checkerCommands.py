@@ -90,7 +90,7 @@ def blacken_tree(event):
 @g.command('check-conventions')
 @g.command('cc')
 def checkConventions(event):
-    '''Experimental script to test Leo's conventsions.'''
+    '''Experimental script to test Leo's convensions.'''
     c = event.get('c')
     if c:
         if c.changed: c.save()
@@ -277,6 +277,7 @@ class BlackCommand:
         self.wrapper = c.frame.body.wrapper
         self.mode.line_length = c.config.getInt("black-line-length") or 88
         self.mode.string_normalization = c.config.getBool("black-string-normalization", default=True)
+        # self.mode.target_versions = set(black.PY36_VERSIONS)
 
     #@+others
     #@+node:ekr.20190726022420.1: *3* class Chunk
@@ -350,6 +351,7 @@ class BlackCommand:
                 except Exception:
                     self.errors += 1
                     print('\n===== error', p.h, '\n')
+                    g.es_print_exception()
                     g.printObj(chunk.lines)
         # Join the chunks.
         result = []
