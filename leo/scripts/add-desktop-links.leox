@@ -4,33 +4,32 @@
 #@@tabwidth -4
 #@+others
 #@+node:mhw.20190808083214.1: ** main
-'''Create Leo Editor desktop and system menu shortcut links'''
+"""Create Leo Editor desktop and system menu shortcut links"""
 
 import leo.core.leoGlobals as g
 
-iconpath = g.os_path_realpath(g.os_path_join(g.__file__, '../../Icons/LeoApp.ico'))
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
 g.es_print("Running add-desktop-links...")
 import sys
 import platform
 from shortcutter import ShortCutter
+
 sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
 
 leocmd = "leo"
-if platform.system() == 'Windows':
+if platform.system() == "Windows":
     leocmd = "leo-messages"
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor",
-    icon=iconpath)
+desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", icon=iconpath)
 menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon=iconpath)
 term = sc.create_shortcut_to_env_terminal()
 
 if desktop:
-    g.es_print("Created shortcut: {} - {}".format(desktop[0],desktop[2]))
+    g.es_print("Created shortcut: {} - {}".format(desktop[0], desktop[2]))
 if menu:
-    g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
+    g.es_print("Created shortcut: {} - {}".format(menu[0], menu[2]))
 if term:
     g.es_print("Created shortcut: terminal   - {}".format(term))
-
 #@-others
 #@-leo
