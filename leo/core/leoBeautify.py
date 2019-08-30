@@ -368,7 +368,7 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
 def should_beautify(p):
     '''
     Return True if @beautify is in effect for node p.
-    Ambiguous @beautify
+    Ambiguous directives have no effect.
     '''
     for p2 in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p2)
@@ -723,6 +723,8 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
+break_lines = True
+
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
     #@+others
@@ -859,6 +861,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
+        ### self.print_stats()
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''

@@ -634,9 +634,10 @@
 </v>
 </v>
 <v t="ekr.20190613024818.1"><vh>Docks</vh>
-<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 <v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
 <v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
+<v t="ekr.20190808031525.1"><vh>@data pyzo_tool_ids</vh></v>
+<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
@@ -2286,67 +2287,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20170509104949.1"></v>
-<v t="ekr.20190805084826.1"><vh>Found:border</vh>
-<v t="ekr.20041119034357.53"></v>
-<v t="ekr.20161011130632.1"></v>
-<v t="ekr.20140912075503.19302"></v>
-<v t="tbrown.20140514191846.42171"></v>
-<v t="tbrown.20140514191846.42173"></v>
-<v t="ekr.20140912075503.19275"></v>
-<v t="ekr.20140912075503.19276"></v>
-<v t="ekr.20140912075503.19271"></v>
-<v t="ekr.20140912075503.19349"></v>
-<v t="ekr.20140912075503.19348"></v>
-<v t="ekr.20161003141448.2"></v>
-<v t="ekr.20161003141513.2"></v>
-<v t="ekr.20140912075503.19358"></v>
-<v t="ekr.20140912075503.19339"></v>
-<v t="tbrown.20140514191846.42169"></v>
-<v t="tbrown.20140514191846.42170"></v>
-<v t="ekr.20140912075503.19328"></v>
-<v t="ekr.20140912075503.19347"></v>
-<v t="ekr.20140912075503.19367"></v>
-<v t="ekr.20140912075503.19366"></v>
-<v t="ekr.20190622093004.1"></v>
-<v t="ekr.20140912075503.19368"></v>
-<v t="ekr.20140915194122.19464"></v>
-<v t="tbrown.20150821171510.145"></v>
-<v t="tbrown.20150821171510.155"></v>
-<v t="tbrown.20150821171510.173"></v>
-<v t="ekr.20140915194122.23439"></v>
-<v t="tbrown.20150821171510.9"></v>
-<v t="tbrown.20150821171510.160"></v>
-<v t="ekr.20140915194122.19466"></v>
-<v t="tbrown.20150821171510.44"></v>
-<v t="ekr.20181018060340.1"></v>
-<v t="ekr.20181018065113.1"></v>
-<v t="tbrown.20140514191846.42168"></v>
-<v t="tbrown.20150821171510.147"></v>
-<v t="tbrown.20150821171510.10"></v>
-<v t="tbrown.20150821171510.163"></v>
-<v t="ekr.20140915194122.19461"></v>
-<v t="ekr.20140915194122.23442"></v>
-<v t="tbrown.20150821171510.143"></v>
-<v t="ekr.20140915194122.19462"></v>
-<v t="tbrown.20150821171510.162"></v>
-<v t="tbrown.20150821171510.11"></v>
-<v t="ekr.20140915194122.19474"></v>
-<v t="ekr.20140915194122.19471"></v>
-<v t="tbrown.20150821171510.61"></v>
-<v t="tbrown.20150821171510.62"></v>
-<v t="tbrown.20150821171510.75"></v>
-<v t="ekr.20140915194122.19473"></v>
-<v t="tbrown.20150821171510.67"></v>
-<v t="tbrown.20150821171510.66"></v>
-<v t="tbrown.20150821171510.148"></v>
-<v t="ekr.20140912075503.19365"></v>
-<v t="tbrown.20150821171510.161"></v>
-<v t="tbrown.20150821171510.164"></v>
-<v t="ekr.20140915194122.19470"></v>
-<v t="tbrown.20150821171510.149"></v>
-</v>
-<v t="ekr.20190622093004.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11803,11 +11743,18 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190724173715.1"></t>
 <t tx="ekr.20190724173724.1"></t>
 <t tx="ekr.20190724173733.1"></t>
-<t tx="ekr.20190805084826.1">@nosearch
+<t tx="ekr.20190808031525.1"># Valid ids are:
 
-# flattened, ignore-case, head, body
+# pyzofilebrowser
+# pyzohistoryviewer
+# pyzointeractivehelp
+# pyzologger
+# pyzowebbrowser
+# pyzosourcestructure
+    # Partially functional.
 
-# found 57 nodes</t>
+# Not ready yet:
+# pyzoworkspace</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

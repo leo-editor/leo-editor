@@ -16,7 +16,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
     # QtDeclarative, QtMultimedia, Qsci, QString, QtSvg,
     # QtWebKit, QtWebKitWidgets
-    # printsupport
+    # printsupport, Signal
 import leo.core.leoGlobals as g
 strict = False
 trace = False
@@ -46,13 +46,14 @@ if fail:
     phonon = uic = None
     QtMultimedia = None # Replacement for phonon.
     qt_version = '<no version>'
-    printsupport = None
+    printsupport = Signal = None
 elif isQt5:
     try:
         from PyQt5 import QtCore
         from PyQt5 import QtGui
         from PyQt5 import QtWidgets
         from PyQt5.QtCore import QUrl
+        from PyQt5.QtCore import pyqtSignal as Signal
         QtConst = QtCore.Qt
         printsupport = Qt
     except ImportError:
@@ -64,6 +65,7 @@ else:
         from PyQt4 import QtCore
         from PyQt4 import QtGui
         from PyQt4.QtCore import QUrl
+        from PyQt4.QtCore import pyqtSignal as Signal
         assert QUrl # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui

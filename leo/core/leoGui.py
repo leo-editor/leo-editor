@@ -392,6 +392,7 @@ class NullGui(LeoGui):
     def get_window_info(self, window): return 600, 500, 20, 20
     def onActivateEvent(self, *args, **keys): pass
     def onDeactivateEvent(self, *args, **keys): pass
+    def set_top_geometry(self, w, h, x, y): pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True # Must be True for unit tests.

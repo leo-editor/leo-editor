@@ -83,6 +83,7 @@ globalDirectiveList = [
     'markup',
     'nobeautify',
     'nocolor-node', 'nocolor', 'noheader', 'nowrap',
+    'nopyflakes', # Leo 6.1.
     'nosearch', # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
     'raw', 'root-code', 'root-doc', 'root', 'silent',
@@ -1429,7 +1430,7 @@ class PosList(list):
     '''
     #@-<< docstring for PosList >>
     #@+others
-    #@+node:ekr.20140531104908.17611: *4* ctor
+    #@+node:ekr.20140531104908.17611: *4* PosList.ctor
     def __init__(self, c, aList=None):
         self.c = c
         super().__init__()
@@ -1439,12 +1440,12 @@ class PosList(list):
         else:
             for p in aList:
                 self.append(p.copy())
-    #@+node:ekr.20140531104908.17612: *4* dump
+    #@+node:ekr.20140531104908.17612: *4* PosList.dump
     def dump(self, sort=False, verbose=False):
         if verbose:
             return g.listToString(self, sort=sort)
         return g.listToString([p.h for p in self], sort=sort)
-    #@+node:ekr.20140531104908.17613: *4* select
+    #@+node:ekr.20140531104908.17613: *4* PosList.select
     def select(self, pat, regex=False, removeClones=True):
         '''Return a new PosList containing all positions
         in self that match the given pattern.'''
@@ -1460,7 +1461,7 @@ class PosList(list):
         if removeClones:
             aList = self.removeClones(aList)
         return PosList(c, aList)
-    #@+node:ekr.20140531104908.17614: *4* removeClones
+    #@+node:ekr.20140531104908.17614: *4* PosList.removeClones
     def removeClones(self, aList):
         seen = {}; aList2 = []
         for p in aList:
@@ -2194,7 +2195,7 @@ def null_object_print_attr(id_, attr):
             tracing_signatures [signature] = True
             g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_, kind):
+def null_object_print(id_, kind, *args):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
@@ -2202,7 +2203,11 @@ def null_object_print(id_, kind):
     signature = '%s:%s' % (s, callers)
     if 1:
         # Always print:
-        g.pr('%40s %s' % (s, callers))
+        if args:
+            args = ', '.join([repr(z) for z in args])
+            g.pr('%40s %s\n\t\t\targs: %s' % (s, callers, args))
+        else:
+            g.pr('%40s %s' % (s, callers))
     elif signature not in tracing_signatures:
         # Print each signature once.
         tracing_signatures [signature] = True
@@ -4161,8 +4166,9 @@ def findRootsWithPredicate(c, root, predicate=None):
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
 
-    This function formalizes the search order used by the pylint, pyflakes and
-    the rst3 commands, returning a list of zero or more found roots.
+    This function formalizes the search order used by the black,
+    pylint, pyflakes and the rst3 commands, returning a list of zero
+    or more found roots.
     '''
     seen = []
     roots = []

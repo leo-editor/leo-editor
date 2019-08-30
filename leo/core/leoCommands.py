@@ -1184,7 +1184,7 @@ class Commands:
             if not c.isChanged():
                 c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2989: *5* c.setChanged
+    #@+node:ekr.20031218072017.2989: *5* c.setChanged (no longer changed)
     def setChanged(self, changedFlag=True, redrawFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
         c = self
@@ -1208,8 +1208,8 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            # Call LeoTabbedTopLevel.setChanged.
             master.setChanged(c, changedFlag)
+                # Call LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2:
             if changedFlag:

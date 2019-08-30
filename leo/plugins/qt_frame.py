@@ -34,17 +34,14 @@ floatable_docks = True
     # True: allow QDockWidgets to float.
 
 #@+others
-#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
+#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     '''
     A class representing all parts of the main Qt window.
-
-    **Important**: when using tabs, the LeoTabbedTopLevel widget
-    is the top-level window, **not** this QMainWindow!
-
-    c.frame.top is a DynamicWindow object.
-    c.frame.top.parent is a TabbedFrameFactory
-    c.frame.top.leo_master is a LeoTabbedTopLevel
+    
+    c.frame.top is a DynamicWindow.
+    c.frame.top.leo_master is a LeoTabbedTopLevel.
+    c.frame.top.parent() is a QStackedWidget()
 
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
@@ -77,7 +74,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.show()
             else:
                 self.iconBar.hide()
-    #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
+    #@+node:ekr.20110605121601.18172: *3* dw.do_leo_spell_btn_*
     def doSpellBtn(self, btn):
         '''Execute btn, a button handler.'''
         # Make *sure* this never crashes.
@@ -114,7 +111,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create the new dock.
         c = self.leo_c
         self.added_bodies += 1
-        dock = self.createDockWidget(
+        dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
             height=100,
@@ -156,10 +153,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # None for non-tabbed windows.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
-        if g.app.dock:
-            self.createMainWindow()
-        else:
-            main_splitter, secondary_splitter = self.createMainWindow()
+        main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.iconBar.setObjectName('icon-bar')
             # Required for QMainWindow.saveState().
@@ -206,7 +200,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createAllDockWidgets()
             # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
-            return None
+            return None, None
         #
         # Legacy code: will not go away.
         self.createCentralWidget()
@@ -289,7 +283,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Scintilla only.
             body.recolorWidget(p, wrapper)
         return parent_frame, wrapper
-    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
+    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets (changed)
     def createAllDockWidgets(self):
         '''Create all the dock widgets.'''
         c = self.leo_c
@@ -315,7 +309,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if not make_dock:
                 setattr(self, '%s_dock' % (name), None)
                 continue
-            dock = self.createDockWidget(
+            dock = g.app.gui.create_dock_widget(
                 closeable=name != central_widget,
                 moveable=name != central_widget,
                 height=0,
@@ -742,7 +736,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
         return logFrame
-    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (not legacy)
+    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock
     def createTabsDock(self, parent):
         '''Create the Tabs dock.'''
         assert g.app.dock
@@ -778,33 +772,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setName(w, name)
         w.setText(self.tr(label))
         return w
-    #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
-    dock_names = []
-
-    def createDockWidget(self, closeable, moveable, height, name):
-        '''Make a new docwidget in Leo's QMainWindow.'''
-        c = self.leo_c
-        dock = QtWidgets.QDockWidget(self)
-            # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
-        if moveable:
-            features |= dock.DockWidgetMovable
-        if moveable and floatable_docks:
-            features |= dock.DockWidgetFloatable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        # An important check.
-        key = '%s.%s:%s' % (id(c), c.shortFileName(),name)
-        if key in self.dock_names:
-            g.es_print('\nDuplicate dock name: %s' % key)
-        else:
-            self.dock_names.append(key)
-        dock.setObjectName('dock.%s' % name)
-        dock.setWindowTitle(name.capitalize())
-        dock.show() # Essential!
-        return dock
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
@@ -1559,12 +1526,16 @@ class FindTabManager:
         if find.minibuffer_mode:
             find.showFindOptionsInStatusArea()
     #@-others
-#@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QtWidgets.QTabWidget)
+#@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
-    #@+node:ekr.20131115120119.17390: *3* __init__ (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
     def __init__(self, *args, **kwargs):
+        
+        #
+        # Called from frameFactory.createMaster.
+        #
         self.factory = kwargs.get('factory')
         if self.factory:
             del kwargs['factory']
@@ -1597,13 +1568,13 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
-    #@+node:ekr.20180123082452.1: *3* new_outline (LeoBaseTabWidget)
+    #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
     def new_outline(self, index):
         '''Open a new outline tab.'''
         w = self.widget(index)
         c = w.leo_c
         c.new()
-    #@+node:ekr.20131115120119.17391: *3* detach (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
     def detach(self, index):
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
@@ -1621,7 +1592,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             w.move(20, 20)
                 # Windows (XP and 7) put the windows title bar off screen.
         return w
-    #@+node:ekr.20131115120119.17392: *3* tile (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17392: *3* qt_base_tab.tile
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
         w = self.widget(index)
@@ -1647,20 +1618,21 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             window.move(x, y)
             w.resize(ww, wh / 2)
             w.move(x, y + fh / 2)
-    #@+node:ekr.20131115120119.17393: *3* reattach_all (LeoBaseTabWidget)
+    #@+node:ekr.20131115120119.17393: *3* qt_base_tab.reattach_all
     def reattach_all(self):
         """reattach all detached tabs"""
         for name, w in self.detached:
             self.addTab(w, name)
             self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
-    #@+node:ekr.20131115120119.17394: *3* delete (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
     def delete(self, w):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20131115120119.17395: *3* setChanged (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged (changed)
     def setChanged(self, c, changed):
+        """Set the changed indicator in c's tab."""
         # Find the tab corresponding to c.
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
@@ -1675,7 +1647,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 if s.startswith('* '):
                     title = s[2:]
                     self.setTabText(i, title)
-    #@+node:ekr.20131115120119.17396: *3* setTabName (LeoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17396: *3* qt_base_tab.setTabName
     def setTabName(self, c, fileName):
         '''Set the tab name for c's tab to fileName.'''
         # Find the tab corresponding to c.
@@ -1683,20 +1655,11 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i > -1:
             self.setTabText(i, g.shortFileName(fileName))
-    #@+node:ekr.20131115120119.17397: *3* closeEvent (leoTabbedTopLevel)
+    #@+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent (changed)
     def closeEvent(self, event):
-        noclose = False
-        if g.app.sessionManager and g.app.loaded_session:
-            g.app.sessionManager.save_snapshot()
-        for c in g.app.commanders():
-            res = c.exists and g.app.closeLeoWindow(c.frame)
-            if not res:
-                noclose = True
-        if noclose:
-            event.ignore()
-        else:
-            event.accept()
-    #@+node:ekr.20131115120119.17398: *3* select (leoTabbedTopLevel)
+        """Handle a close event."""
+        g.app.gui.close_event(event)
+    #@+node:ekr.20131115120119.17398: *3* qt_base_tab.select (leoTabbedTopLevel)
     def select(self, c):
         '''Select the tab for c.'''
         dw = c.frame.top # A DynamicWindow
@@ -2374,32 +2337,38 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
     def finishCreate(self):
-
-        f = self
+        """Finish creating the outline's frame."""
+        # Called from app.newCommander, Commands.__init__
         c = self.c
         assert c
-        f.top = g.app.gui.frameFactory.createFrame(f)
-        f.createIconBar() # A base class method.
-        f.createSplitterComponents()
-        f.createStatusLine() # A base class method.
-        f.createFirstTreeNode() # Call the base-class method.
-        f.menu = LeoQtMenu(c, f, label='top-level-menu')
-        g.app.windowList.append(f)
-        f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        frameFactory = g.app.gui.frameFactory
+        if not frameFactory.masterFrame:
+            frameFactory.createMaster()
+            if g.app.use_global_docks:
+                dock = g.app.gui.outlines_dock
+                dock.setWidget(frameFactory.masterFrame)
+        self.top = frameFactory.createFrame(leoFrame=self)
+        self.createIconBar() # A base class method.
+        self.createSplitterComponents()
+        self.createStatusLine() # A base class method.
+        self.createFirstTreeNode() # Call the base-class method.
+        self.menu = LeoQtMenu(c, self, label='top-level-menu')
+        g.app.windowList.append(self)
+        self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
         
-        c, f = self.c, self
-        f.tree = qt_tree.LeoQtTree(c, f)
-        f.log = LeoQtLog(f, None)
-        f.body = LeoQtBody(f, None)
+        c = self.c
+        self.tree = qt_tree.LeoQtTree(c, self)
+        self.log = LeoQtLog(self, None)
+        self.body = LeoQtBody(self, None)
         if g.app.dock:
             return 
-        f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
-        f.resizePanesToRatio(ratio, secondary_ratio)
+        self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
+        self.resizePanesToRatio(ratio, secondary_ratio)
 
     #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
     def setQtStyle(self):
@@ -3222,10 +3191,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top and self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
 
-    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
+    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info (changed)
     def get_window_info(self):
         '''Return the geometry of the top window.'''
-        if getattr(self.top, 'leo_master', None):
+        if g.app.use_global_docks:
+            f = g.app.gui.main_window
+        elif getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
         else:
             f = self.top
@@ -3234,7 +3205,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         x, y = topLeft.x(), topLeft.y()
         w, h = rect.width(), rect.height()
         if 'size' in g.app.debug:
-            g.trace(w, h, x, y)
+            g.trace('\n', w, h, x, y)
         return w, h, x, y
 
     #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
@@ -3339,6 +3310,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
+        ### g.trace('===== (LeoQtLog)', repr(c.shortFileName()))
         #
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
@@ -3600,7 +3572,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
-                dock = dw.createDockWidget(
+                dock = g.app.gui.create_dock_widget(
                     closeable=True, moveable=True, height=200, name=tabName)
                         # #1207: all plugins docks should be closeable.
                 dock.setWidget(contents)
@@ -4798,12 +4770,10 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame):
 
         c = leoFrame.c
-        if self.masterFrame is None:
-            self.createMaster()
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
@@ -4812,7 +4782,8 @@ class TabbedFrameFactory:
         tip = leoFrame.title
         dw.setWindowTitle(tip)
         idx = tabw.addTab(dw, title)
-        if tip: tabw.setTabToolTip(idx, tip)
+        if tip:
+            tabw.setTabToolTip(idx, tip)
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
         g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
@@ -4821,27 +4792,35 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        dw.show()
-        tabw.show()
+        if g.app.use_global_docks:
+            dw.show()
+            tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (changed)
     def createMaster(self):
-        mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
-        g.app.gui.attachLeoIcon(mf)
-        tabbar = mf.tabBar()
+        
+        window = self.masterFrame = LeoTabbedTopLevel(factory=self)
+        tabbar = window.tabBar()
+        if g.app.use_global_docks:
+           pass
+        else:
+            g.app.gui.attachLeoIcon(window)
         try:
             tabbar.setTabsClosable(True)
             tabbar.tabCloseRequested.connect(self.slotCloseRequest)
         except AttributeError:
             pass # Qt 4.4 does not support setTabsClosable
-        mf.currentChanged.connect(self.slotCurrentChanged)
+        window.currentChanged.connect(self.slotCurrentChanged)
         if 'size' in g.app.debug:
             g.trace('minimized: %s, maximized: %s fullscreen: %s' % (
                 g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
         #
         # #1189: We *can* (and should) minimize here, to eliminate flash.
-        if g.app.start_minimized:
-            mf.showMinimized()
+        if g.app.use_global_docks:
+            pass
+        else:
+            if g.app.start_minimized:
+                window.showMinimized()
     #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """

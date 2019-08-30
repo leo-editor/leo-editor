@@ -1699,13 +1699,18 @@ class LocalConfigManager:
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         assert d is None
         return None
-    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
+    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (changed)
+    no_menu_dict = {}
+        # Keys are file names.
+
     def getShortcut(self, commandName):
         '''Return rawKey,accel for shortcutName'''
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            g.trace('no menu: %s' % (commandName))
+            if c not in self.no_menu_dict:
+                self.no_menu_dict[c] = True
+                g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
             return None, []
         if d:
             assert g.isTypedDictOfLists(d), d
