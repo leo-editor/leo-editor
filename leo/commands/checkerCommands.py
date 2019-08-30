@@ -416,7 +416,7 @@ class BlackCommand:
                 continue
             # Non-python line...
             if not in_python:
-                result.append(line)
+                result.append(self.tag3 + line)
                 continue
             # Handle all Leo constructs
             for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
