@@ -6,6 +6,7 @@
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import os
 import sys
+import re
 from leo.plugins.mod_scripting import build_rclick_tree
 import leo.core.leoGlobals as g
 #@-<< imports >>
@@ -904,6 +905,8 @@ class ParserBaseClass:
 #@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
     
+    settings_pat = re.compile(r'^@(\w+)')
+    
     def __init__(self, c):
 
         self.c = c
@@ -998,12 +1001,23 @@ class ActiveSettingsOutline:
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         g.trace(kind, c.shortFileName())
-        
-        
+        d = c.config.settingsDict
+        munge = g.app.config.munge
+        count = 0
+        print('\n%s...\n' % kind)
+        for p in settings_root.subtree():
+            m = self.settings_pat.match(p.h)
+            if m:
+                val = d.get(munge(m.group(1)))
+                if isinstance(val, g.GeneralSetting):
+                    print(p.h)
+                    count += 1
+                    if count == 20:
+                        return
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-        g.trace(kind, c.shortFileName())
+        # g.trace(kind, c.shortFileName())
     #@+node:ekr.20190831034537.1: *3* aso.create_outline
     def create_outline(self):
         """Create the summary outline"""
