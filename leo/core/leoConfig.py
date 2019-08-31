@@ -1075,7 +1075,7 @@ class ActiveSettingsOutline:
                 '@item', '@menu', '@menus',
                 '@keys',
                 '@mode',
-                '@openwith', '@popup', '@popup_menus',
+                '@openwith', '@popup', '@popup_menus', '@rclick',
                 '@shortcuts', '@strings',
             ):
                 if trace and verbose:
