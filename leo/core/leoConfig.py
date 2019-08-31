@@ -1814,6 +1814,19 @@ class LocalConfigManager:
             pass # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
+    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
+    def createActivesSettingsOutline(self):
+        """
+        Create and open an outline, summarizing all presently active settings.
+        
+        The outline retains the organization of all active settings files.
+        
+        See #852: https://github.com/leo-editor/leo-editor/issues/852
+        """
+        g.trace('not ready yet')
+        c = self.c
+        for name, val, c, letter in g.app.config.config_iter(c):
+            pass
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""

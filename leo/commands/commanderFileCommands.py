@@ -19,7 +19,7 @@ def reloadAllSettings(self, event=None):
     '''Reload settings for all open outlines, saving them if necessary.'''
     c = self
     reloadSettingsHelper(c, all=True)
-#@+node:ekr.20170221034501.1: *3* def reloadSettingsHelper
+#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
 def reloadSettingsHelper(c, all):
     '''Reload settings in all commanders, or just c.'''
     lm = g.app.loadManager
