@@ -954,17 +954,9 @@ class ActiveSettingsOutline:
         c.mFileName = ""
         # From file-new...
         g.app.unlockLog()
-        #
-            # c.frame.setInitialWindowGeometry()
-            # g.app.restoreWindowState(c)
-            # c.frame.deiconify()
-            # c.frame.lift()
-            # c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
-            # c.frame.createFirstTreeNode()
         lm.createMenu(c)
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
-        # g.doHook("new", old_c=old_c, c=c, new_c=c)
         c.setLog()
         c.setChanged(False)
         g.app.disable_redraw = False
