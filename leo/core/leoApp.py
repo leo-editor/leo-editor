@@ -2033,16 +2033,25 @@ class LoadManager:
             # Make sure home has normalized slashes.
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
     def computeThemeFilePath(self):
-        '''Return the absolute path to the theme .leo file.'''
+        """
+        Return the absolute path to the theme .leo file, resolved using the search order for themes.
+        
+        1. Use the --theme command-line option if it exists.
+        
+        2. Otherwise, preload the first .leo file.
+           Load the file given by @string theme-name setting.
+           
+        3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
+           Load the file if setting exists.  Otherwise return None.
+        """
         lm = self
         resolve = self.resolve_theme_path
         #
-        # Step 1: Use the --theme file if it exists
+        # Step 1: Use the --theme command-line options if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path: return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
-        # This is a hack, but especially useful for test*.leo files in leo/themes.
         path = lm.files and lm.files[0]
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
@@ -2060,7 +2069,8 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path: return path
         #
-        # Finally, use the setting in myLeoSettings.leo.
+        # Step 3: use the @string theme-name setting in myLeoSettings.leo.
+        # Note: the setting should *never* appear in leoSettings.leo!
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         return resolve(setting, tag=tag)
@@ -2339,7 +2349,7 @@ class LoadManager:
                 assert commandName
                 result.add(commandName, bi)
         return result
-    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile (new trace)
     def openSettingsFile(self, fn):
         '''
         Open a settings file with a null gui.  Return the commander.
@@ -2358,7 +2368,7 @@ class LoadManager:
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
-            ### g.trace('%20s' % g.shortFileName(fn), g.callers())
+            g.trace('%20s' % g.shortFileName(fn), g.callers(3))
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2379,25 +2389,22 @@ class LoadManager:
         return c if ok else None
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (changed)
     def readGlobalSettingsFiles(self):
-        '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
+        '''
+        Read leoSettings.leo and myLeoSettings.leo using a null gui.
+        
+        New in Leo 6.1: this sets ivars for the ActiveSettingsOutline class.
+        '''
         trace = 'themes' in g.app.debug
         lm = self
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         old_commanders = g.app.commanders()
-        if 1: # Add some settings for ActiveSettingsOutline class
-            lm.leo_settings_path = lm.computeLeoSettingsPath()
-            lm.my_settings_path = lm.computeMyLeoSettingsPath()
-            paths = [lm.leo_settings_path, lm.my_settings_path]
-            lm.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
-            lm.my_settings_c = lm.openSettingsFile(self.my_settings_path)
-            commanders = [lm.leo_settings_c, lm.my_settings_c]
-            commanders = [z for z in commanders if z]
-        else:
-            paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
-            ### old_commanders = g.app.commanders()
-            commanders = [lm.openSettingsFile(path) for path in paths]
-            commanders = [z for z in commanders if z]
+        lm.leo_settings_path = lm.computeLeoSettingsPath()
+        lm.my_settings_path = lm.computeMyLeoSettingsPath()
+        lm.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+        lm.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+        commanders = [lm.leo_settings_c, lm.my_settings_c]
+        commanders = [z for z in commanders if z]
         settings_d, bindings_d = lm.createDefaultSettingsDicts()
         for c in commanders:
             # Merge the settings dicts from c's outline into

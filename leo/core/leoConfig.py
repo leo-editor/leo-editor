@@ -5,8 +5,8 @@
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import os
-import sys
 import re
+import sys
 from leo.plugins.mod_scripting import build_rclick_tree
 import leo.core.leoGlobals as g
 #@-<< imports >>
@@ -940,6 +940,10 @@ class ActiveSettingsOutline:
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
         """
+        if 1:  ### Useful separator
+            print('')
+            g.trace()
+            print('='*60)
         lm = g.app.loadManager
         lm.readGlobalSettingsFiles()
         for ivar in (
@@ -949,15 +953,22 @@ class ActiveSettingsOutline:
         ):
             val = getattr(lm, ivar)
             setattr(self, ivar, val)
-        ###
-            # self.leo_settings_path = lm.computeLeoSettingsPath()
-            # self.my_settings_path = lm.computeMyLeoSettingsPath()
-            # self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
-            # self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
-            # #
-            # # This must be done *after* reading myLeoSettigns.leo.
-            # self.theme_path = lm.computeThemeFilePath()
-            # self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
+        #
+        # Make sure to reload the local file.
+        c = g.app.commanders()[0]
+        fn = c.fileName()
+        if fn:
+            self.local_c = lm.openSettingsFile(fn)
+            if 0:
+                # Create the local dict.  Similar to readGlobalSettingsFiles.
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                   c=c,
+                   settings_d=lm.globalSettingsDict,
+                   bindings_d=lm.globalBindingsDict,
+                   localFlag=True,
+                )
+                c.config.settingsDict = settings_d
+            ### g.printObj(sorted(c.config.settingsDict.d.keys()))
     #@+node:ekr.20190831100214.1: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
@@ -993,7 +1004,6 @@ class ActiveSettingsOutline:
     def create_outline(self):
         """Create the summary outline"""
         c = self.commander
-        c.frame.createFirstTreeNode()
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
         # Create all the inner settings outlines.
@@ -1027,10 +1037,14 @@ class ActiveSettingsOutline:
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         trace = False
+        trace_not_found = True
         verbose = True
-        d = c.config.settingsDict
+        lm = g.app.loadManager
+        d = lm.globalSettingsDict if kind == 'theme_settings' else c.config.settingsDict
         munge = g.app.config.munge
         ignore, ignore_all, outline_data = None, None, None
+        # if 'Dark.leo' in c.fileName():
+            # g.printObj(sorted(c.config.settingsDict.d.keys()))
         g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         for p in settings_root.subtree():
             pad = ' '*p.level()
@@ -1077,7 +1091,8 @@ class ActiveSettingsOutline:
                 elif trace:
                     print(pad, p.h)
             elif m.group(1) in (
-                '@enabled-plugins', '@data',
+                '@enabled-plugins',
+                # '@data',
                 '@button', '@buttons',
                 '@command', '@commands',
                 '@font',
@@ -1092,15 +1107,17 @@ class ActiveSettingsOutline:
                 elif trace:
                     print(pad, 'OK', p.h)
             elif m.group(2):
-                val = d.get(munge(m.group(2).strip()))
+                key = munge(m.group(2).strip())
+                val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
+                # if val is not None:
                     if trace: print(pad, "OK", g.truncate(p.h, 60))
                 elif trace:
-                    print('\n', pad, "NOT FOUND", p.h, '\n')
-                else:
-                    print("NOT FOUND", p.h)
+                    print('\n', pad, "NOT FOUND", g.truncate(p.h, 60), '\n')
+                elif trace_not_found:
+                    print("NOT FOUND", g.truncate(p.h, 60))
             else:
-                print('\n', pad, "ERROR", p.h, '\n')
+                print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
