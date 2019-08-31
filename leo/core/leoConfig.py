@@ -905,7 +905,7 @@ class ParserBaseClass:
 #@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
     
-    settings_pat = re.compile(r'^@(\w+)')
+    settings_pat = re.compile(r'^@\s*(\w+)\s+([\w\-]+)')
     
     def __init__(self, c):
 
@@ -1000,7 +1000,7 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-        g.trace(kind, c.shortFileName())
+        g.trace('\n', kind, c.shortFileName())
         d = c.config.settingsDict
         munge = g.app.config.munge
         count = 0
@@ -1008,12 +1008,17 @@ class ActiveSettingsOutline:
         for p in settings_root.subtree():
             m = self.settings_pat.match(p.h)
             if m:
-                val = d.get(munge(m.group(1)))
+                val = d.get(munge(m.group(2)))
                 if isinstance(val, g.GeneralSetting):
-                    print(p.h)
-                    count += 1
-                    if count == 20:
-                        return
+                    print(' '*p.level(), "FOUND", p.h)
+                    # print('\nFOUND', g.shortFileName(val.path), val.val)
+                else:
+                    print(' '*p.level(), "NOT FOUND", p.h)
+            else:
+                print(' '*p.level(), p.h)
+            count += 1
+            if count == 10:
+                return
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
