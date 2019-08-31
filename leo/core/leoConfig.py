@@ -910,47 +910,19 @@ class ActiveSettingsOutline:
     def __init__(self, c):
 
         self.c = c
-        self.commander = self.load()
+        self.start()
         self.create_outline()
 
     #@+others
-    #@+node:ekr.20190831100214.1: *3* aso.load & helpers
-    def load(self):
-        """Create the new commander, and load all settings files."""
-        # import leo.core.leoApp as leoApp
-        lm = g.app.loadManager
-        old_c = self.c
-        # Save any changes so they can be seen.
-        if old_c.isChanged():
-            old_c.save()
-        # From file-new...
-        old_c.outerUpdate()
-        g.app.disable_redraw = True
-        g.app.setLog(None)
-        g.app.lockLog()
-        if 1:
-            # Open hidden commanders for non-local settings files.
-            self.load_hidden_commanders()
-            # Create the ordered list of commander tuples.
-            self.create_commanders_list()
-        # Switch to the new commander. Do *not* use previous settings.
-        c = g.app.newCommander(fileName='Settings: %s' % old_c.shortFileName())
-            # gui=None, previousSettings=None)
-            # previousSettings=leoApp.PreviousSettings(
-                # settingsDict=lm.globalSettingsDict,
-                # shortcutsDict=lm.globalBindingsDict,
-            # ))
-        # Kill the the file name, so closing won't automatically create a file.
-        c.mFileName = ""
-        # From file-new...
-        # g.app.unlockLog()
-        lm.createMenu(c)
-        lm.finishOpen(c)
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        c.setChanged(False)
-        g.app.disable_redraw = False
-        return c
+    #@+node:ekr.20190831101443.1: *3* aso.start & helpers
+    def start(self):
+        """Do everything except populating the new outline."""
+        # Create the new commander.
+        self.commander = self.new_commander()
+        # Open hidden commanders for non-local settings files.
+        self.load_hidden_commanders()
+        # Create the ordered list of commander tuples, including the local .leo file.
+        self.create_commanders_list()
     #@+node:ekr.20190831052851.1: *4* aso.create_commanders_list
     def create_commanders_list(self):
         
@@ -977,6 +949,37 @@ class ActiveSettingsOutline:
         # This must be done *after* reading myLeoSettigns.leo.
         self.theme_path = lm.computeThemeFilePath()
         self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
+    #@+node:ekr.20190831100214.1: *4* aso.new_commander
+    def new_commander(self):
+        """Create the new commander, and load all settings files."""
+        # import leo.core.leoApp as leoApp
+        lm = g.app.loadManager
+        old_c = self.c
+        # Save any changes so they can be seen.
+        if old_c.isChanged():
+            old_c.save()
+        old_c.outerUpdate()
+        # From file-new...
+        g.app.disable_redraw = True
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Switch to the new commander. Do *not* use previous settings.
+        fileName = '%s-active-settings' % old_c.fileName()
+        g.es(fileName, color='red')
+        c = g.app.newCommander(fileName=fileName)
+        # Restore the layout of docks, if we have ever saved this file.
+        c.frame.setInitialWindowGeometry()
+        g.app.restoreWindowState(c)
+        c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+        # From file-new...
+        g.app.unlockLog()
+        lm.createMenu(c)
+        lm.finishOpen(c)
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        c.setChanged(False)
+        g.app.disable_redraw = False
+        return c
     #@+node:ekr.20190831034537.1: *3* aso.create_outline & helpers
     def create_outline(self):
         """Create the summary outline"""
