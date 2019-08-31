@@ -2358,6 +2358,7 @@ class LoadManager:
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
+            g.trace('%20s' % g.shortFileName(fn), g.callers())
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2376,17 +2377,27 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return c if ok else None
-    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (changed)
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         trace = 'themes' in g.app.debug
         lm = self
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
         old_commanders = g.app.commanders()
-        commanders = [lm.openSettingsFile(path) for path in paths]
-        commanders = [z for z in commanders if z]
+        if 1: # Add some settings for ActiveSettingsOutline class
+            lm.leo_settings_path = lm.computeLeoSettingsPath()
+            lm.my_settings_path = lm.computeMyLeoSettingsPath()
+            paths = [lm.leo_settings_path, lm.my_settings_path]
+            lm.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+            lm.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+            commanders = [lm.leo_settings_c, lm.my_settings_c]
+            commanders = [z for z in commanders if z]
+        else:
+            paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
+            ### old_commanders = g.app.commanders()
+            commanders = [lm.openSettingsFile(path) for path in paths]
+            commanders = [z for z in commanders if z]
         settings_d, bindings_d = lm.createDefaultSettingsDicts()
         for c in commanders:
             # Merge the settings dicts from c's outline into
@@ -2399,16 +2410,16 @@ class LoadManager:
         lm.globalBindingsDict = bindings_d
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
-        theme_path = lm.computeThemeFilePath()
-        if theme_path:
-            theme_c = lm.openSettingsFile(theme_path)
-            if theme_c:
+        lm.theme_path = lm.computeThemeFilePath()
+        if lm.theme_path:
+            lm.theme_c = lm.openSettingsFile(lm.theme_path)
+            if lm.theme_c:
                 # Merge theme_c's settings into globalSettingsDict.
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                    theme_c, settings_d, bindings_d, localFlag=False)
+                    lm.theme_c, settings_d, bindings_d, localFlag=False)
                 lm.globalSettingsDict = settings_d
                 # Set global vars
-                g.app.theme_directory = g.os_path_dirname(theme_path)
+                g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
                 if 0:
                     # Not necessary **provided** that theme .leo files

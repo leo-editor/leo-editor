@@ -941,14 +941,23 @@ class ActiveSettingsOutline:
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
         """
         lm = g.app.loadManager
-        self.leo_settings_path = lm.computeLeoSettingsPath()
-        self.my_settings_path = lm.computeMyLeoSettingsPath()
-        self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
-        self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
-        #
-        # This must be done *after* reading myLeoSettigns.leo.
-        self.theme_path = lm.computeThemeFilePath()
-        self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
+        lm.readGlobalSettingsFiles()
+        for ivar in (
+            'leo_settings_path', 'leo_settings_c', 
+            'my_settings_path', 'my_settings_c',
+            'theme_path', 'theme_c',
+        ):
+            val = getattr(lm, ivar)
+            setattr(self, ivar, val)
+        ###
+            # self.leo_settings_path = lm.computeLeoSettingsPath()
+            # self.my_settings_path = lm.computeMyLeoSettingsPath()
+            # self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+            # self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+            # #
+            # # This must be done *after* reading myLeoSettigns.leo.
+            # self.theme_path = lm.computeThemeFilePath()
+            # self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
     #@+node:ekr.20190831100214.1: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
