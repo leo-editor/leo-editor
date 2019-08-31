@@ -2358,7 +2358,7 @@ class LoadManager:
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
-            g.trace('%20s' % g.shortFileName(fn), g.callers())
+            ### g.trace('%20s' % g.shortFileName(fn), g.callers())
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
