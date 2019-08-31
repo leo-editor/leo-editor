@@ -918,24 +918,6 @@ class ActiveSettingsOutline:
         self.create_outline()
 
     #@+others
-    #@+node:ekr.20190831034104.1: *3* aso.load_hidden_commanders
-    def load_hidden_commanders(self):
-        """Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo."""
-        
-        lm = g.app.loadManager
-        self.leo_settings_path = lm.computeLeoSettingsPath()
-        self.my_settings_path = lm.computeMyLeoSettingsPath()
-        self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
-        self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
-        #
-        # This must be done *after* reading myLeoSettigns.leo.
-        self.theme_path = lm.computeThemeFilePath()
-        self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
-        #
-        # Create the list of hidden commanders. Order matters.
-        self.hidden_commanders = [self.leo_settings_c, self.my_settings_c]
-        if self.theme_c:
-            self.hidden_commanders.append(self.theme_c)
     #@+node:ekr.20190831035231.1: *3* aso.create_commander
     def create_commander(self):
         """Create a new commander, shown in a new tab"""
@@ -966,6 +948,32 @@ class ActiveSettingsOutline:
         c.setChanged(False)
         g.app.disable_redraw = False
         return c
+    #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline & helpers
+    def create_inner_outline(self, c, root):
+        """
+        Create the outline for the given hidden commander, as descendants of root.
+        """
+        # Find the settings tree
+        settings_root = c.config.settingsRoot()
+        if not settings_root:
+            # This should not be called if the local file has no @settings node.
+            g.trace('no @settings node!!', c.shortFileName())
+            return
+        active_root = root.insertAsLastChild()
+        active_root.h = 'active settings'
+        inactive_root = root.insertAsLastChild()
+        inactive_root.h = 'inactive settings'
+        self.create_active_settings(c, active_root, settings_root)
+        self.create_inactive_settings(c, inactive_root, settings_root)
+    #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
+    def create_active_settings(self, c, root, settings_root):
+        """Create the active settings tree for c under root."""
+        pass
+        
+        
+    #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
+    def create_inactive_settings(self, c, root, settings_root):
+        """Create the active settings tree for c under root."""
     #@+node:ekr.20190831034537.1: *3* aso.create_outline
     def create_outline(self):
         """Create the summary outline"""
@@ -974,26 +982,36 @@ class ActiveSettingsOutline:
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
         # Create all the inner settings outlines.
-        commanders = self.hidden_commanders + [self.c]
+        commanders = self.hidden_commanders
+        if self.c.config.settingsRoot():
+            commanders.append(self.c)
         for commander in reversed(commanders):
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
             self.create_inner_outline(commander, p)
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
-        for p in c.all_positions():
-            p.v.clearDirty()
+        for v in c.all_nodes():
+            v.clearDirty()
         c.setChanged(changedFlag=False, redrawFlag=False)
         c.redraw()
-    #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline
-    def create_inner_outline(self, hidden_c, root):
-        """
-        Create the outline for the given hidden commander, as descendants of root.
-        """
-        # Find the settings tree
-        active = root.insertAsLastChild()
-        active.h = 'active settings'
-        inactive = root.insertAsLastChild()
-        inactive.h = 'inactive settings'
+    #@+node:ekr.20190831034104.1: *3* aso.load_hidden_commanders
+    def load_hidden_commanders(self):
+        """Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo."""
+        
+        lm = g.app.loadManager
+        self.leo_settings_path = lm.computeLeoSettingsPath()
+        self.my_settings_path = lm.computeMyLeoSettingsPath()
+        self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+        self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+        #
+        # This must be done *after* reading myLeoSettigns.leo.
+        self.theme_path = lm.computeThemeFilePath()
+        self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
+        #
+        # Create the list of hidden commanders. Order matters.
+        self.hidden_commanders = [self.leo_settings_c, self.my_settings_c]
+        if self.theme_c:
+            self.hidden_commanders.append(self.theme_c)
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
