@@ -901,6 +901,81 @@ class ParserBaseClass:
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others
+#@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
+class ActiveSettingsOutline:
+    
+    def __init__(self, c):
+
+        self.c = c
+        # Save any changes so they can be seen.
+        if c.isChanged():
+            c.save()
+        # Open hidden commanders for non-local settings files.
+        self.load_hidden_commanders()
+        # Create a new commander, and show it.
+        self.commander = self.create_commander()
+        # Create the summary outline in the commander.
+        self.create_outline()
+
+    #@+others
+    #@+node:ekr.20190831034104.1: *3* aso.load_hidden_commanders
+    def load_hidden_commanders(self):
+        """Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo."""
+        
+        lm = g.app.loadManager
+        self.leo_settings_path = lm.computeLeoSettingsPath()
+        self.my_settings_path = lm.computeMyLeoSettingsPath()
+        self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+        self.my_settings_c = lm.openSettingsFile(self.leo_settings_path)
+        #
+        # This must be done *after* reading myLeoSettigns.leo.
+        self.theme_path = lm.computeThemeFilePath()
+        self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
+    #@+node:ekr.20190831035231.1: *3* aso.create_commander
+    def create_commander(self):
+        """Create a new commander, shown in a new tab"""
+        import leo.core.leoApp as leoApp
+        lm = g.app.loadManager
+        old_c = self.c
+        # From file-new...
+        old_c.outerUpdate()
+        g.app.disable_redraw = True
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Switch to the new commander.
+        c = g.app.newCommander(
+            fileName='Settings: %s' % old_c.shortFileName(),
+            gui=None,
+            previousSettings=leoApp.PreviousSettings(
+                settingsDict=lm.globalSettingsDict,
+                shortcutsDict=lm.globalBindingsDict,
+            ))
+        # Kill the the file name, so closing won't automatically create a file.
+        c.mFileName = ""
+        # From file-new...
+        g.app.unlockLog()
+        #
+            # c.frame.setInitialWindowGeometry()
+            # g.app.restoreWindowState(c)
+            # c.frame.deiconify()
+            # c.frame.lift()
+            # c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+            # c.frame.createFirstTreeNode()
+        lm.createMenu(c)
+        lm.finishOpen(c)
+        g.app.writeWaitingLog(c)
+        # g.doHook("new", old_c=old_c, c=c, new_c=c)
+        c.setLog()
+        c.setChanged(False)
+        g.app.disable_redraw = False
+        return c
+    #@+node:ekr.20190831034537.1: *3* aso.create_outline
+    def create_outline(self):
+        """Create the summary outline"""
+        c = self.commander
+        c.frame.createFirstTreeNode()
+        c.redraw()
+    #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
     """A class to manage configuration settings."""
@@ -1823,10 +1898,7 @@ class LocalConfigManager:
         
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
-        g.trace('not ready yet')
-        c = self.c
-        for name, val, c, letter in g.app.config.config_iter(c):
-            pass
+        ActiveSettingsOutline(self.c)
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""

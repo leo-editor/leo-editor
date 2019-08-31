@@ -873,7 +873,7 @@ class Commands:
     # Compatibility with scripts
 
     def fileName(self):
-        s = self.mFileName
+        s = self.mFileName or ""
         if g.isWindows:
             s = s.replace('\\','/')
         return s

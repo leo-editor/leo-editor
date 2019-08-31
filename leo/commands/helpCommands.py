@@ -1149,6 +1149,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''
         self.c.config.printSettings()
     #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)
+    @cmd('aso') # temp, for testing.
     @cmd('show-settings-outline')
     def showSettingsOutline(self, event=None):
         """
