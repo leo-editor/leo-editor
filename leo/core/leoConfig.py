@@ -910,43 +910,40 @@ class ActiveSettingsOutline:
     def __init__(self, c):
 
         self.c = c
-        # Save any changes so they can be seen.
-        if c.isChanged():
-            c.save()
-        # Open hidden commanders for non-local settings files.
-        self.load_hidden_commanders()
-        # Create the ordered list of commander tuples.
-        self.create_commanders_list()
-        # Create a new commander, and show it.
-        self.commander = self.create_commander()
-        # Create the summary outline in the commander.
+        self.commander = self.load()
         self.create_outline()
 
     #@+others
-    #@+node:ekr.20190831053000.1: *3* Birth
-    #@+node:ekr.20190831035231.1: *4* aso.create_commander
-    def create_commander(self):
-        """Create a new commander, shown in a new tab"""
-        import leo.core.leoApp as leoApp
+    #@+node:ekr.20190831100214.1: *3* aso.load & helpers
+    def load(self):
+        """Create the new commander, and load all settings files."""
+        # import leo.core.leoApp as leoApp
         lm = g.app.loadManager
         old_c = self.c
+        # Save any changes so they can be seen.
+        if old_c.isChanged():
+            old_c.save()
         # From file-new...
         old_c.outerUpdate()
         g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
-        # Switch to the new commander.
-        c = g.app.newCommander(
-            fileName='Settings: %s' % old_c.shortFileName(),
-            gui=None,
-            previousSettings=leoApp.PreviousSettings(
-                settingsDict=lm.globalSettingsDict,
-                shortcutsDict=lm.globalBindingsDict,
-            ))
+        if 1:
+            # Open hidden commanders for non-local settings files.
+            self.load_hidden_commanders()
+            # Create the ordered list of commander tuples.
+            self.create_commanders_list()
+        # Switch to the new commander. Do *not* use previous settings.
+        c = g.app.newCommander(fileName='Settings: %s' % old_c.shortFileName())
+            # gui=None, previousSettings=None)
+            # previousSettings=leoApp.PreviousSettings(
+                # settingsDict=lm.globalSettingsDict,
+                # shortcutsDict=lm.globalBindingsDict,
+            # ))
         # Kill the the file name, so closing won't automatically create a file.
         c.mFileName = ""
         # From file-new...
-        g.app.unlockLog()
+        # g.app.unlockLog()
         lm.createMenu(c)
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
@@ -980,7 +977,24 @@ class ActiveSettingsOutline:
         # This must be done *after* reading myLeoSettigns.leo.
         self.theme_path = lm.computeThemeFilePath()
         self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
-    #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline & helpers
+    #@+node:ekr.20190831034537.1: *3* aso.create_outline & helpers
+    def create_outline(self):
+        """Create the summary outline"""
+        c = self.commander
+        c.frame.createFirstTreeNode()
+        root = c.rootPosition()
+        root.h = 'Active settings for %s' % self.c.shortFileName()
+        # Create all the inner settings outlines.
+        for kind, commander in reversed(self.commanders):
+            p = root.insertAfter()
+            p.h = g.shortFileName(commander.fileName())
+            self.create_inner_outline(commander, kind, p)
+        # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
+        for v in c.all_nodes():
+            v.clearDirty()
+        c.setChanged(changedFlag=False, redrawFlag=False)
+        c.redraw()
+    #@+node:ekr.20190831044130.1: *4* aso.create_inner_outline & helpers
     def create_inner_outline(self, c, kind, root):
         """
         Create the outline for the given hidden commander, as descendants of root.
@@ -1001,7 +1015,7 @@ class ActiveSettingsOutline:
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         trace = False
-        verbose = False
+        verbose = True
         g.trace('\n', kind, c.shortFileName())
         d = c.config.settingsDict
         munge = g.app.config.munge
@@ -1014,14 +1028,14 @@ class ActiveSettingsOutline:
                 continue
             if ignore:
                 if p == ignore:
-                    if trace and verbose: print(pad, 'END IGNORE', p.h)
+                    # if trace and verbose: print(pad, 'END IGNORE', p.h)
                     ignore = None
                 else:
                     if trace: print(pad, 'IGNORE', p.h)
                     continue
             if outline_data:
                 if p == outline_data:
-                    if trace and verbose: print(pad, 'END TREE DATA', p.h)
+                    # if trace and verbose: print(pad, 'END TREE DATA', p.h)
                     outline_data = None
                 else:
                     if trace and verbose:
@@ -1037,7 +1051,7 @@ class ActiveSettingsOutline:
                 if trace: print(pad, p.h)
                 after = p.nodeAfterTree()
                 if after:
-                    if trace and verbose: print(pad, 'IGNORE UNTIL', after.h)
+                    # if trace and verbose: print(pad, 'IGNORE UNTIL', after.h)
                     ignore = after
                 else:
                     if trace and verbose: print(pad, 'IGNORE ALL')
@@ -1045,7 +1059,7 @@ class ActiveSettingsOutline:
             elif m.group(1) == '@outline-data':
                 if trace: print(pad, p.h)
                 outline_data = p.nodeAfterTree()
-                if trace and verbose: print(pad, 'TREE DATA UNTIL', outline_data.h if outline_data else 'END!')
+                # if trace and verbose: print(pad, 'TREE DATA UNTIL', outline_data.h if outline_data else 'END!')
             elif m.group(1) in ('@ifenv', '@ifplatform'):
                 if trace and verbose:
                     print(pad, 'SKIP', p.h)
@@ -1080,23 +1094,6 @@ class ActiveSettingsOutline:
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         # g.trace(kind, c.shortFileName())
-    #@+node:ekr.20190831034537.1: *3* aso.create_outline
-    def create_outline(self):
-        """Create the summary outline"""
-        c = self.commander
-        c.frame.createFirstTreeNode()
-        root = c.rootPosition()
-        root.h = 'Active settings for %s' % self.c.shortFileName()
-        # Create all the inner settings outlines.
-        for kind, commander in reversed(self.commanders):
-            p = root.insertAfter()
-            p.h = g.shortFileName(commander.fileName())
-            self.create_inner_outline(commander, kind, p)
-        # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
-        for v in c.all_nodes():
-            v.clearDirty()
-        c.setChanged(changedFlag=False, redrawFlag=False)
-        c.redraw()
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
