@@ -905,7 +905,7 @@ class ParserBaseClass:
 #@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
     
-    settings_pat = re.compile(r'^@\s*(\w+)\s+([\w\-]+)')
+    settings_pat = re.compile(r'^(@[\w-]+)(\s*[\w-]+)?')
     
     def __init__(self, c):
 
@@ -1003,22 +1003,45 @@ class ActiveSettingsOutline:
         g.trace('\n', kind, c.shortFileName())
         d = c.config.settingsDict
         munge = g.app.config.munge
-        count = 0
-        print('\n%s...\n' % kind)
+        ignore, ignore_all = None, None
+        print('\n%s %s...\n' % (kind, c.shortFileName()))
         for p in settings_root.subtree():
+            pad = ' '*p.level()
+            if ignore_all:
+                print(pad, 'IGNORE ALL', p.h)
+                continue
+            if ignore and p == ignore:
+                print(pad, 'END IGNORE', p.h)
+                ignore = False
+            if ignore:
+                print(pad, 'IGNORE', p.h)
+                continue
             m = self.settings_pat.match(p.h)
-            if m:
-                val = d.get(munge(m.group(2)))
+            if not m:
+                print(pad, p.h)
+                continue
+            if m.group(1) == '@ignore':
+                print(pad, p.h)
+                after = p.nodeAfterTree()
+                if after:
+                    print(pad, 'IGNORE UNTIL', after.h)
+                    ignore = after
+                else:
+                    print(pad, 'IGNORE ALL')
+                    ignore_all = True
+            elif m.group(1) in ('@ifenv', '@ifplatorm'):
+                print(pad, 'SKIP', p.h)
+            elif m.group(1) in ('@enabled-plugins', '@data'):
+                print(pad, 'SPECIAL', p.h)
+            elif m.group(2):
+                val = d.get(munge(m.group(2).strip()))
                 if isinstance(val, g.GeneralSetting):
-                    print(' '*p.level(), "FOUND", p.h)
+                    print(pad, "FOUND", p.h)
                     # print('\nFOUND', g.shortFileName(val.path), val.val)
                 else:
-                    print(' '*p.level(), "NOT FOUND", p.h)
+                    print(pad, "NOT FOUND", p.h)
             else:
-                print(' '*p.level(), p.h)
-            count += 1
-            if count == 10:
-                return
+                print('\n', pad, "ERROR", p.h, '\n')
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
