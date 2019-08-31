@@ -966,6 +966,8 @@ class ActiveSettingsOutline:
         """Create the summary outline"""
         c = self.commander
         c.frame.createFirstTreeNode()
+        root = c.rootPosition()
+        root.h = 'Active settings for %s' % self.c.shortFileName()
         c.redraw()
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
