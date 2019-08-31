@@ -988,7 +988,7 @@ class ActiveSettingsOutline:
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
         # Create all the inner settings outlines.
-        for kind, commander in reversed(self.commanders):
+        for kind, commander in self.commanders:
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
             self.create_inner_outline(commander, kind, p)
@@ -1019,11 +1019,10 @@ class ActiveSettingsOutline:
         """Create the active settings tree for c under root."""
         trace = False
         verbose = True
-        g.trace('\n', kind, c.shortFileName())
         d = c.config.settingsDict
         munge = g.app.config.munge
         ignore, ignore_all, outline_data = None, None, None
-        print('\n%s %s...\n' % (kind, c.shortFileName()))
+        g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         for p in settings_root.subtree():
             pad = ' '*p.level()
             if ignore_all:
