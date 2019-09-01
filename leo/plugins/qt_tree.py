@@ -150,7 +150,7 @@ class LeoQtTree(leoFrame.LeoTree):
         
         Not used, as this causes scrolling issues.
         '''
-        t1 = time.clock()
+        t1 = time.process_time()
         c = self.c
         parents = []
         # Clear the widget.
@@ -202,7 +202,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if p == c.p:
                 w.setCurrentItem(item)
         # Useful, for now.
-        t2 = time.clock()
+        t2 = time.process_time()
         if t2-t1 > 0.1:
             g.trace('%s nodes, %5.3f sec' % (n, t2-t1))
     #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible (not used)
@@ -495,7 +495,7 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Draw the tree rooted at p.'''
         trace = 'drawing' in g.app.debug and not g.unitTesting
         if trace:
-            t1 = time.clock()
+            t1 = time.process_time()
         c = self.c
         self.clear()
         # Draw all top-level nodes and their visible descendants.
@@ -515,7 +515,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 self.drawTree(p)
                 p.moveToNext()
         if trace:
-            t2 = time.clock()
+            t2 = time.process_time()
             g.trace('%5.2f sec.' % (t2-t1), g.callers(5))
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):

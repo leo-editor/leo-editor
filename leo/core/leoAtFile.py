@@ -3602,7 +3602,7 @@ class FastAtRead:
         anchored in root.v.
         '''
         trace = False
-        t1 = time.clock()
+        t1 = time.process_time()
         self.path = path
         self.root = root
         sfn = g.shortFileName(path)
@@ -3619,7 +3619,7 @@ class FastAtRead:
         self.scan_lines(
             delims, first_lines, lines, path, start_i)
         if trace:
-            t2 = time.clock()
+            t2 = time.process_time()
             g.trace('%5.3f sec. %s' % ((t2-t1), path))
         return True
     #@-others

@@ -2806,14 +2806,14 @@ def printGcAll(full=False, sort_by_n=True):
     '''Print a summary of all presently live objects.'''
     if g.unitTesting:
         return
-    t1 = time.clock()
+    t1 = time.process_time()
     objects = gc.get_objects()
     d = {} # Keys are types, values are ints (number of instances).
     for obj in objects:
         t = type(obj)
         if hasattr(obj, '__class__'):
             d[t] = d.get(t, 0) + 1
-    t2 = time.clock()
+    t2 = time.process_time()
     if full:
         if sort_by_n: # Sort by n
             items = list(d.items())
@@ -2947,7 +2947,7 @@ def printTimes(times):
     '''
     Print the differences in the times array.
     
-    times: an array of times (calls to time.clock()).
+    times: an array of times (calls to time.process_time()).
     '''
     for n, junk in enumerate(times[:-1]):
         t = times[n+1]-times[n]
