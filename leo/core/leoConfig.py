@@ -947,21 +947,12 @@ class ActiveSettingsOutline:
             print('='*60)
         lm = g.app.loadManager
         lm.readGlobalSettingsFiles()
-        ### Just use the lm ivars directly.
-            # for ivar in (
-                # 'leo_settings_path', 'leo_settings_c', 
-                # 'my_settings_path', 'my_settings_c',
-                # 'theme_path', 'theme_c',
-            # ):
-                # val = getattr(lm, ivar)
-                # setattr(self, ivar, val)
-        #
         # Make sure to reload the local file.
         c = g.app.commanders()[0]
         fn = c.fileName()
         if fn:
             self.local_c = lm.openSettingsFile(fn)
-            if 0:
+            if 0: ### Not needed.
                 # Create the local dict.  Similar to readGlobalSettingsFiles.
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
                    c=c,
@@ -970,7 +961,6 @@ class ActiveSettingsOutline:
                    localFlag=True,
                 )
                 c.config.settingsDict = settings_d
-            ### g.printObj(sorted(c.config.settingsDict.d.keys()))
     #@+node:ekr.20190831100214.1: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
