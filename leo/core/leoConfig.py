@@ -927,12 +927,13 @@ class ActiveSettingsOutline:
     def create_commanders_list(self):
         
         """Create the commanders list. Order matters."""
+        lm = g.app.loadManager
         self.commanders = [
-            ('leo_settings', self.leo_settings_c),
-            ('my_settings', self.my_settings_c),
+            ('leo_settings', lm.leo_settings_c),
+            ('my_settings', lm.my_settings_c),
         ]
-        if self.theme_c:
-            self.commanders.append(('theme_settings', self.theme_c),)
+        if lm.theme_c:
+            self.commanders.append(('theme_settings', lm.theme_c),)
         if self.c.config.settingsRoot():
             self.commanders.append(('local_settings', self.c),)
     #@+node:ekr.20190831034104.1: *4* aso.load_hidden_commanders
@@ -946,13 +947,14 @@ class ActiveSettingsOutline:
             print('='*60)
         lm = g.app.loadManager
         lm.readGlobalSettingsFiles()
-        for ivar in (
-            'leo_settings_path', 'leo_settings_c', 
-            'my_settings_path', 'my_settings_c',
-            'theme_path', 'theme_c',
-        ):
-            val = getattr(lm, ivar)
-            setattr(self, ivar, val)
+        ### Just use the lm ivars directly.
+            # for ivar in (
+                # 'leo_settings_path', 'leo_settings_c', 
+                # 'my_settings_path', 'my_settings_c',
+                # 'theme_path', 'theme_c',
+            # ):
+                # val = getattr(lm, ivar)
+                # setattr(self, ivar, val)
         #
         # Make sure to reload the local file.
         c = g.app.commanders()[0]
@@ -2004,6 +2006,26 @@ class LocalConfigManager:
             junk, found = self.getValFromDict(d, setting, kind)
             if found: return True
         return False
+    #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
+    def getSource(self, setting, theme_path):
+        """
+        Return a string representing the source file of the given setting,
+        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "unknown", "error")
+        """
+        if not isinstance(setting, g.GeneralSetting):
+            return "error"
+        try:
+            path = setting.path
+        except Exception:
+            return "error"
+        if not path:
+            return "unknown"
+        for tag in ('myLeoSettings', 'leoSettings'):
+            if tag in path:
+                return tag
+        if theme_path and theme_path in path:
+            return "theme_file"
+        return "local_file"
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self):
         '''Prints the value of every setting, except key bindings and commands and open-with tables.
