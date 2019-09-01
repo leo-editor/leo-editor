@@ -665,7 +665,7 @@ class AutoCompleterClass:
         body_s = p.b
         #
         # Get the entire source for jedi.
-        t1 = time.clock()
+        t1 = time.process_time()
         goto = gotoCommands.GoToCommands(c)
         root, fileName = goto.find_root(p)
         if root:
@@ -675,7 +675,7 @@ class AutoCompleterClass:
         else:
             source = body_s
             n0 = 0
-        t2 = time.clock()
+        t2 = time.process_time()
         #
         # Get local line
         lines = g.splitLines(body_s)
@@ -712,9 +712,9 @@ class AutoCompleterClass:
                     # sys_path=None):
                 ) 
                 completions = script.completions()
-                t3 = time.clock()
+                t3 = time.process_time()
             except ValueError:
-                t3 = time.clock()
+                t3 = time.process_time()
                 completions = None
                 g.printObj(source_lines[n0-1:n0+30])
                 print('ERROR', p.h)

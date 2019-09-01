@@ -2389,7 +2389,7 @@ class LoadManager:
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
-        t1 = time.clock()
+        t1 = time.process_time()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2427,7 +2427,7 @@ class LoadManager:
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
-            t2 = time.clock()
+            t2 = time.process_time()
             g.es_print('startup time: %5.2f sec' % (t2-t1))
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
