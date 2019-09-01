@@ -269,12 +269,12 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181126103604.1: *4*  app.Initing
     #@+node:ekr.20181114015356.1: *5* app.create_all_data
     def create_gnx_to_vnode(self):
-        t1 = time.clock()
+        t1 = time.process_time()
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
             # This is likely the only data that ever will be needed.
         if 0:
             print('app.create_all_data: %5.3f sec. %s entries' % (
-                (time.clock()-t1), len(list(self.gnx_to_vnode.keys()))))
+                (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))))
         self.test_round_trip_positions()
     #@+node:ekr.20181124133513.1: *5* app.finish_create
     @flx.action
@@ -504,7 +504,7 @@ class LeoBrowserApp(flx.PyComponent):
             # self.test_full_outline(p)
         #
         # Redraw only the visible nodes.
-        t1 = time.clock()
+        t1 = time.process_time()
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
         redraw_dict = self.make_redraw_dict(p)
@@ -519,7 +519,7 @@ class LeoBrowserApp(flx.PyComponent):
             # The redraw instructions are not used.
         #
         # Do not call c.setChanged() here.
-        if trace: print('app.redraw: %5.3f sec.' % (time.clock()-t1))
+        if trace: print('app.redraw: %5.3f sec.' % (time.process_time()-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -593,7 +593,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         c = self.c
         p = p or c.p
-        t1 = time.clock()
+        t1 = time.process_time()
         c.expandAllAncestors(c.p)
             # Ensure that c.p will be shown.
         d = {
@@ -603,7 +603,7 @@ class LeoBrowserApp(flx.PyComponent):
                     for p2 in c.rootPosition().self_and_siblings()
             ],
         }
-        t2 = time.clock()
+        t2 = time.process_time()
         if 0:
             print('app.make_redraw_dict: %s direct children %5.3f sec.' % (
                 len(list(c.rootPosition().self_and_siblings())), (t2-t1)))
@@ -1170,7 +1170,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
         old_d = self.gnx_to_vnode.copy()
         old_len = len(list(self.gnx_to_vnode.keys()))
-        # t1 = time.clock()
+        # t1 = time.process_time()
         for p in c.all_positions():
             ap = self.p_to_ap(p)
             p2 = self.ap_to_p(ap)
@@ -1178,7 +1178,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.gnx_to_vnode = old_d
         new_len = len(list(self.gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
-        # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
+        # print('app.test_round_trip_positions: %5.3f sec' % (time.process_time()-t1))
     #@-others
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):

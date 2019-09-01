@@ -2161,7 +2161,7 @@ class JEditColorizer(BaseJEditColorizer):
 
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
-        t1 = time.clock()
+        t1 = time.process_time()
         f = self.restartDict.get(n)
         i = f(s) if f else 0
         while i < len(s):
@@ -2185,7 +2185,7 @@ class JEditColorizer(BaseJEditColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
-        self.tot_time += time.clock() - t1
+        self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor
     def recolor(self, s):
         '''
@@ -2584,7 +2584,7 @@ class PygmentsColorizer(BaseJEditColorizer):
 
     def mainLoop(self, s):
         '''Colorize a *single* line s'''
-        t1 = time.clock()
+        t1 = time.process_time()
         highlighter = self.highlighter
         #
         # First, set the *expected* lexer. It may change later.
@@ -2638,7 +2638,7 @@ class PygmentsColorizer(BaseJEditColorizer):
             self.state_s_dict [state_s] = state_n
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
-        self.tot_time += time.clock() - t1
+        self.tot_time += time.process_time() - t1
     #@+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
     def at_color_callback(self, lexer, match):
         from pygments.token import Name, Text
