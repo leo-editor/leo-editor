@@ -788,7 +788,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         
         g.pr('\nMainWindowShim.closeEvent 1')
         
-        t1 = time.clock()
+        t1 = time.process_time()
 
         # Are we restaring?
         ### restarting = time.time() - self._closeflag < 1.0
@@ -809,21 +809,21 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         else:
             self._closeflag = True
             
-        t2 = time.clock()
+        t2 = time.process_time()
 
         # Proceed with closing shells
         pyzo.localKernelManager.terminateAll() # pylint: disable=no-member
         for shell in pyzo.shells:
             shell._context.close()
             
-        t3 = time.clock()
+        t3 = time.process_time()
 
         # Close tools
         for toolname in pyzo.toolManager.getLoadedTools():
             tool = pyzo.toolManager.getTool(toolname)
             tool.close()
             
-        t4 = time.clock()
+        t4 = time.process_time()
 
         # Stop all threads (this should really only be daemon threads)
         import threading
@@ -834,7 +834,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
                 except Exception:
                     pass
                     
-        t5 = time.clock()
+        t5 = time.process_time()
 
         if 1: # EKR
             g.pr('\nMainWindowShim.closeEvent 2')

@@ -171,7 +171,7 @@ class GeneralTestCase(unittest.TestCase):
         c = tm.c
         p = tm.p.copy()
         if trace_time:
-            t1 = time.clock()
+            t1 = time.process_time()
         script = g.getScript(c, p).strip()
         if self.setup_script:
             script = self.setup_script + '\n' + script
@@ -193,7 +193,7 @@ class GeneralTestCase(unittest.TestCase):
         else:
             exec(script, d)
         if trace_time:
-            t2 = time.clock()
+            t2 = time.process_time()
             if t2 - t1 > 3.0:
                 g.trace('\nEXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
     #@+node:ekr.20051104075904.11: *3* shortDescription

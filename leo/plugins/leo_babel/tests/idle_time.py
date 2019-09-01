@@ -66,7 +66,7 @@ class IdleTime:
 
         #leoG.trace(id(self))
         IdleTime.list_inactive.remove(self)
-        self._nexttime = time.clock()
+        self._nexttime = time.process_time()
         IdleTime.list_active.insert(0, self)
         self._active = True
     #@+node:bob.20180206125022.1: *3* stop()
@@ -106,7 +106,7 @@ class IdleTime:
                 break
             # pylint: disable=no-member
             os.sched_yield()
-            timeCur = time.clock()
+            timeCur = time.process_time()
             idleTimeObj = cls.list_active.pop(0)
             #leoG.trace('Popped {0} leaving {1}'.format(id(idleTimeObj), [id(ent) for ent in cls.list_active]))
             if timeCur >= idleTimeObj._nexttime:

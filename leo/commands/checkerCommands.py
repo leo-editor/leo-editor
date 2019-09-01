@@ -214,7 +214,7 @@ def find_missing_docstrings(event):
         return "%s,%d" % (link, i)
     #@-others
 
-    count, found, t1 = 0, [], time.clock()
+    count, found, t1 = 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         for p in root.self_and_subtree():
             lines = p.b.split('\n')
@@ -232,7 +232,7 @@ def find_missing_docstrings(event):
     g.es_print('found %s missing docstring%s in %s file%s in %5.2f sec.' % (
         count, g.plural(count),
         len(found), g.plural(len(found)),
-        (time.clock() - t1)))
+        (time.process_time() - t1)))
         
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
