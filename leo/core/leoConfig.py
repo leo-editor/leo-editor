@@ -1037,92 +1037,81 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-        trace = True
-        trace_not_found = True
-        verbose = True
         assert kind in ('local_settings', 'theme_settings', 'my_settings', 'leo_settings'), repr(kind)
         lm = g.app.loadManager
         munge = g.app.config.munge
         d = lm.globalSettingsDict if kind == 'theme_settings' else c.config.settingsDict
             # FAIL d = c.config.settingsDict
             # FAIL d = c.config.settingsDict if kind in ('local_settings', 'theme_settings') else lm.globalSettingsDict
-        ignore, ignore_all, outline_data = None, None, None
+        ignore, outline_data = None, None
         g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
+        self.parents = [root]
+        self.level = root.level()
         for p in settings_root.subtree():
             pad = ' '*p.level()
-            #@+<< continue if we are should ignore p >>
-            #@+node:ekr.20190901185659.1: *5* << continue if we are should ignore p >>
-            if ignore_all:
-                if trace and verbose: print(pad, 'IGNORE ALL', p.h)
-                continue
+            #@+<< continue if we should ignore p >>
+            #@+node:ekr.20190901185659.1: *5* << continue if we should ignore p >>
             if ignore:
                 if p == ignore:
                     ignore = None
                 else:
-                    if trace: print(pad, 'IGNORE', p.h)
+                    # if trace: print(pad, 'IGNORE', p.h)
                     continue
             if outline_data:
                 if p == outline_data:
                     outline_data = None
                 else:
-                    if trace and verbose:
-                        print(pad, 'TREE DATA', p.h)
-                    elif trace:
-                        print(pad, 'SKIP', p.h)
+                    # if trace: print(pad, 'TREE DATA', p.h)
                     continue
-            #@-<< continue if we are should ignore p >>
+            #@-<< continue if we should ignore p >>
             m = self.settings_pat.match(p.h)
             if not m:
-                if trace: print(pad, p.h)
-                continue
-            if m.group(1) == '@ignore':
-                if trace: print(pad, p.h)
-                #@+<< start ignoring nodes >>
-                #@+node:ekr.20190901185738.1: *5* << start ignoring nodes >>
-                after = p.nodeAfterTree()
-                if after:
-                    ignore = after
-                else:
-                    if trace and verbose: print(pad, 'IGNORE ALL')
-                    ignore_all = True
-                #@-<< start ignoring nodes >>
+                self.add(p)
+            elif m.group(1) == '@ignore':
+                ignore = p.nodeAfterTree()
             elif m.group(1) == '@outline-data':
-                if trace: print(pad, p.h)
+                self.add(p)
                 outline_data = p.nodeAfterTree()
             elif m.group(1) in ('@ifenv', '@ifplatform'):
-                if trace and verbose:
-                    print(pad, 'SKIP', p.h)
-                elif trace:
-                    print(pad, p.h)
+                self.add(p)
             elif m.group(1) in self.ignore_list:
-                if trace and verbose:
-                    print(pad, 'SPECIAL', p.h)
-                elif trace:
-                    print(pad, 'OK', p.h)
+                ignore = p.nodeAfterTree()
             elif m.group(2):
-                if 0: ### Experimenatal.
-                    setting = m.group(2)
-                    setting_kind = m.group(1).lstrip('@')
-                    val = c.config.get(setting, setting_kind)
-                else:
-                    key = munge(m.group(2).strip())
-                    val = d.get(key)
+                key = munge(m.group(2).strip())
+                val = d.get(key)
+                ### Fails
+                    # setting = m.group(2)
+                    # setting_kind = m.group(1).lstrip('@')
+                    # val = c.config.get(setting, setting_kind)
                 if isinstance(val, g.GeneralSetting):
-                    if trace: print(pad, "OK", g.truncate(p.h, 60))
-                elif trace:
-                    print('\n', pad, "NOT FOUND", g.truncate(p.h, 60), '\n')
-                elif trace_not_found:
-                    print("NOT FOUND", g.truncate(p.h, 60))
+                    self.add(p)
+                else:
+                    p.h = 'NOT FOUND: ' + p.h
+                    self.add(p)
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
-    #@+node:ekr.20190901192405.1: *5* function: add
-    def add(p):
-        """Add a node for p."""
-        
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         # g.trace(kind, c.shortFileName())
+    #@+node:ekr.20190901192405.1: *3* aso.add
+    def add(self, p):
+        """Add a node for p."""
+        if 0:
+            pad = ' '*p.level()
+            print(pad, p.h)
+        p_level = p.level()
+        if p_level > self.level + 1:
+            g.trace('OOPS', p_level, p.h)
+            return
+        while p_level < self.level + 1 and len(self.parents) > 1:
+            self.parents.pop()
+            self.level -= 1
+        parent = self.parents[-1]
+        child = parent.insertAsLastChild()
+        child.h = p.h
+        self.parents.append(child)
+        self.level += 1
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
