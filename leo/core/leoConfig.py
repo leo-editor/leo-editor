@@ -950,7 +950,7 @@ class ActiveSettingsOutline:
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
         """
-        if 1:  ### Useful separator
+        if 0:  ### Useful separator
             print('')
             g.trace()
             print('='*60)
