@@ -1011,6 +1011,7 @@ class ActiveSettingsOutline:
         for kind, commander in self.commanders:
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
+            p.b = '@language rest\n@wrap\n'
             self.create_inner_outline(commander, kind, p)
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
@@ -1076,9 +1077,9 @@ class ActiveSettingsOutline:
                 self.add(p)
                 outline_data = p.nodeAfterTree()
             elif m.group(1) in ('@ifenv', '@ifplatform'):
-                if p.hasChildren():
-                    self.add(p)
+                self.add(p)
             elif m.group(1) in self.ignore_list:
+                self.add(p)
                 ignore = p.nodeAfterTree()
             elif m.group(2):
                 key = munge(m.group(2).strip())
@@ -1094,10 +1095,6 @@ class ActiveSettingsOutline:
                     self.add(p)
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
-    #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
-    def create_inactive_settings(self, c, kind, root, settings_root):
-        """Create the active settings tree for c under root."""
-        # g.trace(kind, c.shortFileName())
     #@+node:ekr.20190901192405.1: *3* aso.add
     def add(self, p):
         """Add a node for p."""
@@ -1114,6 +1111,7 @@ class ActiveSettingsOutline:
         parent = self.parents[-1]
         child = parent.insertAsLastChild()
         child.h = p.h
+        child.b = p.b
         self.parents.append(child)
         self.level += 1
     #@-others
