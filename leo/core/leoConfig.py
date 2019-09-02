@@ -1029,14 +1029,18 @@ class ActiveSettingsOutline:
             # This should not be called if the local file has no @settings node.
             g.trace('no @settings node!!', c.shortFileName())
             return
-        active_root = root.insertAsLastChild()
-        active_root.h = 'active settings'
-        self.create_active_settings(c, kind, active_root, settings_root)
-        # inactive_root = root.insertAsLastChild()
-        # inactive_root.h = 'inactive settings'
-        # self.create_inactive_settings(c, kind, inactive_root, settings_root)
-    #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
-    def create_active_settings(self, c, kind, root, settings_root):
+        # Unify all settings.
+        self.create_unified_settings(c, kind, root, settings_root)
+        ###
+            # # Create separate outlines for active & inactive settings.
+            # active_root = root.insertAsLastChild()
+            # active_root.h = 'active settings'
+            # self.create_active_settings(c, kind, active_root, settings_root)
+            # inactive_root = root.insertAsLastChild()
+            # inactive_root.h = 'inactive settings'
+            # self.create_inactive_settings(c, kind, inactive_root, settings_root)
+    #@+node:ekr.20190831045822.1: *4* aso.create_unified_settings
+    def create_unified_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         assert kind in ('local_settings', 'theme_settings', 'my_settings', 'leo_settings'), repr(kind)
         lm = g.app.loadManager
@@ -1047,7 +1051,7 @@ class ActiveSettingsOutline:
         ignore, outline_data = None, None
         # g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         self.parents = [root]
-        self.level = root.level()
+        self.level = settings_root.level()
         for p in settings_root.subtree():
             pad = ' '*p.level()
             #@+<< continue if we should ignore p >>
@@ -1103,7 +1107,7 @@ class ActiveSettingsOutline:
             print(pad, p.h)
         p_level = p.level()
         if p_level > self.level + 1:
-            g.trace('OOPS', p_level, p.h)
+            g.trace('OOPS', p.v.context.shortFileName(), self.level, p_level, p.h)
             return
         while p_level < self.level + 1 and len(self.parents) > 1:
             self.parents.pop()
