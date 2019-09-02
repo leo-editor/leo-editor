@@ -907,6 +907,15 @@ class ActiveSettingsOutline:
     
     settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
     
+    ignore_list = [
+        # Settings nodes that don't have names.
+        '@enabled-plugins',
+        '@button', '@buttons', '@command', '@commands',
+        '@font', '@item', '@menu', '@menus', '@keys', '@mode',
+        '@openwith', '@popup', '@popup_menus', '@rclick',
+        '@shortcuts', '@strings',
+    ]
+    
     def __init__(self, c):
 
         self.c = c
@@ -1008,7 +1017,7 @@ class ActiveSettingsOutline:
             v.clearDirty()
         c.setChanged(changedFlag=False, redrawFlag=False)
         c.redraw()
-    #@+node:ekr.20190831044130.1: *4* aso.create_inner_outline & helpers
+    #@+node:ekr.20190831044130.1: *4* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
         Create the outline for the given hidden commander, as descendants of root.
@@ -1028,31 +1037,32 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-        trace = False
+        trace = True
         trace_not_found = True
         verbose = True
+        assert kind in ('local_settings', 'theme_settings', 'my_settings', 'leo_settings'), repr(kind)
         lm = g.app.loadManager
-        d = lm.globalSettingsDict if kind == 'theme_settings' else c.config.settingsDict
         munge = g.app.config.munge
+        d = lm.globalSettingsDict if kind == 'theme_settings' else c.config.settingsDict
+            # FAIL d = c.config.settingsDict
+            # FAIL d = c.config.settingsDict if kind in ('local_settings', 'theme_settings') else lm.globalSettingsDict
         ignore, ignore_all, outline_data = None, None, None
-        # if 'Dark.leo' in c.fileName():
-            # g.printObj(sorted(c.config.settingsDict.d.keys()))
         g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         for p in settings_root.subtree():
             pad = ' '*p.level()
+            #@+<< continue if we are should ignore p >>
+            #@+node:ekr.20190901185659.1: *5* << continue if we are should ignore p >>
             if ignore_all:
                 if trace and verbose: print(pad, 'IGNORE ALL', p.h)
                 continue
             if ignore:
                 if p == ignore:
-                    # if trace and verbose: print(pad, 'END IGNORE', p.h)
                     ignore = None
                 else:
                     if trace: print(pad, 'IGNORE', p.h)
                     continue
             if outline_data:
                 if p == outline_data:
-                    # if trace and verbose: print(pad, 'END TREE DATA', p.h)
                     outline_data = None
                 else:
                     if trace and verbose:
@@ -1060,49 +1070,44 @@ class ActiveSettingsOutline:
                     elif trace:
                         print(pad, 'SKIP', p.h)
                     continue
+            #@-<< continue if we are should ignore p >>
             m = self.settings_pat.match(p.h)
             if not m:
                 if trace: print(pad, p.h)
                 continue
             if m.group(1) == '@ignore':
                 if trace: print(pad, p.h)
+                #@+<< start ignoring nodes >>
+                #@+node:ekr.20190901185738.1: *5* << start ignoring nodes >>
                 after = p.nodeAfterTree()
                 if after:
-                    # if trace and verbose: print(pad, 'IGNORE UNTIL', after.h)
                     ignore = after
                 else:
                     if trace and verbose: print(pad, 'IGNORE ALL')
                     ignore_all = True
+                #@-<< start ignoring nodes >>
             elif m.group(1) == '@outline-data':
                 if trace: print(pad, p.h)
                 outline_data = p.nodeAfterTree()
-                # if trace and verbose: print(pad, 'TREE DATA UNTIL', outline_data.h if outline_data else 'END!')
             elif m.group(1) in ('@ifenv', '@ifplatform'):
                 if trace and verbose:
                     print(pad, 'SKIP', p.h)
                 elif trace:
                     print(pad, p.h)
-            elif m.group(1) in (
-                '@enabled-plugins',
-                # '@data',
-                '@button', '@buttons',
-                '@command', '@commands',
-                '@font',
-                '@item', '@menu', '@menus',
-                '@keys',
-                '@mode',
-                '@openwith', '@popup', '@popup_menus', '@rclick',
-                '@shortcuts', '@strings',
-            ):
+            elif m.group(1) in self.ignore_list:
                 if trace and verbose:
                     print(pad, 'SPECIAL', p.h)
                 elif trace:
                     print(pad, 'OK', p.h)
             elif m.group(2):
-                key = munge(m.group(2).strip())
-                val = d.get(key)
+                if 0: ### Experimenatal.
+                    setting = m.group(2)
+                    setting_kind = m.group(1).lstrip('@')
+                    val = c.config.get(setting, setting_kind)
+                else:
+                    key = munge(m.group(2).strip())
+                    val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
-                # if val is not None:
                     if trace: print(pad, "OK", g.truncate(p.h, 60))
                 elif trace:
                     print('\n', pad, "NOT FOUND", g.truncate(p.h, 60), '\n')
@@ -1110,6 +1115,10 @@ class ActiveSettingsOutline:
                     print("NOT FOUND", g.truncate(p.h, 60))
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
+    #@+node:ekr.20190901192405.1: *5* function: add
+    def add(p):
+        """Add a node for p."""
+        
     #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
     def create_inactive_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
