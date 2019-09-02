@@ -953,10 +953,6 @@ class ActiveSettingsOutline:
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
         """
-        if 0:  ### Useful separator
-            print('')
-            g.trace()
-            print('='*60)
         lm = g.app.loadManager
         lm.readGlobalSettingsFiles()
         # Make sure to reload the local file.
@@ -964,15 +960,6 @@ class ActiveSettingsOutline:
         fn = c.fileName()
         if fn:
             self.local_c = lm.openSettingsFile(fn)
-            if 0: ### Not needed.
-                # Create the local dict.  Similar to readGlobalSettingsFiles.
-                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                   c=c,
-                   settings_d=lm.globalSettingsDict,
-                   bindings_d=lm.globalBindingsDict,
-                   localFlag=True,
-                )
-                c.config.settingsDict = settings_d
     #@+node:ekr.20190831100214.1: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
@@ -1139,7 +1126,7 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190902071645.1: *3* aso.filter_settings
     def filter_settings(self, c, target_kind):
         """Return a dict containing only settings defined in the file given by kind."""
-        # g.trace('\n', '='*10, c.shortFileName(), '\n')
+        ### g.trace('\n', '='*10, c.shortFileName(), '\n')
         #
         # Must match the values returned by c.config.setSource.
         valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
@@ -1155,14 +1142,14 @@ class ActiveSettingsOutline:
                 continue
             kind = c.config.getSource(setting=gs, theme_path=lm.theme_path)
             if kind == 'ignore':
-                g.trace('IGNORE', kind, key)
+                g.trace('IGNORE:', kind, key)
                 continue
             if kind in ('error'):
-                g.trace('ERROR', kind, key)
+                g.trace('ERROR:', kind, key)
                 continue
             if kind == target_kind:
                 result[key] = gs
-        # g.printObj(sorted(result.keys()), tag=target_kind)
+        ### g.printObj(sorted(result.keys()), tag=target_kind)
         return result
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
