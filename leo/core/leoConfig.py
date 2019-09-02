@@ -1044,7 +1044,7 @@ class ActiveSettingsOutline:
             # FAIL d = c.config.settingsDict
             # FAIL d = c.config.settingsDict if kind in ('local_settings', 'theme_settings') else lm.globalSettingsDict
         ignore, outline_data = None, None
-        g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
+        # g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         self.parents = [root]
         self.level = root.level()
         for p in settings_root.subtree():
@@ -1066,14 +1066,16 @@ class ActiveSettingsOutline:
             #@-<< continue if we should ignore p >>
             m = self.settings_pat.match(p.h)
             if not m:
-                self.add(p)
+                if p.hasChildren():
+                    self.add(p)
             elif m.group(1) == '@ignore':
                 ignore = p.nodeAfterTree()
             elif m.group(1) == '@outline-data':
                 self.add(p)
                 outline_data = p.nodeAfterTree()
             elif m.group(1) in ('@ifenv', '@ifplatform'):
-                self.add(p)
+                if p.hasChildren():
+                    self.add(p)
             elif m.group(1) in self.ignore_list:
                 ignore = p.nodeAfterTree()
             elif m.group(2):
@@ -1086,7 +1088,7 @@ class ActiveSettingsOutline:
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
-                    p.h = 'NOT FOUND: ' + p.h
+                    p.h = 'INACTIVE: ' + p.h
                     self.add(p)
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
@@ -1104,7 +1106,7 @@ class ActiveSettingsOutline:
         if p_level > self.level + 1:
             g.trace('OOPS', p_level, p.h)
             return
-        while p_level < self.level + 1 and len(self.parents) > 1:
+        while p_level < self.level and len(self.parents) > 1:
             self.parents.pop()
             self.level -= 1
         parent = self.parents[-1]
