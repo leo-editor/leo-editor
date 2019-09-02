@@ -2152,11 +2152,10 @@ class LoadManager:
         table = (
             ('M', 'myLeoSettings.leo'),
             (' ', 'leoSettings.leo'),
-            # ('F', '.leo'),
             ('F', c.shortFileName()),
         )
         for letter, path2 in table:
-            if path.endswith(path2.lower()):
+            if path2 and path.endswith(path2.lower()):
                 return letter
         if lm.theme_path and path.endswith(lm.theme_path.lower()):
             return 'T'

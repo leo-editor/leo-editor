@@ -2075,10 +2075,10 @@ class LocalConfigManager:
     [F] local file: %s
     [M] myLeoSettings.leo
     ''' % c.shortFileName()
-        
+        # Append [T] line if there is a theme file.
         legend = g.adjustTripleString(legend, c.tab_width)
         if lm.theme_path:
-            legend = legend + '[T] %s\n' % g.shortFileName(lm.theme_path)
+            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else '[%s]' % (letter)
