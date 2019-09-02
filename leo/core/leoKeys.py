@@ -2528,12 +2528,13 @@ class KeyHandlerClass:
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result, data, prefix):
-        lm = g.app.loadManager
+        """Helper for k.printBindings"""
+        c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            letter = lm.computeBindingLetter(kind)
+            letter = lm.computeBindingLetter(c, kind)
             pane = '%4s: ' % (pane if pane else 'all')
             left = pane + key # pane and shortcut fields
             n = max(n, len(left))

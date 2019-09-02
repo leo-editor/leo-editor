@@ -2049,7 +2049,9 @@ class LoadManager:
         #
         # Step 1: Use the --theme command-line options if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
-        if path: return path
+        if path:
+            # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+            return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
         path = lm.files and lm.files[0]
@@ -2067,7 +2069,9 @@ class LoadManager:
                 if setting:
                     tag = theme_c.shortFileName()
                     path = resolve(setting, tag=tag)
-                    if path: return path
+                    if path:
+                        # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+                        return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
         # Note: the setting should *never* appear in leoSettings.leo!
@@ -2140,19 +2144,23 @@ class LoadManager:
                 g.trace('%20s' % (ivar), val)
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
-    def computeBindingLetter(self, kind):
-        # lm = self
-        if not kind:
+    def computeBindingLetter(self, c, path):
+        lm = self
+        if not path:
             return 'D'
+        path = path.lower()
         table = (
             ('M', 'myLeoSettings.leo'),
             (' ', 'leoSettings.leo'),
-            ('F', '.leo'),
+            # ('F', '.leo'),
+            ('F', c.shortFileName()),
         )
-        for letter, kind2 in table:
-            if kind.lower().endswith(kind2.lower()):
+        for letter, path2 in table:
+            if path.endswith(path2.lower()):
                 return letter
-        if kind == 'register-command' or kind.find('mode') > -1:
+        if lm.theme_path and path.endswith(lm.theme_path.lower()):
+            return 'T'
+        if path == 'register-command' or path.find('mode') > -1:
             return '@'
         return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings

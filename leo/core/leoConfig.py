@@ -1033,11 +1033,9 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831045822.1: *3* aso.create_unified_settings
     def create_unified_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-       
-        munge = g.app.config.munge
+        ### g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         d = self.filter_settings(c, kind)
         ignore, outline_data = None, None
-        # g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         self.parents = [root]
         self.level = settings_root.level()
         for p in settings_root.subtree():
@@ -1071,7 +1069,7 @@ class ActiveSettingsOutline:
             elif m.group(1) in self.ignore_list:
                 self.add(p)
             elif m.group(2):
-                key = munge(m.group(2).strip())
+                key = g.app.config.munge(m.group(2).strip())
                 val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
@@ -1598,7 +1596,7 @@ class GlobalConfigManager:
             gs = d.get(key)
             assert g.isGeneralSetting(gs), gs
             if gs and gs.kind:
-                letter = lm.computeBindingLetter(gs.path)
+                letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments
@@ -2065,18 +2063,22 @@ class LocalConfigManager:
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
+        - [T] The theme file.
 
         '''
+        c, lm = self.c, g.app.loadManager
         legend = '''\
     legend:
         leoSettings.leo
      @  @button, @command, @mode
     [D] default settings
-    [F] loaded .leo File
+    [F] local file: %s
     [M] myLeoSettings.leo
-    '''
-        c = self.c
+    ''' % c.shortFileName()
+        
         legend = g.adjustTripleString(legend, c.tab_width)
+        if lm.theme_path:
+            legend = legend + '[T] %s\n' % g.shortFileName(lm.theme_path)
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else '[%s]' % (letter)
