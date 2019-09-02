@@ -1055,13 +1055,14 @@ class ActiveSettingsOutline:
                 if p == ignore:
                     ignore = None
                 else:
-                    # if trace: print(pad, 'IGNORE', p.h)
+                    p.h = 'IGNORE: ' + p.h
+                    self.add(p)
                     continue
             if outline_data:
                 if p == outline_data:
                     outline_data = None
                 else:
-                    # if trace: print(pad, 'TREE DATA', p.h)
+                    self.add(p)
                     continue
             #@-<< continue if we should ignore p >>
             m = self.settings_pat.match(p.h)
@@ -1069,6 +1070,7 @@ class ActiveSettingsOutline:
                 if p.hasChildren():
                     self.add(p)
             elif m.group(1) == '@ignore':
+                self.add(p)
                 ignore = p.nodeAfterTree()
             elif m.group(1) == '@outline-data':
                 self.add(p)
