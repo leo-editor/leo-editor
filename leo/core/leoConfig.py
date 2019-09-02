@@ -1030,10 +1030,10 @@ class ActiveSettingsOutline:
             return
         active_root = root.insertAsLastChild()
         active_root.h = 'active settings'
-        inactive_root = root.insertAsLastChild()
-        inactive_root.h = 'inactive settings'
         self.create_active_settings(c, kind, active_root, settings_root)
-        self.create_inactive_settings(c, kind, inactive_root, settings_root)
+        # inactive_root = root.insertAsLastChild()
+        # inactive_root.h = 'inactive settings'
+        # self.create_inactive_settings(c, kind, inactive_root, settings_root)
     #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
     def create_active_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
@@ -1106,7 +1106,7 @@ class ActiveSettingsOutline:
         if p_level > self.level + 1:
             g.trace('OOPS', p_level, p.h)
             return
-        while p_level < self.level and len(self.parents) > 1:
+        while p_level < self.level + 1 and len(self.parents) > 1:
             self.parents.pop()
             self.level -= 1
         parent = self.parents[-1]
