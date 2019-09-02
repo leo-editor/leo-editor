@@ -1016,7 +1016,7 @@ class ActiveSettingsOutline:
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
-        c.setChanged(changedFlag=False, redrawFlag=False)
+        c.setChanged(changedFlag=False, redrawFlag=True)
         c.redraw()
     #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
