@@ -1001,7 +1001,7 @@ class ActiveSettingsOutline:
         c.setChanged(False)
         g.app.disable_redraw = False
         return c
-    #@+node:ekr.20190831034537.1: *3* aso.create_outline & helpers
+    #@+node:ekr.20190831034537.1: *3* aso.create_outline
     def create_outline(self):
         """Create the summary outline"""
         c = self.commander
@@ -1018,7 +1018,7 @@ class ActiveSettingsOutline:
             v.clearDirty()
         c.setChanged(changedFlag=False, redrawFlag=False)
         c.redraw()
-    #@+node:ekr.20190831044130.1: *4* aso.create_inner_outline
+    #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
         Create the outline for the given hidden commander, as descendants of root.
@@ -1031,6 +1031,7 @@ class ActiveSettingsOutline:
             return
         # Unify all settings.
         self.create_unified_settings(c, kind, root, settings_root)
+        self.clean(root)
         ###
             # # Create separate outlines for active & inactive settings.
             # active_root = root.insertAsLastChild()
@@ -1039,7 +1040,7 @@ class ActiveSettingsOutline:
             # inactive_root = root.insertAsLastChild()
             # inactive_root.h = 'inactive settings'
             # self.create_inactive_settings(c, kind, inactive_root, settings_root)
-    #@+node:ekr.20190831045822.1: *4* aso.create_unified_settings
+    #@+node:ekr.20190831045822.1: *3* aso.create_unified_settings
     def create_unified_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         assert kind in ('local_settings', 'theme_settings', 'my_settings', 'leo_settings'), repr(kind)
@@ -1055,13 +1056,12 @@ class ActiveSettingsOutline:
         for p in settings_root.subtree():
             pad = ' '*p.level()
             #@+<< continue if we should ignore p >>
-            #@+node:ekr.20190901185659.1: *5* << continue if we should ignore p >>
+            #@+node:ekr.20190901185659.1: *4* << continue if we should ignore p >>
             if ignore:
                 if p == ignore:
                     ignore = None
                 else:
-                    p.h = 'IGNORE: ' + p.h
-                    self.add(p)
+                    # g.trace('IGNORE', p.h)
                     continue
             if outline_data:
                 if p == outline_data:
@@ -1071,11 +1071,10 @@ class ActiveSettingsOutline:
                     continue
             #@-<< continue if we should ignore p >>
             m = self.settings_pat.match(p.h)
+            if m and p.h.startswith('Buttons'): g.trace(p.h)
             if not m:
-                if p.hasChildren():
-                    self.add(p)
+                self.add(p, h='ORG:'+p.h)
             elif m.group(1) == '@ignore':
-                self.add(p)
                 ignore = p.nodeAfterTree()
             elif m.group(1) == '@outline-data':
                 self.add(p)
@@ -1084,7 +1083,6 @@ class ActiveSettingsOutline:
                 self.add(p)
             elif m.group(1) in self.ignore_list:
                 self.add(p)
-                ignore = p.nodeAfterTree()
             elif m.group(2):
                 key = munge(m.group(2).strip())
                 val = d.get(key)
@@ -1100,8 +1098,13 @@ class ActiveSettingsOutline:
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
     #@+node:ekr.20190901192405.1: *3* aso.add
-    def add(self, p):
-        """Add a node for p."""
+    def add(self, p, h=None):
+        """
+        Add a node for p.
+        
+        We must *never* alter p in any way.
+        Instead, the org flag tells whether the "ORG:" prefix.
+        """
         if 0:
             pad = ' '*p.level()
             print(pad, p.h)
@@ -1114,10 +1117,29 @@ class ActiveSettingsOutline:
             self.level -= 1
         parent = self.parents[-1]
         child = parent.insertAsLastChild()
-        child.h = p.h
+        child.h = h or p.h
         child.b = p.b
         self.parents.append(child)
         self.level += 1
+    #@+node:ekr.20190902023940.1: *3* aso.clean
+    def clean(self, root):
+        """
+        Remove all unnecessary nodes, whose headlines start with "ORG:".
+        Remove "ORG:" prefix from remaining nodes.
+        """
+        self.clean_node(root)
+        
+    def clean_node(self, p):
+        tag = 'ORG:'
+        for child in reversed(list(p.children())):
+            self.clean_node(child)
+        if p.h.startswith(tag):
+            # g.trace('CLEAN:', p.h)
+            if p.hasChildren():
+                p.h = p.h.lstrip(tag).strip()
+            else:
+                # g.trace('DELETE', p.h)
+                p.doDelete()
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
