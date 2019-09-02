@@ -937,14 +937,17 @@ class ActiveSettingsOutline:
         
         """Create the commanders list. Order matters."""
         lm = g.app.loadManager
+        # The first element of each tuple must match the return values of c.config.getSource.
+        # "local_file", "theme_file", "myLeoSettings", "leoSettings"
+        
         self.commanders = [
-            ('leo_settings', lm.leo_settings_c),
-            ('my_settings', lm.my_settings_c),
+            ('leoSettings', lm.leo_settings_c),
+            ('myLeoSettings', lm.my_settings_c),
         ]
         if lm.theme_c:
-            self.commanders.append(('theme_settings', lm.theme_c),)
+            self.commanders.append(('theme_file', lm.theme_c),)
         if self.c.config.settingsRoot():
-            self.commanders.append(('local_settings', self.c),)
+            self.commanders.append(('local_file', self.c),)
     #@+node:ekr.20190831034104.1: *4* aso.load_hidden_commanders
     def load_hidden_commanders(self):
         """
@@ -1043,12 +1046,9 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831045822.1: *3* aso.create_unified_settings
     def create_unified_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
-        assert kind in ('local_settings', 'theme_settings', 'my_settings', 'leo_settings'), repr(kind)
-        lm = g.app.loadManager
+       
         munge = g.app.config.munge
-        d = lm.globalSettingsDict if kind == 'theme_settings' else c.config.settingsDict
-            # FAIL d = c.config.settingsDict
-            # FAIL d = c.config.settingsDict if kind in ('local_settings', 'theme_settings') else lm.globalSettingsDict
+        d = self.filter_settings(c, kind)
         ignore, outline_data = None, None
         # g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
         self.parents = [root]
@@ -1076,7 +1076,7 @@ class ActiveSettingsOutline:
                 self.add(p, h='ORG:'+p.h)
             elif m.group(1) == '@ignore':
                 ignore = p.nodeAfterTree()
-            elif m.group(1) == '@outline-data':
+            elif m.group(1) in ('@data', '@outline-data'):
                 self.add(p)
                 outline_data = p.nodeAfterTree()
             elif m.group(1) in ('@ifenv', '@ifplatform'):
@@ -1086,10 +1086,6 @@ class ActiveSettingsOutline:
             elif m.group(2):
                 key = munge(m.group(2).strip())
                 val = d.get(key)
-                ### Fails
-                    # setting = m.group(2)
-                    # setting_kind = m.group(1).lstrip('@')
-                    # val = c.config.get(setting, setting_kind)
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
@@ -1124,13 +1120,15 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190902023940.1: *3* aso.clean
     def clean(self, root):
         """
-        Remove all unnecessary nodes, whose headlines start with "ORG:".
-        Remove "ORG:" prefix from remaining nodes.
+        Remove all unnecessary nodes.
+        Remove the "ORG:" prefix from remaining nodes.
         """
         self.clean_node(root)
         
     def clean_node(self, p):
+        """Remove p if it contains no children after cleaning its children."""
         tag = 'ORG:'
+        # There are no clones, so deleting children in reverse preserves positions.
         for child in reversed(list(p.children())):
             self.clean_node(child)
         if p.h.startswith(tag):
@@ -1138,6 +1136,34 @@ class ActiveSettingsOutline:
                 p.h = p.h.lstrip(tag).strip()
             else:
                 p.doDelete()
+    #@+node:ekr.20190902071645.1: *3* aso.filter_settings
+    def filter_settings(self, c, target_kind):
+        """Return a dict containing only settings defined in the file given by kind."""
+        # g.trace('\n', '='*10, c.shortFileName(), '\n')
+        #
+        # Must match the values returned by c.config.setSource.
+        valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
+        assert target_kind in valid_kinds, repr(target_kind)
+        lm = g.app.loadManager
+        d = c.config.settingsDict
+        result = {}
+        for key in d.keys(): 
+            gs = d.get(key)
+            assert g.isGeneralSetting(gs), gs
+            if not gs.kind:
+                g.trace('OOPS: no kind', repr(gs))
+                continue
+            kind = c.config.getSource(setting=gs, theme_path=lm.theme_path)
+            if kind == 'ignore':
+                g.trace('IGNORE', kind, key)
+                continue
+            if kind in ('error'):
+                g.trace('ERROR', kind, key)
+                continue
+            if kind == target_kind:
+                result[key] = gs
+        # g.printObj(sorted(result.keys()), tag=target_kind)
+        return result
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
@@ -2024,7 +2050,7 @@ class LocalConfigManager:
     def getSource(self, setting, theme_path):
         """
         Return a string representing the source file of the given setting,
-        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "unknown", "error")
+        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
         """
         if not isinstance(setting, g.GeneralSetting):
             return "error"
@@ -2033,12 +2059,14 @@ class LocalConfigManager:
         except Exception:
             return "error"
         if not path:
-            return "unknown"
+            return "local_file"
         for tag in ('myLeoSettings', 'leoSettings'):
             if tag in path:
                 return tag
         if theme_path and theme_path in path:
             return "theme_file"
+        if path == 'register-command' or path.find('mode') > -1:
+            return 'ignore'
         return "local_file"
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self):
