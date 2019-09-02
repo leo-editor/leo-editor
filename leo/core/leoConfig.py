@@ -1134,11 +1134,9 @@ class ActiveSettingsOutline:
         for child in reversed(list(p.children())):
             self.clean_node(child)
         if p.h.startswith(tag):
-            # g.trace('CLEAN:', p.h)
             if p.hasChildren():
                 p.h = p.h.lstrip(tag).strip()
             else:
-                # g.trace('DELETE', p.h)
                 p.doDelete()
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
