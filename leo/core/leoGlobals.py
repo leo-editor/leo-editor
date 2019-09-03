@@ -563,7 +563,7 @@ class FileLikeObject:
 
 fileLikeObject = FileLikeObject
     # For compatibility.
-#@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting & isGeneralSetting
+#@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
 
@@ -593,20 +593,9 @@ class GeneralSetting:
         val = str(self.val).replace('\n', ' ')
         return 'GS: %20s %7s = %s' % (
             g.shortFileName(self.path), self.kind, g.truncate(val, 50))
-        # result = ['GeneralSetting kind: %s' % (self.kind)]
-        # ivars = ('ivar', 'path', 'setting', 'val', 'tag')
-        # for ivar in ivars:
-            # if hasattr(self, ivar):
-                # val = getattr(self, ivar)
-                # if val is not None:
-                    # result.append('%s: %s' % (ivar, val))
-        # return ','.join(result)
 
     dump = __repr__
     __str__ = __repr__
-
-def isGeneralSetting(obj):
-    return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
 class KeyStroke:
     '''

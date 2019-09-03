@@ -1549,7 +1549,7 @@ class GlobalConfigManager:
         # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             if gs and gs.kind:
                 letter = lm.computeBindingLetter(gs.path)
                 val = gs.val
@@ -1713,7 +1713,7 @@ class LocalConfigManager:
         returns (val,exists)'''
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None, False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
@@ -1963,7 +1963,7 @@ class LocalConfigManager:
         gs = self.settingsDict.get(key)
         if not gs:
             return False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         path = gs.path.lower()
         for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(fn.lower()):
@@ -2038,7 +2038,7 @@ class LocalConfigManager:
         assert isinstance(d, g.TypedDict), repr(d)
         gs = d.get(key)
         if gs:
-            assert g.isGeneralSetting(gs), repr(gs)
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
