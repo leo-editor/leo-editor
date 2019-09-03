@@ -604,6 +604,7 @@ class GeneralSetting:
             return ','.join(result)
 
     dump = __repr__
+    __str__ = __repr__
 
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
