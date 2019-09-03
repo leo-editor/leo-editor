@@ -2278,9 +2278,11 @@ class TypedDict:
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
-        d = TypedDict(name or self._name, self.keyType, self.valType)
-        d.d = dict(self.d)
-        return d
+        import copy
+        return copy.deepcopy(self)
+        # d = TypedDict(name or self._name, self.keyType, self.valType)
+        # d.d = dict(self.d)
+        # return d
     #@+node:ekr.20120206134955.10151: *4* td.dump
     def dump(self):
         result = ['Dump of %s' % (self)]
@@ -2341,15 +2343,6 @@ class TypedDictOfLists(TypedDict):
             self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
 
     __str__ = __repr__
-
-    def copy(self, name=None):
-        import copy
-        return copy.deepcopy(self)
-        
-
-        # d = TypedDictOfLists(name or self._name, self.keyType, self.valType)
-        # d.d = dict(self.d)
-        # return d
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
