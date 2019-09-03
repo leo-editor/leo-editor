@@ -874,7 +874,7 @@ class ParserBaseClass:
             valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=str, ###type('s'),
+            keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
@@ -1112,7 +1112,7 @@ class GlobalConfigManager:
     defaultTreeFontSize = 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=str, ### type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     defaultsData = (
@@ -1169,7 +1169,7 @@ class GlobalConfigManager:
     #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=str, ### type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     encodingIvarsData = (
@@ -1177,6 +1177,7 @@ class GlobalConfigManager:
         ("default_derived_file_encoding", "string", "utf-8"),
         ("new_leo_file_encoding", "string", "UTF-8"),
             # Upper case for compatibility with previous versions.
+        #
         # The defaultEncoding ivar is no longer used,
         # so it doesn't override better defaults.
     )
@@ -1187,7 +1188,7 @@ class GlobalConfigManager:
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=str, ### type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     ivarsData = (
@@ -1248,7 +1249,7 @@ class GlobalConfigManager:
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
-            keyType=str, ### type('commandName'),
+            keyType=str,
             valType=g.TypedDictOfLists)
         # Inited later...
         self.panes = None

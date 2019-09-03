@@ -2257,14 +2257,6 @@ class TypedDict:
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
     #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
-    def add(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        self.d[key] = val
-
     def replace(self, key, val):
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2272,7 +2264,8 @@ class TypedDict:
         self._checkKeyType(key)
         self._checkValType(val)
         self.d[key] = val
-
+        
+    add = replace
     __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
@@ -2307,7 +2300,7 @@ class TypedDict:
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
-        if isinstance(d, (TypedDict, TypedDictOfLists)): ### Hack.
+        if isinstance(d, (TypedDict, TypedDictOfLists)):
             self.d.update(d.d)
         else:
             self.d.update(d)
@@ -2417,7 +2410,7 @@ class TypedDictOfLists:
     #@+node:ekr.20190903170627.1: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
-        if isinstance(d, (TypedDict, TypedDictOfLists)): ### Hack.
+        if isinstance(d, (TypedDict, TypedDictOfLists)):
             self.d.update(d.d)
         else:
             self.d.update(d)
