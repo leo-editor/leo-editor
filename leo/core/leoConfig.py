@@ -1100,10 +1100,9 @@ class ActiveSettingsOutline:
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
     """A class to manage configuration settings."""
-    #@+<< GlobalConfigManager class data >>
-    #@+node:ekr.20041122094813: *3* << GlobalConfigManager class data >>
-    #@+others
-    #@+node:ekr.20041117062717.1: *4* defaultsDict (GCM class data)
+    # Class data...
+    #@+<< gcm.defaultsDict >>
+    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
@@ -1163,7 +1162,9 @@ class GlobalConfigManager:
         ("split_bar_relief", "relief", "groove"),
         ("split_bar_width", "int", 7),
     )
-    #@+node:ekr.20041118062709: *4* define encodingIvarsDict (GCM class data)
+    #@-<< gcm.defaultsDict >>
+    #@+<< gcm.encodingIvarsDict >>
+    #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
         keyType=type('key'), valType=g.GeneralSetting)
@@ -1172,11 +1173,12 @@ class GlobalConfigManager:
         ("default_derived_file_encoding", "string", "utf-8"),
         ("new_leo_file_encoding", "string", "UTF-8"),
             # Upper case for compatibility with previous versions.
-        # This ivar is no longer used.
-        # ("defaultEncoding", "string", None),
-            # Defaults to None so it doesn't override better defaults.
+        # The defaultEncoding ivar is no longer used,
+        # so it doesn't override better defaults.
     )
-    #@+node:ekr.20041117072055: *4* ivarsDict (GCM class data)
+    #@-<< gcm.encodingIvarsDict >>
+    #@+<< gcm.ivarsDict >>
+    #@+node:ekr.20041117072055: *3* << gcm.ivarsDict >>
     # Each of these settings sets the corresponding ivar.
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
@@ -1209,8 +1211,7 @@ class GlobalConfigManager:
             # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),
     )
-    #@-others
-    #@-<< GlobalConfigManager class data >>
+    #@-<< gcm.ivarsDict >>
     #@+others
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
