@@ -2256,17 +2256,6 @@ class TypedDict:
         print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
-    def replace(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        self.d[key] = val
-        
-    add = replace
-    __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
@@ -2278,25 +2267,34 @@ class TypedDict:
         for key in sorted(self.d.keys()):
             result.append(key, self.d.get(key))
         return '\n'.join(result)
-    #@+node:ekr.20120205022040.17771: *4* td getters
+    #@+node:ekr.20120205022040.17771: *4* td.get & keys
     def get(self, key, default=None):
         self._checkKeyType(key)
         return self.d.get(key, default)
-        
-    # New in Leo 5.7.1
+
+    def keys(self):
+        return self.d.keys()
+    #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
     def get_setting(self, key):
         key = key.replace('-','').replace('_','')
         gs = self.get(key)
         val = gs and gs.val
         return val
         
-    # New in Leo 5.7.1
     def get_string_setting(self, key):
         val = self.get_setting(key)
         return g.toUnicode(val) if val and isinstance(val, str) else None
-
-    def keys(self):
-        return self.d.keys()
+    #@+node:ekr.20120205022040.17774: *4* td.replace
+    def replace(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        self._checkValType(val)
+        self.d[key] = val
+        
+    add = replace
+    __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
@@ -2347,7 +2345,7 @@ class TypedDictOfLists:
         print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20190903165803.1: *4* tdl.add & td.replace
+    #@+node:ekr.20190903165803.1: *4* tdl.add & replace
     def add(self, key, val):
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2372,7 +2370,7 @@ class TypedDictOfLists:
         self.d[key] = val
         
     __setitem__ = replace # allow d[key] = val.
-    #@+node:ekr.20190903171235.1: *4* td.copy
+    #@+node:ekr.20190903171235.1: *4* tdl.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
         import copy
@@ -2386,24 +2384,12 @@ class TypedDictOfLists:
             for z in aList:
                 result.append('  ' + repr(z))
         return '\n'.join(result)
-    #@+node:ekr.20190903165904.1: *4* tdl getters
+    #@+node:ekr.20190903165904.1: *4* tdl.get & keys
     def get(self, key, default=None):
         self._checkKeyType(key)
         if default is None:
             default = []
         return self.d.get(key, default)
-        
-    # New in Leo 5.7.1
-    def get_setting(self, key):
-        key = key.replace('-','').replace('_','')
-        gs = self.get(key)
-        val = gs and gs.val
-        return val
-        
-    # New in Leo 5.7.1
-    def get_string_setting(self, key):
-        val = self.get_setting(key)
-        return g.toUnicode(val) if val and isinstance(val, str) else None
 
     def keys(self):
         return self.d.keys()
