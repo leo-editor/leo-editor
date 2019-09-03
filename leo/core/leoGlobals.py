@@ -2212,7 +2212,7 @@ def null_object_print(id_, kind, *args):
         # Print each signature once.
         tracing_signatures [signature] = True
         g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict & isTypedDictOfLists
+#@+node:ekr.20120129181245.10220: *3* class g.TypedDict
 class TypedDict:
     '''A class containing a name and enforcing type checking.'''
     #@+others
@@ -2328,6 +2328,7 @@ class TypedDict:
             self.d.update(d)
     #@-others
 
+#@+node:ekr.20190903163542.1: *3* class g.TypedDictOfLists
 class TypedDictOfLists(TypedDict):
     '''A class whose values are lists of typed values.'''
 
@@ -2342,9 +2343,13 @@ class TypedDictOfLists(TypedDict):
     __str__ = __repr__
 
     def copy(self, name=None):
-        d = TypedDictOfLists(name or self._name, self.keyType, self.valType)
-        d.d = dict(self.d)
-        return d
+        import copy
+        return copy.deepcopy(self)
+        
+
+        # d = TypedDictOfLists(name or self._name, self.keyType, self.valType)
+        # d.d = dict(self.d)
+        # return d
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
