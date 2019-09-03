@@ -2272,7 +2272,7 @@ class TypedDict:
         
     def get_string_setting(self, key):
         val = self.get_setting(key)
-        return g.toUnicode(val) if val and isinstance(val, str) else None
+        return val if val and isinstance(val, str) else None
     #@+node:ekr.20120205022040.17774: *4* td.replace
     def replace(self, key, val):
         if key is None:
