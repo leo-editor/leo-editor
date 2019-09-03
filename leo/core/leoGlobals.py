@@ -589,14 +589,19 @@ class GeneralSetting:
         self.tag = tag
 
     def __repr__(self):
-        result = ['GeneralSetting kind: %s' % (self.kind)]
-        ivars = ('ivar', 'path', 'setting', 'val', 'tag')
-        for ivar in ivars:
-            if hasattr(self, ivar):
-                val = getattr(self, ivar)
-                if val is not None:
-                    result.append('%s: %s' % (ivar, val))
-        return ','.join(result)
+        if 1: # Better for g.printObj.
+            val = str(self.val).replace('\n', '\\n')
+            return 'GS: %20s %7s = %s' % (
+                g.shortFileName(self.path), self.kind, g.truncate(val, 50))
+        else:
+            result = ['GeneralSetting kind: %s' % (self.kind)]
+            ivars = ('ivar', 'path', 'setting', 'val', 'tag')
+            for ivar in ivars:
+                if hasattr(self, ivar):
+                    val = getattr(self, ivar)
+                    if val is not None:
+                        result.append('%s: %s' % (ivar, val))
+            return ','.join(result)
 
     dump = __repr__
 
@@ -2230,11 +2235,14 @@ class TypedDict:
 
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
-    def __repr__(self):
+    def __str__(self):
+        """Concise"""
         return '<TypedDict name:%s keys:%s values:%s len(keys): %s>' % (
             self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
-
-    __str__ = __repr__
+            
+    def __repr__(self):
+        """Suitable for g.printObj"""
+        return '%s\n%s\n' % (str(self), g.dictToString(self.d))
     #@+node:ekr.20120206134955.10150: *4* td._checkKey/ValType
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
@@ -2313,12 +2321,6 @@ class TypedDictOfLists:
         self._name = name # For dump only.
         self.keyType = keyType
         self.valType = valType
-
-    def __repr__(self):
-        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s>' % (
-            self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
-
-    __str__ = __repr__
     
     def name(self):
         return self._name
@@ -2327,6 +2329,18 @@ class TypedDictOfLists:
         self._name = name
 
     #@+others
+    #@+node:ekr.20190903172917.1: *4* tdl.__repr__ & __str__
+    def __str__(self):
+        """Concise"""
+        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s>' % (
+            self._name,
+            self.keyType.__name__,
+            self.valType.__name__,
+            len(list(self.d.keys())))
+
+    def __repr__(self):
+        """Suitable for g.printObj"""
+        return '%s\n%s\n' % (str(self), g.dictToString(self.d))
     #@+node:ekr.20190903170552.1: *4* tdl._checkKey/ValType
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
