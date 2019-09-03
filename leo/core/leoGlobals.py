@@ -2248,7 +2248,7 @@ class TypedDict:
         print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20120205022040.17774: *4* td.add & td.replace (changed)
+    #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
     def add(self, key, val):
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2271,13 +2271,13 @@ class TypedDict:
         '''Return a new dict with the same contents.'''
         import copy
         return copy.deepcopy(self)
-    #@+node:ekr.20120206134955.10151: *4* td.dump (changed)
+    #@+node:ekr.20120206134955.10151: *4* td.dump
     def dump(self):
         result = ['Dump of %s' % (self)]
         for key in sorted(self.d.keys()):
             result.append(key, self.d.get(key))
         return '\n'.join(result)
-    #@+node:ekr.20120205022040.17771: *4* td getters (changed)
+    #@+node:ekr.20120205022040.17771: *4* td getters
     def get(self, key, default=None):
         self._checkKeyType(key)
         return self.d.get(key, default)
@@ -2327,7 +2327,7 @@ class TypedDictOfLists:
         self._name = name
 
     #@+others
-    #@+node:ekr.20190903170552.1: *4* tdl._checkKey/ValType (new)
+    #@+node:ekr.20190903170552.1: *4* tdl._checkKey/ValType
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
@@ -2340,7 +2340,7 @@ class TypedDictOfLists:
         print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20190903165803.1: *4* tdl.add & td.replace (new)
+    #@+node:ekr.20190903165803.1: *4* tdl.add & td.replace
     def add(self, key, val):
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2365,15 +2365,12 @@ class TypedDictOfLists:
         self.d[key] = val
         
     __setitem__ = replace # allow d[key] = val.
-    #@+node:ekr.20190903171235.1: *4* td.copy (copy)
+    #@+node:ekr.20190903171235.1: *4* td.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
         import copy
         return copy.deepcopy(self)
-        # d = TypedDict(name or self._name, self.keyType, self.valType)
-        # d.d = dict(self.d)
-        # return d
-    #@+node:ekr.20190903165845.1: *4* tdl.dump (new)
+    #@+node:ekr.20190903165845.1: *4* tdl.dump
     def dump(self):
         result = ['Dump of %s' % (self)]
         for key in sorted(self.d.keys()):
@@ -2382,7 +2379,7 @@ class TypedDictOfLists:
             for z in aList:
                 result.append('  ' + repr(z))
         return '\n'.join(result)
-    #@+node:ekr.20190903165904.1: *4* tdl getters (new)
+    #@+node:ekr.20190903165904.1: *4* tdl getters
     def get(self, key, default=None):
         self._checkKeyType(key)
         if default is None:
@@ -2403,7 +2400,7 @@ class TypedDictOfLists:
 
     def keys(self):
         return self.d.keys()
-    #@+node:ekr.20190903170627.1: *4* td.update (new)
+    #@+node:ekr.20190903170627.1: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
         if isinstance(d, (TypedDict, TypedDictOfLists)): ### Hack.
