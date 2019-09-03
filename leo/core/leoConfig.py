@@ -50,7 +50,8 @@ class ParserBaseClass:
         self.shortcutsDict = g.TypedDictOfLists(
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
@@ -526,7 +527,9 @@ class ParserBaseClass:
         modeName = self.computeModeName(name)
         d = g.TypedDictOfLists(
             name='modeDict for %s' % (modeName),
-            keyType=type('commandName'), valType=g.BindingInfo)
+            keyType=type('commandName'),
+            valType=g.BindingInfo,
+        )
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -875,11 +878,13 @@ class ParserBaseClass:
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),
-            valType=g.GeneralSetting)
+            valType=g.GeneralSetting,
+        )
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
             keyType=type('s'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
         if not p:
@@ -1254,7 +1259,9 @@ class GlobalConfigManager:
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=type('key'),
+        valType=g.GeneralSetting,
+    )
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode", "bool", True),
             # For compatibility with previous versions.
@@ -1314,7 +1321,8 @@ class GlobalConfigManager:
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
             keyType=type('commandName'),
-            valType=g.TypedDictOfLists)
+            valType=g.TypedDictOfLists,
+        )
         # Inited later...
         self.panes = None
         self.sc = None

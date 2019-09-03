@@ -2064,7 +2064,8 @@ class KeyHandlerClass:
             d = g.TypedDictOfLists(
                 name='empty shortcuts dict',
                 keyType=type('commandName'),
-                valType=g.BindingInfo)
+                valType=g.BindingInfo,
+            )
         inv_d = lm.invert(d)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
@@ -2219,7 +2220,8 @@ class KeyHandlerClass:
         d2 = g.TypedDictOfLists(
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke,
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)

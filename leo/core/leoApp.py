@@ -2194,7 +2194,8 @@ class LoadManager:
         bindings_d = g.TypedDictOfLists(
             name='lm.globalBindingsDict',
             keyType=type('s'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
@@ -2331,7 +2332,8 @@ class LoadManager:
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
             keyType=g.KeyStroke,
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for commandName in d.keys():
             for bi in d.get(commandName, []):
                 stroke = bi.stroke # This is canonicalized.
@@ -2349,7 +2351,8 @@ class LoadManager:
         result = g.TypedDictOfLists(
             name='uninverted %s' % d.name(),
             keyType=type('commandName'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName
