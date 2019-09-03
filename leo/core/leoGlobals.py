@@ -2231,7 +2231,7 @@ class TypedDict:
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
     def __repr__(self):
-        return '<TypedDict name:%s keys:%s values:%s len(keys): %s' % (
+        return '<TypedDict name:%s keys:%s values:%s len(keys): %s>' % (
             self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
 
     __str__ = __repr__
@@ -2315,7 +2315,7 @@ class TypedDictOfLists:
         self.valType = valType
 
     def __repr__(self):
-        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s' % (
+        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s>' % (
             self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
 
     __str__ = __repr__
