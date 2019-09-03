@@ -874,7 +874,7 @@ class ParserBaseClass:
             valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'),
+            keyType=str, ###type('s'),
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
@@ -1112,7 +1112,9 @@ class GlobalConfigManager:
     defaultTreeFontSize = 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str, ### type('key'),
+        valType=g.GeneralSetting,
+    )
     defaultsData = (
         # compare options...
         ("ignore_blank_lines", "bool", True),
@@ -1167,7 +1169,9 @@ class GlobalConfigManager:
     #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str, ### type('key'),
+        valType=g.GeneralSetting,
+    )
     encodingIvarsData = (
         ("default_at_auto_file_encoding", "string", "utf-8"),
         ("default_derived_file_encoding", "string", "utf-8"),
@@ -1183,7 +1187,9 @@ class GlobalConfigManager:
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str, ### type('key'),
+        valType=g.GeneralSetting,
+    )
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode", "bool", True),
             # For compatibility with previous versions.
@@ -1242,7 +1248,7 @@ class GlobalConfigManager:
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
-            keyType=type('commandName'),
+            keyType=str, ### type('commandName'),
             valType=g.TypedDictOfLists)
         # Inited later...
         self.panes = None
