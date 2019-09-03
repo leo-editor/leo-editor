@@ -2218,10 +2218,13 @@ class TypedDict:
     
     def __init__(self, name, keyType, valType):
         self.d = {}
-        self._name = name # name is a method.
+        self._name = name  # For dump only.
         self.keyType = keyType
         self.valType = valType
         
+    def name(self):
+        return self._name
+
     def setName(self, name):
         self._name = name
 
@@ -2252,14 +2255,6 @@ class TypedDict:
             return
         self._checkKeyType(key)
         self._checkValType(val)
-        ###
-            # if self.isList:
-            # aList = self.d.get(key, [])
-            # if val not in aList:
-                # aList.append(val)
-                # self.d[key] = aList
-        ###
-        # else:
         self.d[key] = val
 
     def replace(self, key, val):
@@ -2267,16 +2262,6 @@ class TypedDict:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
-        ###
-        # if self.isList:
-            # try:
-                # for z in val:
-                    # self._checkValType(z)
-            # except TypeError:
-                # self._checkValType(val) # val is not iterable.
-            # self.d[key] = val
-        ###
-        # else:
         self._checkValType(val)
         self.d[key] = val
 
@@ -2286,29 +2271,15 @@ class TypedDict:
         '''Return a new dict with the same contents.'''
         import copy
         return copy.deepcopy(self)
-        # d = TypedDict(name or self._name, self.keyType, self.valType)
-        # d.d = dict(self.d)
-        # return d
     #@+node:ekr.20120206134955.10151: *4* td.dump (changed)
     def dump(self):
         result = ['Dump of %s' % (self)]
         for key in sorted(self.d.keys()):
-            ###
-                # if self.isList:
-                    # result.append(key)
-                    # aList = self.d.get(key, [])
-                    # for z in aList:
-                        # result.append('  ' + repr(z))
-            ###
-            # else:
             result.append(key, self.d.get(key))
         return '\n'.join(result)
     #@+node:ekr.20120205022040.17771: *4* td getters (changed)
     def get(self, key, default=None):
         self._checkKeyType(key)
-        ###
-            # if default is None and self.isList:
-                # default = []
         return self.d.get(key, default)
         
     # New in Leo 5.7.1
@@ -2325,9 +2296,6 @@ class TypedDict:
 
     def keys(self):
         return self.d.keys()
-
-    def name(self):
-        return self._name
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
@@ -2336,14 +2304,13 @@ class TypedDict:
         else:
             self.d.update(d)
     #@-others
-
 #@+node:ekr.20190903163542.1: *3* class g.TypedDictOfLists
-class TypedDictOfLists: ### (TypedDict):
+class TypedDictOfLists:
     '''A class whose values are lists of typed values.'''
 
     def __init__(self, name, keyType, valType):
         self.d = {}
-        self._name = name # name is a method.
+        self._name = name # For dump only.
         self.keyType = keyType
         self.valType = valType
 
@@ -2353,6 +2320,9 @@ class TypedDictOfLists: ### (TypedDict):
 
     __str__ = __repr__
     
+    def name(self):
+        return self._name
+
     def setName(self, name):
         self._name = name
 
@@ -2377,31 +2347,22 @@ class TypedDictOfLists: ### (TypedDict):
             return
         self._checkKeyType(key)
         self._checkValType(val)
-        ### if self.isList:
         aList = self.d.get(key, [])
         if val not in aList:
             aList.append(val)
             self.d[key] = aList
-        ### 
-            # else:
-                # self.d[key] = val
 
     def replace(self, key, val):
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
-        ### if self.isList:
         try:
             for z in val:
                 self._checkValType(z)
         except TypeError:
             self._checkValType(val) # val is not iterable.
         self.d[key] = val
-        ###
-            # else:
-                # self._checkValType(val)
-                # self.d[key] = val
         
     __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20190903171235.1: *4* td.copy (copy)
@@ -2416,19 +2377,15 @@ class TypedDictOfLists: ### (TypedDict):
     def dump(self):
         result = ['Dump of %s' % (self)]
         for key in sorted(self.d.keys()):
-            ###if self.isList:
             result.append(key)
             aList = self.d.get(key, [])
             for z in aList:
                 result.append('  ' + repr(z))
-            ###
-                # else:
-                    # result.append(key, self.d.get(key))
         return '\n'.join(result)
     #@+node:ekr.20190903165904.1: *4* tdl getters (new)
     def get(self, key, default=None):
         self._checkKeyType(key)
-        if default is None: ### and self.isList:
+        if default is None:
             default = []
         return self.d.get(key, default)
         
@@ -2446,9 +2403,6 @@ class TypedDictOfLists: ### (TypedDict):
 
     def keys(self):
         return self.d.keys()
-
-    def name(self):
-        return self._name
     #@+node:ekr.20190903170627.1: *4* td.update (new)
     def update(self, d):
         """Update self.d from a the appropriate dict."""
