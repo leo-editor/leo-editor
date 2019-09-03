@@ -589,19 +589,18 @@ class GeneralSetting:
         self.tag = tag
 
     def __repr__(self):
-        if 1: # Better for g.printObj.
-            val = str(self.val).replace('\n', '\\n')
-            return 'GS: %20s %7s = %s' % (
-                g.shortFileName(self.path), self.kind, g.truncate(val, 50))
-        else:
-            result = ['GeneralSetting kind: %s' % (self.kind)]
-            ivars = ('ivar', 'path', 'setting', 'val', 'tag')
-            for ivar in ivars:
-                if hasattr(self, ivar):
-                    val = getattr(self, ivar)
-                    if val is not None:
-                        result.append('%s: %s' % (ivar, val))
-            return ','.join(result)
+        # Better for g.printObj.
+        val = str(self.val).replace('\n', ' ')
+        return 'GS: %20s %7s = %s' % (
+            g.shortFileName(self.path), self.kind, g.truncate(val, 50))
+        # result = ['GeneralSetting kind: %s' % (self.kind)]
+        # ivars = ('ivar', 'path', 'setting', 'val', 'tag')
+        # for ivar in ivars:
+            # if hasattr(self, ivar):
+                # val = getattr(self, ivar)
+                # if val is not None:
+                    # result.append('%s: %s' % (ivar, val))
+        # return ','.join(result)
 
     dump = __repr__
     __str__ = __repr__
