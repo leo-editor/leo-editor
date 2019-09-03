@@ -841,7 +841,7 @@ class ParserBaseClass:
             pane=pane,
             stroke=stroke)
         return name, bi
-    #@+node:ekr.20041120094940.9: *3* pbc.set
+    #@+node:ekr.20041120094940.9: *3* pbc.set (bug??)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
         c = self.c
@@ -860,10 +860,14 @@ class ParserBaseClass:
             assert isinstance(gs, g.GeneralSetting), gs
             path = gs.path
             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                g.es("over-riding setting:", name, "from", path)
+                g.es_print("over-riding setting:", name, "from", path)
         # Important: we can't use c here: it may be destroyed!
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
             unl=(p and p.get_UNL(with_proto=True)))
+        # g.trace(c.mFileName, kind, key)
+        ###
+            # if g.shortFileName(p.v.context.mFileName) != c.shortFileName():
+                # g.trace('OOPS', kind, key, g.shortFileName(p.v.context.mFileName), c.shortFileName())
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self, theme=False):
         '''Traverse the entire settings tree.'''
@@ -905,17 +909,6 @@ class ParserBaseClass:
 #@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
     
-    settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
-    
-    ignore_list = [
-        # Settings nodes that don't have names.
-        '@enabled-plugins',
-        '@button', '@buttons', '@command', '@commands',
-        '@font', '@item', '@menu', '@menus', '@keys', '@mode',
-        '@openwith', '@popup', '@popup_menus', '@rclick',
-        '@shortcuts', '@strings',
-    ]
-    
     def __init__(self, c):
 
         self.c = c
@@ -948,7 +941,7 @@ class ActiveSettingsOutline:
             self.commanders.append(('theme_file', lm.theme_c),)
         if self.c.config.settingsRoot():
             self.commanders.append(('local_file', self.c),)
-    #@+node:ekr.20190831034104.1: *4* aso.load_hidden_commanders
+    #@+node:ekr.20190831034104.1: *4* aso.load_hidden_commanders **** Theme file???
     def load_hidden_commanders(self):
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
@@ -997,6 +990,7 @@ class ActiveSettingsOutline:
         c = self.commander
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
+        g.trace('theme_path', repr(g.app.loadManager.theme_path))
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
             p = root.insertAfter()
@@ -1031,9 +1025,22 @@ class ActiveSettingsOutline:
             # inactive_root.h = 'inactive settings'
             # self.create_inactive_settings(c, kind, inactive_root, settings_root)
     #@+node:ekr.20190831045822.1: *3* aso.create_unified_settings
+    settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
+
+    ignore_list = [
+        # Settings nodes that don't have names.
+        '@enabled-plugins',
+        '@button', '@buttons', '@command', '@commands',
+        '@font', '@item', '@menu', '@menus', '@keys', '@mode',
+        '@openwith', '@popup', '@popup_menus', '@rclick',
+        '@shortcuts', '@strings',
+    ]
+
     def create_unified_settings(self, c, kind, root, settings_root):
         """Create the active settings tree for c under root."""
         ### g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
+        if kind != 'theme_file':
+            return
         d = self.filter_settings(c, kind)
         ignore, outline_data = None, None
         self.parents = [root]
@@ -1074,6 +1081,7 @@ class ActiveSettingsOutline:
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
+                    ### g.trace(key, repr(val), p.h)
                     p.h = 'INACTIVE: ' + p.h
                     self.add(p)
             else:
@@ -1129,8 +1137,14 @@ class ActiveSettingsOutline:
         # Must match the values returned by c.config.setSource.
         valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
         assert target_kind in valid_kinds, repr(target_kind)
-        lm = g.app.loadManager
         d = c.config.settingsDict
+        g.trace('theme_path', g.app.loadManager.theme_path)
+        aList = []
+        for key in d.d.keys():
+            gs = d.d.get(key)
+            if isinstance(gs, g.GeneralSetting) and gs.kind == 'color':
+                aList.append('%s %s %s %s' % (gs.path, gs.kind, key, gs.val))
+        g.printObj(aList, tag='c.config.settingsDict colors')
         result = {}
         for key in d.keys(): 
             gs = d.get(key)
@@ -1138,7 +1152,7 @@ class ActiveSettingsOutline:
             if not gs.kind:
                 g.trace('OOPS: no kind', repr(gs))
                 continue
-            kind = c.config.getSource(setting=gs, theme_path=lm.theme_path)
+            kind = c.config.getSource(setting=gs)
             if kind == 'ignore':
                 g.trace('IGNORE:', kind, key)
                 continue
@@ -1147,26 +1161,27 @@ class ActiveSettingsOutline:
                 continue
             if kind == target_kind:
                 result[key] = gs
-        ### g.printObj(sorted(result.keys()), tag=target_kind)
+        g.trace(target_kind)
+        g.printObj(sorted(result.keys()), tag=target_kind)
         return result
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
     """A class to manage configuration settings."""
-    #@+<< GlobalConfigManager class data >>
-    #@+node:ekr.20041122094813: *3* << GlobalConfigManager class data >>
-    #@+others
-    #@+node:ekr.20041117062717.1: *4* defaultsDict (GCM class data)
-    #@+at This contains only the "interesting" defaults.
+    # Class data...
+    #@+<< gcm.defaultsDict >>
+    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
+    # This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
-    #@@c
     defaultBodyFontSize = 9 if sys.platform == "win32" else 12
     defaultLogFontSize = 8 if sys.platform == "win32" else 12
     defaultMenuFontSize = 9 if sys.platform == "win32" else 12
     defaultTreeFontSize = 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=type('key'),
+        valType=g.GeneralSetting,
+    )
     defaultsData = (
         # compare options...
         ("ignore_blank_lines", "bool", True),
@@ -1216,20 +1231,25 @@ class GlobalConfigManager:
         ("split_bar_relief", "relief", "groove"),
         ("split_bar_width", "int", 7),
     )
-    #@+node:ekr.20041118062709: *4* define encodingIvarsDict (GCM class data)
+    #@-<< gcm.defaultsDict >>
+    #@+<< gcm.encodingIvarsDict >>
+    #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=type('key'),
+        valType=g.GeneralSetting,
+    )
     encodingIvarsData = (
         ("default_at_auto_file_encoding", "string", "utf-8"),
         ("default_derived_file_encoding", "string", "utf-8"),
         ("new_leo_file_encoding", "string", "UTF-8"),
             # Upper case for compatibility with previous versions.
-        # This ivar is no longer used.
-        # ("defaultEncoding", "string", None),
-            # Defaults to None so it doesn't override better defaults.
+        #
+        # defaultEncoding ivar now defaults to None so it doesn't override better defaults.
     )
-    #@+node:ekr.20041117072055: *4* ivarsDict (GCM class data)
+    #@-<< gcm.encodingIvarsDict >>
+    #@+<< gcm.ivarsDict >>
+    #@+node:ekr.20041117072055: *3* << gcm.ivarsDict >>
     # Each of these settings sets the corresponding ivar.
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
@@ -1262,8 +1282,7 @@ class GlobalConfigManager:
             # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),
     )
-    #@-others
-    #@-<< GlobalConfigManager class data >>
+    #@-<< gcm.ivarsDict >>
     #@+others
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
@@ -1307,12 +1326,20 @@ class GlobalConfigManager:
     def initDicts(self):
         # Only the settings parser needs to search all dicts.
         self.dictList = [self.defaultsDict]
+        #
+        # Use the defaultsDict only when a setting is not specified anywhere.
+        # xxx Should there be a warning?
         for key, kind, val in self.defaultsData:
             self.defaultsDict[self.munge(key)] = g.GeneralSetting(
                 kind, setting=key, val=val, tag='defaults')
+        #
+        # The ivarsDict gives defaults for global (this class) and per-commander ivars.
         for key, kind, val in self.ivarsData:
             self.ivarsDict[self.munge(key)] = g.GeneralSetting(
                 kind, ivar=key, val=val, tag='ivars')
+        #
+        # The encodingDict gives defaults for encoding-related ivars.
+        # It's a separate dict as a convenience for c.initEncoding.
         for key, kind, val in self.encodingIvarsData:
             self.encodingIvarsDict[self.munge(key)] = g.GeneralSetting(
                 kind, encoding=val, ivar=key, tag='encoding')
@@ -1322,7 +1349,7 @@ class GlobalConfigManager:
             self.initEncoding(ivar)
         for ivar in sorted(list(self.ivarsDict.keys())):
             self.initIvar(ivar)
-    #@+node:ekr.20041117065611.1: *5* initEncoding
+    #@+node:ekr.20041117065611.1: *5* gcm.initEncoding
     def initEncoding(self, key):
         '''Init g.app.config encoding ivars during initialization.'''
         # Important: The key is munged.
@@ -1330,7 +1357,7 @@ class GlobalConfigManager:
         setattr(self, gs.ivar, gs.encoding)
         if gs.encoding and not g.isValidEncoding(gs.encoding):
             g.es("g.app.config: bad encoding:", "%s: %s" % (gs.ivar, gs.encoding))
-    #@+node:ekr.20041117065611: *5* initIvar
+    #@+node:ekr.20041117065611: *5* gcm.initIvar
     def initIvar(self, key):
         '''Init g.app.config ivars during initialization.
 
@@ -2032,24 +2059,33 @@ class LocalConfigManager:
             if found: return True
         return False
     #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
-    def getSource(self, setting, theme_path):
+    def getSource(self, setting):
         """
         Return a string representing the source file of the given setting,
         one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
         """
+        trace = False
         if not isinstance(setting, g.GeneralSetting):
             return "error"
         try:
             path = setting.path
         except Exception:
             return "error"
+        val = g.truncate(repr(setting.val), 50)
         if not path:
+            # g.trace('NO PATH', setting.kind, val)
             return "local_file"
-        for tag in ('myLeoSettings', 'leoSettings'):
-            if tag in path:
-                return tag
-        if theme_path and theme_path in path:
+        path = path.lower()
+        for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
+            if path.endswith(tag.lower()):
+                if setting.kind == 'color':
+                    if trace: g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                return tag.rstrip('.leo')
+        theme_path = g.app.loadManager.theme_path
+        if theme_path and g.shortFileName(theme_path.lower()) in path:
+            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
             return "theme_file"
+        # g.trace('NOT FOUND', repr(theme_path), repr(path))
         if path == 'register-command' or path.find('mode') > -1:
             return 'ignore'
         return "local_file"
