@@ -1064,12 +1064,18 @@ class ActiveSettingsOutline:
     settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
 
     ignore_list = [
-        # Settings nodes that don't have names.
+        # Non-settings nodes: shown.
         '@enabled-plugins',
         '@button', '@buttons', '@command', '@commands',
-        '@font', '@item', '@menu', '@menus', '@keys', '@mode',
+        '@font',
+        '@ifenv', '@ifplatform'
+        '@ignore', # Sets ignore var.
+        '@item', '@menu', '@menus', '@keys', '@mode',
         '@openwith', '@popup', '@popup_menus', '@rclick',
         '@shortcuts', '@strings',
+        # Non-settings nodes: not shown.
+        '@ignore', # Not shown
+        '@data', '@outline-data', # Sets outline_data var.
     ]
 
     def create_unified_settings(self, kind, root, settings_root):
@@ -1098,19 +1104,20 @@ class ActiveSettingsOutline:
                     continue
             #@-<< continue if we should ignore p >>
             m = self.settings_pat.match(p.h)
-            if m and p.h.startswith('Buttons'): g.trace(p.h)
             if not m:
                 self.add(p, h='ORG:'+p.h)
-            elif m.group(1) == '@ignore':
-                ignore = p.nodeAfterTree()
-            elif m.group(1) in ('@data', '@outline-data'):
-                self.add(p)
-                outline_data = p.nodeAfterTree()
-            elif m.group(1) in ('@ifenv', '@ifplatform'):
-                self.add(p)
             elif m.group(1) in self.ignore_list:
-                self.add(p)
+                # Not a setting. Handle special cases.
+                if m.group(1) == '@ignore':
+                    ignore = p.nodeAfterTree()
+                elif m.group(1) in ('@data', '@outline-data'):
+                    outline_data = p.nodeAfterTree()
+                    self.add(p)
+                else:
+                    self.add(p)
             elif m.group(2):
+                #@+<< handle a real setting >>
+                #@+node:ekr.20190904111959.1: *4* << handle a real setting >>
                 key = g.app.config.munge(m.group(2).strip())
                 val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
@@ -1125,6 +1132,7 @@ class ActiveSettingsOutline:
                     else:
                         p.h = 'UNUSED: %s' % p.h
                     self.add(p)
+                #@-<< handle a real setting >>
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
     #@+node:ekr.20190901192405.1: *3* aso.add
