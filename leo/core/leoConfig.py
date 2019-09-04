@@ -1116,6 +1116,7 @@ class ActiveSettingsOutline:
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
+                    # Look at all the settings to discover where the setting is defined.
                     val = c.config.settingsDict.get(key)
                     if val:
                         # Use self.c, not self.commander.
