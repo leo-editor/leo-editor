@@ -923,12 +923,23 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831101443.1: *3* aso.start & helpers
     def start(self):
         """Do everything except populating the new outline."""
+        # Copy settings.
+        c = self.c
+        settings = c.config.settingsDict
+        shortcuts = c.config.shortcutsDict
+        assert isinstance(settings, g.TypedDict), repr(settings)
+        assert isinstance(shortcuts, g.TypedDict), repr(shortcuts)
+        settings_copy = settings.copy()
+        shortcuts_copy = shortcuts.copy()
         # Create the new commander.
         self.commander = self.new_commander()
         # Open hidden commanders for non-local settings files.
         self.load_hidden_commanders()
         # Create the ordered list of commander tuples, including the local .leo file.
         self.create_commanders_list()
+        # Jam the old settings into the new commander.
+        self.commander.config.settingsDict = settings_copy
+        self.commander.config.shortcutsDict = shortcuts_copy
     #@+node:ekr.20190831052851.1: *4* aso.create_commanders_list
     def create_commanders_list(self):
         
@@ -994,18 +1005,20 @@ class ActiveSettingsOutline:
         c = self.commander
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
-        g.trace('theme_path', repr(g.app.loadManager.theme_path))
+        #
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
             p.b = '@language rest\n@wrap\n'
             self.create_inner_outline(commander, kind, p)
+        #
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
         c.setChanged(changedFlag=False, redrawFlag=True)
         c.redraw()
+
     #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
@@ -1018,7 +1031,7 @@ class ActiveSettingsOutline:
             g.trace('no @settings node!!', c.shortFileName())
             return
         # Unify all settings.
-        self.create_unified_settings(c, kind, root, settings_root)
+        self.create_unified_settings(kind, root, settings_root)
         self.clean(root)
         ###
             # # Create separate outlines for active & inactive settings.
@@ -1040,12 +1053,9 @@ class ActiveSettingsOutline:
         '@shortcuts', '@strings',
     ]
 
-    def create_unified_settings(self, c, kind, root, settings_root):
-        """Create the active settings tree for c under root."""
-        ### g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
-        if kind != 'theme_file':
-            return
-        d = self.filter_settings(c, kind)
+    def create_unified_settings(self, kind, root, settings_root):
+        """Create the active settings tree under root."""
+        d = self.filter_settings(kind)
         ignore, outline_data = None, None
         self.parents = [root]
         self.level = settings_root.level()
@@ -1085,7 +1095,6 @@ class ActiveSettingsOutline:
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
-                    ### g.trace(key, repr(val), p.h)
                     p.h = 'INACTIVE: ' + p.h
                     self.add(p)
             else:
@@ -1134,21 +1143,19 @@ class ActiveSettingsOutline:
             else:
                 p.doDelete()
     #@+node:ekr.20190902071645.1: *3* aso.filter_settings
-    def filter_settings(self, c, target_kind):
+    def filter_settings(self, target_kind):
         """Return a dict containing only settings defined in the file given by kind."""
-        ### g.trace('\n', '='*10, c.shortFileName(), '\n')
-        #
-        # Must match the values returned by c.config.setSource.
+        # Crucial: Always use the newly-created commander.
+        #          It's settings are guaranteed to be correct.
+        c = self.commander
         valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
         assert target_kind in valid_kinds, repr(target_kind)
         d = c.config.settingsDict
-        g.trace('theme_path', g.app.loadManager.theme_path)
         aList = []
         for key in d.d.keys():
             gs = d.d.get(key)
             if isinstance(gs, g.GeneralSetting) and gs.kind == 'color':
                 aList.append('%s %s %s %s' % (gs.path, gs.kind, key, gs.val))
-        g.printObj(aList, tag='c.config.settingsDict colors')
         result = {}
         for key in d.keys(): 
             gs = d.get(key)
@@ -1165,8 +1172,6 @@ class ActiveSettingsOutline:
                 continue
             if kind == target_kind:
                 result[key] = gs
-        g.trace(target_kind)
-        g.printObj(sorted(result.keys()), tag=target_kind)
         return result
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
