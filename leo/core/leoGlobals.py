@@ -2302,7 +2302,7 @@ class TypedDict:
             self.d.update(d)
     #@-others
 
-### Experimental
+### While testing, leave references to TypeDictOfLists in the code.
 TypedDictOfLists = TypedDict
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
