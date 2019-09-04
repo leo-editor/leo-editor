@@ -999,27 +999,15 @@ class ActiveSettingsOutline:
         c.setChanged(False)
         g.app.disable_redraw = False
         return c
-    #@+node:ekr.20190831034537.1: *3* aso.create_outline
+    #@+node:ekr.20190831034537.1: *3* aso.create_outline & helper
     def create_outline(self):
         """Create the summary outline"""
-        c, lm = self.commander, g.app.loadManager
-        #
-        # Compute legend.
-        legend = '''\
-            legend:
-                leoSettings.leo
-             @  @button, @command, @mode
-            [D] default settings
-            [F] local file: %s
-            [M] myLeoSettings.leo
-            ''' % self.c.shortFileName()
-        if lm.theme_path:
-            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
+        c = self.commander
         #
         # Create the root node, with the legend in the body text.
         root = c.rootPosition()
-        root.h = 'Active settings for %s' % self.c.shortFileName()
-        root.b = g.adjustTripleString(legend, c.tab_width)
+        root.h = 'Legend for %s' % self.c.shortFileName()
+        root.b = self.legend()
         #
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
@@ -1034,6 +1022,22 @@ class ActiveSettingsOutline:
         c.setChanged(changedFlag=False, redrawFlag=True)
         c.redraw()
 
+    #@+node:ekr.20190904081310.1: *4* aso.legend
+    def legend(self):
+        """Compute legend for self.c"""
+        c, lm = self.c, g.app.loadManager
+        legend = '''\
+            legend:
+
+                leoSettings.leo
+             @  @button, @command, @mode
+            [D] default settings
+            [F] local file: %s
+            [M] myLeoSettings.leo
+            ''' % c.shortFileName()
+        if lm.theme_path:
+            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
+        return g.adjustTripleString(legend, c.tab_width)
     #@+node:ekr.20190831044130.1: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
@@ -1116,7 +1120,7 @@ class ActiveSettingsOutline:
                     if val:
                         # Use self.c, not self.commander.
                         letter = lm.computeBindingLetter(self.c, val.path)
-                        p.h = 'INACTIVE: [%s] %s' % (letter, p.h)
+                        p.h = '[%s] INACTIVE: %s' % (letter, p.h)
                     else:
                         p.h = 'UNUSED: %s' % p.h
                     self.add(p)
