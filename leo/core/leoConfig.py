@@ -1152,7 +1152,7 @@ class ActiveSettingsOutline:
         result = {}
         for key in d.keys(): 
             gs = d.get(key)
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             if not gs.kind:
                 g.trace('OOPS: no kind', repr(gs))
                 continue
