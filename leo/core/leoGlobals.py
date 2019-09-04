@@ -2239,8 +2239,26 @@ class TypedDict:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
-        self._checkValType(val)
+        # From TypedDictOfLists...
+        self._checkKeyType(key)
+        try:
+            for z in val:
+                self._checkValType(z)
+        except TypeError:
+            self._checkValType(val) # val is not iterable.
         self.d[key] = val
+    #@+node:ekr.20190904052828.1: *4* td.add
+    def add(self, key, val):
+        """Update the *list*, self.d [key]"""
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        self._checkValType(val)
+        aList = self.d.get(key, [])
+        if val not in aList:
+            aList.append(val)
+            self.d[key] = aList
     #@+node:ekr.20120206134955.10150: *4* td.checking
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
@@ -2283,61 +2301,9 @@ class TypedDict:
         else:
             self.d.update(d)
     #@-others
-#@+node:ekr.20190903163542.1: *3* class g.TypedDictOfLists (TypedDict)
-class TypedDictOfLists (TypedDict):
-    '''A class whose values are lists of typed values.'''
 
-    #@+others
-    #@+node:ekr.20190903172917.1: *4* tdl.__repr__ & __str__
-    def __str__(self):
-        """Concise. Used by repr."""
-        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s>' % (
-            self._name,
-            self.keyType.__name__,
-            self.valType.__name__,
-            len(list(self.d.keys())))
-
-    def __repr__(self):
-        """Suitable for g.printObj"""
-        return '%s\n%s\n' % (g.dictToString(self.d), str(self))
-    #@+node:ekr.20190903165803.1: *4* tdl.__setitem__
-    def __setitem__(self, key, val):
-        """allow d[key] = val."""
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        try:
-            for z in val:
-                self._checkValType(z)
-        except TypeError:
-            self._checkValType(val) # val is not iterable.
-        self.d[key] = val
-    #@+node:ekr.20190903220732.1: *4* tdl.add
-    def add(self, key, val):
-        """Update the *list*, self.d [key]"""
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        aList = self.d.get(key, [])
-        if val not in aList:
-            aList.append(val)
-            self.d[key] = aList
-    #@+node:ekr.20190903165904.1: *4* tdl.get
-    def get(self, key, default=None):
-        if default is None:
-            default = []
-        return self.d.get(key, default)
-    #@+node:ekr.20190903222229.1: *4* tdl.not implemented
-    # Only TypedDict should handle these.
-    def get_setting(self, key):
-        raise NotImplementedError
-        
-    def get_string_setting(self, key):
-        raise NotImplementedError
-    #@-others
+### Experimental
+TypedDictOfLists = TypedDict
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
