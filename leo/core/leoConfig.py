@@ -1061,33 +1061,20 @@ class ActiveSettingsOutline:
             # inactive_root.h = 'inactive settings'
             # self.create_inactive_settings(c, kind, inactive_root, settings_root)
     #@+node:ekr.20190831045822.1: *3* aso.create_unified_settings
-    settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
-
-    ignore_list = [
-        # Non-settings nodes: shown.
-        '@enabled-plugins',
-        '@button', '@buttons', '@command', '@commands',
-        '@font',
-        '@ifenv', '@ifplatform'
-        '@ignore', # Sets ignore var.
-        '@item', '@menu', '@menus', '@keys', '@mode',
-        '@openwith', '@popup', '@popup_menus', '@rclick',
-        '@shortcuts', '@strings',
-        # Non-settings nodes: not shown.
-        '@ignore', # Not shown
-        '@data', '@outline-data', # Sets outline_data var.
-    ]
-
     def create_unified_settings(self, kind, root, settings_root):
         """Create the active settings tree under root."""
         c = self.commander
         lm = g.app.loadManager
+        settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
+        valid_list = [
+            '@bool', '@color', '@directory', '@encoding',
+            '@int', '@float', '@ratio', '@string',
+        ]
         d = self.filter_settings(kind)
         ignore, outline_data = None, None
         self.parents = [root]
         self.level = settings_root.level()
         for p in settings_root.subtree():
-            pad = ' '*p.level()
             #@+<< continue if we should ignore p >>
             #@+node:ekr.20190901185659.1: *4* << continue if we should ignore p >>
             if ignore:
@@ -1103,19 +1090,11 @@ class ActiveSettingsOutline:
                     self.add(p)
                     continue
             #@-<< continue if we should ignore p >>
-            m = self.settings_pat.match(p.h)
+            m = settings_pat.match(p.h)
             if not m:
                 self.add(p, h='ORG:'+p.h)
-            elif m.group(1) in self.ignore_list:
-                # Not a setting. Handle special cases.
-                if m.group(1) == '@ignore':
-                    ignore = p.nodeAfterTree()
-                elif m.group(1) in ('@data', '@outline-data'):
-                    outline_data = p.nodeAfterTree()
-                    self.add(p)
-                else:
-                    self.add(p)
-            elif m.group(2):
+                continue
+            if m.group(2) and m.group(1) in valid_list:
                 #@+<< handle a real setting >>
                 #@+node:ekr.20190904111959.1: *4* << handle a real setting >>
                 key = g.app.config.munge(m.group(2).strip())
@@ -1125,7 +1104,7 @@ class ActiveSettingsOutline:
                 else:
                     # Look at all the settings to discover where the setting is defined.
                     val = c.config.settingsDict.get(key)
-                    if val:
+                    if isinstance(val, g.GeneralSetting):
                         # Use self.c, not self.commander.
                         letter = lm.computeBindingLetter(self.c, val.path)
                         p.h = '[%s] INACTIVE: %s' % (letter, p.h)
@@ -1133,8 +1112,15 @@ class ActiveSettingsOutline:
                         p.h = 'UNUSED: %s' % p.h
                     self.add(p)
                 #@-<< handle a real setting >>
+                continue
+            # Not a setting. Handle special cases.
+            if m.group(1) == '@ignore':
+                ignore = p.nodeAfterTree()
+            elif m.group(1) in ('@data', '@outline-data'):
+                outline_data = p.nodeAfterTree()
+                self.add(p)
             else:
-                print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
+                self.add(p)
     #@+node:ekr.20190901192405.1: *3* aso.add
     def add(self, p, h=None):
         """
