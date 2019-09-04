@@ -2231,7 +2231,7 @@ class TypedDict:
             
     def __repr__(self):
         """Suitable for g.printObj"""
-        return '%s\n%s\n' % (str(self), g.dictToString(self.d))
+        return '%s\n%s\n' % (g.dictToString(self.d), str(self))
     #@+node:ekr.20120205022040.17774: *4* td.__setitem__
     def __setitem__(self, key, val):
         """Allow d[key] = val"""
@@ -2300,7 +2300,7 @@ class TypedDictOfLists (TypedDict):
 
     def __repr__(self):
         """Suitable for g.printObj"""
-        return '%s\n%s\n' % (str(self), g.dictToString(self.d))
+        return '%s\n%s\n' % (g.dictToString(self.d), str(self))
     #@+node:ekr.20190903165803.1: *4* tdl.__setitem__
     def __setitem__(self, key, val):
         """allow d[key] = val."""
