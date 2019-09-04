@@ -2241,9 +2241,6 @@ class TypedDict:
         self._checkKeyType(key)
         self._checkValType(val)
         self.d[key] = val
-        
-    ### add = replace
-    ###__setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20120206134955.10150: *4* td.checking
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
@@ -2330,8 +2327,8 @@ class TypedDictOfLists:
         """Suitable for g.printObj"""
         return '%s\n%s\n' % (str(self), g.dictToString(self.d))
     #@+node:ekr.20190903165803.1: *4* tdl.__setitem__
-    # allow d[key] = val.
     def __setitem__(self, key, val):
+        """allow d[key] = val."""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
@@ -2342,8 +2339,6 @@ class TypedDictOfLists:
         except TypeError:
             self._checkValType(val) # val is not iterable.
         self.d[key] = val
-        
-    ### replace = __setitem__ 
     #@+node:ekr.20190903220732.1: *4* tdl.add
     def add(self, key, val):
         if key is None:

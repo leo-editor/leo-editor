@@ -518,7 +518,7 @@ class ParserBaseClass:
                             break
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20060102103625.1: *4* pbc.doMode (changed)
+    #@+node:ekr.20060102103625.1: *4* pbc.doMode
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         c = self.c
@@ -546,7 +546,6 @@ class ParserBaseClass:
                     if aList3:
                         aList.extend(aList3)
                     aList.append(bi)
-                    ### d.replace(name, aList)
                     d [name] = aList
             # Restore the global shortcutsDict.
             # Create the command, but not any bindings to it.
@@ -2029,7 +2028,7 @@ class LocalConfigManager:
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
         ActiveSettingsOutline(self.c)
-    #@+node:ekr.20120215072959.12475: *3* c.config.set (changed)
+    #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
         c = self.c
@@ -2043,9 +2042,7 @@ class LocalConfigManager:
             path = gs.path
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
-        gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
-        ### d.replace(key, gs)
-        d [key] = gs
+        d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
         '''
