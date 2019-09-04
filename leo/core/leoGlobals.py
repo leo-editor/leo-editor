@@ -2225,7 +2225,7 @@ class TypedDict:
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
     def __str__(self):
-        """Concise"""
+        """Concise: used by repr."""
         return '<TypedDict name:%s keys:%s values:%s len(keys): %s>' % (
             self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
             
@@ -2233,8 +2233,8 @@ class TypedDict:
         """Suitable for g.printObj"""
         return '%s\n%s\n' % (str(self), g.dictToString(self.d))
     #@+node:ekr.20120205022040.17774: *4* td.__setitem__
-    # allow d[key] = val.
     def __setitem__(self, key, val):
+        """Allow d[key] = val"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
@@ -2259,12 +2259,6 @@ class TypedDict:
         '''Return a new dict with the same contents.'''
         import copy
         return copy.deepcopy(self)
-    #@+node:ekr.20120206134955.10151: *4* td.dump
-    def dump(self):
-        result = ['Dump of %s' % (self)]
-        for key in sorted(self.d.keys()):
-            result.append(key, self.d.get(key))
-        return '\n'.join(result)
     #@+node:ekr.20120205022040.17771: *4* td.get & keys
     def get(self, key, default=None):
         self._checkKeyType(key)
@@ -2297,7 +2291,7 @@ class TypedDictOfLists (TypedDict):
     #@+others
     #@+node:ekr.20190903172917.1: *4* tdl.__repr__ & __str__
     def __str__(self):
-        """Concise"""
+        """Concise. Used by repr."""
         return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s>' % (
             self._name,
             self.keyType.__name__,
@@ -2332,15 +2326,6 @@ class TypedDictOfLists (TypedDict):
         if val not in aList:
             aList.append(val)
             self.d[key] = aList
-    #@+node:ekr.20190903165845.1: *4* tdl.dump
-    def dump(self):
-        result = ['Dump of %s' % (self)]
-        for key in sorted(self.d.keys()):
-            result.append(key)
-            aList = self.d.get(key, [])
-            for z in aList:
-                result.append('  ' + repr(z))
-        return '\n'.join(result)
     #@+node:ekr.20190903165904.1: *4* tdl.get
     def get(self, key, default=None):
         self._checkKeyType(key)
