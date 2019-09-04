@@ -518,7 +518,7 @@ class ParserBaseClass:
                             break
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20060102103625.1: *4* pbc.doMode (changed)
+    #@+node:ekr.20060102103625.1: *4* pbc.doMode
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         c = self.c

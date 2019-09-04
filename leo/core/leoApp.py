@@ -2305,7 +2305,7 @@ class LoadManager:
                 for bi in aList2:
                     g.es_print('%6s %s %s' % (
                         bi.pane, bi.stroke.s, bi.commandName))
-    #@+node:ekr.20120214132927.10724: *5* LM.invert (changed)
+    #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
         '''
         Invert a shortcut dict whose keys are command names,
@@ -2322,7 +2322,7 @@ class LoadManager:
                 assert stroke
                 result.add_to_list(stroke, bi)
         return result
-    #@+node:ekr.20120214132927.10725: *5* LM.uninvert (changed)
+    #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
         '''
         Uninvert an inverted shortcut dict whose keys are strokes,

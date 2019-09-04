@@ -2208,7 +2208,7 @@ class KeyHandlerClass:
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict (changed)
+    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
         c, k = self.c, self
