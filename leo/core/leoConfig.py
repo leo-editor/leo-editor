@@ -1002,9 +1002,24 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190831034537.1: *3* aso.create_outline
     def create_outline(self):
         """Create the summary outline"""
-        c = self.commander
+        c, lm = self.commander, g.app.loadManager
+        #
+        # Compute legend.
+        legend = '''\
+            legend:
+                leoSettings.leo
+             @  @button, @command, @mode
+            [D] default settings
+            [F] local file: %s
+            [M] myLeoSettings.leo
+            ''' % self.c.shortFileName()
+        if lm.theme_path:
+            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
+        #
+        # Create the root node, with the legend in the body text.
         root = c.rootPosition()
         root.h = 'Active settings for %s' % self.c.shortFileName()
+        root.b = g.adjustTripleString(legend, c.tab_width)
         #
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
@@ -1055,6 +1070,8 @@ class ActiveSettingsOutline:
 
     def create_unified_settings(self, kind, root, settings_root):
         """Create the active settings tree under root."""
+        c = self.commander
+        lm = g.app.loadManager
         d = self.filter_settings(kind)
         ignore, outline_data = None, None
         self.parents = [root]
@@ -1095,7 +1112,13 @@ class ActiveSettingsOutline:
                 if isinstance(val, g.GeneralSetting):
                     self.add(p)
                 else:
-                    p.h = 'INACTIVE: ' + p.h
+                    val = c.config.settingsDict.get(key)
+                    if val:
+                        # Use self.c, not self.commander.
+                        letter = lm.computeBindingLetter(self.c, val.path)
+                        p.h = 'INACTIVE: [%s] %s' % (letter, p.h)
+                    else:
+                        p.h = 'UNUSED: %s' % p.h
                     self.add(p)
             else:
                 print('\n', pad, "ERROR", g.truncate(p.h, 60), '\n')
