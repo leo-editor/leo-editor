@@ -2208,19 +2208,25 @@ def null_object_print(id_, kind, *args):
         g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20120129181245.10220: *3* class g.TypedDict (same as g.TypedDictOfLists)
 class TypedDict:
-    '''A class containing a name and enforcing type checking.'''
+    """
+    A class providing additional dictionary-related methods:
+    
+    __init__:     Specifies types and the dict's name.
+    __repr__:     Compatible with g.printObj, based on g.objToString.
+    __setitem__:  Type checks its arguments.
+    __str__:      A concise summary of the inner dict.
+    add_to_list:  A convenience method that adds a value to its key's list.
+    copy:         A thin wrapper for copy.deepcopy.
+    name:         The dict's name.
+    setName:      Sets the dict's name, for use by __repr__.
+    update:       Updates the internal dict.
+    """
     
     def __init__(self, name, keyType, valType):
         self.d = {}
-        self._name = name  # For dump only.
+        self._name = name  # For __repr__ only.
         self.keyType = keyType
         self.valType = valType
-        
-    def name(self):
-        return self._name
-
-    def setName(self, name):
-        self._name = name
 
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
@@ -2294,16 +2300,22 @@ class TypedDict:
     def get_string_setting(self, key):
         val = self.get_setting(key)
         return val if val and isinstance(val, str) else None
+    #@+node:ekr.20190904103552.1: *4* td.name & setName
+    def name(self):
+        return self._name
+
+    def setName(self, name):
+        self._name = name
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
-        if isinstance(d, (TypedDict, TypedDictOfLists)):
+        if isinstance(d, TypedDict):
             self.d.update(d.d)
         else:
             self.d.update(d)
     #@-others
 
-### While testing, leave references to TypeDictOfLists in the code.
+### While testing, retain the TypeDictOfLists spelling in the code.
 TypedDictOfLists = TypedDict
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
