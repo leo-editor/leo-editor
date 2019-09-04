@@ -538,7 +538,7 @@ class ParserBaseClass:
                 name, bi = self.parseShortcutLine('*mode-setting*', line)
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*', bi)
+                    d.add_to_list('*entry-commands*', bi)
                 elif bi is not None:
                     # A regular shortcut.
                     bi.pane = modeName

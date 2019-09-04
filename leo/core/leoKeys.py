@@ -2231,7 +2231,7 @@ class KeyHandlerClass:
                 bi.commandName = commandName
                 if stroke:
                     assert g.isStroke(stroke)
-                    d2.add(stroke, bi)
+                    d2.add_to_list(stroke, bi)
         #
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):

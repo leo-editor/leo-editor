@@ -2339,7 +2339,7 @@ class LoadManager:
                 stroke = bi.stroke # This is canonicalized.
                 bi.commandName = commandName # Add info.
                 assert stroke
-                result.add(stroke, bi)
+                result.add_to_list(stroke, bi)
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
@@ -2357,7 +2357,7 @@ class LoadManager:
             for bi in d.get(stroke, []):
                 commandName = bi.commandName
                 assert commandName
-                result.add(commandName, bi)
+                result.add_to_list(commandName, bi)
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile (new trace)
     def openSettingsFile(self, fn):
