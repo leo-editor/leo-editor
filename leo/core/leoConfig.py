@@ -549,7 +549,7 @@ class ParserBaseClass:
                     if aList3:
                         aList.extend(aList3)
                     aList.append(bi)
-                    d.replace(name, aList)
+                    d [name] = aList
             # Restore the global shortcutsDict.
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName, name1, d)
@@ -882,9 +882,8 @@ class ParserBaseClass:
         )
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'),
-            valType=g.BindingInfo,
-        )
+            keyType=str,
+            valType=g.BindingInfo)
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
         if not p:
@@ -1184,7 +1183,7 @@ class GlobalConfigManager:
     defaultTreeFontSize = 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     defaultsData = (
@@ -1241,7 +1240,7 @@ class GlobalConfigManager:
     #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     encodingIvarsData = (
@@ -1259,7 +1258,7 @@ class GlobalConfigManager:
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=type('key'),
+        keyType=str,
         valType=g.GeneralSetting,
     )
     ivarsData = (
@@ -1320,9 +1319,8 @@ class GlobalConfigManager:
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
-            keyType=type('commandName'),
-            valType=g.TypedDictOfLists,
-        )
+            keyType=str,
+            valType=g.TypedDictOfLists)
         # Inited later...
         self.panes = None
         self.sc = None
@@ -1436,7 +1434,7 @@ class GlobalConfigManager:
         # It *is* valid to call this method: it returns the global settings.
         d = lm.globalSettingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1448,7 +1446,7 @@ class GlobalConfigManager:
         gs = d.get(self.munge(setting))
         if not gs:
             return None, False
-        assert isinstance(gs, g.GeneralSetting)
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
@@ -1629,7 +1627,7 @@ class GlobalConfigManager:
         # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             if gs and gs.kind:
                 letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
@@ -1677,13 +1675,13 @@ class LocalConfigManager:
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
-            assert g.isTypedDict(self.settingsDict)
-            assert g.isTypedDictOfLists(self.shortcutsDict)
+            assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
+            assert isinstance(self.shortcutsDict,g.TypedDictOfLists), repr(self.shortcutsDict)
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
-            assert d1 is None or g.isTypedDict(d1), d1
-            assert d2 is None or g.isTypedDictOfLists(d2), d2
+            assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
+            assert d2 is None or isinstance(d2, g.TypedDictOfLists), repr(d2)
         # Define these explicitly to eliminate a pylint warning.
         if 0:
             # No longer needed now that c.config.initIvar always sets
@@ -1782,7 +1780,7 @@ class LocalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         d = self.settingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1793,7 +1791,7 @@ class LocalConfigManager:
         returns (val,exists)'''
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None, False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
@@ -1973,7 +1971,7 @@ class LocalConfigManager:
         '''return the name of the file responsible for setting.'''
         d = self.settingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             bi = d.get(setting)
             if bi is None:
                 return 'unknown setting', None
@@ -1997,7 +1995,7 @@ class LocalConfigManager:
                 g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
             return None, []
         if d:
-            assert g.isTypedDictOfLists(d), d
+            assert isinstance(d, g.TypedDictOfLists), repr(d)
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '') # Allow '&' in names.
             aList = d.get(commandName, [])
@@ -2043,7 +2041,7 @@ class LocalConfigManager:
         gs = self.settingsDict.get(key)
         if not gs:
             return False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         path = gs.path.lower()
         for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(fn.lower()):
@@ -2150,15 +2148,14 @@ class LocalConfigManager:
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)
         d = self.settingsDict
-        assert g.isTypedDict(d), d
+        assert isinstance(d, g.TypedDict), repr(d)
         gs = d.get(key)
         if gs:
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
-        gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
-        d.replace(key, gs)
+        d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
         '''

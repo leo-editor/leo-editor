@@ -3495,8 +3495,8 @@ class PreviousSettings:
     files and passed to the second pass.'''
 
     def __init__(self, settingsDict, shortcutsDict):
-        assert g.isTypedDict(settingsDict)
-        assert g.isTypedDictOfLists(shortcutsDict)
+        assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
+        assert isinstance(shortcutsDict, g.TypedDictOfLists), repr(shortcutsDict)
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
