@@ -2232,7 +2232,19 @@ class TypedDict:
     def __repr__(self):
         """Suitable for g.printObj"""
         return '%s\n%s\n' % (str(self), g.dictToString(self.d))
-    #@+node:ekr.20120206134955.10150: *4* td._checkKey/ValType
+    #@+node:ekr.20120205022040.17774: *4* td.__setitem__
+    # allow d[key] = val.
+    def __setitem__(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        self._checkValType(val)
+        self.d[key] = val
+        
+    ### add = replace
+    ###__setitem__ = replace # allow d[key] = val.
+    #@+node:ekr.20120206134955.10150: *4* td.checking
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
@@ -2273,17 +2285,6 @@ class TypedDict:
     def get_string_setting(self, key):
         val = self.get_setting(key)
         return val if val and isinstance(val, str) else None
-    #@+node:ekr.20120205022040.17774: *4* td.replace
-    def replace(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        self.d[key] = val
-        
-    add = replace
-    __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
         """Update self.d from a the appropriate dict."""
@@ -2309,6 +2310,13 @@ class TypedDictOfLists:
         self._name = name
 
     #@+others
+    #@+node:ekr.20190903170627.1: *4* td.update
+    def update(self, d):
+        """Update self.d from a the appropriate dict."""
+        if isinstance(d, (TypedDict, TypedDictOfLists)):
+            self.d.update(d.d)
+        else:
+            self.d.update(d)
     #@+node:ekr.20190903172917.1: *4* tdl.__repr__ & __str__
     def __str__(self):
         """Concise"""
@@ -2321,7 +2329,33 @@ class TypedDictOfLists:
     def __repr__(self):
         """Suitable for g.printObj"""
         return '%s\n%s\n' % (str(self), g.dictToString(self.d))
-    #@+node:ekr.20190903170552.1: *4* tdl._checkKey/ValType
+    #@+node:ekr.20190903165803.1: *4* tdl.__setitem__
+    # allow d[key] = val.
+    def __setitem__(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        try:
+            for z in val:
+                self._checkValType(z)
+        except TypeError:
+            self._checkValType(val) # val is not iterable.
+        self.d[key] = val
+        
+    ### replace = __setitem__ 
+    #@+node:ekr.20190903220732.1: *4* tdl.add
+    def add(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        self._checkValType(val)
+        aList = self.d.get(key, [])
+        if val not in aList:
+            aList.append(val)
+            self.d[key] = aList
+    #@+node:ekr.20190903170552.1: *4* tdl.checking...
     def _checkKeyType(self, key):
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
@@ -2334,31 +2368,6 @@ class TypedDictOfLists:
         print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
         return 'dict: %s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20190903165803.1: *4* tdl.add & replace
-    def add(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        aList = self.d.get(key, [])
-        if val not in aList:
-            aList.append(val)
-            self.d[key] = aList
-
-    def replace(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        try:
-            for z in val:
-                self._checkValType(z)
-        except TypeError:
-            self._checkValType(val) # val is not iterable.
-        self.d[key] = val
-        
-    __setitem__ = replace # allow d[key] = val.
     #@+node:ekr.20190903171235.1: *4* tdl.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
@@ -2382,13 +2391,6 @@ class TypedDictOfLists:
 
     def keys(self):
         return self.d.keys()
-    #@+node:ekr.20190903170627.1: *4* td.update
-    def update(self, d):
-        """Update self.d from a the appropriate dict."""
-        if isinstance(d, (TypedDict, TypedDictOfLists)):
-            self.d.update(d.d)
-        else:
-            self.d.update(d)
     #@-others
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
