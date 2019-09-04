@@ -2247,12 +2247,12 @@ class TypedDict:
             self._reportTypeError(key, self.keyType)
 
     def _checkValType(self, val):
-        # This doesn't fail, either on Python 2.x or 3.x.
-        assert val.__class__ == self.valType, self._reportTypeError(val, self.valType)
+        if val.__class__ != self.valType:
+            self._reportTypeError(val, self.valType)
 
     def _reportTypeError(self, obj, objType):
-        print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
-        return 'dict: %s expected %s got %s' % (
+        print('Type mismatch: obj: %s, objType: %s' % (obj.__class__, objType))
+        return '%s expected %s got %s' % (
             self._name, obj.__class__.__name__, objType.__name__)
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
