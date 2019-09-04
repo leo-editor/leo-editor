@@ -518,7 +518,7 @@ class ParserBaseClass:
                             break
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20060102103625.1: *4* pbc.doMode
+    #@+node:ekr.20060102103625.1: *4* pbc.doMode (changed)
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         c = self.c
@@ -535,7 +535,7 @@ class ParserBaseClass:
                 name, bi = self.parseShortcutLine('*mode-setting*', line)
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*', bi)
+                    d.add_to_list('*entry-commands*', bi)
                 elif bi is not None:
                     # A regular shortcut.
                     bi.pane = modeName

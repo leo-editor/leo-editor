@@ -2206,7 +2206,7 @@ def null_object_print(id_, kind, *args):
         # Print each signature once.
         tracing_signatures [signature] = True
         g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict
+#@+node:ekr.20120129181245.10220: *3* class g.TypedDict (same as g.TypedDictOfLists)
 class TypedDict:
     '''A class containing a name and enforcing type checking.'''
     
@@ -2247,9 +2247,10 @@ class TypedDict:
         except TypeError:
             self._checkValType(val) # val is not iterable.
         self.d[key] = val
-    #@+node:ekr.20190904052828.1: *4* td.add
-    def add(self, key, val):
+    #@+node:ekr.20190904052828.1: *4* td.add_to_list
+    def add_to_list(self, key, val):
         """Update the *list*, self.d [key]"""
+        ### g.trace(g.callers())
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return

@@ -2208,7 +2208,7 @@ class KeyHandlerClass:
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
+    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict (changed)
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
         c, k = self.c, self
@@ -2229,7 +2229,7 @@ class KeyHandlerClass:
                 bi.commandName = commandName
                 if stroke:
                     assert g.isStroke(stroke)
-                    d2.add(stroke, bi)
+                    d2.add_to_list(stroke, bi)
         #
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
