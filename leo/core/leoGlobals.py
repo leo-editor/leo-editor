@@ -2290,30 +2290,11 @@ class TypedDict:
         else:
             self.d.update(d)
     #@-others
-#@+node:ekr.20190903163542.1: *3* class g.TypedDictOfLists
-class TypedDictOfLists:
+#@+node:ekr.20190903163542.1: *3* class g.TypedDictOfLists (TypedDict)
+class TypedDictOfLists (TypedDict):
     '''A class whose values are lists of typed values.'''
 
-    def __init__(self, name, keyType, valType):
-        self.d = {}
-        self._name = name # For dump only.
-        self.keyType = keyType
-        self.valType = valType
-    
-    def name(self):
-        return self._name
-
-    def setName(self, name):
-        self._name = name
-
     #@+others
-    #@+node:ekr.20190903170627.1: *4* td.update
-    def update(self, d):
-        """Update self.d from a the appropriate dict."""
-        if isinstance(d, (TypedDict, TypedDictOfLists)):
-            self.d.update(d.d)
-        else:
-            self.d.update(d)
     #@+node:ekr.20190903172917.1: *4* tdl.__repr__ & __str__
     def __str__(self):
         """Concise"""
@@ -2341,6 +2322,7 @@ class TypedDictOfLists:
         self.d[key] = val
     #@+node:ekr.20190903220732.1: *4* tdl.add
     def add(self, key, val):
+        """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
@@ -2350,24 +2332,6 @@ class TypedDictOfLists:
         if val not in aList:
             aList.append(val)
             self.d[key] = aList
-    #@+node:ekr.20190903170552.1: *4* tdl.checking...
-    def _checkKeyType(self, key):
-        if key and key.__class__ != self.keyType:
-            self._reportTypeError(key, self.keyType)
-
-    def _checkValType(self, val):
-        # This doesn't fail, either on Python 2.x or 3.x.
-        assert val.__class__ == self.valType, self._reportTypeError(val, self.valType)
-
-    def _reportTypeError(self, obj, objType):
-        print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
-        return 'dict: %s expected %s got %s' % (
-            self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20190903171235.1: *4* tdl.copy
-    def copy(self, name=None):
-        '''Return a new dict with the same contents.'''
-        import copy
-        return copy.deepcopy(self)
     #@+node:ekr.20190903165845.1: *4* tdl.dump
     def dump(self):
         result = ['Dump of %s' % (self)]
@@ -2377,15 +2341,19 @@ class TypedDictOfLists:
             for z in aList:
                 result.append('  ' + repr(z))
         return '\n'.join(result)
-    #@+node:ekr.20190903165904.1: *4* tdl.get & keys
+    #@+node:ekr.20190903165904.1: *4* tdl.get
     def get(self, key, default=None):
         self._checkKeyType(key)
         if default is None:
             default = []
         return self.d.get(key, default)
-
-    def keys(self):
-        return self.d.keys()
+    #@+node:ekr.20190903222229.1: *4* tdl.not implemented
+    # Only TypedDict should handle these.
+    def get_setting(self, key):
+        raise NotImplementedError
+        
+    def get_string_setting(self, key):
+        raise NotImplementedError
     #@-others
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
