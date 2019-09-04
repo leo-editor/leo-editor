@@ -2261,7 +2261,6 @@ class TypedDict:
         return copy.deepcopy(self)
     #@+node:ekr.20120205022040.17771: *4* td.get & keys
     def get(self, key, default=None):
-        self._checkKeyType(key)
         return self.d.get(key, default)
 
     def keys(self):
@@ -2328,7 +2327,6 @@ class TypedDictOfLists (TypedDict):
             self.d[key] = aList
     #@+node:ekr.20190903165904.1: *4* tdl.get
     def get(self, key, default=None):
-        self._checkKeyType(key)
         if default is None:
             default = []
         return self.d.get(key, default)
