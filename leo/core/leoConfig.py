@@ -1737,6 +1737,47 @@ class LocalConfigManager:
             # Set *both* the commander ivar and the c.config ivar.
             setattr(self, ivarName, val)
             setattr(c, ivarName, val)
+    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
+    def createActivesSettingsOutline(self):
+        """
+        Create and open an outline, summarizing all presently active settings.
+        
+        The outline retains the organization of all active settings files.
+        
+        See #852: https://github.com/leo-editor/leo-editor/issues/852
+        """
+        ActiveSettingsOutline(self.c)
+    #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
+    def getSource(self, setting):
+        """
+        Return a string representing the source file of the given setting,
+        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
+        """
+        trace = False
+        if not isinstance(setting, g.GeneralSetting):
+            return "error"
+        try:
+            path = setting.path
+        except Exception:
+            return "error"
+        val = g.truncate(repr(setting.val), 50)
+        if not path:
+            # g.trace('NO PATH', setting.kind, val)
+            return "local_file"
+        path = path.lower()
+        for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
+            if path.endswith(tag.lower()):
+                if setting.kind == 'color':
+                    if trace: g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                return tag.rstrip('.leo')
+        theme_path = g.app.loadManager.theme_path
+        if theme_path and g.shortFileName(theme_path.lower()) in path:
+            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
+            return "theme_file"
+        # g.trace('NOT FOUND', repr(theme_path), repr(path))
+        if path == 'register-command' or path.find('mode') > -1:
+            return 'ignore'
+        return "local_file"
     #@+node:ekr.20120215072959.12471: *3* c.config.Getters
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
@@ -2110,16 +2151,6 @@ class LocalConfigManager:
             pass # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
-    def createActivesSettingsOutline(self):
-        """
-        Create and open an outline, summarizing all presently active settings.
-        
-        The outline retains the organization of all active settings files.
-        
-        See #852: https://github.com/leo-editor/leo-editor/issues/852
-        """
-        ActiveSettingsOutline(self.c)
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
