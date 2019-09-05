@@ -1819,7 +1819,7 @@ class LoadManager:
         self.globalSettingsDict = None
             # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
         self.globalBindingsDict = None
-            # A g.TypedDictOfLists: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
+            # A g.TypedDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
         #
         # LoadManager ivars corresponding to user options...
         #
@@ -2174,7 +2174,7 @@ class LoadManager:
         settings_d = g.app.config.defaultsDict
         assert isinstance(settings_d, g.TypedDict), settings_d
         settings_d.setName('lm.globalSettingsDict')
-        bindings_d = g.TypedDictOfLists(
+        bindings_d = g.TypedDict( # was TypedDictOfLists.
             name='lm.globalBindingsDict',
             keyType=type('s'),
             valType=g.BindingInfo)
@@ -2311,7 +2311,7 @@ class LoadManager:
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         '''
-        result = g.TypedDictOfLists(
+        result = g.TypedDict( # was TypedDictOfLists.
             name='inverted %s' % d.name(),
             keyType=g.KeyStroke,
             valType=g.BindingInfo)
@@ -2329,7 +2329,7 @@ class LoadManager:
         returning a dict whose keys are command names.
         '''
         assert d.keyType == g.KeyStroke, d.keyType
-        result = g.TypedDictOfLists(
+        result = g.TypedDict( # was TypedDictOfLists.
             name='uninverted %s' % d.name(),
             keyType=type('commandName'),
             valType=g.BindingInfo)
@@ -3467,7 +3467,7 @@ class PreviousSettings:
 
     def __init__(self, settingsDict, shortcutsDict):
         assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(shortcutsDict, g.TypedDictOfLists), repr(shortcutsDict)
+        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict) # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
