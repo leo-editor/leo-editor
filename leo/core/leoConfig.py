@@ -903,10 +903,8 @@ class ParserBaseClass:
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others
-#@+node:ekr.20190831031928.1: ** class ActiveSettingsOutline
+#@+node:ekr.20190905091614.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
-    
-    settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
     
     def __init__(self, c):
 
@@ -915,42 +913,55 @@ class ActiveSettingsOutline:
         self.create_outline()
 
     #@+others
-    #@+node:ekr.20190831101443.1: *3* aso.start & helpers
+    #@+node:ekr.20190905091614.2: *3* aso.start & helpers
     def start(self):
         """Do everything except populating the new outline."""
+        # Copy settings.
+        c = self.c
+        settings = c.config.settingsDict
+        shortcuts = c.config.shortcutsDict
+        assert isinstance(settings, g.TypedDict), repr(settings)
+        assert isinstance(shortcuts, g.TypedDict), repr(shortcuts)
+        settings_copy = settings.copy()
+        shortcuts_copy = shortcuts.copy()
         # Create the new commander.
         self.commander = self.new_commander()
         # Open hidden commanders for non-local settings files.
         self.load_hidden_commanders()
         # Create the ordered list of commander tuples, including the local .leo file.
         self.create_commanders_list()
-    #@+node:ekr.20190831052851.1: *4* aso.create_commanders_list
+        # Jam the old settings into the new commander.
+        self.commander.config.settingsDict = settings_copy
+        self.commander.config.shortcutsDict = shortcuts_copy
+    #@+node:ekr.20190905091614.3: *4* aso.create_commanders_list
     def create_commanders_list(self):
         
         """Create the commanders list. Order matters."""
+        lm = g.app.loadManager
+        # The first element of each tuple must match the return values of c.config.getSource.
+        # "local_file", "theme_file", "myLeoSettings", "leoSettings"
+        
         self.commanders = [
-            ('leo_settings', self.leo_settings_c),
-            ('my_settings', self.my_settings_c),
+            ('leoSettings', lm.leo_settings_c),
+            ('myLeoSettings', lm.my_settings_c),
         ]
-        if self.theme_c:
-            self.commanders.append(('theme_settings', self.theme_c),)
+        if lm.theme_c:
+            self.commanders.append(('theme_file', lm.theme_c),)
         if self.c.config.settingsRoot():
-            self.commanders.append(('local_settings', self.c),)
-    #@+node:ekr.20190831034104.1: *4* aso.load_hidden_commanders
+            self.commanders.append(('local_file', self.c),)
+    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders **** Theme file???
     def load_hidden_commanders(self):
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
         """
         lm = g.app.loadManager
-        self.leo_settings_path = lm.computeLeoSettingsPath()
-        self.my_settings_path = lm.computeMyLeoSettingsPath()
-        self.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
-        self.my_settings_c = lm.openSettingsFile(self.my_settings_path)
-        #
-        # This must be done *after* reading myLeoSettigns.leo.
-        self.theme_path = lm.computeThemeFilePath()
-        self.theme_c = lm.openSettingsFile(self.theme_path) if self.theme_path else None
-    #@+node:ekr.20190831100214.1: *4* aso.new_commander
+        lm.readGlobalSettingsFiles()
+        # Make sure to reload the local file.
+        c = g.app.commanders()[0]
+        fn = c.fileName()
+        if fn:
+            self.local_c = lm.openSettingsFile(fn)
+    #@+node:ekr.20190905091614.5: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
         # import leo.core.leoApp as leoApp
@@ -981,24 +992,46 @@ class ActiveSettingsOutline:
         c.setChanged(False)
         g.app.disable_redraw = False
         return c
-    #@+node:ekr.20190831034537.1: *3* aso.create_outline & helpers
+    #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper
     def create_outline(self):
         """Create the summary outline"""
         c = self.commander
-        c.frame.createFirstTreeNode()
+        #
+        # Create the root node, with the legend in the body text.
         root = c.rootPosition()
-        root.h = 'Active settings for %s' % self.c.shortFileName()
+        root.h = 'Legend for %s' % self.c.shortFileName()
+        root.b = self.legend()
+        #
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
+            p.b = '@language rest\n@wrap\n'
             self.create_inner_outline(commander, kind, p)
+        #
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
-        c.setChanged(changedFlag=False, redrawFlag=False)
+        c.setChanged(changedFlag=False, redrawFlag=True)
         c.redraw()
-    #@+node:ekr.20190831044130.1: *4* aso.create_inner_outline & helpers
+
+    #@+node:ekr.20190905091614.7: *4* aso.legend
+    def legend(self):
+        """Compute legend for self.c"""
+        c, lm = self.c, g.app.loadManager
+        legend = '''\
+            legend:
+
+                leoSettings.leo
+             @  @button, @command, @mode
+            [D] default settings
+            [F] local file: %s
+            [M] myLeoSettings.leo
+            ''' % c.shortFileName()
+        if lm.theme_path:
+            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
+        return g.adjustTripleString(legend, c.tab_width)
+    #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
         Create the outline for the given hidden commander, as descendants of root.
@@ -1009,94 +1042,147 @@ class ActiveSettingsOutline:
             # This should not be called if the local file has no @settings node.
             g.trace('no @settings node!!', c.shortFileName())
             return
-        active_root = root.insertAsLastChild()
-        active_root.h = 'active settings'
-        inactive_root = root.insertAsLastChild()
-        inactive_root.h = 'inactive settings'
-        self.create_active_settings(c, kind, active_root, settings_root)
-        self.create_inactive_settings(c, kind, inactive_root, settings_root)
-    #@+node:ekr.20190831045822.1: *4* aso.create_active_settings
-    def create_active_settings(self, c, kind, root, settings_root):
-        """Create the active settings tree for c under root."""
-        trace = False
-        verbose = True
-        d = c.config.settingsDict
-        munge = g.app.config.munge
-        ignore, ignore_all, outline_data = None, None, None
-        g.trace('\n%s:%s...\n' % (kind, c.shortFileName()))
+        # Unify all settings.
+        self.create_unified_settings(kind, root, settings_root)
+        self.clean(root)
+        ###
+            # # Create separate outlines for active & inactive settings.
+            # active_root = root.insertAsLastChild()
+            # active_root.h = 'active settings'
+            # self.create_active_settings(c, kind, active_root, settings_root)
+            # inactive_root = root.insertAsLastChild()
+            # inactive_root.h = 'inactive settings'
+            # self.create_inactive_settings(c, kind, inactive_root, settings_root)
+    #@+node:ekr.20190905091614.9: *3* aso.create_unified_settings
+    def create_unified_settings(self, kind, root, settings_root):
+        """Create the active settings tree under root."""
+        c = self.commander
+        lm = g.app.loadManager
+        settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
+        valid_list = [
+            '@bool', '@color', '@directory', '@encoding',
+            '@int', '@float', '@ratio', '@string',
+        ]
+        d = self.filter_settings(kind)
+        ignore, outline_data = None, None
+        self.parents = [root]
+        self.level = settings_root.level()
         for p in settings_root.subtree():
-            pad = ' '*p.level()
-            if ignore_all:
-                if trace and verbose: print(pad, 'IGNORE ALL', p.h)
-                continue
+            #@+<< continue if we should ignore p >>
+            #@+node:ekr.20190905091614.10: *4* << continue if we should ignore p >>
             if ignore:
                 if p == ignore:
-                    # if trace and verbose: print(pad, 'END IGNORE', p.h)
                     ignore = None
                 else:
-                    if trace: print(pad, 'IGNORE', p.h)
+                    # g.trace('IGNORE', p.h)
                     continue
             if outline_data:
                 if p == outline_data:
-                    # if trace and verbose: print(pad, 'END TREE DATA', p.h)
                     outline_data = None
                 else:
-                    if trace and verbose:
-                        print(pad, 'TREE DATA', p.h)
-                    elif trace:
-                        print(pad, 'SKIP', p.h)
+                    self.add(p)
                     continue
-            m = self.settings_pat.match(p.h)
+            #@-<< continue if we should ignore p >>
+            m = settings_pat.match(p.h)
             if not m:
-                if trace: print(pad, p.h)
+                self.add(p, h='ORG:'+p.h)
                 continue
-            if m.group(1) == '@ignore':
-                if trace: print(pad, p.h)
-                after = p.nodeAfterTree()
-                if after:
-                    # if trace and verbose: print(pad, 'IGNORE UNTIL', after.h)
-                    ignore = after
-                else:
-                    if trace and verbose: print(pad, 'IGNORE ALL')
-                    ignore_all = True
-            elif m.group(1) == '@outline-data':
-                if trace: print(pad, p.h)
-                outline_data = p.nodeAfterTree()
-                # if trace and verbose: print(pad, 'TREE DATA UNTIL', outline_data.h if outline_data else 'END!')
-            elif m.group(1) in ('@ifenv', '@ifplatform'):
-                if trace and verbose:
-                    print(pad, 'SKIP', p.h)
-                elif trace:
-                    print(pad, p.h)
-            elif m.group(1) in (
-                '@enabled-plugins', '@data',
-                '@button', '@buttons',
-                '@command', '@commands',
-                '@font',
-                '@item', '@menu', '@menus',
-                '@keys',
-                '@mode',
-                '@openwith', '@popup', '@popup_menus', '@rclick',
-                '@shortcuts', '@strings',
-            ):
-                if trace and verbose:
-                    print(pad, 'SPECIAL', p.h)
-                elif trace:
-                    print(pad, 'OK', p.h)
-            elif m.group(2):
-                val = d.get(munge(m.group(2).strip()))
+            if m.group(2) and m.group(1) in valid_list:
+                #@+<< handle a real setting >>
+                #@+node:ekr.20190905091614.11: *4* << handle a real setting >>
+                key = g.app.config.munge(m.group(2).strip())
+                val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
-                    if trace: print(pad, "OK", g.truncate(p.h, 60))
-                elif trace:
-                    print('\n', pad, "NOT FOUND", p.h, '\n')
+                    self.add(p)
                 else:
-                    print("NOT FOUND", p.h)
+                    # Look at all the settings to discover where the setting is defined.
+                    val = c.config.settingsDict.get(key)
+                    if isinstance(val, g.GeneralSetting):
+                        # Use self.c, not self.commander.
+                        letter = lm.computeBindingLetter(self.c, val.path)
+                        p.h = '[%s] INACTIVE: %s' % (letter, p.h)
+                    else:
+                        p.h = 'UNUSED: %s' % p.h
+                    self.add(p)
+                #@-<< handle a real setting >>
+                continue
+            # Not a setting. Handle special cases.
+            if m.group(1) == '@ignore':
+                ignore = p.nodeAfterTree()
+            elif m.group(1) in ('@data', '@outline-data'):
+                outline_data = p.nodeAfterTree()
+                self.add(p)
             else:
-                print('\n', pad, "ERROR", p.h, '\n')
-    #@+node:ekr.20190831045844.1: *4* aso.create_inactive_settings
-    def create_inactive_settings(self, c, kind, root, settings_root):
-        """Create the active settings tree for c under root."""
-        # g.trace(kind, c.shortFileName())
+                self.add(p)
+    #@+node:ekr.20190905091614.12: *3* aso.add
+    def add(self, p, h=None):
+        """
+        Add a node for p.
+        
+        We must *never* alter p in any way.
+        Instead, the org flag tells whether the "ORG:" prefix.
+        """
+        if 0:
+            pad = ' '*p.level()
+            print(pad, p.h)
+        p_level = p.level()
+        if p_level > self.level + 1:
+            g.trace('OOPS', p.v.context.shortFileName(), self.level, p_level, p.h)
+            return
+        while p_level < self.level + 1 and len(self.parents) > 1:
+            self.parents.pop()
+            self.level -= 1
+        parent = self.parents[-1]
+        child = parent.insertAsLastChild()
+        child.h = h or p.h
+        child.b = p.b
+        self.parents.append(child)
+        self.level += 1
+    #@+node:ekr.20190905091614.13: *3* aso.clean
+    def clean(self, root):
+        """
+        Remove all unnecessary nodes.
+        Remove the "ORG:" prefix from remaining nodes.
+        """
+        self.clean_node(root)
+        
+    def clean_node(self, p):
+        """Remove p if it contains no children after cleaning its children."""
+        tag = 'ORG:'
+        # There are no clones, so deleting children in reverse preserves positions.
+        for child in reversed(list(p.children())):
+            self.clean_node(child)
+        if p.h.startswith(tag):
+            if p.hasChildren():
+                p.h = p.h.lstrip(tag).strip()
+            else:
+                p.doDelete()
+    #@+node:ekr.20190905091614.14: *3* aso.filter_settings
+    def filter_settings(self, target_kind):
+        """Return a dict containing only settings defined in the file given by kind."""
+        # Crucial: Always use the newly-created commander.
+        #          It's settings are guaranteed to be correct.
+        c = self.commander
+        valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
+        assert target_kind in valid_kinds, repr(target_kind)
+        d = c.config.settingsDict
+        result = {}
+        for key in d.keys(): 
+            gs = d.get(key)
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
+            if not gs.kind:
+                g.trace('OOPS: no kind', repr(gs))
+                continue
+            kind = c.config.getSource(setting=gs)
+            if kind == 'ignore':
+                g.trace('IGNORE:', kind, key)
+                continue
+            if kind in ('error'):
+                g.trace('ERROR:', kind, key)
+                continue
+            if kind == target_kind:
+                result[key] = gs
+        return result
     #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
@@ -1646,6 +1732,47 @@ class LocalConfigManager:
             # Set *both* the commander ivar and the c.config ivar.
             setattr(self, ivarName, val)
             setattr(c, ivarName, val)
+    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
+    def createActivesSettingsOutline(self):
+        """
+        Create and open an outline, summarizing all presently active settings.
+        
+        The outline retains the organization of all active settings files.
+        
+        See #852: https://github.com/leo-editor/leo-editor/issues/852
+        """
+        ActiveSettingsOutline(self.c)
+    #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
+    def getSource(self, setting):
+        """
+        Return a string representing the source file of the given setting,
+        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
+        """
+        trace = False
+        if not isinstance(setting, g.GeneralSetting):
+            return "error"
+        try:
+            path = setting.path
+        except Exception:
+            return "error"
+        val = g.truncate(repr(setting.val), 50)
+        if not path:
+            # g.trace('NO PATH', setting.kind, val)
+            return "local_file"
+        path = path.lower()
+        for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
+            if path.endswith(tag.lower()):
+                if setting.kind == 'color':
+                    if trace: g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                return tag.rstrip('.leo')
+        theme_path = g.app.loadManager.theme_path
+        if theme_path and g.shortFileName(theme_path.lower()) in path:
+            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
+            return "theme_file"
+        # g.trace('NOT FOUND', repr(theme_path), repr(path))
+        if path == 'register-command' or path.find('mode') > -1:
+            return 'ignore'
+        return "local_file"
     #@+node:ekr.20120215072959.12471: *3* c.config.Getters
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
@@ -2019,16 +2146,6 @@ class LocalConfigManager:
             pass # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
-    def createActivesSettingsOutline(self):
-        """
-        Create and open an outline, summarizing all presently active settings.
-        
-        The outline retains the organization of all active settings files.
-        
-        See #852: https://github.com/leo-editor/leo-editor/issues/852
-        """
-        ActiveSettingsOutline(self.c)
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
@@ -2044,6 +2161,11 @@ class LocalConfigManager:
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+    #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
+    def settingIsActiveInPath(self, gs, target_path):
+        """Return True if settings file given by path actually defines the setting, gs."""
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
+        return gs.path == target_path
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
         '''
