@@ -526,7 +526,8 @@ class ParserBaseClass:
         modeName = self.computeModeName(name)
         d = g.TypedDict( # was TypedDictOfLists.
             name='modeDict for %s' % (modeName),
-            keyType=type('commandName'), valType=g.BindingInfo)
+            keyType=type('commandName'),
+            valType=g.BindingInfo)
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -874,7 +875,6 @@ class ParserBaseClass:
             valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='shortcutsDict for %s' % (c.shortFileName()),
-            
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
