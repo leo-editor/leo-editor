@@ -2061,7 +2061,7 @@ class KeyHandlerClass:
             assert g.isStroke(stroke), stroke
         d = c.config.shortcutsDict
         if d is None:
-            d = g.TypedDictOfLists(
+            d = g.TypedDict( # was TypedDictOfLists.
                 name='empty shortcuts dict',
                 keyType=type('commandName'),
                 valType=g.BindingInfo,
@@ -2217,7 +2217,7 @@ class KeyHandlerClass:
         #
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2 = g.TypedDictOfLists(
+        d2 = g.TypedDict( # was TypedDictOfLists.
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke,
             valType=g.BindingInfo,
