@@ -1552,7 +1552,7 @@ class GlobalConfigManager:
             gs = d.get(key)
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             if gs and gs.kind:
-                letter = lm.computeBindingLetter(gs.path)
+                letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments
