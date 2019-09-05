@@ -98,7 +98,7 @@ def init(): # pyzo_in_leo.py
         global init_warning_given
         if not init_warning_given:
             init_warning_given = True
-            print('%s %s' % (__name__, message))
+            print('\n%s %s\n' % (__name__, message))
         return False
         
     if g.app.gui.guiName() != "qt":
