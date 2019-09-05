@@ -47,7 +47,7 @@ class ParserBaseClass:
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
-        self.shortcutsDict = g.TypedDictOfLists(
+        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),
             valType=g.BindingInfo,
@@ -525,7 +525,7 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d = g.TypedDictOfLists(
+        d = g.TypedDict( # was TypedDictOfLists.
             name='modeDict for %s' % (modeName),
             keyType=type('commandName'),
             valType=g.BindingInfo,
@@ -878,10 +878,10 @@ class ParserBaseClass:
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),
-            valType=g.GeneralSetting,
-        )
-        self.shortcutsDict = g.TypedDictOfLists(
+            valType=g.GeneralSetting)
+        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='shortcutsDict for %s' % (c.shortFileName()),
+            
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
@@ -1347,7 +1347,7 @@ class GlobalConfigManager:
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
             keyType=str,
-            valType=g.TypedDictOfLists)
+            valType=g.TypedDict) # was TypedDictOfLists.
         # Inited later...
         self.panes = None
         self.sc = None
@@ -1703,12 +1703,12 @@ class LocalConfigManager:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            assert isinstance(self.shortcutsDict,g.TypedDictOfLists), repr(self.shortcutsDict)
+            assert isinstance(self.shortcutsDict,g.TypedDict), repr(self.shortcutsDict) # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
-            assert d2 is None or isinstance(d2, g.TypedDictOfLists), repr(d2)
+            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2) # was TypedDictOfLists.
         # Define these explicitly to eliminate a pylint warning.
         if 0:
             # No longer needed now that c.config.initIvar always sets
@@ -2022,7 +2022,7 @@ class LocalConfigManager:
                 g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
             return None, []
         if d:
-            assert isinstance(d, g.TypedDictOfLists), repr(d)
+            assert isinstance(d, g.TypedDict), repr(d) # was TypedDictOfLists.
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '') # Allow '&' in names.
             aList = d.get(commandName, [])

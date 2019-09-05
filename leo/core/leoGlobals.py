@@ -2206,7 +2206,7 @@ def null_object_print(id_, kind, *args):
         # Print each signature once.
         tracing_signatures [signature] = True
         g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict (same as g.TypedDictOfLists)
+#@+node:ekr.20120129181245.10220: *3* class g.TypedDict
 class TypedDict:
     """
     A class providing additional dictionary-related methods:
@@ -2245,7 +2245,6 @@ class TypedDict:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
-        # From TypedDictOfLists...
         self._checkKeyType(key)
         try:
             for z in val:
@@ -2314,9 +2313,6 @@ class TypedDict:
         else:
             self.d.update(d)
     #@-others
-
-### While testing, retain the TypeDictOfLists spelling in the code.
-TypedDictOfLists = TypedDict
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
