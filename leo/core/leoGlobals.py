@@ -2216,10 +2216,16 @@ class TypedDict:
     __setitem__:  Type checks its arguments.
     __str__:      A concise summary of the inner dict.
     add_to_list:  A convenience method that adds a value to its key's list.
-    copy:         A thin wrapper for copy.deepcopy.
     name:         The dict's name.
     setName:      Sets the dict's name, for use by __repr__.
-    update:       Updates the internal dict.
+    
+    Overrides the following standard methods:
+
+    copy:         A thin wrapper for copy.deepcopy.
+    get:          Returns self.d.get
+    items:        Returns self.d.items
+    keys:         Returns self.d.keys
+    update:       Updates self.d from either a dict or a TypedDict.
     """
     
     def __init__(self, name, keyType, valType):
@@ -2283,12 +2289,19 @@ class TypedDict:
         '''Return a new dict with the same contents.'''
         import copy
         return copy.deepcopy(self)
-    #@+node:ekr.20120205022040.17771: *4* td.get & keys
+    #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
     def get(self, key, default=None):
         return self.d.get(key, default)
+        
+    def items(self):
+        return self.d.items()
 
     def keys(self):
         return self.d.keys()
+        
+    def values(self):
+        return self.d.values()
+
     #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
     def get_setting(self, key):
         key = key.replace('-','').replace('_','')
