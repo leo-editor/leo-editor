@@ -2166,6 +2166,23 @@ class LocalConfigManager:
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+    #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
+    def settingIsActiveInPath(self, gs, path):
+        """Return True if settings file given by path actually defines the setting, gs."""
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
+        return True
+        
+        # table = (
+            # ('M', 'myLeoSettings.leo'),
+            # (' ', 'leoSettings.leo'),
+            # ('F', '.leo'),
+        # )
+        # for letter, kind2 in table:
+            # if kind.lower().endswith(kind2.lower()):
+                # return letter
+        # if kind == 'register-command' or kind.find('mode') > -1:
+            # return '@'
+        # return 'D'
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
         '''
