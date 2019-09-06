@@ -2918,7 +2918,7 @@ class LoadManager:
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print('\nIgnoring the deprecated %s option\n' % bad_option)
+                print(f'\nIgnoring the deprecated {bad_option} option\n')
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -3023,7 +3023,7 @@ class LoadManager:
             elif gui in ('console', 'curses', 'text', 'null'):
                 pass
             else:
-                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+                print(f'scanOptions: unknown gui: {gui}.  Using qt gui')
                 gui = 'qt'
         else:
             gui = 'qt'
@@ -3058,7 +3058,7 @@ class LoadManager:
             fn = g.os_path_finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
-                print('script not found:%s' % fn)
+                print(f'script not found: {fn}')
                 sys.exit(1)
         else:
             script = None
@@ -3074,7 +3074,7 @@ class LoadManager:
         g.app.diff = options.diff
          # --global-docks
         g.app.use_global_docks = bool(options.global_docks)
-        print('--global-docks: %s\n' % g.app.use_global_docks)
+        print(f'--global-docks: {g.app.use_global_docks}\n')
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3108,7 +3108,7 @@ class LoadManager:
                     # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
-                    g.es_print('unknown --trace value: %s' % val)
+                    g.es_print(f'unknown --trace value: {val}')
         # g.trace('g.app.debug', repr(g.app.debug))
         #
         # These are not bool options.

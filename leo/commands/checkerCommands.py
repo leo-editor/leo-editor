@@ -314,10 +314,12 @@ class BlackCommand:
         self.undo_type = 'blacken-node'
         self.blacken_node_helper(root, check_flag, diff_flag)
         t2 = time.clock()
-        print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
-            self.total, g.plural(self.total),
-            self.changed, g.plural(self.changed),
-            self.errors, g.plural(self.errors), t2-t1))
+        print(
+            f'scanned {self.total} node{g.plural(self.total)}, '
+            f'changed {self.changed} node{g.plugral(self.changed)}, '
+            f'{self.errors}error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3} sec.'
+        )
         if self.changed:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
