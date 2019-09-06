@@ -1704,24 +1704,24 @@ class LeoApp:
         sfn = c.shortFileName()
         table = (
             # First, try the per-outline state.
-            ('windowState:%s' % (c.fileName()), dw.restoreState),
+            (f'windowState:{c.fileName()}', dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
         )
         for key, method in table:
             val = self.db.get(key)
             if val:
-                if trace: g.trace('%s found key: %s' % (sfn, key))
+                if trace: g.trace(f'{sfn} found key: {key}')
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
                     method(val)
                     return
                 except Exception as err:
-                    g.trace('%s bad value: %s %s' % (sfn, key, err))
+                    g.trace(f'{sfn} bad value: {key} {err}')
             # This is not an error.
             elif trace:
-                g.trace('%s missing key: %s' % (sfn, key))
+                g.trace(f'{sfn} missing key: {key}')
         #
         # #1190 (bad initial layout)
         # Use a pre-defined layout (magic number).
