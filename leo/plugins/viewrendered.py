@@ -742,8 +742,6 @@ if QtWidgets: # NOQA
             self.layout().setContentsMargins(0, 0, 0, 0)
             if not g.app.dock:
                 return
-            if not getattr(dw, 'body_dock', None):
-                return # For show-settings-outline.
             external_dock = c.config.getBool('use-vr-dock', default=False)
                 # reload_settings has not yet been called.
             #
