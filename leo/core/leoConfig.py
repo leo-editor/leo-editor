@@ -949,7 +949,7 @@ class ActiveSettingsOutline:
             self.commanders.append(('theme_file', lm.theme_c),)
         if self.c.config.settingsRoot():
             self.commanders.append(('local_file', self.c),)
-    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders **** Theme file???
+    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders
     def load_hidden_commanders(self):
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
@@ -978,7 +978,14 @@ class ActiveSettingsOutline:
         # Switch to the new commander. Do *not* use previous settings.
         fileName = '%s-active-settings' % old_c.fileName()
         g.es(fileName, color='red')
-        c = g.app.newCommander(fileName=fileName)
+        # 
+        # Work around #1318: don't use docks in the new window.
+        try:
+            old_dock = g.app.dock
+            g.app.dock = False
+            c = g.app.newCommander(fileName=fileName)
+        finally:
+            g.app.dock = old_dock
         # Restore the layout of docks, if we have ever saved this file.
         c.frame.setInitialWindowGeometry()
         g.app.restoreWindowState(c)
