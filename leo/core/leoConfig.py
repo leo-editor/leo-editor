@@ -976,7 +976,7 @@ class ActiveSettingsOutline:
         g.app.setLog(None)
         g.app.lockLog()
         # Switch to the new commander. Do *not* use previous settings.
-        fileName = '%s-active-settings' % old_c.fileName()
+        fileName = f'{old_c.fileName()}-active-settings'
         g.es(fileName, color='red')
         c = g.app.newCommander(fileName=fileName)
         # Restore the layout of docks, if we have ever saved this file.
@@ -999,7 +999,7 @@ class ActiveSettingsOutline:
         #
         # Create the root node, with the legend in the body text.
         root = c.rootPosition()
-        root.h = 'Legend for %s' % self.c.shortFileName()
+        root.h = f'Legend for {self.c.shortFileName()}'
         root.b = self.legend()
         #
         # Create all the inner settings outlines.
@@ -1019,17 +1019,19 @@ class ActiveSettingsOutline:
     def legend(self):
         """Compute legend for self.c"""
         c, lm = self.c, g.app.loadManager
-        legend = '''\
+        legend = f'''\
+            @language rest
+
             legend:
 
                 leoSettings.leo
              @  @button, @command, @mode
             [D] default settings
-            [F] local file: %s
+            [F] local file: {c.shortFileName()}
             [M] myLeoSettings.leo
-            ''' % c.shortFileName()
+            '''
         if lm.theme_path:
-            legend = legend + '[T] theme file: %s\n' % g.shortFileName(lm.theme_path)
+            legend = legend + f'[T] theme file: {g.shortFileName(lm.theme_path)}\n'
         return g.adjustTripleString(legend, c.tab_width)
     #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
@@ -1100,9 +1102,8 @@ class ActiveSettingsOutline:
                     if isinstance(val, g.GeneralSetting):
                         # Use self.c, not self.commander.
                         letter = lm.computeBindingLetter(self.c, val.path)
-                        p.h = '[%s] INACTIVE: %s' % (letter, p.h)
-                    else:
-                        p.h = 'UNUSED: %s' % p.h
+                        p.h = f'[{letter}] INACTIVE: {p.h}'
+                        p.h = f'UNUSED: {p.h}'
                     self.add(p)
                 #@-<< handle a real setting >>
                 continue
