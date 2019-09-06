@@ -735,37 +735,28 @@ if QtWidgets: # NOQA
             self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
-            #
             # Create the inner contents.
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
             if not g.app.dock:
                 return
-            external_dock = c.config.getBool('use-vr-dock', default=False)
-                # reload_settings has not yet been called.
-            #
             # Allow the VR dock to move only in special circumstances.
-            moveable = (
-                external_dock and g.app.init_docks or
-                g.app.get_central_widget(c) == 'body'
-            )
+            central_body = g.app.get_central_widget(c) == 'body'
+            moveable = g.app.init_docks or central_body
             self.leo_dock = dock = g.app.gui.create_dock_widget(
                 closeable=True, moveable=moveable, height=50, name='Render')
-            if moveable:
-                #
+            if central_body:
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-                # dock.show()
-                return
-            #
-            # Split the body dock.
-            dw.leo_docks.append(dock)
-            dock.setWidget(self)
-            dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-            # Doesn't work.
-                # dock.hide()
+            else:
+                # Split the body dock.
+                dw.leo_docks.append(dock)
+                dock.setWidget(self)
+                dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
+            if g.app.init_docks:
+                    dock.show()
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
