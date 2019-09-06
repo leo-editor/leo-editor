@@ -978,14 +978,7 @@ class ActiveSettingsOutline:
         # Switch to the new commander. Do *not* use previous settings.
         fileName = '%s-active-settings' % old_c.fileName()
         g.es(fileName, color='red')
-        # 
-        # Work around #1318: don't use docks in the new window.
-        try:
-            old_dock = g.app.dock
-            g.app.dock = False
-            c = g.app.newCommander(fileName=fileName)
-        finally:
-            g.app.dock = old_dock
+        c = g.app.newCommander(fileName=fileName)
         # Restore the layout of docks, if we have ever saved this file.
         c.frame.setInitialWindowGeometry()
         g.app.restoreWindowState(c)
