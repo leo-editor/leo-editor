@@ -949,7 +949,7 @@ class ActiveSettingsOutline:
             self.commanders.append(('theme_file', lm.theme_c),)
         if self.c.config.settingsRoot():
             self.commanders.append(('local_file', self.c),)
-    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders **** Theme file???
+    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders
     def load_hidden_commanders(self):
         """
         Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
