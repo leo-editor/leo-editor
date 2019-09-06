@@ -19,7 +19,7 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 
 #@+others
-#@+node:ekr.20190816163728.1: ** close_handler (to do)
+#@+node:ekr.20190816163728.1: ** close_handler
 def close_handler():
     """
     Shut down pyzo.
@@ -318,7 +318,7 @@ def main_window_ctor():
         # bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
             # # Default: solarized base00
         # try:
-            # self.setStyleSheet("background: %s" % bg) 
+            # self.setStyleSheet(f"background: {bg}") 
         # except Exception:
             # g.es_exception()
 
