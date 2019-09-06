@@ -801,7 +801,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.app.use_global_docks:
             dock.show() # Essential!
         return dock
-    #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
+    #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (testing only)
     def make_all_global_docks(self):
         """Make four global docks for testing."""
         Qt = QtCore.Qt
