@@ -191,10 +191,10 @@ class ConventionChecker:
                 print('===== %s' % (sfn))
             else:
                 print('===== <string>\n%s\n----- </string>\n' % s.rstrip())
-        t1 = time.clock()
+        t1 = time.process_time()
         node = ast.parse(s, filename='before', mode='exec')
         self.check_helper(fn=sfn, node=node, s=s)
-        t2 = time.clock()
+        t2 = time.process_time()
         t_tot = t2-t1
         if t_tot > self.max_time:
             self.max_time = t_tot
@@ -233,14 +233,14 @@ class ConventionChecker:
         utils = ProjectUtils()
         files = utils.project_files(project_name, force_all=False)
         if files:
-            t1 = time.clock()
+            t1 = time.process_time()
             for fn in files:
                 sfn = g.shortFileName(fn)
                 if sfn in fails or fn in fails:
                     if trace_skipped: print('===== skipping', sfn)
                 else:
                     self.check_file(fn=fn, trace_fn=trace_fn)
-            t2 = time.clock()
+            t2 = time.process_time()
             print('%s files in %4.2f sec. max %4.2f sec in %s' % (
                 len(files), (t2-t1), self.max_time, self.slowest_file))
             if self.errors:

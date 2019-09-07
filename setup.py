@@ -116,7 +116,7 @@ user_requires = [
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
     'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
-    'pylint','pyflakes', # coding syntax standards
+    'pylint','pyflakes','black', # coding syntax standards
     'setupext-janitor >= 1.1', # extend `setup.py clean` #1055,#1255
     'shortcutter', # desktop integration (#1243)
     'sphinx', # rST plugin

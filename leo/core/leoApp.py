@@ -1704,24 +1704,24 @@ class LeoApp:
         sfn = c.shortFileName()
         table = (
             # First, try the per-outline state.
-            ('windowState:%s' % (c.fileName()), dw.restoreState),
+            (f'windowState:{c.fileName()}', dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
         )
         for key, method in table:
             val = self.db.get(key)
             if val:
-                if trace: g.trace('%s found key: %s' % (sfn, key))
+                if trace: g.trace(f'{sfn} found key: {key}')
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
                     method(val)
                     return
                 except Exception as err:
-                    g.trace('%s bad value: %s %s' % (sfn, key, err))
+                    g.trace(f'{sfn} bad value: {key} {err}')
             # This is not an error.
             elif trace:
-                g.trace('%s missing key: %s' % (sfn, key))
+                g.trace(f'{sfn} missing key: {key}')
         #
         # #1190 (bad initial layout)
         # Use a pre-defined layout (magic number).
@@ -1819,7 +1819,7 @@ class LoadManager:
         self.globalSettingsDict = None
             # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
         self.globalBindingsDict = None
-            # A g.TypedDictOfLists: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
+            # A g.TypedDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
         #
         # LoadManager ivars corresponding to user options...
         #
@@ -2033,16 +2033,27 @@ class LoadManager:
             # Make sure home has normalized slashes.
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
     def computeThemeFilePath(self):
-        '''Return the absolute path to the theme .leo file.'''
+        """
+        Return the absolute path to the theme .leo file, resolved using the search order for themes.
+        
+        1. Use the --theme command-line option if it exists.
+        
+        2. Otherwise, preload the first .leo file.
+           Load the file given by @string theme-name setting.
+           
+        3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
+           Load the file if setting exists.  Otherwise return None.
+        """
         lm = self
         resolve = self.resolve_theme_path
         #
-        # Step 1: Use the --theme file if it exists
+        # Step 1: Use the --theme command-line options if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
-        if path: return path
+        if path:
+            # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+            return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
-        # This is a hack, but especially useful for test*.leo files in leo/themes.
         path = lm.files and lm.files[0]
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
@@ -2058,9 +2069,12 @@ class LoadManager:
                 if setting:
                     tag = theme_c.shortFileName()
                     path = resolve(setting, tag=tag)
-                    if path: return path
+                    if path:
+                        # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+                        return path
         #
-        # Finally, use the setting in myLeoSettings.leo.
+        # Step 3: use the @string theme-name setting in myLeoSettings.leo.
+        # Note: the setting should *never* appear in leoSettings.leo!
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         return resolve(setting, tag=tag)
@@ -2130,19 +2144,22 @@ class LoadManager:
                 g.trace('%20s' % (ivar), val)
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
-    def computeBindingLetter(self, kind):
-        # lm = self
-        if not kind:
+    def computeBindingLetter(self, c, path):
+        lm = self
+        if not path:
             return 'D'
+        path = path.lower()
         table = (
             ('M', 'myLeoSettings.leo'),
             (' ', 'leoSettings.leo'),
-            ('F', '.leo'),
+            ('F', c.shortFileName()),
         )
-        for letter, kind2 in table:
-            if kind.lower().endswith(kind2.lower()):
+        for letter, path2 in table:
+            if path2 and path.endswith(path2.lower()):
                 return letter
-        if kind == 'register-command' or kind.find('mode') > -1:
+        if lm.theme_path and path.endswith(lm.theme_path.lower()):
+            return 'T'
+        if path == 'register-command' or path.find('mode') > -1:
             return '@'
         return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
@@ -2174,10 +2191,11 @@ class LoadManager:
         settings_d = g.app.config.defaultsDict
         assert isinstance(settings_d, g.TypedDict), settings_d
         settings_d.setName('lm.globalSettingsDict')
-        bindings_d = g.TypedDictOfLists(
+        bindings_d = g.TypedDict( # was TypedDictOfLists.
             name='lm.globalBindingsDict',
             keyType=type('s'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
@@ -2311,16 +2329,17 @@ class LoadManager:
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         '''
-        result = g.TypedDictOfLists(
+        result = g.TypedDict( # was TypedDictOfLists.
             name='inverted %s' % d.name(),
             keyType=g.KeyStroke,
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for commandName in d.keys():
             for bi in d.get(commandName, []):
                 stroke = bi.stroke # This is canonicalized.
                 bi.commandName = commandName # Add info.
                 assert stroke
-                result.add(stroke, bi)
+                result.add_to_list(stroke, bi)
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
@@ -2329,17 +2348,18 @@ class LoadManager:
         returning a dict whose keys are command names.
         '''
         assert d.keyType == g.KeyStroke, d.keyType
-        result = g.TypedDictOfLists(
+        result = g.TypedDict( # was TypedDictOfLists.
             name='uninverted %s' % d.name(),
             keyType=type('commandName'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName
                 assert commandName
-                result.add(commandName, bi)
+                result.add_to_list(commandName, bi)
         return result
-    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile (new trace)
     def openSettingsFile(self, fn):
         '''
         Open a settings file with a null gui.  Return the commander.
@@ -2358,6 +2378,8 @@ class LoadManager:
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
+            # A useful trace.
+            # g.trace('%20s' % g.shortFileName(fn), g.callers(3))
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2376,16 +2398,23 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return c if ok else None
-    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (changed)
     def readGlobalSettingsFiles(self):
-        '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
+        '''
+        Read leoSettings.leo and myLeoSettings.leo using a null gui.
+        
+        New in Leo 6.1: this sets ivars for the ActiveSettingsOutline class.
+        '''
         trace = 'themes' in g.app.debug
         lm = self
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
         old_commanders = g.app.commanders()
-        commanders = [lm.openSettingsFile(path) for path in paths]
+        lm.leo_settings_path = lm.computeLeoSettingsPath()
+        lm.my_settings_path = lm.computeMyLeoSettingsPath()
+        lm.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+        lm.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+        commanders = [lm.leo_settings_c, lm.my_settings_c]
         commanders = [z for z in commanders if z]
         settings_d, bindings_d = lm.createDefaultSettingsDicts()
         for c in commanders:
@@ -2399,16 +2428,16 @@ class LoadManager:
         lm.globalBindingsDict = bindings_d
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
-        theme_path = lm.computeThemeFilePath()
-        if theme_path:
-            theme_c = lm.openSettingsFile(theme_path)
-            if theme_c:
+        lm.theme_path = lm.computeThemeFilePath()
+        if lm.theme_path:
+            lm.theme_c = lm.openSettingsFile(lm.theme_path)
+            if lm.theme_c:
                 # Merge theme_c's settings into globalSettingsDict.
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                    theme_c, settings_d, bindings_d, localFlag=False)
+                    lm.theme_c, settings_d, bindings_d, localFlag=False)
                 lm.globalSettingsDict = settings_d
                 # Set global vars
-                g.app.theme_directory = g.os_path_dirname(theme_path)
+                g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
                 if 0:
                     # Not necessary **provided** that theme .leo files
@@ -2452,7 +2481,7 @@ class LoadManager:
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
-        t1 = time.clock()
+        t1 = time.process_time()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2491,7 +2520,7 @@ class LoadManager:
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
-            t2 = time.clock()
+            t2 = time.process_time()
             g.es_print('startup time: %5.2f sec' % (t2-t1))
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
@@ -2873,7 +2902,7 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
@@ -2884,12 +2913,12 @@ class LoadManager:
             '--session-restore',
             '--session-save',
         )
-        trace_m='''cache,coloring,dock,drawing,events,focus,git,gnx,ipython,
-          keys,plugins,select,shutdown,size,startup,themes'''
+        trace_m='''black,cache,coloring,dock,drawing,events,focus,git,gnx,
+          ipython,keys,plugins,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print('\nIgnoring the deprecated %s option\n' % bad_option)
+                print(f'\nIgnoring the deprecated {bad_option} option\n')
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -2994,7 +3023,7 @@ class LoadManager:
             elif gui in ('console', 'curses', 'text', 'null'):
                 pass
             else:
-                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+                print(f'scanOptions: unknown gui: {gui}.  Using qt gui')
                 gui = 'qt'
         else:
             gui = 'qt'
@@ -3029,7 +3058,7 @@ class LoadManager:
             fn = g.os_path_finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
-                print('script not found:%s' % fn)
+                print(f'script not found: {fn}')
                 sys.exit(1)
         else:
             script = None
@@ -3045,7 +3074,7 @@ class LoadManager:
         g.app.diff = options.diff
          # --global-docks
         g.app.use_global_docks = bool(options.global_docks)
-        print('--global-docks: %s\n' % g.app.use_global_docks)
+        print(f'--global-docks: {g.app.use_global_docks}\n')
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3079,7 +3108,7 @@ class LoadManager:
                     # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
-                    g.es_print('unknown --trace value: %s' % val)
+                    g.es_print(f'unknown --trace value: {val}')
         # g.trace('g.app.debug', repr(g.app.debug))
         #
         # These are not bool options.
@@ -3466,8 +3495,8 @@ class PreviousSettings:
     files and passed to the second pass.'''
 
     def __init__(self, settingsDict, shortcutsDict):
-        assert g.isTypedDict(settingsDict)
-        assert g.isTypedDictOfLists(shortcutsDict)
+        assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
+        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict) # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 

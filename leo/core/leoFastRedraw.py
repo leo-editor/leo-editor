@@ -56,12 +56,12 @@ class FastRedraw:
     def flatten_outline (self, c):
         '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
         trace = False and not g.unitTesting
-        t1 = time.clock()
+        t1 = time.process_time()
         aList = []
         for p in c.rootPosition().self_and_siblings():
             self.extend_flattened_outline(aList, p)
         if trace:
-            t2 = time.clock()
+            t2 = time.process_time()
             print('app.flatten_outline: %s entries %6.4f sec.' % (
                 len(aList), (t2-t1)))
         return aList

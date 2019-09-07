@@ -19,9 +19,13 @@ def reloadAllSettings(self, event=None):
     '''Reload settings for all open outlines, saving them if necessary.'''
     c = self
     reloadSettingsHelper(c, all=True)
-#@+node:ekr.20170221034501.1: *3* def reloadSettingsHelper
+#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
 def reloadSettingsHelper(c, all):
-    '''Reload settings in all commanders, or just c.'''
+    """
+    Reload settings in all commanders, or just c.
+    
+    A helper function for reload-settings and reload-all-settings.
+    """
     lm = g.app.loadManager
     commanders = g.app.commanders() if all else [c]
     # Save any changes so they can be seen.
@@ -143,6 +147,7 @@ g.command_alias('importMOREFiles', importAnyFile)
 g.command_alias('importNowebFiles', importAnyFile)
 g.command_alias('importTabFiles', importAnyFile)
 #@+node:ekr.20031218072017.1623: *3* c_file.new
+@g.commander_command('file-new')
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     '''Create a new Leo window.'''

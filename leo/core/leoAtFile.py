@@ -1667,7 +1667,7 @@ class AtFile:
         except Exception:
             at.exception("exception preprocessing script")
             return ''
-    #@+node:ekr.20041005105605.160: *4* Writing 4.x
+    #@+node:ekr.20041005105605.160: *4* Writing helpers
     #@+node:ekr.20041005105605.161: *5* at.putBody & helper
     def putBody(self, p, fromString=''):
         '''
@@ -2079,7 +2079,7 @@ class AtFile:
         if at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.onl()
-    #@+node:ekr.20041005105605.187: *4* Writing 4,x sentinels...
+    #@+node:ekr.20041005105605.187: *4* Writing sentinels...
     #@+node:ekr.20041005105605.188: *5* at.nodeSentinelText & helper
     def nodeSentinelText(self, p):
         """Return the text of a @+node or @-node sentinel for p."""
@@ -2177,7 +2177,7 @@ class AtFile:
             if at.endSentinelComment:
                 at.os(at.endSentinelComment)
             at.onl()
-    #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
+    #@+node:ekr.20041005105605.196: *4* Writing utils...
     #@+node:ekr.20181024134823.1: *5* at.addToOrphanList
     def addToOrphanList(self, root):
         '''Mark the root as erroneous for c.raise_error_dialogs().'''
@@ -2539,7 +2539,7 @@ class AtFile:
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
+    #@+node:ekr.20041005105605.206: *5* at.putDirective & helper
     def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.
@@ -2559,15 +2559,23 @@ class AtFile:
         elif g.match_word(s, k, "@comment"):
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
+            # #1307.
+            if p.isAtCleanNode():
+                at.error('ignoring @last directive in %r' % p.h)
+                g.es_print('@last is not valid in @clean nodes')
             # #1297.
-            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+            elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@last")
                     # Convert to an verbatim line _without_ anything else.
             else:
                 at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
+            # #1307.
+            if p.isAtCleanNode():
+                at.error('ignoring @first directive in %r' % p.h)
+                g.es_print('@first is not valid in @clean nodes')
             # #1297.
-            if g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+            elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@first")
                     # Convert to an verbatim line _without_ anything else.
             else:
@@ -3594,7 +3602,7 @@ class FastAtRead:
         anchored in root.v.
         '''
         trace = False
-        t1 = time.clock()
+        t1 = time.process_time()
         self.path = path
         self.root = root
         sfn = g.shortFileName(path)
@@ -3611,7 +3619,7 @@ class FastAtRead:
         self.scan_lines(
             delims, first_lines, lines, path, start_i)
         if trace:
-            t2 = time.clock()
+            t2 = time.process_time()
             g.trace('%5.3f sec. %s' % ((t2-t1), path))
         return True
     #@-others

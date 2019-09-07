@@ -1133,9 +1133,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)
-    #@+node:ekr.20150514063305.402: *3* printSettings
+    #@+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
-    def printSettings(self, event=None):
+    def showSettings(self, event=None):
         '''
         Prints the value of every setting, except key bindings and commands and
         open-with tables. The following shows where the active setting came
@@ -1148,6 +1148,18 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [M] myLeoSettings.leo,
         '''
         self.c.config.printSettings()
+    #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)
+    @cmd('show-settings-outline')
+    def showSettingsOutline(self, event=None):
+        """
+        Create and open an outline, summarizing all presently active settings.
+        
+        The outline retains the organization of all active settings files.
+        
+        See #852: https://github.com/leo-editor/leo-editor/issues/852
+        """
+        
+        self.c.config.createActivesSettingsOutline()
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
     def pythonHelp(self, event=None):

@@ -4655,7 +4655,7 @@ if p:
 try:
     parser = leoConfig.SettingsTreeParser(c,localFlag=True)
     d1,d2 = parser.traverse()
-    assert isinstance(d1,g.TypedDictOfLists),d1
+    assert isinstance(d1,g.TypedDict),d1
     assert isinstance(d2,g.TypedDict),d2
 finally:
     if p:

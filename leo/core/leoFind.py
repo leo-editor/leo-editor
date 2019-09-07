@@ -1413,7 +1413,7 @@ class LeoFind:
 
         c = self.c; u = c.undoer; undoType = 'Replace All'
         current = c.p
-        t1 = time.clock()
+        t1 = time.process_time()
         if not self.checkArgs():
             return
         self.initInHeadline()
@@ -1450,7 +1450,7 @@ class LeoFind:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
-        t2 = time.clock()
+        t2 = time.process_time()
         g.es_print('changed %s instances%s in %4.2f sec.' % (
             count, g.plural(count), (t2-t1)))
         c.recolor()

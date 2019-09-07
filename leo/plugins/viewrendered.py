@@ -757,13 +757,15 @@ if QtWidgets: # NOQA
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-                dock.show()
+                # dock.show()
                 return
             #
             # Split the body dock.
             dw.leo_docks.append(dock)
             dock.setWidget(self)
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
+            # Doesn't work.
+                # dock.hide()
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -1497,8 +1499,13 @@ if QtWidgets: # NOQA
             if g.app.dock:
                 dock = vr.leo_dock
                 if dock:
+                    # g.trace('hidden', dock.isHidden(), dock.objectName(), g.callers(2))
                     if dock.isHidden():
-                        dock.show()
+                        # dock.show()
+                        g.app.restoreWindowState(c)
+                            # #1318.
+                        dock.hide()
+                            # #1318.
                     dock.raise_()
                         # #1230.
             else:

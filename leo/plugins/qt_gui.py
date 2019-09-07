@@ -796,30 +796,11 @@ class LeoQtGui(leoGui.LeoGui):
             features |= dock.DockWidgetClosable
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
-        dock.setObjectName('dock.%s' % name.lower())
+        dock.setObjectName(f'dock.{name.lower()}')
         dock.setWindowTitle(name.capitalize())
         if g.app.use_global_docks:
             dock.show() # Essential!
         return dock
-    #@+node:ekr.20190822141147.1: *4* qt_gui.make_all_global_docks (new)
-    def make_all_global_docks(self):
-        """Make four global docks for testing."""
-        Qt = QtCore.Qt
-        bottom_area, top_area = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
-        lt_area, rt_area = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
-        table = (
-            ("Test1", lt_area, "blue"),
-            ("Test2", rt_area, "yellow"),
-            ("Test3", top_area, "green"),
-            ("Test4", bottom_area, "pink"),
-        )
-        for name, area, color in table:
-            dock = self.create_dock_widget(
-                closeable=True, moveable=True, height=100, name=name)
-            dock.setStyleSheet("background: %s;" % color)
-            w = QtWidgets.QFrame()
-            dock.setWidget(w)
-            self.main_window.addDockWidget(area, dock)
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
     def make_outlines_dock(self):
         """

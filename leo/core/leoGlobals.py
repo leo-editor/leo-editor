@@ -563,7 +563,7 @@ class FileLikeObject:
 
 fileLikeObject = FileLikeObject
     # For compatibility.
-#@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting & isGeneralSetting
+#@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
 
@@ -589,19 +589,14 @@ class GeneralSetting:
         self.tag = tag
 
     def __repr__(self):
-        result = ['GeneralSetting kind: %s' % (self.kind)]
-        ivars = ('ivar', 'path', 'setting', 'val', 'tag')
-        for ivar in ivars:
-            if hasattr(self, ivar):
-                val = getattr(self, ivar)
-                if val is not None:
-                    result.append('%s: %s' % (ivar, val))
-        return ','.join(result)
+        # Better for g.printObj.
+        val = str(self.val).replace('\n', ' ')
+        return (
+            f'GS: {g.shortFileName(self.path):20} '
+            f'{self.kind:7} = {g.truncate(val, 50)}')
 
     dump = __repr__
-
-def isGeneralSetting(obj):
-    return isinstance(obj, GeneralSetting)
+    __str__ = __repr__
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
 class KeyStroke:
     '''
@@ -2212,145 +2207,134 @@ def null_object_print(id_, kind, *args):
         # Print each signature once.
         tracing_signatures [signature] = True
         g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict/OfLists & isTypedDict/OfLists
+#@+node:ekr.20120129181245.10220: *3* class g.TypedDict
 class TypedDict:
-    '''A class containing a name and enforcing type checking.'''
-    #@+others
-    #@+node:ekr.20120205022040.17769: *4* td.ctor
-    def __init__(self, name, keyType, valType):
+    """
+    A class providing additional dictionary-related methods:
+    
+    __init__:     Specifies types and the dict's name.
+    __repr__:     Compatible with g.printObj, based on g.objToString.
+    __setitem__:  Type checks its arguments.
+    __str__:      A concise summary of the inner dict.
+    add_to_list:  A convenience method that adds a value to its key's list.
+    name:         The dict's name.
+    setName:      Sets the dict's name, for use by __repr__.
+    
+    Overrides the following standard methods:
 
+    copy:         A thin wrapper for copy.deepcopy.
+    get:          Returns self.d.get
+    items:        Returns self.d.items
+    keys:         Returns self.d.keys
+    update:       Updates self.d from either a dict or a TypedDict.
+    """
+    
+    def __init__(self, name, keyType, valType):
         self.d = {}
-        self.isList = False
-        self._name = name # name is a method.
+        self._name = name  # For __repr__ only.
         self.keyType = keyType
         self.valType = valType
+
+    #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
+    def __str__(self):
+        """Concise: used by repr."""
+        return (
+            f'<TypedDict name:{self._name} '
+            f'keys:{self.keyType.__name__} '
+            f'values:{self.valType.__name__} '
+            f'len(keys): {len(list(self.keys()))}>'
+        )
+            
     def __repr__(self):
-        return '<TypedDict name:%s keys:%s values:%s len(keys): %s' % (
-            self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
+        """Suitable for g.printObj"""
+        return f'{g.dictToString(self.d)}\n{str(self)}\n'
 
-    __str__ = __repr__
-    #@+node:ekr.20120206134955.10150: *4* td._checkKey/ValType
-    def _checkKeyType(self, key):
-        if key and key.__class__ != self.keyType:
-            self._reportTypeError(key, self.keyType)
-
-    def _checkValType(self, val):
-        # This doesn't fail, either on Python 2.x or 3.x.
-        assert val.__class__ == self.valType, self._reportTypeError(val, self.valType)
-
-    def _reportTypeError(self, obj, objType):
-        print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
-        return 'dict: %s expected %s got %s' % (
-            self._name, obj.__class__.__name__, objType.__name__)
-    #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
-    def add(self, key, val):
+    #@+node:ekr.20120205022040.17774: *4* td.__setitem__
+    def __setitem__(self, key, val):
+        """Allow d[key] = val"""
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        self._checkKeyType(key)
+        self._checkKeyType(key)
+        try:
+            for z in val:
+                self._checkValType(z)
+        except TypeError:
+            self._checkValType(val) # val is not iterable.
+        self.d[key] = val
+    #@+node:ekr.20190904052828.1: *4* td.add_to_list
+    def add_to_list(self, key, val):
+        """Update the *list*, self.d [key]"""
+        ### g.trace(g.callers())
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
         self._checkValType(val)
-        if self.isList:
-            aList = self.d.get(key, [])
-            if val not in aList:
-                aList.append(val)
-                self.d[key] = aList
-        else:
-            self.d[key] = val
+        aList = self.d.get(key, [])
+        if val not in aList:
+            aList.append(val)
+            self.d[key] = aList
+    #@+node:ekr.20120206134955.10150: *4* td.checking
+    def _checkKeyType(self, key):
+        if key and key.__class__ != self.keyType:
+            self._reportTypeError(key, self.keyType)
 
-    def replace(self, key, val):
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        if self.isList:
-            try:
-                for z in val:
-                    self._checkValType(z)
-            except TypeError:
-                self._checkValType(val) # val is not iterable.
-            self.d[key] = val
-        else:
-            self._checkValType(val)
-            self.d[key] = val
+    def _checkValType(self, val):
+        if val.__class__ != self.valType:
+            self._reportTypeError(val, self.valType)
 
-    __setitem__ = replace # allow d[key] = val.
+    def _reportTypeError(self, obj, objType):
+        # print(f'Type mismatch: obj: {obj.__class__}, objType: {objType}')
+        return(
+            f'{self._name} '
+            f'expected {obj.__class__.__name__} '
+            f'got {objType.__name__}'
+        )
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
-        d = TypedDict(name or self._name, self.keyType, self.valType)
-        d.d = dict(self.d)
-        return d
-    #@+node:ekr.20120206134955.10151: *4* td.dump
-    def dump(self):
-        result = ['Dump of %s' % (self)]
-        for key in sorted(self.d.keys()):
-            if self.isList:
-                result.append(key)
-                aList = self.d.get(key, [])
-                for z in aList:
-                    result.append('  ' + repr(z))
-            else:
-                result.append(key, self.d.get(key))
-        return '\n'.join(result)
-    #@+node:ekr.20120205022040.17771: *4* td getters
+        import copy
+        return copy.deepcopy(self)
+    #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
     def get(self, key, default=None):
-        self._checkKeyType(key)
-        if default is None and self.isList:
-            default = []
         return self.d.get(key, default)
         
-    # New in Leo 5.7.1
+    def items(self):
+        return self.d.items()
+
+    def keys(self):
+        return self.d.keys()
+        
+    def values(self):
+        return self.d.values()
+
+    #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
     def get_setting(self, key):
         key = key.replace('-','').replace('_','')
         gs = self.get(key)
         val = gs and gs.val
         return val
         
-    # New in Leo 5.7.1
     def get_string_setting(self, key):
         val = self.get_setting(key)
-        return g.toUnicode(val) if val and isinstance(val, str) else None
-
-    def keys(self):
-        return self.d.keys()
-
+        return val if val and isinstance(val, str) else None
+    #@+node:ekr.20190904103552.1: *4* td.name & setName
     def name(self):
         return self._name
-    #@+node:ekr.20120214165710.10728: *4* td.setName
+
     def setName(self, name):
         self._name = name
     #@+node:ekr.20120205022040.17807: *4* td.update
     def update(self, d):
+        """Update self.d from a the appropriate dict."""
         if isinstance(d, TypedDict):
             self.d.update(d.d)
         else:
             self.d.update(d)
     #@-others
-
-def isTypedDict(obj):
-    return isinstance(obj, TypedDict)
-
-class TypedDictOfLists(TypedDict):
-    '''A class whose values are lists of typed values.'''
-
-    def __init__(self, name, keyType, valType):
-        super().__init__(name, keyType, valType)
-        self.isList = True
-
-    def __repr__(self):
-        return '<TypedDictOfLists name:%s keys:%s values:%s len(keys): %s' % (
-            self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
-
-    __str__ = __repr__
-
-    def copy(self, name=None):
-        d = TypedDictOfLists(name or self._name, self.keyType, self.valType)
-        d.d = dict(self.d)
-        return d
-
-def isTypedDictOfLists(obj):
-    return isinstance(obj, TypedDictOfLists)
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
@@ -2806,14 +2790,14 @@ def printGcAll(full=False, sort_by_n=True):
     '''Print a summary of all presently live objects.'''
     if g.unitTesting:
         return
-    t1 = time.clock()
+    t1 = time.process_time()
     objects = gc.get_objects()
     d = {} # Keys are types, values are ints (number of instances).
     for obj in objects:
         t = type(obj)
         if hasattr(obj, '__class__'):
             d[t] = d.get(t, 0) + 1
-    t2 = time.clock()
+    t2 = time.process_time()
     if full:
         if sort_by_n: # Sort by n
             items = list(d.items())
@@ -2947,7 +2931,7 @@ def printTimes(times):
     '''
     Print the differences in the times array.
     
-    times: an array of times (calls to time.clock()).
+    times: an array of times (calls to time.process_time()).
     '''
     for n, junk in enumerate(times[:-1]):
         t = times[n+1]-times[n]
@@ -3069,30 +3053,17 @@ def findTabWidthDirectives(c, p):
                 if w == 0: w = None
     return w
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-g_language_pat = re.compile(r'(^@language)', re.MULTILINE)
+g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
 
 def findLanguageDirectives(c, p):
     '''Return the language in effect at position p.'''
     if c is None:
         return None # c may be None for testing.
-    if c.target_language:
-        language = c.target_language.lower()
-    else:
-        language = 'python'
-    found = False
     for p in p.self_and_parents(copy=False):
-        if found: break
         for s in p.h, p.b:
-            if found: break
-            anIter = g_language_pat.finditer(s)
-            for m in anIter:
-                word = m.group(0)
-                i = m.start(0)
-                j = i + len(word)
-                k = g.skip_line(s, j)
-                language = s[j: k].strip()
-                found = True
-    return language
+            for m in g_language_pat.finditer(s):
+                return m.group(1)
+    return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.

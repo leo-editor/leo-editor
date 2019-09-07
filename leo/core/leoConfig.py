@@ -6,6 +6,7 @@
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import os
 import sys
+import re
 from leo.plugins.mod_scripting import build_rclick_tree
 import leo.core.leoGlobals as g
 #@-<< imports >>
@@ -46,7 +47,7 @@ class ParserBaseClass:
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
-        self.shortcutsDict = g.TypedDictOfLists(
+        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),
             valType=g.BindingInfo)
@@ -523,9 +524,10 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d = g.TypedDictOfLists(
+        d = g.TypedDict( # was TypedDictOfLists.
             name='modeDict for %s' % (modeName),
-            keyType=type('commandName'), valType=g.BindingInfo)
+            keyType=type('commandName'),
+            valType=g.BindingInfo)
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -534,7 +536,7 @@ class ParserBaseClass:
                 name, bi = self.parseShortcutLine('*mode-setting*', line)
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*', bi)
+                    d.add_to_list('*entry-commands*', bi)
                 elif bi is not None:
                     # A regular shortcut.
                     bi.pane = modeName
@@ -545,7 +547,7 @@ class ParserBaseClass:
                     if aList3:
                         aList.extend(aList3)
                     aList.append(bi)
-                    d.replace(name, aList)
+                    d [name] = aList
             # Restore the global shortcutsDict.
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName, name1, d)
@@ -871,9 +873,9 @@ class ParserBaseClass:
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),
             valType=g.GeneralSetting)
-        self.shortcutsDict = g.TypedDictOfLists(
+        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'),
+            keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
@@ -901,13 +903,294 @@ class ParserBaseClass:
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others
+#@+node:ekr.20190905091614.1: ** class ActiveSettingsOutline
+class ActiveSettingsOutline:
+    
+    def __init__(self, c):
+
+        self.c = c
+        self.start()
+        self.create_outline()
+
+    #@+others
+    #@+node:ekr.20190905091614.2: *3* aso.start & helpers
+    def start(self):
+        """Do everything except populating the new outline."""
+        # Copy settings.
+        c = self.c
+        settings = c.config.settingsDict
+        shortcuts = c.config.shortcutsDict
+        assert isinstance(settings, g.TypedDict), repr(settings)
+        assert isinstance(shortcuts, g.TypedDict), repr(shortcuts)
+        settings_copy = settings.copy()
+        shortcuts_copy = shortcuts.copy()
+        # Create the new commander.
+        self.commander = self.new_commander()
+        # Open hidden commanders for non-local settings files.
+        self.load_hidden_commanders()
+        # Create the ordered list of commander tuples, including the local .leo file.
+        self.create_commanders_list()
+        # Jam the old settings into the new commander.
+        self.commander.config.settingsDict = settings_copy
+        self.commander.config.shortcutsDict = shortcuts_copy
+    #@+node:ekr.20190905091614.3: *4* aso.create_commanders_list
+    def create_commanders_list(self):
+        
+        """Create the commanders list. Order matters."""
+        lm = g.app.loadManager
+        # The first element of each tuple must match the return values of c.config.getSource.
+        # "local_file", "theme_file", "myLeoSettings", "leoSettings"
+        
+        self.commanders = [
+            ('leoSettings', lm.leo_settings_c),
+            ('myLeoSettings', lm.my_settings_c),
+        ]
+        if lm.theme_c:
+            self.commanders.append(('theme_file', lm.theme_c),)
+        if self.c.config.settingsRoot():
+            self.commanders.append(('local_file', self.c),)
+    #@+node:ekr.20190905091614.4: *4* aso.load_hidden_commanders
+    def load_hidden_commanders(self):
+        """
+        Open hidden commanders for leoSettings.leo, myLeoSettings.leo and theme.leo.
+        """
+        lm = g.app.loadManager
+        lm.readGlobalSettingsFiles()
+        # Make sure to reload the local file.
+        c = g.app.commanders()[0]
+        fn = c.fileName()
+        if fn:
+            self.local_c = lm.openSettingsFile(fn)
+    #@+node:ekr.20190905091614.5: *4* aso.new_commander
+    def new_commander(self):
+        """Create the new commander, and load all settings files."""
+        # import leo.core.leoApp as leoApp
+        lm = g.app.loadManager
+        old_c = self.c
+        # Save any changes so they can be seen.
+        if old_c.isChanged():
+            old_c.save()
+        old_c.outerUpdate()
+        # From file-new...
+        g.app.disable_redraw = True
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Switch to the new commander. Do *not* use previous settings.
+        fileName = f'{old_c.fileName()}-active-settings'
+        g.es(fileName, color='red')
+        c = g.app.newCommander(fileName=fileName)
+        # Restore the layout of docks, if we have ever saved this file.
+        c.frame.setInitialWindowGeometry()
+        g.app.restoreWindowState(c)
+        c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+        # From file-new...
+        g.app.unlockLog()
+        lm.createMenu(c)
+        lm.finishOpen(c)
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        c.setChanged(False)
+        g.app.disable_redraw = False
+        return c
+    #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper
+    def create_outline(self):
+        """Create the summary outline"""
+        c = self.commander
+        #
+        # Create the root node, with the legend in the body text.
+        root = c.rootPosition()
+        root.h = f'Legend for {self.c.shortFileName()}'
+        root.b = self.legend()
+        #
+        # Create all the inner settings outlines.
+        for kind, commander in self.commanders:
+            p = root.insertAfter()
+            p.h = g.shortFileName(commander.fileName())
+            p.b = '@language rest\n@wrap\n'
+            self.create_inner_outline(commander, kind, p)
+        #
+        # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
+        for v in c.all_nodes():
+            v.clearDirty()
+        c.setChanged(changedFlag=False, redrawFlag=True)
+        c.redraw()
+
+    #@+node:ekr.20190905091614.7: *4* aso.legend
+    def legend(self):
+        """Compute legend for self.c"""
+        c, lm = self.c, g.app.loadManager
+        legend = f'''\
+            @language rest
+
+            legend:
+
+                leoSettings.leo
+             @  @button, @command, @mode
+            [D] default settings
+            [F] local file: {c.shortFileName()}
+            [M] myLeoSettings.leo
+            '''
+        if lm.theme_path:
+            legend = legend + f'[T] theme file: {g.shortFileName(lm.theme_path)}\n'
+        return g.adjustTripleString(legend, c.tab_width)
+    #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
+    def create_inner_outline(self, c, kind, root):
+        """
+        Create the outline for the given hidden commander, as descendants of root.
+        """
+        # Find the settings tree
+        settings_root = c.config.settingsRoot()
+        if not settings_root:
+            # This should not be called if the local file has no @settings node.
+            g.trace('no @settings node!!', c.shortFileName())
+            return
+        # Unify all settings.
+        self.create_unified_settings(kind, root, settings_root)
+        self.clean(root)
+        ###
+            # # Create separate outlines for active & inactive settings.
+            # active_root = root.insertAsLastChild()
+            # active_root.h = 'active settings'
+            # self.create_active_settings(c, kind, active_root, settings_root)
+            # inactive_root = root.insertAsLastChild()
+            # inactive_root.h = 'inactive settings'
+            # self.create_inactive_settings(c, kind, inactive_root, settings_root)
+    #@+node:ekr.20190905091614.9: *3* aso.create_unified_settings
+    def create_unified_settings(self, kind, root, settings_root):
+        """Create the active settings tree under root."""
+        c = self.commander
+        lm = g.app.loadManager
+        settings_pat = re.compile(r'^(@[\w-]+)(\s+[\w\-\.]+)?')
+        valid_list = [
+            '@bool', '@color', '@directory', '@encoding',
+            '@int', '@float', '@ratio', '@string',
+        ]
+        d = self.filter_settings(kind)
+        ignore, outline_data = None, None
+        self.parents = [root]
+        self.level = settings_root.level()
+        for p in settings_root.subtree():
+            #@+<< continue if we should ignore p >>
+            #@+node:ekr.20190905091614.10: *4* << continue if we should ignore p >>
+            if ignore:
+                if p == ignore:
+                    ignore = None
+                else:
+                    # g.trace('IGNORE', p.h)
+                    continue
+            if outline_data:
+                if p == outline_data:
+                    outline_data = None
+                else:
+                    self.add(p)
+                    continue
+            #@-<< continue if we should ignore p >>
+            m = settings_pat.match(p.h)
+            if not m:
+                self.add(p, h='ORG:'+p.h)
+                continue
+            if m.group(2) and m.group(1) in valid_list:
+                #@+<< handle a real setting >>
+                #@+node:ekr.20190905091614.11: *4* << handle a real setting >>
+                key = g.app.config.munge(m.group(2).strip())
+                val = d.get(key)
+                if isinstance(val, g.GeneralSetting):
+                    self.add(p)
+                else:
+                    # Look at all the settings to discover where the setting is defined.
+                    val = c.config.settingsDict.get(key)
+                    if isinstance(val, g.GeneralSetting):
+                        # Use self.c, not self.commander.
+                        letter = lm.computeBindingLetter(self.c, val.path)
+                        p.h = f'[{letter}] INACTIVE: {p.h}'
+                        p.h = f'UNUSED: {p.h}'
+                    self.add(p)
+                #@-<< handle a real setting >>
+                continue
+            # Not a setting. Handle special cases.
+            if m.group(1) == '@ignore':
+                ignore = p.nodeAfterTree()
+            elif m.group(1) in ('@data', '@outline-data'):
+                outline_data = p.nodeAfterTree()
+                self.add(p)
+            else:
+                self.add(p)
+    #@+node:ekr.20190905091614.12: *3* aso.add
+    def add(self, p, h=None):
+        """
+        Add a node for p.
+        
+        We must *never* alter p in any way.
+        Instead, the org flag tells whether the "ORG:" prefix.
+        """
+        if 0:
+            pad = ' '*p.level()
+            print(pad, p.h)
+        p_level = p.level()
+        if p_level > self.level + 1:
+            g.trace('OOPS', p.v.context.shortFileName(), self.level, p_level, p.h)
+            return
+        while p_level < self.level + 1 and len(self.parents) > 1:
+            self.parents.pop()
+            self.level -= 1
+        parent = self.parents[-1]
+        child = parent.insertAsLastChild()
+        child.h = h or p.h
+        child.b = p.b
+        self.parents.append(child)
+        self.level += 1
+    #@+node:ekr.20190905091614.13: *3* aso.clean
+    def clean(self, root):
+        """
+        Remove all unnecessary nodes.
+        Remove the "ORG:" prefix from remaining nodes.
+        """
+        self.clean_node(root)
+        
+    def clean_node(self, p):
+        """Remove p if it contains no children after cleaning its children."""
+        tag = 'ORG:'
+        # There are no clones, so deleting children in reverse preserves positions.
+        for child in reversed(list(p.children())):
+            self.clean_node(child)
+        if p.h.startswith(tag):
+            if p.hasChildren():
+                p.h = p.h.lstrip(tag).strip()
+            else:
+                p.doDelete()
+    #@+node:ekr.20190905091614.14: *3* aso.filter_settings
+    def filter_settings(self, target_kind):
+        """Return a dict containing only settings defined in the file given by kind."""
+        # Crucial: Always use the newly-created commander.
+        #          It's settings are guaranteed to be correct.
+        c = self.commander
+        valid_kinds = ('local_file', 'theme_file', 'myLeoSettings', 'leoSettings')
+        assert target_kind in valid_kinds, repr(target_kind)
+        d = c.config.settingsDict
+        result = {}
+        for key in d.keys(): 
+            gs = d.get(key)
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
+            if not gs.kind:
+                g.trace('OOPS: no kind', repr(gs))
+                continue
+            kind = c.config.getSource(setting=gs)
+            if kind == 'ignore':
+                g.trace('IGNORE:', kind, key)
+                continue
+            if kind in ('error'):
+                g.trace('ERROR:', kind, key)
+                continue
+            if kind == target_kind:
+                result[key] = gs
+        return result
+    #@-others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
     """A class to manage configuration settings."""
-    #@+<< GlobalConfigManager class data >>
-    #@+node:ekr.20041122094813: *3* << GlobalConfigManager class data >>
-    #@+others
-    #@+node:ekr.20041117062717.1: *4* defaultsDict (GCM class data)
+    # Class data...
+    #@+<< gcm.defaultsDict >>
+    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
@@ -917,7 +1200,9 @@ class GlobalConfigManager:
     defaultTreeFontSize = 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str,
+        valType=g.GeneralSetting,
+    )
     defaultsData = (
         # compare options...
         ("ignore_blank_lines", "bool", True),
@@ -967,25 +1252,33 @@ class GlobalConfigManager:
         ("split_bar_relief", "relief", "groove"),
         ("split_bar_width", "int", 7),
     )
-    #@+node:ekr.20041118062709: *4* define encodingIvarsDict (GCM class data)
+    #@-<< gcm.defaultsDict >>
+    #@+<< gcm.encodingIvarsDict >>
+    #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
     encodingIvarsDict = g.TypedDict(
         name='g.app.config.encodingIvarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str,
+        valType=g.GeneralSetting,
+    )
     encodingIvarsData = (
         ("default_at_auto_file_encoding", "string", "utf-8"),
         ("default_derived_file_encoding", "string", "utf-8"),
         ("new_leo_file_encoding", "string", "UTF-8"),
             # Upper case for compatibility with previous versions.
-        # This ivar is no longer used.
-        # ("defaultEncoding", "string", None),
-            # Defaults to None so it doesn't override better defaults.
+        #
+        # The defaultEncoding ivar is no longer used,
+        # so it doesn't override better defaults.
     )
-    #@+node:ekr.20041117072055: *4* ivarsDict (GCM class data)
+    #@-<< gcm.encodingIvarsDict >>
+    #@+<< gcm.ivarsDict >>
+    #@+node:ekr.20041117072055: *3* << gcm.ivarsDict >>
     # Each of these settings sets the corresponding ivar.
     # Also, the LocalConfigManager class inits the corresponding commander ivar.
     ivarsDict = g.TypedDict(
         name='g.app.config.ivarsDict',
-        keyType=type('key'), valType=g.GeneralSetting)
+        keyType=str,
+        valType=g.GeneralSetting,
+    )
     ivarsData = (
         ("at_root_bodies_start_in_doc_mode", "bool", True),
             # For compatibility with previous versions.
@@ -1013,8 +1306,7 @@ class GlobalConfigManager:
             # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),
     )
-    #@-others
-    #@-<< GlobalConfigManager class data >>
+    #@-<< gcm.ivarsDict >>
     #@+others
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
@@ -1045,8 +1337,8 @@ class GlobalConfigManager:
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
-            keyType=type('commandName'),
-            valType=g.TypedDictOfLists)
+            keyType=str,
+            valType=g.TypedDict) # was TypedDictOfLists.
         # Inited later...
         self.panes = None
         self.sc = None
@@ -1152,7 +1444,7 @@ class GlobalConfigManager:
         # It *is* valid to call this method: it returns the global settings.
         d = lm.globalSettingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1164,7 +1456,7 @@ class GlobalConfigManager:
         gs = d.get(self.munge(setting))
         if not gs:
             return None, False
-        assert isinstance(gs, g.GeneralSetting)
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
@@ -1345,9 +1637,9 @@ class GlobalConfigManager:
         # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             if gs and gs.kind:
-                letter = lm.computeBindingLetter(gs.path)
+                letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments
@@ -1393,13 +1685,13 @@ class LocalConfigManager:
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
-            assert g.isTypedDict(self.settingsDict)
-            assert g.isTypedDictOfLists(self.shortcutsDict)
+            assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
+            assert isinstance(self.shortcutsDict,g.TypedDict), repr(self.shortcutsDict) # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
-            assert d1 is None or g.isTypedDict(d1), d1
-            assert d2 is None or g.isTypedDictOfLists(d2), d2
+            assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
+            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2) # was TypedDictOfLists.
         # Define these explicitly to eliminate a pylint warning.
         if 0:
             # No longer needed now that c.config.initIvar always sets
@@ -1441,6 +1733,47 @@ class LocalConfigManager:
             # Set *both* the commander ivar and the c.config ivar.
             setattr(self, ivarName, val)
             setattr(c, ivarName, val)
+    #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
+    def createActivesSettingsOutline(self):
+        """
+        Create and open an outline, summarizing all presently active settings.
+        
+        The outline retains the organization of all active settings files.
+        
+        See #852: https://github.com/leo-editor/leo-editor/issues/852
+        """
+        ActiveSettingsOutline(self.c)
+    #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
+    def getSource(self, setting):
+        """
+        Return a string representing the source file of the given setting,
+        one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
+        """
+        trace = False
+        if not isinstance(setting, g.GeneralSetting):
+            return "error"
+        try:
+            path = setting.path
+        except Exception:
+            return "error"
+        val = g.truncate(repr(setting.val), 50)
+        if not path:
+            # g.trace('NO PATH', setting.kind, val)
+            return "local_file"
+        path = path.lower()
+        for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
+            if path.endswith(tag.lower()):
+                if setting.kind == 'color':
+                    if trace: g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                return tag.rstrip('.leo')
+        theme_path = g.app.loadManager.theme_path
+        if theme_path and g.shortFileName(theme_path.lower()) in path:
+            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
+            return "theme_file"
+        # g.trace('NOT FOUND', repr(theme_path), repr(path))
+        if path == 'register-command' or path.find('mode') > -1:
+            return 'ignore'
+        return "local_file"
     #@+node:ekr.20120215072959.12471: *3* c.config.Getters
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
@@ -1498,7 +1831,7 @@ class LocalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         d = self.settingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1509,7 +1842,7 @@ class LocalConfigManager:
         returns (val,exists)'''
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None, False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
@@ -1689,7 +2022,7 @@ class LocalConfigManager:
         '''return the name of the file responsible for setting.'''
         d = self.settingsDict
         if d:
-            assert g.isTypedDict(d), d
+            assert isinstance(d, g.TypedDict), repr(d)
             bi = d.get(setting)
             if bi is None:
                 return 'unknown setting', None
@@ -1713,7 +2046,7 @@ class LocalConfigManager:
                 g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
             return None, []
         if d:
-            assert g.isTypedDictOfLists(d), d
+            assert isinstance(d, g.TypedDict), repr(d) # was TypedDictOfLists.
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '') # Allow '&' in names.
             aList = d.get(commandName, [])
@@ -1759,7 +2092,7 @@ class LocalConfigManager:
         gs = self.settingsDict.get(key)
         if not gs:
             return False
-        assert g.isGeneralSetting(gs), gs
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
         path = gs.path.lower()
         for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(fn.lower()):
@@ -1821,15 +2154,19 @@ class LocalConfigManager:
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)
         d = self.settingsDict
-        assert g.isTypedDict(d), d
+        assert isinstance(d, g.TypedDict), repr(d)
         gs = d.get(key)
         if gs:
-            assert g.isGeneralSetting(gs), gs
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
             if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
-        gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
-        d.replace(key, gs)
+        d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+    #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
+    def settingIsActiveInPath(self, gs, target_path):
+        """Return True if settings file given by path actually defines the setting, gs."""
+        assert isinstance(gs, g.GeneralSetting), repr(gs)
+        return gs.path == target_path
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
         '''

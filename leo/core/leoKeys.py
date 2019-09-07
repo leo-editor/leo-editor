@@ -665,7 +665,7 @@ class AutoCompleterClass:
         body_s = p.b
         #
         # Get the entire source for jedi.
-        t1 = time.clock()
+        t1 = time.process_time()
         goto = gotoCommands.GoToCommands(c)
         root, fileName = goto.find_root(p)
         if root:
@@ -675,7 +675,7 @@ class AutoCompleterClass:
         else:
             source = body_s
             n0 = 0
-        t2 = time.clock()
+        t2 = time.process_time()
         #
         # Get local line
         lines = g.splitLines(body_s)
@@ -712,9 +712,9 @@ class AutoCompleterClass:
                     # sys_path=None):
                 ) 
                 completions = script.completions()
-                t3 = time.clock()
+                t3 = time.process_time()
             except ValueError:
-                t3 = time.clock()
+                t3 = time.process_time()
                 completions = None
                 g.printObj(source_lines[n0-1:n0+30])
                 print('ERROR', p.h)
@@ -2061,10 +2061,11 @@ class KeyHandlerClass:
             assert g.isStroke(stroke), stroke
         d = c.config.shortcutsDict
         if d is None:
-            d = g.TypedDictOfLists(
+            d = g.TypedDict( # was TypedDictOfLists.
                 name='empty shortcuts dict',
                 keyType=type('commandName'),
-                valType=g.BindingInfo)
+                valType=g.BindingInfo,
+            )
         inv_d = lm.invert(d)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
@@ -2216,10 +2217,11 @@ class KeyHandlerClass:
         #
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2 = g.TypedDictOfLists(
+        d2 = g.TypedDict( # was TypedDictOfLists.
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke,
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -2229,7 +2231,7 @@ class KeyHandlerClass:
                 bi.commandName = commandName
                 if stroke:
                     assert g.isStroke(stroke)
-                    d2.add(stroke, bi)
+                    d2.add_to_list(stroke, bi)
         #
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
@@ -2528,12 +2530,13 @@ class KeyHandlerClass:
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result, data, prefix):
-        lm = g.app.loadManager
+        """Helper for k.printBindings"""
+        c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            letter = lm.computeBindingLetter(kind)
+            letter = lm.computeBindingLetter(c, kind)
             pane = '%4s: ' % (pane if pane else 'all')
             left = pane + key # pane and shortcut fields
             n = max(n, len(left))
