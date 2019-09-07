@@ -115,7 +115,7 @@ def main():
             self.emit('the_emission', 12, [1,2,3])
 
     def hear_emit(n, l):
-        print("Got %s %s" % (n,l))
+        print(f"Got {n} {l}")
 
     emitter = Emitter()
     emitter.connect('the_emission', hear_emit)
@@ -133,7 +133,7 @@ def main():
         def check_work(self, num, animal='eels'):
             if is_locked(self):
                 return
-            print("%s heard about %s %s" % (self.name, num, animal))
+            print(f"{self.name} heard about {num} {animal}")
 
     class SomeProxy:
         """Like a public notice board"""

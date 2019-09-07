@@ -261,8 +261,7 @@ class LeoKeyEvent:
             stroke = binding
         else:
             stroke = g.KeyStroke(binding) if binding else None
-        assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
-            repr(stroke), g.callers())
+        assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
         if 'keys' in g.app.debug:
             print('LeoKeyEvent: binding: %s, stroke: %s, char: %r' % (
                 binding, stroke, char))

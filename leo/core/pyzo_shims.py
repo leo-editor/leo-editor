@@ -89,7 +89,7 @@ def createEditor(parent, filename=None):
         #@+node:ekr.20190408085219.2: *3* << createEditor patch >>
         # check and normalize
         if not os.path.isfile(filename):
-            raise IOError("File does not exist '%s'." % filename)
+            raise IOError(f"File does not exist '{filename}'.")
         #
         # load file (as bytes)
         with open(filename, 'rb') as f:
@@ -148,7 +148,7 @@ def createEditor(parent, filename=None):
     else:
         # check and normalize
         if not os.path.isfile(filename):
-            raise IOError("File does not exist '%s'." % filename)
+            raise IOError(f"File does not exist '{filename}'.")
         # load file (as bytes)
         with open(filename, 'rb') as f:
             bb = f.read()
@@ -513,8 +513,7 @@ class ConfigShim(config_base):
                 else:
                     nonidentifier_items.append('(%r, %r)' % (key, val))
             if nonidentifier_items:
-                return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
-                                           ', '.join(identifier_items))
+                return f"Dict([{', '.join(nonidentifier_items)}], {', '.join(identifier_items)})"
             else:
                 return 'Dict(%s)' % (', '.join(identifier_items))
         #@+node:ekr.20190317082751.3: *4* ConfigShim.__getattribute__
@@ -669,7 +668,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
                 # Default: solarized base00
             try:
-                self.setStyleSheet("background: %s" % bg) 
+                self.setStyleSheet(f"background: {bg}")
             except Exception:
                 g.pr('oops: MainWindow.__init__')
         #

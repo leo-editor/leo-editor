@@ -294,11 +294,11 @@ class formatController:
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
-                g.es_print('ignoring unknown option: %s' % (name),color='red')
+                g.es_print(f"ignoring unknown option: {name}", color='red')
                 return {}
         else:
             g.trace(repr(s))
-            s2 = 'bad rst3 option in %s: %s' % (p.h,s)
+            s2 = f"bad rst3 option in {p.h}: {s}"
             g.es_print(s2,color='red')
             return {}
     #@+node:ekr.20100811091636.5943: *6* scanOptions
@@ -443,10 +443,10 @@ class formatController:
         if self.getOption('number-code-lines'):
             i = 1
             for s in lines:
-                result.append('    %d: %s' % (i,s))
+                result.append(f"    {i}: {s}")
                 i += 1
         else:
-            result.extend(['    %s' % (z) for z in lines])
+            result.extend([f"    {z}" for z in lines])
 
         s = ''.join(result).rstrip()+'\n\n'
         return g.splitLines(s)

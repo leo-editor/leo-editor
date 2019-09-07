@@ -115,7 +115,7 @@ class SessionManager:
                 json.dump(session, f)
                 f.close()
             # Do not use g.trace or g.es here.
-            print('wrote %s' % (self.path))
+            print(f"wrote {self.path}")
         else:
             print('can not save session: no leo.session file')
     #@-others
