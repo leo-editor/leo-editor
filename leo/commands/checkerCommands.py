@@ -295,9 +295,9 @@ class BlackCommand:
         '''ctor for PyflakesCommand class.'''
         self.c = c
         self.language = None
-        self.mode = black.FileMode()
+        self.mode = black.FileMode(0)
         self.wrapper = c.frame.body.wrapper
-        self.mode.line_length = c.config.getInt("black-line-length") or 88
+        self.line_length = c.config.getInt("black-line-length") or 88
         self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
         
         # self.mode.target_versions = set(black.PY36_VERSIONS)
@@ -362,10 +362,10 @@ class BlackCommand:
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
         try:
-            body3 = black.format_str(body2, mode=self.mode)
+            body3 = black.format_str(body2, line_length=self.line_length, mode=self.mode)
         except Exception:
             self.errors += 1
-            print('\n===== error', p.h, '\n')
+            print('\n===== error {p.h}\n')
             g.es_print_exception()
             self.dump_lines(body2, 'after-replace-leo-constructs')
             return False
@@ -399,7 +399,7 @@ class BlackCommand:
         """Dump all lines in s, with line numbers."""
         print(f'\n{tag}...\n')
         for i, line in enumerate(g.splitLines(s)):
-            print(f'{i:3}: {line:!r}')
+            print(f'{i:3}: {line!r}')
         print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
     c_pat = re.compile(r'^\s*@c\s*\n')
