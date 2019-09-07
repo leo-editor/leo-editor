@@ -145,29 +145,20 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
-<v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
-<v t="ekr.20130809141000.1992"><vh>Leo's HOME directory</vh></v>
-<v t="ekr.20130809141000.1993"><vh>Linux installation</vh></v>
-<v t="ekr.20130809141000.1994"><vh>Windows installation</vh></v>
-<v t="ekr.20130809141000.1995"><vh>Running Leo</vh></v>
-<v t="ekr.20130809141000.1996"><vh>Creating file associations</vh></v>
-<v t="ekr.20130809141000.1997"><vh>Adding Leo to your path</vh></v>
-<v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
-</v>
-<v t="matt.20190205105334.1"><vh>@asis ../../.travis.yml</vh></v>
-<v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE</vh></v>
-<v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
-<v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
+<v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
+<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh></v>
+<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
+<v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
+<v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="ekr.20151227063335.1"><vh>@clean ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="maphew.20190208135916.1"><vh>@asis ../../setup.cfg</vh></v>
-<v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
+<v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
+<v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 <v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
@@ -578,8 +569,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
 <t tx="ekr.20130809141000.1990">@language rest
-</t>
-<t tx="ekr.20130809141000.1991">System requirements
+System requirements
 -------------------
 
 Leo requires the `Python`_ and `PyQt_` package.
@@ -600,8 +590,7 @@ Leo's Spell tab. Download and install the PyEnchant package from
 http://pythonhosted.org/pyenchant/download.html There is an executable
 installer for Windows users.
 
-</t>
-<t tx="ekr.20130809141000.1992">
+
 Leo's HOME directory
 --------------------
 
@@ -611,8 +600,7 @@ See http://docs.python.org/lib/os-procinfo.html for details.
 Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 There are various fallback directories if there is no home directory.
-</t>
-<t tx="ekr.20130809141000.1993">
+
 Installing Leo on Linux
 -----------------------
 
@@ -629,8 +617,7 @@ I prefer using aliases because they allow me to start Leo using Python 2 or 3,
 or other distributions, like Anaconda 2 or 3.
 
 See `Running Leo`_ for how to run Leo after installing it.
-</t>
-<t tx="ekr.20130809141000.1994">
+
 Installing Leo on Windows
 --------------------------
 
@@ -641,8 +628,7 @@ http://leoeditor.com/download.html If the sources are zipped, unpack them
 into a temp folder. You may place the sources anywhere you like, including
 Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
 
-</t>
-<t tx="ekr.20130809141000.1995">
+
 Running Leo
 -----------
 
@@ -656,8 +642,7 @@ Another way to run Leo is as follows::
 
     cd &lt;path-to-launchLeo.py&gt;
     python launchLeo.py
-</t>
-<t tx="ekr.20130809141000.1996">
+
 Creating File Associations
 --------------------------
 
@@ -707,8 +692,7 @@ And put this leo.bat in %PATH%::
     @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
     
 You may omit the /b option if you want to create a separate console window for Leo.
-</t>
-<t tx="ekr.20130809141000.1997">
+
 Adding Leo to Your Path
 -----------------------
 
@@ -719,8 +703,7 @@ One way to do this is adding something like the following to python/Lib/sitecust
     sys.path.append(r'&lt;path-to-leo&gt;leo\core')
 
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
-</t>
-<t tx="ekr.20130809141000.1998">
+
 Running Leo for the first time
 ------------------------------
 
@@ -2514,6 +2497,8 @@ requires = ["setuptools&gt;=38.6.0",
     "setupext-janitor&gt;=1.1",
     "wheel&gt;=0.31.0",
     "twine&gt;=1.11.0"]
+    
+build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 # This flag says that the code is written to work on both Python 2 and Python
@@ -2588,6 +2573,8 @@ deploy:
 <t tx="mhw.20190718140259.1">language: python
 python:
   - "3.6"
+cache:
+    - pip
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
