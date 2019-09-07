@@ -1282,11 +1282,11 @@ class PythonTokenBeautifier:
         print(f"tokens         {self.n_input_tokens}")
         print(f"len(code_list) {self.n_output_tokens}")
         print(f"len(s)         {self.n_strings}")
-        print('parse          %4.2f sec.' % self.parse_time)
-        print('tokenize       %4.2f sec.' % self.tokenize_time)
-        print('format         %4.2f sec.' % self.beautify_time)
-        print('check          %4.2f sec.' % self.check_time)
-        print('total          %4.2f sec.' % self.total_time)
+        print(f"parse          {self.parse_time:4.2f}")
+        print(f"tokenize       {self.tokenize_time:4.2f}")
+        print(f"format         {self.beautify_time:4.2f}")
+        print(f"check          {self.check_time:4.2f}")
+        print(f"total          {self.total_time:4.2f}")
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
         '''Append a state to the state stack.'''
