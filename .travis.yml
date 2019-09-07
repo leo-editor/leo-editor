@@ -1,6 +1,8 @@
 language: python
 python:
   - "3.6"
+cache:
+    - pip
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
