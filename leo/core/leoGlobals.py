@@ -2435,8 +2435,7 @@ def _callerName(n, verbose=False):
         if verbose:
             obj = locals_.get('self')
             full_name = f"{obj.__class__.__name__}.{name}" if obj else name
-            ### return 'line %4s %-30s %s' % (line, sfn, full_name)
-            return f"line {line:4} {sfn:-30} {full_name}"
+            return 'line %4s %-30s %s' % (line, sfn, full_name)
         return name
     except ValueError:
         return ''
