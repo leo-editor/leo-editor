@@ -806,7 +806,13 @@ class PythonTokenBeautifier:
     #@+node:ekr.20190908154125.1: *3* ptb.Compare AST's
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts
     def compare_two_asts(self, node1, node2):
-        """Compare both nodes, and recursively compare their children."""
+        """
+        Compare both nodes, and recursively compare their children.
+        
+        Replaces failed code:  http://stackoverflow.com/questions/3312989/
+        
+        The following is an expanded version of the first answer.
+        """
         # Compare the nodes themselves.
         self.compare_two_nodes(node1, node2)
         # Get the list of fields.
