@@ -1115,6 +1115,19 @@ class PythonTokenBeautifier:
         '''Add a file-start token to the code list and the state stack.'''
         self.add_token('file-start')
         self.push_state('file-start')
+    #@+node:ekr.20190908050434.1: *4* ptb.find_prev_line (new)
+    def find_prev_line(self):
+        '''
+        Return the previous line, as a string.
+        Should be called only at the end of a line.
+        '''
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        tokens = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind == 'line-end':
+                break
+            tokens.append(t)
+        return ''.join([z.to_string() for z in reversed(tokens)])
     #@+node:ekr.20150530190758.1: *4* ptb.line_indent
     def line_indent(self, ws=None):
         '''Add a line-indent token if indentation is non-empty.'''
@@ -1125,6 +1138,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
+        trace = True and not g.unitTesting
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
             return
@@ -1135,6 +1149,10 @@ class PythonTokenBeautifier:
         if self.backslash_seen:
             self.backslash()
         self.add_token('line-end', '\n')
+        if trace:
+            # Must be done just after inserting the line-end token.
+            s = self.find_prev_line()
+            print('prev line', repr(s))
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
