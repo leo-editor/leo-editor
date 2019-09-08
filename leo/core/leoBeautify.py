@@ -1054,13 +1054,6 @@ class PythonTokenBeautifier:
         '''Add a token to the code list.'''
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
-    #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end (not used)
-    # def arg_end(self):
-        # '''Add a token indicating the end of an argument list.'''
-        # self.add_token('arg-end')
-    # def arg_start(self):
-        # '''Add a token indicating the start of an argument list.'''
-        # self.add_token('arg-start')
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
         '''Add a backslash token and clear .backslash_seen'''
