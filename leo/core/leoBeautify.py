@@ -1122,12 +1122,12 @@ class PythonTokenBeautifier:
         Should be called only at the end of a line.
         '''
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-        tokens = []
+        line = []
         for t in reversed(self.code_list[:-1]):
             if t.kind == 'line-end':
                 break
-            tokens.append(t)
-        return ''.join([z.to_string() for z in reversed(tokens)])
+            line.insert(0, t)
+        return ''.join([z.to_string() for z in line])
     #@+node:ekr.20150530190758.1: *4* ptb.line_indent
     def line_indent(self, ws=None):
         '''Add a line-indent token if indentation is non-empty.'''
