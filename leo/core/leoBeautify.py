@@ -877,7 +877,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
-        self.print_stats() ###
+        ### self.print_stats() ###
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''
