@@ -804,7 +804,7 @@ class PythonTokenBeautifier:
         self.changed = False
         self.dirtyVnodeList = []
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
-    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
+    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
         '''The driver for beautification: beautify a single node.'''
         # c = self.c
@@ -849,7 +849,7 @@ class PythonTokenBeautifier:
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='after', mode='exec')
-            ### g.printObj(node2, tag='node2')
+            # g.printObj(node2, tag='node2')
         except Exception:
             g.trace('Unexcpected exception creating the "after" parse tree')
             self.skip_message('BeautifierError', p)
@@ -864,6 +864,7 @@ class PythonTokenBeautifier:
             g.trace('The beautify command did not preserve meaning!')
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.skip_message('Ast mismatch', p)
+            return
         except Exception:
             g.trace(f"Unexpected error in {p.h}...\n")
             self.skip_message('BeautifierError', p)
@@ -1424,27 +1425,28 @@ class PythonTokenBeautifier:
                 raise self.AstNotEqual(
                     f"attrs1: {attr1},\n"
                     f"attrs2: {attr2}")
-            if attr1 is not None:
-                self.compare_two_asts(attr1, attr2)
+            self.compare_two_asts(attr1, attr2)
     #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
     def compare_two_nodes(self, node1, node2):
         """
-        Compare node1 and node2 recursively.
+        Compare node1 and node2.
+        For lists and tuples, compare elements recursively.
         Raise AstNotEqual if not equal.
         """
-        # Special case for strings.
-        if isinstance(node1, str):
-            if isinstance(node2, str):
-                return
+        # Class names must always match.
+        if node1.__class__.__name__ != node2.__class__.__name__:
             raise self.AstNotEqual(
-                    f"node1: {node1}\n"
-                    f"node2: {node2}")
-        # Special case for lists and tuples:
+                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+                f"node2.__class__.__name__: {node2.__class__.__name_}"
+            )
+        # Special cases for strings and None
+        if node1 is None:
+            return
+        if isinstance(node1, str):
+            return
+        # Special cases for lists and tuples:
         if isinstance(node1, (tuple,list)):
-            if (
-                node2.__class__.__name__ != node2.__class__.__name__
-                or len(node1) != len(node2)
-            ):
+            if len(node1) != len(node2):
                 raise self.AstNotEqual(
                     f"node1: {node1}\n"
                     f"node2: {node2}")
@@ -1455,13 +1457,6 @@ class PythonTokenBeautifier:
                         f"list item1: {i} {item1}\n"
                         f"list item2: {i} {item2}")
                 self.compare_two_asts(item1, item2)
-            return
-        # General case: just compare the class names.
-        if node1.__class__.__name__ != node2.__class__.__name__:
-            raise self.AstNotEqual(
-                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-                f"node2.__class__.__name__: {node2.__class__.__name_}"
-            )
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
