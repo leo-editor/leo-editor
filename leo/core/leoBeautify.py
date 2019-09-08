@@ -1151,11 +1151,11 @@ class PythonTokenBeautifier:
         # Still too long.  Split the line at commas.
         #
         # Convert 'op-no-blanks in the prefix before starting a new line.
-        if 1:
+        if 0:
             for t in prefix:
                 if t.kind == 'op-no-blanks' and t.value in '([{':
                     t.kind = 'lt'
-        if 1:
+        if 0:
             g.printObj(prefix, tag="PREFIX")
             g.printObj(tail, tag="TAIL")
         # Add the adjusted prefix.
@@ -1168,13 +1168,9 @@ class PythonTokenBeautifier:
             kind='rt',
             value=open_delim.value.replace('(',')').replace('[',']').replace('{','}'),
         )
-        # g.trace("STILL TOO LONG", close_delim)
-        # self.code_list.append(open_delim)
-        ### after_comma = False
         for i, t in enumerate(tail):
             if t.kind == 'op' and t.value == ',':
                 # Start a new line.
-                ###self.code_list.append(t)
                 self.add_token('op-no-blanks', ',')
                 self.add_token('line-end', '\n')
                 self.add_token('line-indent', self.lws+' '*4)
@@ -1190,10 +1186,6 @@ class PythonTokenBeautifier:
                 self.add_token('line-indent', self.lws)
                 self.code_list.extend(tail[i:])
                 return
-            # elif after_comma:
-                # after_comma = False
-                # if t.kind != 'blank':
-                    # self.code_list.append(t)
             else:
                 self.code_list.append(t)
     #@+node:ekr.20190908050434.1: *5* ptb.find_prev_line (new)
