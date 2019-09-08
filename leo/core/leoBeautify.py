@@ -737,10 +737,12 @@ class PythonTokenBeautifier:
             self.value = value
 
         def __repr__(self):
-            if self.kind == 'line-indent':
-                assert not self.value.strip(' ')
-                return '%15s %s' % (self.kind, len(self.value))
-            return '%15s %r' % (self.kind, self.value)
+            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+            return f"{self.kind:15} {val}"
+            # if self.kind == 'line-indent':
+                # assert not self.value.strip(' ')
+                # return '%15s %s' % (self.kind, len(self.value))
+            # return '%15s %r' % (self.kind, self.value)
 
         __str__ = __repr__
 
@@ -749,16 +751,19 @@ class PythonTokenBeautifier:
             return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
-        '''A class representing items parse state stack.'''
+        '''A class representing items in the parse state stack.'''
 
         def __init__(self, kind, value):
             self.kind = kind
             self.value = value
 
         def __repr__(self):
-            return 'State: %10s %s' % (self.kind, repr(self.value))
+            return f"State: {self.kind} {self.value!r}"
 
         __str__ = __repr__
+    #@+node:ekr.20190908033048.1: *3* class AstNotEqual (Exception)
+    class AstNotEqual (Exception):
+        """The two given AST's are not equivalent."""
     #@+node:ekr.20150519111713.1: *3* ptb.ctor
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
@@ -839,7 +844,7 @@ class PythonTokenBeautifier:
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='before', mode='exec')
-            ok = compare_ast(node1, node2)
+            ok = self.compare_two_asts(node1, node2)
         except Exception:
             g.es_exception()
             g.trace('Error in %s...\n%s' % (p.h, s2_e))
@@ -1251,6 +1256,61 @@ class PythonTokenBeautifier:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
+    #@+node:ekr.20190908032911.1: *4* ptb.compare_asts & helpers
+    def compare_two_asts(self, node1, node2):
+        
+        self.compare_stack = []
+            # The stack of already-compared pairs of nodes.
+
+        def dump():
+            g.printObj(
+                [f"{z[0]!r} {z[1]!r}" for z in self.compare_stack],
+                tag="compare stack")
+
+        try:
+            self.compare_corresponding_nodes(node1, node2)
+            return True
+        except self.AstNotEqual as e:
+            dump()
+            return False
+        except Exception:
+            dump()
+            g.es_exception()
+            return False
+    #@+node:ekr.20190908033524.1: *5* ptb.compare_corresponding_nodes
+    def compare_corresponding_nodes(self, node1, node2):
+        """Compare both nodes, and recursively compare their children."""
+        self.compare_stack.append([node1, node2])
+        children1, children2 = self.compare_two_nodes(node1, node2)
+            # Fails unless the two nodes have similar children.
+        # Compare all children.
+        for i, child1 in enumerate(children1):
+            child2 = children2[i]
+            self.compare_corresponding_nodes(child1, child2)
+    #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
+    def compare_two_nodes(self, node1, node2):
+        """
+        Compare node1 and node2, including the length of each node's children.
+        Return the list of each node's children if equal.
+        Raise AstNotEqual if not equal.
+        """
+        # Special case for strings.
+        if isinstance(node1, str) and isinstance(node2, str):
+            return [], []
+        # Compare the nodes themselves.
+        if node1.__class__.__name__ != node2.__class__.__name__:
+            raise self.AstNotEqual(
+                f"node1 kind: {node1.__class__.__name__}\n"
+                f"node2 kind: {node2.__class__.__name_}"
+            )
+        # Compare the number of children.
+        children1, children2 = list(node1._fields), list(node2._fields)
+        if len(children1) != len(children2):
+            raise self.AstNotEqual(
+                f"node1 has {len(children1)} children\n"
+                f"node2 has {len(children2)} children"
+            )
+        return children1, children2
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
