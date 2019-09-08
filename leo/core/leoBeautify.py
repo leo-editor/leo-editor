@@ -1407,6 +1407,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts & helper
     def compare_two_asts(self, node1, node2):
         """Compare both nodes, and recursively compare their children."""
+        # Compare the nodes themselves.
         self.compare_two_nodes(node1, node2)
         # Get the list of fields.
         fields1 = getattr(node1, "_fields", [])
@@ -1415,6 +1416,7 @@ class PythonTokenBeautifier:
             raise self.AstNotEqual(
                 f"node1._fields: {fields1}\n"
                 f"node2._fields: {fields2}")
+        # Recursively compare each field.
         for field in fields1:
             attr1 = getattr(node1, field, None)
             attr2 = getattr(node2, field, None)
