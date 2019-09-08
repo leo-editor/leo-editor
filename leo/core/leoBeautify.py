@@ -1088,6 +1088,70 @@ class PythonTokenBeautifier:
             # Retain the token (intention) for debugging.
             self.add_token('blank-lines', n)
             self.line_indent()
+    #@+node:ekr.20190908054807.1: *4* ptb.self_break_line (new) & helpers
+    def break_line(self):
+        '''
+        Break the preceding line, if necessary.
+        Should be called only at the end of a line.
+        '''
+        trace = True and not g.unitTesting
+        # Must be called just after inserting the line-end token.
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        # g.printObj(self.state_stack, 'parse stack')
+        line_tokens = self.find_prev_line()
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        if len(line_s) < 88:
+            return
+        # Must have an opening delim: (, [ or {.
+        if not any([z.kind == 'lt' for z in line_tokens]):
+            g.trace("can't split line: no opening delim", repr(line_s))
+            return
+        if trace:
+            g.trace(repr(line_s))
+            g.printObj(line_tokens, tag="BEFORE")
+        prefix = self.find_line_prefix(line_tokens)
+        # Calculate the tail before cleaning the prefix.
+        tail = line_tokens[len(prefix):]
+        if prefix[0].kind == 'line-indent':
+            prefix = prefix[1:]
+        if trace:
+            g.printObj(prefix, tag="PREFIX")
+            g.printObj(tail, tag="TAIL")
+        assert prefix, repr(line_tokens)
+        assert prefix[-1].kind == 'lt', repr(prefix)
+        # Cut back the token list
+        self.code_list = self.code_list[:-(len(line_tokens))]
+        # Add the prefix.
+        self.code_list.extend(prefix)
+        # Start a new line.
+        self.add_token('line-end', '\n')
+        # self.clean('line-indent')
+        self.add_token('line-indent', self.lws+' '*4)
+        # Append the tail.
+        self.code_list.extend(tail)
+        # Add back the line-end token deleted by find_line_prefix.
+        self.add_token('line-end', '\n')
+        if trace:
+            g.printObj(self.code_list, tag="AFTER")
+        
+    #@+node:ekr.20190908050434.1: *5* ptb.find_prev_line (new)
+    def find_prev_line(self):
+        '''Return the previous line, as a list of tokens.'''
+        line = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind == 'line-end':
+                break
+            line.append(t)
+        return list(reversed(line))
+    #@+node:ekr.20190908061659.1: *5* ptb.find_line_prefix (new)
+    def find_line_prefix(self, token_list):
+        """Return all tokens up to and including the first lt token"""
+        result = []
+        for t in token_list:
+            result.append(t)
+            if t.kind == 'lt':
+                break
+        return result
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -1115,19 +1179,6 @@ class PythonTokenBeautifier:
         '''Add a file-start token to the code list and the state stack.'''
         self.add_token('file-start')
         self.push_state('file-start')
-    #@+node:ekr.20190908050434.1: *4* ptb.find_prev_line (new)
-    def find_prev_line(self):
-        '''
-        Return the previous line, as a string.
-        Should be called only at the end of a line.
-        '''
-        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-        line = []
-        for t in reversed(self.code_list[:-1]):
-            if t.kind == 'line-end':
-                break
-            line.insert(0, t)
-        return ''.join([z.to_string() for z in line])
     #@+node:ekr.20150530190758.1: *4* ptb.line_indent
     def line_indent(self, ws=None):
         '''Add a line-indent token if indentation is non-empty.'''
@@ -1138,7 +1189,6 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
-        trace = True and not g.unitTesting
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
             return
@@ -1149,10 +1199,8 @@ class PythonTokenBeautifier:
         if self.backslash_seen:
             self.backslash()
         self.add_token('line-end', '\n')
-        if trace:
-            # Must be done just after inserting the line-end token.
-            s = self.find_prev_line()
-            print('prev line', repr(s))
+        if orange:
+            self.break_line()
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
