@@ -1404,45 +1404,21 @@ class PythonTokenBeautifier:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
-    #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts & helpers
+    #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts & helper
     def compare_two_asts(self, node1, node2):
-        
-        self.compare_stack = []
-            # The stack of already-compared pairs of nodes.
-            
-        self.compare_corresponding_nodes(node1, node2)
-
-        # def dump():
-            # g.printObj(
-                # [f"{z[0]!r} {z[1]!r}" for z in self.compare_stack],
-                # tag="compare stack")
-
-        # try:
-            # self.compare_corresponding_nodes(node1, node2)
-            # return True
-        # except self.AstNotEqual as e:
-            # dump() ### Testing.
-            # return False
-        # except Exception:
-            # dump()
-            # g.es_exception()
-            # return False
-    #@+node:ekr.20190908033524.1: *5* ptb.compare_corresponding_nodes
-    def compare_corresponding_nodes(self, node1, node2):
         """Compare both nodes, and recursively compare their children."""
-        self.compare_stack.append([node1, node2])
         fields = self.compare_two_nodes(node1, node2)
             # Fails unless the two nodes have similar children.
-        g.trace('FIELDS', fields)
+        # g.trace('FIELDS', fields)
         for field in fields:
-            g.trace('FIELD', field)
+            # g.trace('FIELD', field)
             attr1 = getattr(node1, field, None)
             attr2 = getattr(node2, field, None)
             if attr1.__class__.__name__ != attr2.__class__.__name__:
                 raise self.AstNotEqual(
                     f"attrs1: {attr1},\n"
                     f"attrs2: {attr2}")
-            self.compare_corresponding_nodes(attr1, attr2)
+            self.compare_two_asts(attr1, attr2)
     #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
     def compare_two_nodes(self, node1, node2):
         """
@@ -1458,34 +1434,38 @@ class PythonTokenBeautifier:
                     f"node1: {node1}\n"
                     f"node2: {node2}")
         # Special case for lists.
-        if isinstance(node1, list):
-            if not isinstance(node2, list) or len(node1) != len(node2):
+        if isinstance(node1, (tuple,list)):
+            if node2.__class__.__name__ != node2.__class__.__name__ or len(node1) != len(node2):
                 raise self.AstNotEqual(
                     f"node1: {node1}\n"
                     f"node2: {node2}")
-            if 0: ### Not ready yet.
-                for i, item1 in enumerate(node1):
-                    item2 = node2[i]
-                    self.compare_corresponding_nodes(item1, item2)
+            # g.trace("COMPARE LIST ITEMS")
+            if 0: print(
+                    f"list1: {node1}\n"
+                    f"list2: {node2}")
+            for i, item1 in enumerate(node1):
+                item2 = node2[i]
+                if item1.__class__.__name__ != item2.__class__.__name__:
+                    raise self.AstNotEqual(
+                        f"list item1: {i} {item1}\n"
+                        f"list item2: {i} {item2}")
+                # g.trace("Compare list item")
+                self.compare_two_asts(item1, item2)
             return []
-        # Compare the nodes themselves.
+        # Compare the class names of the nodes themselves.
         if node1.__class__.__name__ != node2.__class__.__name__:
             raise self.AstNotEqual(
-                f"node1 kind: {node1.__class__.__name__}\n"
-                f"node2 kind: {node2.__class__.__name_}"
+                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+                f"node2.__class__.__name__: {node2.__class__.__name_}"
             )
-        # Compare the number of children.
-        fields1, fields2 = list(node1._fields), list(node2._fields)
-        if 0:
-            g.trace()
-            print(
-                f"node1: {node1.__class__.__name__} fields1: {fields1}\n"
-                f"node2: {node2.__class__.__name__} fields2: {fields2}"
-            )
+        # Compare the lists of fields.
+        fields1 = getattr(node1, "_fields", [])
+        fields2 = getattr(node2, "_fields", [])
         if fields1 != fields2:
             raise self.AstNotEqual(
                 f"node1._fields: {fields1}\n"
                 f"node2._fields: {fields2}")
+        # Return the list of fields.
         return fields1
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
