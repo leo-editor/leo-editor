@@ -867,10 +867,10 @@ class PythonTokenBeautifier:
                         f"list item2: {i} {item2}")
                 self.compare_two_asts(item1, item2)
     #@+node:ekr.20190908163223.1: *4* ptb.dump_ast
-    def dump_ast(self, node):
+    def dump_ast(self, node, tag=None):
         """Dump the tree"""
         from leo.core.leoAst import AstDumper
-        g.printObj(AstDumper().dump(node))
+        g.printObj(AstDumper().dump(node),tag=tag)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
@@ -931,14 +931,16 @@ class PythonTokenBeautifier:
             g.trace(f"Error in {p.h}...\n")
             g.trace('The beautify command did not preserve meaning!')
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            self.dump_ast(node2)
+            self.dump_ast(node1,tag='AST BEFORE')
+            self.dump_ast(node2,tag='AST AFTER')
             self.skip_message('Ast mismatch', p)
             return
         except Exception:
             g.trace(f"Unexpected error in {p.h}...\n")
             self.skip_message('BeautifierError', p)
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            self.dump_ast(node2)
+            self.dump_ast(node1,tag='AST BEFORE')
+            self.dump_ast(node2,tag='AST AFTER')
             g.es_exception()
             return
         t5 = time.time()
