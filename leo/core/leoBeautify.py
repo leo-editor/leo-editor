@@ -824,13 +824,14 @@ class PythonTokenBeautifier:
                 f"node2._fields: {fields2}")
         # Recursively compare each field.
         for field in fields1:
-            attr1 = getattr(node1, field, None)
-            attr2 = getattr(node2, field, None)
-            if attr1.__class__.__name__ != attr2.__class__.__name__:
-                raise self.AstNotEqual(
-                    f"attrs1: {attr1},\n"
-                    f"attrs2: {attr2}")
-            self.compare_two_asts(attr1, attr2)
+            if field not in ('lineno', 'col_offset', 'ctx'):
+                attr1 = getattr(node1, field, None)
+                attr2 = getattr(node2, field, None)
+                if attr1.__class__.__name__ != attr2.__class__.__name__:
+                    raise self.AstNotEqual(
+                        f"attrs1: {attr1},\n"
+                        f"attrs2: {attr2}")
+                self.compare_two_asts(attr1, attr2)
     #@+node:ekr.20190908034557.1: *4* ptb.compare_two_nodes
     def compare_two_nodes(self, node1, node2):
         """
