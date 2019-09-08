@@ -843,8 +843,7 @@ class PythonTokenBeautifier:
         if node1.__class__.__name__ != node2.__class__.__name__:
             raise self.AstNotEqual(
                 f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-                f"node2.__class__.__name__: {node2.__class__.__name_}"
-            )
+                f"node2.__class__.__name__: {node2.__class__.__name_}")
         # Special cases for strings and None
         if node1 is None:
             return
