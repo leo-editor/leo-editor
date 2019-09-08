@@ -1407,66 +1407,59 @@ class PythonTokenBeautifier:
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts & helper
     def compare_two_asts(self, node1, node2):
         """Compare both nodes, and recursively compare their children."""
-        fields = self.compare_two_nodes(node1, node2)
-            # Fails unless the two nodes have similar children.
-        # g.trace('FIELDS', fields)
-        for field in fields:
-            # g.trace('FIELD', field)
-            attr1 = getattr(node1, field, None)
-            attr2 = getattr(node2, field, None)
-            if attr1.__class__.__name__ != attr2.__class__.__name__:
-                raise self.AstNotEqual(
-                    f"attrs1: {attr1},\n"
-                    f"attrs2: {attr2}")
-            self.compare_two_asts(attr1, attr2)
-    #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
-    def compare_two_nodes(self, node1, node2):
-        """
-        Compare node1 and node2, including the length of each node's children.
-        Return the list of each node's fields if equal.
-        Raise AstNotEqual if not equal.
-        """
-        # Special case for strings.
-        if isinstance(node1, str):
-            if isinstance(node2, str):
-                return []
-            raise self.AstNotEqual(
-                    f"node1: {node1}\n"
-                    f"node2: {node2}")
-        # Special case for lists.
-        if isinstance(node1, (tuple,list)):
-            if node2.__class__.__name__ != node2.__class__.__name__ or len(node1) != len(node2):
-                raise self.AstNotEqual(
-                    f"node1: {node1}\n"
-                    f"node2: {node2}")
-            # g.trace("COMPARE LIST ITEMS")
-            if 0: print(
-                    f"list1: {node1}\n"
-                    f"list2: {node2}")
-            for i, item1 in enumerate(node1):
-                item2 = node2[i]
-                if item1.__class__.__name__ != item2.__class__.__name__:
-                    raise self.AstNotEqual(
-                        f"list item1: {i} {item1}\n"
-                        f"list item2: {i} {item2}")
-                # g.trace("Compare list item")
-                self.compare_two_asts(item1, item2)
-            return []
-        # Compare the class names of the nodes themselves.
-        if node1.__class__.__name__ != node2.__class__.__name__:
-            raise self.AstNotEqual(
-                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-                f"node2.__class__.__name__: {node2.__class__.__name_}"
-            )
-        # Compare the lists of fields.
+        self.compare_two_nodes(node1, node2)
+        # Get the list of fields.
         fields1 = getattr(node1, "_fields", [])
         fields2 = getattr(node2, "_fields", [])
         if fields1 != fields2:
             raise self.AstNotEqual(
                 f"node1._fields: {fields1}\n"
                 f"node2._fields: {fields2}")
-        # Return the list of fields.
-        return fields1
+        for field in fields1:
+            attr1 = getattr(node1, field, None)
+            attr2 = getattr(node2, field, None)
+            if attr1.__class__.__name__ != attr2.__class__.__name__:
+                raise self.AstNotEqual(
+                    f"attrs1: {attr1},\n"
+                    f"attrs2: {attr2}")
+            if attr1 is not None:
+                self.compare_two_asts(attr1, attr2)
+    #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
+    def compare_two_nodes(self, node1, node2):
+        """
+        Compare node1 and node2 recursively.
+        Raise AstNotEqual if not equal.
+        """
+        # Special case for strings.
+        if isinstance(node1, str):
+            if isinstance(node2, str):
+                return
+            raise self.AstNotEqual(
+                    f"node1: {node1}\n"
+                    f"node2: {node2}")
+        # Special case for lists and tuples:
+        if isinstance(node1, (tuple,list)):
+            if (
+                node2.__class__.__name__ != node2.__class__.__name__
+                or len(node1) != len(node2)
+            ):
+                raise self.AstNotEqual(
+                    f"node1: {node1}\n"
+                    f"node2: {node2}")
+            for i, item1 in enumerate(node1):
+                item2 = node2[i]
+                if item1.__class__.__name__ != item2.__class__.__name__:
+                    raise self.AstNotEqual(
+                        f"list item1: {i} {item1}\n"
+                        f"list item2: {i} {item2}")
+                self.compare_two_asts(item1, item2)
+            return
+        # General case: just compare the class names.
+        if node1.__class__.__name__ != node2.__class__.__name__:
+            raise self.AstNotEqual(
+                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+                f"node2.__class__.__name__: {node2.__class__.__name_}"
+            )
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
