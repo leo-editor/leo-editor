@@ -803,7 +803,7 @@ class PythonTokenBeautifier:
         # Undo vars
         self.changed = False
         self.dirtyVnodeList = []
-    #@+node:ekr.20190908154125.1: *3* ptb.Compare AST's
+    #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's 
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts
     def compare_two_asts(self, node1, node2):
         """
@@ -848,7 +848,11 @@ class PythonTokenBeautifier:
         if node1 is None:
             return
         if isinstance(node1, str):
-            return
+            if node1 != node2:
+                raise self.AstNotEqual(
+                    f"node1: {node1!r}\n"
+                    f"node2: {node2!r}")
+                
         # Special cases for lists and tuples:
         if isinstance(node1, (tuple,list)):
             if len(node1) != len(node2):
@@ -862,6 +866,11 @@ class PythonTokenBeautifier:
                         f"list item1: {i} {item1}\n"
                         f"list item2: {i} {item2}")
                 self.compare_two_asts(item1, item2)
+    #@+node:ekr.20190908163223.1: *4* ptb.dump_ast
+    def dump_ast(self, node):
+        """Dump the tree"""
+        from leo.core.leoAst import AstDumper
+        g.printObj(AstDumper().dump(node))
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
@@ -908,7 +917,7 @@ class PythonTokenBeautifier:
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='after', mode='exec')
-            # g.printObj(node2, tag='node2')
+            # self.dump_ast(node2)
         except Exception:
             g.trace('Unexcpected exception creating the "after" parse tree')
             self.skip_message('BeautifierError', p)
@@ -922,12 +931,14 @@ class PythonTokenBeautifier:
             g.trace(f"Error in {p.h}...\n")
             g.trace('The beautify command did not preserve meaning!')
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
+            self.dump_ast(node2)
             self.skip_message('Ast mismatch', p)
             return
         except Exception:
             g.trace(f"Unexpected error in {p.h}...\n")
             self.skip_message('BeautifierError', p)
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
+            self.dump_ast(node2)
             g.es_exception()
             return
         t5 = time.time()
