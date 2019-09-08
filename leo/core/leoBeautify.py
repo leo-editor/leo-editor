@@ -21,7 +21,7 @@ import optparse
 import os
 import sys
 import time
-import token
+import token as token_module
 import tokenize
 #@-<< imports >>
 #@+others
@@ -145,7 +145,7 @@ def dump_tokens(tokens, verbose=True):
 def dump_token(last_line_number, token5tuple, verbose):
     '''Dump the given input token.'''
     t1, t2, t3, t4, t5 = token5tuple
-    name = token.tok_name[t1].lower()
+    name = token_module.tok_name[t1].lower()
     val = str(t2) # can fail
     srow, scol = t3
     erow, ecol = t4
@@ -522,9 +522,9 @@ class CPrettyPrinter:
 
         i, n, result = 0, len(s), []
         while i < n:
-            token_ = s[i] # token is a module.
+            token = s[i]
             progress = i
-            if token_ in ('if', 'for', 'while',):
+            if token in ('if', 'for', 'while',):
                 j = self.skip_ws_and_comments(s, i + 1)
                 if self.match(s, j, '('):
                     j = self.skip_parens(s, j)
@@ -558,15 +558,15 @@ class CPrettyPrinter:
                     result.extend(s[i: j])
                 i = j
             else:
-                result.append(token_)
+                result.append(token)
                 i += 1
             assert progress < i
         return result
     #@+node:ekr.20110919184022.6903: *5* skip_ws
     def skip_ws(self, s, i):
         while i < len(s):
-            token_ = s[i] # token is a module.
-            if token_.startswith(' ') or token_.startswith('\t'):
+            token = s[i]
+            if token.startswith(' ') or token.startswith('\t'):
                 i += 1
             else:
                 break
@@ -574,10 +574,10 @@ class CPrettyPrinter:
     #@+node:ekr.20110918225821.6820: *5* skip_ws_and_comments
     def skip_ws_and_comments(self, s, i):
         while i < len(s):
-            token_ = s[i] # token is a module.
-            if token_.isspace():
+            token = s[i]
+            if token.isspace():
                 i += 1
-            elif token_.startswith('//') or token_.startswith('/*'):
+            elif token.startswith('//') or token.startswith('/*'):
                 i += 1
             else:
                 break
@@ -849,6 +849,7 @@ class PythonTokenBeautifier:
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='after', mode='exec')
+            ### g.printObj(node2, tag='node2')
         except Exception:
             g.trace('Unexcpected exception creating the "after" parse tree')
             self.skip_message('BeautifierError', p)
@@ -859,12 +860,14 @@ class PythonTokenBeautifier:
         try:
             self.compare_two_asts(node1, node2)
         except self.AstNotEqual:
-            g.trace('Error in %s...\n%s' % (p.h, s2_e))
+            g.trace(f"Error in {p.h}...\n")
             g.trace('The beautify command did not preserve meaning!')
+            g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.skip_message('Ast mismatch', p)
         except Exception:
-            g.trace('Unexpected error in %s...\n%s' % (p.h, s2_e))
+            g.trace(f"Unexpected error in {p.h}...\n")
             self.skip_message('BeautifierError', p)
+            g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.es_exception()
             return
         t5 = time.time()
@@ -897,7 +900,7 @@ class PythonTokenBeautifier:
         for token5tuple in tokens:
             t1, t2, t3, t4, t5 = token5tuple
             srow, scol = t3
-            self.kind = token.tok_name[t1].lower()
+            self.kind = token_module.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
             self.raw_val = g.toUnicode(t5)
             if srow != self.last_line_number:
@@ -919,7 +922,7 @@ class PythonTokenBeautifier:
             func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
-        ### g.printObj(self.code_list, tag='FINAL')
+        # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
@@ -1175,6 +1178,9 @@ class PythonTokenBeautifier:
                 # Done if the delims match.
                 delim_count -= 1
                 if delim_count == 0:
+                    # Create an error, on purpose.
+                    # self.add_token('op', ',')
+                    # self.add_token('number', 666)
                     # Start a new line
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
@@ -1398,47 +1404,70 @@ class PythonTokenBeautifier:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
-    #@+node:ekr.20190908032911.1: *4* ptb.compare_asts & helpers
+    #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts & helpers
     def compare_two_asts(self, node1, node2):
         
         self.compare_stack = []
             # The stack of already-compared pairs of nodes.
+            
+        self.compare_corresponding_nodes(node1, node2)
 
-        def dump():
-            g.printObj(
-                [f"{z[0]!r} {z[1]!r}" for z in self.compare_stack],
-                tag="compare stack")
+        # def dump():
+            # g.printObj(
+                # [f"{z[0]!r} {z[1]!r}" for z in self.compare_stack],
+                # tag="compare stack")
 
-        try:
-            self.compare_corresponding_nodes(node1, node2)
-            return True
-        except self.AstNotEqual as e:
-            dump() ### Testing.
-            return False
-        except Exception:
-            dump()
-            g.es_exception()
-            return False
+        # try:
+            # self.compare_corresponding_nodes(node1, node2)
+            # return True
+        # except self.AstNotEqual as e:
+            # dump() ### Testing.
+            # return False
+        # except Exception:
+            # dump()
+            # g.es_exception()
+            # return False
     #@+node:ekr.20190908033524.1: *5* ptb.compare_corresponding_nodes
     def compare_corresponding_nodes(self, node1, node2):
         """Compare both nodes, and recursively compare their children."""
         self.compare_stack.append([node1, node2])
-        children1, children2 = self.compare_two_nodes(node1, node2)
+        fields = self.compare_two_nodes(node1, node2)
             # Fails unless the two nodes have similar children.
-        # Compare all children.
-        for i, child1 in enumerate(children1):
-            child2 = children2[i]
-            self.compare_corresponding_nodes(child1, child2)
+        g.trace('FIELDS', fields)
+        for field in fields:
+            g.trace('FIELD', field)
+            attr1 = getattr(node1, field, None)
+            attr2 = getattr(node2, field, None)
+            if attr1.__class__.__name__ != attr2.__class__.__name__:
+                raise self.AstNotEqual(
+                    f"attrs1: {attr1},\n"
+                    f"attrs2: {attr2}")
+            self.compare_corresponding_nodes(attr1, attr2)
     #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
     def compare_two_nodes(self, node1, node2):
         """
         Compare node1 and node2, including the length of each node's children.
-        Return the list of each node's children if equal.
+        Return the list of each node's fields if equal.
         Raise AstNotEqual if not equal.
         """
         # Special case for strings.
-        if isinstance(node1, str) and isinstance(node2, str):
-            return [], []
+        if isinstance(node1, str):
+            if isinstance(node2, str):
+                return []
+            raise self.AstNotEqual(
+                    f"node1: {node1}\n"
+                    f"node2: {node2}")
+        # Special case for lists.
+        if isinstance(node1, list):
+            if not isinstance(node2, list) or len(node1) != len(node2):
+                raise self.AstNotEqual(
+                    f"node1: {node1}\n"
+                    f"node2: {node2}")
+            if 0: ### Not ready yet.
+                for i, item1 in enumerate(node1):
+                    item2 = node2[i]
+                    self.compare_corresponding_nodes(item1, item2)
+            return []
         # Compare the nodes themselves.
         if node1.__class__.__name__ != node2.__class__.__name__:
             raise self.AstNotEqual(
@@ -1446,13 +1475,18 @@ class PythonTokenBeautifier:
                 f"node2 kind: {node2.__class__.__name_}"
             )
         # Compare the number of children.
-        children1, children2 = list(node1._fields), list(node2._fields)
-        if len(children1) != len(children2):
-            raise self.AstNotEqual(
-                f"node1 has {len(children1)} children\n"
-                f"node2 has {len(children2)} children"
+        fields1, fields2 = list(node1._fields), list(node2._fields)
+        if 0:
+            g.trace()
+            print(
+                f"node1: {node1.__class__.__name__} fields1: {fields1}\n"
+                f"node2: {node2.__class__.__name__} fields2: {fields2}"
             )
-        return children1, children2
+        if fields1 != fields2:
+            raise self.AstNotEqual(
+                f"node1._fields: {fields1}\n"
+                f"node2._fields: {fields2}")
+        return fields1
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
