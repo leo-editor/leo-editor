@@ -739,8 +739,11 @@ class PythonTokenBeautifier:
         def __repr__(self):
             val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
             return f"{self.kind:15} {val}"
-
-        __str__ = __repr__
+            
+        def __str__(self):
+            # More compact
+            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+            return f"{self.kind} {val}"
 
         def to_string(self):
             '''Convert an output token to a string.'''
@@ -916,7 +919,7 @@ class PythonTokenBeautifier:
             func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
-        g.printObj(self.code_list, tag='FINAL')
+        ### g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
@@ -1095,7 +1098,6 @@ class PythonTokenBeautifier:
         Break the preceding line, if necessary.
         Should be called only at the end of a line.
         '''
-        trace = True and not g.unitTesting
         # Must be called just after inserting the line-end token.
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         # g.printObj(self.state_stack, 'parse stack')
@@ -1107,7 +1109,7 @@ class PythonTokenBeautifier:
         if not any([z.kind == 'lt' for z in line_tokens]):
             g.trace("can't split line: no opening delim", repr(line_s))
             return
-        if trace:
+        if 0:
             g.trace(repr(line_s))
             g.printObj(line_tokens, tag="BEFORE")
         prefix = self.find_line_prefix(line_tokens)
@@ -1115,24 +1117,17 @@ class PythonTokenBeautifier:
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
-        # if trace:
-            # g.printObj(prefix, tag="PREFIX")
-            # g.printObj(tail, tag="TAIL")
+        if 0:
+            g.printObj(prefix, tag="PREFIX")
+            g.printObj(tail, tag="TAIL")
         assert prefix, repr(line_tokens)
-        ### assert prefix[-1].kind == 'lt', g.objToString(prefix)
         # Cut back the token list
         self.code_list = self.code_list[:-(len(line_tokens))]
-        ###
-            # # Add the prefix.
-            # self.code_list.extend(prefix)
-            # # Start a new line and increase the indentation.
-            # self.add_token('line-end', '\n')
-            # self.add_token('line-indent', self.lws+' '*4)
         # Append the tail, splitting it further, as needed.
         self.append_tail(prefix, tail)
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
-        if trace:
+        if 0:
             g.printObj(self.code_list, tag="AFTER")
         
     #@+node:ekr.20190908065154.1: *5* ptb.append_tail
@@ -1149,45 +1144,52 @@ class PythonTokenBeautifier:
             return
         #
         # Still too long.  Split the line at commas.
-        #
-        # Convert 'op-no-blanks in the prefix before starting a new line.
-        if 0:
-            for t in prefix:
-                if t.kind == 'op-no-blanks' and t.value in '([{':
-                    t.kind = 'lt'
-        if 0:
-            g.printObj(prefix, tag="PREFIX")
-            g.printObj(tail, tag="TAIL")
-        # Add the adjusted prefix.
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
         self.add_token('line-indent', self.lws+' '*4)
-        open_delim = prefix[-1]
+        open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
         close_delim = self.OutputToken(
             kind='rt',
             value=open_delim.value.replace('(',')').replace('[',']').replace('{','}'),
         )
+        delim_count = 1
+        lws = self.lws+' '*4
         for i, t in enumerate(tail):
+            # g.trace(delim_count, str(t))
             if t.kind == 'op' and t.value == ',':
-                # Start a new line.
-                self.add_token('op-no-blanks', ',')
-                self.add_token('line-end', '\n')
-                self.add_token('line-indent', self.lws+' '*4)
-                # Kill a following blank.
-                if i+1 < len(tail):
-                    next_t = tail[i+1]
-                    if next_t.kind == 'blank':
-                        next_t.value = ''
+                if delim_count == 1:
+                    # Start a new line.
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', lws)
+                    # Kill a following blank.
+                    if i+1 < len(tail):
+                        next_t = tail[i+1]
+                        if next_t.kind == 'blank':
+                            next_t.kind = 'no-op'
+                            next_t.value = ''
+                else:
+                    self.code_list.append(t)
             elif t.kind == close_delim.kind and t.value == close_delim.value:
-                # Start a new line and finish.
-                self.add_token('op-no-blanks', ',')
-                self.add_token('line-end', '\n')
-                self.add_token('line-indent', self.lws)
-                self.code_list.extend(tail[i:])
-                return
+                # Done if the delims match.
+                delim_count -= 1
+                if delim_count == 0:
+                    # Start a new line
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', self.lws)
+                    self.code_list.extend(tail[i:])
+                    return
+                lws = lws[:-4]
+                self.code_list.append(t)
+            elif t.kind == open_delim.kind and t.value == open_delim.value:
+                delim_count += 1
+                lws = lws + ' '*4
+                self.code_list.append(t)
             else:
                 self.code_list.append(t)
+        g.trace('BAD DELIMS', delim_count)
     #@+node:ekr.20190908050434.1: *5* ptb.find_prev_line (new)
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
