@@ -916,6 +916,7 @@ class PythonTokenBeautifier:
             func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
+        g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
@@ -1114,26 +1115,87 @@ class PythonTokenBeautifier:
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
-        if trace:
-            g.printObj(prefix, tag="PREFIX")
-            g.printObj(tail, tag="TAIL")
+        # if trace:
+            # g.printObj(prefix, tag="PREFIX")
+            # g.printObj(tail, tag="TAIL")
         assert prefix, repr(line_tokens)
-        assert prefix[-1].kind == 'lt', repr(prefix)
+        ### assert prefix[-1].kind == 'lt', g.objToString(prefix)
         # Cut back the token list
         self.code_list = self.code_list[:-(len(line_tokens))]
-        # Add the prefix.
-        self.code_list.extend(prefix)
-        # Start a new line.
-        self.add_token('line-end', '\n')
-        # self.clean('line-indent')
-        self.add_token('line-indent', self.lws+' '*4)
-        # Append the tail.
-        self.code_list.extend(tail)
-        # Add back the line-end token deleted by find_line_prefix.
+        ###
+            # # Add the prefix.
+            # self.code_list.extend(prefix)
+            # # Start a new line and increase the indentation.
+            # self.add_token('line-end', '\n')
+            # self.add_token('line-indent', self.lws+' '*4)
+        # Append the tail, splitting it further, as needed.
+        self.append_tail(prefix, tail)
+        # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
         if trace:
             g.printObj(self.code_list, tag="AFTER")
         
+    #@+node:ekr.20190908065154.1: *5* ptb.append_tail
+    def append_tail(self, prefix, tail):
+        '''Append the tail tokens, splitting the line further as necessary.'''
+        tail_s = ''.join([z.to_string() for z in tail])
+        if len(tail_s) < 88:
+            # Add the prefix.
+            self.code_list.extend(prefix)
+            # Start a new line and increase the indentation.
+            self.add_token('line-end', '\n')
+            self.add_token('line-indent', self.lws+' '*4)
+            self.code_list.extend(tail)
+            return
+        #
+        # Still too long.  Split the line at commas.
+        #
+        # Convert 'op-no-blanks in the prefix before starting a new line.
+        if 1:
+            for t in prefix:
+                if t.kind == 'op-no-blanks' and t.value in '([{':
+                    t.kind = 'lt'
+        if 1:
+            g.printObj(prefix, tag="PREFIX")
+            g.printObj(tail, tag="TAIL")
+        # Add the adjusted prefix.
+        self.code_list.extend(prefix)
+        # Start a new line and increase the indentation.
+        self.add_token('line-end', '\n')
+        self.add_token('line-indent', self.lws+' '*4)
+        open_delim = prefix[-1]
+        close_delim = self.OutputToken(
+            kind='rt',
+            value=open_delim.value.replace('(',')').replace('[',']').replace('{','}'),
+        )
+        # g.trace("STILL TOO LONG", close_delim)
+        # self.code_list.append(open_delim)
+        ### after_comma = False
+        for i, t in enumerate(tail):
+            if t.kind == 'op' and t.value == ',':
+                # Start a new line.
+                ###self.code_list.append(t)
+                self.add_token('op-no-blanks', ',')
+                self.add_token('line-end', '\n')
+                self.add_token('line-indent', self.lws+' '*4)
+                # Kill a following blank.
+                if i+1 < len(tail):
+                    next_t = tail[i+1]
+                    if next_t.kind == 'blank':
+                        next_t.value = ''
+            elif t.kind == close_delim.kind and t.value == close_delim.value:
+                # Start a new line and finish.
+                self.add_token('op-no-blanks', ',')
+                self.add_token('line-end', '\n')
+                self.add_token('line-indent', self.lws)
+                self.code_list.extend(tail[i:])
+                return
+            # elif after_comma:
+                # after_comma = False
+                # if t.kind != 'blank':
+                    # self.code_list.append(t)
+            else:
+                self.code_list.append(t)
     #@+node:ekr.20190908050434.1: *5* ptb.find_prev_line (new)
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
@@ -1145,13 +1207,29 @@ class PythonTokenBeautifier:
         return list(reversed(line))
     #@+node:ekr.20190908061659.1: *5* ptb.find_line_prefix (new)
     def find_line_prefix(self, token_list):
-        """Return all tokens up to and including the first lt token"""
+        """
+        Return all tokens up to and including the first lt token.
+        Also add all lt tokens directly following the first lt token.
+        """
         result = []
-        for t in token_list:
+        for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
+                for t in token_list[i+1:]:
+                    if t.kind == 'blank' or self.is_any_lt(t):
+                    # if t.kind in ('lt', 'blank'):
+                        result.append(t)
+                    else:
+                        break
                 break
         return result
+    #@+node:ekr.20190908072548.1: *5* ptb.is_any_lt
+    def is_any_lt(self, output_token):
+        """Return True if the given token is any lt token"""
+        return (
+            output_token == 'lt' or
+            output_token.kind == 'op-no-blanks' and output_token.value in "{[("
+        )
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''
