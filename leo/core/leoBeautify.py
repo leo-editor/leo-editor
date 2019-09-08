@@ -723,7 +723,7 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-break_lines = True
+orange = True
 
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
@@ -739,10 +739,6 @@ class PythonTokenBeautifier:
         def __repr__(self):
             val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
             return f"{self.kind:15} {val}"
-            # if self.kind == 'line-indent':
-                # assert not self.value.strip(' ')
-                # return '%15s %s' % (self.kind, len(self.value))
-            # return '%15s %r' % (self.kind, self.value)
 
         __str__ = __repr__
 
@@ -836,22 +832,37 @@ class PythonTokenBeautifier:
             self.skip_message('Exception', p)
             return
         t2 = time.time()
+        #
+        # Generate the tokens.
         readlines = g.ReadLinesClass(s0).next
         tokens = list(tokenize.generate_tokens(readlines))
+        #
+        # Beautify into s2.
         t3 = time.time()
         s2 = self.run(tokens)
         t4 = time.time()
+        #
+        # Create the "after" parse tree.
         try:
             s2_e = g.toEncodedString(s2)
-            node2 = ast.parse(s2_e, filename='before', mode='exec')
-            ok = self.compare_two_asts(node1, node2)
+            node2 = ast.parse(s2_e, filename='after', mode='exec')
         except Exception:
+            g.trace('Unexcpected exception creating the "after" parse tree')
+            self.skip_message('BeautifierError', p)
             g.es_exception()
-            g.trace('Error in %s...\n%s' % (p.h, s2_e))
-            self.skip_message('BeautifierError', p)
             return
-        if not ok:
+        #
+        # Compare the two parse trees.
+        try:
+            self.compare_two_asts(node1, node2)
+        except self.AstNotEqual:
+            g.trace('Error in %s...\n%s' % (p.h, s2_e))
+            g.trace('The beautify command did not preserve meaning!')
+            self.skip_message('Ast mismatch', p)
+        except Exception:
+            g.trace('Unexpected error in %s...\n%s' % (p.h, s2_e))
             self.skip_message('BeautifierError', p)
+            g.es_exception()
             return
         t5 = time.time()
         # Restore the tags after the compare
