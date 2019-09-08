@@ -877,7 +877,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
-        ### self.print_stats()
+        self.print_stats() ###
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''
@@ -1282,7 +1282,7 @@ class PythonTokenBeautifier:
             self.compare_corresponding_nodes(node1, node2)
             return True
         except self.AstNotEqual as e:
-            dump()
+            dump() ### Testing.
             return False
         except Exception:
             dump()
@@ -1350,16 +1350,19 @@ class PythonTokenBeautifier:
             u.afterChangeGroup(current, undoType, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150528172940.1: *4* ptb.print_stats
     def print_stats(self):
-        print('==================== stats')
-        print('changed nodes  %s' % self.n_changed_nodes)
-        print('tokens         %s' % self.n_input_tokens)
-        print('len(code_list) %s' % self.n_output_tokens)
-        print('len(s)         %s' % self.n_strings)
-        print('parse          %4.2f sec.' % self.parse_time)
-        print('tokenize       %4.2f sec.' % self.tokenize_time)
-        print('format         %4.2f sec.' % self.beautify_time)
-        print('check          %4.2f sec.' % self.check_time)
-        print('total          %4.2f sec.' % self.total_time)
+        print(
+            f"{'='*10} stats\n\n"
+            f"changed nodes  {self.n_changed_nodes:4}\n"
+            f"tokens         {self.n_input_tokens:4}\n"
+            f"len(code_list) {self.n_output_tokens:4}\n"
+            f"len(s)         {self.n_strings:4}\n"
+            f"\ntimes (seconds)...\n"
+            f"parse          {self.parse_time:4.2f}\n"
+            f"tokenize       {self.tokenize_time:4.2f}\n"
+            f"format         {self.beautify_time:4.2f}\n"
+            f"check          {self.check_time:4.2f}\n"
+            f"total          {self.total_time:4.2f}"
+        )
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
         '''Append a state to the state stack.'''
