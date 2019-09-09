@@ -735,7 +735,7 @@ class PythonTokenBeautifier:
         else:
             self.tab_width = 4
         #
-        # Statistics
+        # Statistics...
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
         self.n_output_tokens = 0
@@ -746,7 +746,7 @@ class PythonTokenBeautifier:
         self.check_time = 0.0
         self.total_time = 0.0
         #
-        # Undo vars
+        # Undo vars...
         self.changed = False
         self.dirtyVnodeList = []
     #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's 
@@ -1131,35 +1131,36 @@ class PythonTokenBeautifier:
     def break_line(self):
         '''
         Break the preceding line, if necessary.
-        Should be called only at the end of a line.
         
         Return True if the line was broken into two or more lines.
         '''
-        # Must be called just after inserting the line-end token.
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+            # Must be called just after inserting the line-end token.
+        #
+        # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
         if len(line_s) < 88:
             return False
-        # Must have an opening delim: (, [ or {.
+        #
+        # Return if the previous line has no opening delim: (, [ or {.
         if not any([z.kind == 'lt' for z in line_tokens]):
-            # g.trace("can't split line: no opening delim", repr(line_s))
             return False
         prefix = self.find_line_prefix(line_tokens)
+        #
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
-        # g.printObj(prefix, tag="PREFIX")
-        # g.printObj(tail, tag="TAIL")
-        assert prefix, repr(line_tokens)
+        #
         # Cut back the token list
         self.code_list = self.code_list[:-(len(line_tokens))]
+        #
         # Append the tail, splitting it further, as needed.
         self.append_tail(prefix, tail)
+        #
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
-        # g.printObj(self.code_list, tag="AFTER")
         return True
     #@+node:ekr.20190908065154.1: *5* ptb.append_tail
     def append_tail(self, prefix, tail):
