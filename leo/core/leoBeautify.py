@@ -1255,7 +1255,7 @@ class PythonTokenBeautifier:
         Should be called only at the end of a line.
         '''
         # Must be called just after inserting the line-end token.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
