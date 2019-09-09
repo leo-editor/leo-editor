@@ -295,9 +295,9 @@ class BlackCommand:
         '''ctor for PyflakesCommand class.'''
         self.c = c
         self.language = None
-        self.mode = black.FileMode()
+        self.mode = black.FileMode(0)
         self.wrapper = c.frame.body.wrapper
-        self.mode.line_length = c.config.getInt("black-line-length") or 88
+        self.line_length = c.config.getInt("black-line-length") or 88
         self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
         
         # self.mode.target_versions = set(black.PY36_VERSIONS)
@@ -314,10 +314,12 @@ class BlackCommand:
         self.undo_type = 'blacken-node'
         self.blacken_node_helper(root, check_flag, diff_flag)
         t2 = time.clock()
-        print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
-            self.total, g.plural(self.total),
-            self.changed, g.plural(self.changed),
-            self.errors, g.plural(self.errors), t2-t1))
+        print(
+            f'scanned {self.total} node{g.plural(self.total)}, '
+            f'changed {self.changed} node{g.plural(self.changed)}, '
+            f'{self.errors} error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3f} sec.'
+        )
         if self.changed:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
@@ -339,10 +341,12 @@ class BlackCommand:
             c.setChanged(True)
             c.undoer.afterChangeTree(root, undo_type, bunch)
         t2 = time.clock()
-        print('scanned %s node%s, changed %s node%s, %s error%s in %5.3f sec.' % (
-            self.total, g.plural(self.total),
-            self.changed, g.plural(self.changed),
-            self.errors, g.plural(self.errors), t2-t1))
+        print(
+            f'scanned {self.total} node{g.plural(self.total)}, '
+            f'changed {self.changed} node{g.plural(self.changed)}, '
+            f'{self.errors} error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3f} sec.'
+        )
         if self.changed:
             if not c.changed: c.setChanged(True)
             c.redraw()
@@ -358,7 +362,11 @@ class BlackCommand:
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
         try:
-            body3 = black.format_str(body2, mode=self.mode)
+            body3 = black.format_str(
+                body2,
+                line_length=self.line_length,
+                mode=self.mode,
+            )
         except Exception:
             self.errors += 1
             print('\n===== error', p.h, '\n')
@@ -393,9 +401,9 @@ class BlackCommand:
     #@+node:ekr.20190830045147.1: *4* black.dump_lines
     def dump_lines(self, s, tag):
         """Dump all lines in s, with line numbers."""
-        print('\n%s...\n' % tag)
+        print(f'\n{tag}...\n')
         for i, line in enumerate(g.splitLines(s)):
-            print('%3s: %r' % (i, line))
+            print(f'{i:3}: {line:!r}')
         print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
     c_pat = re.compile(r'^\s*@c\s*\n')

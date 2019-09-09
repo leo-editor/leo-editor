@@ -591,8 +591,9 @@ class GeneralSetting:
     def __repr__(self):
         # Better for g.printObj.
         val = str(self.val).replace('\n', ' ')
-        return 'GS: %20s %7s = %s' % (
-            g.shortFileName(self.path), self.kind, g.truncate(val, 50))
+        return (
+            f'GS: {g.shortFileName(self.path):20} '
+            f'{self.kind:7} = {g.truncate(val, 50)}')
 
     dump = __repr__
     __str__ = __repr__
@@ -2238,12 +2239,17 @@ class TypedDict:
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
     def __str__(self):
         """Concise: used by repr."""
-        return '<TypedDict name:%s keys:%s values:%s len(keys): %s>' % (
-            self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
+        return (
+            f'<TypedDict name:{self._name} '
+            f'keys:{self.keyType.__name__} '
+            f'values:{self.valType.__name__} '
+            f'len(keys): {len(list(self.keys()))}>'
+        )
             
     def __repr__(self):
         """Suitable for g.printObj"""
-        return '%s\n%s\n' % (g.dictToString(self.d), str(self))
+        return f'{g.dictToString(self.d)}\n{str(self)}\n'
+
     #@+node:ekr.20120205022040.17774: *4* td.__setitem__
     def __setitem__(self, key, val):
         """Allow d[key] = val"""
@@ -2281,9 +2287,12 @@ class TypedDict:
             self._reportTypeError(val, self.valType)
 
     def _reportTypeError(self, obj, objType):
-        print('Type mismatch: obj: %s, objType: %s' % (obj.__class__, objType))
-        return '%s expected %s got %s' % (
-            self._name, obj.__class__.__name__, objType.__name__)
+        # print(f'Type mismatch: obj: {obj.__class__}, objType: {objType}')
+        return(
+            f'{self._name} '
+            f'expected {obj.__class__.__name__} '
+            f'got {objType.__name__}'
+        )
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
         '''Return a new dict with the same contents.'''
