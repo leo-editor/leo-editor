@@ -142,24 +142,6 @@ def dump_token(last_line_number, token5tuple, verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
-#@+node:ekr.20170202095522.1: *3* fail (not used)
-def fail(node1, node2, tag):
-    '''Report a failed mismatch in the beautifier. This is a bug.'''
-    name1 = node1.__class__.__name__
-    name2 = node2.__class__.__name__
-    format = 'compare_ast failed: %s: %s %s %r %r'
-    if name1 == 'str':
-        print(format % (tag, name1, name2, node1, node2))
-    elif name1 == 'Str':
-        print(format % (tag, name1, name2, node1.s, node2.s))
-    elif 1:
-        format = 'compare_ast failed: %s: %s %s\n%r\n%r'
-        print(format % (tag, name1, name2, node1, node2))
-    else:
-        format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
-        attr1 = getattr(node1, 'lineno', '<no lineno>')
-        attr2 = getattr(node2, 'lineno', '<no lineno>')
-        print(format % (tag, name1, name2, node1, node2, attr1, attr2))
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
@@ -194,7 +176,7 @@ def beautify(options, path):
         f.close()
     except Exception:
         print('failed to beautify %s' % fn)
-#@+node:ekr.20150601162203.1: *4* scan_options & helper
+#@+node:ekr.20150601162203.1: *4* scan_options (stand alone)
 def scan_options():
     '''Handle all options. Return a list of files.'''
     # This automatically implements the --help option.
@@ -735,6 +717,7 @@ class PythonTokenBeautifier:
             self.max_line_length = 88 if n is None else n
             self.tab_width = abs(c.tab_width)
         else:
+            self.max_line_length = 88
             self.tab_width = 4
         #
         # Statistics...
