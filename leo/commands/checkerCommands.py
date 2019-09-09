@@ -362,7 +362,11 @@ class BlackCommand:
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
         try:
-            body3 = black.format_str(body2, line_length=self.line_length, mode=self.mode)
+            body3 = black.format_str(
+                body2,
+                line_length=self.line_length,
+                mode=self.mode,
+            )
         except Exception:
             self.errors += 1
             print('\n===== error {p.h}\n')

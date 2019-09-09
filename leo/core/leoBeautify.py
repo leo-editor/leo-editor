@@ -721,7 +721,7 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-break_lines = True
+orange = True
 
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
@@ -735,10 +735,8 @@ class PythonTokenBeautifier:
             self.value = value
 
         def __repr__(self):
-            if self.kind == 'line-indent':
-                assert not self.value.strip(' ')
-                return '%15s %s' % (self.kind, len(self.value))
-            return '%15s %r' % (self.kind, self.value)
+            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+            return f"{self.kind:15} {val}"
 
         __str__ = __repr__
 
@@ -747,16 +745,19 @@ class PythonTokenBeautifier:
             return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
-        '''A class representing items parse state stack.'''
+        '''A class representing items in the parse state stack.'''
 
         def __init__(self, kind, value):
             self.kind = kind
             self.value = value
 
         def __repr__(self):
-            return 'State: %10s %s' % (self.kind, repr(self.value))
+            return f"State: {self.kind} {self.value!r}"
 
         __str__ = __repr__
+    #@+node:ekr.20190908033048.1: *3* class AstNotEqual (Exception)
+    class AstNotEqual (Exception):
+        """The two given AST's are not equivalent."""
     #@+node:ekr.20150519111713.1: *3* ptb.ctor
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
@@ -829,22 +830,37 @@ class PythonTokenBeautifier:
             self.skip_message('Exception', p)
             return
         t2 = time.time()
+        #
+        # Generate the tokens.
         readlines = g.ReadLinesClass(s0).next
         tokens = list(tokenize.generate_tokens(readlines))
+        #
+        # Beautify into s2.
         t3 = time.time()
         s2 = self.run(tokens)
         t4 = time.time()
+        #
+        # Create the "after" parse tree.
         try:
             s2_e = g.toEncodedString(s2)
-            node2 = ast.parse(s2_e, filename='before', mode='exec')
-            ok = compare_ast(node1, node2)
+            node2 = ast.parse(s2_e, filename='after', mode='exec')
         except Exception:
+            g.trace('Unexcpected exception creating the "after" parse tree')
+            self.skip_message('BeautifierError', p)
             g.es_exception()
-            g.trace('Error in %s...\n%s' % (p.h, s2_e))
-            self.skip_message('BeautifierError', p)
             return
-        if not ok:
+        #
+        # Compare the two parse trees.
+        try:
+            self.compare_two_asts(node1, node2)
+        except self.AstNotEqual:
+            g.trace('Error in %s...\n%s' % (p.h, s2_e))
+            g.trace('The beautify command did not preserve meaning!')
+            self.skip_message('Ast mismatch', p)
+        except Exception:
+            g.trace('Unexpected error in %s...\n%s' % (p.h, s2_e))
             self.skip_message('BeautifierError', p)
+            g.es_exception()
             return
         t5 = time.time()
         # Restore the tags after the compare
@@ -859,7 +875,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
-        ### self.print_stats()
+        ### self.print_stats() ###
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''
@@ -1036,13 +1052,6 @@ class PythonTokenBeautifier:
         '''Add a token to the code list.'''
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
-    #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end (not used)
-    # def arg_end(self):
-        # '''Add a token indicating the end of an argument list.'''
-        # self.add_token('arg-end')
-    # def arg_start(self):
-        # '''Add a token indicating the start of an argument list.'''
-        # self.add_token('arg-start')
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
         '''Add a backslash token and clear .backslash_seen'''
@@ -1249,6 +1258,61 @@ class PythonTokenBeautifier:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
+    #@+node:ekr.20190908032911.1: *4* ptb.compare_asts & helpers
+    def compare_two_asts(self, node1, node2):
+        
+        self.compare_stack = []
+            # The stack of already-compared pairs of nodes.
+
+        def dump():
+            g.printObj(
+                [f"{z[0]!r} {z[1]!r}" for z in self.compare_stack],
+                tag="compare stack")
+
+        try:
+            self.compare_corresponding_nodes(node1, node2)
+            return True
+        except self.AstNotEqual as e:
+            dump() ### Testing.
+            return False
+        except Exception:
+            dump()
+            g.es_exception()
+            return False
+    #@+node:ekr.20190908033524.1: *5* ptb.compare_corresponding_nodes
+    def compare_corresponding_nodes(self, node1, node2):
+        """Compare both nodes, and recursively compare their children."""
+        self.compare_stack.append([node1, node2])
+        children1, children2 = self.compare_two_nodes(node1, node2)
+            # Fails unless the two nodes have similar children.
+        # Compare all children.
+        for i, child1 in enumerate(children1):
+            child2 = children2[i]
+            self.compare_corresponding_nodes(child1, child2)
+    #@+node:ekr.20190908034557.1: *5* ptb.compare_two_nodes
+    def compare_two_nodes(self, node1, node2):
+        """
+        Compare node1 and node2, including the length of each node's children.
+        Return the list of each node's children if equal.
+        Raise AstNotEqual if not equal.
+        """
+        # Special case for strings.
+        if isinstance(node1, str) and isinstance(node2, str):
+            return [], []
+        # Compare the nodes themselves.
+        if node1.__class__.__name__ != node2.__class__.__name__:
+            raise self.AstNotEqual(
+                f"node1 kind: {node1.__class__.__name__}\n"
+                f"node2 kind: {node2.__class__.__name_}"
+            )
+        # Compare the number of children.
+        children1, children2 = list(node1._fields), list(node2._fields)
+        if len(children1) != len(children2):
+            raise self.AstNotEqual(
+                f"node1 has {len(children1)} children\n"
+                f"node2 has {len(children2)} children"
+            )
+        return children1, children2
     #@+node:ekr.20150528171420.1: *4* ppp.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
@@ -1277,16 +1341,19 @@ class PythonTokenBeautifier:
             u.afterChangeGroup(current, undoType, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150528172940.1: *4* ptb.print_stats
     def print_stats(self):
-        print('==================== stats')
-        print(f"changed nodes  {self.n_changed_nodes}")
-        print(f"tokens         {self.n_input_tokens}")
-        print(f"len(code_list) {self.n_output_tokens}")
-        print(f"len(s)         {self.n_strings}")
-        print(f"parse          {self.parse_time:4.2f}")
-        print(f"tokenize       {self.tokenize_time:4.2f}")
-        print(f"format         {self.beautify_time:4.2f}")
-        print(f"check          {self.check_time:4.2f}")
-        print(f"total          {self.total_time:4.2f}")
+        print(
+            f"{'='*10} stats\n\n"
+            f"changed nodes  {self.n_changed_nodes:4}\n"
+            f"tokens         {self.n_input_tokens:4}\n"
+            f"len(code_list) {self.n_output_tokens:4}\n"
+            f"len(s)         {self.n_strings:4}\n"
+            f"\ntimes (seconds)...\n"
+            f"parse          {self.parse_time:4.2f}\n"
+            f"tokenize       {self.tokenize_time:4.2f}\n"
+            f"format         {self.beautify_time:4.2f}\n"
+            f"check          {self.check_time:4.2f}\n"
+            f"total          {self.total_time:4.2f}"
+        )
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
         '''Append a state to the state stack.'''
