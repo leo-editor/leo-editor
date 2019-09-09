@@ -317,8 +317,8 @@ class BlackCommand:
         print(
             f'scanned {self.total} node{g.plural(self.total)}, '
             f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors}error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3} sec.'
+            f'{self.errors} error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3f} sec.'
         )
         if self.changed:
             c.redraw()
@@ -345,7 +345,7 @@ class BlackCommand:
             f'scanned {self.total} node{g.plural(self.total)}, '
             f'changed {self.changed} node{g.plural(self.changed)}, '
             f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3} sec.'
+            f'in {t2-t1:5.3f} sec.'
         )
         if self.changed:
             if not c.changed: c.setChanged(True)
@@ -362,7 +362,11 @@ class BlackCommand:
         body = p.b.rstrip()+'\n'
         body2 = self.replace_leo_constructs(body)
         try:
-            body3 = black.format_str(body2, line_length=self.line_length, mode=self.mode)
+            body3 = black.format_str(
+                body2,
+                line_length=self.line_length,
+                mode=self.mode,
+            )
         except Exception:
             self.errors += 1
             print('\n===== error {p.h}\n')
