@@ -1142,7 +1142,7 @@ class PythonTokenBeautifier:
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
-        if len(line_s) < self.max_line_length:
+        if self.max_line_length == 0 or len(line_s) < self.max_line_length:
             return False
         #
         # Return if the previous line has no opening delim: (, [ or {.
@@ -1278,7 +1278,7 @@ class PythonTokenBeautifier:
         line_s = ''.join([z.to_string() for z in line_tokens])
         if trace: g.trace(line_s)
         # Don't bother trying if the line is already long.
-        if len(line_s) > self.max_line_length:
+        if self.max_line_length == 0 or len(line_s) > self.max_line_length:
             return
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
