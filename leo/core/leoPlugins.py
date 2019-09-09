@@ -235,10 +235,10 @@ class BaseLeoPlugin:
             commandName = self.commandName
         else:
             if commandName not in self.commandNames:
-                raise NameError("setButton error, %s is not a commandName" % commandName)
+                raise NameError(f"setButton error, {commandName} is not a commandName")
         if color is None:
             color = 'grey'
-        script = "c.k.simulateCommand('%s')" % self.commandName
+        script = f"c.k.simulateCommand('{self.commandName}')"
         g.app.gui.makeScriptButton(
             self.c,
             args=None,
@@ -323,7 +323,7 @@ class LeoPluginsController:
         try:
             result = handler(tag, keywords)
         except Exception:
-            g.es("hook failed: %s, %s, %s" % (tag, handler, moduleName))
+            g.es(f"hook failed: {tag}, {handler}, {moduleName}")
             g.es_exception()
             result = None
         self.loadingModuleNameStack.pop()
@@ -447,8 +447,7 @@ class LeoPluginsController:
         if not s: return
         if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
             if 0:
-                s2 = '@enabled-plugins found in %s' % (
-                    g.app.config.enabledPluginsFileName)
+                s2 = f"@enabled-plugins found in {g.app.config.enabledPluginsFileName}"
                 g.blue(s2)
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
@@ -466,7 +465,7 @@ class LeoPluginsController:
 
         def report(message):
             if trace and not g.unitTesting:
-                g.es_print('loadOnePlugin: %s' % message)
+                g.es_print(f"loadOnePlugin: {message}")
                 
         # Define local helper functions.
         #@+others
@@ -478,15 +477,15 @@ class LeoPluginsController:
                 init_result = result.init()
                     # Careful: this may throw an exception.
                 if init_result not in (True, False):
-                    report('%s.init() did not return a bool' % moduleName)
+                    report(f"{moduleName}.init() did not return a bool")
                 if init_result:
                     self.loadedModules[moduleName] = result
                     self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                 else:
-                    report('%s.init() returned False' % moduleName)
+                    report(f"{moduleName}.init() returned False")
                     result = None
             except Exception:
-                report('exception loading plugin: %s' % moduleName)
+                report(f"exception loading plugin: {moduleName}")
                 g.es_exception()
                 result = None
             return result
@@ -504,7 +503,7 @@ class LeoPluginsController:
                 self.loadedModules[moduleName] = None
                 return None
             # Guess that the module was loaded correctly.
-            report('fyi: no top-level init() function in %s' % moduleName)
+            report(f"fyi: no top-level init() function in {moduleName}")
             self.loadedModules[moduleName] = result
             return result
         #@+node:ekr.20180528160744.1: *5* function:loadOnePluginHelper
@@ -515,15 +514,15 @@ class LeoPluginsController:
                 # Look up through sys.modules, __import__ returns toplevel package
                 result = sys.modules[moduleName]
             except g.UiTypeException:
-                report('plugin %s does not support %s gui' % (moduleName, g.app.gui.guiName()))
+                report(f"plugin {moduleName} does not support {g.app.gui.guiName()} gui")
             except ImportError:
-                report('error importing plugin: %s' % moduleName)
+                report(f"error importing plugin: {moduleName}")
             # except ModuleNotFoundError:
                 # report('module not found: %s' % moduleName)
             except SyntaxError:
-                report('syntax error importing plugin: %s' % moduleName)
+                report(f"syntax error importing plugin: {moduleName}")
             except Exception:
-                report('exception importing plugin: %s' % moduleName)
+                report(f"exception importing plugin: {moduleName}")
                 g.es_exception()
             return result
         #@+node:ekr.20180528162300.1: *5* function:reportFailedImport
@@ -537,14 +536,14 @@ class LeoPluginsController:
                 not g.app.gui.guiName().startswith('curses') and
                 moduleName not in optional_modules
             ):
-                report('can not load enabled plugin: %s' % moduleName)
+                report(f"can not load enabled plugin: {moduleName}")
         #@-others
 
         if not g.app.enablePlugins:
-            report('plugins disabled: %s' % moduleOrFileName)
+            report(f"plugins disabled: {moduleOrFileName}")
             return None
         if moduleOrFileName.startswith('@'):
-            report('ignoring Leo directive: %s' % moduleOrFileName)
+            report(f"ignoring Leo directive: {moduleOrFileName}")
             return None
                 # Return None, not False, to keep pylint happy.
                 # Allow Leo directives in @enabled-plugins nodes.
@@ -573,7 +572,7 @@ class LeoPluginsController:
         finally:
             self.loadingModuleNameStack.pop()
         if result:
-            report('loaded: %s' % moduleName)
+            report(f"loaded: {moduleName}")
         self.signonModule = result # for self.plugin_signon.
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
@@ -583,8 +582,7 @@ class LeoPluginsController:
         # in self.loadOnePlugin
         m = self.signonModule
         if verbose:
-            g.es('', "...%s.py v%s: %s" % (
-                m.__name__, m.__version__, g.plugin_date(m)))
+            g.es(f"...{m.__name__}.py v{m.__version__}: {g.plugin_date(m)}")
             g.pr(m.__name__, m.__version__)
         self.signonModule = None # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* plugins.unloadOnePlugin
@@ -619,7 +617,7 @@ class LeoPluginsController:
             g.pr('%6s %15s %25s %s' % (g.app.unitTesting, moduleName, tag, fn.__name__))
         if g.app.unitTesting: return
         if tag in self.handlers:
-            g.es("*** Two exclusive handlers for", "'%s'" % (tag))
+            g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             self.handlers[tag] = [bunch] # Vitalije

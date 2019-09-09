@@ -282,7 +282,7 @@ class PersistenceDataController:
                 last.moveToNext()
             p = last.insertAfter()
             p.h = h
-            g.es_print('created %s node' % h, color='red')
+            g.es_print(f"created {h} node", color='red')
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(self, root):

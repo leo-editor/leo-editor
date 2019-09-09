@@ -136,7 +136,7 @@ class BaseColorizer:
     #@+node:ekr.20170127142001.6: *5* bjc.isValidLanguage
     def isValidLanguage(self, language):
         '''True if language exists in leo/modes.'''
-        fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
+        fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
         return g.os_path_exists(fn)
     #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
@@ -285,8 +285,10 @@ class BaseJEditColorizer (BaseColorizer):
         for key in sorted(self.default_colors_dict.keys()):
             option_name, default_color = self.default_colors_dict[key]
             color = (
-                getColor('%s_%s' % (self.language, option_name)) or
-                getColor(option_name) or default_color)
+                getColor(f"{self.language}_{option_name}") or
+                getColor(option_name) or
+                default_color
+            )
             # Must use foreground, not fg.
             try:
                 wrapper.tag_configure(key, foreground=color)
@@ -644,7 +646,7 @@ class BaseJEditColorizer (BaseColorizer):
             return True
         # Don't try to import a non-existent language.
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        fn = g.os_path_join(path, '%s.py' % (language))
+        fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
             mode = g.importFromPath(moduleName=language, path=path)
         else:
@@ -727,11 +729,11 @@ class BaseJEditColorizer (BaseColorizer):
             language = name
             # New in Leo 5.0: allow delegated language names.
             language = g.app.delegate_language_dict.get(language, language)
-            rulesetName = '%s_main' % (language)
+            rulesetName = f"{language}_main"
         else:
             language = name[: i]
             delegate = name[i + 2:]
-            rulesetName = self.munge('%s_%s' % (language, delegate))
+            rulesetName = self.munge(f"{language}_{delegate}")
         return language, rulesetName
     #@+node:ekr.20110605121601.18583: *4* bjc.setKeywords
     def setKeywords(self):
@@ -802,11 +804,11 @@ class BaseJEditColorizer (BaseColorizer):
         startComment = d.get('commentStart')
         endComment = d.get('commentEnd')
         if lineComment and startComment and endComment:
-            delims = '%s %s %s' % (lineComment, startComment, endComment)
+            delims = f"{lineComment} {startComment} {endComment}"
         elif startComment and endComment:
-            delims = '%s %s' % (startComment, endComment)
+            delims = f"{startComment} {endComment}"
         elif lineComment:
-            delims = '%s' % lineComment
+            delims = f"{lineComment}"
         else:
             delims = None
         if delims:
@@ -953,7 +955,7 @@ class BaseJEditColorizer (BaseColorizer):
         if self.prev_use_styles is None:
             self.prev_use_styles = self.use_pygments_styles
         elif self.use_pygments_styles != self.prev_use_styles:
-            g.es_print('using pygments styles: %s' % self.use_pygments_styles)
+            g.es_print(f"using pygments styles: {self.use_pygments_styles}")
         #
         # Report @string pygments-style-name only if we are using styles.
         if not self.use_pygments_styles:
@@ -963,7 +965,7 @@ class BaseJEditColorizer (BaseColorizer):
         if self.prev_style is None:
             self.prev_style = style_name
         elif style_name != self.prev_style:
-            g.es_print('New pygments style: %s' % style_name)
+            g.es_print(f"New pygments style: {style_name}")
             self.prev_style = style_name
     #@+node:ekr.20110605121601.18641: *3* bjc.setTag
     last_v = None
@@ -2010,13 +2012,13 @@ class JEditColorizer(BaseJEditColorizer):
             val = d.get(key)
             if val is None:
                 val = keys.get(key)
-                result.append('%s=%s' % (key, val))
+                result.append(f"{key}={val}")
             elif keyVal is True:
-                result.append('%s' % val)
+                result.append(f"{val}")
             elif keyVal is False:
                 pass
             elif keyVal not in (None, ''):
-                result.append('%s=%s' % (key, keyVal))
+                result.append(f"{key}={keyVal}")
         state = ';'.join(result).lower()
         table = (
             ('kind=', ''),
@@ -3000,7 +3002,7 @@ if pygments:
                     '%s=%r' % (attr, getattr(self, attr))
                         for attr in attrs
                 ])
-                return 'PygmentsBlockUserData(%s)' % kwds
+                return f"PygmentsBlockUserData({kwds})"
                 
     else:
         # For TravisCi.

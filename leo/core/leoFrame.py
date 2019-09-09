@@ -290,7 +290,7 @@ class LeoBody:
                 self.selectLabel(w_old) # Immediately create the label in the old editor.
             else:
                 g.trace('can not happen: unexpected editorWidgets', d)
-        name = '%d' % self.totalNumberOfEditors
+        name = f"{self.totalNumberOfEditors}"
         pane = self.pb.add(name)
         panes = self.pb.panes()
         minSize = float(1.0 / float(len(panes)))
@@ -438,7 +438,7 @@ class LeoBody:
     def computeLabel(self, w):
         s = w.leo_label_s
         if hasattr(w, 'leo_chapter') and w.leo_chapter:
-            s = '%s: %s' % (w.leo_chapter.name, s)
+            s = f"{w.leo_chapter.name}: {s}"
         return s
     #@+node:ekr.20070422094710: *5* LeoBody.createChapterIvar
     def createChapterIvar(self, w):
@@ -785,10 +785,11 @@ class LeoFrame:
             name = g.shortFileName(root.atEditNodeName())
         else:
             name = c.mFileName if c.mFileName else self.title
-        answer = g.app.gui.runAskYesNoCancelDialog(c,
-            title="Confirm",
-            message='Save changes to %s before %s' % (
-                g.splitLongFileName(name), theType))
+        answer = g.app.gui.runAskYesNoCancelDialog(
+            c,
+            title='Confirm',
+            message=f"Save changes to {g.splitLongFileName(name)} before {theType}",
+        )
         if answer == "cancel":
             return True # Veto.
         if answer == "no":
@@ -811,7 +812,7 @@ class LeoFrame:
             c.bringToFront()
         if c.mFileName:
             if g.app.gui.guiName() == 'curses':
-                g.pr('Saving: %s' % c.mFileName)
+                g.pr(f"Saving: {c.mFileName}")
             ok = c.fileCommands.save(c.mFileName)
             return not ok
                 # Veto if the save did not succeed.
@@ -1789,11 +1790,11 @@ class NullIconBarClass:
         except Exception:
             g.app.iconWidgetCount = 1
         n = g.app.iconWidgetCount
-        name = 'nullButtonWidget %d' % n
+        name = f"nullButtonWidget {n}"
         if not command:
 
             def commandCallback(name=name):
-                g.pr("command for %s" % (name))
+                g.pr(f"command for {name}")
 
             command = commandCallback
 
@@ -1841,7 +1842,7 @@ class NullLog(LeoLog):
     def createTextWidget(self, parentFrame):
         self.logNumber += 1
         c = self.c
-        log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
+        log = StringTextWrapper(c=c, name=f"log-{self.logNumber}")
         return log
     #@+node:ekr.20181119135041.1: *3* NullLog.hasSelection
     def hasSelection(self):
@@ -2028,7 +2029,7 @@ class StringTextWrapper:
         self.widget = None # This ivar must exist, and be None.
 
     def __repr__(self):
-        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
+        return f"<StringTextWrapper: {id(self)} {self.name}>"
 
     def getName(self):
         '''StringTextWrapper.'''

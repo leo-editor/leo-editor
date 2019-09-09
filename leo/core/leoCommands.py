@@ -390,7 +390,7 @@ class Commands:
         g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self):
-        return "Commander %d: %s" % (id(self), repr(self.mFileName))
+        return f"Commander {id(self)}: {repr(self.mFileName)}"
 
     __str__ = __repr__
     #@+node:ekr.20050920093543: *4* c.finishCreate & helpers
@@ -487,7 +487,7 @@ class Commands:
         elif trace and trace_inactive_focus:
             w_class = w and w.__class__.__name__
             count = c.idle_focus_count
-            g.trace('%s inactive focus: %s' % (count, w_class))
+            g.trace(f"{count} inactive focus: {w_class}")
     #@+node:ekr.20160427062131.1: *5* c.is_unusual_focus
     def is_unusual_focus(self, w):
         '''Return True if w is not in an expected place.'''
@@ -519,14 +519,14 @@ class Commands:
             c.last_no_focus = False
             if self.is_unusual_focus(w):
                 if trace:
-                    g.trace('%s unusual focus: %s' % (count, w_class))
+                    g.trace(f"{count} unusual focus: {w_class}")
             else:
                 c.last_unusual_focus = None
                 if isinstance(w, table):
                     if trace and trace_known:
-                        g.trace('%s known focus: %s' % (count, w_class))
+                        g.trace(f"{count} known focus: {w_class}")
                 elif trace:
-                    g.trace('%s unknown focus: %s' % (count, w_class))
+                    g.trace(f"{count} unknown focus: {w_class}")
         else:
             if trace:
                 g.trace('%3s no focus' % (count))
@@ -863,7 +863,7 @@ class Commands:
         for p in c.all_positions():
             if p.v.expandedPositions:
                 indent = ' '*p.level()
-                print('%s%s' % (indent, p.h))
+                print(f"{indent}{p.h}")
                 g.printObj(p.v.expandedPositions, indent=indent)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p):
@@ -1024,7 +1024,7 @@ class Commands:
         g.trace('=====',p.h, p._childIndex)
         for i, data in enumerate(p.stack):
             v, childIndex = data
-            print('%s %s %s' % (i, childIndex, v._headString))
+            print(f"{i} {childIndex} {v._headString}")
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
 
@@ -1359,13 +1359,19 @@ class Commands:
                 g.es_print('multiple vnodes with gnx: %r' % (gnx), color='red')
                 for v in aList:
                     gnx_errors += 1
-                    g.es_print('id(v): %s gnx: %s %s' % (id(v), v.fileIndex, v.h), color='red')
+                    g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
                     new_gnx(v)
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
         if not ok:
-            g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
-                c.shortFileName(), count, gnx_errors, g.app.structure_errors), color='red')
+            g.es_print(
+                f"check-outline ERROR! {c.shortFileName()} "
+                f"{count} nodes, "
+                f"{gnx_errors} gnx errors, "
+                f"{g.app.structure_errors} "
+                f"structure errors",
+                color='red'
+            )
         elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2 - t1, c.shortFileName(), count))
         return g.app.structure_errors
@@ -1416,7 +1422,7 @@ class Commands:
         if p.hasParent():
             n = p.childIndex()
             if not _assert(p == p.parent().moveToNthChild(n)):
-                g.trace("p != parent().moveToNthChild(%s)" % (n))
+                g.trace(f"p != parent().moveToNthChild({n})")
                 dump(p)
                 dump(p.parent())
                 return False
@@ -1573,7 +1579,7 @@ class Commands:
                     except Exception:
                         return "surprise" # abort
                     if unittest and result != "ok":
-                        g.pr("Syntax error in %s" % p.h)
+                        g.pr(f"Syntax error in {p.h}")
                         return result # End the unit test: it has failed.
         if not unittest:
             g.blue("check complete")
@@ -1616,12 +1622,12 @@ class Commands:
         body = g.getScript(c, p.copy())
         if not body: return
         try:
-            fn = '<node: %s>' % p.h
+            fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
             c.tabNannyNode(p, h, body, unittest, suppressErrors)
         except SyntaxError:
             if not suppressErrors:
-                g.warning("Syntax error in: %s" % h)
+                g.warning(f"Syntax error in: {h}")
                 g.es_exception(full=False, color="black")
             if unittest: raise
         except Exception:
@@ -2087,7 +2093,7 @@ class Commands:
             event = g.app.gui.create_key_event(c)
             k.masterCommand(commandName=None, event=event, func=func)
             return k.funcReturn
-        g.error('no such command: %s %s' % (commandName, g.callers()))
+        g.error(f"no such command: {commandName} {g.callers()}")
         return None
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
@@ -2172,7 +2178,7 @@ class Commands:
                 f.write(script)
         except Exception:
             g.es_exception()
-            g.es("Failed to write script to %s" % path)
+            g.es(f"Failed to write script to {path}")
             # g.es("Check your configuration of script_file_path, currently %s" %
                 # c.config.getString('script-file-path'))
             path = None
@@ -2194,7 +2200,7 @@ class Commands:
                 base = base[: -4]
             stamp = time.strftime("%Y%m%d-%H%M%S")
             branch = prefix + '-' if prefix else ''
-            fn = '%s%s-%s.leo' % (branch, base, stamp)
+            fn = f"{branch}{base}-{stamp}.leo"
             path = g.os_path_finalize_join(theDir, fn)
         else:
             path = fn
@@ -2225,7 +2231,7 @@ class Commands:
                 try:
                     base_dir = os.environ[env_key]
                 except KeyError:
-                    print('No environment var: %s' % env_key)
+                    print(f"No environment var: {env_key}")
                     base_dir = None
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
@@ -2240,7 +2246,7 @@ class Commands:
                     prefix=git_branch,
                     silent=True,
                     useTimeStamp=True)
-                g.es_print('wrote: %s' % written_fn)
+                g.es_print(f"wrote: {written_fn}")
             else:
                 g.es_print('backup_dir not found: %r' % backup_dir)
         else:
@@ -2275,7 +2281,7 @@ class Commands:
         # pylint: disable=no-member
         # Defined in commanderOutlineCommands.py
         p2 = c.insertHeadline(op_name='Open File', as_child=False)
-        p2.h = '@edit %s' % fn # g.shortFileName(fn)
+        p2.h = f"@edit {fn}"
         p2.b = prefix + s
         w = c.frame.body.wrapper
         if w: w.setInsertPoint(0)
@@ -2355,7 +2361,7 @@ class Commands:
                 if 'gnx' in g.app.debug:
                     g.trace(c.shortFileName(), gnxString, v)
             else:
-                g.internalError('no gnx for vnode: %s' % (v))
+                g.internalError(f"no gnx for vnode: {v}")
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
@@ -2475,7 +2481,7 @@ class Commands:
                     title='Not %s' % kind.capitalize(),
                 )
             else:
-                g.es('not %s (@ignore)...' % (kind), color='red')
+                g.es(f"not {kind} (@ignore)...", color='red')
                 g.es(files, color='blue')
         #
         # #1050: always raise a dialog for orphan @<file> nodes.
@@ -2689,7 +2695,7 @@ class Commands:
         p = kwargs.get('p')
         for name in ('incremental', 'interruptable'):
             if name in kwargs:
-                print('c.recolor_now: "%s" keyword arg is deprecated' % name)
+                print(f'c.recolor_now: "{name}" keyword arg is deprecated')
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
@@ -3502,7 +3508,7 @@ class Commands:
             finally:
                 c.redraw()
         else:
-            g.es_print('Does not exist: %s' % (dir_))
+            g.es_print(f"Does not exist: {dir_}")
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
     def cloneFindByPredicate(self,

@@ -118,7 +118,7 @@ UserTip(
     for kind in ('open',): # 'closed':
         data = requests.get(url+kind).json()
         for tip in get_tips(data):
-            tags = ["%s" % (z) for z in tip.tags or []]
+            tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)

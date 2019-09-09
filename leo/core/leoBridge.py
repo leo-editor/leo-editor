@@ -201,7 +201,7 @@ class BridgeController:
             g.app.gui = qt_gui.LeoQtGui()
             print('Qt gui created')
         else:
-            assert False, 'leoBridge.py: unsupported gui: %s' % self.guiName
+            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"
     #@+node:ekr.20070227093629.4: *4* bridge.isValidPython
     def isValidPython(self):
         import sys
@@ -291,7 +291,7 @@ class BridgeController:
                 c = g.openWithFileName(fileName)
                 if c: return c
             elif not self.silentMode:
-                print('file not found: %s. creating new window' % (fileName))
+                print(f"file not found: {fileName}. creating new window")
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
         frame = c.frame

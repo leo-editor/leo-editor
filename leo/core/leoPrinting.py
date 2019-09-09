@@ -61,7 +61,7 @@ class PrintingController:
             head = self.sanitize_html(head)
             contents = "<h1>%s</h1>\n<pre>%s</pre>" % (head, text)
         else:
-            contents = "<pre>%s<pre>" % text
+            contents = f"<pre>{text}<pre>"
         doc.setHtml(contents)
         return doc
     #@+node:ekr.20150419124739.10: *4* pr.html_document
@@ -85,7 +85,7 @@ class PrintingController:
         '''Return the entire script at node p.'''
         result = [p.b]
         for p in p.subtree():
-            result.extend(['', 'Node: %s' % (p.h), ''])
+            result.extend(['', f"Node: {p.h}", ''])
             result.append(p.b)
         return '\n'.join(result)
     #@+node:ekr.20150419124739.14: *4* pr.sanitize html

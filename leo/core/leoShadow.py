@@ -131,7 +131,7 @@ class ShadowController:
         theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
             if not g.unitTesting:
-                x.error('not written: %s directory not found' % fileName)
+                x.error(f"not written: {fileName} directory not found")
             return False
         # Replace the file.
         try:
@@ -145,7 +145,7 @@ class ShadowController:
                 g.es('%-6s: %s' % (kind, fileName))
             return True
         except IOError:
-            x.error('unexpected exception writing file: %s' % (fileName))
+            x.error(f"unexpected exception writing file: {fileName}")
             g.es_exception()
             return False
     #@+node:ekr.20080711063656.6: *4* x.shadowDirName and shadowPathName
@@ -180,7 +180,7 @@ class ShadowController:
         x = self
         ok = g.utils_remove(filename, verbose=not silent)
         if not ok:
-            x.error('can not delete %s' % (filename), silent=silent)
+            x.error(f"can not delete {filename}", silent=silent)
         return ok
     #@+node:ekr.20080708192807.1: *3* x.Propagation
     #@+node:ekr.20080708094444.35: *4* x.check_output
@@ -393,8 +393,7 @@ class ShadowController:
         old_private_lines = g.splitLines(s)
         s = at.readFileToUnicode(old_public_file)
         if at.encoding != self.encoding:
-            g.trace('can not happen: encoding mismatch: %s %s' % (
-                at.encoding, self.encoding))
+            g.trace(f"can not happen: encoding mismatch: {at.encoding} {self.encoding}")
             at.encoding = self.encoding
         old_public_lines = g.splitLines(s)
         if 0:
@@ -427,7 +426,7 @@ class ShadowController:
             # Update the private shadow file from the public file.
             written = x.propagate_changes(fn, shadow_fn)
             if written:
-                x.message("updated private %s from public %s" % (shadow_fn, fn))
+                x.message(f"updated private {shadow_fn} from public {fn}")
         else:
             pass
             # Don't write *anything*.
@@ -657,7 +656,7 @@ class ShadowController:
                     (results, 'results'),
                     (self.expected_private_lines, 'expected_private_lines')
                 ):
-                    g.pr('%s...' % tag)
+                    g.pr(f"{tag}...")
                     for i, line in enumerate(aList):
                         g.pr('%3s %s' % (i, repr(line)))
                     g.pr('-' * 40)
@@ -689,7 +688,7 @@ class ShadowController:
             if self.delim1:
                 delims = self.delim1
             else:
-                delims = '%s %s' % (self.delim2, self.delim3)
+                delims = f"{self.delim2} {self.delim3}"
             return '<Marker: delims: %s>' % repr(delims)
         #@+node:ekr.20090529061522.6258: *4* getDelims
         def getDelims(self):
