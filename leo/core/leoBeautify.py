@@ -114,28 +114,6 @@ def beautifyPythonTree(event):
             g.es_print('beautified total %s node%s in %4.2f sec.' % (
                 pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
-#@+node:ekr.20170202095153.1: *3* compare_ast (diabled)
-# http://stackoverflow.com/questions/3312989/
-# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
-
-def compare_ast(node1, node2):
-    return True
-    # Can hang, for mysterious reasons.
-        # if type(node1) is not type(node2):
-            # return False
-        # if isinstance(node1, ast.AST):
-            # # Py 2/3: Use items, not itertool.iteritems.
-            # for k, v in vars(node1).items():
-                # if k in ('lineno', 'col_offset', 'ctx'):
-                    # continue
-                # if not compare_ast(v, getattr(node2, k)):
-                    # return False
-            # return True
-        # elif isinstance(node1, list):
-            # return all(itertools.starmap(compare_ast, zip(node1, node2)))
-                # # Py 2/3: Use zip, not itertools.izip.
-        # else:
-            # return node1 == node2
 #@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
 def dump_tokens(tokens, verbose=True):
     last_line_number = 0
@@ -209,11 +187,12 @@ def beautify(options, path):
     s2 = beautifier.run(tokens)
     s2_e = g.toEncodedString(s2)
     node2 = ast.parse(s2_e, filename='before', mode='exec')
-    if compare_ast(node1, node2):
+    try:
+        beautifier.compare_two_asts(node1, node2)
         f = open(path, 'wb')
         f.write(s2_e)
         f.close()
-    else:
+    except Exception:
         print('failed to beautify %s' % fn)
 #@+node:ekr.20150601162203.1: *4* scan_options & helper
 def scan_options():
@@ -391,7 +370,7 @@ def should_beautify(p):
             return True
         if 'nobeautify' in d:
             # This message would quickly become annoying.
-            # self.skip_message('@nobeautify',p)
+            # g.warning(f"{p.h}: @nobeautify")
             return False
     # The default is to beautify.
     return True
@@ -403,76 +382,9 @@ def should_kill_beautify(p):
 def show_lws(s):
     '''Show leading whitespace in a convenient format.'''
     return repr(s) if s.strip(' ') else len(s)
-#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
-def test_beautifier(c, h, p, settings):
-    '''Test Leo's beautifier code'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return None
-    s = g.getScript(c, p,
-            useSelectedText=False,
-            forcePythonSentinels=True,
-            useSentinels=False)
-    g.trace(h.strip())
-    t1 = time.time()
-    s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1, filename='before', mode='exec')
-    t2 = time.time()
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.time()
-    beautifier = PythonTokenBeautifier(c)
-    keep_blank_lines = settings.get('tidy-keep-blank-lines')
-    if keep_blank_lines is not None:
-        beautifier.delete_blank_lines = not keep_blank_lines
-    s2 = beautifier.run(tokens)
-    t4 = time.time()
-    try:
-        s2_e = g.toEncodedString(s2)
-        node2 = ast.parse(s2_e, filename='before', mode='exec')
-        ok = compare_ast(node1, node2)
-    except Exception:
-        g.es_exception()
-        ok = False
-    t5 = time.time()
-    #  Update the stats
-    beautifier.n_input_tokens += len(tokens)
-    beautifier.n_output_tokens += len(beautifier.code_list)
-    beautifier.n_strings += len(s2)
-    beautifier.parse_time += (t2 - t1)
-    beautifier.tokenize_time += (t3 - t2)
-    beautifier.beautify_time += (t4 - t3)
-    beautifier.check_time += (t5 - t4)
-    beautifier.total_time += (t5 - t1)
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i, z in enumerate(g.splitLines(s)):
-            print('%4s %s' % (i + 1, z.rstrip()))
-    if settings.get('input_lines'):
-        print('==================== input_lines')
-        dump_tokens(tokens, verbose=False)
-    if settings.get('input_tokens'):
-        print('==================== input_tokens')
-        dump_tokens(tokens, verbose=True)
-    if settings.get('output_tokens'):
-        print('==================== code_list')
-        for i, z in enumerate(beautifier.code_list):
-            print('%4s %s' % (i, z))
-    if settings.get('output_string'):
-        print('==================== output_string')
-        for i, z in enumerate(g.splitLines(s2)):
-            if z == '\n':
-                print('%4s' % (i + 1))
-            elif z.rstrip():
-                print('%4s %s' % (i + 1, z.rstrip()))
-            else:
-                print('%4s %r' % (i + 1, str(z)))
-    if settings.get('stats'):
-        beautifier.print_stats()
-    if not ok:
-        print('*************** fail: %s ***************' % (h))
-    return beautifier
-        # For statistics.
+#@+node:ekr.20190908033048.1: ** class AstNotEqual (Exception)
+class AstNotEqual (Exception):
+    """The two given AST's are not equivalent."""
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
     #@+others
@@ -760,9 +672,6 @@ class PythonTokenBeautifier:
             return f"State: {self.kind} {self.value!r}"
 
         __str__ = __repr__
-    #@+node:ekr.20190908033048.1: *3* class AstNotEqual (Exception)
-    class AstNotEqual (Exception):
-        """The two given AST's are not equivalent."""
     #@+node:ekr.20150519111713.1: *3* ptb.ctor
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
@@ -809,9 +718,7 @@ class PythonTokenBeautifier:
         """
         Compare both nodes, and recursively compare their children.
         
-        Replaces failed code:  http://stackoverflow.com/questions/3312989/
-        
-        The following is an expanded version of the first answer.
+        See also: http://stackoverflow.com/questions/3312989/
         """
         # Compare the nodes themselves.
         self.compare_two_nodes(node1, node2)
@@ -819,7 +726,7 @@ class PythonTokenBeautifier:
         fields1 = getattr(node1, "_fields", [])
         fields2 = getattr(node2, "_fields", [])
         if fields1 != fields2:
-            raise self.AstNotEqual(
+            raise AstNotEqual(
                 f"node1._fields: {fields1}\n"
                 f"node2._fields: {fields2}")
         # Recursively compare each field.
@@ -828,7 +735,7 @@ class PythonTokenBeautifier:
                 attr1 = getattr(node1, field, None)
                 attr2 = getattr(node2, field, None)
                 if attr1.__class__.__name__ != attr2.__class__.__name__:
-                    raise self.AstNotEqual(
+                    raise AstNotEqual(
                         f"attrs1: {attr1},\n"
                         f"attrs2: {attr2}")
                 self.compare_two_asts(attr1, attr2)
@@ -841,7 +748,7 @@ class PythonTokenBeautifier:
         """
         # Class names must always match.
         if node1.__class__.__name__ != node2.__class__.__name__:
-            raise self.AstNotEqual(
+            raise AstNotEqual(
                 f"node1.__class__.__name__: {node1.__class__.__name__}\n"
                 f"node2.__class__.__name__: {node2.__class__.__name_}")
         # Special cases for strings and None
@@ -849,20 +756,19 @@ class PythonTokenBeautifier:
             return
         if isinstance(node1, str):
             if node1 != node2:
-                raise self.AstNotEqual(
+                raise AstNotEqual(
                     f"node1: {node1!r}\n"
                     f"node2: {node2!r}")
-                
         # Special cases for lists and tuples:
         if isinstance(node1, (tuple,list)):
             if len(node1) != len(node2):
-                raise self.AstNotEqual(
+                raise AstNotEqual(
                     f"node1: {node1}\n"
                     f"node2: {node2}")
             for i, item1 in enumerate(node1):
                 item2 = node2[i]
                 if item1.__class__.__name__ != item2.__class__.__name__:
-                    raise self.AstNotEqual(
+                    raise AstNotEqual(
                         f"list item1: {i} {item1}\n"
                         f"list item2: {i} {item2}")
                 self.compare_two_asts(item1, item2)
@@ -893,14 +799,14 @@ class PythonTokenBeautifier:
             s1 = g.toEncodedString(s0)
             node1 = ast.parse(s1, filename='before', mode='exec')
         except IndentationError:
-            self.skip_message('IndentationError', p)
+            g.warning(f"{p.h}: IndentationError")
             return
         except SyntaxError:
-            self.skip_message('SyntaxError', p)
+            g.warning(f"{p.h}: SyntaxError")
             return
         except Exception:
+            g.warning(f"{p.h}: Unexpected exception")
             g.es_exception()
-            self.skip_message('Exception', p)
             return
         t2 = time.time()
         #
@@ -919,29 +825,25 @@ class PythonTokenBeautifier:
             node2 = ast.parse(s2_e, filename='after', mode='exec')
             # self.dump_ast(node2)
         except Exception:
-            g.trace('Unexcpected exception creating the "after" parse tree')
-            self.skip_message('BeautifierError', p)
+            g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
             g.es_exception()
             return
         #
         # Compare the two parse trees.
         try:
             self.compare_two_asts(node1, node2)
-        except self.AstNotEqual:
-            g.trace(f"Error in {p.h}...\n")
-            g.trace('The beautify command did not preserve meaning!')
+        except AstNotEqual:
+            g.warning(f"{p.h}: The beautify command did not preserve meaning!")
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.dump_ast(node1,tag='AST BEFORE')
             self.dump_ast(node2,tag='AST AFTER')
-            self.skip_message('Ast mismatch', p)
             return
         except Exception:
-            g.trace(f"Unexpected error in {p.h}...\n")
-            self.skip_message('BeautifierError', p)
+            g.warning(f"{p.h}: Unexpected exception")
+            g.es_exception()
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.dump_ast(node1,tag='AST BEFORE')
             self.dump_ast(node2,tag='AST AFTER')
-            g.es_exception()
             return
         t5 = time.time()
         # Restore the tags after the compare
@@ -1523,11 +1425,6 @@ class PythonTokenBeautifier:
         '''Append a state to the state stack.'''
         state = self.ParseState(kind, value)
         self.state_stack.append(state)
-    #@+node:ekr.20150528192109.1: *4* ptb.skip_message
-    def skip_message(self, s, p):
-        '''Print a standard message about skipping a node.'''
-        message = '%s. skipped:' % s
-        g.warning('%22s %s' % (message, p.h))
     #@-others
 #@-others
 if __name__ == "__main__":

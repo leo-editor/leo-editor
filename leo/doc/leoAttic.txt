@@ -3176,6 +3176,76 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
+#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
+def test_beautifier(c, h, p, settings):
+    '''Test Leo's beautifier code'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return None
+    s = g.getScript(c, p,
+            useSelectedText=False,
+            forcePythonSentinels=True,
+            useSentinels=False)
+    g.trace(h.strip())
+    t1 = time.time()
+    s1 = g.toEncodedString(s)
+    node1 = ast.parse(s1, filename='before', mode='exec')
+    t2 = time.time()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    t3 = time.time()
+    beautifier = PythonTokenBeautifier(c)
+    keep_blank_lines = settings.get('tidy-keep-blank-lines')
+    if keep_blank_lines is not None:
+        beautifier.delete_blank_lines = not keep_blank_lines
+    s2 = beautifier.run(tokens)
+    t4 = time.time()
+    try:
+        s2_e = g.toEncodedString(s2)
+        node2 = ast.parse(s2_e, filename='before', mode='exec')
+        ok = compare_ast(node1, node2)
+    except Exception:
+        g.es_exception()
+        ok = False
+    t5 = time.time()
+    #  Update the stats
+    beautifier.n_input_tokens += len(tokens)
+    beautifier.n_output_tokens += len(beautifier.code_list)
+    beautifier.n_strings += len(s2)
+    beautifier.parse_time += (t2 - t1)
+    beautifier.tokenize_time += (t3 - t2)
+    beautifier.beautify_time += (t4 - t3)
+    beautifier.check_time += (t5 - t4)
+    beautifier.total_time += (t5 - t1)
+    if settings.get('input_string'):
+        print('==================== input_string')
+        for i, z in enumerate(g.splitLines(s)):
+            print('%4s %s' % (i + 1, z.rstrip()))
+    if settings.get('input_lines'):
+        print('==================== input_lines')
+        dump_tokens(tokens, verbose=False)
+    if settings.get('input_tokens'):
+        print('==================== input_tokens')
+        dump_tokens(tokens, verbose=True)
+    if settings.get('output_tokens'):
+        print('==================== code_list')
+        for i, z in enumerate(beautifier.code_list):
+            print('%4s %s' % (i, z))
+    if settings.get('output_string'):
+        print('==================== output_string')
+        for i, z in enumerate(g.splitLines(s2)):
+            if z == '\n':
+                print('%4s' % (i + 1))
+            elif z.rstrip():
+                print('%4s %s' % (i + 1, z.rstrip()))
+            else:
+                print('%4s %r' % (i + 1, str(z)))
+    if settings.get('stats'):
+        beautifier.print_stats()
+    if not ok:
+        print('*************** fail: %s ***************' % (h))
+    return beautifier
+        # For statistics.
 #@+node:ekr.20190508063206.1: ** From LeoTree.select
 #@+node:ekr.20140831085423.18637: *3* LeoTree.is_qt_body (from LeoTree.select)
 if 0:
