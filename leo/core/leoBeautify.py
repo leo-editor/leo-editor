@@ -929,7 +929,8 @@ class PythonTokenBeautifier:
         '''Handle dedent token.'''
         self.level -= 1
         self.lws = self.level * self.tab_width * ' '
-        self.line_start()
+        self.line_indent()
+            # was self.line_start()
         state = self.state_stack[-1]
         if state.kind == 'indent' and state.value == self.level:
             self.state_stack.pop()
@@ -944,7 +945,8 @@ class PythonTokenBeautifier:
         '''Handle indent token.'''
         self.level += 1
         self.lws = self.val
-        self.line_start()
+        self.line_indent()
+            # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         '''Handle a name token.'''
@@ -1239,7 +1241,7 @@ class PythonTokenBeautifier:
         ws = ws or self.lws
         if ws:
             self.add_token('line-indent', ws)
-    #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
+    #@+node:ekr.20150526201701.9: *4* ptb.line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
         prev = self.code_list[-1]
@@ -1257,10 +1259,6 @@ class PythonTokenBeautifier:
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
-
-    def line_start(self):
-        '''Add a line-start request to the code list.'''
-        self.line_indent()
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     def lt(self, s):
         '''Add a left paren request to the code list.'''
