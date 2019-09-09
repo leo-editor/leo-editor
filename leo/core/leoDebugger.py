@@ -226,7 +226,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 if reply in ('y', 'yes'):
                     self.clear_all_breaks()
                     for bp in bplist:
-                        self.message('Deleted %s' % bp)
+                        self.message(f"Deleted {bp}")
             return
         if ':' in arg:
             # Make sure it works for "clear C:\foo\bar.py:12"
@@ -236,7 +236,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             try:
                 lineno = int(arg)
             except ValueError:
-                err = "Invalid line number (%s)" % arg
+                err = f"Invalid line number ({arg})"
             else:
                 bplist = self.get_breaks(filename, lineno)
                 err = self.clear_break(filename, lineno)
@@ -244,7 +244,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 self.error(err)
             else:
                 for bp in bplist:
-                    self.message('Deleted %s' % bp)
+                    self.message(f"Deleted {bp}")
             return
         numberlist = arg.split()
         for i in numberlist:
@@ -254,7 +254,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 self.error(err)
             else:
                 self.clear_bpbynumber(i)
-                self.message('Deleted %s' % bp)
+                self.message(f"Deleted {bp}")
 
     do_cl = do_clear # 'c' is already an abbreviation for 'continue'
 
@@ -367,7 +367,7 @@ def get_gnx_from_file(file_s, p, path):
             p.v.fileIndex = gnx
             if path == path2:
                 return True
-    g.trace('Not found: @+node for %s' % path)
+    g.trace(f"Not found: @+node for {path}")
     g.trace('Reverting to @auto')
     return False
 #@+node:ekr.20180701050839.3: *3* function: listener
@@ -432,7 +432,7 @@ def make_at_file_node(line, path):
         # Set p.v.gnx from the derived file.
         is_derived = get_gnx_from_file(file_s, p, path)
     kind = '@file' if is_derived else '@auto'
-    p.h = '%s %s' % (kind, path)
+    p.h = f"{kind} {path}"
     c.selectPosition(p)
     c.refreshFromDisk()
     return p

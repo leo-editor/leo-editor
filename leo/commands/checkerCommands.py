@@ -369,7 +369,7 @@ class BlackCommand:
             )
         except Exception:
             self.errors += 1
-            print('\n===== error', p.h, '\n')
+            print('\n===== error {p.h}\n')
             g.es_print_exception()
             self.dump_lines(body2, 'after-replace-leo-constructs')
             return False
@@ -403,7 +403,7 @@ class BlackCommand:
         """Dump all lines in s, with line numbers."""
         print(f'\n{tag}...\n')
         for i, line in enumerate(g.splitLines(s)):
-            print(f'{i:3}: {line:!r}')
+            print(f'{i:3}: {line!r}')
         print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
     c_pat = re.compile(r'^\s*@c\s*\n')

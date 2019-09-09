@@ -24,7 +24,7 @@ try:
 except ImportError:
     docutils = None
 if verbose:
-    print('leoRst3.py: docutils: %s' % docutils)
+    print(f"leoRst3.py: docutils: {docutils}")
 if docutils:
     try:
         from docutils import parsers
@@ -406,9 +406,9 @@ class RstCommands:
         result = ['::\n\n'] # ['[**code block**]\n\n']
         if self.getOption(p, 'number-code-lines'):
             for i, s in enumerate(lines):
-                result.append('    %d: %s' % (i, s))
+                result.append(f"    {i}: {s}")
         else:
-            result.extend(['    %s' % (z) for z in lines])
+            result.extend([f"    {z}" for z in lines])
         s = ''.join(result).rstrip() + '\n\n'
         return g.splitLines(s)
     #@+node:ekr.20100812082517.5966: *5* rst.write_code_headline & helper
@@ -598,7 +598,7 @@ class RstCommands:
         i = g.skip_id(h, 1) # Skip the '@'
         kind, fn = h[: i].strip(), h[i:].strip()
         if not fn:
-            g.error('%s requires file name' % (kind))
+            g.error(f"{kind} requires file name")
             return
         title = p.firstChild().h if p and p.firstChild() else '<no slide>'
         title = title.strip().capitalize()
@@ -624,7 +624,7 @@ class RstCommands:
     def writeSlideTitle(self, title, n, n_tot):
         '''Write the title, underlined with the '#' character.'''
         if n != 1:
-            title = '%s (%s of %s)' % (title, n, n_tot)
+            title = f"{title} ({n} of {n_tot})"
         width = max(4, len(g.toEncodedString(title,
             encoding=self.encoding, reportErrors=False)))
         self.write('%s\n%s \n\n' % (title, ('#' * width)))
@@ -837,7 +837,7 @@ class RstCommands:
             if name:
                 p2 = self.findSectionDef(name, p)
                 if p2:
-                    g.trace('expanding: %s from %s' % (name, p2.h))
+                    g.trace(f"expanding: {name} from {p2.h}")
                     result.append(s) # Append the section reference line.
                     lines2 = g.splitLines(p2.b)
                     if self.getOption(p, 'expand_noweb_recursively'):
@@ -912,8 +912,8 @@ class RstCommands:
     def formatCodeModeLine(self, s, n, numberOption):
         if not s.strip(): s = ''
         if numberOption:
-            return '\t%d: %s' % (n, s)
-        return '\t%s' % s
+            return f'\t{n}: {s}'
+        return f'\t{s}'
     #@+node:ekr.20090502071837.74: *8* rst.rstripList
     def rstripList(self, theList):
         '''Removed trailing blank lines from theList.'''
@@ -1123,7 +1123,7 @@ class RstCommands:
             # Do *not* set a default for overlining characters.
         if len(underlines2) > 1:
             underlines2 = underlines2[0]
-            g.warning('too many top-level underlines, using %s' % (underlines2))
+            g.warning(f"too many top-level underlines, using {underlines2}")
         underlines1 = d.get('underlines1', '')
         # Bug fix:  2010/05/26: pad underlines with default characters.
         default_underlines = '=+*^~"\'`-:><_'
@@ -1369,7 +1369,7 @@ class RstCommands:
             self.getOption(p, 'generate_rst')
         ):
             self.nodeNumber += 1
-            anchorname = "%s%s" % (self.getOption(p, 'node_begin_marker'), self.nodeNumber)
+            anchorname = f"{self.getOption(p, 'node_begin_marker')}{self.nodeNumber}"
             s = "\n\n.. _%s:\n\n" % anchorname
             self.write(s)
             self.http_map[anchorname] = p.copy()
@@ -1422,16 +1422,18 @@ class RstCommands:
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
                     marker = marker_parts[1]
-                    replacement = '%s#%s' % (http_node_ref, marker)
+                    replacement = f"{http_node_ref}#{marker}"
                     try:
                         attr[line + 2] = attr[line + 2].replace(
-                            'href="%s"' % href, 'href="%s"' % replacement)
+                            f'href="{href}"',
+                            f'href="{replacement}"')
                     except Exception:
                         g.es("Skipped ", attr[line + 2])
                 else:
                     try:
                         attr[line + 2] = attr[line + 2].replace(
-                            'href="%s"' % href, 'href="%s"' % http_node_ref)
+                            f'href="{href}"',
+                            f'href="{http_node_ref}"')
                     except Exception:
                         g.es("Skipped", attr[line + 2])
     #@+node:ekr.20090502071837.99: *5* rst.find_anchors
@@ -1573,7 +1575,7 @@ class RstCommands:
             ):
                 if ext2 == ext: break
             else:
-                g.error('unknown docutils extension: %s' % (ext))
+                g.error(f"unknown docutils extension: {ext}")
                 return None
         # SilverCity seems not to be supported, so this warning is strange.
         if False and ext in ('.html', '.htm') and not SilverCity:
@@ -1606,7 +1608,7 @@ class RstCommands:
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
-            g.error('stylesheet not found: %s' % (path))
+            g.error(f"stylesheet not found: {path}")
         else:
             g.error('stylesheet not found\n', path)
             if self.path: g.es_print('@path:', self.path)
@@ -1721,10 +1723,10 @@ class RstCommands:
             return
         name = self.c.os_path_finalize(name)
         f = g.blue if self.getOption(p, 'verbose') else g.pr
-        f('wrote: %s' % (name))
+        f(f"wrote: {name}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment(self, s):
-        return '.. %s' % s
+        return f".. {s}"
     #@+node:ekr.20090502071837.93: *4* rst.underline
     def underline(self, s, p):
         '''

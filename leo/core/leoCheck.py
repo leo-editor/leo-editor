@@ -188,7 +188,7 @@ class ConventionChecker:
         # Check the source
         if trace_fn:
             if fn:
-                print('===== %s' % (sfn))
+                print(f"===== {sfn}")
             else:
                 print('===== <string>\n%s\n----- </string>\n' % s.rstrip())
         t1 = time.process_time()
@@ -244,9 +244,9 @@ class ConventionChecker:
             print('%s files in %4.2f sec. max %4.2f sec in %s' % (
                 len(files), (t2-t1), self.max_time, self.slowest_file))
             if self.errors:
-                print('%s error%s' % (self.errors, g.plural(self.errors)))
+                print(f"{self.errors} error{g.plural(self.errors)}")
         else:
-            print('no files for project: %s' % (project_name))
+            print(f"no files for project: {project_name}")
     #@+node:ekr.20171208135642.1: *4* checker.end_file & helper
     def end_file(self,trace_classes=False, trace_unknowns=False):
         
@@ -295,7 +295,7 @@ class ConventionChecker:
             s = g.adjustTripleString(s, self.c.tab_width)
             self.check_file(s=s, test_kind='test', trace_fn=True)
         if self.errors:
-            print('%s error%s' % (self.errors, g.plural(self.errors)))
+            print(f"{self.errors} error{g.plural(self.errors)}")
     #@+node:ekr.20171216063026.1: *3* checker.error, fail, note & log_line
     def error(self, node, *args, **kwargs):
         
@@ -351,9 +351,9 @@ class ConventionChecker:
             elif context.kind in ('class', 'instance'):
                 result = self.resolve_ivar(node, name, context)
             else:
-                result = self.Type('error', 'unknown kind: %s' % context.kind)
+                result = self.Type('error', f"unknown kind: {context.kind}")
         else:
-            result = self.Type('error', 'unbound name: %s' % name)
+            result = self.Type('error', f"unbound name: {name}")
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -405,7 +405,7 @@ class ConventionChecker:
             return self.Type('error', 'recursion')
         the_class = self.classes.get(class_name)
         if not the_class:
-            return self.Type('error', 'no class %s' % ivar)
+            return self.Type('error', f"no class {ivar}")
         ivars = the_class.get('ivars')
         methods = the_class.get('methods')
         if ivar == 'self':
@@ -439,7 +439,7 @@ class ConventionChecker:
             return val
         # Remember the unknown.
         self.remember_unknown_ivar(ivar)
-        return self.Type('error', 'no member %s' % ivar)
+        return self.Type('error', f"no member {ivar}")
     #@+node:ekr.20171217102701.1: *5* checker.remember_unknown_ivar
     def remember_unknown_ivar(self, ivar):
 
@@ -592,7 +592,8 @@ class ConventionChecker:
         value_s = self.format(node.value)
         resolved_type = self.resolve(node, value_s, context, trace=False)
         assert isinstance(resolved_type, self.Type), repr(resolved_type)
-        if 0: self.note(node, 'context %s : %s ==> %s' % (context, value_s, resolved_type))
+        if 0:
+            self.note(node, f"context {context} : {value_s} ==> {resolved_type}")
         # Update var1's dict, not class_name's dict.
         d = self.classes.get(t.name)
         ivars = d.get('ivars')
@@ -647,7 +648,7 @@ class ConventionChecker:
         self.indent -= 1
         if 0 and self.pass_n == 1:
             g.trace(node, self.show_stack())
-            print('----- END class %s. class dict...' % self.class_name)
+            print(f"----- END class {self.class_name}. class dict...")
             g.printDict(self.classes.get(self.class_name))
         #
         # This code must execute in *both* passes.
@@ -789,7 +790,7 @@ class ConventionChecker:
             
         def __repr__(self):
 
-            return '<%s: %s>' % (self.kind, self.name)
+            return f"<{self.kind}: {self.name}>"
             
         def __eq__(self, other):
             
@@ -993,7 +994,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         # Synthesize a lambda name in the old context.
         # This name must not conflict with split names of the form name@n.
         old_cx = self.context
-        name = 'Lambda@@%s' % self.stats.n_lambdas
+        name = f"Lambda@@{self.stats.n_lambdas}"
         # Define a Context for the 'lambda' variables.
         new_cx = Context(
             fn=None,
@@ -1363,7 +1364,7 @@ class ProjectUtils:
                             dirs.remove(z)
         else:
             for ext in extList:
-                result.extend(g.glob_glob('%s.*%s' % (theDir, ext)))
+                result.extend(g.glob_glob(f"{theDir}.*{ext}"))
         return sorted(list(set(result)))
     #@+node:ekr.20150525123715.3: *3* pu.get_project_directory
     def get_project_directory(self, name):
@@ -1383,7 +1384,7 @@ class ProjectUtils:
         }
         dir_ = d.get(name.lower())
         if not dir_:
-            g.trace('bad project name: %s' % (name))
+            g.trace(f"bad project name: {name}")
         if not g.os_path_exists(dir_):
             g.trace('directory not found:' % (dir_))
         return dir_ or ''
@@ -1398,8 +1399,8 @@ class ProjectUtils:
         core_files = g.glob_glob('%s%s%s' % (loadDir, os.sep, '*.py'))
         for exclude in ['format-code.py',]:
             core_files = [z for z in core_files if not z.endswith(exclude)]
-        command_files = g.glob_glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
-        plugins_files = g.glob_glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
+        command_files = g.glob_glob(f"{commands_dir}{os.sep}{'*.py'}")
+        plugins_files = g.glob_glob(f"{plugins_dir}{os.sep}{'qt_*.py'}")
         # Compute the result.
         files = core_files + command_files + plugins_files
         files = [z for z in files if not z.endswith('__init__.py')]
@@ -1432,7 +1433,7 @@ class ProjectUtils:
         }
         data = d.get(name.lower())
         if not data:
-            g.trace('bad project name: %s' % (name))
+            g.trace(f"bad project name: {name}")
             return []
         extList, excludeDirs = data
         files = self.files_in_dir(theDir,
@@ -1444,7 +1445,7 @@ class ProjectUtils:
             if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
                 return [files[0]]
         if not files:
-            g.trace('no files found for %s in %s' % (name, theDir))
+            g.trace(f"no files found for {name} in {theDir}")
         if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
             return [files[0]]
         return files
@@ -1539,7 +1540,7 @@ class NewShowData:
             ('returns', self.returns_d),
         )
         for name, d in table:
-            print('%s...' % name)
+            print(f"{name}...")
             g.printDict({key: sorted(set(d.get(key))) for key in d})
     #@+node:ekr.20171213174732.1: *3* sd.visit
     def visit(self, node, types):
@@ -1723,7 +1724,7 @@ class ShowData:
         aList = self.calls_d.get(name, [])
         if not aList:
             return
-        result.extend(['', '    %s call%s...' % (len(aList), g.plural(aList))])
+        result.extend(['', f"    {len(aList)} call{g.plural(aList)}..."])
         w = 0
         calls = sorted(set(aList))
         for call_tuple in calls:
@@ -1754,7 +1755,7 @@ class ShowData:
             if not name_added:
                 name_added = True
                 result.append('\n%s' % name)
-                result.append('    %s definition%s...' % (len(aList), g.plural(aList)))
+                result.append(f"    {len(aList)} definition{g.plural(aList)}...")
             if context_stack:
                 fn, kind, context_s = context_stack[-1]
                 def_s = s.strip()
@@ -1767,7 +1768,7 @@ class ShowData:
         aList = self.returns_d.get(name, [])
         if not aList:
             return
-        result.extend(['', '    %s return%s...' % (len(aList), g.plural(aList))])
+        result.extend(['', f"    {len(aList)} return{g.plural(aList)}..."])
         w, returns = 0, sorted(set(aList))
         for returns_tuple in returns:
             context, s = returns_tuple
@@ -1799,8 +1800,7 @@ class ShowData:
             if name not in self.defs_d:
                 undef.append(call_tuple)
         undef = list(set(undef))
-        result.extend(['', '%s undefined call%s...' % (
-            len(undef), g.plural(undef))])
+        result.extend(['', f"{len(undef)} undefined call{g.plural(undef)}..."])
         self.n_undefined_calls = len(undef)
         # Merge all the calls for name.
         # There may be several with different s values.
@@ -1815,7 +1815,7 @@ class ShowData:
         # Print the final results.
         for name in sorted(results_d):
             calls = results_d.get(name)
-            result.extend(['', '%s %s call%s...' % (name, len(calls), g.plural(calls))])
+            result.extend(['', f"{name} {len(calls)} call{g.plural(calls)}..."])
             w = 0
             for call_tuple in calls:
                 context2, context1, s = call_tuple

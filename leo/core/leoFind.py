@@ -740,7 +740,7 @@ class LeoFind:
             # g.es("end of wrapped search")
             k.setLabelRed('end of wrapped search')
         else:
-            g.es("not found: %s" % (pattern))
+            g.es(f"not found: {pattern}")
             if not again:
                 event = g.app.gui.create_key_event(c, binding='BackSpace', char='\b', w=w)
                 k.updateLabel(event)
@@ -845,11 +845,13 @@ class LeoFind:
         self.push(c.p, i, j, self.in_headline)
         self.inverseBindingDict = k.computeInverseBindingDict()
         self.iSearchStrokes = self.getStrokes(commandName)
-        k.setLabelBlue('Isearch%s%s%s: ' % (
-            '' if self.isearch_forward else ' Backward',
-            ' Regexp' if self.isearch_regexp else '',
-            ' NoCase' if self.isearch_ignore_case else '',
-        ))
+        k.setLabelBlue(
+            "Isearch"
+            f"{' Backward' if not self.isearch_forward else ''}"
+            f"{' Regexp' if self.isearch_regexp else ''}"
+            f"{' NoCase' if self.isearch_ignore_case else ''}"
+            ": "
+        )
         k.setState('isearch', 1, handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
@@ -990,8 +992,7 @@ class LeoFind:
         if tc:
             for p in c.p.children():
                 tc.add_tag(p,tag)
-            g.es_print('Added %s tag to %s nodes' % (
-                tag, len(list(c.p.children()))))
+            g.es_print(f"Added {tag} tag to {len(list(c.p.children()))} nodes")
         else:
             g.es_print('nodetags not active')
     #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
@@ -1127,7 +1128,7 @@ class LeoFind:
     def setReplaceString(self, event):
         '''A state handler to get the replacement string.'''
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
-        prefix = '%s: ' % prompt
+        prefix = f"{prompt}: "
         self.stateZeroHelper(event,
             prefix=prefix,
             handler=self.setReplaceString1)
@@ -1137,7 +1138,7 @@ class LeoFind:
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         self._sString = k.arg
         self.updateFindList(k.arg)
-        s = '%s: %s With: ' % (prompt, self._sString)
+        s = f"{prompt}: {self._sString} With: "
         k.setLabelBlue(s)
         self.addChangeStringToLabel()
         k.getNextArg(self.setReplaceString2)
@@ -1375,7 +1376,7 @@ class LeoFind:
         head = 'head' if head else ''
         body = 'body' if body else ''
         sep = '+' if head and body else ''
-        part1 = '%s%s%s %s  ' % (head, sep, body, scope)
+        part1 = f"{head}{sep}{body} {scope}  "
         # Set the type field.
         regex = self.pattern_match
         if regex: z.append('regex')
@@ -1622,7 +1623,7 @@ class LeoFind:
                 if gn < len(groups):
                     result.append(groups[gn]) # Append groups[i-1]
                 else:
-                    result.append('\\%s' % ch) # Append raw '\i'
+                    result.append(f'\\{ch}')
         result.append(s[i:])
         return ''.join(result)
     #@+node:ekr.20031218072017.3071: *4* find.changeThenFind
@@ -1651,7 +1652,7 @@ class LeoFind:
             c.selectPosition(found)
             c.redraw()
         else:
-            g.es_print('tag not found: %s' % self.find_text)
+            g.es_print(f"tag not found: {self.find_text}")
         return len(clones)
     #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes
     def createCloneTagNodes(self, clones):
@@ -1665,7 +1666,7 @@ class LeoFind:
         found = c.lastTopLevel().insertAfter()
         assert found
         assert c.positionExists(found), found
-        found.h = 'Found Tag: %s' % self.find_text
+        found.h = f"Found Tag: {self.find_text}"
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
@@ -1754,7 +1755,7 @@ class LeoFind:
         found = c.lastTopLevel().insertAfter()
         assert found
         assert c.positionExists(found), found
-        found.h = 'Found:%s' % self.find_text
+        found.h = f"Found:{self.find_text}"
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
@@ -1837,7 +1838,7 @@ class LeoFind:
         c = self.c
         found = c.lastTopLevel().insertAfter()
         assert found
-        found.h = 'Found All:%s' % self.find_text
+        found.h = f"Found All:{self.find_text}"
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = '# %s\n%s' % (status, ''.join(result))
@@ -1848,7 +1849,7 @@ class LeoFind:
         c = self.c
         found = c.lastTopLevel().insertAfter()
         assert found
-        found.h = 'Found Unique Regex:%s' % self.find_text
+        found.h = f"Found Unique Regex:{self.find_text}"
         # status = self.getFindResultStatus(find_all=True)
         # status = status.strip().lstrip('(').rstrip(')').strip()
         # found.b = '# %s\n%s' % (status, ''.join(result))
@@ -2332,7 +2333,7 @@ class LeoFind:
         )
         for option, ivar in table2:
             if ivar.isChecked():
-                result.append('[%s]' % option)
+                result.append(f"[{option}]")
                 break
         return 'Find: %s' % ' '.join(result)
     #@+node:ekr.20150619070602.1: *4* find.showStatus
@@ -2342,7 +2343,7 @@ class LeoFind:
         d = getattr(g.app.gui, 'globalFindDialog', None)
         status = 'found' if found else 'not found'
         options = self.getFindResultStatus()
-        s = '%s:%s %s' % (status, options, self.find_text)
+        s = f"{status}:{options} {self.find_text}"
         if d:
             top = c.frame.top
             top.find_status_edit.setText(s)

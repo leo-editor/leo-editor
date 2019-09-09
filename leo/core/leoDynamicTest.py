@@ -34,14 +34,14 @@ def main():
     options = scanOptions()
     if g_trace and trace_main:
         print('leoDynamicTest.py:main: options...')
-        print('  curdir         %s' % cwd)
-        print('  path:          %s' % options.path)
-        print('  gui:           %s' % options.gui)
-        print('  load_plugins:  %s' % options.load_plugins)
-        print('  read_settings: %s' % options.read_settings)
-        print('  silent:        %s' % options.silent)
-        print('  trace_plugins: %s' % options.trace_plugins)
-        print('  verbose:       %s' % options.verbose)
+        print(f"  curdir         {cwd}")
+        print(f"  path:          {options.path}")
+        print(f"  gui:           {options.gui}")
+        print(f"  load_plugins:  {options.load_plugins}")
+        print(f"  read_settings: {options.read_settings}")
+        print(f"  silent:        {options.silent}")
+        print(f"  trace_plugins: {options.trace_plugins}")
+        print(f"  verbose:       {options.verbose}")
     bridge = leoBridge.controller(
         gui=options.gui,
         loadPlugins=options.load_plugins,

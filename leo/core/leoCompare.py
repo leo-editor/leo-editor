@@ -526,7 +526,7 @@ class CompareLeoOutlines:
     def create_file_node(self, diff_list, fn1, fn2):
         '''Create an organizer node for the file.'''
         p = self.root.insertAsLastChild()
-        p.h = '%s, %s' % (g.shortFileName(fn1).strip(), g.shortFileName(fn2).strip())
+        p.h = f"{g.shortFileName(fn1).strip()}, {g.shortFileName(fn2).strip()}"
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root

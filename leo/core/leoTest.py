@@ -73,21 +73,22 @@ class EditBodyTestCase(unittest.TestCase):
                 assert tm.compareOutlines(
                     self.tempNode,
                     self.after,
-                    compareHeadlines=False), '%s: before undo1' % commandName
+                    compareHeadlines=False), f"{commandName}: before undo1"
                 c.undoer.undo()
                 assert tm.compareOutlines(
                     self.tempNode,
                     self.before,
-                    compareHeadlines=False), '%s: after undo1' % commandName
+                    compareHeadlines=False), f"{commandName}: after undo1"
                 c.undoer.redo()
                 assert tm.compareOutlines(
                     self.tempNode,
                     self.after,
-                    compareHeadlines=False), '%s: after redo' % commandName
+                    compareHeadlines=False), f"{commandName}: after redo"
                 c.undoer.undo()
                 assert tm.compareOutlines(
                     self.tempNode,
-                    self.before, compareHeadlines=False), '%s: after undo2' % commandName
+                    self.before,
+                    compareHeadlines=False), f"{commandName}: after undo2"
         except Exception:
             self.fail()
             raise
@@ -121,7 +122,7 @@ class EditBodyTestCase(unittest.TestCase):
     #@+node:ekr.20110117113521.6107: *3* shortDescription
     def shortDescription(self):
         try:
-            return "EditBodyTestCase: %s" % (self.parent.h)
+            return f"EditBodyTestCase: {self.parent.h}"
         except Exception:
             g.es_print_exception()
             return "EditBodyTestCase"
@@ -274,7 +275,7 @@ class ImportExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.85: *3* shortDescription (ImportExportTestCase)
     def shortDescription(self):
         try:
-            return "ImportExportTestCase: %s %s" % (self.p.h, self.fileName)
+            return f"ImportExportTestCase: {self.p.h} {self.fileName}"
         except Exception:
             return "ImportExportTestCase"
     #@+node:ekr.20051104075904.86: *3* tearDown (ImportExportTestCase)
@@ -433,7 +434,7 @@ class LinterTable():
                         if g.os_path_isfile(fn):
                             paths.append(fn)
                     else:
-                        print('does not exist: %s' % fn)
+                        print(f"does not exist: {fn}")
             paths = sorted(set(paths))
             return paths
         print('LinterTable.get_table: bad scope', scope)
@@ -474,9 +475,11 @@ class RunTestExternallyHelperClass:
                 # Let runUitTestLeoFile determine most defaults.
             c.selectPosition(p.copy())
         else:
-            g.es_print('no %s@test or @suite nodes in %s outline' % (
-                'marked ' if self.marked else '',
-                'entire' if self.all else 'selected'))
+            g.es_print(
+                f"no {'marked ' if self.marked else ''}"
+                f"@test or @suite nodes in "
+                f"{'entire' if self.all else 'selected'} outline"
+            )
     #@+node:ekr.20070627135336.10: *4* createFileFromOutline (RunTestExternallyHelperClass)
     def createFileFromOutline(self, c2):
         '''Write c's outline to test/dynamicUnitTest.leo.'''
@@ -545,8 +548,8 @@ class RunTestExternallyHelperClass:
             if ' ' in leo: leo = '"' + leo + '"'
             if ' ' in path: path = '"' + path + '"'
         args = [sys.executable, leo]
-        args.append('--gui=%s' % gui)
-        args.append('--path=%s' % path)
+        args.append(f"--gui={gui}")
+        args.append(f"--path={path}")
         if loadPlugins: args.append('--load-plugins')
         if readSettings: args.append('--read-settings')
         if silent: args.append('--silent')
@@ -649,9 +652,10 @@ class TestManager:
         c = self.c
         suite = self.make_test_suite(all, marked)
         if not suite:
-            g.error('no %s@test or @suite nodes in %s outline' % (
-                'marked ' if marked else '',
-                'entire' if all else 'selected'))
+            g.error(
+                f"no {'marked ' if marked else ''}"
+                f"@test or @suite nodes in "
+                f"{'entire' if all else 'selected'} outline")
             return
         #
         # New in Leo 5.8.1: re-init the dict.
@@ -784,7 +788,7 @@ class TestManager:
         p = p.copy()
         script = g.getScript(c, p).strip()
         if not script:
-            print("nothing in %s" % p.h)
+            print(f"nothing in {p.h}")
             return None
         try:
             script = script + tm.get_test_class_script()
@@ -825,7 +829,7 @@ class TestManager:
         p = p.copy()
         script = g.getScript(c, p).strip()
         if not script:
-            print("no script in %s" % p.h)
+            print(f"no script in {p.h}")
             return None
         if setup_script:
             script = setup_script + script
@@ -916,7 +920,7 @@ class TestManager:
                     if verbose:
                         g.pr("found %2d doctests for %s" % (n, module.__name__))
             except ValueError:
-                g.pr('no doctests in %s' % module.__name__)
+                g.pr(f"no doctests in {module.__name__}")
         return suite if created else None
     #@+node:ekr.20051104075904.69: *4* TM.makeEditBodySuite
     def makeEditBodySuite(self, p):
@@ -925,10 +929,9 @@ class TestManager:
         c = self.c
         assert c.positionExists(p)
         data_p = tm.findNodeInTree(p, "editBodyTests")
-        assert data_p, '%s %s' % (p and p.h, g.callers())
+        assert data_p, f"{p and p.h} {g.callers()}"
         temp_p = tm.findNodeInTree(data_p, "tempNode")
-        assert temp_p, 'not found %s in tree %s %s' % (
-            p and p.h, data_p and data_p.h, g.callers())
+        assert temp_p, f"not found {p and p.h} in tree {data_p and data_p.h} {g.callers()}"
         # Create the suite and add all test cases.
         suite = unittest.makeSuite(unittest.TestCase)
         for p in data_p.children():
@@ -949,7 +952,7 @@ class TestManager:
         tm = self
         c = self.c
         parent = tm.findNodeAnywhere(parentHeadline)
-        assert parent, 'node not found: %s' % (parentHeadline)
+        assert parent, f"node not found: {parentHeadline}"
         temp = tm.findNodeInTree(parent, "tempNode")
         assert temp, 'node not found: tempNode'
         # Create the suite and add all test cases.
@@ -978,9 +981,8 @@ class TestManager:
         # Compute the type from child1's headline.
         j = g.skip_c_id(h1, 2)
         theType = h1[1: j]
-        assert theType in (
-            "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
-            "@asis",), "bad type: %s" % theType
+        kinds = ('@auto', '@clean', '@edit', '@file', '@thin', '@nosent', '@asis')
+        assert theType in kinds, f"bad type: {theType}"
         if theType == "@asis":
             result = at.atAsisToString(child1)
         elif theType == "@auto":
@@ -1013,20 +1015,20 @@ class TestManager:
         atTest = p.copy()
         w = c.frame.body.wrapper
         h = atTest.h
-        assert h.startswith('@test '), 'expected head: %s, got: %s' % ('@test', h)
+        assert h.startswith('@test '), f"expected head: {'@test'}, got: {h}"
         commandName = h[6:].strip()
         # Ignore everything after the actual command name.
         i = g.skip_id(commandName, 0, chars='-')
         commandName = commandName[: i]
         assert commandName, 'empty command name'
         command = c.commandsDict.get(commandName)
-        assert command, 'no command: %s' % (commandName)
+        assert command, f"no command: {commandName}"
         work, before, after = tm.findChildrenOf(atTest)
         before_h = 'before sel='
         after_h = 'after sel='
         for node, h in ((work, 'work'), (before, before_h), (after, after_h)):
             h2 = node.h
-            assert h2.startswith(h), 'expected head: %s, got: %s' % (h, h2)
+            assert h2.startswith(h), f"expected head: {h}, got: {h2}"
         sels = []
         for node, h in ((before, before_h), (after, after_h)):
             sel = node.h[len(h):].strip()
@@ -1043,9 +1045,9 @@ class TestManager:
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
-        assert len(sel2) == 2, 'Bad headline index.  Expected index,index.  got: %s' % sel2
+        assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert len(sel3) == 2, 'Bad headline index.  Expected index,index.  got: %s' % sel3
+        assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig, sel2, sel3)
         c.selectPosition(atTest)
@@ -1097,11 +1099,11 @@ class TestManager:
             print('\n', '-' * 20)
             print("expected files:")
             for n in expectList:
-                print("[%s]" % n, n.__class__)
+                print(f"[{n}]", n.__class__)
             print('-' * 20)
             print("result files:")
             for n in resultList:
-                print("[%s]" % n, n.__class__)
+                print(f"[{n}]", n.__class__)
             print('-' * 20)
             #@-<< dump result file names and expected >>
             rootTestAfterP.doDelete()
@@ -1181,12 +1183,12 @@ class TestManager:
             c.tangleCommands.tangle(event=None, p=rootTestToChangeP)
             inputSetList = sorted(inputSet)
             resultList = sorted(c.tangleCommands.tangle_output)
-            assert inputSetList == resultList, "Expected tangled file list %s, got %s" % (
-                repr(resultList), repr(inputSetList))
+            assert inputSetList == resultList, (
+                f"Expected tangled file list {repr(resultList)}, got {repr(inputSetList)}")
             for t in inputSet:
                 result = g.toUnicode(c.tangleCommands.tangle_output[t])
-                assert inputSet[t] == result, "Expected %s with content %s, got %s" % (
-                    t, inputSet[t], result)
+                assert inputSet[t] == result, (
+                    f"Expected {t} with content {inputSet[t]}, got {result}")
         finally:
             rootTestToChangeP.doDelete()
     #@+node:ekr.20131111140646.16544: *4* TM.runVimTest
@@ -1199,7 +1201,7 @@ class TestManager:
         atTest = p.copy()
         w = c.frame.body.wrapper
         h = atTest.h
-        assert h.startswith('@test '), 'expected head: %s, got: %s' % ('@test', h)
+        assert h.startswith('@test '), f"expected head: {'@test'}, got: {h}"
         s = h[6:].strip()
         # The vim command is everything up to the first blank.
         i = 0
@@ -1207,13 +1209,13 @@ class TestManager:
             i += 1
         command = s[: i]
         assert command, 'empty vim command'
-        assert command, 'no command: %s' % (command)
+        assert command, f"no command: {command}"
         work, before, after = tm.findChildrenOf(atTest)
         before_h = 'before sel='
         after_h = 'after sel='
         for node, h in ((work, 'work'), (before, before_h), (after, after_h)):
             h2 = node.h
-            assert h2.startswith(h), 'expected head: %s, got: %s' % (h, h2)
+            assert h2.startswith(h), f"expected head: {h}, got: {h2}"
         sels = []
         for node, h in ((before, before_h), (after, after_h)):
             sel = node.h[len(h):].strip()
@@ -1234,9 +1236,9 @@ class TestManager:
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
-        assert len(sel2) == 2, 'Bad headline index.  Expected index,index.  got: %s' % sel2
+        assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert len(sel3) == 2, 'Bad headline index.  Expected index,index.  got: %s' % sel3
+        assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig, sel2, sel3)
         c.selectPosition(atTest)
@@ -1620,11 +1622,11 @@ class TestManager:
     #@+node:sps.20100720205345.26316: *4* TM.showTwoBodies
     def showTwoBodies(self, t, b1, b2):
         print('\n', '-' * 20)
-        print("expected for %s..." % t)
+        print(f"expected for {t}...")
         for line in g.splitLines(b1):
             print("%3d" % len(line), repr(line))
         print('-' * 20)
-        print("result for %s..." % t)
+        print(f"result for {t}...")
         for line in g.splitLines(b2):
             print("%3d" % len(line), repr(line))
         print('-' * 20)
@@ -1755,7 +1757,7 @@ def printGc(message=None):
     n2 = len(gc.get_objects())
     delta = n2 - lastObjectCount
     g.pr('-' * 30)
-    g.pr("garbage: %d" % n)
+    g.pr(f"garbage: {n}")
     g.pr("%6d =%7d %s" % (delta, n2, "totals"))
     #@+<< print number of each type of object >>
     #@+node:ekr.20051104075904.21: *5* << print number of each type of object >>

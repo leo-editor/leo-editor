@@ -130,9 +130,9 @@ class NodeIndices:
         # This logic must match the existing logic so that
         # previously written gnx's can be found.
         if n in (None, 0, '',):
-            s = "%s.%s" % (theId, t)
+            s = f"{theId}.{t}"
         else:
-            s = "%s.%s.%s" % (theId, t, n)
+            s = f"{theId}.{t}.{n}"
         return g.toUnicode(s)
     #@+node:ekr.20150321161305.13: *3* ni.update
     def update(self):
@@ -263,9 +263,16 @@ class Position:
     def __str__(self):
         p = self
         if p.v:
-            return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
-                id(p), p._childIndex, p.level(), p.key(), p.h)
-        return "<pos %d [%d] None>" % (id(p), len(p.stack))
+            return (
+                "<"
+                f"pos {id(p)} "
+                f"childIndex: {p._childIndex} "
+                f"lvl: {p.level()} "
+                f"key: {p.key()} "
+                f"{p.h}"
+                ">"
+            )
+        return f"<pos {id(p)} [{len(p.stack)}] None>"
 
     __repr__ = __str__
     #@+node:ekr.20061006092649: *4* p.archivedPosition
@@ -300,8 +307,8 @@ class Position:
         result = []
         for z in p.stack:
             v, childIndex = z
-            result.append('%s:%s' % (id(v), childIndex))
-        result.append('%s:%s' % (id(p.v), p._childIndex))
+            result.append(f"{id(v)}:{childIndex}")
+        result.append(f"{id(p.v)}:{p._childIndex}")
         return '.'.join(result)
 
     def sort_key(self, p):
@@ -734,7 +741,7 @@ class Position:
             s = "unl:" + "//%s#%s" % (self.v.context.fileName(), UNL)
             return s.replace(' ', '%20')
         if with_file:
-            return ("%s#%s" % (self.v.context.fileName(), UNL))
+            return f"{self.v.context.fileName()}#{UNL}"
         return UNL
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self):
@@ -1050,7 +1057,7 @@ class Position:
     def badUnlink(self, parent_v, n, child):
         
         if 0 <= n < len(parent_v.children):
-            g.trace('**can not happen: children[%s] != p.v' % (n))
+            g.trace(f"**can not happen: children[{n}] != p.v")
             g.trace('parent_v.children...\n',
                 g.listToString(parent_v.children))
             g.trace('parent_v', parent_v)
@@ -1059,13 +1066,12 @@ class Position:
             g.trace('** callers:', g.callers())
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
         else:
-            g.trace('**can not happen: bad child index: %s, len(children): %s' % (
-                n, len(parent_v.children)))
+            g.trace(f"**can not happen: bad child index: {n}, len(children): {len(parent_v.children)}")
             g.trace('parent_v.children...\n',
                 g.listToString(parent_v.children))
             g.trace('parent_v', parent_v, 'child', child)
             g.trace('** callers:', g.callers())
-            if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
+            if g.app.unitTesting:assert False, f"bad child index: {n}"
     #@+node:ekr.20080416161551.199: *3* p.moveToX
     #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
@@ -1265,7 +1271,7 @@ class Position:
                 for parent in p.self_and_parents(copy=False):
                     if child_v == parent.v:
                         g.app.structure_errors += 1
-                        g.error('vnode: %s is its own parent' % child_v)
+                        g.error(f"vnode: {child_v} is its own parent")
                         # Allocating a new vnode would be difficult.
                         # Just remove child_v from parent.v.children.
                         parent.v.children = [
@@ -1947,7 +1953,7 @@ class VNode:
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
-        return "<VNode %s %s>" % (self.gnx, self.headString())
+        return f"<VNode {self.gnx} {self.headString()}>"
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2515,7 +2521,7 @@ class VNode:
             try:
                 v.parents.remove(parent_v)
             except ValueError:
-                g.internalError('%s not in parents of %s' % (parent_v, v))
+                g.internalError(f"{parent_v} not in parents of {v}")
                 g.trace('v.parents:')
                 g.printObj(v.parents)
         v._p_changed = 1
@@ -2547,7 +2553,7 @@ class VNode:
             try:
                 v2.parents.remove(v)
             except ValueError:
-                g.internalError('%s not in parents of %s' % (v, v2))
+                g.internalError(f"{v} not in parents of {v2}")
                 g.trace('v2.parents:')
                 g.printObj(v2.parents)
         v.children = []
