@@ -1283,8 +1283,6 @@ class PythonTokenBeautifier:
         ###
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
-        ### Maybe someday we'll handle backslash-newlines.
-        
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -1482,6 +1480,27 @@ class PythonTokenBeautifier:
         if self.changed:
             # Tag the end of the command.
             u.afterChangeGroup(current, undoType, dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20190909072007.1: *4* ptb.find_delims (new)
+    def find_delims(self, tokens):
+        '''
+        Compute the net number of each kind of delim in the given range of tokens.
+        
+        Return (curlies, parens, squares)
+        '''
+        parens, curlies, squares = 0, 0, 0
+        for token in tokens:
+            value = token.value
+            if token.kind == 'lt':
+                assert value in '([{', f"Bad lt value: {token.kind} {value}"
+                if value == '{': curlies += 1
+                elif value == '(': parens += 1
+                elif value == '[': squares += 1
+            elif token.kind == 'rt':
+                assert value in ')]}', f"Bad rt value: {token.kind} {value}"
+                if value == ')': parens -= 1
+                elif value == ']': squares -= 1
+                elif value == '}': curlies += 1
+        return curlies, parens, squares
     #@+node:ekr.20150528172940.1: *4* ptb.print_stats
     def print_stats(self):
         print(
