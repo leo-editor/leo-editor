@@ -731,7 +731,9 @@ class PythonTokenBeautifier:
         if c:
             self.delete_blank_lines = (
                 not c.config.getBool('orange-keep-blank-lines', default=True))
-            self.tab_width = abs(c.tab_width) if c else 4
+            n = c.config.getInt('orange-max-line-length')
+            self.max_line_length = 88 if n is None else n
+            self.tab_width = abs(c.tab_width)
         else:
             self.tab_width = 4
         #
@@ -1140,7 +1142,7 @@ class PythonTokenBeautifier:
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
-        if len(line_s) < 88:
+        if len(line_s) < self.max_line_length:
             return False
         #
         # Return if the previous line has no opening delim: (, [ or {.
@@ -1166,7 +1168,7 @@ class PythonTokenBeautifier:
     def append_tail(self, prefix, tail):
         '''Append the tail tokens, splitting the line further as necessary.'''
         tail_s = ''.join([z.to_string() for z in tail])
-        if len(tail_s) < 88:
+        if len(tail_s) < self.max_line_length:
             # Add the prefix.
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
@@ -1270,12 +1272,13 @@ class PythonTokenBeautifier:
         Should be called only at the end of a line.
         '''
         # Must be called just after inserting the line-end token.
+        trace = True and not g.unitTesting
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
-        g.trace(line_s)
+        if trace: g.trace(line_s)
         # Don't bother trying if the line is already long.
-        if len(line_s) > 88:
+        if len(line_s) > self.max_line_length:
             return
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
