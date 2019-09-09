@@ -32,7 +32,7 @@ import_trace = True and not g.unitTesting
 
 def import_fail(s):
     if import_trace:
-        print('===== leoIpython.py: can not import %s' % s)
+        print(f"===== leoIpython.py: can not import {s}")
 
 try:
     from ipykernel.connect import connect_qtconsole
@@ -149,7 +149,7 @@ class InternalIPKernel:
     def put_log(self, s, raw=False):
         '''Put a message to the IPython kernel log.'''
         if not raw:
-            s = '[leoIpython.py] %s' % s
+            s = f"[leoIpython.py] {s}"
         if self.kernelApp:
             self.kernelApp.log.info(s)
         else:
@@ -166,7 +166,7 @@ class InternalIPKernel:
         This will be seen, regardless of Leo's --debug option.
         '''
         if not raw:
-            s = '[leoIpython.py] %s' % s
+            s = f"[leoIpython.py] {s}"
         if self.kernelApp:
             self.kernelApp.log.warning(s)
         else:

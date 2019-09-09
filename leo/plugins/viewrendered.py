@@ -756,7 +756,7 @@ if QtWidgets: # NOQA
                 dock.setWidget(self)
                 dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
             if g.app.init_docks:
-                    dock.show()
+                dock.show()
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''

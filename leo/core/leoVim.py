@@ -77,7 +77,7 @@ class VimCommands:
         for d, tag in ((d1, 'normal'), (d2, 'motion'), (d3, 'visual')):
             for key in arrow_d:
                 if key in d:
-                    g.trace('duplicate arrow key in %s dict: %s' % (tag, key))
+                    g.trace(f"duplicate arrow key in {tag} dict: {key}")
                 else:
                     d[key] = arrow_d.get(key)
         if 1:
@@ -87,11 +87,13 @@ class VimCommands:
                 for key in d2:
                     f, f2 = d.get(key), d2.get(key)
                     if f2 and f and f != f2:
-                        g.trace('conflicting motion key in %s dict: %s %s %s' % (
-                                tag, key, f2.__name__, f.__name__))
+                        g.trace(
+                            f"conflicting motion key in {tag} "
+                            f"dict: {key} {f2.__name__} {f.__name__}")
                     elif f2 and not f:
-                        g.trace('missing motion key in %s dict: %s %s' % (
-                            tag, key, f2.__name__))
+                        g.trace(
+                            f"missing motion key in {tag} "
+                            f"dict: {key} {f2.__name__}")
                         # d[key] = f2
     #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
     #@@nobeautify
@@ -531,8 +533,12 @@ class VimCommands:
         self.do_trace()
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.command_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
-        g.es_print('ignoring %s in %s mode after %s' % (
-            self.stroke, self.state, ''.join(aList)), color='blue')
+        g.es_print(
+            f"ignoring {self.stroke} "
+            f"in {self.state} mode "
+            f"after {''.join(aList)}",
+            color='blue',
+        )
         # This is a surprisingly helpful trace.
             # g.trace(g.callers())
         self.show_status()
@@ -1635,7 +1641,7 @@ class VimCommands:
         elif self.in_tree(self.w):
             # Paste an outline.
             c = self.c
-            g.es('Yank outline: %s' % c.p.h)
+            g.es(f"Yank outline: {c.p.h}")
             c.copyOutline()
             self.done()
         else:
@@ -2028,7 +2034,7 @@ class VimCommands:
                 c.new()
                 try:
                     os.chdir(fn)
-                    g.es('chdir(%s)' % (fn), color='blue')
+                    g.es(f"chdir({fn})", color='blue')
                 except Exception:
                     g.es('curdir not changed', color='red')
             elif fn:
@@ -2358,7 +2364,7 @@ class VimCommands:
     #@+node:ekr.20140802225657.18022: *4* vc.oops
     def oops(self, message):
         '''Report an internal error'''
-        g.warning('Internal vim-mode error: %s' % message)
+        g.warning(f"Internal vim-mode error: {message}")
     #@+node:ekr.20140802120757.18001: *4* vc.save_body (handles undo)
     def save_body(self):
         '''Undoably preserve any changes to body text.'''

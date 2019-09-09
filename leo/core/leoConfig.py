@@ -352,7 +352,7 @@ class ParserBaseClass:
                 self.valueError(p, 'int', name, val)
                 return
             if val not in items:
-                self.error("%d is not in %s in %s" % (val, kind, name))
+                self.error(f"{val} is not in {kind} in {name}")
                 return
             # At present no checking is done.
             self.set(p, kind, name, val)
@@ -461,10 +461,10 @@ class ParserBaseClass:
                     for z in aList:
                         name2, junk, junk = z
                         if name2 == name:
-                            self.error('Replacing previous @menu %s' % (name))
+                            self.error(f"Replacing previous @menu {name}")
                             break
                     aList2 = []
-                    kind = '%s %s' % ('@menu', name)
+                    kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
                     p.moveToNodeAfterTree()
@@ -499,7 +499,7 @@ class ParserBaseClass:
                             # This allows following comment lines.
                         if tag == '@menu':
                             aList2 = []
-                            kind = '%s %s' % (tag, itemName)
+                            kind = f"{tag} {itemName}"
                             self.doItems(p, aList2)
                             aList.append((kind, aList2, body),)
                                 # #848: Body was None.
@@ -524,8 +524,8 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d = g.TypedDict( # was TypedDictOfLists.
-            name='modeDict for %s' % (modeName),
+        d = g.TypedDict(
+            name=f"modeDict for {modeName}",
             keyType=type('commandName'),
             valType=g.BindingInfo)
         s = p.b
@@ -585,7 +585,7 @@ class ParserBaseClass:
                     if itemName:
                         if tag == '@menu':
                             aList2 = []
-                            kind = '%s' % itemName
+                            kind = f"{itemName}"
                             body = p.b
                             self.doPopupItems(p, aList2)
                             aList.append((kind + '\n' + body, aList2),)
@@ -761,11 +761,11 @@ class ParserBaseClass:
             j = g.skip_c_id(s, i)
             tag = s[i: j].strip()
             if not tag:
-                g.es_print('@openwith lines must start with a tag: %s' % (s))
+                g.es_print(f"@openwith lines must start with a tag: {s}")
                 return
             i = g.skip_ws(s, j)
             if not g.match(s, i, ':'):
-                g.es_print('colon must follow @openwith tag: %s' % (s))
+                g.es_print(f"colon must follow @openwith tag: {s}")
                 return
             i += 1
             val = s[i:].strip() or ''
@@ -775,7 +775,7 @@ class ParserBaseClass:
                 aList.append(val)
                 d['args'] = aList
             elif d.get(tag):
-                g.es_print('ignoring duplicate definition of %s %s' % (tag, s))
+                g.es_print(f"ignoring duplicate definition of {tag} {s}")
             else:
                 d[tag] = val
         else:
@@ -896,7 +896,7 @@ class ParserBaseClass:
     #@+node:ekr.20041120094940.10: *3* pbc.valueError
     def valueError(self, p, kind, name, val):
         """Give an error: val is not valid for kind."""
-        self.error("%s is not a valid %s for %s" % (val, kind, name))
+        self.error(f"{val} is not a valid {kind} for {name}")
     #@+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
     def visitNode(self, p):
         self.oops()
@@ -1372,7 +1372,7 @@ class GlobalConfigManager:
         gs = self.encodingIvarsDict.get(key)
         setattr(self, gs.ivar, gs.encoding)
         if gs.encoding and not g.isValidEncoding(gs.encoding):
-            g.es("g.app.config: bad encoding:", "%s: %s" % (gs.ivar, gs.encoding))
+            g.es('g.app.config: bad encoding:', f"{gs.ivar}: {gs.encoding}")
     #@+node:ekr.20041117065611: *5* initIvar
     def initIvar(self, key):
         '''Init g.app.config ivars during initialization.
@@ -1720,7 +1720,7 @@ class LocalConfigManager:
             encoding = getattr(g.app.config, encodingName)
             setattr(self, encodingName, encoding)
         if encoding and not g.isValidEncoding(encoding):
-            g.es("bad", "%s: %s" % (encodingName, encoding))
+            g.es('bad', f"{encodingName}: {encoding}")
     #@+node:ekr.20041118104240: *4* c.config.initIvar
     def initIvar(self, key):
 
@@ -2043,7 +2043,7 @@ class LocalConfigManager:
         if not c.frame.menu:
             if c not in self.no_menu_dict:
                 self.no_menu_dict[c] = True
-                g.trace('no menu: %s:%s' % (c.shortFileName(), commandName))
+                g.trace(f"no menu: {c.shortFileName()}:{commandName}")
             return None, []
         if d:
             assert isinstance(d, g.TypedDict), repr(d) # was TypedDictOfLists.
@@ -2139,7 +2139,7 @@ class LocalConfigManager:
         legend = g.adjustTripleString(legend, c.tab_width)
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
-            kind = '   ' if letter == ' ' else '[%s]' % (letter)
+            kind = '   ' if letter == ' ' else f"[{letter}]"
             result.append('%s %s = %s\n' % (kind, name, val))
         # Use a single g.es statement.
         result.append('\n' + legend)
@@ -2189,7 +2189,7 @@ class LocalConfigManager:
         i = h.find('=')
         if i > -1:
             h = h[:i].strip()
-        p.h = '%s = %s' % (h, value)
+        p.h = f"{h} = {value}"
         #
         # Delay the second redraw until idle time.
         c.setChanged(redrawFlag=False)

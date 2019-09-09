@@ -41,7 +41,7 @@ def runUnitTests(c, g):
     try:
         p = g.findNodeAnywhere(c, nodeName)
         if p:
-            g.es('running unit tests in %s...' % nodeName)
+            g.es(f"running unit tests in {nodeName}...")
             c.selectPosition(p)
             c.debugCommands.runUnitTests()
             g.es('unit tests complete')

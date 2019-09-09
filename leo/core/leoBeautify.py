@@ -88,8 +88,7 @@ def beautifyPythonTree(event):
                 if pp.n_changed_nodes != prev_changed and not is_auto:
                     if not g.unitTesting:
                         n = pp.n_changed_nodes - prev_changed
-                        g.es_print('beautified %s node%s' % (
-                            n, g.plural(n)))
+                        g.es_print(f"beautified {n} node{g.plural(n)}")
                 prev_changed = pp.n_changed_nodes
                 if not is_auto:
                     g.es_print(p.h)
@@ -98,8 +97,7 @@ def beautifyPythonTree(event):
     if not g.unitTesting:
         if pp.n_changed_nodes != prev_changed and not is_auto:
             n = pp.n_changed_nodes - prev_changed
-            g.es_print('beautified %s node%s' % (
-                n, g.plural(n)))
+            g.es_print(f"beautified {n} node{g.plural(n)}")
     pp.end_undo()
     t2 = time.time()
     # pp.print_stats()
@@ -199,7 +197,7 @@ def beautify(options, path):
     s, e = g.readFileIntoString(path)
     if not s:
         return
-    print('beautifying %s' % fn)
+    print(f"beautifying {fn}")
     s1 = g.toEncodedString(s)
     node1 = ast.parse(s1, filename='before', mode='exec')
     readlines = g.ReadLinesClass(s).next
@@ -214,7 +212,7 @@ def beautify(options, path):
         f.write(s2_e)
         f.close()
     else:
-        print('failed to beautify %s' % fn)
+        print(f"failed to beautify {fn}")
 #@+node:ekr.20150601162203.1: *4* scan_options & helper
 def scan_options():
     '''Handle all options. Return a list of files.'''
@@ -359,7 +357,7 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
         if i < len(lines) and lines[i].lstrip().startswith('pass'):
             i += 1
         else:
-            g.trace('*** no pass after %s: %s' % (kind, p.h))
+            g.trace(f"*** no pass after {kind}: {p.h}")
     else:
         # A directive line.
         result.append(s)
@@ -407,7 +405,7 @@ def show_lws(s):
 def test_beautifier(c, h, p, settings):
     '''Test Leo's beautifier code'''
     if not p:
-        g.trace('not found: %s' % h)
+        g.trace(f"not found: {h}")
         return None
     s = g.getScript(c, p,
             useSelectedText=False,
@@ -470,7 +468,7 @@ def test_beautifier(c, h, p, settings):
     if settings.get('stats'):
         beautifier.print_stats()
     if not ok:
-        print('*************** fail: %s ***************' % (h))
+        print(f"*************** fail: {h} ***************")
     return beautifier
         # For statistics.
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
@@ -1364,7 +1362,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150528192109.1: *4* ptb.skip_message
     def skip_message(self, s, p):
         '''Print a standard message about skipping a node.'''
-        message = '%s. skipped:' % s
+        message = f"{s}. skipped:"
         g.warning('%22s %s' % (message, p.h))
     #@-others
 #@-others

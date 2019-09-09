@@ -60,7 +60,7 @@ class IdleTimeManager:
                 callback()
             except Exception:
                 g.es_exception()
-                g.es_print('removing callback: %s' % callback)
+                g.es_print(f"removing callback: {callback}")
                 self.callback_list.remove(callback)
         # Handle idle-time hooks.
         g.app.pluginsController.on_idle()
@@ -976,8 +976,7 @@ class LeoApp:
                     true_platform = os.environ['PROCESSOR_ARCHITEw6432']
                 except KeyError:
                     pass
-                sysVersion = 'Windows %s %s (build %s) %s' % (
-                    release, true_platform, winbuild, sp)
+                sysVersion = f"Windows {release} {true_platform} (build {winbuild}) {sp}"
             except Exception:
                 pass
         else: sysVersion = sys.platform
@@ -986,7 +985,7 @@ class LeoApp:
         # Compute g.app.signon.
         signon = ['Leo %s' % leoVer]
         if branch:
-            signon.append(', %s branch' % branch)
+            signon.append(f", {branch} branch")
         if commit:
             signon.append(', build '+ commit)
         if date:
@@ -1112,7 +1111,7 @@ class LeoApp:
         # Complete the initialization.
         qt_gui.init()
         if app.gui and fileName and verbose:
-            print('Qt Gui created in %s' % fileName)
+            print(f"Qt Gui created in {fileName}")
     #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
@@ -1124,7 +1123,7 @@ class LeoApp:
         app = self
         app.pluginsController.loadOnePlugin('leo.plugins.wxGui', verbose=verbose)
         if fileName and verbose:
-            print('wxGui created in %s' % fileName)
+            print(f"wxGui created in {fileName}")
     #@+node:ville.20090620122043.6275: *4* app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db
@@ -1316,7 +1315,7 @@ class LeoApp:
         """
         c = frame.c
         if 'shutdown' in g.app.debug:
-            g.trace('changed: %s %s' % (c.changed, c.shortFileName()))
+            g.trace(f"changed: {c.changed} {c.shortFileName()}")
         c.endEditing() # Commit any open edits.
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
@@ -1413,7 +1412,7 @@ class LeoApp:
         self.log = None # Disable writeWaitingLog
         self.killed = True # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace: g.pr('forceShutdown: %s' % w)
+            if trace:g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
         if trace: g.pr('before finishQuit')
         self.finishQuit()
@@ -1666,17 +1665,17 @@ class LeoApp:
         key = 'globalWindowState:'
         val = self.db.get(key)
         if val:
-            if trace: g.trace('found key: %s' % key)
+            if trace: g.trace(f"found key: {key}")
             try:
                 val = base64.decodebytes(val.encode('ascii'))
                     # Elegant pyzo code.
                 main_window.restoreState(val)
                 return
             except Exception as err:
-                g.trace('bad value: %s %s' % (key, err))
+                g.trace(f"bad value: {key} {err}")
                 return
         # This is not an error.
-        if trace: g.trace('missing key: %s' % key)
+        if trace: g.trace(f"missing key: {key}")
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     def restoreWindowState(self, c):
         """
@@ -1769,7 +1768,7 @@ class LeoApp:
             val = bytes(val) # PyQt4
         except Exception:
             val = bytes().join(val) # PySide
-        if trace: g.trace('set key: %s' % key)
+        if trace: g.trace(f"set key: {key}")
         g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
@@ -1802,7 +1801,7 @@ class LeoApp:
                 val = bytes(val) # PyQt4
             except Exception:
                 val = bytes().join(val) # PySide
-            if trace: g.trace('%s set key: %s' % (c.shortFileName(), key))
+            if trace: g.trace(f"{c.shortFileName()} set key: {key}")
             g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
@@ -2090,7 +2089,7 @@ class LoadManager:
                 # Normalizes slashes, etc.
             if g.os_path_exists(path):
                 return path
-        print('theme .leo file not found: %s' % fn)
+        print(f"theme .leo file not found: {fn}")
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
@@ -2258,7 +2257,7 @@ class LoadManager:
                 fn = bi.kind.split(' ')[-1]
                 stroke = c.k.prettyPrintKey(bi.stroke)
                 if bi.pane and bi.pane != 'all':
-                    pane = ' in %s panes' % bi.pane
+                    pane = f" in {bi.pane} panes"
                 else:
                     pane = ''
         inverted_old_d = lm.invert(old_d)
@@ -2268,8 +2267,7 @@ class LoadManager:
             binding = g.app.trace_binding
             # First, see if the binding is for a command. (Doesn't work for plugin commands).
             if localFlag and binding in c.k.killedBindings:
-                g.es_print('--trace-binding: %s sets %s to None' % (
-                    c.shortFileName(), binding))
+                g.es_print(f"--trace-binding: {c.shortFileName()} sets {binding} to None")
             elif localFlag and binding in c.commandsDict:
                  d = c.k.computeInverseBindingDict()
                  g.trace('--trace-binding: %20s binds %s to %s' % (
@@ -2284,7 +2282,7 @@ class LoadManager:
                         fn = bi.kind.split(' ')[-1] # bi.kind #
                         stroke2 = c.k.prettyPrintKey(stroke)
                         if bi.pane and bi.pane != 'all':
-                            pane = ' in %s panes' % bi.pane
+                            pane = f" in {bi.pane} panes"
                         else:
                             pane = ''
                         g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
@@ -2319,7 +2317,7 @@ class LoadManager:
             if duplicates:
                 bindings = list(set([z.stroke.s for z in duplicates]))
                 kind = 'duplicate, (not conflicting)' if len(bindings) == 1 else 'conflicting'
-                g.es_print('%s key bindings in %s' % (kind, c.shortFileName()))
+                g.es_print(f"{kind} key bindings in {c.shortFileName()}")
                 for bi in aList2:
                     g.es_print('%6s %s %s' % (
                         bi.pane, bi.stroke.s, bi.commandName))
@@ -2446,9 +2444,9 @@ class LoadManager:
                     g.app.theme_name = settings_d.get_string_setting('theme-name')
                     if trace:
                         g.trace('\n=====\n')
-                        print(' g.app.theme_path: %s' % g.app.theme_directory)
-                        print(' g.app.theme_name: %s' % g.app.theme_name)
-                        print('g.app.theme_color: %s' % g.app.theme_color)
+                        print(f" g.app.theme_path: {g.app.theme_directory}")
+                        print(f" g.app.theme_name: {g.app.theme_name}")
+                        print(f"g.app.theme_color: {g.app.theme_color}")
                         print('')
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
@@ -2710,8 +2708,7 @@ class LoadManager:
                         self.parse_importer_dict(sfn, m)
                         # print('createImporterData', m.__name__)
                     except Exception:
-                        g.warning('can not import leo.plugins.importers.%s' % (
-                            module_name))
+                        g.warning(f"can not import leo.plugins.importers.{module_name}")
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
@@ -2741,7 +2738,7 @@ class LoadManager:
             'basescanner.py',
             'linescanner.py',
         ):
-            g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
+            g.warning(f"leo/plugins/importers/{sfn} has no importer_dict")
     #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper
     def createWritersData(self):
         '''Create the data structures describing writer plugins.'''
@@ -2766,7 +2763,7 @@ class LoadManager:
                         self.parse_writer_dict(sfn, m)
                     except Exception:
                         g.es_exception()
-                        g.warning('can not import leo.plugins.writers.%s' % sfn)
+                        g.warning(f"can not import leo.plugins.writers.{sfn}")
         if trace:
             g.trace('LM.writersDispatchDict')
             g.printDict(g.app.writersDispatchDict)
@@ -2790,8 +2787,7 @@ class LoadManager:
                 for s in at_auto:
                     aClass = d.get(s)
                     if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %s class %s in %s:' % (
-                            sfn, s, aClass.__name__, m.__file__))
+                        g.trace(f"{sfn}: duplicate {s} class {aClass.__name__} in {m.__file__}:")
                     else:
                         d[s] = scanner_class
                         g.app.atAutoNames.add(s)
@@ -2801,12 +2797,11 @@ class LoadManager:
                 for ext in extensions:
                     aClass = d.get(ext)
                     if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %s class' % (sfn, ext),
-                            aClass, scanner_class)
+                        g.trace(f"{sfn}: duplicate {ext} class", aClass, scanner_class)
                     else:
                         d[ext] = scanner_class
         elif sfn not in ('basewriter.py',):
-            g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
+            g.warning(f"leo/plugins/writers/{sfn} has no writer_dict")
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
     def createGui(self, pymacs):
         lm = self
@@ -3393,13 +3388,13 @@ class LoadManager:
             p = c.rootPosition()
             if p:
                 load_type = self.options['load_type']
-                p.setHeadString('%s %s' % (load_type,fn))
+                p.setHeadString(f"{load_type} {fn}")
                 c.refreshFromDisk()
                 c.selectPosition(p)
 
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
-        c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
+        c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
         c.wrappedFileName = fn
         c.frame.title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(c.frame.title)
@@ -3635,7 +3630,7 @@ class RecentFilesManager:
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else: # original behavior
-                label = "%s %s" % (accel_ch[i], g.computeWindowTitle(name))
+                label = f"{accel_ch[i]} {g.computeWindowTitle(name)}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1
@@ -3838,7 +3833,7 @@ class RecentFilesManager:
                                 g.es_print('wrote recent file: %s' % fileName)
                             written = True
                         else:
-                            g.error('failed to write recent file: %s' % (fileName))
+                            g.error(f"failed to write recent file: {fileName}")
                     # Bug fix: Leo 4.4.6: write *all* recent files.
         if written:
             rf.recentFileMessageWritten = True
@@ -3847,7 +3842,7 @@ class RecentFilesManager:
             if g.app.homeLeoDir:
                 fileName = g.os_path_finalize_join(g.app.homeLeoDir, tag)
                 if not g.os_path_exists(fileName):
-                    g.red('creating: %s' % (fileName))
+                    g.red(f"creating: {fileName}")
                 rf.writeRecentFilesFileHelper(fileName)
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper(self, fileName):

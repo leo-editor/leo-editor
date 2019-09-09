@@ -80,16 +80,16 @@ class BackgroundProcessManager:
                 try:
                     self.link_pattern = re.compile(link_pattern)
                 except Exception:
-                    g.trace('Invalid link pattern: %s' % link_pattern)
+                    g.trace(f"Invalid link pattern: {link_pattern}")
                     self.link_pattern = None
 
         def __repr__(self):
-            return 'c: %s kind: %s callback: %s fn: %s shell: %s' % (
-                self.c.shortFileName(),
-                self.kind,
-                id(self.callback) if self.callback else None,
-                self.fn,
-                self.shell,
+            return (
+                f"c: {self.c.shortFileName()} "
+                f"kind: {self.kind} "
+                f"callback: {(id(self.callback) if self.callback else None)} "
+                f"fn: {self.fn} "
+                f"shell: {self.shell}"
             )
 
         __str__ = __repr__
@@ -123,7 +123,7 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()
         else:
-            self.put_log('%s finished' % self.data.kind)
+            self.put_log(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
@@ -136,13 +136,13 @@ class BackgroundProcessManager:
         else:
             self.process_queue = [z for z in self.process_queue if z.kind != kind]
         if self.pid and kind in ('all', self.data.kind):
-            self.put_log('killing %s process' % kind)
+            self.put_log(f"killing {kind} process")
             try:
                 self.pid.kill()
             except OSError:
                 pass
             self.pid = None
-        self.put_log('%s finished' % kind)
+        self.put_log(f"{kind} finished")
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         '''The idle-time callback for leo.commands.checkerCommands.'''
@@ -191,7 +191,7 @@ class BackgroundProcessManager:
         #
         # Put a clickable link.
         unl = link_root.get_UNL(with_proto=True, with_count=True)
-        nodeLink = "%s,%d" % (unl, -line)
+        nodeLink = f"{unl},{-line}"
         log.put(s + '\n', nodeLink=nodeLink)
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,

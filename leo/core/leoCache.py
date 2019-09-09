@@ -111,27 +111,27 @@ class CommanderWrapper:
         self.user_keys = set()
 
     def get(self, key, default=None):
-        value = self.db.get('%s:::%s' % (self.key, key))
+        value = self.db.get(f"{self.key}:::{key}")
         return default if value is None else value
     
     def keys(self):
         return sorted(list(self.user_keys))
         
     def __contains__ (self, key):
-        return '%s:::%s' % (self.key, key) in self.db
+        return f"{self.key}:::{key}" in self.db
     
     def __delitem__ (self, key):
         if key in self.user_keys:
             self.user_keys.remove(key)
-        del self.db ['%s:::%s' % (self.key, key)]
+        del self.db[f"{self.key}:::{key}"]
     
     def __getitem__(self, key):
-        return self.db ['%s:::%s' % (self.key, key)]
+        return self.db[f"{self.key}:::{key}"]
             # May (properly) raise KeyError
     
     def __setitem__ (self, key, value):
         self.user_keys.add(key)
-        self.db ['%s:::%s' % (self.key, key)] = value
+        self.db[f"{self.key}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher:
     '''A singleton global cacher, g.app.db'''
@@ -179,7 +179,7 @@ class GlobalCacher:
     def dump(self, tag=''):
         '''Dump the indicated cache if --trace-cache is in effect.'''
         tag0 = 'Global Cache'
-        tag2 = '%s: %s' % (tag0, tag) if tag else tag0
+        tag2 = f"{tag0}: {tag}" if tag else tag0
         dump_cache(self.db, tag2)
             # Careful: g.app.db may not be set yet.
     #@-others
@@ -267,7 +267,7 @@ class PickleShareDB:
             yield k
     #@+node:ekr.20100208223942.5974: *4* __repr__
     def __repr__(self):
-        return "PickleShareDB('%s')" % self.root
+        return f"PickleShareDB('{self.root}')"
     #@+node:ekr.20100208223942.5975: *4* __setitem__ (PickleShareDB)
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
@@ -533,7 +533,7 @@ class SqlitePickleShare:
             yield k
     #@+node:vitalije.20170716201700.8: *4* __repr__
     def __repr__(self):
-        return "SqlitePickleShare('%s')" % self.root
+        return f"SqlitePickleShare('{self.root}')"
     #@+node:vitalije.20170716201700.9: *4* __setitem__
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
@@ -699,7 +699,7 @@ def dump_cache(db, tag):
             dump_list('File: ' + key, d.get(key))
             files += 1
     if d.get('None'):
-        heading = 'All others (%s)' % (tag) if files else None
+        heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
         
 def dump_list(heading, aList):
