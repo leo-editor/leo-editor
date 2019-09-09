@@ -1112,7 +1112,7 @@ class PythonTokenBeautifier:
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
         self.line_indent()
-    #@+node:ekr.20190908054807.1: *4* ptb.self_break_line (new) & helpers
+    #@+node:ekr.20190908054807.1: *4* ptb.break_line (new) & helpers
     def break_line(self):
         '''
         Break the preceding line, if necessary.
@@ -1381,7 +1381,7 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
-        elif prev.kind == 'word' and prev.value in ('elif', 'if', 'return', 'while'):
+        elif prev.kind == 'word' and prev.value in ('elif', 'else', 'if', 'return', 'while'):
             self.unary_op(s)
         else:
             self.op(s)
