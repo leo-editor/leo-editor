@@ -658,11 +658,31 @@ class PythonTokenBeautifier:
             return f"{self.kind} {val}"
 
         def to_string(self):
-            '''Convert an output token to a string.'''
+            '''
+            Convert an output token to a string.
+            Note: repr shows the length of line-indent string.
+            '''
             return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
-        '''A class representing items in the parse state stack.'''
+        '''
+        A class representing items in the parse state stack.
+        
+        The present states:
+            
+        'file-start': Ensures the stack stack is never empty.
+            
+        'decorator': The last '@' was a decorator.
+            
+            do_op():    push_state('decorator')
+            do_name():  pops the stack if state.kind == 'decorator'.
+                        
+        'indent': The indentation level for 'class' and 'def' names.
+        
+            do_name():      push_state('indent', self.level)
+            do_dendent():   pops the stack once or twice if state.value == self.level.
+
+        '''
 
         def __init__(self, kind, value):
             self.kind = kind
@@ -676,29 +696,45 @@ class PythonTokenBeautifier:
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
+        #
         # Globals...
-        self.code_list = [] # The list of output tokens.
-        # The present line and token...
-        self.last_line_number = 0
-        self.raw_val = None # Raw value for strings, comments.
-        self.s = None # The string containing the line.
+        self.code_list = []
+            # The list of output tokens.
+        self.raw_val = None
+            # Raw value for strings, comments.
+        self.s = None
+            # The string containing the line.
         self.val = None
+            # The string containing the input token's value.
+        #
         # State vars...
         self.backslash_seen = False
+            # True if a backslash-newline appears at the end of a *string*
+            # Comments retain proper spelling, so they never set this flag.
+            # Note: run() calls self.backslash() when srow != last_line_number.
         self.decorator_seen = False
-        self.level = 0 # indentation level.
-        self.lws = '' # Leading whitespace.
+            # Set by do_name as a flag to do_op.
+        self.level = 0
+            # indentation level. Set only by do_indent and do_dedent.
+            # do_name calls: push_state('indent', self.level)
+        self.lws = ''
+            # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-        self.paren_level = 0 # Number of unmatched left parens.
-        self.state_stack = [] # Stack of ParseState objects.
+        self.paren_level = 0
+            # Number of unmatched left parens.
+        self.state_stack = []
+            # Stack of ParseState objects.
+            # See the ParseState class for more details.
+        #
         # Settings...
         if c:
-            self.delete_blank_lines = \
-                not c.config.getBool('tidy-keep-blank-lines', default=True)
+            self.delete_blank_lines = (
+                not c.config.getBool('orange-keep-blank-lines', default=True))
             self.tab_width = abs(c.tab_width) if c else 4
         else:
             self.tab_width = 4
+        #
         # Statistics
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -709,6 +745,7 @@ class PythonTokenBeautifier:
         self.beautify_time = 0.0
         self.check_time = 0.0
         self.total_time = 0.0
+        #
         # Undo vars
         self.changed = False
         self.dirtyVnodeList = []
@@ -823,7 +860,6 @@ class PythonTokenBeautifier:
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='after', mode='exec')
-            # self.dump_ast(node2)
         except Exception:
             g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
             g.es_exception()
@@ -845,6 +881,9 @@ class PythonTokenBeautifier:
             self.dump_ast(node1,tag='AST BEFORE')
             self.dump_ast(node2,tag='AST AFTER')
             return
+        if 'black' in g.app.debug:
+            # g.printObj(g.toUnicode(s2_e), tag='RESULT')
+            g.printObj(self.code_list, tag="Code List")
         t5 = time.time()
         # Restore the tags after the compare
         s3 = uncomment_leo_lines(comment_string, p, s2)
@@ -871,6 +910,7 @@ class PythonTokenBeautifier:
 
         self.code_list = []
         self.state_stack = []
+        last_line_number = 0
         self.file_start()
         for token5tuple in tokens:
             t1, t2, t3, t4, t5 = token5tuple
@@ -878,7 +918,7 @@ class PythonTokenBeautifier:
             self.kind = token_module.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
             self.raw_val = g.toUnicode(t5)
-            if srow != self.last_line_number:
+            if srow != last_line_number:
                 # Handle a previous backslash.
                 if self.backslash_seen:
                     self.backslash()
@@ -893,14 +933,14 @@ class PythonTokenBeautifier:
                     # to:      foo(
                     self.line_indent(ws=' ' * n)
                         # Do not set self.lws here!
-                self.last_line_number = srow
+                last_line_number = srow
             func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
-    #@+node:ekr.20150526203605.1: *4* ptb.do_comment
+    #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
         '''Handle a comment token.'''
         raw_val = self.raw_val.rstrip()
@@ -980,6 +1020,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20041021101911.6: *4* ptb.do_number
     def do_number(self):
         '''Handle a number token.'''
+        assert isinstance(self.val, str), repr(self.val)
         self.add_token('number', self.val)
     #@+node:ekr.20040711135244.11: *4* ptb.do_op
     def do_op(self):
@@ -1024,7 +1065,7 @@ class PythonTokenBeautifier:
             # Pep 8: If operators with different priorities are used,
             # consider adding whitespace around the operators with the lowest priority(ies).
             self.op(val)
-    #@+node:ekr.20150526204248.1: *4* ptb.do_string
+    #@+node:ekr.20150526204248.1: *4* ptb.do_string (sets backslash_seen)
     def do_string(self):
         '''Handle a 'string' token.'''
         self.add_token('string', self.val)
@@ -1035,12 +1076,26 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
-        '''Add a token to the code list.'''
+        '''
+        Add a token to the code list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        OutputToken.to_string() ignores such tokens.
+        '''
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
-        '''Add a backslash token and clear .backslash_seen'''
+        '''
+        Add a backslash token and clear .backslash_seen.
+        
+        Called in two places:
+            
+        - run()         if srow != last_line_number.
+        - line_end()    if backslash_seen.
+        '''
         self.add_token('backslash', '\\')
         self.add_token('line-end', '\n')
         self.line_indent()
@@ -1066,12 +1121,12 @@ class PythonTokenBeautifier:
         kind = self.code_list[-1].kind
         if kind == 'file-start':
             self.add_token('blank-lines', n)
-        else:
-            for i in range(0, n + 1):
-                self.add_token('line-end', '\n')
-            # Retain the token (intention) for debugging.
-            self.add_token('blank-lines', n)
-            self.line_indent()
+            return
+        for i in range(0, n + 1):
+            self.add_token('line-end', '\n')
+        # Retain the token (intention) for debugging.
+        self.add_token('blank-lines', n)
+        self.line_indent()
     #@+node:ekr.20190908054807.1: *4* ptb.self_break_line (new) & helpers
     def break_line(self):
         '''
@@ -1151,9 +1206,13 @@ class PythonTokenBeautifier:
                 # Done if the delims match.
                 delim_count -= 1
                 if delim_count == 0:
-                    # Create an error, on purpose.
-                    # self.add_token('op', ',')
-                    # self.add_token('number', 666)
+                    if 0:
+                        # Create an error, on purpose.
+                        # This test passes: proper dumps are created,
+                        # and the body is not updated.
+                        self.add_token('line-end', '\n')
+                        self.add_token('op', ',')
+                        self.add_token('number', '666')
                     # Start a new line
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
@@ -1203,6 +1262,28 @@ class PythonTokenBeautifier:
             output_token == 'lt' or
             output_token.kind == 'op-no-blanks' and output_token.value in "{[("
         )
+    #@+node:ekr.20190909020458.1: *4* ptb.join_lines (new) & helpers
+    def join_lines(self):
+        '''
+        Join preceding lines, if the result would be short enough.
+        Should be called only at the end of a line.
+        '''
+        # Must be called just after inserting the line-end token.
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        line_tokens = self.find_prev_line()
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        g.trace(line_s)
+        # Don't bother trying if the line is already long.
+        if len(line_s) > 88:
+            return
+        # Terminating long lines must have ), ] or }
+        if not any([z.kind == 'rt' for z in line_tokens]):
+            return
+        ###
+        ### Scan back, looking for the first line with all balanced delims.
+        ### Do nothing if it is this line.
+        ### Maybe someday we'll handle backslash-newlines.
+        
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -1251,7 +1332,8 @@ class PythonTokenBeautifier:
             self.backslash()
         self.add_token('line-end', '\n')
         if orange:
-            self.break_line()
+            if not self.break_line():
+                self.join_lines()
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
