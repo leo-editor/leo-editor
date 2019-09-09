@@ -937,8 +937,10 @@ class PythonTokenBeautifier:
             self.clean('line-indent')
             self.add_token('comment', raw_val)
         else:
-            self.blank()
+            self.add_token('blank', ' ')
+                # Force a blank before the comment.
             self.add_token('comment', val)
+
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
         '''Handle an endmarker token.'''
