@@ -259,7 +259,7 @@ def open_outline(self, event=None):
     )
     open_completer(c, closeFlag, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
-# refresh_pattern = re.compile('^(@[\w-]+)')
+# refresh_pattern = re.compile(r'^(@[\w-]+)')
 
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self, event=None):

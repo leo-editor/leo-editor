@@ -361,10 +361,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, end = w.getSelectionRange()
         txt = w.getSelectedText()
         if which == 'tabify':
-            pattern = re.compile(' {4,4}') # Huh?
+            pattern = re.compile(r' {4,4}') # Huh?
             ntxt = pattern.sub('\t', txt)
         else:
-            pattern = re.compile('\t')
+            pattern = re.compile(r'\t')
             ntxt = pattern.sub('    ', txt)
         w.delete(i, end)
         w.insert(i, ntxt)

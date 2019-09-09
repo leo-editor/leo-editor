@@ -424,7 +424,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''For each instance of the pattern !<command-name>! is s,
         replace the pattern by the key binding for command-name.'''
         c = self.c
-        pattern = re.compile('!<(.*)>!')
+        pattern = re.compile(r'!<(.*)>!')
         while True:
             m = pattern.search(s, 0)
             if m is None: break

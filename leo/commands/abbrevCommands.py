@@ -447,7 +447,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def make_script_substitutions_in_headline(self, p):
         '''Make scripting substitutions in p.h.'''
         c = self.c
-        pattern = re.compile('^(.*)%s(.+)%s(.*)$' % (
+        pattern = re.compile(r'^(.*)%s(.+)%s(.*)$' % (
             re.escape(c.abbrev_subst_start),
             re.escape(c.abbrev_subst_end),
         ))

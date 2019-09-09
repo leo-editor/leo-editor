@@ -1611,7 +1611,7 @@ class ShowData:
         r_def = r'def[ \t]+([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\((.*)\)'
         r_return = r'(return[ \t].*)$'
         r_call = r'([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\(([^)]*)\)'
-        r_all = re.compile('|'.join([r_class, r_def, r_return, r_call,]))
+        r_all = re.compile(r'|'.join([r_class, r_def, r_return, r_call,]))
 
         def scan(self, fn, s):
             lines = g.splitLines(s)
