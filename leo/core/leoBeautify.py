@@ -1077,29 +1077,26 @@ class PythonTokenBeautifier:
         '''
         Break the preceding line, if necessary.
         Should be called only at the end of a line.
+        
+        Return True if the line was broken into two or more lines.
         '''
         # Must be called just after inserting the line-end token.
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-        # g.printObj(self.state_stack, 'parse stack')
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
         if len(line_s) < 88:
-            return
+            return False
         # Must have an opening delim: (, [ or {.
         if not any([z.kind == 'lt' for z in line_tokens]):
-            g.trace("can't split line: no opening delim", repr(line_s))
-            return
-        if 0:
-            g.trace(repr(line_s))
-            g.printObj(line_tokens, tag="BEFORE")
+            # g.trace("can't split line: no opening delim", repr(line_s))
+            return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
-        if 0:
-            g.printObj(prefix, tag="PREFIX")
-            g.printObj(tail, tag="TAIL")
+        # g.printObj(prefix, tag="PREFIX")
+        # g.printObj(tail, tag="TAIL")
         assert prefix, repr(line_tokens)
         # Cut back the token list
         self.code_list = self.code_list[:-(len(line_tokens))]
@@ -1107,9 +1104,8 @@ class PythonTokenBeautifier:
         self.append_tail(prefix, tail)
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
-        if 0:
-            g.printObj(self.code_list, tag="AFTER")
-        
+        # g.printObj(self.code_list, tag="AFTER")
+        return True
     #@+node:ekr.20190908065154.1: *5* ptb.append_tail
     def append_tail(self, prefix, tail):
         '''Append the tail tokens, splitting the line further as necessary.'''
