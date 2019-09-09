@@ -87,7 +87,7 @@ class BackgroundProcessManager:
             return (
                 f"c: {self.c.shortFileName()} "
                 f"kind: {self.kind} "
-                f"callback: {(id(self.callback) if self.callback else None)} "
+                f"callback: {id(self.callback) if self.callback else None} "
                 f"fn: {self.fn} "
                 f"shell: {self.shell}"
             )

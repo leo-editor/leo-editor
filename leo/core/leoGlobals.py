@@ -406,7 +406,7 @@ class Bunch:
     def toString(self):
         tag = self.__dict__.get('tag')
         entries = [
-            f"{key}: {(str(self.__dict__.get(key)) or repr(self.__dict__.get(key)))}"
+            f"{key}: {str(self.__dict__.get(key)) or repr(self.__dict__.get(key))}"
                 for key in self.ivars() if key != 'tag'
         ]
         result = ['g.Bunch(%s)' % (tag or '')]
