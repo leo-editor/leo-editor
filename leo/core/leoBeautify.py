@@ -937,10 +937,8 @@ class PythonTokenBeautifier:
             self.clean('line-indent')
             self.add_token('comment', raw_val)
         else:
-            self.add_token('blank', ' ')
-                # Force a blank before the comment.
+            self.blank_before_end_line_comment()
             self.add_token('comment', val)
-
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
         '''Handle an endmarker token.'''
@@ -1096,6 +1094,16 @@ class PythonTokenBeautifier:
             'file-start',
             'line-end', 'line-indent',
             'lt', 'op-no-blanks', 'unary-op',
+        ):
+            self.add_token('blank', ' ')
+            
+    def blank_before_end_line_comment(self):
+        '''Add a blank before an end-of-line comment.'''
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank', 'blank-lines',
+            'file-start',
+            'line-end', 'line-indent',
         ):
             self.add_token('blank', ' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
