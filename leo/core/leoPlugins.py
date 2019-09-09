@@ -582,7 +582,7 @@ class LeoPluginsController:
         # in self.loadOnePlugin
         m = self.signonModule
         if verbose:
-            g.es('', f"...{m.__name__}.py v{m.__version__}: {g.plugin_date(m)}")
+            g.es(f"...{m.__name__}.py v{m.__version__}: {g.plugin_date(m)}")
             g.pr(m.__name__, m.__version__)
         self.signonModule = None # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* plugins.unloadOnePlugin
@@ -617,7 +617,7 @@ class LeoPluginsController:
             g.pr('%6s %15s %25s %s' % (g.app.unitTesting, moduleName, tag, fn.__name__))
         if g.app.unitTesting: return
         if tag in self.handlers:
-            g.es('*** Two exclusive handlers for', f"'{tag}'")
+            g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             self.handlers[tag] = [bunch] # Vitalije

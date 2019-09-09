@@ -3033,9 +3033,9 @@ def comment_delims_from_extension(filename):
     if ext:
         return g.set_delims_from_language(language)
     g.trace(
-        f"unknown extension: {repr(ext)}, "
-        f"filename: {repr(filename)}, "
-        f"root: {repr(root)}")
+        f"unknown extension: {ext!r}, "
+        f"filename: {filename!r}, "
+        f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)

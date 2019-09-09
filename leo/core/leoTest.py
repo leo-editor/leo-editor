@@ -653,9 +653,9 @@ class TestManager:
         suite = self.make_test_suite(all, marked)
         if not suite:
             g.error(
-                f"no {('marked ' if marked else '')}"
+                f"no {'marked ' if marked else ''}"
                 f"@test or @suite nodes in "
-                f"{('entire' if all else 'selected')} outline")
+                f"{'entire' if all else 'selected'} outline")
             return
         #
         # New in Leo 5.8.1: re-init the dict.
@@ -929,9 +929,9 @@ class TestManager:
         c = self.c
         assert c.positionExists(p)
         data_p = tm.findNodeInTree(p, "editBodyTests")
-        assert data_p, f"{(p and p.h)} {g.callers()}"
+        assert data_p, f"{p and p.h} {g.callers()}"
         temp_p = tm.findNodeInTree(data_p, "tempNode")
-        assert temp_p, f"not found {(p and p.h)} in tree {(data_p and data_p.h)} {g.callers()}"
+        assert temp_p, f"not found {p and p.h} in tree {data_p and data_p.h} {g.callers()}"
         # Create the suite and add all test cases.
         suite = unittest.makeSuite(unittest.TestCase)
         for p in data_p.children():
@@ -981,8 +981,8 @@ class TestManager:
         # Compute the type from child1's headline.
         j = g.skip_c_id(h1, 2)
         theType = h1[1: j]
-        assert theType in (
-            '@auto', '@clean', '@edit', '@file', '@thin', '@nosent', '@asis'), f"bad type: {theType}"
+        kinds = ('@auto', '@clean', '@edit', '@file', '@thin', '@nosent', '@asis')
+        assert theType in kinds, f"bad type: {theType}"
         if theType == "@asis":
             result = at.atAsisToString(child1)
         elif theType == "@auto":

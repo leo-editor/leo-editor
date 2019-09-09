@@ -1424,12 +1424,16 @@ class RstCommands:
                     marker = marker_parts[1]
                     replacement = f"{http_node_ref}#{marker}"
                     try:
-                        attr[line + 2] = attr[line + 2].replace(f'href="{href}"', f'href="{replacement}"')
+                        attr[line + 2] = attr[line + 2].replace(
+                            f'href="{href}"',
+                            f'href="{replacement}"')
                     except Exception:
                         g.es("Skipped ", attr[line + 2])
                 else:
                     try:
-                        attr[line + 2] = attr[line + 2].replace(f'href="{href}"', f'href="{http_node_ref}"')
+                        attr[line + 2] = attr[line + 2].replace(
+                            f'href="{href}"',
+                            f'href="{http_node_ref}"')
                     except Exception:
                         g.es("Skipped", attr[line + 2])
     #@+node:ekr.20090502071837.99: *5* rst.find_anchors

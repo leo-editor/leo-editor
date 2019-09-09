@@ -87,9 +87,13 @@ class VimCommands:
                 for key in d2:
                     f, f2 = d.get(key), d2.get(key)
                     if f2 and f and f != f2:
-                        g.trace(f"conflicting motion key in {tag} dict: {key} {f2.__name__} {f.__name__}")
+                        g.trace(
+                            f"conflicting motion key in {tag} "
+                            f"dict: {key} {f2.__name__} {f.__name__}")
                     elif f2 and not f:
-                        g.trace(f"missing motion key in {tag} dict: {key} {f2.__name__}")
+                        g.trace(
+                            f"missing motion key in {tag} "
+                            f"dict: {key} {f2.__name__}")
                         # d[key] = f2
     #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
     #@@nobeautify
@@ -529,7 +533,12 @@ class VimCommands:
         self.do_trace()
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.command_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
-        g.es_print(f"ignoring {self.stroke} in {self.state} mode after {''.join(aList)}", color='blue')
+        g.es_print(
+            f"ignoring {self.stroke} "
+            f"in {self.state} mode "
+            f"after {''.join(aList)}",
+            color='blue',
+        )
         # This is a surprisingly helpful trace.
             # g.trace(g.callers())
         self.show_status()

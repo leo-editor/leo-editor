@@ -401,7 +401,7 @@ class BaseTangleCommands:
         self.language = c.target_language
         if 0: # debug
             import sys
-            g.es(f"TangleCommands.languague: {self.language} at header {repr(self.p)}")
+            g.es(f"TangleCommands.languague: {self.language} at header {self.p!r}")
             f = sys._getframe(1)
             g.es("caller: " + f.f_code.co_name)
             f = sys._getframe(2)
@@ -665,7 +665,7 @@ class BaseTangleCommands:
         #@+<< return if @silent >>
         #@+node:ekr.20031218072017.3482: *5* << return if @silent >>
         if self.print_mode in ("quiet", "silent"):
-            g.warning('', f"@{self.print_mode}", 'inhibits untangle for', root.h)
+            g.warning(f"@{self.print_mode} inhibits untangle for {root.h}")
             return
         #@-<< return if @silent >>
         s = root.b
@@ -1589,14 +1589,14 @@ class BaseTangleCommands:
                             # put (n of m)
                             if sections > 1:
                                 self.oblank()
-                                self.os(f"({count} of {sections})")
+                                self.os(f"{count} of {sections}")
                         else:
                             assert part.delims[1] and part.delims[2]
                             self.os(part.delims[1]); self.oblank(); self.os(name)
                             # put (n of m)
                             if sections > 1:
                                 self.oblank()
-                                self.os(f"({count} of {sections})")
+                                self.os(f"{count} of {sections}")
                             self.oblank(); self.os(part.delims[2])
                         self.onl() # Always output a newline.
                         #@-<< Put the section name in a comment >>
@@ -2256,7 +2256,7 @@ class BaseTangleCommands:
                             elif not found:
                                 self.ust_enter(name, dn.part, dn.of, dn.code, dn.nl_flag, False) # not root
                     elif kind == end_sentinel_line:
-                        self.error(f"Missing sentinel line for {name} found end {dn.name} instead")
+                        self.error(f"Missing sentinel line for {name}. found end {dn.name} instead")
                 #@-<< terminate the previous part of this section if it exists >>
                 if kind == start_sentinel_line:
                     indent = line_indent
