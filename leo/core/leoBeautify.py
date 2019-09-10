@@ -15,14 +15,22 @@ except ImportError:
         return func
 
     g.command = command
+
 import ast
-# import itertools
 import optparse
 import os
+import re
 import sys
 import time
 import token as token_module
 import tokenize
+
+try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
+    import black
+except Exception:
+    black = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
@@ -113,6 +121,76 @@ def beautifyPythonTree(event):
         else:
             g.es_print('beautified total %s node%s in %4.2f sec.' % (
                 pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
+#@+node:ekr.20190830043650.1: *3* blacken-check-tree
+@g.command('blkc')
+@g.command('blacken-check-tree')
+def blacken_check_tree(event):
+    '''
+    Run black on all nodes of the selected tree, reporting only errors.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_tree(c.p, diff_flag=False, check_flag=True)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190829163640.1: *3* blacken-diff-node
+@g.command('blacken-diff-node')
+def blacken_diff_node(event):
+    '''
+    Run black on all nodes of the selected node.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_node(c.p, diff_flag=True)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190829163652.1: *3* blacken-diff-tree
+@g.command('blkd')
+@g.command('blacken-diff-tree')
+def blacken_diff_tree(event):
+    '''
+    Run black on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_tree(c.p, diff_flag=True)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190725155006.1: *3* blacken-node
+@g.command('blacken-node')
+def blacken_node(event):
+    '''
+    Run black on all nodes of the selected node.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_node(c.p, diff_flag=False)
+    else:
+        g.es_print('can not import black')
+#@+node:ekr.20190729105252.1: *3* blacken-tree
+@g.command('blk')
+@g.command('blacken-tree')
+def blacken_tree(event):
+    '''
+    Run black on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    if black:
+        BlackCommand(c).blacken_tree(c.p, diff_flag=False)
+    else:
+        g.es_print('can not import black')
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
 def dump_tokens(tokens, verbose=True):
@@ -803,7 +881,6 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
         '''The driver for beautification: beautify a single node.'''
-        # c = self.c
         if not should_beautify(p):
             # @nobeautify is in effect.
             return
@@ -1517,6 +1594,188 @@ class PythonTokenBeautifier:
         '''Append a state to the state stack.'''
         state = self.ParseState(kind, value)
         self.state_stack.append(state)
+    #@-others
+#@+node:ekr.20190725154916.1: ** class BlackCommand
+class BlackCommand:
+    '''A class to run black on all Python @<file> nodes in c.p's tree.'''
+    
+    # tag1 must be executable, and can't be pass.
+    tag1 = "if xxx: print('') # black-tag1:::"
+    tag2 = ":::black-tag2"
+    tag3 = "# black-tag3:::"
+
+    def __init__(self, c):
+        '''ctor for PyflakesCommand class.'''
+        self.c = c
+        self.language = None
+        self.mode = black.FileMode(0)
+        self.wrapper = c.frame.body.wrapper
+        self.line_length = c.config.getInt("black-line-length") or 88
+        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
+        
+        # self.mode.target_versions = set(black.PY36_VERSIONS)
+
+    #@+others
+    #@+node:ekr.20190725154916.7: *3* black.blacken_node
+    def blacken_node(self, root, diff_flag, check_flag=False):
+        '''Run black on all Python @<file> nodes in root's tree.'''
+        c = self.c
+        if not black or not root:
+            return
+        t1 = time.clock()
+        self.changed, self.errors, self.total = 0, 0, 0
+        self.undo_type = 'blacken-node'
+        self.blacken_node_helper(root, check_flag, diff_flag)
+        t2 = time.clock()
+        print(
+            f'scanned {self.total} node{g.plural(self.total)}, '
+            f'changed {self.changed} node{g.plural(self.changed)}, '
+            f'{self.errors} error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3f} sec.'
+        )
+        if self.changed:
+            c.redraw()
+    #@+node:ekr.20190729065756.1: *3* black.blacken_tree
+    def blacken_tree(self, root, diff_flag, check_flag=False):
+        '''Run black on all Python @<file> nodes in root's tree.'''
+        c = self.c
+        if not black or not root:
+            return
+        t1 = time.clock()
+        self.changed, self.errors, self.total = 0, 0, 0
+        undo_type = 'blacken-tree'
+        bunch = c.undoer.beforeChangeTree(root)
+        # Blacken *only* the selected tree.
+        changed = False
+        for p in root.self_and_subtree():
+            if self.blacken_node_helper(p, check_flag, diff_flag):
+                changed = True
+        if changed:
+            c.setChanged(True)
+            c.undoer.afterChangeTree(root, undo_type, bunch)
+        t2 = time.clock()
+        print(
+            f'scanned {self.total} node{g.plural(self.total)}, '
+            f'changed {self.changed} node{g.plural(self.changed)}, '
+            f'{self.errors} error{g.plural(self.errors)} '
+            f'in {t2-t1:5.3f} sec.'
+        )
+        if self.changed:
+            if not c.changed: c.setChanged(True)
+            c.redraw()
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
+    def blacken_node_helper(self, p, check_flag, diff_flag):
+        '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
+        trace = 'black' in g.app.debug and not g.unitTesting
+        if not should_beautify(p):
+            return False
+        c = self.c
+        self.total += 1
+        self.language = g.findLanguageDirectives(c, p)
+        body = p.b.rstrip()+'\n'
+        body2 = self.replace_leo_constructs(body)
+        try:
+            body3 = black.format_str(
+                body2,
+                line_length=self.line_length,
+                mode=self.mode,
+            )
+        except Exception:
+            self.errors += 1
+            print('\n===== error {p.h}\n')
+            g.es_print_exception()
+            self.dump_lines(body2, 'after-replace-leo-constructs')
+            return False
+        if trace:
+            self.dump_lines(body2, 'after-replace-leo-constructs')
+        result = self.restore_leo_constructs(body3)
+        # if trace:
+            # self.dump_lines(result, 'after-restore-leo-constructs')
+        if check_flag:
+            return False
+        if result == body:
+            return False
+        if g.unitTesting:
+            return False
+        if diff_flag:
+            print('=====', p.h)
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+            return False
+        # Update p.b and set undo params.
+        self.changed += 1
+        p.b = result
+        c.frame.body.updateEditors()
+        p.v.contentModified()
+        c.undoer.setUndoTypingParams(p, 'blacken-node',
+            oldText=body, newText=result)
+        if not p.v.isDirty():
+            p.v.setDirty()
+        return True
+    #@+node:ekr.20190830045147.1: *4* black.dump_lines
+    def dump_lines(self, s, tag):
+        """Dump all lines in s, with line numbers."""
+        print(f'\n{tag}...\n')
+        for i, line in enumerate(g.splitLines(s)):
+            print(f'{i:3}: {line!r}')
+        print('')
+    #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
+    c_pat = re.compile(r'^\s*@c\s*\n')
+    dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
+    ref_pat = re.compile(r'.*\<\<.*\>\>')
+    doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
+    lang_pat = re.compile(r'@language\s+(\w+)')
+
+    def replace_leo_constructs(self, s):
+        """Replace Leo constructs with special lines."""
+        in_python = self.language == 'python'
+        in_doc, result = False, []
+        for line in g.splitLines(s):
+            # @language...
+            m = self.lang_pat.match(line)
+            if m:
+                in_python = m.group(1).lower() == 'python'
+                result.append(self.tag3 + line)
+                continue
+            # Non-python line...
+            if not in_python:
+                result.append(self.tag3 + line)
+                continue
+            # Handle all Leo constructs
+            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
+                m = pat.match(line)
+                if m:
+                    ### g.trace('=====', repr(line), pat)
+                    if pat == self.doc_pat:
+                        in_doc = True
+                        result.append(self.tag3 + line)
+                    elif pat == self.c_pat:
+                        in_doc = False
+                        result.append(self.tag3 + line)
+                    else:
+                        lws = g.get_leading_ws(line)
+                        result.append(lws + self.tag1 + line.rstrip() + self.tag2 + '\n')
+                    break
+            else: # Not a Leo consruct.
+                if in_doc:
+                    result.append(self.tag3 + line)
+                else:
+                    result.append(line)
+        return ''.join(result)
+        
+    #@+node:ekr.20190829212936.1: *4* black.restore_leo_constructs
+    tag1_pat = re.compile(r'\s*%s(.+)%s' % (tag1, tag2))
+
+    def restore_leo_constructs(self, s):
+        """Restore all Leo constructs from the tags."""
+        result = []
+        for line in g.splitLines(s):
+            m = self.tag1_pat.match(line)
+            if m:
+                line = m.group(1)+'\n'
+            elif line.strip().startswith(self.tag3):
+                line = line.lstrip()[len(self.tag3):]
+            result.append(line)
+        return ''.join(result)
     #@-others
 #@-others
 if __name__ == "__main__":
