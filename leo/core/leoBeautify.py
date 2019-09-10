@@ -409,7 +409,7 @@ class BlackCommand:
             return False
         if trace:
             g.printObj(body2, tag='Sanitized syntax')
-        result = self.sanitizer.uncomment_leo_lines(comment_string, body3, p)
+        result = self.sanitizer.uncomment_leo_lines(comment_string, p, body3)
         if check_flag or result == body or g.unitTesting:
             return False
         if diff_flag:
