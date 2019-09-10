@@ -711,7 +711,9 @@ class PythonTokenBeautifier:
                 node2 = ast.parse(s2_e, filename='after', mode='exec')
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
+                g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
+                g.printObj(s2_e, tag='RESULT')
                 return False
             #
             # Compare the two parse trees.
