@@ -65,7 +65,7 @@ class IdleTimeManager:
         # Handle idle-time hooks.
         g.app.pluginsController.on_idle()
     #@+node:ekr.20161028034808.1: *3* itm.start
-    def start (self):
+    def start(self):
         '''Start the idle-time timer.'''
         self.timer = g.IdleTime(
             self.on_idle,
@@ -326,7 +326,7 @@ class LeoApp:
             # The directory from which the theme file was loaded, if any.
             # Set only by LM.readGlobalSettingsFiles.
             # Used by the StyleSheetManager class.
-            
+
         # Not necessary **provided** that theme .leo files
         # set @string theme-name to the name of the .leo file.
         if 0:
@@ -987,14 +987,14 @@ class LeoApp:
         if branch:
             signon.append(f", {branch} branch")
         if commit:
-            signon.append(', build '+ commit)
+            signon.append(', build ' + commit)
         if date:
             signon.append('\n' + date)
         app.signon = ''.join(signon)
         # Compute g.app.signon1.
         app.signon1 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
-            
+
     def printSignon(self, verbose=False):
         '''Print a minimal sigon to the log.'''
         app = self
@@ -1087,7 +1087,7 @@ class LeoApp:
             assert Qt
         except Exception:
             # #1215: Raise an emergency dialog.
-            message='Can not Import Qt'
+            message = 'Can not Import Qt'
             print(message)
             try:
                 d = g.EmergencyDialog(title=message, message=message)
@@ -1287,9 +1287,9 @@ class LeoApp:
                     app.logWaiting.insert(0, (s, color, True),)
             # Write all the queued log entries.
             for msg in app.logWaiting:
-                s, color, newline = msg[:3]
+                s, color, newline = msg[: 3]
                 kwargs = {} if len(msg) < 4 else msg[3]
-                kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
+                kwargs = {k: v for k, v in kwargs.items() if k not in ('color', 'newline')}
                 g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
@@ -1298,7 +1298,7 @@ class LeoApp:
         g.app.setLog(None)
     #@+node:ekr.20180924093227.1: *3* app.c property
     @property
-    def c (self):
+    def c(self):
         return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
@@ -1412,7 +1412,7 @@ class LeoApp:
         self.log = None # Disable writeWaitingLog
         self.killed = True # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace:g.pr(f"forceShutdown: {w}")
+            if trace: g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
         if trace: g.pr('before finishQuit')
         self.finishQuit()
@@ -1482,7 +1482,7 @@ class LeoApp:
         # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
-        
+
         #
         # Do not call g.trace, etc. here.
         d, tag = g.app.db, 'open-leo-files'
@@ -1512,7 +1512,7 @@ class LeoApp:
                 text="Ok")
     #@+node:ekr.20190616092159.1: *3* app.get_central_widget
     def get_central_widget(self, c):
-        
+
         assert self.dock, g.callers()
         s = c.config.getString('central-dock-widget')
         if s:
@@ -1769,7 +1769,7 @@ class LeoApp:
         except Exception:
             val = bytes().join(val) # PySide
         if trace: g.trace(f"set key: {key}")
-        g.app.db [key] = base64.encodebytes(val).decode('ascii')
+        g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         '''
@@ -1802,7 +1802,7 @@ class LeoApp:
             except Exception:
                 val = bytes().join(val) # PySide
             if trace: g.trace(f"{c.shortFileName()} set key: {key}")
-            g.app.db [key] = base64.encodebytes(val).decode('ascii')
+            g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
@@ -2177,7 +2177,7 @@ class LoadManager:
                 val = settings_d2.d.get(key)
                 if val:
                     fn = g.shortFileName(val.path)
-                    g.es_print('--trace-setting: in %20s: @%s %s=%s' %  (
+                    g.es_print('--trace-setting: in %20s: @%s %s=%s' % (
                         fn, val.kind, g.app.trace_setting, val.val))
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
@@ -2285,7 +2285,7 @@ class LoadManager:
                             pane = f" in {bi.pane} panes"
                         else:
                             pane = ''
-                        g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                        g.es_print('--trace-binding: %20s binds %s to %-20s%s' % (
                             fn, stroke2, bi.commandName, pane))
                     print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
@@ -2387,7 +2387,7 @@ class LoadManager:
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            ok =  c.fileCommands.openLeoFile(theFile, fn,
+            ok = c.fileCommands.openLeoFile(theFile, fn,
                     readAtFileNodesFlag=False, silent=True)
                         # closes theFile.
         finally:
@@ -2519,7 +2519,7 @@ class LoadManager:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
             t2 = time.process_time()
-            g.es_print('startup time: %5.2f sec' % (t2-t1))
+            g.es_print('startup time: %5.2f sec' % (t2 - t1))
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
@@ -2908,7 +2908,7 @@ class LoadManager:
             '--session-restore',
             '--session-save',
         )
-        trace_m='''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
+        trace_m = '''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
           ipython,keys,plugins,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
@@ -2941,7 +2941,7 @@ class LoadManager:
                 # --theme=name
             'version': options.version,
                 # --version: print the version and exit.
-            'windowFlag': script and options.script_window, 
+            'windowFlag': script and options.script_window,
             'windowSize': lm.doWindowSizeOption(options),
         }
         return d
@@ -3029,12 +3029,10 @@ class LoadManager:
         return gui
     #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption
     def doLoadTypeOption(self, options):
-        
+
         s = options.load_type
         s = s.lower() if s else 'edit'
         return '@' + s
-
-        
     #@+node:ekr.20180312152609.1: *6* LM.doScreenShotOption
     def doScreenShotOption(self, options):
 
@@ -3094,7 +3092,7 @@ class LoadManager:
         # --silent
         g.app.silentMode = options.silent
         # --trace=...
-        valid = trace_m.replace(' ','').replace('\n','').split(',')
+        valid = trace_m.replace(' ', '').replace('\n', '').split(',')
         # g.trace('valid', valid)
         if options.trace:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
@@ -3114,10 +3112,9 @@ class LoadManager:
         # --trace-setting=setting
         g.app.trace_setting = options.trace_setting
             # g.app.config does not exist yet.
-        
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
-        
+
         # --window-size
         windowSize = options.window_size
         if windowSize:
@@ -3331,7 +3328,7 @@ class LoadManager:
                 # Don't call frame.bringToFront(), it breaks --minimize
                 c.setLog()
                 # Selecting the new tab ensures focus is set.
-                master =getattr(frame.top, 'leo_master', None)
+                master = getattr(frame.top, 'leo_master', None)
                 if master: # master is a TabbedTopLevel.
                     master.select(frame.c)
                 c.outerUpdate()
@@ -3409,7 +3406,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
         return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
-        
+
     def isZippedFile(self, fn):
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
@@ -3668,7 +3665,7 @@ class RecentFilesManager:
             "*clean-recent-files",
             "*demangle-recent-files",
             "*sort-recent-files",
-            ("-",None,None),
+            ("-", None, None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
     def readRecentFiles(self, localConfigFile):
@@ -3902,8 +3899,6 @@ def demangle_recent_files_command(event):
             g.app.recentFilesManager.demangleRecentFiles(c, data)
         else:
             g.es_print('No patterns in @data path-demangle')
-
-    
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):
