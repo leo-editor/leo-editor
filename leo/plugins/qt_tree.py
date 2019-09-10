@@ -204,7 +204,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Useful, for now.
         t2 = time.process_time()
         if t2-t1 > 0.1:
-            g.trace('%s nodes, %5.3f sec' % (n, t2-t1))
+            g.trace('%s nodes, %5.2f sec' % (n, t2-t1))
     #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible (not used)
     def yieldVisible(self, first_p, target_p=None):
         """

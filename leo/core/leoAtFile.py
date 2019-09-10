@@ -3617,7 +3617,7 @@ class FastAtRead:
             delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.process_time()
-            g.trace('%5.3f sec. %s' % ((t2-t1), path))
+            g.trace('%5.2f sec. %s' % ((t2-t1), path))
         return True
     #@-others
 #@-others
