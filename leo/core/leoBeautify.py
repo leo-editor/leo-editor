@@ -702,6 +702,7 @@ class PythonTokenBeautifier:
         # Beautify into s2.
         t3 = time.time()
         s2 = self.run(tokens)
+        assert isinstance(s2, str), s2.__class__.__name__
         t4 = time.time()
         if check_result:
             #
@@ -709,11 +710,17 @@ class PythonTokenBeautifier:
             try:
                 s2_e = g.toEncodedString(s2)
                 node2 = ast.parse(s2_e, filename='after', mode='exec')
+            except IndentationError:
+                g.warning(f"{p.h}: Indentation error in the result")
+                g.es_print(f"{p.h} will not be changed")
+                g.es_exception()
+                g.printObj(s2, tag='RESULT')
+                return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
                 g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
-                g.printObj(s2_e, tag='RESULT')
+                g.printObj(s2, tag='RESULT')
                 return False
             #
             # Compare the two parse trees.
@@ -721,7 +728,7 @@ class PythonTokenBeautifier:
                 self.compare_two_asts(node1, node2)
             except AstNotEqual:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
-                g.printObj(g.toUnicode(s2_e), tag='RESULT')
+                g.printObj(s2, tag='RESULT')
                 g.printObj(self.code_list, 'CODE LIST')
                 self.dump_ast(node1, tag='AST BEFORE')
                 self.dump_ast(node2, tag='AST AFTER')
@@ -729,7 +736,7 @@ class PythonTokenBeautifier:
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception")
                 g.es_exception()
-                g.printObj(g.toUnicode(s2_e), tag='RESULT')
+                g.printObj(s2, tag='RESULT')
                 self.dump_ast(node1, tag='AST BEFORE')
                 self.dump_ast(node2, tag='AST AFTER')
                 return False
