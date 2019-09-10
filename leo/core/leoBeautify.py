@@ -132,7 +132,7 @@ def beautifyPythonTree(event):
         f"in {t2-t1:4.2f} sec."
     )
                 # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
-    
+
         # if is_auto:
             # if pp.n_changed_nodes > 0:
                 # g.es_print('auto-beautified %s node%s in\n%s' % (
@@ -464,7 +464,7 @@ def show_lws(s):
     '''Show leading whitespace in a convenient format.'''
     return repr(s) if s.strip(' ') else len(s)
 #@+node:ekr.20190908033048.1: ** class AstNotEqual (Exception)
-class AstNotEqual (Exception):
+class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
@@ -732,7 +732,7 @@ class PythonTokenBeautifier:
         def __repr__(self):
             val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
             return f"{self.kind:15} {val}"
-            
+
         def __str__(self):
             # More compact
             val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
@@ -881,7 +881,7 @@ class PythonTokenBeautifier:
                     f"node1: {node1!r}\n"
                     f"node2: {node2!r}")
         # Special cases for lists and tuples:
-        if isinstance(node1, (tuple,list)):
+        if isinstance(node1, (tuple, list)):
             if len(node1) != len(node2):
                 raise AstNotEqual(
                     f"node1: {node1}\n"
@@ -897,7 +897,7 @@ class PythonTokenBeautifier:
     def dump_ast(self, node, tag=None):
         """Dump the tree"""
         from leo.core.leoAst import AstDumper
-        g.printObj(AstDumper().dump(node),tag=tag)
+        g.printObj(AstDumper().dump(node), tag=tag)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
@@ -957,15 +957,16 @@ class PythonTokenBeautifier:
         except AstNotEqual:
             g.warning(f"{p.h}: The beautify command did not preserve meaning!")
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            self.dump_ast(node1,tag='AST BEFORE')
-            self.dump_ast(node2,tag='AST AFTER')
+            g.printObj(self.code_list, 'CODE LIST')
+            self.dump_ast(node1, tag='AST BEFORE')
+            self.dump_ast(node2, tag='AST AFTER')
             return False
         except Exception:
             g.warning(f"{p.h}: Unexpected exception")
             g.es_exception()
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            self.dump_ast(node1,tag='AST BEFORE')
-            self.dump_ast(node2,tag='AST AFTER')
+            self.dump_ast(node1, tag='AST BEFORE')
+            self.dump_ast(node2, tag='AST AFTER')
             return False
         if 'black' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
@@ -1200,7 +1201,7 @@ class PythonTokenBeautifier:
             'lt', 'op-no-blanks', 'unary-op',
         ):
             self.add_token('blank', ' ')
-            
+
     def blank_before_end_line_comment(self):
         '''Add a blank before an end-of-line comment.'''
         prev = self.code_list[-1]
@@ -1238,6 +1239,7 @@ class PythonTokenBeautifier:
         #
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
+        # g.printObj(line_tokens, tag='PREV LINE')
         line_s = ''.join([z.to_string() for z in line_tokens])
         if self.max_line_length == 0 or len(line_s) < self.max_line_length:
             return False
@@ -1251,9 +1253,13 @@ class PythonTokenBeautifier:
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
+        # g.printObj(prefix, tag='PREFIX')
+        # g.printObj(tail, tag='TAIL')
         #
         # Cut back the token list
-        self.code_list = self.code_list[:-(len(line_tokens))]
+        self.code_list = self.code_list[:len(self.code_list)-len(line_tokens)-1]
+            # -1 for the trailing line-end.
+        # g.printObj(self.code_list, tag='CUT CODE LIST')
         #
         # Append the tail, splitting it further, as needed.
         self.append_tail(prefix, tail)
@@ -1270,7 +1276,7 @@ class PythonTokenBeautifier:
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
             self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws+' '*4)
+            self.add_token('line-indent', self.lws + ' ' * 4)
             self.code_list.extend(tail)
             return
         #
@@ -1278,14 +1284,14 @@ class PythonTokenBeautifier:
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws+' '*4)
+        self.add_token('line-indent', self.lws + ' ' * 4)
         open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
         close_delim = self.OutputToken(
             kind='rt',
-            value=open_delim.value.replace('(',')').replace('[',']').replace('{','}'),
+            value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
         )
         delim_count = 1
-        lws = self.lws+' '*4
+        lws = self.lws + ' ' * 4
         for i, t in enumerate(tail):
             # g.trace(delim_count, str(t))
             if t.kind == 'op' and t.value == ',':
@@ -1295,8 +1301,8 @@ class PythonTokenBeautifier:
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', lws)
                     # Kill a following blank.
-                    if i+1 < len(tail):
-                        next_t = tail[i+1]
+                    if i + 1 < len(tail):
+                        next_t = tail[i + 1]
                         if next_t.kind == 'blank':
                             next_t.kind = 'no-op'
                             next_t.value = ''
@@ -1319,11 +1325,11 @@ class PythonTokenBeautifier:
                     self.add_token('line-indent', self.lws)
                     self.code_list.extend(tail[i:])
                     return
-                lws = lws[:-4]
+                lws = lws[: -4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
-                lws = lws + ' '*4
+                lws = lws + ' ' * 4
                 self.code_list.append(t)
             else:
                 self.code_list.append(t)
@@ -1332,7 +1338,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
-        for t in reversed(self.code_list[:-1]):
+        for t in reversed(self.code_list[: -1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1347,7 +1353,7 @@ class PythonTokenBeautifier:
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                for t in token_list[i+1:]:
+                for t in token_list[i + 1:]:
                     if t.kind == 'blank' or self.is_any_lt(t):
                     # if t.kind in ('lt', 'blank'):
                         result.append(t)
@@ -1495,7 +1501,8 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
-        elif prev.kind == 'word' and prev.value in ('elif', 'else', 'if', 'return', 'while'):
+        elif prev.kind == 'word' and prev.value in (
+            'elif', 'else', 'if', 'return', 'while'):
             self.unary_op(s)
         else:
             self.op(s)
@@ -1571,7 +1578,8 @@ class PythonTokenBeautifier:
         c.setBodyString(p, s)
         dirtyVnodeList2 = p.setDirty()
         self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
+        u.afterChangeNodeContents(
+            p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150528180738.1: *4* ptb.end_undo
     def end_undo(self):
         '''Complete undo processing.'''
@@ -1625,7 +1633,7 @@ class PythonTokenBeautifier:
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
     '''A class to run black on all Python @<file> nodes in c.p's tree.'''
-    
+
     # tag1 must be executable, and can't be pass.
     tag1 = "if xxx: print('') # black-tag1:::"
     tag2 = ":::black-tag2"
@@ -1638,8 +1646,9 @@ class BlackCommand:
         self.mode = black.FileMode(0)
         self.wrapper = c.frame.body.wrapper
         self.line_length = c.config.getInt("black-line-length") or 88
-        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
-        
+        self.mode.string_normalization = c.config.getBool(
+            "black-string-normalization", default=False)
+
         # self.mode.target_versions = set(black.PY36_VERSIONS)
 
     #@+others
@@ -1699,7 +1708,7 @@ class BlackCommand:
         c = self.c
         self.total += 1
         self.language = g.findLanguageDirectives(c, p)
-        body = p.b.rstrip()+'\n'
+        body = p.b.rstrip() + '\n'
         body2 = self.replace_leo_constructs(body)
         try:
             body3 = black.format_str(
@@ -1726,7 +1735,7 @@ class BlackCommand:
             return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+            print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -1798,7 +1807,7 @@ class BlackCommand:
         for line in g.splitLines(s):
             m = self.tag1_pat.match(line)
             if m:
-                line = m.group(1)+'\n'
+                line = m.group(1) + '\n'
             elif line.strip().startswith(self.tag3):
                 line = line.lstrip()[len(self.tag3):]
             result.append(line)
