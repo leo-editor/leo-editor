@@ -1257,7 +1257,7 @@ class PythonTokenBeautifier:
         # g.printObj(tail, tag='TAIL')
         #
         # Cut back the token list
-        self.code_list = self.code_list[:len(self.code_list)-len(line_tokens)-1]
+        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
             # -1 for the trailing line-end.
         # g.printObj(self.code_list, tag='CUT CODE LIST')
         #
@@ -1756,7 +1756,8 @@ class BlackCommand:
         print('')
     #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
     c_pat = re.compile(r'^\s*@c\s*\n')
-    dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
+    directives_join = '|'.join([fr"\b{z}\b" for z in g.globalDirectiveList])
+    dir_pat = re.compile(fr"\s*@({directives_join})")
     ref_pat = re.compile(r'.*\<\<.*\>\>')
     doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
     lang_pat = re.compile(r'@language\s+(\w+)')
@@ -1797,7 +1798,6 @@ class BlackCommand:
                 else:
                     result.append(line)
         return ''.join(result)
-        
     #@+node:ekr.20190829212936.1: *4* black.restore_leo_constructs
     tag1_pat = re.compile(r'\s*%s(.+)%s' % (tag1, tag2))
 
