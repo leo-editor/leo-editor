@@ -731,7 +731,7 @@ class PythonTokenBeautifier:
                 self.dump_ast(node1, tag='AST BEFORE')
                 self.dump_ast(node2, tag='AST AFTER')
                 return False
-        if 'black' in g.app.debug:
+        if 'beauty' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")
         t5 = time.time()
