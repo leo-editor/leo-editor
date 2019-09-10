@@ -475,7 +475,7 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-orange = True
+orange = False
 
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
