@@ -1638,9 +1638,7 @@ class SyntaxSanitizer:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
-        d = {}
-        for z in g.globalDirectiveList:
-            d[z] = True
+        d = {z: True for z in g.globalDirectiveList}
         # Convert all Leonine lines to special comments.
         i, lines, result = 0, g.splitLines(s0), []
         while i < len(lines):
