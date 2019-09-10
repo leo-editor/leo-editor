@@ -19,18 +19,10 @@ except ImportError:
 import ast
 import optparse
 import os
-import re
 import sys
 import time
 import token as token_module
 import tokenize
-
-try:
-    # pylint: disable=import-error
-        # We can't assume the user has this.
-    import black
-except Exception:
-    black = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
@@ -142,105 +134,7 @@ def beautifyPythonTree(event):
         # else:
             # g.es_print('beautified total %s node%s in %4.2f sec.' % (
                 # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
-#@+node:ekr.20190830043650.1: *3* blacken-check-tree
-@g.command('blkc')
-@g.command('blacken-check-tree')
-def blacken_check_tree(event):
-    '''
-    Run black on all nodes of the selected tree, reporting only errors.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=False, check_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190829163640.1: *3* blacken-diff-node
-@g.command('blacken-diff-node')
-def blacken_diff_node(event):
-    '''
-    Run black on all nodes of the selected node.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_node(c.p, diff_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190829163652.1: *3* blacken-diff-tree
-@g.command('blkd')
-@g.command('blacken-diff-tree')
-def blacken_diff_tree(event):
-    '''
-    Run black on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190725155006.1: *3* blacken-node
-@g.command('blacken-node')
-def blacken_node(event):
-    '''
-    Run black on all nodes of the selected node.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_node(c.p, diff_flag=False)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190729105252.1: *3* blacken-tree
-@g.command('blk')
-@g.command('blacken-tree')
-def blacken_tree(event):
-    '''
-    Run black on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=False)
-    else:
-        g.es_print('can not import black')
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
-#@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
-def dump_tokens(tokens, verbose=True):
-    last_line_number = 0
-    for token5tuple in tokens:
-        last_line_number = dump_token(last_line_number, token5tuple, verbose)
-
-def dump_token(last_line_number, token5tuple, verbose):
-    '''Dump the given input token.'''
-    t1, t2, t3, t4, t5 = token5tuple
-    name = token_module.tok_name[t1].lower()
-    val = str(t2) # can fail
-    srow, scol = t3
-    erow, ecol = t4
-    line = str(t5) # can fail
-    if last_line_number != srow:
-        if verbose:
-            print("\n---- line: %3s %3s %r" % (srow, erow, line))
-        else:
-            print('%3s %7s %r' % (srow, name, line))
-    if verbose:
-        if name in ('dedent', 'indent', 'newline', 'nl'):
-            val = repr(val)
-        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
-        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
-        print('%10s %s' % (name, val))
-            # line[scol:ecol]
-    last_line_number = srow
-    return last_line_number
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
@@ -293,137 +187,6 @@ def scan_options():
         g.trace('files...', files)
         sys.exit(0)
     return files, options
-#@+node:ekr.20150531042746.1: *3* munging leo directives
-#@+node:ekr.20150529084212.1: *4* comment_leo_lines (leoBeautifier.py)
-def comment_leo_lines(p):
-    '''Replace lines with Leonine syntax with special comments.'''
-    # Choose the comment string so it appears nowhere in s.
-    s0 = p.b
-    n = 5
-    while s0.find('#' + ('!' * n)) > -1:
-        n += 1
-    comment = '#' + ('!' * n)
-    # Create a dict of directives.
-    d = {}
-    for z in g.globalDirectiveList:
-        d[z] = True
-    # Convert all Leonine lines to special comments.
-    i, lines, result = 0, g.splitLines(s0), []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        # Comment out any containing a section reference.
-        j = s.find('<<')
-        k = s.find('>>') if j > -1 else -1
-        if -1 < j < k:
-            result.append(comment + s)
-            # Generate a properly-indented pass line.
-            j2 = g.skip_ws(s, 0)
-            result.append('%spass\n' % (' ' * j2))
-        elif s.lstrip().startswith('@'):
-            # Comment out all other Leonine constructs.
-            if starts_doc_part(s):
-                # Comment the entire doc part, until @c or @code.
-                result.append(comment + s)
-                i += 1
-                while i < len(lines):
-                    s = lines[i]
-                    result.append(comment + s)
-                    i += 1
-                    if ends_doc_part(s):
-                        break
-            else:
-                j = g.skip_ws(s, 0)
-                assert s[j] == '@'
-                j += 1
-                k = g.skip_id(s, j, chars='-')
-                if k > j:
-                    word = s[j: k]
-                    if word == 'others':
-                        # Remember the original @others line.
-                        result.append(comment + s)
-                        # Generate a properly-indented pass line.
-                        result.append('%spass\n' % (' ' * (j - 1)))
-                    else:
-                        # Comment only Leo directives, not decorators.
-                        result.append(comment + s if word in d else s)
-                else:
-                    result.append(s)
-        else:
-            # A plain line.
-            result.append(s)
-        if i == progress:
-            i += 1
-    return comment, ''.join(result)
-#@+node:ekr.20150531042830.1: *4* starts_doc_part & ends_doc_part
-def starts_doc_part(s):
-    '''Return True if s word matches @ or @doc.'''
-    for delim in ('@\n', '@doc\n', '@ ', '@doc '):
-        if s.startswith(delim):
-            return True
-    return False
-
-def ends_doc_part(s):
-    '''Return True if s word matches @c or @code.'''
-    for delim in ('@c\n', '@code\n', '@c ', '@code '):
-        if s.startswith(delim):
-            return True
-    return False
-#@+node:ekr.20150529095117.1: *4* uncomment_leo_lines
-def uncomment_leo_lines(comment, p, s0):
-    '''Reverse the effect of comment_leo_lines.'''
-    lines = g.splitLines(s0)
-    i, result = 0, []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        i += 1
-        if s.find(comment) == -1:
-            # A regular line.
-            result.append(s)
-        else:
-            # One or more special lines.
-            i = uncomment_special_lines(comment, i, lines, p, result, s)
-        assert progress < i
-    return ''.join(result).rstrip() + '\n'
-#@+node:ekr.20150531041720.1: *4* uncomment_special_line & helpers
-def uncomment_special_lines(comment, i, lines, p, result, s):
-    '''
-    s is a line containing the comment delim.
-    i points at the *next* line.
-    Handle one or more lines, appending stripped lines to result.
-    '''
-    s = s.lstrip().lstrip(comment)
-    if starts_doc_part(s):
-        result.append(s)
-        while i < len(lines):
-            s = lines[i].lstrip().lstrip(comment)
-            i += 1
-            result.append(s)
-            if ends_doc_part(s):
-                break
-        return i
-    j = s.find('<<')
-    k = s.find('>>') if j > -1 else -1
-    if -1 < j < k or s.find('@others') > -1:
-        # A section reference line or an @others line.
-        # Such lines are followed by a pass line.
-        # The beautifier may insert blank lines before the pass line.
-        kind = 'section ref' if -1 < j < k else '@others'
-        # Restore the original line, including leading whitespace.
-        result.append(s)
-        # Skip blank lines.
-        while i < len(lines) and not lines[i].strip():
-            i += 1
-        # Skip the pass line.
-        if i < len(lines) and lines[i].lstrip().startswith('pass'):
-            i += 1
-        else:
-            g.trace('*** no pass after %s: %s' % (kind, p.h))
-    else:
-        # A directive line.
-        result.append(s)
-    return i
 #@+node:ekr.20150602154951.1: *3* should_beautify
 def should_beautify(p):
     '''
@@ -459,10 +222,6 @@ def should_beautify(p):
 def should_kill_beautify(p):
     '''Return True if p.b contains @killbeautify'''
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20150527143619.1: *3* show_lws
-def show_lws(s):
-    '''Show leading whitespace in a convenient format.'''
-    return repr(s) if s.strip(' ') else len(s)
 #@+node:ekr.20190908033048.1: ** class AstNotEqual (Exception)
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
@@ -917,16 +676,19 @@ class PythonTokenBeautifier:
             return False
         t1 = time.time()
         # Replace Leonine syntax with special comments.
-        comment_string, s0 = comment_leo_lines(p)
+        comment_string, s0 = self.comment_leo_lines(p)
+        check_result = True
         try:
             s1 = g.toEncodedString(s0)
             node1 = ast.parse(s1, filename='before', mode='exec')
         except IndentationError:
-            g.warning(f"{p.h}: IndentationError")
-            return False
+            ### g.warning(f"{p.h}: IndentationError")
+            ### return False
+            g.warning(f"Can't check {p.h}")
         except SyntaxError:
-            g.warning(f"{p.h}: SyntaxError")
-            return False
+            ### g.warning(f"{p.h}: SyntaxError")
+            ### return False
+            g.warning(f"Can't check {p.h}")
         except Exception:
             g.warning(f"{p.h}: Unexpected exception")
             g.es_exception()
@@ -941,39 +703,40 @@ class PythonTokenBeautifier:
         t3 = time.time()
         s2 = self.run(tokens)
         t4 = time.time()
-        #
-        # Create the "after" parse tree.
-        try:
-            s2_e = g.toEncodedString(s2)
-            node2 = ast.parse(s2_e, filename='after', mode='exec')
-        except Exception:
-            g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
-            g.es_exception()
-            return False
-        #
-        # Compare the two parse trees.
-        try:
-            self.compare_two_asts(node1, node2)
-        except AstNotEqual:
-            g.warning(f"{p.h}: The beautify command did not preserve meaning!")
-            g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            g.printObj(self.code_list, 'CODE LIST')
-            self.dump_ast(node1, tag='AST BEFORE')
-            self.dump_ast(node2, tag='AST AFTER')
-            return False
-        except Exception:
-            g.warning(f"{p.h}: Unexpected exception")
-            g.es_exception()
-            g.printObj(g.toUnicode(s2_e), tag='RESULT')
-            self.dump_ast(node1, tag='AST BEFORE')
-            self.dump_ast(node2, tag='AST AFTER')
-            return False
+        if check_result:
+            #
+            # Create the "after" parse tree.
+            try:
+                s2_e = g.toEncodedString(s2)
+                node2 = ast.parse(s2_e, filename='after', mode='exec')
+            except Exception:
+                g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
+                g.es_exception()
+                return False
+            #
+            # Compare the two parse trees.
+            try:
+                self.compare_two_asts(node1, node2)
+            except AstNotEqual:
+                g.warning(f"{p.h}: The beautify command did not preserve meaning!")
+                g.printObj(g.toUnicode(s2_e), tag='RESULT')
+                g.printObj(self.code_list, 'CODE LIST')
+                self.dump_ast(node1, tag='AST BEFORE')
+                self.dump_ast(node2, tag='AST AFTER')
+                return False
+            except Exception:
+                g.warning(f"{p.h}: Unexpected exception")
+                g.es_exception()
+                g.printObj(g.toUnicode(s2_e), tag='RESULT')
+                self.dump_ast(node1, tag='AST BEFORE')
+                self.dump_ast(node2, tag='AST AFTER')
+                return False
         if 'black' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")
         t5 = time.time()
         # Restore the tags after the compare
-        s3 = uncomment_leo_lines(comment_string, p, s2)
+        s3 = self.uncomment_leo_lines(comment_string, p, s2)
         changed = p.b != s3
         if changed:
             self.replace_body(p, s3)
@@ -1163,6 +926,137 @@ class PythonTokenBeautifier:
             self.backslash_seen = False
             # This *does* retain the string's spelling.
         self.blank()
+    #@+node:ekr.20190910022637.1: *3* ptb: Munge leo syntax
+    #@+node:ekr.20190910022637.2: *4* comment_leo_lines (leoBeautifier.py)
+    def comment_leo_lines(self, p):
+        '''Replace lines with Leonine syntax with special comments.'''
+        # Choose the comment string so it appears nowhere in s.
+        s0 = p.b
+        n = 5
+        while s0.find('#' + ('!' * n)) > -1:
+            n += 1
+        comment = '#' + ('!' * n)
+        # Create a dict of directives.
+        d = {}
+        for z in g.globalDirectiveList:
+            d[z] = True
+        # Convert all Leonine lines to special comments.
+        i, lines, result = 0, g.splitLines(s0), []
+        while i < len(lines):
+            progress = i
+            s = lines[i]
+            # Comment out any containing a section reference.
+            j = s.find('<<')
+            k = s.find('>>') if j > -1 else -1
+            if -1 < j < k:
+                result.append(comment + s)
+                # Generate a properly-indented pass line.
+                j2 = g.skip_ws(s, 0)
+                result.append('%spass\n' % (' ' * j2))
+            elif s.lstrip().startswith('@'):
+                # Comment out all other Leonine constructs.
+                if self.starts_doc_part(s):
+                    # Comment the entire doc part, until @c or @code.
+                    result.append(comment + s)
+                    i += 1
+                    while i < len(lines):
+                        s = lines[i]
+                        result.append(comment + s)
+                        i += 1
+                        if self.ends_doc_part(s):
+                            break
+                else:
+                    j = g.skip_ws(s, 0)
+                    assert s[j] == '@'
+                    j += 1
+                    k = g.skip_id(s, j, chars='-')
+                    if k > j:
+                        word = s[j: k]
+                        if word == 'others':
+                            # Remember the original @others line.
+                            result.append(comment + s)
+                            # Generate a properly-indented pass line.
+                            result.append('%spass\n' % (' ' * (j - 1)))
+                        else:
+                            # Comment only Leo directives, not decorators.
+                            result.append(comment + s if word in d else s)
+                    else:
+                        result.append(s)
+            else:
+                # A plain line.
+                result.append(s)
+            if i == progress:
+                i += 1
+        return comment, ''.join(result)
+    #@+node:ekr.20190910022637.3: *4* starts_doc_part & ends_doc_part
+    def starts_doc_part(self, s):
+        '''Return True if s word matches @ or @doc.'''
+        for delim in ('@\n', '@doc\n', '@ ', '@doc '):
+            if s.startswith(delim):
+                return True
+        return False
+
+    def ends_doc_part(self, s):
+        '''Return True if s word matches @c or @code.'''
+        for delim in ('@c\n', '@code\n', '@c ', '@code '):
+            if s.startswith(delim):
+                return True
+        return False
+    #@+node:ekr.20190910022637.4: *4* uncomment_leo_lines
+    def uncomment_leo_lines(self, comment, p, s0):
+        '''Reverse the effect of comment_leo_lines.'''
+        lines = g.splitLines(s0)
+        i, result = 0, []
+        while i < len(lines):
+            progress = i
+            s = lines[i]
+            i += 1
+            if s.find(comment) == -1:
+                # A regular line.
+                result.append(s)
+            else:
+                # One or more special lines.
+                i = self.uncomment_special_lines(comment, i, lines, p, result, s)
+            assert progress < i
+        return ''.join(result).rstrip() + '\n'
+    #@+node:ekr.20190910022637.5: *4* uncomment_special_line & helpers
+    def uncomment_special_lines(self, comment, i, lines, p, result, s):
+        '''
+        s is a line containing the comment delim.
+        i points at the *next* line.
+        Handle one or more lines, appending stripped lines to result.
+        '''
+        s = s.lstrip().lstrip(comment)
+        if self.starts_doc_part(s):
+            result.append(s)
+            while i < len(lines):
+                s = lines[i].lstrip().lstrip(comment)
+                i += 1
+                result.append(s)
+                if self.ends_doc_part(s):
+                    break
+            return i
+        j = s.find('<<')
+        k = s.find('>>') if j > -1 else -1
+        if -1 < j < k or s.find('@others') > -1:
+            # A section reference line or an @others line.
+            # Such lines are followed by a pass line.
+            # The beautifier may insert blank lines before the pass line.
+            kind = 'section ref' if -1 < j < k else '@others'
+            # Restore the original line, including leading whitespace.
+            result.append(s)
+            # Skip blank lines.
+            while i < len(lines) and not lines[i].strip():
+                i += 1
+            # Skip the pass line.
+            if i < len(lines) and lines[i].lstrip().startswith('pass'):
+                i += 1
+            else:
+                g.trace('*** no pass after %s: %s' % (kind, p.h))
+        else:
+            # A directive line.
+            result.append(s)
+        return i
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
@@ -1561,7 +1455,7 @@ class PythonTokenBeautifier:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
-    #@+node:ekr.20150528171420.1: *4* ppp.replace_body
+    #@+node:ekr.20150528171420.1: *4* ptb.replace_body
     def replace_body(self, p, s):
         '''Replace the body with the pretty version.'''
         c, u = self.c, self.c.undoer
@@ -1629,189 +1523,6 @@ class PythonTokenBeautifier:
         '''Append a state to the state stack.'''
         state = self.ParseState(kind, value)
         self.state_stack.append(state)
-    #@-others
-#@+node:ekr.20190725154916.1: ** class BlackCommand
-class BlackCommand:
-    '''A class to run black on all Python @<file> nodes in c.p's tree.'''
-
-    # tag1 must be executable, and can't be pass.
-    tag1 = "if xxx: print('') # black-tag1:::"
-    tag2 = ":::black-tag2"
-    tag3 = "# black-tag3:::"
-
-    def __init__(self, c):
-        '''ctor for PyflakesCommand class.'''
-        self.c = c
-        self.language = None
-        self.mode = black.FileMode(0)
-        self.wrapper = c.frame.body.wrapper
-        self.line_length = c.config.getInt("black-line-length") or 88
-        self.mode.string_normalization = c.config.getBool(
-            "black-string-normalization", default=False)
-
-        # self.mode.target_versions = set(black.PY36_VERSIONS)
-
-    #@+others
-    #@+node:ekr.20190725154916.7: *3* black.blacken_node
-    def blacken_node(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
-        c = self.c
-        if not black or not root:
-            return
-        t1 = time.clock()
-        self.changed, self.errors, self.total = 0, 0, 0
-        self.undo_type = 'blacken-node'
-        self.blacken_node_helper(root, check_flag, diff_flag)
-        t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3f} sec.'
-        )
-        if self.changed:
-            c.redraw()
-    #@+node:ekr.20190729065756.1: *3* black.blacken_tree
-    def blacken_tree(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
-        c = self.c
-        if not black or not root:
-            return
-        t1 = time.clock()
-        self.changed, self.errors, self.total = 0, 0, 0
-        undo_type = 'blacken-tree'
-        bunch = c.undoer.beforeChangeTree(root)
-        # Blacken *only* the selected tree.
-        changed = False
-        for p in root.self_and_subtree():
-            if self.blacken_node_helper(p, check_flag, diff_flag):
-                changed = True
-        if changed:
-            c.setChanged(True)
-            c.undoer.afterChangeTree(root, undo_type, bunch)
-        t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3f} sec.'
-        )
-        if self.changed:
-            if not c.changed: c.setChanged(True)
-            c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
-    def blacken_node_helper(self, p, check_flag, diff_flag):
-        '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
-        trace = 'black' in g.app.debug and not g.unitTesting
-        if not should_beautify(p):
-            return False
-        c = self.c
-        self.total += 1
-        self.language = g.findLanguageDirectives(c, p)
-        body = p.b.rstrip() + '\n'
-        body2 = self.replace_leo_constructs(body)
-        try:
-            body3 = black.format_str(
-                body2,
-                line_length=self.line_length,
-                mode=self.mode,
-            )
-        except Exception:
-            self.errors += 1
-            print('\n===== error {p.h}\n')
-            g.es_print_exception()
-            self.dump_lines(body2, 'after-replace-leo-constructs')
-            return False
-        if trace:
-            self.dump_lines(body2, 'after-replace-leo-constructs')
-        result = self.restore_leo_constructs(body3)
-        # if trace:
-            # self.dump_lines(result, 'after-restore-leo-constructs')
-        if check_flag:
-            return False
-        if result == body:
-            return False
-        if g.unitTesting:
-            return False
-        if diff_flag:
-            print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
-            return False
-        # Update p.b and set undo params.
-        self.changed += 1
-        p.b = result
-        c.frame.body.updateEditors()
-        p.v.contentModified()
-        c.undoer.setUndoTypingParams(p, 'blacken-node',
-            oldText=body, newText=result)
-        if not p.v.isDirty():
-            p.v.setDirty()
-        return True
-    #@+node:ekr.20190830045147.1: *4* black.dump_lines
-    def dump_lines(self, s, tag):
-        """Dump all lines in s, with line numbers."""
-        print(f'\n{tag}...\n')
-        for i, line in enumerate(g.splitLines(s)):
-            print(f'{i:3}: {line!r}')
-        print('')
-    #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
-    c_pat = re.compile(r'^\s*@c\s*\n')
-    directives_join = '|'.join([fr"\b{z}\b" for z in g.globalDirectiveList])
-    dir_pat = re.compile(fr"\s*@({directives_join})")
-    ref_pat = re.compile(r'.*\<\<.*\>\>')
-    doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
-    lang_pat = re.compile(r'@language\s+(\w+)')
-
-    def replace_leo_constructs(self, s):
-        """Replace Leo constructs with special lines."""
-        in_python = self.language == 'python'
-        in_doc, result = False, []
-        for line in g.splitLines(s):
-            # @language...
-            m = self.lang_pat.match(line)
-            if m:
-                in_python = m.group(1).lower() == 'python'
-                result.append(self.tag3 + line)
-                continue
-            # Non-python line...
-            if not in_python:
-                result.append(self.tag3 + line)
-                continue
-            # Handle all Leo constructs
-            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
-                m = pat.match(line)
-                if m:
-                    ### g.trace('=====', repr(line), pat)
-                    if pat == self.doc_pat:
-                        in_doc = True
-                        result.append(self.tag3 + line)
-                    elif pat == self.c_pat:
-                        in_doc = False
-                        result.append(self.tag3 + line)
-                    else:
-                        lws = g.get_leading_ws(line)
-                        result.append(lws + self.tag1 + line.rstrip() + self.tag2 + '\n')
-                    break
-            else: # Not a Leo consruct.
-                if in_doc:
-                    result.append(self.tag3 + line)
-                else:
-                    result.append(line)
-        return ''.join(result)
-    #@+node:ekr.20190829212936.1: *4* black.restore_leo_constructs
-    tag1_pat = re.compile(r'\s*%s(.+)%s' % (tag1, tag2))
-
-    def restore_leo_constructs(self, s):
-        """Restore all Leo constructs from the tags."""
-        result = []
-        for line in g.splitLines(s):
-            m = self.tag1_pat.match(line)
-            if m:
-                line = m.group(1) + '\n'
-            elif line.strip().startswith(self.tag3):
-                line = line.lstrip()[len(self.tag3):]
-            result.append(line)
-        return ''.join(result)
     #@-others
 #@-others
 if __name__ == "__main__":
