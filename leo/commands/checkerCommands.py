@@ -56,7 +56,6 @@ def find_long_lines(event):
             if '@nopylint' in parent.h:
                 return True
         return False
-        
     #@-others
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
@@ -128,9 +127,9 @@ def find_missing_docstrings(event):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
     #@+node:ekr.20190615180900.1: *4* function: clickable_link 
-    def clickable_link (p, i):
+    def clickable_link(p, i):
         '''Return a clickable link to line i of p.b.'''
-        link =  p.get_UNL(with_proto=True, with_count=True, with_index=True)
+        link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
         return "%s,%d" % (link, i)
     #@-others
 
@@ -146,14 +145,13 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es(line, nodeLink=clickable_link(p, i+1))
+                    g.es(line, nodeLink=clickable_link(p, i + 1))
                     break
     g.es_print('')
     g.es_print('found %s missing docstring%s in %s file%s in %5.2f sec.' % (
         count, g.plural(count),
         len(found), g.plural(len(found)),
         (time.process_time() - t1)))
-        
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -315,9 +313,9 @@ class PyflakesCommand:
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
     class LogStream:
-        
+
         '''A log stream for pyflakes.'''
-         
+
         def __init__(self, fn_n=0, roots=None):
              self.fn_n = fn_n
              self.roots = roots
@@ -334,7 +332,7 @@ class PyflakesCommand:
                     line = int(s.split(':')[1])
                     unl = root.get_UNL(with_proto=True, with_count=True)
                     g.es(s, nodeLink="%s,%d" % (unl, -line))
-                except (IndexError, TypeError, ValueError):
+                except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail
                     g.es(s)
             else:
@@ -437,11 +435,11 @@ class PyflakesCommand:
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
-    
+
     regex = r'^.*:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
         # m.group(1) is the line number.
         # m.group(2) is the (unused) test name.
-        
+
     # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
 
     def __init__(self, c):
@@ -463,7 +461,7 @@ class PylintCommand:
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-            
+
         # Ignore @nopylint trees.
 
         def predicate(p):
@@ -480,7 +478,6 @@ class PylintCommand:
             return
         for fn, p in data:
             self.run_pylint(fn, p)
-        
     #@+node:ekr.20190605183824.1: *3* 2. pylint.import_lint
     def import_lint(self):
         '''Make sure lint can be imported.'''
@@ -533,9 +530,9 @@ class PylintCommand:
         #
         # Invoke pylint directly.
         is_win = sys.platform.startswith('win')
-        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+        args = ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
         if is_win:
-            args = args.replace('\\','\\\\')
+            args = args.replace('\\', '\\\\')
         command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
             sys.executable, args)
         if not is_win:
@@ -546,10 +543,10 @@ class PylintCommand:
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern = self.regex,
-            link_root = p,
+            link_pattern=self.regex,
+            link_root=p,
         )
-        
+
         # Old code: Invoke g.run_pylint.
             # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
             # # When shell is True, it's recommended to pass a string, not a sequence.
@@ -560,5 +557,4 @@ class PylintCommand:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo
