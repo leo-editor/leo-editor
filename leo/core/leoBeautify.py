@@ -30,7 +30,6 @@ try:
     import black
 except Exception:
     black = None
-
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
@@ -1603,10 +1602,13 @@ class PythonTokenBeautifier:
     #@-others
 #@+node:ekr.20190910081550.1: ** class SyntaxSanitizer
 class SyntaxSanitizer:
+    
+    #@+<< SyntaxSanitizer docstring >>
+    #@+node:ekr.20190910093739.1: *3* << SyntaxSanitizer docstring >>
     r"""
     This class converts section references, @others and Leo directives to
     comments. This allows ast.parse to handle the result.
-    
+
     Within section references, these comments must *usually* be executable:
         
     BEFORE:
@@ -1616,17 +1618,24 @@ class SyntaxSanitizer:
         if condition:
             pass # do something
             
-    Alas, sanitation can result in a syntax error. In leoTips.py contains:
+    Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
         
     BEFORE:
         tips = [
             <\< define tips >\>
             ]
+
     AFTER:
         tips = [
             pass # define tips
         ]
+        
+    This fails because tips = [pass] is a SyntaxError.
+
+    The beautify* and black* commands clearly report such failures.
     """
+    #@-<< SyntaxSanitizer docstring >>
+
     #@+others
     #@+node:ekr.20190910022637.2: *3* sanitize.comment_leo_lines
     def comment_leo_lines(self, p):
