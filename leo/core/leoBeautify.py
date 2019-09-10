@@ -337,7 +337,7 @@ class BlackCommand:
             f'scanned {self.total} node{g.plural(self.total)}, '
             f'changed {self.changed} node{g.plural(self.changed)}, '
             f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3f} sec.'
+            f'in {t2-t1:5.2f} sec.'
         )
         if self.changed:
             c.redraw()
@@ -364,7 +364,7 @@ class BlackCommand:
             f'scanned {self.total} node{g.plural(self.total)}, '
             f'changed {self.changed} node{g.plural(self.changed)}, '
             f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3f} sec.'
+            f'in {t2-t1:5.2f} sec.'
         )
         if self.changed:
             if not c.changed: c.setChanged(True)
