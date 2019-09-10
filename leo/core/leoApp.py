@@ -2908,7 +2908,7 @@ class LoadManager:
             '--session-restore',
             '--session-save',
         )
-        trace_m='''black,cache,coloring,dock,drawing,events,focus,git,gnx,
+        trace_m='''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
           ipython,keys,plugins,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
