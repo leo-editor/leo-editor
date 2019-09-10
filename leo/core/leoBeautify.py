@@ -69,12 +69,22 @@ def beautifyCCode(event):
 def prettyPrintPythonNode(event):
     '''Beautify a single Python node.'''
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
+    t1 = time.process_time()
     pp = PythonTokenBeautifier(c)
+    changed = 0
     if g.scanForAtLanguage(c, c.p) == "python":
-        pp.prettyPrintNode(c.p)
+        if pp.prettyPrintNode(c.p):
+            changed += 1
     pp.end_undo()
-    # pp.print_stats()
+    if g.unitTesting:
+        return
+    t2 = time.process_time()
+    g.es_print(
+        f"changed {changed} node{g.plural(changed)} "
+        f"in {t2-t1:4.2f} sec."
+    )
 #@+node:ekr.20150528131012.5: *3* beautify-tree
 @g.command('beautify-tree')
 @g.command('pretty-print-tree')
@@ -82,45 +92,56 @@ def beautifyPythonTree(event):
     '''Beautify the Python code in the selected outline.'''
     c = event.get('c')
     p0 = event.get('p0')
-    is_auto = bool(p0)
+    # is_auto = bool(p0)
     p0 = p0 or c.p
     if should_kill_beautify(p0):
         return
-    t1 = time.time()
+    t1 = time.process_time()
     pp = PythonTokenBeautifier(c)
-    prev_changed = 0
+    ### prev_changed = 0
+    changed = total = 0
     for p in p0.self_and_subtree():
         if g.scanForAtLanguage(c, p) == "python":
-            if p.isAnyAtFileNode():
-                # Report changed nodes in previous @<file> node.
-                if pp.n_changed_nodes != prev_changed and not is_auto:
-                    if not g.unitTesting:
-                        n = pp.n_changed_nodes - prev_changed
-                        g.es_print('beautified %s node%s' % (
-                            n, g.plural(n)))
-                prev_changed = pp.n_changed_nodes
-                if not is_auto:
-                    g.es_print(p.h)
-            pp.prettyPrintNode(p)
-    # Report any nodes in the last @<file> tree.
-    if not g.unitTesting:
-        if pp.n_changed_nodes != prev_changed and not is_auto:
-            n = pp.n_changed_nodes - prev_changed
-            g.es_print('beautified %s node%s' % (
-                n, g.plural(n)))
+            ### Huh?
+            # if p.isAnyAtFileNode():
+                # # Report changed nodes in previous @<file> node.
+                # if pp.n_changed_nodes != prev_changed and not is_auto:
+                    # if not g.unitTesting:
+                        # n = pp.n_changed_nodes - prev_changed
+                        # g.es_print('beautified %s node%s' % (n, g.plural(n)))
+                # prev_changed = pp.n_changed_nodes
+                # if not is_auto:
+                    # g.es_print(p.h)
+            total += 1
+            if pp.prettyPrintNode(p):
+                changed += 1
+    ### Huh?
+        # Report any nodes in the last @<file> tree.
+        # if not g.unitTesting:
+            # if pp.n_changed_nodes != prev_changed and not is_auto:
+                # n = pp.n_changed_nodes - prev_changed
+                # g.es_print('beautified %s node%s' % (
+                    # n, g.plural(n)))
     pp.end_undo()
-    t2 = time.time()
-    # pp.print_stats()
-    if not g.unitTesting:
-        if is_auto:
-            if pp.n_changed_nodes > 0:
-                g.es_print('auto-beautified %s node%s in\n%s' % (
-                    pp.n_changed_nodes,
-                    g.plural(pp.n_changed_nodes),
-                    p0.h))
-        else:
-            g.es_print('beautified total %s node%s in %4.2f sec.' % (
-                pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
+    if g.unitTesting:
+        return
+    t2 = time.process_time()
+    g.es_print(
+        f"scanned {total} node{g.plural(total)}, "
+        f"changed {changed} node{g.plural(changed)} "
+        f"in {t2-t1:4.2f} sec."
+    )
+                # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
+    
+        # if is_auto:
+            # if pp.n_changed_nodes > 0:
+                # g.es_print('auto-beautified %s node%s in\n%s' % (
+                    # pp.n_changed_nodes,
+                    # g.plural(pp.n_changed_nodes),
+                    # p0.h))
+        # else:
+            # g.es_print('beautified total %s node%s in %4.2f sec.' % (
+                # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20190830043650.1: *3* blacken-check-tree
 @g.command('blkc')
 @g.command('blacken-check-tree')
@@ -880,17 +901,20 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
     def prettyPrintNode(self, p):
-        '''The driver for beautification: beautify a single node.'''
+        '''
+        The driver for beautification: beautify a single node.
+        Return True if the node was actually changed.
+        '''
         if not should_beautify(p):
             # @nobeautify is in effect.
-            return
+            return False
         if not p.b:
             # Pretty printing might add text!
-            return
+            return False
         if not p.b.strip():
             # Do this *after* we are sure @beautify is in effect.
             self.replace_body(p, '')
-            return
+            return False
         t1 = time.time()
         # Replace Leonine syntax with special comments.
         comment_string, s0 = comment_leo_lines(p)
@@ -899,14 +923,14 @@ class PythonTokenBeautifier:
             node1 = ast.parse(s1, filename='before', mode='exec')
         except IndentationError:
             g.warning(f"{p.h}: IndentationError")
-            return
+            return False
         except SyntaxError:
             g.warning(f"{p.h}: SyntaxError")
-            return
+            return False
         except Exception:
             g.warning(f"{p.h}: Unexpected exception")
             g.es_exception()
-            return
+            return False
         t2 = time.time()
         #
         # Generate the tokens.
@@ -925,7 +949,7 @@ class PythonTokenBeautifier:
         except Exception:
             g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
             g.es_exception()
-            return
+            return False
         #
         # Compare the two parse trees.
         try:
@@ -935,21 +959,23 @@ class PythonTokenBeautifier:
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.dump_ast(node1,tag='AST BEFORE')
             self.dump_ast(node2,tag='AST AFTER')
-            return
+            return False
         except Exception:
             g.warning(f"{p.h}: Unexpected exception")
             g.es_exception()
             g.printObj(g.toUnicode(s2_e), tag='RESULT')
             self.dump_ast(node1,tag='AST BEFORE')
             self.dump_ast(node2,tag='AST AFTER')
-            return
+            return False
         if 'black' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")
         t5 = time.time()
         # Restore the tags after the compare
         s3 = uncomment_leo_lines(comment_string, p, s2)
-        self.replace_body(p, s3)
+        changed = p.b != s3
+        if changed:
+            self.replace_body(p, s3)
         # Update the stats
         self.n_input_tokens += len(tokens)
         self.n_output_tokens += len(self.code_list)
@@ -960,6 +986,7 @@ class PythonTokenBeautifier:
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
         ### self.print_stats() ###
+        return changed
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
         '''
