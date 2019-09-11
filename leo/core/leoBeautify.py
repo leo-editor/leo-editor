@@ -315,7 +315,8 @@ class BlackCommand:
         self.c = c
         self.language = None
         self.mode = black.FileMode(0)
-        self.sanitizer = SyntaxSanitizer()
+        keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
+        self.sanitizer = SyntaxSanitizer(c, keep_comments)
         self.wrapper = c.frame.body.wrapper
         self.line_length = c.config.getInt("black-line-length") or 88
         self.mode.string_normalization = c.config.getBool(
@@ -737,7 +738,8 @@ class PythonTokenBeautifier:
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
-        self.sanitizer = SyntaxSanitizer()
+        keep_comments = c.config.getBool('orange-keep-comment-indentation', default=True)
+        self.sanitizer = SyntaxSanitizer(c, keep_comments)
         #
         # Globals...
         self.code_list = []
@@ -1635,6 +1637,10 @@ class SyntaxSanitizer:
     The beautify* and black* commands clearly report such failures.
     """
     #@-<< SyntaxSanitizer docstring >>
+    
+    def __init__(self, c, keep_comments):
+        self.c = c
+        self.keep_comments = keep_comments
 
     #@+others
     #@+node:ekr.20190910022637.2: *3* sanitize.comment_leo_lines
@@ -1653,6 +1659,7 @@ class SyntaxSanitizer:
         while i < len(lines):
             progress = i
             s = lines[i]
+            s_lstrip = s.lstrip()
             # Comment out any containing a section reference.
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
@@ -1661,7 +1668,7 @@ class SyntaxSanitizer:
                 # Generate a properly-indented pass line.
                 j2 = g.skip_ws(s, 0)
                 result.append('%spass\n' % (' ' * j2))
-            elif s.lstrip().startswith('@'):
+            elif s_lstrip.startswith('@'):
                 # Comment out all other Leonine constructs.
                 if self.starts_doc_part(s):
                     # Comment the entire doc part, until @c or @code.
@@ -1690,6 +1697,9 @@ class SyntaxSanitizer:
                             result.append(comment + s if word in d else s)
                     else:
                         result.append(s)
+            elif s_lstrip.startswith('#') and self.keep_comments:
+                # A leading comment.
+                result.append(comment + s)
             else:
                 # A plain line.
                 result.append(s)
@@ -1762,7 +1772,7 @@ class SyntaxSanitizer:
             else:
                 g.trace('*** no pass after %s: %s' % (kind, p.h))
         else:
-            # A directive line.
+            # A directive line or a comment line.
             result.append(s)
         return i
     #@-others
