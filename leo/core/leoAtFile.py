@@ -3061,24 +3061,24 @@ class FastAtRead:
         # This must be a function, because of @comments & @delims.
         delim_start, delim_end = delims
         delims = re.escape(delim_start), re.escape(delim_end or '')
-        delim_start, delim_end = delims
+        delim1, delim2 = delims
+        ref = g.angleBrackets(r'(.*)')
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
-            r'^\s*%s@afterref%s$'%delims,               # @afterref
-            r'^(\s*)%s@(\+|-)all\b(.*)%s$'%delims,      # @all
-            r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
-            r'^\s*%s@comment(.*)%s'%delims,             # @comment
-            r'^\s*%s@delims(.*)%s'%delims,              # @delims
-            r'^\s*%s@\+(at|doc)?(\s.*?)?%s\n'%delims,   # @doc or @
-            r'^\s*%s@end_raw\s*%s'%delims,              # @end_raw
-            r'^\s*%s@@first%s$'%delims,                 # @first
-            r'^\s*%s@@last%s$'%delims,                  # @last
-            r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,   # @others
-            r'^\s*%s@raw(.*)%s'%delims,                 # @raw
-            r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
-                delim_start, g.angleBrackets('(.*)'), delim_end)
+            fr'^\s*{delim1}@afterref{delim2}$',             # @afterref
+            fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$',    # @all
+            fr'^\s*{delim1}@@c(ode)?{delim2}$',             # @c and @code
+            fr'^\s*{delim1}@comment(.*){delim2}',           # @comment
+            fr'^\s*{delim1}@delims(.*){delim2}',            # @delims
+            fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n', # @doc or @
+            fr'^\s*{delim1}@end_raw\s*{delim2}',            # @end_raw
+            fr'^\s*{delim1}@@first{delim2}$',               # @first
+            fr'^\s*{delim1}@@last{delim2}$',                # @last
+            fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$', # @node
+            fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$', # @others
+            fr'^\s*{delim1}@raw(.*){delim2}',               # @raw
+            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'      # section ref
         )
         # Return the compiled patterns, in alphabetical order.
         return (re.compile(pattern) for pattern in patterns)
