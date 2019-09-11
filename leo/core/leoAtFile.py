@@ -3579,7 +3579,7 @@ class FastAtRead:
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
             # This trace is less important, but interesting.
-            g.trace('UNEXPECTED LINE:', repr(sentinel), repr(line), g.shortFileName(self.path))
+            g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
             body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:
