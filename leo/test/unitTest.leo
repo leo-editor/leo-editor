@@ -247,8 +247,10 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20190912165746.1"><vh>note</vh></v>
 <v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
 <v t="ekr.20190912105517.1"><vh>basic test</vh></v>
+<v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
 <v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
 <v t="ekr.20190912071608.2"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
 <v t="ekr.20190912071608.3"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
@@ -1670,8 +1672,7 @@ unl: eggs
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
-<t tx="ekr.20190912065312.1">from leo.core.leoBeautify import SyntaxSanitizer, should_beautify
-trace = False
+<t tx="ekr.20190912065312.1">from leo.core.leoBeautify import BlackCommand, PythonTokenBeautifier, SyntaxSanitizer, should_beautify
 toStr = g.objToString
 for child in p.subtree():
     child_s = child.b
@@ -1682,16 +1683,28 @@ for child in p.subtree():
         #
         # Test basic round-tripping.
         result2 = sanitizer.uncomment_leo_lines(comment, child, s0=result1)
-        assert child_s == result2, f"keep: {keep}, {child.h}\n{toStr(result1)}\n{toStr(result2)}"
+        assert child_s.rstrip() == result2.rstrip(), (
+            f"Round-trip FAIL: keep: {keep}, {child.h}\n"
+            f"{toStr(child_s, tag='child_s')}\n"
+            f"{toStr(result1, tag='result1')}\n"
+            f"{toStr(result2, tag='result2')}")
         #
         # Test result of command
         for command in ('beautify-node', 'blacken-node'):
             try:
                 assert should_beautify(child), child.h
                 c.selectPosition(child)
-                c.k.simulateCommand(command)
-                # if child.h == 'basic test': g.printObj(child.b, tag=f'BASIC TEST: keep: {keep}, {command}')
-                assert comment not in child.b, f"keep: {keep}, {command}:{child.h}\n{toStr(child.b)}"
+                if command == 'beautify-node':
+                    PythonTokenBeautifier(c).prettyPrintNode(child)
+                else:
+                    BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+                #
+                # Do this check only for nodes that should not have been changed.
+                if child.h in ('basic test', 'sections references'):
+                    assert child_s.rstrip() == child.b.rstrip(), (
+                        f"Contents FAIL: keep: {keep}, {command}:{child.h}\n"
+                        f"{toStr(child_s, tag='OLD child.b')}\n"
+                        f"{toStr(child.b, tag='NEW child.b')}")
             finally:
                 child.b = child_s
                 c.selectPosition(p)
@@ -2148,6 +2161,22 @@ def spam():
             # Indented comment.
     else:
         pass
+</t>
+<t tx="ekr.20190912160752.1">a = 1
+&lt;&lt; section ref &gt;&gt;
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # &lt;section ref&gt;
+    # ):
+        # pass
+</t>
+<t tx="ekr.20190912165746.1">
 </t>
 </tnodes>
 </leo_file>

@@ -1778,8 +1778,7 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
-from leo.core.leoBeautify import SyntaxSanitizer, should_beautify
-trace = False
+from leo.core.leoBeautify import BlackCommand, PythonTokenBeautifier, SyntaxSanitizer, should_beautify
 toStr = g.objToString
 for child in p.subtree():
     child_s = child.b
@@ -1790,16 +1789,28 @@ for child in p.subtree():
         #
         # Test basic round-tripping.
         result2 = sanitizer.uncomment_leo_lines(comment, child, s0=result1)
-        assert child_s == result2, f"keep: {keep}, {child.h}\n{toStr(result1)}\n{toStr(result2)}"
+        assert child_s.rstrip() == result2.rstrip(), (
+            f"Round-trip FAIL: keep: {keep}, {child.h}\n"
+            f"{toStr(child_s, tag='child_s')}\n"
+            f"{toStr(result1, tag='result1')}\n"
+            f"{toStr(result2, tag='result2')}")
         #
         # Test result of command
         for command in ('beautify-node', 'blacken-node'):
             try:
                 assert should_beautify(child), child.h
                 c.selectPosition(child)
-                c.k.simulateCommand(command)
-                # if child.h == 'basic test': g.printObj(child.b, tag=f'BASIC TEST: keep: {keep}, {command}')
-                assert comment not in child.b, f"keep: {keep}, {command}:{child.h}\n{toStr(child.b)}"
+                if command == 'beautify-node':
+                    PythonTokenBeautifier(c).prettyPrintNode(child)
+                else:
+                    BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+                #
+                # Do this check only for nodes that should not have been changed.
+                if child.h in ('basic test', 'sections references'):
+                    assert child_s.rstrip() == child.b.rstrip(), (
+                        f"Contents FAIL: keep: {keep}, {command}:{child.h}\n"
+                        f"{toStr(child_s, tag='OLD child.b')}\n"
+                        f"{toStr(child.b, tag='NEW child.b')}")
             finally:
                 child.b = child_s
                 c.selectPosition(p)
@@ -1816,6 +1827,20 @@ def spam():
             # Indented comment.
     else:
         pass
+#@+node:ekr.20190912160752.1: *5* @others & sections references
+a = 1
+<< section ref >>
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # <section ref>
+    # ):
+        # pass
 #@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
 @language python
 
