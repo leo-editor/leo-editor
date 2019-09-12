@@ -1784,29 +1784,34 @@ toStr = g.objToString
 for child in p.subtree():
     child_s = child.b
     for keep in (True, False):
+        # Setup.
         sanitizer = SyntaxSanitizer(c, keep)
         comment, result1 = sanitizer.comment_leo_lines(child)
-        if trace:
-            g.printObj(child_s, tag=f'ORIGINAL: keep: {keep}')
-            g.printObj(result1, tag=f'RESULT1: keep: {keep}')
+        #
+        # Test basic round-tripping.
         result2 = sanitizer.uncomment_leo_lines(comment, child, s0=result1)
-        if trace:
-            g.printObj(child_s, tag=f'ORIGINAL: keep: {keep}')
-            g.printObj(result2, tag=f'RESULT2: keep: {keep}')
-        assert child_s == result2, f"keep: {keep}, {p.h}\n{toStr(result1)}\n{toStr(result2)}"
-#@+node:ekr.20190912072247.1: *5* from init scan_lines
-#
-# Simple vars...
-afterref = False
-    # A special verbatim line follows @afterref.
-clone_v = None
-    # The root of the clone tree.
-    # When not None, we are scanning a clone and all it's descendants.
-#@+node:ekr.20190912073929.1: *5* Test doc parts
+        assert child_s == result2, f"keep: {keep}, {child.h}\n{toStr(result1)}\n{toStr(result2)}"
+        #
+        # Test result of command
+        for command in ('beautify-node', 'blacken-node'):
+            try:
+                c.k.simulateCommand(command)
+                if child.h == 'basic test': g.printObj(child.b, tag=f'BASIC TEST: keep: {keep}, {command}')
+                assert comment not in child.b, f"keep: {keep}, {command}:{child.h}\n{toStr(child.b)}"
+            finally:
+                child.b = child_s
+#@+node:ekr.20190912105517.1: *5* basic test
 @
 This is a doc part.
 @c
-print('pass')
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
 #@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
     '''Scan all lines of the file, creating vnodes.'''
