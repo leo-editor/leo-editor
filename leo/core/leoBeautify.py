@@ -313,7 +313,6 @@ class BlackCommand:
 
     def __init__(self, c):
         self.c = c
-        self.language = None
         self.mode = black.FileMode(0)
         self.wrapper = c.frame.body.wrapper
         self.reloadSettings()
@@ -385,7 +384,10 @@ class BlackCommand:
             return False
         c = self.c
         self.total += 1
-        self.language = g.findLanguageDirectives(c, p)
+        language = g.findLanguageDirectives(c, p)
+        if language != 'python':
+            g.trace(f"skipping node: {p.h}")
+            return False
         body = p.b.rstrip() + '\n'
         comment_string, body2 = self.sanitizer.comment_leo_lines(p)
         try:
