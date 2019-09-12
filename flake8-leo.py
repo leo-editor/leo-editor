@@ -18,6 +18,7 @@ import leo.core.leoTest as leoTest
 import optparse
 import os
 import time
+
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
@@ -28,13 +29,12 @@ def main(files):
         print('can not import flake8')
     config_file = get_flake8_config()
     if config_file:
-        style = engine.get_style_guide(
-            parse_argv=False, config_file=config_file)
+        style = engine.get_style_guide(parse_argv=False, config_file=config_file)
         t1 = time.time()
         check_all(files, style)
         t2 = time.time()
         n = len(files)
-        print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
+        print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2 - t1))
 #@+node:ekr.20160517222900.1: *3* get_home
 def get_home():
     """Returns the user's home directory."""
@@ -43,15 +43,12 @@ def get_home():
         # environment vars, then gives up.
     if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
         # Get the indirect reference to the true home.
-        home = os.getenv(home[1: -1], default=None)
+        home = os.getenv(home[1:-1], default=None)
     if home:
         # Important: This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
         home = g.os_path_finalize(home)
-        if (
-            not g.os_path_exists(home) or
-            not g.os_path_isdir(home)
-        ):
+        if not g.os_path_exists(home) or not g.os_path_isdir(home):
             home = None
     return home
 #@+node:ekr.20160517222236.1: *3* get_flake8_config
@@ -71,19 +68,20 @@ def get_flake8_config():
             fn = g.os_path_abspath(join(path, base))
             if g.os_path_exists(fn):
                 return fn
-    print('no flake8 configuration file found in\n%s' % (
-        '\n'.join(dir_table)))
+    print('no flake8 configuration file found in\n%s' % ('\n'.join(dir_table)))
     return None
 #@+node:ekr.20160517222332.1: *3* check_all
 def check_all(files, style):
     '''Run flake8 on all paths.'''
     from flake8 import main
+
     report = style.check_files(paths=files)
     main.print_report(report, style)
 #@+node:ekr.20160517182239.11: ** report_version
 def report_version():
     try:
         import flake8
+
         print('flake8 version: %s' % flake8.__version__)
     except ImportError:
         g.trace('can not import flake8')
@@ -103,26 +101,35 @@ def scanOptions():
     add('-p', action='store_true', help='plugins')
     # add('-s', action='store_true', help='silent')
     add('-u', action='store_true', help='user commands')
-    add('-v', '--version', dest='v',
-        action='store_true', help='report flake8 version')
+    add('-v', '--version', dest='v', action='store_true', help='report flake8 version')
     # Parse the options.
     options, args = parser.parse_args()
     # silent = options.s
-    if options.a: scope = 'all'
-    elif options.c: scope = 'core'
-    elif options.e: scope = 'external'
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
     elif options.filename:
         fn = options.filename
-        if fn.startswith('='): fn = fn[1:]
+        if fn.startswith('='):
+            fn = fn[1:]
         g_option_fn = fn.strip('"')
         scope = 'file'
-    elif options.g: scope = 'gui'
-    elif options.m: scope = 'modes'
-    elif options.p: scope = 'plugins'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
     # elif options.s: scope = 'silent'
-    elif options.u: scope = 'commands'
-    elif options.v: scope = 'version'
-    else: scope = 'all'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
     return scope
 #@-others
 g_option_fn = None

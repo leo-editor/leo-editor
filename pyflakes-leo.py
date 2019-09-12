@@ -17,9 +17,11 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 from pyflakes import api, reporter
 import optparse
+
 # import os
 import sys
 import time
+
 #@+others
 #@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
@@ -31,18 +33,16 @@ def main(files):
         sfn = g.shortFileName(fn)
         s = g.readFileIntoEncodedString(fn)
         if s and s.strip():
-            r = reporter.Reporter(
-                errorStream=sys.stderr,
-                warningStream=sys.stderr,
-                )
+            r = reporter.Reporter(errorStream=sys.stderr, warningStream=sys.stderr)
             api.check(s, sfn, r)
     t2 = time.time()
     n = len(files)
-    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
+    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2 - t1))
 #@+node:ekr.20160518000549.14: ** report_version
 def report_version():
     try:
         import flake8
+
         print('flake8 version: %s' % flake8.__version__)
     except Exception:
         g.trace('can not import flake8')
@@ -62,26 +62,37 @@ def scanOptions():
     add('-p', action='store_true', help='plugins')
     # add('-s', action='store_true', help='silent')
     add('-u', action='store_true', help='user commands')
-    add('-v', '--version', dest='v',
-        action='store_true', help='report pyflakes version')
+    add(
+        '-v', '--version', dest='v', action='store_true', help='report pyflakes version'
+    )
     # Parse the options.
     options, args = parser.parse_args()
     # silent = options.s
-    if options.a: scope = 'all'
-    elif options.c: scope = 'core'
-    elif options.e: scope = 'external'
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
     elif options.filename:
         fn = options.filename
-        if fn.startswith('='): fn = fn[1:]
+        if fn.startswith('='):
+            fn = fn[1:]
         g_option_fn = fn.strip('"')
         scope = 'file'
-    elif options.g: scope = 'gui'
-    elif options.m: scope = 'modes'
-    elif options.p: scope = 'plugins'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
     # elif options.s: scope = 'silent'
-    elif options.u: scope = 'commands'
-    elif options.v: scope = 'version'
-    else: scope = 'all'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
     return scope
 #@-others
 g_option_fn = None
