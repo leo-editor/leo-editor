@@ -1778,7 +1778,6 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
-g.cls()
 from leo.core.leoBeautify import SyntaxSanitizer
 trace = False
 toStr = g.objToString

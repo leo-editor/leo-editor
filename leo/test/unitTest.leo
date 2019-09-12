@@ -1671,8 +1671,7 @@ unl: eggs
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
-<t tx="ekr.20190912065312.1">g.cls()
-from leo.core.leoBeautify import SyntaxSanitizer
+<t tx="ekr.20190912065312.1">from leo.core.leoBeautify import SyntaxSanitizer
 trace = False
 toStr = g.objToString
 for child in p.subtree():
