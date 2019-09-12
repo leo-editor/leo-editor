@@ -338,7 +338,7 @@ class BlackCommand:
         t2 = time.clock()
         if not g.unitTesting:
             print(
-                f'scanned {self.total} node{g.plural(self.total)}, '
+                f'{root.h}: scanned {self.total} node{g.plural(self.total)}, '
                 f'changed {self.changed} node{g.plural(self.changed)}, '
                 f'{self.errors} error{g.plural(self.errors)} '
                 f'in {t2-t1:5.2f} sec.'
@@ -366,7 +366,7 @@ class BlackCommand:
         t2 = time.clock()
         if not g.unitTesting:
             print(
-                f'scanned {self.total} node{g.plural(self.total)}, '
+                f'{root.h}: scanned {self.total} node{g.plural(self.total)}, '
                 f'changed {self.changed} node{g.plural(self.changed)}, '
                 f'{self.errors} error{g.plural(self.errors)} '
                 f'in {t2-t1:5.2f} sec.'
