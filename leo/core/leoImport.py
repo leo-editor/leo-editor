@@ -263,9 +263,8 @@ class LeoImportCommands:
                 head_ref = file_name or "*"
             else:
                 head_ref = "@others"
-            result += ("<<" + head_ref +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12
+            result += (g.angleBrackets(head_ref) + "=" + nl)
     #@+node:ekr.20140630085837.16719: *5* ic.appendRefToFileName
     def appendRefToFileName(self, file_name, result):
         ic = self
@@ -279,9 +278,10 @@ class LeoImportCommands:
         else:
             if not file_name:
                 file_name = "*"
-            result += ("<<" + file_name +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12.
+            lt = "<<"
+            rt = ">>"
+            result += (lt + file_name + rt + "=" + nl)
     #@+node:ekr.20140630085837.16721: *5* ic.getHeadRef
     def getHeadRef(self, p):
         '''
@@ -402,9 +402,10 @@ class LeoImportCommands:
                 g.match_word(s, i, "@code") # 2/25/03
             ):
                 return i, result
-            if(g.match(s, i, "<<") and # must be on separate lines.
-                g.find_on_line(s, i, ">>=") > -1
-            ):
+             # 2019/09/12
+            lt = "<<"
+            rt = ">>="
+            if g.match(s, i, lt) and g.find_on_line(s, i, rt) > -1:
                 return i, result
             # Copy the entire line, escaping '@' and
             # Converting @others to < < @ others > >
