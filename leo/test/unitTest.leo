@@ -247,7 +247,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20190912165746.1"><vh>note</vh></v>
 <v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
 <v t="ekr.20190912105517.1"><vh>basic test</vh></v>
 <v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
@@ -2175,8 +2174,6 @@ if 1:
         # &lt;section ref&gt;
     # ):
         # pass
-</t>
-<t tx="ekr.20190912165746.1">
 </t>
 </tnodes>
 </leo_file>
