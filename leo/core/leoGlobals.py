@@ -5623,11 +5623,11 @@ def isascii(s):
     # s.isascii() is defined in Python 3.7.
     return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20031218072017.3106: *4* g.angleBrackets & virtual_event_name
-# Returns < < s > >
-
 def angleBrackets(s):
-    return ("<<" + s +
-        ">>") # must be on a separate line.
+    """Returns < < s > >"""
+    lt = "<<"
+    rt = ">>"
+    return lt + s + rt
 
 virtual_event_name = angleBrackets
 #@+node:ekr.20090516135452.5777: *4* g.ensureLeading/TrailingNewlines

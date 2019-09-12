@@ -867,9 +867,10 @@ def toggleAngleBrackets(self, event=None):
         return
     c.endEditing()
     s = p.h.strip()
-    if (s[0: 2] == "<<" or
-        s[-2:] == ">>" # Must be on separate line.
-    ):
+    # 2019/09/12: Guard against black.
+    lt = "<<"
+    rt = ">>"
+    if s[0: 2] == lt or s[-2:] == rt:
         if s[0: 2] == "<<": s = s[2:]
         if s[-2:] == ">>": s = s[: -2]
         s = s.strip()
