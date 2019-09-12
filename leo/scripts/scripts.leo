@@ -383,6 +383,7 @@
 </v>
 <v t="ekr.20190911074700.1"><vh>Leo 6.1</vh>
 <v t="ekr.20190911074705.1"><vh>script: find trailing comments</vh></v>
+<v t="ekr.20190911232205.1"><vh>@@button next-trailing-comment @key=ctrl-1</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4588,6 +4589,42 @@ with open(file_name, 'w') as f:
         if do_node(f, p):
             count += 1
 print(f"found {count} nodes. wrote results to {file_name}")
+</t>
+<t tx="ekr.20190911232205.1">g.cls()
+import re
+pattern = re.compile(r'\w+\s*=\s\w+')
+
+def do_node(p):
+    prev_assign = False
+    old_lws = 0
+    lines = g.splitLines(p.b)
+    for i, line in enumerate(lines):
+        lws = g.computeLeadingWhitespaceWidth(line, tab_width=-4)
+        if line.strip().startswith('@nobeautify'):
+            return False
+        if line.strip().startswith('#'):
+            if prev_assign and lws &gt; old_lws:
+                # Found a likely trailing comment.
+                print(f"\n{i} {p.h}")
+                print(g.objToString(
+                    [f"{i+i2:3} {z}" for i2, z in enumerate(lines[i-1:i+1])],
+                    tag=f"line {i} {p.h}"),
+                )
+                return True
+            prev_assign = False
+        else:
+            old_lws = lws
+            prev_assign = pattern.search(line)
+    return False
+    
+p = c.p
+if do_node(p):
+    p.moveToThreadNext()
+while p:
+    if do_node(p):
+        c.selectPosition(p)
+        break
+    p.moveToThreadNext()
 </t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
