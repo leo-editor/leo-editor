@@ -1778,7 +1778,7 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
-from leo.core.leoBeautify import SyntaxSanitizer
+from leo.core.leoBeautify import SyntaxSanitizer, should_beautify
 trace = False
 toStr = g.objToString
 for child in p.subtree():
@@ -1795,12 +1795,16 @@ for child in p.subtree():
         # Test result of command
         for command in ('beautify-node', 'blacken-node'):
             try:
+                assert should_beautify(child), child.h
+                c.selectPosition(child)
                 c.k.simulateCommand(command)
-                if child.h == 'basic test': g.printObj(child.b, tag=f'BASIC TEST: keep: {keep}, {command}')
+                # if child.h == 'basic test': g.printObj(child.b, tag=f'BASIC TEST: keep: {keep}, {command}')
                 assert comment not in child.b, f"keep: {keep}, {command}:{child.h}\n{toStr(child.b)}"
             finally:
                 child.b = child_s
+                c.selectPosition(p)
 #@+node:ekr.20190912105517.1: *5* basic test
+@language python
 @
 This is a doc part.
 @c
@@ -1813,6 +1817,8 @@ def spam():
     else:
         pass
 #@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
+@language python
+
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
     '''Scan all lines of the file, creating vnodes.'''
     << init scan_lines >>
