@@ -5624,8 +5624,7 @@ def isascii(s):
     return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20031218072017.3106: *4* g.angleBrackets & virtual_event_name
 def angleBrackets(s):
-    """Returns < < s > > """
-    # 2019/09/12: Safeguard against black.
+    """Returns < < s > >"""
     lt = "<<"
     rt = ">>"
     return lt + s + rt
