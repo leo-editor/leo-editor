@@ -1656,7 +1656,7 @@ class SyntaxSanitizer:
         # Choose the comment string so it appears nowhere in s.
         s0 = p.b
         n = 5
-        while s0.find('#' + ('!' * n)) > -1:
+        while ('#' + ('!' * n)) in s0:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
@@ -1716,17 +1716,11 @@ class SyntaxSanitizer:
     #@+node:ekr.20190910022637.3: *3* sanitize.starts_doc_part & ends_doc_part
     def starts_doc_part(self, s):
         '''Return True if s word matches @ or @doc.'''
-        for delim in ('@\n', '@doc\n', '@ ', '@doc '):
-            if s.startswith(delim):
-                return True
-        return False
+        return s.startswith(('@\n', '@doc\n', '@ ', '@doc '),)
 
     def ends_doc_part(self, s):
         '''Return True if s word matches @c or @code.'''
-        for delim in ('@c\n', '@code\n', '@c ', '@code '):
-            if s.startswith(delim):
-                return True
-        return False
+        return s.startswith(('@c\n', '@code\n', '@c ', '@code '),)
     #@+node:ekr.20190910022637.4: *3* sanitize.uncomment_leo_lines
     def uncomment_leo_lines(self, comment, p, s0):
         '''Reverse the effect of comment_leo_lines.'''
@@ -1764,7 +1758,7 @@ class SyntaxSanitizer:
             return i
         j = s.find('<<')
         k = s.find('>>') if j > -1 else -1
-        if -1 < j < k or s.find('@others') > -1:
+        if -1 < j < k or '@others' in s:
             # A section reference line or an @others line.
             # Such lines are followed by a pass line.
             # The beautifier may insert blank lines before the pass line.
