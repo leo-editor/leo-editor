@@ -257,6 +257,7 @@
 </v>
 <v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
 <v t="ekr.20190912072247.1"><vh>from init scan_lines</vh></v>
+<v t="ekr.20190912073929.1"><vh>Test doc parts</vh></v>
 <v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
 <v t="ekr.20190912071608.2"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
 <v t="ekr.20190912071608.3"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
@@ -1976,7 +1977,6 @@ for child in p.subtree():
     for keep in (True, False):
         sanitizer = SyntaxSanitizer(c, keep)
         comment, result1 = sanitizer.comment_leo_lines(child)
-        print(child.h, 'comment', repr(comment))
         if trace:
             g.printObj(child_s, tag=f'ORIGINAL: keep: {keep}')
             g.printObj(result1, tag=f'RESULT1: keep: {keep}')
@@ -2431,6 +2431,11 @@ afterref = False
 clone_v = None
     # The root of the clone tree.
     # When not None, we are scanning a clone and all it's descendants.
+</t>
+<t tx="ekr.20190912073929.1">@
+This is a doc part.
+@c
+print('pass')
 </t>
 </tnodes>
 </leo_file>

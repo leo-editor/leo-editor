@@ -1736,12 +1736,12 @@ class SyntaxSanitizer:
             progress = i
             s = lines[i]
             i += 1
-            if s.find(comment) == -1:
-                # A regular line.
-                result.append(s)
-            else:
+            if comment in s:
                 # One or more special lines.
                 i = self.uncomment_special_lines(comment, i, lines, p, result, s)
+            else:
+                # A regular line.
+                result.append(s)
             assert progress < i
         return ''.join(result).rstrip() + '\n'
     #@+node:ekr.20190910022637.5: *3* sanitize.uncomment_special_line & helpers
@@ -1751,7 +1751,8 @@ class SyntaxSanitizer:
         i points at the *next* line.
         Handle one or more lines, appending stripped lines to result.
         '''
-        s = s.lstrip().lstrip(comment)
+        assert comment in s
+        s = s[len(comment):]
         if self.starts_doc_part(s):
             result.append(s)
             while i < len(lines):

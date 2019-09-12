@@ -1787,7 +1787,6 @@ for child in p.subtree():
     for keep in (True, False):
         sanitizer = SyntaxSanitizer(c, keep)
         comment, result1 = sanitizer.comment_leo_lines(child)
-        print(child.h, 'comment', repr(comment))
         if trace:
             g.printObj(child_s, tag=f'ORIGINAL: keep: {keep}')
             g.printObj(result1, tag=f'RESULT1: keep: {keep}')
@@ -1804,6 +1803,11 @@ afterref = False
 clone_v = None
     # The root of the clone tree.
     # When not None, we are scanning a clone and all it's descendants.
+#@+node:ekr.20190912073929.1: *5* Test doc parts
+@
+This is a doc part.
+@c
+print('pass')
 #@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
     '''Scan all lines of the file, creating vnodes.'''
