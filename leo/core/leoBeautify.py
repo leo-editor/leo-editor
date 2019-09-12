@@ -336,12 +336,13 @@ class BlackCommand:
         self.undo_type = 'blacken-node'
         self.blacken_node_helper(root, check_flag, diff_flag)
         t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.2f} sec.'
-        )
+        if not g.unitTesting:
+            print(
+                f'scanned {self.total} node{g.plural(self.total)}, '
+                f'changed {self.changed} node{g.plural(self.changed)}, '
+                f'{self.errors} error{g.plural(self.errors)} '
+                f'in {t2-t1:5.2f} sec.'
+            )
         if self.changed:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
@@ -363,12 +364,13 @@ class BlackCommand:
             c.setChanged(True)
             c.undoer.afterChangeTree(root, undo_type, bunch)
         t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.2f} sec.'
-        )
+        if not g.unitTesting:
+            print(
+                f'scanned {self.total} node{g.plural(self.total)}, '
+                f'changed {self.changed} node{g.plural(self.changed)}, '
+                f'{self.errors} error{g.plural(self.errors)} '
+                f'in {t2-t1:5.2f} sec.'
+            )
         if self.changed:
             if not c.changed: c.setChanged(True)
             c.redraw()
