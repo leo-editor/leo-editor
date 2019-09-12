@@ -374,7 +374,7 @@ class BlackCommand:
         if self.changed:
             if not c.changed: c.setChanged(True)
             c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p, check_flag, diff_flag):
         '''
         blacken p.b, incrementing counts and stripping unnecessary blank lines.
@@ -1748,7 +1748,13 @@ class SyntaxSanitizer:
         Handle one or more lines, appending stripped lines to result.
         '''
         assert comment in s
-        s = s[len(comment):]
+        # Careful: the comment might not start the line.
+        # Remove everything up to the comment.
+        lws = s.find(comment)
+        s = s[lws + len(comment):]
+        if comment in s:
+            g.trace(f"can not happen: {s!r}")
+            return i
         if self.starts_doc_part(s):
             result.append(s)
             while i < len(lines):
