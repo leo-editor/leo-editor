@@ -405,7 +405,7 @@ class BlackCommand:
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
             return False
-        except SyntaxError:
+        except (SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
@@ -1654,8 +1654,19 @@ class SyntaxSanitizer:
     #@+others
     #@+node:ekr.20190910022637.2: *3* sanitize.comment_leo_lines
     def comment_leo_lines(self, p):
-        '''Replace lines with Leonine syntax with special comments.'''
-        # Choose the comment string so it appears nowhere in s.
+        '''
+        Replace lines containing Leonine syntax with **special comment lines** of the form:
+            
+            {lws}#{marker}{line}
+            
+        where: 
+        - lws is the leading whitespace of the original line
+        - marker appears nowhere in p.b
+        - line is the original line, unchanged.
+        
+        This convention allows uncomment_special_lines to restore these lines.
+        '''
+        # Choose a marker that appears nowhere in s.
         s0 = p.b
         n = 5
         while ('#' + ('!' * n)) in s0:
@@ -1668,7 +1679,7 @@ class SyntaxSanitizer:
         while i < len(lines):
             progress = i
             s = lines[i]
-            s_lstrip = s.lstrip(' ')
+            s_lstrip = s.lstrip()
             # Comment out any containing a section reference.
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
@@ -1743,22 +1754,34 @@ class SyntaxSanitizer:
     #@+node:ekr.20190910022637.5: *3* sanitize.uncomment_special_line & helpers
     def uncomment_special_lines(self, comment, i, lines, p, result, s):
         '''
+        This method restores original lines from the special comment lines
+        created by comment_leo_lines. These lines have the form:
+            
+            {lws}#{marker}{line}
+            
+        where: 
+        - lws is the leading whitespace of the original line
+        - marker appears nowhere in p.b
+        - line is the original line, unchanged.
+        
         s is a line containing the comment delim.
         i points at the *next* line.
         Handle one or more lines, appending stripped lines to result.
         '''
+        #
+        # Delete the lws before the comment.
+        # This works because the tail contains the original whitespace.
         assert comment in s
-        # Careful: the comment might not start the line.
-        # Remove everything up to the comment.
-        lws = s.find(comment)
-        s = s[lws + len(comment):]
+        s = s.lstrip().replace(comment,'')
+        #
+        # Here, s is the original line.
         if comment in s:
             g.trace(f"can not happen: {s!r}")
             return i
         if self.starts_doc_part(s):
             result.append(s)
             while i < len(lines):
-                s = lines[i].lstrip().lstrip(comment)
+                s = lines[i].lstrip().replace(comment,'')
                 i += 1
                 result.append(s)
                 if self.ends_doc_part(s):
@@ -1767,8 +1790,10 @@ class SyntaxSanitizer:
         j = s.find('<<')
         k = s.find('>>') if j > -1 else -1
         if -1 < j < k or '@others' in s:
+            #
             # A section reference line or an @others line.
             # Such lines are followed by a pass line.
+            #
             # The beautifier may insert blank lines before the pass line.
             kind = 'section ref' if -1 < j < k else '@others'
             # Restore the original line, including leading whitespace.
