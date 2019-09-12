@@ -1668,7 +1668,7 @@ class SyntaxSanitizer:
         while i < len(lines):
             progress = i
             s = lines[i]
-            s_lstrip = s.lstrip()
+            s_lstrip = s.lstrip(' ') ### Another bug ###.
             # Comment out any containing a section reference.
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
