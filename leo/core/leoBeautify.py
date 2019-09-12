@@ -315,12 +315,15 @@ class BlackCommand:
         self.c = c
         self.language = None
         self.mode = black.FileMode(0)
+        self.wrapper = c.frame.body.wrapper
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-        self.wrapper = c.frame.body.wrapper
         self.line_length = c.config.getInt("black-line-length") or 88
-        self.mode.string_normalization = c.config.getBool(
-            "black-string-normalization", default=False)
+        self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
 
     #@+others
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
@@ -386,6 +389,8 @@ class BlackCommand:
         body = p.b.rstrip() + '\n'
         comment_string, body2 = self.sanitizer.comment_leo_lines(p)
         try:
+            if not self.normalize_strings:
+                self.mode |= black.FileMode.NO_STRING_NORMALIZATION
             body3 = black.format_str(
                 body2,
                 line_length=self.line_length,
