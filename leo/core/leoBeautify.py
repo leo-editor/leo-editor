@@ -946,7 +946,6 @@ class PythonTokenBeautifier:
             except IndentationError:
                 g.warning(f"{p.h}: Indentation error in the result")
                 g.es_print(f"{p.h} will not be changed")
-                g.es_exception()
                 # g.printObj(s2, tag='RESULT')
                 self.errors += 1
                 return False
