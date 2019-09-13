@@ -963,7 +963,7 @@ class PythonTokenBeautifier:
             except AstNotEqual:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
                 g.printObj(s2, tag='RESULT')
-                g.printObj(self.code_list, 'CODE LIST')
+                # g.printObj(self.code_list, 'CODE LIST')
                 # self.dump_ast(node1, tag='AST BEFORE')
                 # self.dump_ast(node2, tag='AST AFTER')
                 self.errors += 1
