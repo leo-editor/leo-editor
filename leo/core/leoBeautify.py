@@ -777,6 +777,7 @@ class PythonTokenBeautifier:
             # See the ParseState class for more details.
         #
         # Statistics...
+        self.errors = 0
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
         self.n_output_tokens = 0
@@ -935,13 +936,15 @@ class PythonTokenBeautifier:
                 g.warning(f"{p.h}: Indentation error in the result")
                 g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
-                g.printObj(s2, tag='RESULT')
+                # g.printObj(s2, tag='RESULT')
+                self.errors += 1
                 return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
                 g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
-                g.printObj(s2, tag='RESULT')
+                # g.printObj(s2, tag='RESULT')
+                self.errors += 1
                 return False
             #
             # Compare the two parse trees.
@@ -951,15 +954,17 @@ class PythonTokenBeautifier:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
                 g.printObj(s2, tag='RESULT')
                 g.printObj(self.code_list, 'CODE LIST')
-                self.dump_ast(node1, tag='AST BEFORE')
-                self.dump_ast(node2, tag='AST AFTER')
+                # self.dump_ast(node1, tag='AST BEFORE')
+                # self.dump_ast(node2, tag='AST AFTER')
+                self.errors += 1
                 return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception")
                 g.es_exception()
                 g.printObj(s2, tag='RESULT')
-                self.dump_ast(node1, tag='AST BEFORE')
-                self.dump_ast(node2, tag='AST AFTER')
+                # self.dump_ast(node1, tag='AST BEFORE')
+                # self.dump_ast(node2, tag='AST AFTER')
+                self.errors += 1
                 return False
         if 'beauty' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
@@ -991,6 +996,7 @@ class PythonTokenBeautifier:
         def oops():
             g.trace('unknown kind', self.kind)
 
+        self.errors = 0
         self.code_list = []
         self.state_stack = []
         last_line_number = 0
