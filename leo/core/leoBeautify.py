@@ -915,11 +915,16 @@ class PythonTokenBeautifier:
             node1 = ast.parse(s1, filename='before', mode='exec')
         except IndentationError:
             g.warning(f"IndentationError: can't check {p.h}")
+            self.errors += 1
+            return False
         except SyntaxError:
             g.warning(f"SyntaxError: can't check {p.h}")
+            self.errors += 1
+            return False
         except Exception:
             g.warning(f"Unexpected exception: {p.h}")
             g.es_exception()
+            self.errors += 1
             return False
         t2 = time.time()
         #
