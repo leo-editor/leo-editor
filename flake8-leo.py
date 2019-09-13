@@ -26,7 +26,8 @@ def main(files):
     try:
         from flake8 import engine
     except Exception:
-        print('can not import flake8')
+        print(f'{g.shortFileName(__file__)}: can not import flake8')
+        return
     config_file = get_flake8_config()
     if config_file:
         style = engine.get_style_guide(parse_argv=False, config_file=config_file)
