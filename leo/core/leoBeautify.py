@@ -1254,7 +1254,7 @@ class PythonTokenBeautifier:
         ws = ws or self.lws
         if ws:
             self.add_token('line-indent', ws)
-    #@+node:ekr.20150526201701.9: *4* ptb.line_end (splits/joins lines)
+    #@+node:ekr.20150526201701.9: *4* ptb.line_end & split/join helpers
     def line_end(self):
         '''Add a line-end request to the code list.'''
         prev = self.code_list[-1]
