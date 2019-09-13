@@ -280,7 +280,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190912065312.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1669,10 +1668,11 @@ char t
 p1 = p.firstChild()
 s = p1.b
 p2 = p1.next()
+toStr = g.objToString
 try:
     c.selectPosition(p1)
     c.k.simulateCommand('beautify-tree')
-    assert p1.b == p2.b
+    assert p1.b == p2.b, f"{toStr(p1.b, tag='BEFORE')}\n{toStr(p2.b, tag='AFTER')}"
 finally:
     p1.b = s
     c.setChanged(False)

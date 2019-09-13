@@ -776,22 +776,6 @@ class PythonTokenBeautifier:
             # Stack of ParseState objects.
             # See the ParseState class for more details.
         #
-        # Settings...
-        if c:
-            keep_comments = c.config.getBool('orange-keep-comment-indentation', default=True)
-            self.delete_blank_lines = (
-                not c.config.getBool('orange-keep-blank-lines', default=True))
-            n = c.config.getInt('orange-max-line-length')
-            self.max_line_length = 88 if n is None else n
-            self.tab_width = abs(c.tab_width)
-        else:
-            keep_comments = True
-            self.max_line_length = 88
-            self.tab_width = 4
-        #
-        # Instantiate the sanitizer after computing keep_comments.
-        self.sanitizer = SyntaxSanitizer(c, keep_comments)
-        #
         # Statistics...
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -806,6 +790,33 @@ class PythonTokenBeautifier:
         # Undo vars...
         self.changed = False
         self.dirtyVnodeList = []
+        #
+        # Complete the init.
+        self.sanitizer = None # For pylint.
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        if c:
+            keep_comments = c.config.getBool('beautify-keep-comment-indentation', default=True)
+            self.delete_blank_lines = not c.config.getBool('beautify-keep-blank-lines', default=True)
+            # Join.
+            n = c.config.getInt('beautify-max-join-line-length')
+            self.max_join_line_length = 88 if n is None else n
+            # Split
+            n = c.config.getInt('beautify-max-split-line-length')
+            self.max_split_line_length = 88 if n is None else n
+            # Join <= Split.
+            if self.max_join_line_length > self.max_split_line_length:
+                self.max_join_line_length = self.max_split_line_length
+            self.tab_width = abs(c.tab_width)
+        else:
+            keep_comments = True
+            self.delete_blank_lines = True
+            self.max_join_line_length = 88
+            self.max_split_line_length = 88
+            self.tab_width = 4
+        self.sanitizer = SyntaxSanitizer(c, keep_comments)
     #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's 
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts
     def compare_two_asts(self, node1, node2):
@@ -1256,9 +1267,11 @@ class PythonTokenBeautifier:
         if self.backslash_seen:
             self.backslash()
         self.add_token('line-end', '\n')
-        if self.max_line_length > 0:
-            if not self.break_line():
-                self.join_lines()
+        allow_join = True
+        if self.max_split_line_length > 0:
+            allow_join = not self.break_line()
+        if allow_join and self.max_join_line_length > 0:
+            self.join_lines()
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
@@ -1276,7 +1289,7 @@ class PythonTokenBeautifier:
         line_tokens = self.find_prev_line()
         # g.printObj(line_tokens, tag='PREV LINE')
         line_s = ''.join([z.to_string() for z in line_tokens])
-        if self.max_line_length == 0 or len(line_s) < self.max_line_length:
+        if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
             return False
         #
         # Return if the previous line has no opening delim: (, [ or {.
@@ -1306,7 +1319,7 @@ class PythonTokenBeautifier:
     def append_tail(self, prefix, tail):
         '''Append the tail tokens, splitting the line further as necessary.'''
         tail_s = ''.join([z.to_string() for z in tail])
-        if len(tail_s) < self.max_line_length:
+        if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
@@ -1416,7 +1429,7 @@ class PythonTokenBeautifier:
         line_s = ''.join([z.to_string() for z in line_tokens])
         if trace: g.trace(line_s)
         # Don't bother trying if the line is already long.
-        if self.max_line_length == 0 or len(line_s) > self.max_line_length:
+        if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
             return
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):

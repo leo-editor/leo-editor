@@ -1761,10 +1761,11 @@ static exit_values_ty indent_main_loop(void)
 p1 = p.firstChild()
 s = p1.b
 p2 = p1.next()
+toStr = g.objToString
 try:
     c.selectPosition(p1)
     c.k.simulateCommand('beautify-tree')
-    assert p1.b == p2.b
+    assert p1.b == p2.b, f"{toStr(p1.b, tag='BEFORE')}\n{toStr(p2.b, tag='AFTER')}"
 finally:
     p1.b = s
     c.setChanged(False)
