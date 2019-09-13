@@ -686,8 +686,6 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-orange = False
-
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
     #@+others
@@ -747,8 +745,6 @@ class PythonTokenBeautifier:
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
-        keep_comments = c.config.getBool('orange-keep-comment-indentation', default=True)
-        self.sanitizer = SyntaxSanitizer(c, keep_comments)
         #
         # Globals...
         self.code_list = []
@@ -782,14 +778,19 @@ class PythonTokenBeautifier:
         #
         # Settings...
         if c:
+            keep_comments = c.config.getBool('orange-keep-comment-indentation', default=True)
             self.delete_blank_lines = (
                 not c.config.getBool('orange-keep-blank-lines', default=True))
             n = c.config.getInt('orange-max-line-length')
             self.max_line_length = 88 if n is None else n
             self.tab_width = abs(c.tab_width)
         else:
+            keep_comments = True
             self.max_line_length = 88
             self.tab_width = 4
+        #
+        # Instantiate the sanitizer after computing keep_comments.
+        self.sanitizer = SyntaxSanitizer(c, keep_comments)
         #
         # Statistics...
         self.n_changed_nodes = 0
@@ -1208,7 +1209,60 @@ class PythonTokenBeautifier:
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
         self.line_indent()
-    #@+node:ekr.20190908054807.1: *4* ptb.break_line (new) & helpers
+    #@+node:ekr.20150526201701.6: *4* ptb.clean
+    def clean(self, kind):
+        '''Remove the last item of token list if it has the given kind.'''
+        prev = self.code_list[-1]
+        if prev.kind == kind:
+            self.code_list.pop()
+    #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
+    def clean_blank_lines(self):
+        '''Remove all vestiges of previous lines.'''
+        table = ('blank-lines', 'line-end', 'line-indent')
+        while self.code_list[-1].kind in table:
+            self.code_list.pop()
+    #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
+    def file_end(self):
+        '''
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        '''
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+
+    def file_start(self):
+        '''Add a file-start token to the code list and the state stack.'''
+        self.add_token('file-start')
+        self.push_state('file-start')
+    #@+node:ekr.20150530190758.1: *4* ptb.line_indent
+    def line_indent(self, ws=None):
+        '''Add a line-indent token if indentation is non-empty.'''
+        self.clean('line-indent')
+        ws = ws or self.lws
+        if ws:
+            self.add_token('line-indent', ws)
+    #@+node:ekr.20150526201701.9: *4* ptb.line_end (splits/joins lines)
+    def line_end(self):
+        '''Add a line-end request to the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind == 'file-start':
+            return
+        self.clean('blank') # Important!
+        if self.delete_blank_lines:
+            self.clean_blank_lines()
+        self.clean('line-indent')
+        if self.backslash_seen:
+            self.backslash()
+        self.add_token('line-end', '\n')
+        if self.max_line_length > 0:
+            if not self.break_line():
+                self.join_lines()
+        self.line_indent()
+            # Add the indentation for all lines
+            # until the next indent or unindent token.
+    #@+node:ekr.20190908054807.1: *5* ptb.break_line (new) & helpers
     def break_line(self):
         '''
         Break the preceding line, if necessary.
@@ -1248,7 +1302,7 @@ class PythonTokenBeautifier:
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
         return True
-    #@+node:ekr.20190908065154.1: *5* ptb.append_tail
+    #@+node:ekr.20190908065154.1: *6* ptb.append_tail
     def append_tail(self, prefix, tail):
         '''Append the tail tokens, splitting the line further as necessary.'''
         tail_s = ''.join([z.to_string() for z in tail])
@@ -1315,7 +1369,7 @@ class PythonTokenBeautifier:
             else:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
-    #@+node:ekr.20190908050434.1: *5* ptb.find_prev_line (new)
+    #@+node:ekr.20190908050434.1: *6* ptb.find_prev_line (new)
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
@@ -1324,7 +1378,7 @@ class PythonTokenBeautifier:
                 break
             line.append(t)
         return list(reversed(line))
-    #@+node:ekr.20190908061659.1: *5* ptb.find_line_prefix (new)
+    #@+node:ekr.20190908061659.1: *6* ptb.find_line_prefix (new)
     def find_line_prefix(self, token_list):
         """
         Return all tokens up to and including the first lt token.
@@ -1342,14 +1396,14 @@ class PythonTokenBeautifier:
                         break
                 break
         return result
-    #@+node:ekr.20190908072548.1: *5* ptb.is_any_lt
+    #@+node:ekr.20190908072548.1: *6* ptb.is_any_lt
     def is_any_lt(self, output_token):
         """Return True if the given token is any lt token"""
         return (
             output_token == 'lt' or
             output_token.kind == 'op-no-blanks' and output_token.value in "{[("
         )
-    #@+node:ekr.20190909020458.1: *4* ptb.join_lines (new) & helpers
+    #@+node:ekr.20190909020458.1: *5* ptb.join_lines (new) & helpers
     def join_lines(self):
         '''
         Join preceding lines, if the result would be short enough.
@@ -1370,59 +1424,6 @@ class PythonTokenBeautifier:
         ###
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
-    #@+node:ekr.20150526201701.6: *4* ptb.clean
-    def clean(self, kind):
-        '''Remove the last item of token list if it has the given kind.'''
-        prev = self.code_list[-1]
-        if prev.kind == kind:
-            self.code_list.pop()
-    #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
-    def clean_blank_lines(self):
-        '''Remove all vestiges of previous lines.'''
-        table = ('blank-lines', 'line-end', 'line-indent')
-        while self.code_list[-1].kind in table:
-            self.code_list.pop()
-    #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
-    def file_end(self):
-        '''
-        Add a file-end token to the code list.
-        Retain exactly one line-end token.
-        '''
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
-
-    def file_start(self):
-        '''Add a file-start token to the code list and the state stack.'''
-        self.add_token('file-start')
-        self.push_state('file-start')
-    #@+node:ekr.20150530190758.1: *4* ptb.line_indent
-    def line_indent(self, ws=None):
-        '''Add a line-indent token if indentation is non-empty.'''
-        self.clean('line-indent')
-        ws = ws or self.lws
-        if ws:
-            self.add_token('line-indent', ws)
-    #@+node:ekr.20150526201701.9: *4* ptb.line_end
-    def line_end(self):
-        '''Add a line-end request to the code list.'''
-        prev = self.code_list[-1]
-        if prev.kind == 'file-start':
-            return
-        self.clean('blank') # Important!
-        if self.delete_blank_lines:
-            self.clean_blank_lines()
-        self.clean('line-indent')
-        if self.backslash_seen:
-            self.backslash()
-        self.add_token('line-end', '\n')
-        if orange:
-            if not self.break_line():
-                self.join_lines()
-        self.line_indent()
-            # Add the indentation for all lines
-            # until the next indent or unindent token.
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     def lt(self, s):
         '''Add a left paren request to the code list.'''

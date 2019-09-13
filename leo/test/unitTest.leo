@@ -247,6 +247,14 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20150521123343.1"><vh>leoBeautify</vh>
+<v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
+<v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20150610064911.1"><vh>@test beautifier</vh>
+<v t="ekr.20150610064930.1"><vh>before</vh></v>
+<v t="ekr.20150610065241.1"><vh>after</vh></v>
+</v>
 <v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
 <v t="ekr.20190912105517.1"><vh>basic test</vh></v>
 <v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
@@ -271,6 +279,8 @@
 <v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20190912065312.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1038,6 +1048,271 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111104171708.3843">import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+
+if 1: # test of indent.
+    # import os ; os.system('cls')
+    cpp.indent(p2)
+if 0: # test of tokenize.
+    aList = cpp.tokenize(p2.b)
+    assert(p2.b == ''.join(aList))
+</t>
+<t tx="ekr.20111104171708.3844">@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos-&gt;can_break;
+        }
+
+        parser_state_tos-&gt;last_saw_nl = false;
+        parser_state_tos-&gt;can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp;
+            (buf_break != NULL) &amp;&amp;
+            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                (type_code != newline) &amp;&amp;
+                (type_code != form_feed) &amp;&amp;
+                (type_code != rparen) &amp;&amp;
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != rparen) ) ) &amp;&amp;
+            (output_line_length () &gt; settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp &gt; 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
+                  parser_state_tos-&gt;in_parameter_declaration) ||
+                 (parser_state_tos-&gt;classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &amp;paren_target);
+            }
+
+            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            if (force_nl &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
+                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos-&gt;last_token == rbrace)))
+            {
+                if (settings.verbose &amp;&amp; !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &amp;paren_target);
+                parser_state_tos-&gt;want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos-&gt;want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &amp;&amp;
+                 (type_code != cplus_comment) &amp;&amp;
+                 !(settings.break_function_decl_args &amp;&amp;
+                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
+                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
+                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
+                         can_break, &amp;last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            parser_state_tos-&gt;last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &amp;&amp;
+                 (output_line_length () &gt; settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+</t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
 # These are now EKR's preferred settings everywhere:
@@ -1386,9 +1661,31 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150521123343.1"></t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150610064911.1"># This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b
+finally:
+    p1.b = s
+    c.setChanged(False)
+
+</t>
+<t tx="ekr.20150610064930.1">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20150610065241.1">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
