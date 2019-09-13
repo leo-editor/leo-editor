@@ -117,8 +117,8 @@ def beautifyPythonTree(event):
             total += 1
             if pp.prettyPrintNode(p):
                 changed += 1
-                errors += pp.errors
-                pp.errors = 0
+            errors += pp.errors
+            pp.errors = 0
     ### Huh?
         # Report any nodes in the last @<file> tree.
         # if not g.unitTesting:
