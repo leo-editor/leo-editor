@@ -72,6 +72,7 @@ def prettyPrintPythonNode(event):
         return
     t1 = time.process_time()
     pp = PythonTokenBeautifier(c)
+    pp.errors = 0
     changed = 0
     if g.scanForAtLanguage(c, c.p) == "python":
         if pp.prettyPrintNode(c.p):
@@ -81,7 +82,8 @@ def prettyPrintPythonNode(event):
         return
     t2 = time.process_time()
     g.es_print(
-        f"changed {changed} node{g.plural(changed)} "
+        f"changed {changed} node{g.plural(changed)}, "
+        f"{pp.errors} error{g.plural(pp.errors)} "
         f"in {t2-t1:4.2f} sec."
     )
 #@+node:ekr.20150528131012.5: *3* beautify-tree
@@ -98,7 +100,8 @@ def beautifyPythonTree(event):
     t1 = time.process_time()
     pp = PythonTokenBeautifier(c)
     ### prev_changed = 0
-    changed = total = 0
+    pp.errors = 0
+    changed = errors = total = 0
     for p in p0.self_and_subtree():
         if g.scanForAtLanguage(c, p) == "python":
             ### Huh?
@@ -114,6 +117,8 @@ def beautifyPythonTree(event):
             total += 1
             if pp.prettyPrintNode(p):
                 changed += 1
+                errors += pp.errors
+                pp.errors = 0
     ### Huh?
         # Report any nodes in the last @<file> tree.
         # if not g.unitTesting:
@@ -127,7 +132,8 @@ def beautifyPythonTree(event):
     t2 = time.process_time()
     g.es_print(
         f"scanned {total} node{g.plural(total)}, "
-        f"changed {changed} node{g.plural(changed)} "
+        f"changed {changed} node{g.plural(changed)}, "
+        f"{errors} error{g.plural(errors)} "
         f"in {t2-t1:4.2f} sec."
     )
                 # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
@@ -884,7 +890,7 @@ class PythonTokenBeautifier:
         from leo.core.leoAst import AstDumper
         g.printObj(AstDumper().dump(node), tag=tag)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
-    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (reports errors)
+    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
     def prettyPrintNode(self, p):
         '''
         The driver for beautification: beautify a single node.
