@@ -328,9 +328,21 @@
 </v>
 </v>
 <v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
-<v t="ekr.20190914112029.1"><vh>peeve: space after unary minus</vh>
-<v t="ekr.20190914111357.2"><vh>before</vh></v>
-<v t="ekr.20190914111357.3"><vh>after</vh></v>
+<v t="ekr.20190914112029.1"><vh>peeve: ws after unary minus</vh>
+<v t="ekr.20190914111357.2"><vh>test</vh></v>
+<v t="ekr.20190914111357.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914115821.1"><vh>peeve: ws between trailing comma &amp; close paren</vh>
+<v t="ekr.20190914120010.1"><vh>test</vh></v>
+<v t="ekr.20190914120016.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914115215.1"><vh>peeve: ws inside parentheses, brackets or braces.</vh>
+<v t="ekr.20190914115300.1"><vh>test</vh></v>
+<v t="ekr.20190914115304.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914120318.1"><vh>peeve: ws before comma, semicolon, colon</vh>
+<v t="ekr.20190914120402.1"><vh>test</vh></v>
+<v t="ekr.20190914120406.1"><vh>expected</vh></v>
 </v>
 </v>
 </v>
@@ -3481,26 +3493,35 @@ if m:
     continue
 </t>
 <t tx="ekr.20190914111357.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+errors, fails = [], []
 try:
     for peeve in p.children():
-        before = peeve.firstChild()
-        after = before.next()
-        assert before.h.lower() == 'before', repr(before.h)
-        assert after.h.lower() == 'after', repr(after.h)
-        after_s = after.b
-        before_s = before.b
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
         try:
-            # Beautify "before" node in place.
-            assert should_beautify(before), repr(before.h)
-            PythonTokenBeautifier(c).prettyPrintNode(before)
-            assert before.b == after.b, (
-                f"{g.objToString(before.b, tag='BEFORE')}\n"
-                f"{g.objToString(after.b, tag='AFTER')}")
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test)
+            if not ok:
+                errors.append(peeve.h)
+                print("ERROR: {peeve.h}\n")
+            elif test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"FAIL: {peeve.h}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
         finally:
-            before.b = before_s
-            after.b = after_s
+            test.b = test_s
+            expected.b = expected_s
 finally:
     c.setChanged(False)
+assert not fails, g.objToString(fails, tag='FAILED tests')
+assert not errors, g.objToString(fails, tag='ERROR tests (SyntaxError, IndentationError)')
 </t>
 <t tx="ekr.20190914111357.2">def spam():
     if - 1 &lt; 2:
@@ -3510,6 +3531,64 @@ finally:
     if -1 &lt; 2:
         pass
 </t>
-<t tx="ekr.20190914112029.1"></t>
+<t tx="ekr.20190914112029.1"># Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914115215.1"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914115300.1">spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914115304.1">spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914115821.1"># Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)</t>
+<t tx="ekr.20190914120010.1">foo = (0,)
+bar = (0, )
+</t>
+<t tx="ekr.20190914120016.1">foo = (0,)
+bar = (0,)
+</t>
+<t tx="ekr.20190914120318.1"># Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+</t>
+<t tx="ekr.20190914120402.1">if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+</t>
+<t tx="ekr.20190914120406.1">if x == 4: pass
+if x == 4: pass
+print(x, y); x, y = y, x
+print(x, y); x, y = y, x
+x, y = y, x
+x, y = y, x</t>
 </tnodes>
 </leo_file>

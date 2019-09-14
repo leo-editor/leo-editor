@@ -3238,35 +3238,104 @@ g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
 #@+node:ekr.20190914111357.1: *4* @test beautifier (pet peeves) 
 from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+errors, fails = [], []
 try:
     for peeve in p.children():
-        before = peeve.firstChild()
-        after = before.next()
-        assert before.h.lower() == 'before', repr(before.h)
-        assert after.h.lower() == 'after', repr(after.h)
-        after_s = after.b
-        before_s = before.b
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
         try:
-            # Beautify "before" node in place.
-            assert should_beautify(before), repr(before.h)
-            PythonTokenBeautifier(c).prettyPrintNode(before)
-            assert before.b == after.b, (
-                f"{g.objToString(before.b, tag='BEFORE')}\n"
-                f"{g.objToString(after.b, tag='AFTER')}")
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test)
+            if not ok:
+                errors.append(peeve.h)
+                print("ERROR: {peeve.h}\n")
+            elif test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"FAIL: {peeve.h}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
         finally:
-            before.b = before_s
-            after.b = after_s
+            test.b = test_s
+            expected.b = expected_s
 finally:
     c.setChanged(False)
-#@+node:ekr.20190914112029.1: *5* peeve: space after unary minus
-#@+node:ekr.20190914111357.2: *6* before
+assert not fails, g.objToString(fails, tag='FAILED tests')
+assert not errors, g.objToString(fails, tag='ERROR tests (SyntaxError, IndentationError)')
+#@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914111357.2: *6* test
 def spam():
     if - 1 < 2:
         pass
-#@+node:ekr.20190914111357.3: *6* after
+#@+node:ekr.20190914111357.3: *6* expected
 def spam():
     if -1 < 2:
         pass
+#@+node:ekr.20190914115821.1: *5* peeve: ws between trailing comma & close paren
+# Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)
+#@+node:ekr.20190914120010.1: *6* test
+foo = (0,)
+bar = (0, )
+#@+node:ekr.20190914120016.1: *6* expected
+foo = (0,)
+bar = (0,)
+#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
+# Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914115300.1: *6* test
+spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914115304.1: *6* expected
+spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914120318.1: *5* peeve: ws before comma, semicolon, colon
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+#@+node:ekr.20190914120402.1: *6* test
+if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+#@+node:ekr.20190914120406.1: *6* expected
+if x == 4: pass
+if x == 4: pass
+print(x, y); x, y = y, x
+print(x, y); x, y = y, x
+x, y = y, x
+x, y = y, x
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
