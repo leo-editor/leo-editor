@@ -328,6 +328,10 @@
 </v>
 </v>
 <v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
+<v t="ekr.20190914122333.1"><vh>SKIP: peeve: ws in slices</vh>
+<v t="ekr.20190914122356.1"><vh>test</vh></v>
+<v t="ekr.20190914122359.1"><vh>expected</vh></v>
+</v>
 <v t="ekr.20190914112029.1"><vh>peeve: ws after unary minus</vh>
 <v t="ekr.20190914111357.2"><vh>test</vh></v>
 <v t="ekr.20190914111357.3"><vh>expected</vh></v>
@@ -343,6 +347,10 @@
 <v t="ekr.20190914120318.1"><vh>peeve: ws before comma, semicolon, colon</vh>
 <v t="ekr.20190914120402.1"><vh>test</vh></v>
 <v t="ekr.20190914120406.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914123001.1"><vh>peeve:  ws before parens</vh>
+<v t="ekr.20190914123101.1"><vh>test</vh></v>
+<v t="ekr.20190914123104.1"><vh>expected</vh></v>
 </v>
 </v>
 </v>
@@ -3496,6 +3504,8 @@ if m:
 errors, fails = [], []
 try:
     for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
         test = peeve.firstChild()
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
@@ -3590,5 +3600,73 @@ print(x, y); x, y = y, x
 print(x, y); x, y = y, x
 x, y = y, x
 x, y = y, x</t>
+<t tx="ekr.20190914122333.1"># Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]</t>
+<t tx="ekr.20190914122356.1"># FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]</t>
+<t tx="ekr.20190914122359.1"># FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower+offset:upper+offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]</t>
+<t tx="ekr.20190914123001.1"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately before the open parenthesis that starts the argument list of a function call:
+
+# Yes: spam(1)
+spam(1)
+
+# Immediately before the open parenthesis that starts an indexing or slicing:
+
+# Yes: dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914123101.1">spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914123104.1">spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
 </tnodes>
 </leo_file>
