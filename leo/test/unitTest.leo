@@ -248,31 +248,34 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150521123343.1"><vh>leoBeautify</vh>
-<v t="ekr.20190914105123.1"><vh>@test beautifier (large)</vh>
-<v t="ekr.20190914105123.2"><vh>basic test</vh></v>
-<v t="ekr.20190914105123.3"><vh>@others &amp; sections references</vh></v>
-<v t="ekr.20190914105123.4"><vh>fast_at.scan_lines</vh>
-<v t="ekr.20190914105123.5"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.6"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.7"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.8"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.9"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.10"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.11"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.12"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.13"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.14"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.15"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.16"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.17"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.18"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.19"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.20"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.21"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
-<v t="ekr.20190914105123.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
+<v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
+<v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
+<v t="ekr.20190912105517.1"><vh>basic test</vh></v>
+<v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
+<v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20190912071608.2"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.3"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.4"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.5"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.6"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.7"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.8"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.9"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.10"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.11"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.12"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.13"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.14"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.15"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.16"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.17"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.18"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20150610064911.1"><vh>@test beautifier (small) </vh>
+<v t="ekr.20150610064911.1"><vh>OLD @test beautifier (small) </vh>
 <v t="ekr.20150610064930.1"><vh>before</vh></v>
 <v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
@@ -300,31 +303,34 @@
 <v t="ekr.20190914104955.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
-<v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
+<v t="ekr.20190914105123.1"><vh>@test beautifier (large)</vh>
+<v t="ekr.20190914105123.2"><vh>basic test</vh></v>
+<v t="ekr.20190914105123.3"><vh>@others &amp; sections references</vh></v>
+<v t="ekr.20190914105123.4"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20190914105123.5"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.6"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.7"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.8"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.9"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.10"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.11"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.12"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.13"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.14"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.15"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.16"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.17"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.18"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.19"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.20"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.21"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
-<v t="ekr.20190912105517.1"><vh>basic test</vh></v>
-<v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
-<v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
-<v t="ekr.20190912071608.2"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.3"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.4"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.5"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.6"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.7"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.8"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.9"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.10"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.11"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.12"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.13"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.14"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.15"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.16"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.17"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.18"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
-<v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
+<v t="ekr.20190914112029.1"><vh>peeve: space after unary minus</vh>
+<v t="ekr.20190914111357.2"><vh>before</vh></v>
+<v t="ekr.20190914111357.3"><vh>after</vh></v>
 </v>
 </v>
 </v>
@@ -2508,15 +2514,15 @@ for child in p.subtree():
     child_s = child.b
     try:
         # Blacken all nodes.
-        assert should_beautify(child), child.h
+        assert should_beautify(child), repr(child.h)
         c.selectPosition(child)
         BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
         # Check only those nodes that should not have been changed.
         if child.h in ('basic test', 'sections references'):
             assert child_s.rstrip() == child.b.rstrip(), (
-                f"FAIL: blacken_tree: {child.h}\n"
-                f"{g.objToString(child_s, tag='OLD child.b')}\n"
-                f"{g.objToString(child.b, tag='NEW child.b')}")
+                f"FAIL: blacken-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
     finally:
         child.b = child_s
         c.selectPosition(p)
@@ -2988,21 +2994,21 @@ if m:
         gnx, indent, body = stack.pop()
     continue
 </t>
-<t tx="ekr.20190914105123.1">from leo.core.leoBeautify import  PythonTokenBeautifier, should_beautify
+<t tx="ekr.20190914105123.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
 
 for child in p.subtree():
     child_s = child.b
     try:
         # Beautify all nodes.
-        assert should_beautify(child), child.h
+        assert should_beautify(child), repr(child.h)
         c.selectPosition(child)
         PythonTokenBeautifier(c).prettyPrintNode(child)
         # Check only those nodes that should not have been changed.
         if child.h in ('basic test', 'sections references'):
             assert child_s.rstrip() == child.b.rstrip(), (
-                f"FAIL: beautify-tree: {child.h}\n"
-                f"{g.objToString(child_s, tag='OLD child.b')}\n"
-                f"{g.objToString(child.b, tag='NEW child.b')}")
+                f"FAIL: beautify-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
     finally:
         child.b = child_s
         c.selectPosition(p)
@@ -3474,5 +3480,36 @@ if m:
         gnx, indent, body = stack.pop()
     continue
 </t>
+<t tx="ekr.20190914111357.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+try:
+    for peeve in p.children():
+        before = peeve.firstChild()
+        after = before.next()
+        assert before.h.lower() == 'before', repr(before.h)
+        assert after.h.lower() == 'after', repr(after.h)
+        after_s = after.b
+        before_s = before.b
+        try:
+            # Beautify "before" node in place.
+            assert should_beautify(before), repr(before.h)
+            PythonTokenBeautifier(c).prettyPrintNode(before)
+            assert before.b == after.b, (
+                f"{g.objToString(before.b, tag='BEFORE')}\n"
+                f"{g.objToString(after.b, tag='AFTER')}")
+        finally:
+            before.b = before_s
+            after.b = after_s
+finally:
+    c.setChanged(False)
+</t>
+<t tx="ekr.20190914111357.2">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914111357.3">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914112029.1"></t>
 </tnodes>
 </leo_file>
