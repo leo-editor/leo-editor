@@ -328,7 +328,15 @@
 </v>
 </v>
 <v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
-<v t="ekr.20190914122333.1"><vh>peeve: ws in slices</vh>
+<v t="ekr.20190914181344.1"><vh>peeve: ws in slices: function calls</vh>
+<v t="ekr.20190914181344.2"><vh>test</vh></v>
+<v t="ekr.20190914181344.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914181159.1"><vh>peeve: ws in slices: + ops</vh>
+<v t="ekr.20190914181159.2"><vh>test</vh></v>
+<v t="ekr.20190914181159.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914122333.1"><vh>peeve: ws in slices (small test)</vh>
 <v t="ekr.20190914122356.1"><vh>test</vh></v>
 <v t="ekr.20190914122359.1"><vh>expected</vh></v>
 </v>
@@ -348,9 +356,13 @@
 <v t="ekr.20190914120402.1"><vh>test</vh></v>
 <v t="ekr.20190914120406.1"><vh>expected</vh></v>
 </v>
-<v t="ekr.20190914123001.1"><vh>peeve:  ws before parens</vh>
+<v t="ekr.20190914123001.1"><vh>peeve: ws before parens</vh>
 <v t="ekr.20190914123101.1"><vh>test</vh></v>
 <v t="ekr.20190914123104.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914172058.1"><vh>peeve: ws in slices (full test)</vh>
+<v t="ekr.20190914172058.2"><vh>test</vh></v>
+<v t="ekr.20190914172058.3"><vh>expected</vh></v>
 </v>
 </v>
 <v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
@@ -380,6 +392,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20190914111357.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3528,12 +3541,13 @@ if m:
     continue
 </t>
 <t tx="ekr.20190914111357.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
-errors, fails = [], []
+errors, fails, tests = [], [], []
 try:
     for peeve in p.children():
         if peeve.h.startswith('SKIP:'):
             continue
         test = peeve.firstChild()
+        tests.append(peeve.h)
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
         assert expected.h.lower() == 'expected', repr(expected.h)
@@ -3552,16 +3566,20 @@ try:
                 fails.append(peeve.h)
                 print(
                     f"Beautify-node FAIL: {peeve.h}\n"
-                    f"{g.objToString(test_s, tag='TEST')}\n"
-                    f"{g.objToString(test.b, tag='GOT')}\n"
-                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+                    f"{g.objToString(test_s,     tag='    TEST')}\n"
+                    f"{g.objToString(test.b,     tag='     GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}\n")
         finally:
             test.b = test_s
             expected.b = expected_s
 finally:
     c.setChanged(False)
-assert not fails, g.objToString(fails, tag='FAILED tests')
-assert not errors, g.objToString(fails, tag='ERROR tests (SyntaxError, IndentationError)')
+if 0:
+    g.printObj(tests, tag='TESTS')
+if fails or errors:
+    self.fail("\n"
+        f"{g.objToString(fails,  tag='Failures')}\n"
+        f"{g.objToString(errors, tag='  Errors')}")
 </t>
 <t tx="ekr.20190914111357.2">def spam():
     if - 1 &lt; 2:
@@ -3589,8 +3607,8 @@ spam(ham[1], {eggs: 2})
 <t tx="ekr.20190914115300.1">spam(ham[1], {eggs: 2})
 spam( ham[ 1 ], { eggs: 2 } )
 </t>
-<t tx="ekr.20190914115304.1">spam(ham[1], {eggs: 2})
-spam(ham[1], {eggs: 2})
+<t tx="ekr.20190914115304.1">spam(ham[1], {eggs:2})
+spam(ham[1], {eggs:2})
 </t>
 <t tx="ekr.20190914115821.1"># Avoid extraneous whitespace in the following situations:
 
@@ -3632,54 +3650,14 @@ print(x, y); x, y = y, x
 x, y = y, x
 x, y = y, x
 </t>
-<t tx="ekr.20190914122333.1"># Avoid extraneous whitespace in the following situations:
-
-# However, in a slice the colon acts like a binary operator,
-# and should have equal amounts on either side (treating it as the operator with the lowest priority).
-# In an extended slice, both colons must have the same amount of spacing applied.
-# Exception: when a slice parameter is omitted, the space is omitted.
-
-# Yes:
-# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-# ham[lower:upper], ham[lower:upper:], ham[lower::step]
-# ham[lower+offset : upper+offset]
-# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-# ham[lower + offset : upper + offset]
-
-# FAIL
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper]
+<t tx="ekr.20190914122333.1"></t>
+<t tx="ekr.20190914122356.1">ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
 ham[: upper]
 </t>
-<t tx="ekr.20190914122356.1"># FAIL
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper]
-ham[: upper]
-
-# PASS
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+<t tx="ekr.20190914122359.1">ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
 ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[lower+offset : upper+offset]
-ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-ham[lower + offset : upper + offset]
-</t>
-<t tx="ekr.20190914122359.1"># FAIL
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower+offset:upper+offset]
-ham[1:9], ham[1:9], ham[1:9:3]
-ham[lower:: upper]
-ham[: upper]
-
-# PASS
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[lower+offset : upper+offset]
-ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-ham[lower + offset : upper + offset]
+ham[:upper]
 </t>
 <t tx="ekr.20190914123001.1"># Avoid extraneous whitespace in the following situations:
     
@@ -3882,6 +3860,71 @@ bar = (0,)
 </t>
 <t tx="ekr.20190914132845.9">foo = (0,)
 bar = (0, )
+</t>
+<t tx="ekr.20190914172058.1"># Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+</t>
+<t tx="ekr.20190914172058.2"># FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper], ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914172058.3"># FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset:upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper], ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset:upper + offset]
+ham[:upper_fn(x):step_fn(x)], ham[::step_fn(x)]
+ham[lower + offset:upper + offset]
+</t>
+<t tx="ekr.20190914181159.1"># FAIL
+
+ham[lower + offset: upper + offset]
+</t>
+<t tx="ekr.20190914181159.2">ham[lower + offset: upper + offset]
+</t>
+<t tx="ekr.20190914181159.3">ham[lower + offset:upper + offset]
+</t>
+<t tx="ekr.20190914181344.1"># FAIL
+
+ham[lower + offset: upper + offset]
+</t>
+<t tx="ekr.20190914181344.2">ham[ : upper_fn(x) : step_fn(x)]
+ham[ : : step_fn(x)]
+</t>
+<t tx="ekr.20190914181344.3">ham[:upper_fn(x):step_fn(x)]
+ham[::step_fn(x)]
 </t>
 </tnodes>
 </leo_file>

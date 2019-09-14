@@ -3239,12 +3239,13 @@ g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
 #@+node:ekr.20190914111357.1: *4* @test beautifier (pet peeves) 
 from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
-errors, fails = [], []
+errors, fails, tests = [], [], []
 try:
     for peeve in p.children():
         if peeve.h.startswith('SKIP:'):
             continue
         test = peeve.firstChild()
+        tests.append(peeve.h)
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
         assert expected.h.lower() == 'expected', repr(expected.h)
@@ -3263,65 +3264,47 @@ try:
                 fails.append(peeve.h)
                 print(
                     f"Beautify-node FAIL: {peeve.h}\n"
-                    f"{g.objToString(test_s, tag='TEST')}\n"
-                    f"{g.objToString(test.b, tag='GOT')}\n"
-                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+                    f"{g.objToString(test_s,     tag='    TEST')}\n"
+                    f"{g.objToString(test.b,     tag='     GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}\n")
         finally:
             test.b = test_s
             expected.b = expected_s
 finally:
     c.setChanged(False)
-assert not fails, g.objToString(fails, tag='FAILED tests')
-assert not errors, g.objToString(fails, tag='ERROR tests (SyntaxError, IndentationError)')
-#@+node:ekr.20190914122333.1: *5* peeve: ws in slices
-# Avoid extraneous whitespace in the following situations:
-
-# However, in a slice the colon acts like a binary operator,
-# and should have equal amounts on either side (treating it as the operator with the lowest priority).
-# In an extended slice, both colons must have the same amount of spacing applied.
-# Exception: when a slice parameter is omitted, the space is omitted.
-
-# Yes:
-# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-# ham[lower:upper], ham[lower:upper:], ham[lower::step]
-# ham[lower+offset : upper+offset]
-# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-# ham[lower + offset : upper + offset]
-
+if 0:
+    g.printObj(tests, tag='TESTS')
+if fails or errors:
+    self.fail("\n"
+        f"{g.objToString(fails,  tag='Failures')}\n"
+        f"{g.objToString(errors, tag='  Errors')}")
+#@+node:ekr.20190914181344.1: *5* peeve: ws in slices: function calls
 # FAIL
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+
 ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper]
-ham[: upper]
+#@+node:ekr.20190914181344.2: *6* test
+ham[ : upper_fn(x) : step_fn(x)]
+ham[ : : step_fn(x)]
+#@+node:ekr.20190914181344.3: *6* expected
+ham[:upper_fn(x):step_fn(x)]
+ham[::step_fn(x)]
+#@+node:ekr.20190914181159.1: *5* peeve: ws in slices: + ops
+# FAIL
+
+ham[lower + offset: upper + offset]
+#@+node:ekr.20190914181159.2: *6* test
+ham[lower + offset: upper + offset]
+#@+node:ekr.20190914181159.3: *6* expected
+ham[lower + offset:upper + offset]
+#@+node:ekr.20190914122333.1: *5* peeve: ws in slices (small test)
 #@+node:ekr.20190914122356.1: *6* test
-# FAIL
 ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper]
+ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
 ham[: upper]
-
-# PASS
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[lower+offset : upper+offset]
-ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-ham[lower + offset : upper + offset]
 #@+node:ekr.20190914122359.1: *6* expected
-# FAIL
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower+offset:upper+offset]
-ham[1:9], ham[1:9], ham[1:9:3]
-ham[lower:: upper]
-ham[: upper]
-
-# PASS
 ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
 ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[lower+offset : upper+offset]
-ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-ham[lower + offset : upper + offset]
+ham[:upper]
 #@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
 # Avoid extraneous whitespace in the following situations:
 
@@ -3363,8 +3346,8 @@ bar = (0,)
 spam(ham[1], {eggs: 2})
 spam( ham[ 1 ], { eggs: 2 } )
 #@+node:ekr.20190914115304.1: *6* expected
-spam(ham[1], {eggs: 2})
-spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs:2})
+spam(ham[1], {eggs:2})
 #@+node:ekr.20190914120318.1: *5* peeve: ws before comma, semicolon, colon
 # Avoid extraneous whitespace in the following situations:
 
@@ -3391,7 +3374,7 @@ print(x, y); x, y = y, x
 print(x, y); x, y = y, x
 x, y = y, x
 x, y = y, x
-#@+node:ekr.20190914123001.1: *5* peeve:  ws before parens
+#@+node:ekr.20190914123001.1: *5* peeve: ws before parens
 # Avoid extraneous whitespace in the following situations:
     
 # Immediately before the open parenthesis that starts the argument list of a function call:
@@ -3413,6 +3396,53 @@ spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
+#@+node:ekr.20190914172058.1: *5* peeve: ws in slices (full test)
+# Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+#@+node:ekr.20190914172058.2: *6* test
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper], ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914172058.3: *6* expected
+# FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset:upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper], ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset:upper + offset]
+ham[:upper_fn(x):step_fn(x)], ham[::step_fn(x)]
+ham[lower + offset:upper + offset]
 #@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:

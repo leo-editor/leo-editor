@@ -1058,6 +1058,8 @@ class PythonTokenBeautifier:
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
         '''
+        
+        ### trace = 'beauty' in g.app.debug
 
         def oops():
             g.trace('unknown kind', self.kind)
@@ -1189,6 +1191,12 @@ class PythonTokenBeautifier:
                 self.decorator_seen = True
             self.op_no_blanks(val)
             self.push_state('decorator')
+        if val == ':':
+            # Treat slices differently.
+            if self.paren_level > 0:
+                self.op_no_blanks(val)
+            else:
+                self.op_blank(val)
         elif val in ',;:':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
@@ -1265,6 +1273,7 @@ class PythonTokenBeautifier:
             'line-end', 'line-indent',
             'lt', 'op-no-blanks', 'unary-op',
         ):
+            ### g.trace(f"caller: {g.callers(1):10} prev: {prev!r}")
             self.add_token('blank', ' ')
 
     def blank_before_end_line_comment(self):
@@ -1547,6 +1556,7 @@ class PythonTokenBeautifier:
     def op(self, s):
         '''Add op token to code list.'''
         assert s and isinstance(s, str), repr(s)
+        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}") ###
         self.blank()
         self.add_token('op', s)
         self.blank()
@@ -1554,12 +1564,14 @@ class PythonTokenBeautifier:
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
+        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}")
         self.clean('blank')
         self.add_token('op', s)
         self.blank()
 
     def op_no_blanks(self, s):
         '''Add an operator *not* surrounded by blanks.'''
+        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}")
         self.clean('blank')
         self.add_token('op-no-blanks', s)
     #@+node:ekr.20150527213419.1: *4* ptb.possible_unary_op & unary_op
