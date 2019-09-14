@@ -319,7 +319,6 @@ class BlackCommand:
 
     def __init__(self, c):
         self.c = c
-        self.mode = black.FileMode(0)
         self.wrapper = c.frame.body.wrapper
         self.reloadSettings()
         
@@ -399,13 +398,11 @@ class BlackCommand:
         body = p.b.rstrip() + '\n'
         comment_string, body2 = self.sanitizer.comment_leo_lines(p)
         try:
-            if not self.normalize_strings:
-                self.mode |= black.FileMode.NO_STRING_NORMALIZATION
-            body3 = black.format_str(
-                body2,
-                line_length=self.line_length,
-                mode=self.mode,
-            )
+            # Support black, version 19.3b0.
+            mode = black.FileMode()
+            mode.line_length=self.line_length
+            mode.string_normalization=self.normalize_strings
+            body3 = black.format_str(body2, mode=mode)
         except IndentationError:
             g.warning(f"IndentationError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
