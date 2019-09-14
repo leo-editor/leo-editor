@@ -3255,11 +3255,14 @@ try:
             ok = PythonTokenBeautifier(c).prettyPrintNode(test)
             if not ok:
                 errors.append(peeve.h)
-                print("ERROR: {peeve.h}\n")
+                print(
+                    f"ERROR: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n")
             elif test.b.rstrip() != expected.b.rstrip():
                 fails.append(peeve.h)
                 print(
-                    f"FAIL: {peeve.h}\n"
+                    f"Beautify-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n"
                     f"{g.objToString(test.b, tag='GOT')}\n"
                     f"{g.objToString(expected.b, tag='EXPECTED')}")
         finally:
@@ -3269,7 +3272,7 @@ finally:
     c.setChanged(False)
 assert not fails, g.objToString(fails, tag='FAILED tests')
 assert not errors, g.objToString(fails, tag='ERROR tests (SyntaxError, IndentationError)')
-#@+node:ekr.20190914122333.1: *5* SKIP: peeve: ws in slices
+#@+node:ekr.20190914122333.1: *5* peeve: ws in slices
 # Avoid extraneous whitespace in the following situations:
 
 # However, in a slice the colon acts like a binary operator,
@@ -3405,6 +3408,186 @@ spam ( 1 )
 dct ['key'] = lst [index]
 dct['key'] = lst[index]
 #@+node:ekr.20190914123104.1: *6* expected
+spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
+from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+fails = []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            c.selectPosition(test)
+            BlackCommand(c).blacken_node(test, diff_flag=False, check_flag=False)
+            if test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"blacken-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    c.selectPosition(p)
+    c.setChanged(False)
+assert not fails, g.objToString(fails, tag='FAILED tests')
+#@+node:ekr.20190914132845.2: *5* peeve: ws in slices
+# Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+#@+node:ekr.20190914132845.3: *6* test
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914132845.4: *6* expected
+# FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset : upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper]
+ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset : upper + offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914132845.5: *5* peeve: ws after unary minus
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914132845.6: *6* test
+def spam():
+    if - 1 < 2:
+        pass
+#@+node:ekr.20190914132845.7: *6* expected
+def spam():
+    if -1 < 2:
+        pass
+#@+node:ekr.20190914132845.8: *5* peeve: ws between trailing comma & close paren
+# Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)
+#@+node:ekr.20190914132845.9: *6* test
+foo = (0,)
+bar = (0, )
+#@+node:ekr.20190914132845.10: *6* expected
+foo = (0,)
+bar = (0,)
+#@+node:ekr.20190914132845.11: *5* peeve: ws inside parentheses, brackets or braces.
+# Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914132845.12: *6* test
+spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914132845.13: *6* expected
+spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914132845.14: *5* peeve: ws before comma, semicolon, colon
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+#@+node:ekr.20190914132845.15: *6* test
+if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+#@+node:ekr.20190914132845.16: *6* expected
+if x == 4:
+    pass
+if x == 4:
+    pass
+print(x, y)
+x, y = y, x
+print(x, y)
+x, y = y, x
+x, y = y, x
+x, y = y, x
+#@+node:ekr.20190914132845.17: *5* peeve:  ws before parens
+# Avoid extraneous whitespace in the following situations:
+    
+# Immediately before the open parenthesis that starts the argument list of a function call:
+
+# Yes: spam(1)
+spam(1)
+
+# Immediately before the open parenthesis that starts an indexing or slicing:
+
+# Yes: dct['key'] = lst[index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914132845.18: *6* test
+spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914132845.19: *6* expected
 spam(1)
 spam(1)
 dct['key'] = lst[index]
