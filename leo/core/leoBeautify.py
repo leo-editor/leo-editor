@@ -426,6 +426,8 @@ class BlackCommand:
             mode = black.FileMode()
             mode.line_length=self.line_length
             mode.string_normalization=self.normalize_strings
+            # Note: format_str does not check parse trees,
+            #       so in effect, it already runs in fast mode.
             body3 = black.format_str(body2, mode=mode)
         except IndentationError:
             g.warning(f"IndentationError: Can't blacken {p.h}")
@@ -785,7 +787,9 @@ class PythonTokenBeautifier:
         #
         # Globals...
         self.code_list = []
-            # The list of output tokens.
+            # The list of output tokens
+        self.orange = False
+            # Split or join lines only if orange is True.
         self.raw_val = None
             # Raw value for strings, comments.
         self.s = None
@@ -1335,11 +1339,12 @@ class PythonTokenBeautifier:
         if self.backslash_seen:
             self.backslash()
         self.add_token('line-end', '\n')
-        allow_join = True
-        if self.max_split_line_length > 0:
-            allow_join = not self.break_line()
-        if allow_join and self.max_join_line_length > 0:
-            self.join_lines()
+        if self.orange:
+            allow_join = True
+            if self.max_split_line_length > 0:
+                allow_join = not self.break_line()
+            if allow_join and self.max_join_line_length > 0:
+                self.join_lines()
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
