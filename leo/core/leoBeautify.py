@@ -236,33 +236,56 @@ def beautify(options, path):
     if not s:
         return
     print('beautifying %s' % fn)
-    s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1, filename='before', mode='exec')
+    try:
+        s1 = g.toEncodedString(s)
+        node1 = ast.parse(s1, filename='before', mode='exec')
+    except IndentationError:
+        g.warning(f"IndentationError: can't check {fn}")
+        return
+    except SyntaxError:
+        g.warning(f"SyntaxError: can't check {fn}")
+        return
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
     beautifier = PythonTokenBeautifier(c=None)
-    beautifier.delete_blank_lines = not options.keep
     s2 = beautifier.run(tokens)
-    s2_e = g.toEncodedString(s2)
-    node2 = ast.parse(s2_e, filename='before', mode='exec')
+    try:
+        s2_e = g.toEncodedString(s2)
+        node2 = ast.parse(s2_e, filename='before', mode='exec')
+    except IndentationError:
+        g.warning(f"{fn}: IndentationError in result")
+        g.es_print(f"{fn} will not be changed")
+        g.printObj(s2, tag='RESULT')
+        return
+    except SyntaxError:
+        g.warning(f"{fn}: Syntax error in result")
+        g.es_print(f"{fn} will not be changed")
+        g.printObj(s2, tag='RESULT')
+        return
+    except Exception:
+        g.warning(f"{fn}: Unexpected exception creating the \"after\" parse tree")
+        g.es_print(f"{fn} will not be changed")
+        g.es_exception()
+        g.printObj(s2, tag='RESULT')
+        return
     try:
         beautifier.compare_two_asts(node1, node2)
-        f = open(path, 'wb')
-        f.write(s2_e)
-        f.close()
     except Exception:
         print('failed to beautify %s' % fn)
+        return
+    with open(path, 'wb') as f:
+        f.write(s2_e)
 #@+node:ekr.20150601162203.1: *4* scan_options (stand alone)
 def scan_options():
     '''Handle all options. Return a list of files.'''
     # This automatically implements the --help option.
-    usage = "usage: python leoBeautify -m file1, file2, ..."
+    usage = "usage: python -m leo.core.leoBeautify file1, file2, ..."
     parser = optparse.OptionParser(usage=usage)
     add = parser.add_option
     add('-d', '--debug', action='store_true', dest='debug',
         help='print the list of files and exit')
-    add('-k', '--keep-blank-lines', action='store_true', dest='keep',
-        help='keep-blank-lines')
+    # add('-k', '--keep-blank-lines', action='store_true', dest='keep',
+        # help='keep-blank-lines')
     # Parse the options.
     options, files = parser.parse_args()
     if options.debug:
@@ -397,7 +420,7 @@ class BlackCommand:
             g.trace(f"skipping node: {p.h}")
             return False
         body = p.b.rstrip() + '\n'
-        comment_string, body2 = self.sanitizer.comment_leo_lines(p)
+        comment_string, body2 = self.sanitizer.comment_leo_lines(p=p)
         try:
             # Support black, version 19.3b0.
             mode = black.FileMode()
@@ -909,7 +932,7 @@ class PythonTokenBeautifier:
             return False
         t1 = time.time()
         # Replace Leonine syntax with special comments.
-        comment_string, s0 = self.sanitizer.comment_leo_lines(p)
+        comment_string, s0 = self.sanitizer.comment_leo_lines(p=p)
         check_result = True
         try:
             s1 = g.toEncodedString(s0)
@@ -1691,7 +1714,7 @@ class SyntaxSanitizer:
 
     #@+others
     #@+node:ekr.20190910022637.2: *3* sanitize.comment_leo_lines
-    def comment_leo_lines(self, p):
+    def comment_leo_lines(self, p=None, s0=None):
         '''
         Replace lines containing Leonine syntax with **special comment lines** of the form:
             
@@ -1705,7 +1728,8 @@ class SyntaxSanitizer:
         This convention allows uncomment_special_lines to restore these lines.
         '''
         # Choose a marker that appears nowhere in s.
-        s0 = p.b
+        if p:
+            s0 = p.b
         n = 5
         while ('#' + ('!' * n)) in s0:
             n += 1
