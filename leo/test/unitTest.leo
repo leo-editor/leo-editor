@@ -2802,6 +2802,7 @@ if m:
 This is a doc part.
 @c
 
+
 def spam():
     if 1:
         # Regular comment.
