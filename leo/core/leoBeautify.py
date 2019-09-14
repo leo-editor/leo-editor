@@ -431,12 +431,16 @@ class BlackCommand:
             g.warning(f"IndentationError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         except (SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         except Exception:
@@ -444,13 +448,16 @@ class BlackCommand:
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
             g.es_exception()
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         if trace:
             g.printObj(body2, tag='Sanitized syntax')
         result = self.sanitizer.uncomment_leo_lines(comment_string, p, body3)
-        if check_flag or result == body or g.unitTesting:
-            return False
+        if check_flag or result == body:
+            if not g.unitTesting:
+                return False
         if diff_flag:
             print('=====', p.h)
             print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
@@ -940,17 +947,23 @@ class PythonTokenBeautifier:
         except IndentationError:
             g.warning(f"IndentationError: can't check {p.h}")
             self.errors += 1
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         except SyntaxError:
             g.warning(f"SyntaxError: can't check {p.h}")
             self.errors += 1
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         except Exception:
             g.warning(f"Unexpected exception: {p.h}")
             g.es_exception()
             self.errors += 1
+            if g.unitTesting:
+                raise
             p.v.setMarked()
             return False
         t2 = time.time()
@@ -974,6 +987,8 @@ class PythonTokenBeautifier:
                 g.warning(f"{p.h}: Indentation error in the result")
                 g.es_print(f"{p.h} will not be changed")
                 g.printObj(s2, tag='RESULT')
+                if g.unitTesting:
+                    raise
                 self.errors += 1
                 p.v.setMarked()
                 return False
@@ -982,6 +997,8 @@ class PythonTokenBeautifier:
                 g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
                 # g.printObj(s2, tag='RESULT')
+                if g.unitTesting:
+                    raise
                 self.errors += 1
                 p.v.setMarked()
                 return False
@@ -995,6 +1012,8 @@ class PythonTokenBeautifier:
                 # g.printObj(self.code_list, 'CODE LIST')
                 # self.dump_ast(node1, tag='AST BEFORE')
                 # self.dump_ast(node2, tag='AST AFTER')
+                if g.unitTesting:
+                    raise
                 self.errors += 1
                 p.v.setMarked()
                 return False
@@ -1005,6 +1024,8 @@ class PythonTokenBeautifier:
                 # self.dump_ast(node1, tag='AST BEFORE')
                 # self.dump_ast(node2, tag='AST AFTER')
                 self.errors += 1
+                if g.unitTesting:
+                    raise
                 p.v.setMarked()
                 return False
         if 'beauty' in g.app.debug:
