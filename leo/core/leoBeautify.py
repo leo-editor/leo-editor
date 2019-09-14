@@ -348,7 +348,7 @@ class BlackCommand:
                 f'{self.errors} error{g.plural(self.errors)} '
                 f'in {t2-t1:5.2f} sec.'
             )
-        if self.changed:
+        if self.changed or self.errors:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
     def blacken_tree(self, root, diff_flag, check_flag=False):
@@ -376,8 +376,9 @@ class BlackCommand:
                 f'{self.errors} error{g.plural(self.errors)} '
                 f'in {t2-t1:5.2f} sec.'
             )
-        if self.changed:
-            if not c.changed: c.setChanged(True)
+        if self.changed and not c.changed:
+            c.setChanged(True)
+        if self.changed or self.errors:
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p, check_flag, diff_flag):
@@ -407,17 +408,20 @@ class BlackCommand:
             g.warning(f"IndentationError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
+            p.v.setMarked()
             return False
         except (SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
+            p.v.setMarked()
             return False
         except Exception:
             g.warning(f"Unexpected exception: {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
             g.es_exception()
+            p.v.setMarked()
             return False
         if trace:
             g.printObj(body2, tag='Sanitized syntax')
@@ -913,15 +917,18 @@ class PythonTokenBeautifier:
         except IndentationError:
             g.warning(f"IndentationError: can't check {p.h}")
             self.errors += 1
+            p.v.setMarked()
             return False
         except SyntaxError:
             g.warning(f"SyntaxError: can't check {p.h}")
             self.errors += 1
+            p.v.setMarked()
             return False
         except Exception:
             g.warning(f"Unexpected exception: {p.h}")
             g.es_exception()
             self.errors += 1
+            p.v.setMarked()
             return False
         t2 = time.time()
         #
@@ -943,8 +950,9 @@ class PythonTokenBeautifier:
             except IndentationError:
                 g.warning(f"{p.h}: Indentation error in the result")
                 g.es_print(f"{p.h} will not be changed")
-                # g.printObj(s2, tag='RESULT')
+                g.printObj(s2, tag='RESULT')
                 self.errors += 1
+                p.v.setMarked()
                 return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
@@ -952,6 +960,7 @@ class PythonTokenBeautifier:
                 g.es_exception()
                 # g.printObj(s2, tag='RESULT')
                 self.errors += 1
+                p.v.setMarked()
                 return False
             #
             # Compare the two parse trees.
@@ -964,6 +973,7 @@ class PythonTokenBeautifier:
                 # self.dump_ast(node1, tag='AST BEFORE')
                 # self.dump_ast(node2, tag='AST AFTER')
                 self.errors += 1
+                p.v.setMarked()
                 return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception")
@@ -972,6 +982,7 @@ class PythonTokenBeautifier:
                 # self.dump_ast(node1, tag='AST BEFORE')
                 # self.dump_ast(node2, tag='AST AFTER')
                 self.errors += 1
+                p.v.setMarked()
                 return False
         if 'beauty' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
