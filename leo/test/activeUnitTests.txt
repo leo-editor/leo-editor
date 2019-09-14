@@ -1779,6 +1779,12 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
+try:
+    import black
+except ImportError:
+    black = None
+    # self.skipTest('can not import black')
+
 from leo.core.leoBeautify import BlackCommand, PythonTokenBeautifier, SyntaxSanitizer, should_beautify
 toStr = g.objToString
 for child in p.subtree():
@@ -1803,8 +1809,10 @@ for child in p.subtree():
                 c.selectPosition(child)
                 if command == 'beautify-node':
                     PythonTokenBeautifier(c).prettyPrintNode(child)
-                else:
+                elif black:
                     BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+                else:
+                    continue
                 #
                 # Do this check only for nodes that should not have been changed.
                 if child.h in ('basic test', 'sections references'):
