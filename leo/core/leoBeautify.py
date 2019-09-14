@@ -959,6 +959,7 @@ class PythonTokenBeautifier:
             g.warning(f"SyntaxError: can't check {p.h}")
             self.errors += 1
             if g.unitTesting:
+                g.printObj(s1, tag='SANITIZED STRING')
                 raise
             p.v.setMarked()
             return False
@@ -996,11 +997,20 @@ class PythonTokenBeautifier:
                 self.errors += 1
                 p.v.setMarked()
                 return False
+            except SyntaxError:
+                g.warning(f"{p.h}: Syntax error in the result")
+                g.es_print(f"{p.h} will not be changed")
+                g.printObj(s2, tag='RESULT')
+                if g.unitTesting:
+                    raise
+                self.errors += 1
+                p.v.setMarked()
+                return False
             except Exception:
                 g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
                 g.es_print(f"{p.h} will not be changed")
                 g.es_exception()
-                # g.printObj(s2, tag='RESULT')
+                g.printObj(s2, tag='RESULT')
                 if g.unitTesting:
                     raise
                 self.errors += 1
@@ -1189,7 +1199,7 @@ class PythonTokenBeautifier:
                 self.decorator_seen = True
             self.op_no_blanks(val)
             self.push_state('decorator')
-        if val == ':':
+        elif val == ':':
             # Treat slices differently.
             if self.paren_level > 0:
                 self.op_no_blanks(val)
