@@ -1050,7 +1050,7 @@ class PythonTokenBeautifier:
         self.beautify_time += (t4 - t3)
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
-        ### self.print_stats() ###
+        ### self.print_stats()
         return changed
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
@@ -1059,8 +1059,6 @@ class PythonTokenBeautifier:
         Called by prettPrintNode & test_beautifier.
         '''
         
-        ### trace = 'beauty' in g.app.debug
-
         def oops():
             g.trace('unknown kind', self.kind)
 
@@ -1273,7 +1271,6 @@ class PythonTokenBeautifier:
             'line-end', 'line-indent',
             'lt', 'op-no-blanks', 'unary-op',
         ):
-            ### g.trace(f"caller: {g.callers(1):10} prev: {prev!r}")
             self.add_token('blank', ' ')
 
     def blank_before_end_line_comment(self):
@@ -1556,7 +1553,7 @@ class PythonTokenBeautifier:
     def op(self, s):
         '''Add op token to code list.'''
         assert s and isinstance(s, str), repr(s)
-        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}") ###
+        # g.trace(f"caller: {g.callers(1):10} op: {s!r}")
         self.blank()
         self.add_token('op', s)
         self.blank()
@@ -1564,14 +1561,12 @@ class PythonTokenBeautifier:
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
-        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}")
         self.clean('blank')
         self.add_token('op', s)
         self.blank()
 
     def op_no_blanks(self, s):
         '''Add an operator *not* surrounded by blanks.'''
-        ### g.trace(f"caller: {g.callers(1):10} op: {s!r}")
         self.clean('blank')
         self.add_token('op-no-blanks', s)
     #@+node:ekr.20150527213419.1: *4* ptb.possible_unary_op & unary_op
