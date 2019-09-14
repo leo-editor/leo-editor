@@ -392,7 +392,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190914111357.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
