@@ -1968,7 +1968,13 @@ unl: eggs
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
-<t tx="ekr.20190912065312.1">from leo.core.leoBeautify import BlackCommand, PythonTokenBeautifier, SyntaxSanitizer, should_beautify
+<t tx="ekr.20190912065312.1">try:
+    import black
+except ImportError:
+    black = None
+    # self.skipTest('can not import black')
+
+from leo.core.leoBeautify import BlackCommand, PythonTokenBeautifier, SyntaxSanitizer, should_beautify
 toStr = g.objToString
 for child in p.subtree():
     child_s = child.b
@@ -1992,8 +1998,10 @@ for child in p.subtree():
                 c.selectPosition(child)
                 if command == 'beautify-node':
                     PythonTokenBeautifier(c).prettyPrintNode(child)
-                else:
+                elif black:
                     BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+                else:
+                    continue
                 #
                 # Do this check only for nodes that should not have been changed.
                 if child.h in ('basic test', 'sections references'):
