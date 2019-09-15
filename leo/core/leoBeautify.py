@@ -227,7 +227,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time()- t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     '''Beautify the file with the given path.'''
@@ -669,7 +669,7 @@ class CPrettyPrinter:
                 s = s.replace('\t', ' '* w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n'+s2[:-w])
+                    self.result.append('\n'+ s2[:-w])
                 else:
                     self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
@@ -1108,10 +1108,10 @@ class PythonTokenBeautifier:
                     # This n will be one-too-many if formatting has
                     # changed: foo (
                     # to:      foo(
-                    self.line_indent(ws=' ' * n)
+                    self.line_indent(ws=' '* n)
                         # Do not set self.lws here!
                 last_line_number = srow
-            func = getattr(self, 'do_' + self.kind, oops)
+            func = getattr(self, 'do_'+ self.kind, oops)
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
