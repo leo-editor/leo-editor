@@ -3335,7 +3335,7 @@ bar = (0, )
 #@+node:ekr.20190914120016.1: *6* expected
 foo = (0,)
 bar = (0,)
-#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
+#@+node:ekr.20190914115215.1: *5* peeve: WRONG ws inside parentheses, brackets or braces.
 # Avoid extraneous whitespace in the following situations:
     
 # Immediately inside parentheses, brackets or braces.
