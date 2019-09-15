@@ -3933,9 +3933,11 @@ ham[::step_fn(x)]
 <t tx="ekr.20190915074109.1"></t>
 <t tx="ekr.20190915074201.1">def foo(a, b):
     foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+    bar(2 + baz)
 </t>
 <t tx="ekr.20190915074205.1">def foo(a, b):
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+    bar(2+baz)
 </t>
 </tnodes>
 </leo_file>

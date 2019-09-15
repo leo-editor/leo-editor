@@ -3447,9 +3447,11 @@ ham[lower + offset:upper + offset]
 #@+node:ekr.20190915074201.1: *6* test
 def foo(a, b):
     foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+    bar(2 + baz)
 #@+node:ekr.20190915074205.1: *6* expected
 def foo(a, b):
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+    bar(2+baz)
 #@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:

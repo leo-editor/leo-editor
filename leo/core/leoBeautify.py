@@ -1668,14 +1668,20 @@ class PythonTokenBeautifier:
     def word(self, s):
         '''Add a word request to the code list.'''
         assert s and isinstance(s, str), repr(s)
-        self.blank()
+        if self.in_arg_list > 0:
+            pass
+        else:
+            self.blank()
         self.add_token('word', s)
         self.blank()
 
     def word_op(self, s):
         '''Add a word-op request to the code list.'''
         assert s and isinstance(s, str), repr(s)
-        self.blank()
+        if self.in_arg_list > 0:
+            pass
+        else:
+            self.blank()
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
