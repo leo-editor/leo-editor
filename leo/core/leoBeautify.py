@@ -1115,7 +1115,7 @@ class PythonTokenBeautifier:
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
-        return ''.join([z.to_string()for z in self.code_list])
+        return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
@@ -1182,7 +1182,7 @@ class PythonTokenBeautifier:
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
             self.word(name)
-        elif name in ('and', 'in', 'not', 'not in', 'or'):
+        elif name in ('and', 'in', 'not', 'not in', 'or', 'for'):
             self.word_op(name)
         else:
             self.word(name)
@@ -1389,7 +1389,7 @@ class PythonTokenBeautifier:
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
         # g.printObj(line_tokens, tag='PREV LINE')
-        line_s = ''.join([z.to_string()for z in line_tokens])
+        line_s = ''.join([z.to_string() for z in line_tokens])
         if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
             return False
         #
@@ -1419,7 +1419,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20190908065154.1: *6* ptb.append_tail
     def append_tail(self, prefix, tail):
         '''Append the tail tokens, splitting the line further as necessary.'''
-        tail_s = ''.join([z.to_string()for z in tail])
+        tail_s = ''.join([z.to_string() for z in tail])
         if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
             self.code_list.extend(prefix)
@@ -1527,7 +1527,7 @@ class PythonTokenBeautifier:
         trace = False and not g.unitTesting
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
-        line_s = ''.join([z.to_string()for z in line_tokens])
+        line_s = ''.join([z.to_string() for z in line_tokens])
         if trace: g.trace(line_s)
         # Don't bother trying if the line is already long.
         if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
@@ -1678,10 +1678,7 @@ class PythonTokenBeautifier:
     def word_op(self, s):
         '''Add a word-op request to the code list.'''
         assert s and isinstance(s, str), repr(s)
-        if self.in_arg_list > 0:
-            pass
-        else:
-            self.blank()
+        self.blank()
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils

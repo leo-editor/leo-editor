@@ -368,6 +368,10 @@
 <v t="ekr.20190915074201.1"><vh>test</vh></v>
 <v t="ekr.20190915074205.1"><vh>expected</vh></v>
 </v>
+<v t="ekr.20190915083243.1"><vh>peeve: ws around word ops</vh>
+<v t="ekr.20190915083412.1"><vh>test</vh></v>
+<v t="ekr.20190915083418.1"><vh>expected</vh></v>
+</v>
 </v>
 <v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
 <v t="ekr.20190914132845.2"><vh>peeve: ws in slices</vh>
@@ -3939,5 +3943,11 @@ ham[::step_fn(x)]
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
     bar(2+baz)
 </t>
+<t tx="ekr.20190915083243.1">b = name in ('and', 'in', 'not', 'not in', 'or')
+return ''.join([z.to_string() for z in self.code_list])</t>
+<t tx="ekr.20190915083412.1">b = name in ('and', 'in', 'not', 'not in', 'or')
+return ''.join([z.to_string() for z in self.code_list])</t>
+<t tx="ekr.20190915083418.1">b = name in ('and', 'in', 'not', 'not in', 'or')
+return ''.join([z.to_string() for z in self.code_list])</t>
 </tnodes>
 </leo_file>
