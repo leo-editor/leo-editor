@@ -232,7 +232,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     '''Beautify the file with the given path.'''
@@ -449,7 +449,7 @@ class BlackCommand:
                 raise
             p.v.setMarked()
             return False
-        except (SyntaxError, black.InvalidInput):
+        except(SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
@@ -474,7 +474,7 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
+            print(black.diff(body, result, "old", "new")[16 :].rstrip()+'\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -532,44 +532,44 @@ class CPrettyPrinter:
             # This can be called from c-to-python, in which case warnings should be suppressed.
             if giveWarnings:
                 g.error('** changed ', p.h)
-                g.es_print('%s after\n%s' % (message, repr(''.join(s[i:j]))))
+                g.es_print('%s after\n%s' % (message, repr(''.join(s[i : j]))))
 
         i, n, result = 0, len(s), []
         while i < n:
             token = s[i]
             progress = i
             if token in ('if', 'for', 'while'):
-                j = self.skip_ws_and_comments(s, i + 1)
+                j = self.skip_ws_and_comments(s, i+1)
                 if self.match(s, j, '('):
                     j = self.skip_parens(s, j)
                     if self.match(s, j, ')'):
                         old_j = j + 1
-                        j = self.skip_ws_and_comments(s, j + 1)
+                        j = self.skip_ws_and_comments(s, j+1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                         elif self.match(s, j, '{'):
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                         else:
                             oops("insert '{'", i, j)
                             # Back up, and don't go past a newline or comment.
                             j = self.skip_ws(s, old_j)
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                             result.append(' ')
                             result.append('{')
                             result.append('\n')
                             i = j
                             j = self.skip_statement(s, i)
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                             result.append('\n')
                             result.append('}')
                             oops("insert '}'", i, j)
                     else:
                         oops("missing ')'", i, j)
-                        result.extend(s[i:j])
+                        result.extend(s[i : j])
                 else:
                     oops("missing '('", i, j)
-                    result.extend(s[i:j])
+                    result.extend(s[i : j])
                 i = j
             else:
                 result.append(token)
@@ -683,12 +683,12 @@ class CPrettyPrinter:
             s = self.result[-1]
             if s.isspace():
                 self.result.pop()
-                s = s.replace('\t', ' ' * w)
+                s = s.replace('\t', ' '*w)
                 if s.startswith('\n'):
-                    s2 = s[1:]
-                    self.result.append('\n' + s2[:-w])
+                    s2 = s[1 :]
+                    self.result.append('\n'+s2[: -w])
                 else:
-                    self.result.append(s[:-w])
+                    self.result.append(s[: -w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -717,7 +717,7 @@ class CPrettyPrinter:
             else:
                 j += 1
             assert j > i
-            result.append(''.join(s[i:j]))
+            result.append(''.join(s[i : j]))
             i = j  # Advance.
         return result
 
@@ -864,7 +864,6 @@ class PythonTokenBeautifier:
         # Complete the init.
         self.sanitizer = None  # For pylint.
         self.reloadSettings()
-
 
     def reloadSettings(self):
         c = self.c
@@ -1127,10 +1126,10 @@ class PythonTokenBeautifier:
                     # This n will be one-too-many if formatting has
                     # changed: foo (
                     # to:      foo(
-                    self.line_indent(ws=' ' * n)
+                    self.line_indent(ws=' '*n)
                         # Do not set self.lws here!
                 last_line_number = srow
-            func = getattr(self, 'do_' + self.kind, oops)
+            func = getattr(self, 'do_'+self.kind, oops)
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
@@ -1178,7 +1177,6 @@ class PythonTokenBeautifier:
 
                     # Most Leo nodes aren't at the top level of the file.
                     # self.blank_lines(2 if self.level == 0 else 1)
-
 
     def do_indent(self):
         '''Handle indent token.'''
@@ -1338,7 +1336,7 @@ class PythonTokenBeautifier:
         if kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        for i in range(0, n + 1):
+        for i in range(0, n+1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
@@ -1380,7 +1378,6 @@ class PythonTokenBeautifier:
         self.add_token('line-end', '\n')
         self.add_token('line-end', '\n')
         self.add_token('file-end')
-
 
     def file_start(self):
         '''Add a file-start token to the code list and the state stack.'''
@@ -1442,7 +1439,7 @@ class PythonTokenBeautifier:
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
         if prefix[0].kind == 'line-indent':
-            prefix = prefix[1:]
+            prefix = prefix[1 :]
         # g.printObj(prefix, tag='PREFIX')
         # g.printObj(tail, tag='TAIL')
         #
@@ -1466,7 +1463,7 @@ class PythonTokenBeautifier:
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
             self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws + ' ' * 4)
+            self.add_token('line-indent', self.lws+' '*4)
             self.code_list.extend(tail)
             return
         #
@@ -1474,7 +1471,7 @@ class PythonTokenBeautifier:
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws + ' ' * 4)
+        self.add_token('line-indent', self.lws+' '*4)
         open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
         close_delim = self.OutputToken(
             kind='rt',
@@ -1513,9 +1510,9 @@ class PythonTokenBeautifier:
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i:])
+                    self.code_list.extend(tail[i :])
                     return
-                lws = lws[:-4]
+                lws = lws[: -4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1528,7 +1525,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
-        for t in reversed(self.code_list[:-1]):
+        for t in reversed(self.code_list[: -1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1616,7 +1613,7 @@ class PythonTokenBeautifier:
         assert s in ')]}', repr(s)
         if s == ')':
             self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list - 1)
+            self.in_arg_list = max(0, self.in_arg_list-1)
         elif s == ']':
             self.square_brackets_level -= 1
         else:
@@ -1643,7 +1640,6 @@ class PythonTokenBeautifier:
             self.add_token('op', s)
             self.blank()
 
-
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
@@ -1653,7 +1649,6 @@ class PythonTokenBeautifier:
         else:
             self.add_token('op', s)
             self.blank()
-
 
     def op_no_blanks(self, s):
         '''Add an operator *not* surrounded by blanks.'''
@@ -1676,7 +1671,6 @@ class PythonTokenBeautifier:
             self.unary_op(s)
         else:
             self.op(s)
-
 
     def unary_op(self, s):
         '''Add an operator request to the code list.'''
@@ -1727,7 +1721,6 @@ class PythonTokenBeautifier:
             self.blank()
         self.add_token('word', s)
         self.blank()
-
 
     def word_op(self, s):
         '''Add a word-op request to the code list.'''
@@ -1871,7 +1864,7 @@ class SyntaxSanitizer:
         if p:
             s0 = p.b
         n = 5
-        while ('#' + ('!' * n)) in s0:
+        while('#'+ ('!'*n)) in s0:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
@@ -1886,19 +1879,19 @@ class SyntaxSanitizer:
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
             if -1 < j < k:
-                result.append(comment + s)
+                result.append(comment+s)
                 # Generate a properly-indented pass line.
                 j2 = g.skip_ws(s, 0)
-                result.append('%spass\n' % (' ' * j2))
+                result.append('%spass\n' % (' '*j2))
             elif s_lstrip.startswith('@'):
                 # Comment out all other Leonine constructs.
                 if self.starts_doc_part(s):
                     # Comment the entire doc part, until @c or @code.
-                    result.append(comment + s)
+                    result.append(comment+s)
                     i += 1
                     while i < len(lines):
                         s = lines[i]
-                        result.append(comment + s)
+                        result.append(comment+s)
                         i += 1
                         if self.ends_doc_part(s):
                             break
@@ -1908,20 +1901,20 @@ class SyntaxSanitizer:
                     j += 1
                     k = g.skip_id(s, j, chars='-')
                     if k > j:
-                        word = s[j:k]
+                        word = s[j : k]
                         if word == 'others':
                             # Remember the original @others line.
-                            result.append(comment + s)
+                            result.append(comment+s)
                             # Generate a properly-indented pass line.
-                            result.append('%spass\n' % (' ' * (j - 1)))
+                            result.append('%spass\n' % (' '* (j-1)))
                         else:
                             # Comment only Leo directives, not decorators.
-                            result.append(comment + s if word in d else s)
+                            result.append(comment+s if word in d else s)
                     else:
                         result.append(s)
             elif s_lstrip.startswith('#') and self.keep_comments:
                 # A leading comment.
-                result.append(comment + s)
+                result.append(comment+s)
             else:
                 # A plain line.
                 result.append(s)
@@ -1932,7 +1925,6 @@ class SyntaxSanitizer:
     def starts_doc_part(self, s):
         '''Return True if s word matches @ or @doc.'''
         return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
-
 
     def ends_doc_part(self, s):
         '''Return True if s word matches @c or @code.'''
