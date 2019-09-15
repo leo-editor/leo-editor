@@ -804,6 +804,8 @@ class PythonTokenBeautifier:
             # Note: run() calls self.backslash() when srow != last_line_number.
         self.decorator_seen = False
             # Set by do_name as a flag to do_op.
+        self.in_arg_list = 0
+            # > 0 if in an argument list of a function definition.
         self.level = 0
             # indentation level. Set only by do_indent and do_dedent.
             # do_name calls: push_state('indent', self.level)
@@ -811,7 +813,6 @@ class PythonTokenBeautifier:
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-
         self.state_stack = []
             # Stack of ParseState objects.
             # See the ParseState class for more details.
@@ -1557,7 +1558,10 @@ class PythonTokenBeautifier:
             # Only suppress blanks before '(' or '[' for non-keyworks.
             if s == '{' or prev.value in ('if', 'else', 'return'):
                 self.blank()
-            self.add_token('lt', s)
+            else:
+                if s == '(':
+                    self.in_arg_list += 1
+                self.add_token('lt', s)
         elif prev.kind == 'op':
             self.op(s)
         else:
@@ -1568,6 +1572,7 @@ class PythonTokenBeautifier:
         assert s in ')]}', repr(s)
         if s == ')':
             self.paren_level -= 1
+            self.in_arg_list = max(0, self.in_arg_list - 1)
         elif s == ']':
             self.square_brackets_level -= 1
         else:
@@ -1585,17 +1590,24 @@ class PythonTokenBeautifier:
     def op(self, s):
         '''Add op token to code list.'''
         assert s and isinstance(s, str), repr(s)
-        # g.trace(f"caller: {g.callers(1):10} op: {s!r}")
-        self.blank()
-        self.add_token('op', s)
-        self.blank()
+        if self.in_arg_list > 0 and s in '+-/*' or s == '//':
+            # Treat arithmetic ops differently.
+            self.clean('blank')
+            self.add_token('op', s)
+        else:
+            self.blank()
+            self.add_token('op', s)
+            self.blank()
 
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
-        self.add_token('op', s)
-        self.blank()
+        if self.in_arg_list > 0 and s in '+-/*' or s == '//':
+            self.add_token('op', s)
+        else:
+            self.add_token('op', s)
+            self.blank()
 
     def op_no_blanks(self, s):
         '''Add an operator *not* surrounded by blanks.'''

@@ -3443,6 +3443,13 @@ ham[lower:upper], ham[lower:upper:], ham[lower::step]
 ham[lower + offset:upper + offset]
 ham[:upper_fn(x):step_fn(x)], ham[::step_fn(x)]
 ham[lower + offset:upper + offset]
+#@+node:ekr.20190915074109.1: *5* peeve: ws around arithmetic ops in argument lists
+#@+node:ekr.20190915074201.1: *6* test
+def foo(a, b):
+    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+#@+node:ekr.20190915074205.1: *6* expected
+def foo(a, b):
+    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
 #@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:

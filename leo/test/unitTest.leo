@@ -364,6 +364,10 @@
 <v t="ekr.20190914172058.2"><vh>test</vh></v>
 <v t="ekr.20190914172058.3"><vh>expected</vh></v>
 </v>
+<v t="ekr.20190915074109.1"><vh>peeve: ws around arithmetic ops in argument lists</vh>
+<v t="ekr.20190915074201.1"><vh>test</vh></v>
+<v t="ekr.20190915074205.1"><vh>expected</vh></v>
+</v>
 </v>
 <v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
 <v t="ekr.20190914132845.2"><vh>peeve: ws in slices</vh>
@@ -392,6 +396,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20190914111357.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3924,6 +3929,13 @@ ham[ : : step_fn(x)]
 </t>
 <t tx="ekr.20190914181344.3">ham[:upper_fn(x):step_fn(x)]
 ham[::step_fn(x)]
+</t>
+<t tx="ekr.20190915074109.1"></t>
+<t tx="ekr.20190915074201.1">def foo(a, b):
+    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+</t>
+<t tx="ekr.20190915074205.1">def foo(a, b):
+    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
 </t>
 </tnodes>
 </leo_file>
