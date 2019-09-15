@@ -1558,10 +1558,9 @@ class PythonTokenBeautifier:
             # Only suppress blanks before '(' or '[' for non-keyworks.
             if s == '{' or prev.value in ('if', 'else', 'return'):
                 self.blank()
-            else:
-                if s == '(':
-                    self.in_arg_list += 1
-                self.add_token('lt', s)
+            elif s == '(':
+                self.in_arg_list += 1
+            self.add_token('lt', s)
         elif prev.kind == 'op':
             self.op(s)
         else:
