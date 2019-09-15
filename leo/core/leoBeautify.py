@@ -811,7 +811,7 @@ class PythonTokenBeautifier:
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-       
+
         self.state_stack = []
             # Stack of ParseState objects.
             # See the ParseState class for more details.
@@ -1800,7 +1800,7 @@ class SyntaxSanitizer:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
-        d = {z:True for z in g.globalDirectiveList}
+        d = {z: True for z in g.globalDirectiveList}
         # Convert all Leonine lines to special comments.
         i, lines, result = 0, g.splitLines(s0), []
         while i < len(lines):
