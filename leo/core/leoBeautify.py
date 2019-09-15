@@ -811,11 +811,18 @@ class PythonTokenBeautifier:
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-        self.paren_level = 0
-            # Number of unmatched left parens.
+       
         self.state_stack = []
             # Stack of ParseState objects.
             # See the ParseState class for more details.
+        #
+        # Counts of unmatched brackets and parentheses.
+        self.paren_level = 0
+            # Number of unmatched '(' tokens.
+        self.square_brackets_level = 0
+            # Number of unmatched '[' tokens.
+        self.curly_brackets_level = 0
+            # Number of unmatched '{' tokens.
         #
         # Statistics...
         self.errors = 0
@@ -1090,7 +1097,11 @@ class PythonTokenBeautifier:
                 # Start a new row.
                 raw_val = self.raw_val.rstrip()
                 self.backslash_seen = raw_val.endswith('\\')
-                if self.paren_level > 0:
+                if (
+                    self.curly_brackets_level > 0
+                    or self.paren_level > 0
+                    or self.square_brackets_level > 0
+                ):
                     s = self.raw_val.rstrip()
                     n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
                     # This n will be one-too-many if formatting has
@@ -1201,7 +1212,7 @@ class PythonTokenBeautifier:
             self.push_state('decorator')
         elif val == ':':
             # Treat slices differently.
-            if self.paren_level > 0:
+            if self.square_brackets_level > 0: ### was paren_level
                 self.op_no_blanks(val)
             else:
                 self.op_blank(val)
@@ -1526,11 +1537,17 @@ class PythonTokenBeautifier:
         ###
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
-    #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
+    #@+node:ekr.20150526201701.11: *4* ptb.parens and backets
+    #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):
-        '''Add a left paren request to the code list.'''
+        '''Generate code for a left paren or curly/square bracket.'''
         assert s in '([{', repr(s)
-        self.paren_level += 1
+        if s == '(':
+            self.paren_level += 1
+        elif s == '[':
+            self.square_brackets_level += 1
+        else:
+            self.curly_brackets_level += 1
         self.clean('blank')
         prev = self.code_list[-1]
         if prev.kind in ('op', 'word-op'):
@@ -1545,11 +1562,16 @@ class PythonTokenBeautifier:
             self.op(s)
         else:
             self.op_no_blanks(s)
-
+    #@+node:ekr.20190915070502.1: *5* ptb.rt
     def rt(self, s):
-        '''Add a right paren request to the code list.'''
+        '''Generate code for a right paren or curly/square bracket.'''
         assert s in ')]}', repr(s)
-        self.paren_level -= 1
+        if s == ')':
+            self.paren_level -= 1
+        elif s == ']':
+            self.square_brackets_level -= 1
+        else:
+            self.curly_brackets_level -= 1
         prev = self.code_list[-1]
         if prev.kind == 'arg-end':
             # Remove a blank token preceding the arg-end token.
@@ -1597,11 +1619,11 @@ class PythonTokenBeautifier:
         assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('unary-op', s)
-    #@+node:ekr.20150531051827.1: *4* ptb.star_op
+    #@+node:ekr.20150531051827.1: *4* ptb.star_op (no change)
     def star_op(self):
         '''Put a '*' op, with special cases for *args.'''
         val = '*'
-        if self.paren_level:
+        if self.paren_level > 0:
             i = len(self.code_list) - 1
             if self.code_list[i].kind == 'blank':
                 i -= 1
@@ -1615,11 +1637,11 @@ class PythonTokenBeautifier:
                 self.op(val)
         else:
             self.op(val)
-    #@+node:ekr.20150531053417.1: *4* ptb.star_star_op
+    #@+node:ekr.20150531053417.1: *4* ptb.star_star_op (no changed)
     def star_star_op(self):
         '''Put a ** operator, with a special case for **kwargs.'''
         val = '**'
-        if self.paren_level:
+        if self.paren_level > 0:
             i = len(self.code_list) - 1
             if self.code_list[i].kind == 'blank':
                 i -= 1

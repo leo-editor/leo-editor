@@ -348,7 +348,7 @@
 <v t="ekr.20190914120010.1"><vh>test</vh></v>
 <v t="ekr.20190914120016.1"><vh>expected</vh></v>
 </v>
-<v t="ekr.20190914115215.1"><vh>peeve: WRONG ws inside parentheses, brackets or braces.</vh>
+<v t="ekr.20190914115215.1"><vh>peeve: ws inside parentheses, brackets or braces.</vh>
 <v t="ekr.20190914115300.1"><vh>test</vh></v>
 <v t="ekr.20190914115304.1"><vh>expected</vh></v>
 </v>
@@ -3606,8 +3606,8 @@ spam(ham[1], {eggs: 2})
 <t tx="ekr.20190914115300.1">spam(ham[1], {eggs: 2})
 spam( ham[ 1 ], { eggs: 2 } )
 </t>
-<t tx="ekr.20190914115304.1">spam(ham[1], {eggs:2})
-spam(ham[1], {eggs:2})
+<t tx="ekr.20190914115304.1">spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
 </t>
 <t tx="ekr.20190914115821.1"># Avoid extraneous whitespace in the following situations:
 
