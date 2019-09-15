@@ -9,6 +9,7 @@ except ImportError:
     # Allow main() to run in any folder containing leoGlobals.py
     # pylint: disable=relative-import
     import leoGlobals as g
+
     # Create a dummy decorator.
 
     def command(func):
@@ -39,7 +40,8 @@ except Exception:
 def beautifyCCode(event):
     '''Beautify all C code in the selected tree.'''
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
     if should_kill_beautify(c.p):
         return
     u, undoType = c.undoer, 'beautify-c'
@@ -59,8 +61,9 @@ def beautifyCCode(event):
                 u.afterChangeNodeContents(p, undoType, bunch)
                 changed = True
     if changed:
-        u.afterChangeGroup(c.p, undoType,
-            reportFlag=False, dirtyVnodeList=dirtyVnodeList)
+        u.afterChangeGroup(
+            c.p, undoType, reportFlag=False, dirtyVnodeList=dirtyVnodeList
+        )
     c.bodyWantsFocus()
 #@+node:ekr.20150528131012.4: *3* beautify-node
 @g.command('beautify-node')
@@ -136,6 +139,8 @@ def beautifyPythonTree(event):
         f"{errors} error{g.plural(errors)} "
         f"in {t2-t1:4.2f} sec."
     )
+
+
                 # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 
         # if is_auto:
@@ -227,7 +232,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     '''Beautify the file with the given path.'''
@@ -282,8 +287,13 @@ def scan_options():
     usage = "usage: python -m leo.core.leoBeautify file1, file2, ..."
     parser = optparse.OptionParser(usage=usage)
     add = parser.add_option
-    add('-d', '--debug', action='store_true', dest='debug',
-        help='print the list of files and exit')
+    add(
+        '-d',
+        '--debug',
+        action='store_true',
+        dest='debug',
+        help='print the list of files and exit',
+    )
     # add('-k', '--keep-blank-lines', action='store_true', dest='keep',
         # help='keep-blank-lines')
     # Parse the options.
@@ -350,7 +360,9 @@ class BlackCommand:
         keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
         self.line_length = c.config.getInt("black-line-length") or 88
-        self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
+        self.normalize_strings = c.config.getBool(
+            "black-string-normalization", default=False
+        )
 
     #@+others
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
@@ -437,7 +449,7 @@ class BlackCommand:
                 raise
             p.v.setMarked()
             return False
-        except(SyntaxError, black.InvalidInput):
+        except (SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
@@ -462,15 +474,14 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16 :].rstrip()+'\n')
+            print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
         p.b = result
         c.frame.body.updateEditors()
         p.v.contentModified()
-        c.undoer.setUndoTypingParams(p, 'blacken-node',
-            oldText=body, newText=result)
+        c.undoer.setUndoTypingParams(p, 'blacken-node', oldText=body, newText=result)
         if not p.v.isDirty():
             p.v.setDirty()
         return True
@@ -491,6 +502,8 @@ class CPrettyPrinter:
         self.result = []
             # The list of tokens that form the final result.
         self.tab_width = 4
+
+
             # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
@@ -519,45 +532,44 @@ class CPrettyPrinter:
             # This can be called from c-to-python, in which case warnings should be suppressed.
             if giveWarnings:
                 g.error('** changed ', p.h)
-                g.es_print('%s after\n%s' % (
-                    message, repr(''.join(s[i : j]))))
+                g.es_print('%s after\n%s' % (message, repr(''.join(s[i:j]))))
 
         i, n, result = 0, len(s), []
         while i < n:
             token = s[i]
             progress = i
-            if token in ('if', 'for', 'while',):
-                j = self.skip_ws_and_comments(s, i+1)
+            if token in ('if', 'for', 'while'):
+                j = self.skip_ws_and_comments(s, i + 1)
                 if self.match(s, j, '('):
                     j = self.skip_parens(s, j)
                     if self.match(s, j, ')'):
                         old_j = j + 1
-                        j = self.skip_ws_and_comments(s, j+1)
+                        j = self.skip_ws_and_comments(s, j + 1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                         elif self.match(s, j, '{'):
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                         else:
                             oops("insert '{'", i, j)
                             # Back up, and don't go past a newline or comment.
                             j = self.skip_ws(s, old_j)
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                             result.append(' ')
                             result.append('{')
                             result.append('\n')
                             i = j
                             j = self.skip_statement(s, i)
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                             result.append('\n')
                             result.append('}')
                             oops("insert '}'", i, j)
                     else:
                         oops("missing ')'", i, j)
-                        result.extend(s[i : j])
+                        result.extend(s[i:j])
                 else:
                     oops("missing '('", i, j)
-                    result.extend(s[i : j])
+                    result.extend(s[i:j])
                 i = j
             else:
                 result.append(token)
@@ -589,17 +601,20 @@ class CPrettyPrinter:
         '''Skips from the opening ( to the matching ).
 
         If no matching is found i is set to len(s)'''
-        assert(self.match(s, i, '('))
+        assert self.match(s, i, '(')
         level = 0
         while i < len(s):
             ch = s[i]
             if ch == '(':
-                level += 1; i += 1
+                level += 1
+                i += 1
             elif ch == ')':
                 level -= 1
-                if level <= 0: return i
+                if level <= 0:
+                    return i
                 i += 1
-            else: i += 1
+            else:
+                i += 1
         return i
     #@+node:ekr.20110918225821.6818: *5* skip_statement
     def skip_statement(self, s, i):
@@ -631,12 +646,14 @@ class CPrettyPrinter:
         elif s.startswith('\n'):
             if self.parens <= 0:
                 s = '\n%s' % (' ' * self.brackets * self.tab_width)
-            else: pass  # Use the existing indentation.
+            else:
+                pass  # Use the existing indentation.
         elif s.isspace():
             if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
                 # Kill the whitespace.
                 s = ''
-            else: pass  # Keep the whitespace.
+            else:
+                pass  # Keep the whitespace.
         elif s.startswith('/*'):
             s = self.reformat_block_comment(s)
         else:
@@ -666,12 +683,12 @@ class CPrettyPrinter:
             s = self.result[-1]
             if s.isspace():
                 self.result.pop()
-                s = s.replace('\t', ' '*w)
+                s = s.replace('\t', ' ' * w)
                 if s.startswith('\n'):
-                    s2 = s[1 :]
-                    self.result.append('\n'+s2[: -w])
+                    s2 = s[1:]
+                    self.result.append('\n' + s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -700,9 +717,11 @@ class CPrettyPrinter:
             else:
                 j += 1
             assert j > i
-            result.append(''.join(s[i : j]))
+            result.append(''.join(s[i:j]))
             i = j  # Advance.
         return result
+
+
     #@+at The following could be added to the 'else' clause::
     #     # Accumulate everything else.
     #     while (
@@ -718,7 +737,7 @@ class CPrettyPrinter:
     #         j += 1
     #@+node:ekr.20110917193725.6974: *4* cpp.skip_block_comment
     def skip_block_comment(self, s, i):
-        assert(g.match(s, i, "/*"))
+        assert g.match(s, i, "/*")
         j = s.find("*/", i)
         if j == -1:
             return len(s)
@@ -727,6 +746,7 @@ class CPrettyPrinter:
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
+
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
     class OutputToken:
@@ -845,11 +865,16 @@ class PythonTokenBeautifier:
         self.sanitizer = None  # For pylint.
         self.reloadSettings()
 
+
     def reloadSettings(self):
         c = self.c
         if c:
-            keep_comments = c.config.getBool('beautify-keep-comment-indentation', default=True)
-            self.delete_blank_lines = not c.config.getBool('beautify-keep-blank-lines', default=True)
+            keep_comments = c.config.getBool(
+                'beautify-keep-comment-indentation', default=True
+            )
+            self.delete_blank_lines = not c.config.getBool(
+                'beautify-keep-blank-lines', default=True
+            )
             # Join.
             n = c.config.getInt('beautify-max-join-line-length')
             self.max_join_line_length = 88 if n is None else n
@@ -881,18 +906,14 @@ class PythonTokenBeautifier:
         fields1 = getattr(node1, "_fields", [])
         fields2 = getattr(node2, "_fields", [])
         if fields1 != fields2:
-            raise AstNotEqual(
-                f"node1._fields: {fields1}\n"
-                f"node2._fields: {fields2}")
+            raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
         # Recursively compare each field.
         for field in fields1:
             if field not in ('lineno', 'col_offset', 'ctx'):
                 attr1 = getattr(node1, field, None)
                 attr2 = getattr(node2, field, None)
                 if attr1.__class__.__name__ != attr2.__class__.__name__:
-                    raise AstNotEqual(
-                        f"attrs1: {attr1},\n"
-                        f"attrs2: {attr2}")
+                    raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
                 self.compare_two_asts(attr1, attr2)
     #@+node:ekr.20190908034557.1: *4* ptb.compare_two_nodes
     def compare_two_nodes(self, node1, node2):
@@ -905,32 +926,30 @@ class PythonTokenBeautifier:
         if node1.__class__.__name__ != node2.__class__.__name__:
             raise AstNotEqual(
                 f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-                f"node2.__class__.__name__: {node2.__class__.__name_}")
+                f"node2.__class__.__name__: {node2.__class__.__name_}"
+            )
         # Special cases for strings and None
         if node1 is None:
             return
         if isinstance(node1, str):
             if node1 != node2:
-                raise AstNotEqual(
-                    f"node1: {node1!r}\n"
-                    f"node2: {node2!r}")
+                raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
         # Special cases for lists and tuples:
         if isinstance(node1, (tuple, list)):
             if len(node1) != len(node2):
-                raise AstNotEqual(
-                    f"node1: {node1}\n"
-                    f"node2: {node2}")
+                raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
             for i, item1 in enumerate(node1):
                 item2 = node2[i]
                 if item1.__class__.__name__ != item2.__class__.__name__:
                     raise AstNotEqual(
-                        f"list item1: {i} {item1}\n"
-                        f"list item2: {i} {item2}")
+                        f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
+                    )
                 self.compare_two_asts(item1, item2)
     #@+node:ekr.20190908163223.1: *4* ptb.dump_ast
     def dump_ast(self, node, tag=None):
         """Dump the tree"""
         from leo.core.leoAst import AstDumper
+
         g.printObj(AstDumper().dump(node), tag=tag)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
@@ -1063,11 +1082,11 @@ class PythonTokenBeautifier:
         self.n_input_tokens += len(tokens)
         self.n_output_tokens += len(self.code_list)
         self.n_strings += len(s3)
-        self.parse_time += (t2 - t1)
-        self.tokenize_time += (t3 - t2)
-        self.beautify_time += (t4 - t3)
-        self.check_time += (t5 - t4)
-        self.total_time += (t5 - t1)
+        self.parse_time += t2 - t1
+        self.tokenize_time += t3 - t2
+        self.beautify_time += t4 - t3
+        self.check_time += t5 - t4
+        self.total_time += t5 - t1
         ### self.print_stats()
         return changed
     #@+node:ekr.20150526194715.1: *4* ptb.run
@@ -1108,10 +1127,10 @@ class PythonTokenBeautifier:
                     # This n will be one-too-many if formatting has
                     # changed: foo (
                     # to:      foo(
-                    self.line_indent(ws=' '*n)
+                    self.line_indent(ws=' ' * n)
                         # Do not set self.lws here!
                 last_line_number = srow
-            func = getattr(self, 'do_'+self.kind, oops)
+            func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
@@ -1155,14 +1174,19 @@ class PythonTokenBeautifier:
             if state.kind in ('class', 'def'):
                 self.state_stack.pop()
                 self.blank_lines(1)
+
+
                     # Most Leo nodes aren't at the top level of the file.
                     # self.blank_lines(2 if self.level == 0 else 1)
+
 
     def do_indent(self):
         '''Handle indent token.'''
         self.level += 1
         self.lws = self.val
         self.line_indent()
+
+
             # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
@@ -1285,10 +1309,14 @@ class PythonTokenBeautifier:
         '''Add a blank request on the code list.'''
         prev = self.code_list[-1]
         if prev.kind not in (
-            'blank', 'blank-lines',
+            'blank',
+            'blank-lines',
             'file-start',
-            'line-end', 'line-indent',
-            'lt', 'op-no-blanks', 'unary-op',
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
         ):
             self.add_token('blank', ' ')
     #@+node:ekr.20190915083748.1: *4* ptb.blank_before_end_line_comment
@@ -1296,11 +1324,7 @@ class PythonTokenBeautifier:
         '''Add two blanks before an end-of-line comment.'''
         prev = self.code_list[-1]
         self.clean('blank')
-        if prev.kind not in (
-            'blank-lines',
-            'file-start',
-            'line-end', 'line-indent',
-        ):
+        if prev.kind not in ('blank-lines', 'file-start', 'line-end', 'line-indent'):
             self.add_token('blank', ' ')
             self.add_token('blank', ' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
@@ -1314,7 +1338,7 @@ class PythonTokenBeautifier:
         if kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        for i in range(0, n+1):
+        for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
@@ -1357,6 +1381,7 @@ class PythonTokenBeautifier:
         self.add_token('line-end', '\n')
         self.add_token('file-end')
 
+
     def file_start(self):
         '''Add a file-start token to the code list and the state stack.'''
         self.add_token('file-start')
@@ -1388,6 +1413,8 @@ class PythonTokenBeautifier:
             if allow_join and self.max_join_line_length > 0:
                 self.join_lines()
         self.line_indent()
+
+
             # Add the indentation for all lines
             # until the next indent or unindent token.
     #@+node:ekr.20190908054807.1: *5* ptb.break_line (new) & helpers
@@ -1415,7 +1442,7 @@ class PythonTokenBeautifier:
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
         if prefix[0].kind == 'line-indent':
-            prefix = prefix[1 :]
+            prefix = prefix[1:]
         # g.printObj(prefix, tag='PREFIX')
         # g.printObj(tail, tag='TAIL')
         #
@@ -1439,7 +1466,7 @@ class PythonTokenBeautifier:
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
             self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws+' '*4)
+            self.add_token('line-indent', self.lws + ' ' * 4)
             self.code_list.extend(tail)
             return
         #
@@ -1447,7 +1474,7 @@ class PythonTokenBeautifier:
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws+' '*4)
+        self.add_token('line-indent', self.lws + ' ' * 4)
         open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
         close_delim = self.OutputToken(
             kind='rt',
@@ -1486,9 +1513,9 @@ class PythonTokenBeautifier:
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i :])
+                    self.code_list.extend(tail[i:])
                     return
-                lws = lws[: -4]
+                lws = lws[:-4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1501,7 +1528,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
-        for t in reversed(self.code_list[: -1]):
+        for t in reversed(self.code_list[:-1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1528,8 +1555,9 @@ class PythonTokenBeautifier:
     def is_any_lt(self, output_token):
         """Return True if the given token is any lt token"""
         return (
-            output_token == 'lt' or
-            output_token.kind == 'op-no-blanks' and output_token.value in "{[("
+            output_token == 'lt'
+            or output_token.kind == 'op-no-blanks'
+            and output_token.value in "{[("
         )
     #@+node:ekr.20190909020458.1: *5* ptb.join_lines (new) & helpers
     def join_lines(self):
@@ -1542,13 +1570,16 @@ class PythonTokenBeautifier:
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
-        if trace: g.trace(line_s)
+        if trace:
+            g.trace(line_s)
         # Don't bother trying if the line is already long.
         if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
             return
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
             return
+
+
         ###
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
@@ -1585,7 +1616,7 @@ class PythonTokenBeautifier:
         assert s in ')]}', repr(s)
         if s == ')':
             self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list-1)
+            self.in_arg_list = max(0, self.in_arg_list - 1)
         elif s == ']':
             self.square_brackets_level -= 1
         else:
@@ -1612,6 +1643,7 @@ class PythonTokenBeautifier:
             self.add_token('op', s)
             self.blank()
 
+
     def op_blank(self, s):
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
@@ -1621,6 +1653,7 @@ class PythonTokenBeautifier:
         else:
             self.add_token('op', s)
             self.blank()
+
 
     def op_no_blanks(self, s):
         '''Add an operator *not* surrounded by blanks.'''
@@ -1634,10 +1667,16 @@ class PythonTokenBeautifier:
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
         elif prev.kind == 'word' and prev.value in (
-            'elif', 'else', 'if', 'return', 'while'):
+            'elif',
+            'else',
+            'if',
+            'return',
+            'while',
+        ):
             self.unary_op(s)
         else:
             self.op(s)
+
 
     def unary_op(self, s):
         '''Add an operator request to the code list.'''
@@ -1689,6 +1728,7 @@ class PythonTokenBeautifier:
         self.add_token('word', s)
         self.blank()
 
+
     def word_op(self, s):
         '''Add a word-op request to the code list.'''
         assert s and isinstance(s, str), repr(s)
@@ -1713,12 +1753,13 @@ class PythonTokenBeautifier:
         c.setBodyString(p, s)
         dirtyVnodeList2 = p.setDirty()
         self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(
-            p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
+        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150528180738.1: *4* ptb.end_undo
     def end_undo(self):
         '''Complete undo processing.'''
-        c = self.c; u = c.undoer; undoType = 'Pretty Print'
+        c = self.c
+        u = c.undoer
+        undoType = 'Pretty Print'
         current = c.p
         if self.changed:
             # Tag the end of the command.
@@ -1735,14 +1776,20 @@ class PythonTokenBeautifier:
             value = token.value
             if token.kind == 'lt':
                 assert value in '([{', f"Bad lt value: {token.kind} {value}"
-                if value == '{': curlies += 1
-                elif value == '(': parens += 1
-                elif value == '[': squares += 1
+                if value == '{':
+                    curlies += 1
+                elif value == '(':
+                    parens += 1
+                elif value == '[':
+                    squares += 1
             elif token.kind == 'rt':
                 assert value in ')]}', f"Bad rt value: {token.kind} {value}"
-                if value == ')': parens -= 1
-                elif value == ']': squares -= 1
-                elif value == '}': curlies += 1
+                if value == ')':
+                    parens -= 1
+                elif value == ']':
+                    squares -= 1
+                elif value == '}':
+                    curlies += 1
         return curlies, parens, squares
     #@+node:ekr.20150528172940.1: *4* ptb.print_stats
     def print_stats(self):
@@ -1824,7 +1871,7 @@ class SyntaxSanitizer:
         if p:
             s0 = p.b
         n = 5
-        while('#'+ ('!'*n)) in s0:
+        while ('#' + ('!' * n)) in s0:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
@@ -1839,19 +1886,19 @@ class SyntaxSanitizer:
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
             if -1 < j < k:
-                result.append(comment+s)
+                result.append(comment + s)
                 # Generate a properly-indented pass line.
                 j2 = g.skip_ws(s, 0)
-                result.append('%spass\n' % (' '*j2))
+                result.append('%spass\n' % (' ' * j2))
             elif s_lstrip.startswith('@'):
                 # Comment out all other Leonine constructs.
                 if self.starts_doc_part(s):
                     # Comment the entire doc part, until @c or @code.
-                    result.append(comment+s)
+                    result.append(comment + s)
                     i += 1
                     while i < len(lines):
                         s = lines[i]
-                        result.append(comment+s)
+                        result.append(comment + s)
                         i += 1
                         if self.ends_doc_part(s):
                             break
@@ -1861,20 +1908,20 @@ class SyntaxSanitizer:
                     j += 1
                     k = g.skip_id(s, j, chars='-')
                     if k > j:
-                        word = s[j : k]
+                        word = s[j:k]
                         if word == 'others':
                             # Remember the original @others line.
-                            result.append(comment+s)
+                            result.append(comment + s)
                             # Generate a properly-indented pass line.
-                            result.append('%spass\n' % (' '* (j-1)))
+                            result.append('%spass\n' % (' ' * (j - 1)))
                         else:
                             # Comment only Leo directives, not decorators.
-                            result.append(comment+s if word in d else s)
+                            result.append(comment + s if word in d else s)
                     else:
                         result.append(s)
             elif s_lstrip.startswith('#') and self.keep_comments:
                 # A leading comment.
-                result.append(comment+s)
+                result.append(comment + s)
             else:
                 # A plain line.
                 result.append(s)
@@ -1884,11 +1931,12 @@ class SyntaxSanitizer:
     #@+node:ekr.20190910022637.3: *3* sanitize.starts_doc_part & ends_doc_part
     def starts_doc_part(self, s):
         '''Return True if s word matches @ or @doc.'''
-        return s.startswith(('@\n', '@doc\n', '@ ', '@doc '),)
+        return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
+
 
     def ends_doc_part(self, s):
         '''Return True if s word matches @c or @code.'''
-        return s.startswith(('@c\n', '@code\n', '@c ', '@code '),)
+        return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
     #@+node:ekr.20190910022637.4: *3* sanitize.uncomment_leo_lines
     def uncomment_leo_lines(self, comment, p, s0):
         '''Reverse the effect of comment_leo_lines.'''
