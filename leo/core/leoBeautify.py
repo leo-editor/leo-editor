@@ -462,7 +462,7 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
+            print(black.diff(body, result, "old", "new")[16 :].rstrip()+'\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -520,7 +520,7 @@ class CPrettyPrinter:
             if giveWarnings:
                 g.error('** changed ', p.h)
                 g.es_print('%s after\n%s' % (
-                    message, repr(''.join(s[i:j]))))
+                    message, repr(''.join(s[i : j]))))
 
         i, n, result = 0, len(s), []
         while i < n:
@@ -535,29 +535,29 @@ class CPrettyPrinter:
                         j = self.skip_ws_and_comments(s, j+1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                         elif self.match(s, j, '{'):
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                         else:
                             oops("insert '{'", i, j)
                             # Back up, and don't go past a newline or comment.
                             j = self.skip_ws(s, old_j)
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                             result.append(' ')
                             result.append('{')
                             result.append('\n')
                             i = j
                             j = self.skip_statement(s, i)
-                            result.extend(s[i:j])
+                            result.extend(s[i : j])
                             result.append('\n')
                             result.append('}')
                             oops("insert '}'", i, j)
                     else:
                         oops("missing ')'", i, j)
-                        result.extend(s[i:j])
+                        result.extend(s[i : j])
                 else:
                     oops("missing '('", i, j)
-                    result.extend(s[i:j])
+                    result.extend(s[i : j])
                 i = j
             else:
                 result.append(token)
@@ -668,10 +668,10 @@ class CPrettyPrinter:
                 self.result.pop()
                 s = s.replace('\t', ' '*w)
                 if s.startswith('\n'):
-                    s2 = s[1:]
-                    self.result.append('\n'+s2[:-w])
+                    s2 = s[1 :]
+                    self.result.append('\n'+s2[: -w])
                 else:
-                    self.result.append(s[:-w])
+                    self.result.append(s[: -w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -700,7 +700,7 @@ class CPrettyPrinter:
             else:
                 j += 1
             assert j > i
-            result.append(''.join(s[i:j]))
+            result.append(''.join(s[i : j]))
             i = j  # Advance.
         return result
     #@+at The following could be added to the 'else' clause::
@@ -1213,11 +1213,8 @@ class PythonTokenBeautifier:
             self.push_state('decorator')
         elif val == ':':
             # Treat slices differently.
-            if self.square_brackets_level > 0:  ### was paren_level
-                self.op_no_blanks(val)
-            else:
-                self.op_blank(val)
-        elif val in ',;:':
+            self.colon(val)
+        elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
             self.op_blank(val)
@@ -1334,6 +1331,21 @@ class PythonTokenBeautifier:
         table = ('blank-lines', 'line-end', 'line-indent')
         while self.code_list[-1].kind in table:
             self.code_list.pop()
+    #@+node:ekr.20190915120431.1: *4* ptb.colon
+    def colon(self, val):
+        '''Handle a colon.'''
+        if self.square_brackets_level > 0:
+            # Put blanks on either side of the colon,
+            # but not between commas, and not next to [.
+            self.clean('blank')
+            prev = self.code_list[-1]
+            if prev.value in '[:':
+                self.add_token('op', val)
+                self.blank()
+            else:
+                self.op(val)
+        else:
+            self.op_blank(val)
     #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
     def file_end(self):
         '''
@@ -1401,14 +1413,14 @@ class PythonTokenBeautifier:
         prefix = self.find_line_prefix(line_tokens)
         #
         # Calculate the tail before cleaning the prefix.
-        tail = line_tokens[len(prefix):]
+        tail = line_tokens[len(prefix) :]
         if prefix[0].kind == 'line-indent':
-            prefix = prefix[1:]
+            prefix = prefix[1 :]
         # g.printObj(prefix, tag='PREFIX')
         # g.printObj(tail, tag='TAIL')
         #
         # Cut back the token list
-        self.code_list = self.code_list[:len(self.code_list) - len(line_tokens) - 1]
+        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
             # -1 for the trailing line-end.
         # g.printObj(self.code_list, tag='CUT CODE LIST')
         #
@@ -1474,9 +1486,9 @@ class PythonTokenBeautifier:
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i:])
+                    self.code_list.extend(tail[i :])
                     return
-                lws = lws[:-4]
+                lws = lws[: -4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1489,7 +1501,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
-        for t in reversed(self.code_list[:-1]):
+        for t in reversed(self.code_list[: -1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1504,7 +1516,7 @@ class PythonTokenBeautifier:
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                for t in token_list[i + 1:]:
+                for t in token_list[i + 1 :]:
                     if t.kind == 'blank' or self.is_any_lt(t):
                     # if t.kind in ('lt', 'blank'):
                         result.append(t)
@@ -1540,7 +1552,7 @@ class PythonTokenBeautifier:
         ###
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
-    #@+node:ekr.20150526201701.11: *4* ptb.parens and backets
+    #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):
         '''Generate code for a left paren or curly/square bracket.'''
@@ -1849,7 +1861,7 @@ class SyntaxSanitizer:
                     j += 1
                     k = g.skip_id(s, j, chars='-')
                     if k > j:
-                        word = s[j:k]
+                        word = s[j : k]
                         if word == 'others':
                             # Remember the original @others line.
                             result.append(comment+s)

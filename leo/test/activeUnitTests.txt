@@ -3249,13 +3249,12 @@ try:
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
         assert expected.h.lower() == 'expected', repr(expected.h)
-        assert test.b != expected.b, f"{peeve.h}: test and expected must be different"
         expected_s = expected.b
         test_s = test.b
         try:
             # Beautify "test" node in place.
             assert should_beautify(test), repr(test.h)
-            ok = PythonTokenBeautifier(c).prettyPrintNode(test)
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test) or test.b == expected.b
             if not ok:
                 errors.append(peeve.h)
                 print(
@@ -3263,6 +3262,7 @@ try:
                     f"{g.objToString(test_s, tag='TEST')}\n")
             elif test.b.rstrip() != expected.b.rstrip():
                 fails.append(peeve.h)
+                # self.assertEqual(test_s, test.b, f"Beautify-node FAIL: {peeve.h}\n")
                 print(
                     f"Beautify-node FAIL: {peeve.h}\n"
                     f"{g.objToString(test_s,     tag='    TEST')}\n"
@@ -3279,41 +3279,16 @@ if fails or errors:
     self.fail("\n"
         f"{g.objToString(fails,  tag='Failures')}\n"
         f"{g.objToString(errors, tag='  Errors')}")
-#@+node:ekr.20190914181344.1: *5* peeve: ws in slices: function calls
-# FAIL
-
-ham[lower + offset: upper + offset]
-#@+node:ekr.20190914181344.2: *6* test
-ham[ : upper_fn(x) : step_fn(x)]
-ham[ : : step_fn(x)]
-#@+node:ekr.20190914181344.3: *6* expected
-ham[:upper_fn(x):step_fn(x)]
-ham[::step_fn(x)]
-#@+node:ekr.20190914181159.1: *5* peeve: ws in slices: + ops
-# FAIL
-
-ham[lower + offset: upper + offset]
-#@+node:ekr.20190914181159.2: *6* test
-ham[lower + offset: upper + offset]
-#@+node:ekr.20190914181159.3: *6* expected
-ham[lower + offset:upper + offset]
-#@+node:ekr.20190914122333.1: *5* peeve: ws in slices (small test)
-#@+node:ekr.20190914122356.1: *6* test
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
-ham[: upper]
-#@+node:ekr.20190914122359.1: *6* expected
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[:upper]
+#@+node:ekr.20190915083933.1: *5* peeve: two spaces before a trailing comment
+#@+node:ekr.20190915083945.1: *6* test
+a = b # comment
+c = d# comment
+e - f   # comment
+#@+node:ekr.20190915084039.1: *6* expected
+a = b  # comment
+c = d  # comment
+e - f  # comment
 #@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
-# Avoid extraneous whitespace in the following situations:
-
-# Immediately inside parentheses, brackets or braces.
-
-# Yes: spam(ham[1], {eggs: 2})
-# No:  spam( ham[ 1 ], { eggs: 2 } )
-spam(ham[1], {eggs: 2})
 #@+node:ekr.20190914111357.2: *6* test
 def spam():
     if - 1 < 2:
@@ -3322,45 +3297,25 @@ def spam():
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20190914115821.1: *5* peeve: ws between trailing comma & close paren
-# Avoid extraneous whitespace in the following situations:
-
-# Between a trailing comma and a following close parenthesis.
-
-# Yes: foo = (0,)
-# No:  bar = (0, )
-bar = (0,)
-#@+node:ekr.20190914120010.1: *6* test
-foo = (0,)
-bar = (0, )
-#@+node:ekr.20190914120016.1: *6* expected
-foo = (0,)
-bar = (0,)
-#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
-# Avoid extraneous whitespace in the following situations:
-    
-# Immediately inside parentheses, brackets or braces.
-
-# Yes: spam(ham[1], {eggs: 2})
-# No:  spam( ham[ 1 ], { eggs: 2 } )
-#@+node:ekr.20190914115300.1: *6* test
-spam(ham[1], {eggs: 2})
-spam( ham[ 1 ], { eggs: 2 } )
-#@+node:ekr.20190914115304.1: *6* expected
-spam(ham[1], {eggs: 2})
-spam(ham[1], {eggs: 2})
+#@+node:ekr.20190915074109.1: *5* peeve: ws around arithmetic ops in argument lists
+#@+node:ekr.20190915074201.1: *6* test
+def foo(a, b):
+    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+    bar(2 + baz)
+#@+node:ekr.20190915074205.1: *6* expected
+def foo(a, b):
+    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+    bar(2+baz)
+#@+node:ekr.20190915083243.1: *5* peeve: ws around word ops
+#@+node:ekr.20190915083412.1: *6* test
+b =    ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+#@+node:ekr.20190915083418.1: *6* expected
+b = ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
 #@+node:ekr.20190914120318.1: *5* peeve: ws before comma, semicolon, colon
-# Avoid extraneous whitespace in the following situations:
-
-# Immediately before a comma, semicolon, or colon:
-
-# Yes: if x == 4: pass
-# No:  if x == 4 : pass
-if x == 4: pass
-
-# YES: print (x, y); x, y = y, x)
-# NO: print (x , y) ; x , y = y , x
-print(x, y); x, y = y, x
 #@+node:ekr.20190914120402.1: *6* test
 if x == 4: pass
 if x == 4 : pass
@@ -3376,17 +3331,6 @@ print(x, y); x, y = y, x
 x, y = y, x
 x, y = y, x
 #@+node:ekr.20190914123001.1: *5* peeve: ws before parens
-# Avoid extraneous whitespace in the following situations:
-    
-# Immediately before the open parenthesis that starts the argument list of a function call:
-
-# Yes: spam(1)
-spam(1)
-
-# Immediately before the open parenthesis that starts an indexing or slicing:
-
-# Yes: dct['key'] = lst[index]
-dct['key'] = lst[index]
 #@+node:ekr.20190914123101.1: *6* test
 spam(1)
 spam ( 1 )
@@ -3397,80 +3341,43 @@ spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
-#@+node:ekr.20190914172058.1: *5* peeve: ws in slices (full test)
-# Avoid extraneous whitespace in the following situations:
-
-# However, in a slice the colon acts like a binary operator,
-# and should have equal amounts on either side (treating it as the operator with the lowest priority).
-# In an extended slice, both colons must have the same amount of spacing applied.
-# Exception: when a slice parameter is omitted, the space is omitted.
-
-# Yes:
-# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-# ham[lower:upper], ham[lower:upper:], ham[lower::step]
-# ham[lower+offset : upper+offset]
-# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
-# ham[lower + offset : upper + offset]
-
-# FAIL
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+#@+node:ekr.20190914115821.1: *5* peeve: ws between trailing comma & close paren
+#@+node:ekr.20190914120010.1: *6* test
+foo = (0,)
+bar = (0, )
+#@+node:ekr.20190914120016.1: *6* expected
+foo = (0,)
+bar = (0,)
+#@+node:ekr.20190914181159.1: *5* peeve: ws in slices: arithmetic ops
+#@+node:ekr.20190914181159.2: *6* test
 ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper]
-ham[: upper]
-#@+node:ekr.20190914172058.2: *6* test
-# FAIL
-ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-ham[lower + offset: upper + offset]
-ham[1: 9], ham[1: 9], ham[1: 9: 3]
-ham[lower:: upper], ham[: upper]
-
-# PASS
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower:upper], ham[lower:upper:], ham[lower::step]
 ham[lower+offset : upper+offset]
-ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+#@+node:ekr.20190914181159.3: *6* expected
 ham[lower + offset : upper + offset]
-#@+node:ekr.20190914172058.3: *6* expected
-# FAIL
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower + offset:upper + offset]
-ham[1:9], ham[1:9], ham[1:9:3]
-ham[lower::upper], ham[:upper]
-
-# PASS
-ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
-ham[lower:upper], ham[lower:upper:], ham[lower::step]
-ham[lower + offset:upper + offset]
-ham[:upper_fn(x):step_fn(x)], ham[::step_fn(x)]
-ham[lower + offset:upper + offset]
-#@+node:ekr.20190915074109.1: *5* peeve: ws around arithmetic ops in argument lists
-#@+node:ekr.20190915074201.1: *6* test
-def foo(a, b):
-    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
-    bar(2 + baz)
-#@+node:ekr.20190915074205.1: *6* expected
-def foo(a, b):
-    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
-    bar(2+baz)
-#@+node:ekr.20190915083933.1: *5* peeve: two spaces before a trailing comment
-#@+node:ekr.20190915083945.1: *6* test
-a = b # comment
-c = d# comment
-e - f   # comment
-#@+node:ekr.20190915084039.1: *6* expected
-a = b  # comment
-c = d  # comment
-e - f  # comment
-#@+node:ekr.20190915083243.1: *5* peeve: ws around word ops
-#@+node:ekr.20190915083412.1: *6* test
-b =    ('and', 'in', 'not', 'not in', 'or')
-# def foo():
-    # return ''.join([z.to_string() for z in self.code_list])
-#@+node:ekr.20190915083418.1: *6* expected
-b = ('and', 'in', 'not', 'not in', 'or')
-# def foo():
-    # return ''.join([z.to_string() for z in self.code_list])
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914181344.1: *5* peeve: ws in slices: function calls
+#@+node:ekr.20190914181344.2: *6* test
+ham[ : upper_fn(x) : step_fn(x)]
+ham[ : : step_fn(x)]
+#@+node:ekr.20190914181344.3: *6* expected
+ham[: upper_fn(x) : step_fn(x)]
+ham[:: step_fn(x)]
+#@+node:ekr.20190914122333.1: *5* peeve: ws in slices: numbers & words
+#@+node:ekr.20190914122356.1: *6* test
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
+ham[: upper]
+#@+node:ekr.20190914122359.1: *6* expected
+ham[1 : 9], ham[1 : 9 : 3], ham[: 9 : 3], ham[1 :: 3], ham[1 : 9 :]
+ham[lower : upper], ham[lower : upper :], ham[lower :: step]
+ham[: upper]
+#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
+#@+node:ekr.20190914115300.1: *6* test
+spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914115304.1: *6* expected
+spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
 #@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:
