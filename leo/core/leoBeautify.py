@@ -1173,8 +1173,6 @@ class PythonTokenBeautifier:
             if state.kind in ('class', 'def'):
                 self.state_stack.pop()
                 self.blank_lines(1)
-
-
                     # Most Leo nodes aren't at the top level of the file.
                     # self.blank_lines(2 if self.level == 0 else 1)
 
@@ -1183,8 +1181,6 @@ class PythonTokenBeautifier:
         self.level += 1
         self.lws = self.val
         self.line_indent()
-
-
             # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
@@ -1410,8 +1406,6 @@ class PythonTokenBeautifier:
             if allow_join and self.max_join_line_length > 0:
                 self.join_lines()
         self.line_indent()
-
-
             # Add the indentation for all lines
             # until the next indent or unindent token.
     #@+node:ekr.20190908054807.1: *5* ptb.break_line (new) & helpers
