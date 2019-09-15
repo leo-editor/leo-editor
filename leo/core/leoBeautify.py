@@ -227,7 +227,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     '''Beautify the file with the given path.'''
@@ -462,7 +462,7 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip() + '\n')
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -527,12 +527,12 @@ class CPrettyPrinter:
             token = s[i]
             progress = i
             if token in ('if', 'for', 'while',):
-                j = self.skip_ws_and_comments(s, i + 1)
+                j = self.skip_ws_and_comments(s, i+1)
                 if self.match(s, j, '('):
                     j = self.skip_parens(s, j)
                     if self.match(s, j, ')'):
                         old_j = j + 1
-                        j = self.skip_ws_and_comments(s, j + 1)
+                        j = self.skip_ws_and_comments(s, j+1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
                             result.extend(s[i:j])
@@ -666,10 +666,10 @@ class CPrettyPrinter:
             s = self.result[-1]
             if s.isspace():
                 self.result.pop()
-                s = s.replace('\t', ' ' * w)
+                s = s.replace('\t', ' '* w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n' + s2[:-w])
+                    self.result.append('\n'+s2[:-w])
                 else:
                     self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
@@ -1315,7 +1315,7 @@ class PythonTokenBeautifier:
         if kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        for i in range(0, n + 1):
+        for i in range(0, n+1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
@@ -1425,7 +1425,7 @@ class PythonTokenBeautifier:
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
             self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws + ' ' * 4)
+            self.add_token('line-indent', self.lws+' '*4)
             self.code_list.extend(tail)
             return
         #
@@ -1433,7 +1433,7 @@ class PythonTokenBeautifier:
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws + ' ' * 4)
+        self.add_token('line-indent', self.lws+' '*4)
         open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
         close_delim = self.OutputToken(
             kind='rt',
@@ -1572,7 +1572,7 @@ class PythonTokenBeautifier:
         assert s in ')]}', repr(s)
         if s == ')':
             self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list - 1)
+            self.in_arg_list = max(0, self.in_arg_list-1)
         elif s == ']':
             self.square_brackets_level -= 1
         else:
@@ -1590,7 +1590,7 @@ class PythonTokenBeautifier:
     def op(self, s):
         '''Add op token to code list.'''
         assert s and isinstance(s, str), repr(s)
-        if self.in_arg_list > 0 and s in '+-/*' or s == '//':
+        if self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
             # Treat arithmetic ops differently.
             self.clean('blank')
             self.add_token('op', s)
@@ -1603,7 +1603,7 @@ class PythonTokenBeautifier:
         '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
-        if self.in_arg_list > 0 and s in '+-/*' or s == '//':
+        if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
             self.add_token('op', s)
         else:
             self.add_token('op', s)
@@ -1808,7 +1808,7 @@ class SyntaxSanitizer:
         if p:
             s0 = p.b
         n = 5
-        while('#' + ('!' * n)) in s0:
+        while('#'+ ('!'* n)) in s0:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
@@ -1823,19 +1823,19 @@ class SyntaxSanitizer:
             j = s.find('<<')
             k = s.find('>>') if j > -1 else -1
             if -1 < j < k:
-                result.append(comment + s)
+                result.append(comment+ s)
                 # Generate a properly-indented pass line.
                 j2 = g.skip_ws(s, 0)
-                result.append('%spass\n' % (' ' * j2))
+                result.append('%spass\n' % (' '* j2))
             elif s_lstrip.startswith('@'):
                 # Comment out all other Leonine constructs.
                 if self.starts_doc_part(s):
                     # Comment the entire doc part, until @c or @code.
-                    result.append(comment + s)
+                    result.append(comment+ s)
                     i += 1
                     while i < len(lines):
                         s = lines[i]
-                        result.append(comment + s)
+                        result.append(comment+ s)
                         i += 1
                         if self.ends_doc_part(s):
                             break
@@ -1848,17 +1848,17 @@ class SyntaxSanitizer:
                         word = s[j:k]
                         if word == 'others':
                             # Remember the original @others line.
-                            result.append(comment + s)
+                            result.append(comment+ s)
                             # Generate a properly-indented pass line.
-                            result.append('%spass\n' % (' ' * (j - 1)))
+                            result.append('%spass\n' % (' '* (j-1)))
                         else:
                             # Comment only Leo directives, not decorators.
-                            result.append(comment + s if word in d else s)
+                            result.append(comment+ s if word in d else s)
                     else:
                         result.append(s)
             elif s_lstrip.startswith('#') and self.keep_comments:
                 # A leading comment.
-                result.append(comment + s)
+                result.append(comment+ s)
             else:
                 # A plain line.
                 result.append(s)
