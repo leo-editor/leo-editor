@@ -631,16 +631,16 @@ class CPrettyPrinter:
         elif s.startswith('\n'):
             if self.parens <= 0:
                 s = '\n%s' % (' ' * self.brackets * self.tab_width)
-            else: pass # Use the existing indentation.
+            else: pass  # Use the existing indentation.
         elif s.isspace():
             if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
                 # Kill the whitespace.
                 s = ''
-            else: pass # Keep the whitespace.
+            else: pass  # Keep the whitespace.
         elif s.startswith('/*'):
             s = self.reformat_block_comment(s)
         else:
-            pass # put s as it is.
+            pass  # put s as it is.
         if s:
             self.result.append(s)
     #@+node:ekr.20110917204542.6968: *5* prev_token
@@ -683,9 +683,9 @@ class CPrettyPrinter:
             # Loop invariant: at end: j > i and s[i:j] is the new token.
             j = i
             ch = s[i]
-            if ch in '@\n': # Make *sure* these are separate tokens.
+            if ch in '@\n':  # Make *sure* these are separate tokens.
                 j += 1
-            elif ch == '#': # Preprocessor directive.
+            elif ch == '#':  # Preprocessor directive.
                 j = g.skip_to_end_of_line(s, i)
             elif ch in ' \t':
                 j = g.skip_ws(s, i)
@@ -701,7 +701,7 @@ class CPrettyPrinter:
                 j += 1
             assert j > i
             result.append(''.join(s[i:j]))
-            i = j # Advance.
+            i = j  # Advance.
         return result
     #@+at The following could be added to the 'else' clause::
     #     # Accumulate everything else.
@@ -842,7 +842,7 @@ class PythonTokenBeautifier:
         self.dirtyVnodeList = []
         #
         # Complete the init.
-        self.sanitizer = None # For pylint.
+        self.sanitizer = None  # For pylint.
         self.reloadSettings()
 
     def reloadSettings(self):
@@ -1213,7 +1213,7 @@ class PythonTokenBeautifier:
             self.push_state('decorator')
         elif val == ':':
             # Treat slices differently.
-            if self.square_brackets_level > 0: ### was paren_level
+            if self.square_brackets_level > 0:  ### was paren_level
                 self.op_no_blanks(val)
             else:
                 self.op_blank(val)
@@ -1294,15 +1294,17 @@ class PythonTokenBeautifier:
             'lt', 'op-no-blanks', 'unary-op',
         ):
             self.add_token('blank', ' ')
-
+    #@+node:ekr.20190915083748.1: *4* ptb.blank_before_end_line_comment
     def blank_before_end_line_comment(self):
-        '''Add a blank before an end-of-line comment.'''
+        '''Add two blanks before an end-of-line comment.'''
         prev = self.code_list[-1]
+        self.clean('blank')
         if prev.kind not in (
-            'blank', 'blank-lines',
+            'blank-lines',
             'file-start',
             'line-end', 'line-indent',
         ):
+            self.add_token('blank', ' ')
             self.add_token('blank', ' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
     def blank_lines(self, n):
@@ -1360,7 +1362,7 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
             return
-        self.clean('blank') # Important!
+        self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')

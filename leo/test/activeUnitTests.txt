@@ -3249,6 +3249,7 @@ try:
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
         assert expected.h.lower() == 'expected', repr(expected.h)
+        assert test.b != expected.b, f"{peeve.h}: test and expected must be different"
         expected_s = expected.b
         test_s = test.b
         try:
@@ -3452,15 +3453,24 @@ def foo(a, b):
 def foo(a, b):
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
     bar(2+baz)
+#@+node:ekr.20190915083933.1: *5* peeve: two spaces before a trailing comment
+#@+node:ekr.20190915083945.1: *6* test
+a = b # comment
+c = d# comment
+e - f   # comment
+#@+node:ekr.20190915084039.1: *6* expected
+a = b  # comment
+c = d  # comment
+e - f  # comment
 #@+node:ekr.20190915083243.1: *5* peeve: ws around word ops
-b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])
 #@+node:ekr.20190915083412.1: *6* test
-b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])
+b =    ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
 #@+node:ekr.20190915083418.1: *6* expected
-b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])
+b = ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
 #@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:

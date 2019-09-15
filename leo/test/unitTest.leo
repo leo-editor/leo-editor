@@ -368,6 +368,10 @@
 <v t="ekr.20190915074201.1"><vh>test</vh></v>
 <v t="ekr.20190915074205.1"><vh>expected</vh></v>
 </v>
+<v t="ekr.20190915083933.1"><vh>peeve: two spaces before a trailing comment</vh>
+<v t="ekr.20190915083945.1"><vh>test</vh></v>
+<v t="ekr.20190915084039.1"><vh>expected</vh></v>
+</v>
 <v t="ekr.20190915083243.1"><vh>peeve: ws around word ops</vh>
 <v t="ekr.20190915083412.1"><vh>test</vh></v>
 <v t="ekr.20190915083418.1"><vh>expected</vh></v>
@@ -3559,6 +3563,7 @@ try:
         expected = test.next()
         assert test.h.lower() == 'test', repr(test.h)
         assert expected.h.lower() == 'expected', repr(expected.h)
+        assert test.b != expected.b, f"{peeve.h}: test and expected must be different"
         expected_s = expected.b
         test_s = test.b
         try:
@@ -3943,11 +3948,23 @@ ham[::step_fn(x)]
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
     bar(2+baz)
 </t>
-<t tx="ekr.20190915083243.1">b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])</t>
-<t tx="ekr.20190915083412.1">b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])</t>
-<t tx="ekr.20190915083418.1">b = name in ('and', 'in', 'not', 'not in', 'or')
-return ''.join([z.to_string() for z in self.code_list])</t>
+<t tx="ekr.20190915083243.1"></t>
+<t tx="ekr.20190915083412.1">b =    ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+</t>
+<t tx="ekr.20190915083418.1">b = ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+</t>
+<t tx="ekr.20190915083933.1"></t>
+<t tx="ekr.20190915083945.1">a = b # comment
+c = d# comment
+e - f   # comment
+</t>
+<t tx="ekr.20190915084039.1">a = b  # comment
+c = d  # comment
+e - f  # comment
+</t>
 </tnodes>
 </leo_file>
