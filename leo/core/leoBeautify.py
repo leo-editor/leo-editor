@@ -344,7 +344,7 @@ class BlackCommand:
         self.c = c
         self.wrapper = c.frame.body.wrapper
         self.reloadSettings()
-        
+
     def reloadSettings(self):
         c = self.c
         keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
@@ -424,8 +424,8 @@ class BlackCommand:
         try:
             # Support black, version 19.3b0.
             mode = black.FileMode()
-            mode.line_length=self.line_length
-            mode.string_normalization=self.normalize_strings
+            mode.line_length = self.line_length
+            mode.string_normalization = self.normalize_strings
             # Note: format_str does not check parse trees,
             #       so in effect, it already runs in fast mode.
             body3 = black.format_str(body2, mode=mode)
@@ -437,7 +437,7 @@ class BlackCommand:
                 raise
             p.v.setMarked()
             return False
-        except (SyntaxError, black.InvalidInput):
+        except(SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
             g.es_print(f"{p.h} will not be changed")
             g.printObj(body2, tag='Sanitized syntax')
@@ -520,7 +520,7 @@ class CPrettyPrinter:
             if giveWarnings:
                 g.error('** changed ', p.h)
                 g.es_print('%s after\n%s' % (
-                    message, repr(''.join(s[i: j]))))
+                    message, repr(''.join(s[i:j]))))
 
         i, n, result = 0, len(s), []
         while i < n:
@@ -535,29 +535,29 @@ class CPrettyPrinter:
                         j = self.skip_ws_and_comments(s, j + 1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
-                            result.extend(s[i: j])
+                            result.extend(s[i:j])
                         elif self.match(s, j, '{'):
-                            result.extend(s[i: j])
+                            result.extend(s[i:j])
                         else:
                             oops("insert '{'", i, j)
                             # Back up, and don't go past a newline or comment.
                             j = self.skip_ws(s, old_j)
-                            result.extend(s[i: j])
+                            result.extend(s[i:j])
                             result.append(' ')
                             result.append('{')
                             result.append('\n')
                             i = j
                             j = self.skip_statement(s, i)
-                            result.extend(s[i: j])
+                            result.extend(s[i:j])
                             result.append('\n')
                             result.append('}')
                             oops("insert '}'", i, j)
                     else:
                         oops("missing ')'", i, j)
-                        result.extend(s[i: j])
+                        result.extend(s[i:j])
                 else:
                     oops("missing '('", i, j)
-                    result.extend(s[i: j])
+                    result.extend(s[i:j])
                 i = j
             else:
                 result.append(token)
@@ -669,9 +669,9 @@ class CPrettyPrinter:
                 s = s.replace('\t', ' ' * w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n' + s2[: -w])
+                    self.result.append('\n' + s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -700,7 +700,7 @@ class CPrettyPrinter:
             else:
                 j += 1
             assert j > i
-            result.append(''.join(s[i: j]))
+            result.append(''.join(s[i:j]))
             i = j # Advance.
         return result
     #@+at The following could be added to the 'else' clause::
@@ -836,7 +836,7 @@ class PythonTokenBeautifier:
         # Complete the init.
         self.sanitizer = None # For pylint.
         self.reloadSettings()
-        
+
     def reloadSettings(self):
         c = self.c
         if c:
@@ -1068,7 +1068,7 @@ class PythonTokenBeautifier:
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
         '''
-        
+
         def oops():
             g.trace('unknown kind', self.kind)
 
@@ -1394,7 +1394,7 @@ class PythonTokenBeautifier:
         # g.printObj(tail, tag='TAIL')
         #
         # Cut back the token list
-        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
+        self.code_list = self.code_list[:len(self.code_list) - len(line_tokens) - 1]
             # -1 for the trailing line-end.
         # g.printObj(self.code_list, tag='CUT CODE LIST')
         #
@@ -1462,7 +1462,7 @@ class PythonTokenBeautifier:
                     self.add_token('line-indent', self.lws)
                     self.code_list.extend(tail[i:])
                     return
-                lws = lws[: -4]
+                lws = lws[:-4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1475,7 +1475,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         '''Return the previous line, as a list of tokens.'''
         line = []
-        for t in reversed(self.code_list[: -1]):
+        for t in reversed(self.code_list[:-1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1717,7 +1717,7 @@ class PythonTokenBeautifier:
     #@-others
 #@+node:ekr.20190910081550.1: ** class SyntaxSanitizer
 class SyntaxSanitizer:
-    
+
     #@+<< SyntaxSanitizer docstring >>
     #@+node:ekr.20190910093739.1: *3* << SyntaxSanitizer docstring >>
     r"""
@@ -1750,7 +1750,7 @@ class SyntaxSanitizer:
     The beautify* and black* commands clearly report such failures.
     """
     #@-<< SyntaxSanitizer docstring >>
-    
+
     def __init__(self, c, keep_comments):
         self.c = c
         self.keep_comments = keep_comments
@@ -1774,11 +1774,11 @@ class SyntaxSanitizer:
         if p:
             s0 = p.b
         n = 5
-        while ('#' + ('!' * n)) in s0:
+        while('#' + ('!' * n)) in s0:
             n += 1
         comment = '#' + ('!' * n)
         # Create a dict of directives.
-        d = {z: True for z in g.globalDirectiveList}
+        d = {z:True for z in g.globalDirectiveList}
         # Convert all Leonine lines to special comments.
         i, lines, result = 0, g.splitLines(s0), []
         while i < len(lines):
@@ -1811,7 +1811,7 @@ class SyntaxSanitizer:
                     j += 1
                     k = g.skip_id(s, j, chars='-')
                     if k > j:
-                        word = s[j: k]
+                        word = s[j:k]
                         if word == 'others':
                             # Remember the original @others line.
                             result.append(comment + s)
@@ -1877,7 +1877,7 @@ class SyntaxSanitizer:
         # Delete the lws before the comment.
         # This works because the tail contains the original whitespace.
         assert comment in s
-        s = s.lstrip().replace(comment,'')
+        s = s.lstrip().replace(comment, '')
         #
         # Here, s is the original line.
         if comment in s:
@@ -1886,7 +1886,7 @@ class SyntaxSanitizer:
         if self.starts_doc_part(s):
             result.append(s)
             while i < len(lines):
-                s = lines[i].lstrip().replace(comment,'')
+                s = lines[i].lstrip().replace(comment, '')
                 i += 1
                 result.append(s)
                 if self.ends_doc_part(s):
