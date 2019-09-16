@@ -521,8 +521,13 @@
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20150602160413.1"><vh>@bool tidy-autobeautify = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool tidy-keep-blank-lines = True</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
+</v>
+<v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
+<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
@@ -9691,7 +9696,7 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19779"></t>
+<t tx="ekr.20141010095448.19779">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
@@ -9978,7 +9983,6 @@ except KeyError:
             return "self, "
     return ""
 </t>
-<t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
 <t tx="ekr.20150618105435.1"></t>
 <t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
 False: leave the Find Dialog open after any search.</t>
@@ -11755,6 +11759,11 @@ The --init-docks command-line option is the easy way to do this.</t>
 
 # Not ready yet:
 # pyzoworkspace</t>
+<t tx="ekr.20190915192551.1"></t>
+<t tx="ekr.20190915192624.1"></t>
+<t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
+<t tx="ekr.20190915192705.1"></t>
+<t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
