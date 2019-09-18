@@ -682,13 +682,17 @@ class BaseJEditColorizer (BaseColorizer):
         self.language = language
         self.rulesetName = rulesetName
         self.properties = getattr(mode, 'properties', None) or {}
-        self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) \
-            if hasattr(mode, 'keywordsDictDict') else {}
+        #
+        # #1334: Careful: getattr(mode, ivar, {}) might be None!
+        #
+        d = getattr(mode, 'keywordsDictDict', {}) or {}
+        self.keywordsDict = d.get(rulesetName, {})
         self.setKeywords()
-        self.attributesDict = mode.attributesDictDict.get(rulesetName) \
-            if hasattr(mode, 'attributesDictDict') else {}
+        d = getattr(mode, 'attributesDictDict', {}) or {}
+        self.attributesDict = d.get(rulesetName, {})
         self.setModeAttributes()
-        self.rulesDict = mode.rulesDictDict.get(rulesetName) if hasattr(mode, 'rulesDictDict') else {}
+        d = getattr(mode, 'rulesDictDict', {}) or {}
+        self.rulesDict = d.get(rulesetName, {})
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
