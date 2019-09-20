@@ -6894,7 +6894,7 @@ def os_path_exists(path):
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper
-def os_path_expandExpression(s, **keys):
+def os_path_expandExpression(s, report_errors=True, **keys):
     '''Expand all {{anExpression}} in c's context.'''
     c = keys.get('c')
     if not c:
@@ -6916,7 +6916,7 @@ def os_path_expandExpression(s, **keys):
             exp = s[i + 2: j].strip()
             if exp:
                 try:
-                    s2 = replace_path_expression(c, exp)
+                    s2 = replace_path_expression(c, exp, report_errors)
                     aList.append(s2)
                 except Exception:
                     g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
@@ -6932,7 +6932,7 @@ def os_path_expandExpression(s, **keys):
         val = val.replace('\\','/')
     return val
 #@+node:ekr.20180120140558.1: *4* g.replace_path_expression
-def replace_path_expression(c, expr):
+def replace_path_expression(c, expr, report_error=True):
     ''' local function to replace a single path expression.'''
     d = {
         'c': c,
@@ -6943,14 +6943,15 @@ def replace_path_expression(c, expr):
         'sep': os.sep,
         'sys': sys,
     }
+    # #1338: Don't report errors when called by g.getUrlFromNode.
     try:
         val = eval(expr, d)
         return g.toUnicode(val, encoding='utf-8', reportErrors=True)
     except Exception as e:
-        g.trace(
-            f"{c.shortFileName()}: "
-            f"{e.__class__.__name__} in {c.p and c.p.h}: {repr(expr)}")
-        g.trace(g.callers())
+        if report_error:
+            g.trace(
+                f"{c.shortFileName()}: "
+                f"{e.__class__.__name__} in {c.p and c.p.h}: {repr(expr)}")
         return expr
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
@@ -7764,7 +7765,8 @@ def getUrlFromNode(p):
     # Next check for existing file and add a file:// scheme.
     for s in table:
         tag = 'file://'
-        url = computeFileUrl(s, c=c, p=p)
+        # #1338: Suppress errors when evaluating {{expr}}.
+        url = computeFileUrl(s, c=c, p=p, report_errors=False)
         if url.startswith(tag):
             fn = url[len(tag):].lstrip()
             fn = fn.split('#', 1)[0]
