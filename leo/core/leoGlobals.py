@@ -7710,7 +7710,7 @@ def unquoteUrl(url):
     '''Replace special characters (especially %20, by their equivalent).'''
     return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn, c=None, p=None):
+def computeFileUrl(fn, c=None, p=None, report_errors=True):
     '''
     Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.
