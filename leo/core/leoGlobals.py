@@ -6894,9 +6894,8 @@ def os_path_exists(path):
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper
-def os_path_expandExpression(s, report_errors=True, **keys):
+def os_path_expandExpression(s, **keys):
     '''Expand all {{anExpression}} in c's context.'''
-    assert 'report_errors' not in keys, repr(keys)
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c', g.callers())
@@ -6917,7 +6916,7 @@ def os_path_expandExpression(s, report_errors=True, **keys):
             exp = s[i + 2: j].strip()
             if exp:
                 try:
-                    s2 = replace_path_expression(c, exp, report_errors=report_errors)
+                    s2 = replace_path_expression(c, exp)
                     aList.append(s2)
                 except Exception:
                     g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
@@ -6933,7 +6932,7 @@ def os_path_expandExpression(s, report_errors=True, **keys):
         val = val.replace('\\','/')
     return val
 #@+node:ekr.20180120140558.1: *4* g.replace_path_expression
-def replace_path_expression(c, expr, report_errors=True):
+def replace_path_expression(c, expr):
     ''' local function to replace a single path expression.'''
     d = {
         'c': c,
@@ -6947,13 +6946,9 @@ def replace_path_expression(c, expr, report_errors=True):
     # #1338: Don't report errors when called by g.getUrlFromNode.
     try:
         val = eval(expr, d)
-        return g.toUnicode(val, encoding='utf-8', reportErrors=report_errors)
+        return g.toUnicode(val, encoding='utf-8')
     except Exception as e:
-        if report_errors:
-            g.trace(g.callers())
-            g.trace(
-                f"{c.shortFileName()}: "
-                f"{e.__class__.__name__} in {c.p.h}: {repr(expr)}")
+        g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
         return expr
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
@@ -7712,7 +7707,7 @@ def unquoteUrl(url):
     '''Replace special characters (especially %20, by their equivalent).'''
     return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn, c=None, p=None, report_errors=True):
+def computeFileUrl(fn, c=None, p=None, expand_expressions=True):
     '''
     Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.
@@ -7725,7 +7720,8 @@ def computeFileUrl(fn, c=None, p=None, report_errors=True):
         # Expand '~' and handle Leo expressions.
         path = url[i:]
         path = g.os_path_expanduser(path)
-        path = g.os_path_expandExpression(path, c=c, report_errors=report_errors)
+        if expand_expressions:
+            path = g.os_path_expandExpression(path, c=c)
         path = g.os_path_finalize(path)
         url = url[: i] + path
     else:
@@ -7738,7 +7734,8 @@ def computeFileUrl(fn, c=None, p=None, report_errors=True):
             path = url[len(tag):].lstrip()
         else:
             path = url
-        path = g.os_path_expandExpression(path, c=c, report_errors=report_errors)
+        if expand_expressions:
+            path = g.os_path_expandExpression(path, c=c)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
@@ -7767,8 +7764,8 @@ def getUrlFromNode(p):
     # Next check for existing file and add a file:// scheme.
     for s in table:
         tag = 'file://'
-        # #1338: Suppress errors when evaluating {{expr}}.
-        url = computeFileUrl(s, c=c, p=p, report_errors=False)
+        # #1338: Don't expand {{ expressions here!
+        url = computeFileUrl(s, c=c, p=p, expand_expressions=False)
         if url.startswith(tag):
             fn = url[len(tag):].lstrip()
             fn = fn.split('#', 1)[0]
