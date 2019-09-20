@@ -6932,7 +6932,7 @@ def os_path_expandExpression(s, report_errors=True, **keys):
         val = val.replace('\\','/')
     return val
 #@+node:ekr.20180120140558.1: *4* g.replace_path_expression
-def replace_path_expression(c, expr, report_error=True):
+def replace_path_expression(c, expr, report_errors=True):
     ''' local function to replace a single path expression.'''
     d = {
         'c': c,
@@ -6948,7 +6948,7 @@ def replace_path_expression(c, expr, report_error=True):
         val = eval(expr, d)
         return g.toUnicode(val, encoding='utf-8', reportErrors=True)
     except Exception as e:
-        if report_error:
+        if report_errors:
             g.trace(
                 f"{c.shortFileName()}: "
                 f"{e.__class__.__name__} in {c.p and c.p.h}: {repr(expr)}")
