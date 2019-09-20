@@ -6943,8 +6943,13 @@ def replace_path_expression(c, expr):
         'sep': os.sep,
         'sys': sys,
     }
-    val = eval(expr, d)
-    return g.toUnicode(val, encoding='utf-8', reportErrors=True)
+    try:
+        val = eval(expr, d)
+        return g.toUnicode(val, encoding='utf-8', reportErrors=True)
+    except Exception as e:
+        g.trace(e.__class__.__name__, c.shortFileName(), c.p.h)
+        g.printObj(expr)
+        return expr
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""

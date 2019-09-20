@@ -213,17 +213,22 @@ class FastRead:
         if g.app.use_global_docks:
             mf = getattr(g.app.gui, 'main_window', None)
             if not mf:
+                g.trace('*** no main_window ***')
                 return ####
             g.app.gui.set_top_geometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
         else:
+            # c.frame may be a NullFrame.
+            ### g.trace('***c.frame.top', c.frame.top)
             c.frame.setTopGeometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
             frameFactory = getattr(g.app.gui, 'frameFactory', None)
             if not frameFactory:
                 return ####
+            assert frameFactory is not None
+            g.trace("Has frame factory:", c.shortFileName())
             mf = frameFactory.masterFrame
         if trace: g.trace('sizing screen')
         if g.app.start_minimized:

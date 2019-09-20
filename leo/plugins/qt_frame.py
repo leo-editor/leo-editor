@@ -4757,7 +4757,7 @@ class TabbedFrameFactory:
     with multiple tabs for documents
     """
     #@+others
-    #@+node:ekr.20110605121601.18465: *3* frameFactory.__init__	
+    #@+node:ekr.20110605121601.18465: *3* frameFactory.__init__	 & __repr__
     def __init__(self):
         # will be created when first frame appears
         # DynamicWindow => Leo frame map
@@ -4768,7 +4768,7 @@ class TabbedFrameFactory:
             # Keys are DynamicWindows, values are frames.
         self.masterFrame = None
         self.createTabCommands()
-
+        
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame):
 
