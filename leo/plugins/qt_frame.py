@@ -3207,7 +3207,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if 'size' in g.app.debug:
             g.trace('\n', w, h, x, y)
         return w, h, x, y
-
     #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.

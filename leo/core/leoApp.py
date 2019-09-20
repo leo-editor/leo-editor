@@ -1645,7 +1645,7 @@ class LeoApp:
         Restore the layout of global dock widgets and toolbars.
         '''
         #
-        # Note for #1189: The windows has already been improperly resized
+        # Note for #1189: The windows has already been properly resized
         #                 by the time this method is called.
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
@@ -1653,7 +1653,11 @@ class LeoApp:
             return
         main_window = getattr(g.app.gui, 'main_window', None)
         if not main_window:
-            if trace: g.trace('no main window')
+            if trace:
+                if hasattr(g.app.gui, 'main_window'):
+                    g.trace('g.app.gui.main_window is None')
+                else:
+                    g.trace('no ivar: g.app.gui.main_window')
             return
         #
         # Support --init-docks.
@@ -1757,7 +1761,11 @@ class LeoApp:
             return
         main_window = getattr(g.app.gui, 'main_window', None)
         if not main_window:
-            if trace: g.trace('no main window')
+            if trace:
+                if hasattr(g.app.gui, 'main_window'):
+                    g.trace('g.app.gui.main_window is None')
+                else:
+                    g.trace('no ivar: g.app.gui.main_window')
             return
         #
         # Save the state
