@@ -228,7 +228,7 @@ class FastRead:
             if not frameFactory:
                 return ####
             assert frameFactory is not None
-            g.trace("Has frame factory:", c.shortFileName())
+            ### g.trace("Has frame factory:", c.shortFileName())
             mf = frameFactory.masterFrame
         if trace: g.trace('sizing screen')
         if g.app.start_minimized:
