@@ -6947,8 +6947,10 @@ def replace_path_expression(c, expr):
         val = eval(expr, d)
         return g.toUnicode(val, encoding='utf-8', reportErrors=True)
     except Exception as e:
-        g.trace(e.__class__.__name__, c.shortFileName(), c.p.h)
-        g.printObj(expr)
+        g.trace(
+            f"{c.shortFileName()}: "
+            f"{e.__class__.__name__} in {c.p and c.p.h}: {repr(expr)}")
+        g.trace(g.callers())
         return expr
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
