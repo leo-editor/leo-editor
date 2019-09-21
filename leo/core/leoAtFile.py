@@ -229,8 +229,8 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
-        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
-        targetFileName = g.os_path_expanduser(targetFileName) # #1341.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        targetFileName = c.expand_path_expression(targetFileName) # #1341.
         return g.os_path_realpath(
             g.os_path_finalize_join(at.default_directory, targetFileName)) # #1341.
     #@+node:ekr.20041005105605.17: *3* at.Reading
@@ -427,6 +427,7 @@ class AtFile:
     def initFileName(self, fromString, importFileName, root):
         '''Return the fileName to be used in messages.'''
         # at = self
+        c = self.c
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
@@ -434,7 +435,7 @@ class AtFile:
         elif root.isAnyAtFileNode():
             fileName = root.anyAtFileNodeName()
             # #102, #1341: expand user expression.
-            fileName = g.os_path_expanduser(fileName)
+            fileName = c.expand_path_expression(fileName) # #1341:
         else:
             fileName = None
         if fileName:
@@ -549,7 +550,7 @@ class AtFile:
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
         if not g.os_path_exists(fileName):
             g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
@@ -595,7 +596,7 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
@@ -626,7 +627,7 @@ class AtFile:
         '''Read one @asis node. Used only by refresh-from-disk'''
         at, c = self, self.c
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
@@ -711,7 +712,7 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
@@ -1320,11 +1321,13 @@ class AtFile:
         c.init_error_dialogs()
         p = p.copy()
         after = p.nodeAfterTree()
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
-                    fileName = c.os_path_finalize_join(at.default_directory, fileName)
+                    fileName = c.expand_path_expression(fileName) # #1341
+                    fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True

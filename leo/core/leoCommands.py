@@ -1872,7 +1872,9 @@ class Commands:
             if name: break
         if name:
             # The commander method supports {{expr}}; the global function does not.
-            name = c.os_path_finalize_join(path, name)
+            path = c.expand_path_expression(path) # #1341.
+            name = c.expand_path_expression(name) # #1341.
+            name = g.os_path_finalize_join(path, name)
         return name
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
@@ -1957,7 +1959,7 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives (change? ok?)
+    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives (changed)
     def scanAtPathDirectives(self, aList):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
@@ -1969,9 +1971,12 @@ class Commands:
             base = c.openDirectory
         else:
             base = g.app.config.relative_path_base_directory
-            if base and base == "!": base = g.app.loadDir
-            elif base and base == ".": base = c.openDirectory
-        absbase = c.os_path_finalize_join(g.app.loadDir, base)
+            if base and base == "!":
+                base = g.app.loadDir
+            elif base and base == ".":
+                base = c.openDirectory
+        base = c.expand_path_expression(base) # #1341:
+        absbase = g. os_path_finalize_join(g.app.loadDir, base)  # #1341:
         # Step 2: look for @path directives.
         paths = []
         for d in aList:
@@ -1982,13 +1987,14 @@ class Commands:
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
                 if path and not warning:
+                    path = c.expand_path_expression(path) # #1341.
                     paths.append(path)
                 # We will silently ignore empty @path directives.
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = c.os_path_finalize_join(*paths)
+        path = g.os_path_finalize_join(*paths) # #1341.
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
@@ -2009,6 +2015,62 @@ class Commands:
             if 'root' in d:
                 return 'doc' if start_in_doc else 'code'
         return None
+    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression (new)
+    def expand_path_expression(self, s):
+        '''Expand all {{anExpression}} in c's context.'''
+        c = self
+        if not s:
+            return ''
+        s = g.toUnicode(s)
+        # find and replace repeated path expressions
+        previ, aList = 0, []
+        while previ < len(s):
+            i = s.find('{{', previ)
+            j = s.find('}}', previ)
+            if -1 < i < j:
+                # Add anything from previous index up to '{{'
+                if previ < i:
+                    aList.append(s[previ:i])
+                # Get expression and find substitute
+                exp = s[i + 2: j].strip()
+                if exp:
+                    try:
+                        s2 = c.replace_path_expression(exp)
+                        aList.append(s2)
+                    except Exception:
+                        g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
+                        g.es_exception(full=True, c=c)
+                # Prepare to search again after the last '}}'
+                previ = j+2
+            else:
+                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
+                aList.append(s[previ:])
+                break
+        val = ''.join(aList)
+        if g.isWindows:
+            val = val.replace('\\','/')
+        return val
+    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression (new)
+    def replace_path_expression(self, expr):
+        ''' local function to replace a single path expression.'''
+        c = self
+        d = {
+            'c': c,
+            'g': g,
+            # 'getString': c.config.getString,
+            'p': c.p,
+            'os': os,
+            'sep': os.sep,
+            'sys': sys,
+        }
+        # #1338: Don't report errors when called by g.getUrlFromNode.
+        # # pylint: disable=eval-used
+        try:
+            val = eval(expr, d)
+            return g.toUnicode(val, encoding='utf-8')
+        except Exception as e:
+            g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
+            return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
