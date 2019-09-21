@@ -498,7 +498,7 @@ class LeoImportCommands:
                 if s[-1] != '\n':
                     theFile.write(nl)
         theFile.close()
-    #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand (changed)
+    #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand(self, paths, toString=False):
         c = self.c
         self.setEncoding()
@@ -670,7 +670,7 @@ class LeoImportCommands:
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
-    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename (changed)
+    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
         c = self.c

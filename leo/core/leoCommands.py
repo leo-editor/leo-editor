@@ -442,7 +442,7 @@ class Commands:
             print('%30s = %s' % (
                 key, command.__name__ if command else '<None>'))
         print('')
-    #@+node:ekr.20041130173135: *4* c.hash (changed)
+    #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
 
     def hash(self):
@@ -1846,7 +1846,7 @@ class Commands:
             else:
                 n += len(s)
         return language
-    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName (changed)
+    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
     # Not used in Leo's core.
     # Used by the UNl plugin.  Does not need to create a path.
 
@@ -1959,7 +1959,7 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives (changed)
+    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
     def scanAtPathDirectives(self, aList):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''

@@ -842,7 +842,7 @@ class ParserBaseClass:
             pane=pane,
             stroke=stroke)
         return name, bi
-    #@+node:ekr.20041120094940.9: *3* pbc.set (changed)
+    #@+node:ekr.20041120094940.9: *3* pbc.set
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
         c = self.c
@@ -2147,7 +2147,7 @@ class LocalConfigManager:
             pass # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20120215072959.12475: *3* c.config.set (changed)
+    #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
         c = self.c

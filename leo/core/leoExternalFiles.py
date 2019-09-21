@@ -223,7 +223,7 @@ class ExternalFilesController:
             else:
                 p.setDirty()
                 c.setChanged(True)
-    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers (changed)
+    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.

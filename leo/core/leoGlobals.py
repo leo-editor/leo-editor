@@ -3626,7 +3626,7 @@ def ensure_extension(name, ext):
     if old_ext and old_ext == ext:
         return name
     return name + ext
-#@+node:ekr.20150403150655.1: *3* g.fullPath (changed)
+#@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''
     Return the full path (including fileName) in effect at p. Neither the

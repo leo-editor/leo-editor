@@ -969,7 +969,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(c.p, aList[1:])
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName (changed)
+    #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
     def deleteIconByName(self, t, name, relPath): # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
@@ -1014,7 +1014,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20150514063305.240: *4* ec.insertIcon (changed)
+    #@+node:ekr.20150514063305.240: *4* ec.insertIcon
     @cmd('insert-icon')
     def insertIcon(self, event=None):
         '''Prompt for an icon, and insert it into the node's icon list.'''

@@ -1517,7 +1517,7 @@ class RstCommands:
             s = s.replace('<title></title>',
                 '<title>%s</title>' % m.group(1))
         return s
-    #@+node:ekr.20100813041139.5914: *5* rst.createDirectoryForFile (changed)
+    #@+node:ekr.20100813041139.5914: *5* rst.createDirectoryForFile
     def createDirectoryForFile(self, fn):
         '''Create the directory for fn if
         a) it doesn't exist and
@@ -1716,7 +1716,7 @@ class RstCommands:
     def encode(self, s):
         '''return s converted to an encoded string.'''
         return g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
-    #@+node:ekr.20090502071837.91: *4* rst.report (changed)
+    #@+node:ekr.20090502071837.91: *4* rst.report
     def report(self, name, p):
         '''Issue a report to the log pane.'''
         if self.getOption(p, 'silent'):

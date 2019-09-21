@@ -3460,7 +3460,7 @@ class LoadManager:
             if not g.unitTesting:
                 g.error("can not open:", fn)
             return None
-    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile (changed)
+    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
     def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile

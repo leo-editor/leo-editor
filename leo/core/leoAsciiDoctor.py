@@ -136,7 +136,7 @@ class AsciiDoctorCommands:
             g.es_print('can not open: %r' % fn)
             g.es_exception()
             return fn, None
-    #@+node:ekr.20190515070742.79: *3* adoc.create_directory (changed)
+    #@+node:ekr.20190515070742.79: *3* adoc.create_directory
     def create_directory(self, fn):
         '''
         Create the directory for fn if
