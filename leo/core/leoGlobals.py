@@ -7710,14 +7710,13 @@ def unquoteUrl(url):
 def computeFileUrl(fn, c=None, p=None):
     '''
     Compute finalized url for filename fn.
-    This involves adding url escapes and evaluating Leo expressions.
     '''
     # First, replace special characters (especially %20, by their equivalent).
     url = urllib.parse.unquote(fn)
     # Finalize the path *before* parsing the url.
     i = url.find('~')
     if i > -1:
-        # Expand '~' and handle Leo expressions.
+        # Expand '~'.
         path = url[i:]
         path = g.os_path_expanduser(path)
         # #1338: This is way too dangerous, and a serious security violation.
@@ -7725,7 +7724,6 @@ def computeFileUrl(fn, c=None, p=None):
         path = g.os_path_finalize(path)
         url = url[: i] + path
     else:
-        # Handle Leo expressions.
         tag = 'file://'
         tag2 = 'file:///'
         if sys.platform.startswith('win') and url.startswith(tag2):
