@@ -7721,7 +7721,7 @@ def computeFileUrl(fn, c=None, p=None):
         path = url[i:]
         path = g.os_path_expanduser(path)
         # #1338: This is way too dangerous, and a serious security violation.
-            #    path = g.os_path_expandExpression(path, c=c)
+            # path = g.os_path_expandExpression(path, c=c)
         path = g.os_path_finalize(path)
         url = url[: i] + path
     else:
