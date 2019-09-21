@@ -1846,7 +1846,7 @@ class Commands:
             else:
                 n += len(s)
         return language
-    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
+    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName (changed)
     # Not used in Leo's core.
     # Used by the UNl plugin.  Does not need to create a path.
 
@@ -2227,7 +2227,7 @@ class Commands:
     #fix bobjack's spelling error
 
     universallCallback = universalCallback
-    #@+node:ekr.20070115135502: *4* c.writeScriptFile
+    #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
     def writeScriptFile(self, script):
 
         # Get the path to the file.
@@ -2243,10 +2243,9 @@ class Commands:
                 # make the first element absolute
                 parts[0] = driveSpec + os.sep + parts[0]
             allParts = [path] + parts
-            path = c.os_path_finalize_join(*allParts)
+            path = g.os_path_finalize_join(*allParts) # #1431
         else:
-            path = c.os_path_finalize_join(
-                g.app.homeLeoDir, 'scriptFile.py')
+            path = g.os_path_finalize_join(g.app.homeLeoDir, 'scriptFile.py') # #1431
         #
         # Write the file.
         try:

@@ -3627,7 +3627,7 @@ def ensure_extension(name, ext):
     if old_ext and old_ext == ext:
         return name
     return name + ext
-#@+node:ekr.20150403150655.1: *3* g.fullPath
+#@+node:ekr.20150403150655.1: *3* g.fullPath (changed)
 def fullPath(c, p, simulate=False):
     '''
     Return the full path (including fileName) in effect at p. Neither the
@@ -3640,8 +3640,9 @@ def fullPath(c, p, simulate=False):
         fn = p.h if simulate else p.anyAtFileNodeName()
             # Use p.h for unit tests.
         if fn:
-            # Fix #102: call commander method, not the global function.
-            return c.os_path_finalize_join(path, fn)
+            # Fix #102: expand path expressions.
+            fn = c.expand_path_expression(fn) # #1341.
+            return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory, kinds=None, recursive=True):
