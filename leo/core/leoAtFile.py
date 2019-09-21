@@ -229,8 +229,10 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
+        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        targetFileName = g.os_path_expanduser(targetFileName) # #1341.
         return g.os_path_realpath(
-            c.os_path_finalize_join(at.default_directory, targetFileName))
+            g.os_path_finalize_join(at.default_directory, targetFileName)) # #1341.
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -424,18 +426,19 @@ class AtFile:
     #@+node:ekr.20041005105605.22: *6* at.initFileName
     def initFileName(self, fromString, importFileName, root):
         '''Return the fileName to be used in messages.'''
-        at = self
+        # at = self
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
             fileName = importFileName
         elif root.isAnyAtFileNode():
             fileName = root.anyAtFileNodeName()
+            # #102, #1341: expand user expression.
+            fileName = g.os_path_expanduser(fileName)
         else:
             fileName = None
         if fileName:
-            # Fix bug 102: call the commander method, not the global funtion.
-            fileName = at.c.os_path_finalize(fileName)
+            fileName = g.os_path_finalize(fileName) # #1341:
         return fileName
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
