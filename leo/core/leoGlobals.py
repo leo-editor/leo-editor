@@ -7707,7 +7707,7 @@ def unquoteUrl(url):
     '''Replace special characters (especially %20, by their equivalent).'''
     return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn, c=None, p=None, expand_expressions=True):
+def computeFileUrl(fn, c=None, p=None):
     '''
     Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.
@@ -7720,8 +7720,8 @@ def computeFileUrl(fn, c=None, p=None, expand_expressions=True):
         # Expand '~' and handle Leo expressions.
         path = url[i:]
         path = g.os_path_expanduser(path)
-        if expand_expressions:
-            path = g.os_path_expandExpression(path, c=c)
+        # #1338: This is way too dangerous, and a serious security violation.
+            #    path = g.os_path_expandExpression(path, c=c)
         path = g.os_path_finalize(path)
         url = url[: i] + path
     else:
@@ -7734,8 +7734,8 @@ def computeFileUrl(fn, c=None, p=None, expand_expressions=True):
             path = url[len(tag):].lstrip()
         else:
             path = url
-        if expand_expressions:
-            path = g.os_path_expandExpression(path, c=c)
+        # #1338: This is way too dangerous, and a serious security violation.
+            # path = g.os_path_expandExpression(path, c=c)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
@@ -7764,8 +7764,7 @@ def getUrlFromNode(p):
     # Next check for existing file and add a file:// scheme.
     for s in table:
         tag = 'file://'
-        # #1338: Don't expand {{ expressions here!
-        url = computeFileUrl(s, c=c, p=p, expand_expressions=False)
+        url = computeFileUrl(s, c=c, p=p)
         if url.startswith(tag):
             fn = url[len(tag):].lstrip()
             fn = fn.split('#', 1)[0]
