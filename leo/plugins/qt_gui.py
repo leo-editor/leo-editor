@@ -621,12 +621,13 @@ class LeoQtGui(leoGui.LeoGui):
             '''
             # Adjust sys.path.
             g.trace()
-            path = g.os_path_finalize_join(g.app.loadDir,'..','external')
+            path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
             assert g.os_path_exists(path), repr(path)
             if not path in sys.path:
                 sys.path.append(path)
             #
             # Imports.
+            # pylint: disable=import-error
             import pyzo
             import pyzo.core.menu as menu
             pyzo.core.menu = menu
@@ -642,6 +643,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20190518110307.1: *7* pfd.init_real_pyzo
         def init_real_pyzo(self):
             '''Init the real pyzo, which has already been inited by pyzo_support.py'''
+            # pylint: disable=import-error
             g.trace()
             if 0: # Probably already done.
                 import pyzo
