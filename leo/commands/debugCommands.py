@@ -97,7 +97,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         else:
             args = [sys.executable, winpdb, '-t', filename]
             os.spawnv(os.P_NOWAIT, python, args)
-    #@+node:ekr.20150514063305.105: *3* debug.findDebugger
+    #@+node:ekr.20150514063305.105: *3* debug.findDebugger (expand only debugger path)
     def findDebugger(self):
         '''Find the debugger using settings.'''
         c = self.c

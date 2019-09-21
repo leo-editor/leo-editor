@@ -1943,7 +1943,7 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
+    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives (change? ok?)
     def scanAtPathDirectives(self, aList):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
