@@ -223,7 +223,7 @@ class ExternalFilesController:
             else:
                 p.setDirty()
                 c.setChanged(True)
-    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
+    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers (changed)
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.
@@ -244,7 +244,8 @@ class ExternalFilesController:
                 if root:
                     # Open the external file itself.
                     directory = g.setDefaultDirectory(c, root)
-                    path = c.os_path_finalize_join(directory, root.anyAtFileNodeName())
+                    fn = c.expand_path_expression(root.anyAtFileNodeName()) # 1341
+                    path = g.os_path_finalize_join(directory, fn) # 1341
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.

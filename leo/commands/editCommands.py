@@ -969,20 +969,20 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(c.p, aList[1:])
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
+    #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName (changed)
     def deleteIconByName(self, t, name, relPath): # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
         aList = self.getIconList(p)
         if not aList:
             return
-        basePath = c.os_path_finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = c.os_path_finalize_join(basePath, relPath)
-        name = c.os_path_finalize(name)
+        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons") # #1341.
+        absRelPath = g.os_path_finalize_join(basePath, relPath) # #1341
+        name = g.os_path_finalize(name) # #1341
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = c.os_path_finalize(name2)
+            name2 = g.os_path_finalize(name2) # #1341
             name2rel = d.get('relPath')
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
                 newList.append(d)
@@ -1014,12 +1014,12 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20150514063305.240: *4* ec.insertIcon
+    #@+node:ekr.20150514063305.240: *4* ec.insertIcon (changed)
     @cmd('insert-icon')
     def insertIcon(self, event=None):
         '''Prompt for an icon, and insert it into the node's icon list.'''
         c, p = self.c, self.c.p
-        iconDir = c.os_path_finalize_join(g.app.loadDir, "..", "Icons")
+        iconDir = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
         os.chdir(iconDir)
         paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',

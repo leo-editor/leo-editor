@@ -498,7 +498,7 @@ class LeoImportCommands:
                 if s[-1] != '\n':
                     theFile.write(nl)
         theFile.close()
-    #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
+    #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand (changed)
     def removeSentinelsCommand(self, paths, toString=False):
         c = self.c
         self.setEncoding()
@@ -532,10 +532,10 @@ class LeoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = c.os_path_finalize_join(path, fileName + ext)
+                newFileName = g.os_path_finalize_join(path, fileName + ext) # 1341
             else:
                 head, ext2 = g.os_path_splitext(fileName)
-                newFileName = c.os_path_finalize_join(path, head + ext + ext2)
+                newFileName = g.os_path_finalize_join(path, head + ext + ext2) # 1341
             if toString:
                 return s
             #@+<< Write s into newFileName >>
@@ -670,12 +670,12 @@ class LeoImportCommands:
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
-    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
+    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename (changed)
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
         c = self.c
         self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = c.os_path_finalize_join(self.default_directory, fileName)
+        fileName = g.os_path_finalize_join(self.default_directory, fileName) # 1341
         fileName = fileName.replace('\\', '/') # 2011/11/25
         return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file

@@ -136,7 +136,7 @@ class AsciiDoctorCommands:
             g.es_print('can not open: %r' % fn)
             g.es_exception()
             return fn, None
-    #@+node:ekr.20190515070742.79: *3* adoc.create_directory
+    #@+node:ekr.20190515070742.79: *3* adoc.create_directory (changed)
     def create_directory(self, fn):
         '''
         Create the directory for fn if
@@ -147,7 +147,7 @@ class AsciiDoctorCommands:
         '''
         c = self.c
         theDir, junk = g.os_path_split(fn)
-        theDir = c.os_path_finalize(theDir)
+        theDir = g.os_path_finalize(theDir) # #1341.
         if g.os_path_exists(theDir):
             return True
         ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)

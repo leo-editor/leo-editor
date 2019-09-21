@@ -3460,7 +3460,7 @@ class LoadManager:
             if not g.unitTesting:
                 g.error("can not open:", fn)
             return None
-    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
+    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile (changed)
     def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
@@ -3470,7 +3470,7 @@ class LoadManager:
                 # closes file.
         if ok:
             if not c.openDirectory:
-                theDir = c.os_path_finalize(g.os_path_dirname(fn))
+                theDir = g.os_path_finalize(g.os_path_dirname(fn)) # 1341
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
             g.app.closeLeoWindow(c.frame, finish_quit=False)

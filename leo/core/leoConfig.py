@@ -842,7 +842,7 @@ class ParserBaseClass:
             pane=pane,
             stroke=stroke)
         return name, bi
-    #@+node:ekr.20041120094940.9: *3* pbc.set
+    #@+node:ekr.20041120094940.9: *3* pbc.set (changed)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
         c = self.c
@@ -860,8 +860,8 @@ class ParserBaseClass:
         if gs:
             assert isinstance(gs, g.GeneralSetting), gs
             path = gs.path
-            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                g.es("over-riding setting:", name, "from", path)
+            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
+                g.es("over-riding setting:", name, "from", path) # 1341
         # Important: we can't use c here: it may be destroyed!
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
             unl=(p and p.get_UNL(with_proto=True)))
@@ -2147,7 +2147,7 @@ class LocalConfigManager:
             pass # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20120215072959.12475: *3* c.config.set
+    #@+node:ekr.20120215072959.12475: *3* c.config.set (changed)
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
         c = self.c
@@ -2159,7 +2159,7 @@ class LocalConfigManager:
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
-            if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+            if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path): # #1341.
                 g.es("over-riding setting:", name, "from", path)
         d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath

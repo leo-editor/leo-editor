@@ -74,14 +74,15 @@ class ShadowController:
         self.shadow_in_home_dir = c.config.getBool('shadow-in-home-dir', default=False)
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
     #@+node:ekr.20080711063656.1: *3* x.File utils
-    #@+node:ekr.20080711063656.7: *4* x.baseDirName
+    #@+node:ekr.20080711063656.7: *4* x.baseDirName (changed)
     def baseDirName(self):
-        x = self; c = x.c; filename = c.fileName()
+        c = self.c
+        filename = c.fileName()
         if filename:
-            return g.os_path_dirname(c.os_path_finalize(filename))
+            return g.os_path_dirname(g.os_path_finalize(filename)) # 1341
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
-    #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
+    #@+node:ekr.20080711063656.4: *4* x.dirName and pathName (changed)
     def dirName(self, filename):
         '''Return the directory for filename.'''
         x = self
@@ -89,8 +90,9 @@ class ShadowController:
 
     def pathName(self, filename):
         '''Return the full path name of filename.'''
-        x = self; c = x.c; theDir = x.baseDirName()
-        return theDir and c.os_path_finalize_join(theDir, filename)
+        x = self
+        theDir = x.baseDirName()
+        return theDir and g.os_path_finalize_join(theDir, filename) # 1341
     #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile(self, fn):
         '''This tells the AtFile.read logic whether to import a public file
@@ -168,7 +170,7 @@ class ShadowController:
                 fileDir = fileDir.replace(':', '%')
             # build the chache path as a subdir of the base dir
             fileDir = "/".join([baseDir, fname, fileDir])
-        return baseDir and c.os_path_finalize_join(
+        return baseDir and g.os_path_finalize_join(  # 1341
                 baseDir,
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,

@@ -442,13 +442,13 @@ class Commands:
             print('%30s = %s' % (
                 key, command.__name__ if command else '<None>'))
         print('')
-    #@+node:ekr.20041130173135: *4* c.hash
+    #@+node:ekr.20041130173135: *4* c.hash (changed)
     # This is a bad idea.
 
     def hash(self):
         c = self
         if c.mFileName:
-            return c.os_path_finalize(c.mFileName).lower()
+            return g.os_path_finalize(c.mFileName).lower() # #1341.
         return 0
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
