@@ -1200,7 +1200,7 @@ class Pattern:
         if isinstance(obj, Pattern):
             return self.find_s == obj.find_s and self.repl_s == obj.repl_s
         else:
-            return NotImplemented
+            return NotImplementedError
 
     def __ne__(self, obj):
         """Return True if two Patterns are not equivalent."""
@@ -2038,7 +2038,7 @@ class Stub:
         if isinstance(obj, Stub):
             return self.full_name == obj.full_name and self.kind == obj.kind
         else:
-            return NotImplemented
+            return NotImplementedError
 
     def __ne__(self, obj):
         """Stub.__ne__"""

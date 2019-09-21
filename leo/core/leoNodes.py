@@ -150,7 +150,7 @@ class NodeIndices:
         id_, t, n = self.scanGnx(gnx)
         # pylint: disable=literal-comparison
             # Don't you dare touch this code to keep pylint happy.
-        if not id_ or (n is not 0 and not n):
+        if not id_ or (n != 0 and not n):
             return # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
             try:
@@ -211,7 +211,7 @@ class Position:
                 p1._childIndex == p2._childIndex and
                 p1.stack == p2.stack)
         # Do this only after testing for None.
-        return NotImplemented
+        return NotImplementedError
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
