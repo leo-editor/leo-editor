@@ -2269,7 +2269,6 @@ class TypedDict:
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
     def add_to_list(self, key, val):
         """Update the *list*, self.d [key]"""
-        ### g.trace(g.callers())
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
@@ -6898,11 +6897,10 @@ def os_path_expandExpression(s, **keys):
     if not c:
         g.trace('can not happen: no c', g.callers())
         return s
-    callers1 = g.callers(1)
-    callers2 = g.callers(2)
-    if callers1 not in deprecated_messages:
-        deprecated_messages.append(callers1)
-        g.es_print(f"\nos_path_expandExpression is deprecated. called from: {callers2}")
+    callers = g.callers(2)
+    if callers not in deprecated_messages:
+        deprecated_messages.append(callers)
+        g.es_print(f"\nos_path_expandExpression is deprecated. called from: {callers}")
     return c.expand_path_expression(s)
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
@@ -6918,12 +6916,6 @@ def os_path_finalize(path, **keys):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     '''
-    ### c = keys.get('c')
-    ###expanduser = keys.get('expanduser', True)
-        # 2014/09/17: Allow expanduser to be False.
-    ### if c: path = g.os_path_expandExpression(path, **keys)
-    ### if expanduser:
-        ### path = g.os_path_expanduser(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -6934,12 +6926,6 @@ def os_path_finalize(path, **keys):
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join(*args, **keys):
     '''Do os.path.join(*args), then finalize the result.'''
-    # #1341: to do- don't call g.os_path_expandExpression.
-    c = keys.get('c')
-    if c:
-        args = [g.os_path_expandExpression(z, **keys)
-            for z in args if z]
-    # #1341: no longer handles expanduser.
     path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys))) 
     if g.isWindows:
         path = path.replace('\\','/')
@@ -6979,9 +6965,6 @@ def os_path_join(*args, **keys):
     In addition, it supports the !! and . conventions.
     '''
     c = keys.get('c')
-    # #1341: no longer handle expanduser
-    ### expanduser = keys.get('expanduser', True)
-        # 2014/09/17: Allow expanduser to be False.
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
@@ -6990,8 +6973,6 @@ def os_path_join(*args, **keys):
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-    ### if expanduser:
-    ###     uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if uargs:
         try:
             path = os.path.join(*uargs)
@@ -6999,7 +6980,7 @@ def os_path_join(*args, **keys):
             g.trace(uargs, args, keys, g.callers())
             raise
     else:
-        path = '' # 2017/11/12: don't crash.
+        path = ''
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.

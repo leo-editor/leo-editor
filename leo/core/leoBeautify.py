@@ -1086,7 +1086,7 @@ class PythonTokenBeautifier:
         self.beautify_time += t4 - t3
         self.check_time += t5 - t4
         self.total_time += t5 - t1
-        ### self.print_stats()
+        # self.print_stats()
         return changed
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
@@ -1569,9 +1569,7 @@ class PythonTokenBeautifier:
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
             return
-
-
-        ###
+        ### To do...
         ### Scan back, looking for the first line with all balanced delims.
         ### Do nothing if it is this line.
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt

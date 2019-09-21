@@ -1858,7 +1858,7 @@ class RecursiveImportController:
             try:
                 # Fix #408. Catch path exceptions.
                 # The idea here is to keep going on small errors.
-                path = g.os_path_join(dir_, path) ###, expanduser=False)
+                path = g.os_path_join(dir_, path)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(path)
                     if ext in self.theTypes:
