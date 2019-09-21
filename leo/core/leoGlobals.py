@@ -2393,17 +2393,12 @@ def _assert(condition, show_callers=True):
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     '''
-    Return a list containing the callers of the function that called g.callerList.
+    Return a string containing a comma-separated list of the callers
+    of the function that called g.callerList.
 
     excludeCaller: True (the default), g.callers itself is not on the list.
     
-    If the `verbose` keyword is True, or the caller name is in the `names`
-    list, return:
-    
-        line N <file name> <class_name>.<caller_name> # methods
-        line N <file name> <caller_name>              # functions.
-        
-    Otherwise, just return the <caller name>
+    If the `verbose` keyword is True, return a list separated by newlines.
     '''
     # Be careful to call g._callerName with smaller values of i first:
     # sys._getframe throws ValueError if there are less than i entries.
@@ -6964,12 +6959,12 @@ def os_path_finalize(path, **keys):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     '''
-    c = keys.get('c')
-    expanduser = keys.get('expanduser', True)
+    ### c = keys.get('c')
+    ###expanduser = keys.get('expanduser', True)
         # 2014/09/17: Allow expanduser to be False.
-    if c: path = g.os_path_expandExpression(path, **keys)
-    if expanduser:
-        path = g.os_path_expanduser(path)
+    ### if c: path = g.os_path_expandExpression(path, **keys)
+    ### if expanduser:
+        ### path = g.os_path_expanduser(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -6980,12 +6975,13 @@ def os_path_finalize(path, **keys):
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join(*args, **keys):
     '''Do os.path.join(*args), then finalize the result.'''
+    # #1341: to do- don't call g.os_path_expandExpression.
     c = keys.get('c')
     if c:
         args = [g.os_path_expandExpression(z, **keys)
             for z in args if z]
-    path = os.path.normpath(os.path.abspath(
-        g.os_path_join(*args, **keys))) # Handles expanduser
+    # #1341: no longer handles expanduser.
+    path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys))) 
     if g.isWindows:
         path = path.replace('\\','/')
     return path
@@ -7024,7 +7020,8 @@ def os_path_join(*args, **keys):
     In addition, it supports the !! and . conventions.
     '''
     c = keys.get('c')
-    expanduser = keys.get('expanduser', True)
+    # #1341: no longer handle expanduser
+    ### expanduser = keys.get('expanduser', True)
         # 2014/09/17: Allow expanduser to be False.
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
     # Note:  This is exactly the same convention as used by getBaseDirectory.
@@ -7034,8 +7031,8 @@ def os_path_join(*args, **keys):
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-    if expanduser:
-        uargs = [g.os_path_expanduser(z) for z in uargs if z]
+    ### if expanduser:
+    ###     uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if uargs:
         try:
             path = os.path.join(*uargs)
