@@ -246,7 +246,7 @@ class CommanderCommand:
             method(event=event)
             
         # Inject ivars for plugins_menu.py.
-        commander_command_wrapper.__name__ = 'commander_command_wrapper: %s' % self.name
+        commander_command_wrapper.__name__ = f"commander_command_wrapper: {self.name}"
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
         if app:
@@ -300,7 +300,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        new_cmd_wrapper.__name__ = 'wrapper: %s' % name
+        new_cmd_wrapper.__name__ = f"wrapper: {name}"
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
             # Put the *wrapper* into the global dict.
@@ -405,8 +405,10 @@ class Bunch:
 
     def toString(self):
         tag = self.__dict__.get('tag')
-        entries = ["%s: %s" % (key, str(self.__dict__.get(key)) or repr(self.__dict__.get(key)))
-            for key in self.ivars() if key != 'tag']
+        entries = [
+            f"{key}: {str(self.__dict__.get(key)) or repr(self.__dict__.get(key))}"
+                for key in self.ivars() if key != 'tag'
+        ]
         result = ['g.Bunch(%s)' % (tag or '')]
         result.extend(entries)
         return '\n    '.join(result) + '\n'
@@ -1686,7 +1688,7 @@ class SherlockTracer:
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '+' if self.show_return else ''
             args = '(%s)' % self.get_args(frame1) if self.show_args else ''
-            print('%s%s%s%s%s' % (path, dots, leadin, full_name, args))
+            print(f"{path}{dots}{leadin}{full_name}{args}")
         # Always update stats.
         d = self.stats.get(fn, {})
         d[full_name] = 1 + d.get(full_name, 0)
@@ -1712,7 +1714,7 @@ class SherlockTracer:
                     else:
                         val = self.show(arg)
                     if val:
-                        result.append('%s=%s' % (name, val))
+                        result.append(f"{name}={val}")
         return ','.join(result)
     #@+node:ekr.20140402060647.16845: *4* do_line (Sherlock)
     def do_line(self, frame, arg):
@@ -1737,7 +1739,7 @@ class SherlockTracer:
                 # name = full_name if i == -1 else full_name[i+2:]
                 print('%3s %s' % (name, line))
             else:
-                print('%s %s %s %s' % (g.shortFileName(fn), n, full_name, line))
+                print(f"{g.shortFileName(fn)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self, frame, arg): # Arg *is* used below.
         '''Trace a return statement.'''
@@ -1759,10 +1761,10 @@ class SherlockTracer:
                     ret1 = locals_ and locals_.get('self', None)
                     ret = self.format_ret(ret1)
                 except NameError:
-                    ret = '<%s>' % ret1.__class__.__name__
+                    ret = f"<{ret1.__class__.__name__}>"
             else:
                 ret = self.format_ret(arg)
-            print('%s%s-%s%s' % (path, dots, full_name, ret))
+            print(f"{path}{dots}-{full_name}{ret}")
     #@+node:ekr.20130111120935.10192: *5* format_ret
     def format_ret(self, arg):
         '''Format arg, the value returned by a "return" statement.'''
@@ -1782,8 +1784,8 @@ class SherlockTracer:
         except Exception:
             exctype, value = sys.exc_info()[: 2]
             s = '<**exception: %s,%s arg: %r**>' % (exctype.__name__, value, arg)
-            ret = ' ->\n    %s' % (s) if len(s) > 40 else ' -> %s' % (s)
-        return ' -> %s' % ret # if ret else ''
+            ret = ' ->\n    %s' % s if len(s) > 40 else f" -> {s}"
+        return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
     def fn_is_enabled(self, fn, patterns):
         '''
@@ -1879,13 +1881,13 @@ class SherlockTracer:
         '''Push the old patterns and set the new.'''
         self.pattern_stack.append(self.patterns)
         self.set_patterns(patterns)
-        print('SherlockTracer.push: %s' % self.patterns)
+        print(f"SherlockTracer.push: {self.patterns}")
 
     def pop(self):
         '''Restore the pushed patterns.'''
         if self.pattern_stack:
             self.patterns = self.pattern_stack.pop()
-            print('SherlockTracer.pop: %s' % self.patterns)
+            print(f"SherlockTracer.pop: {self.patterns}")
         else:
             print('SherlockTracer.pop: pattern stack underflow')
     #@+node:ekr.20140326100337.16845: *4* set_patterns
@@ -1990,7 +1992,7 @@ class Tracer:
                 self.stack.append(name)
             name = self.computeName(frame)
             if self.trace and (self.limit == 0 or len(self.stack) < self.limit):
-                g.trace('%scall' % (pad), name)
+                g.trace(f"{pad}call", name)
             self.updateStats(name)
             self.stack.append(name)
             return self.tracer
@@ -2002,7 +2004,7 @@ class Tracer:
                     self.verbose and
                     (self.limit == 0 or len(self.stack) < self.limit)
                 ):
-                    g.trace('%sret ' % (pad), name)
+                    g.trace(f"{pad}ret ", name)
             else:
                 g.trace('return underflow')
                 self.stop()
@@ -2178,7 +2180,7 @@ def null_object_print_attr(id_, attr):
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
     in_callers = any([z in callers for z in suppress_callers])
-    s = '%s.%s' % (tag, attr)
+    s = f"{tag}.{attr}"
     if suppress:
         # Filter traces.
         if not in_callers and s not in suppress_attrs:
@@ -2194,8 +2196,8 @@ def null_object_print(id_, kind, *args):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
-    s = '%s.%s' % (kind, tag)
-    signature = '%s:%s' % (s, callers)
+    s = f"{kind}.{tag}"
+    signature = f"{s}:{callers}"
     if 1:
         # Always print:
         if args:
@@ -2432,7 +2434,7 @@ def _callerName(n, verbose=False):
         line = code1.co_firstlineno
         if verbose:
             obj = locals_.get('self')
-            full_name = '%s.%s' % (obj.__class__.__name__, name) if obj else name
+            full_name = f"{obj.__class__.__name__}.{name}" if obj else name
             return 'line %4s %-30s %s' % (line, sfn, full_name)
         return name
     except ValueError:
@@ -2537,8 +2539,10 @@ def checkUnchangedIvars(obj, d, exceptions=None):
     for key in d:
         if key not in exceptions:
             if getattr(obj, key) != d.get(key):
-                g.trace('changed ivar: %s old: %s new: %s' % (
-                    key, repr(d.get(key)), repr(getattr(obj, key))))
+                g.trace(
+                    f"changed ivar: {key} "
+                    f"old: {repr(d.get(key))} "
+                    f"new: {repr(getattr(obj, key))}")
                 ok = False
     return ok
 #@+node:ekr.20031218072017.3128: *4* g.pause
@@ -2578,7 +2582,7 @@ def dictToString(d, indent='', tag=None):
     n = 2 + len(indent) + max([len(repr(z)) for z in d.keys()])
     for i, key in enumerate(sorted(d, key=lambda z:repr(z))):
         pad = ' ' * max(0, (n-len(repr(key))))
-        result.append('%s%s:' % (pad, key))
+        result.append(f"{pad}{key}:")
         result.append(objToString(d.get(key),indent=indent2))
         if i+1 < len(d.keys()):
             result.append(',')
@@ -2630,14 +2634,14 @@ def objToString(obj, indent='', printCaller=False, tag=None):
     #
     # Compute the return value.
     if printCaller and tag:
-        prefix = '%s: %s' % (g.caller(), tag)
+        prefix = f"{g.caller()}: {tag}"
     elif printCaller or tag:
         prefix = g.caller() if printCaller else tag
     else:
         prefix = None
     if prefix:
         sep = '\n' if '\n' in s else ' '
-        return '%s:%s%s' % (prefix, sep, s)
+        return f"{prefix}:{sep}{s}"
     return s
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
@@ -2667,7 +2671,7 @@ def run_pylint(fn, rc,
     if not g.os_path_exists(rc):
         g.trace('does not exist', rc)
         return
-    args = ['--rcfile=%s' % (rc)]
+    args = [f"--rcfile={rc}"]
     # Prints error number.
         # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     args.append(fn)
@@ -2849,7 +2853,7 @@ def printGcObjects(tag=''):
                 break
         if not empty:
             g.pr('-' * 30)
-            g.pr("%s: garbage: %d, objects: %d, delta: %d" % (tag, n, n2, delta))
+            g.pr(f"{tag}: garbage: {n}, objects: {n2}, delta: {delta}")
             if 0:
                 for key in sorted(keys):
                     n1 = lastTypesDict.get(key, 0)
@@ -2894,7 +2898,7 @@ def printGcSummary(tag=''):
     try:
         n = len(gc.garbage)
         n2 = len(gc.get_objects())
-        s = '%s: printGCSummary: garbage: %d, objects: %d' % (tag, n, n2)
+        s = f"{tag}: printGCSummary: garbage: {n}, objects: {n2}"
         g.pr(s)
     except Exception:
         traceback.print_exc()
@@ -2923,8 +2927,8 @@ def printGcVerbose(tag=''):
         #    g.pr(o)
         i += 1
     g.pr('=' * 40)
-    g.pr('dicts: %d, sequences: %d' % (dicts, seqs))
-    g.pr("%s: %d new, %d total objects" % (tag, len(newObjects), len(objects)))
+    g.pr(f"dicts: {dicts}, sequences: {seqs}")
+    g.pr(f"{tag}: {len(newObjects)} new, {len(objects)} total objects")
     g.pr('-' * 40)
 #@+node:ekr.20180528151850.1: *3* g.printTimes
 def printTimes(times):
@@ -3028,8 +3032,10 @@ def comment_delims_from_extension(filename):
     language = g.app.extension_dict.get(ext[1:])
     if ext:
         return g.set_delims_from_language(language)
-    g.trace("unknown extension: %s, filename: %s, root: %s" % (
-        repr(ext), repr(filename), repr(root)))
+    g.trace(
+        f"unknown extension: {ext!r}, "
+        f"filename: {filename!r}, "
+        f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
@@ -3466,7 +3472,7 @@ def set_delims_from_string(s):
                     delims[i] = binascii.unhexlify(delims[i][3:])
                     delims[i] = g.toUnicode(delims[i])
                 except Exception as e:
-                    g.warning("'%s' delimiter is invalid: %s" % (delims[i], e))
+                    g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
                     return None, None, None
             else:
                 # 7/8/02: The "REM hack": replace underscores by blanks.
@@ -3537,8 +3543,7 @@ def checkOpenDirectory(c):
             'c.frame.openDirectory: %s' % (
                 c.openDirectory, c.frame.openDirectory))
     if not g.os_path_isabs(c.openDirectory):
-        g.error('Error: relative c.openDirectory: %s' % (
-            c.openDirectory))
+        g.error(f"Error: relative c.openDirectory: {c.openDirectory}")
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
 def stripPathCruft(path):
     '''Strip cruft from a path name.'''
@@ -3878,7 +3883,7 @@ def readFileIntoEncodedString(fn, silent=False):
             g.error('can not open', fn)
     except Exception:
         if not silent:
-            g.error('readFileIntoEncodedString: exception reading %s' % (fn))
+            g.error(f"readFileIntoEncodedString: exception reading {fn}")
             g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
@@ -3927,7 +3932,7 @@ def readFileIntoString(fileName,
         if verbose:
            g.error('can not open', '', (kind or ''), fileName)
     except Exception:
-        g.error('readFileIntoString: unexpected exception reading %s' % (fileName))
+        g.error(f"readFileIntoString: unexpected exception reading {fileName}")
         g.es_exception()
     return None, None
 #@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString
@@ -3941,7 +3946,7 @@ def readFileIntoUnicodeString(fn, encoding=None, silent=False):
         if not silent:
             g.error('can not open', fn)
     except Exception:
-        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
+        g.error(f"readFileIntoUnicodeString: unexpected exception reading {fn}")
         g.es_exception()
     return None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
@@ -3957,7 +3962,7 @@ def readlineForceUnixNewline(f, fileName=None):
     try:
         s = f.readline()
     except UnicodeDecodeError:
-        g.trace('UnicodeDecodeError: %s' % (fileName), f, g.callers())
+        g.trace(f"UnicodeDecodeError: {fileName}", f, g.callers())
         s = ''
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0: -2] + "\n"
@@ -4950,7 +4955,7 @@ class GitIssueController:
         elif state is None:
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
-                organizer.h = '%s issues...' % state
+                organizer.h = f"{state} issues..."
                 self.get_all_issues(label_list, organizer, state)
         elif state in ('closed', 'open'):
             self.get_all_issues(label_list, root, state)
@@ -5021,10 +5026,9 @@ class GitIssueController:
                 break
         state = state.capitalize()
         if self.milestone:
-            root.h = '%s %s %s issues for milestone %s' % (
-                total, state, label, self.milestone)
+            root.h = f"{total} {state} {label} issues for milestone {self.milestone}"
         else:
-            root.h = '%s %s %s issues' % (total, state, label)
+            root.h = f"{total} {state} {label} issues"
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
     def get_one_page(self, label, page, r, root):
         
@@ -5040,7 +5044,7 @@ class GitIssueController:
             n, title = d.get('number'), d.get('title')
             html_url = d.get('html_url') or self.base_url
             p = root.insertAsNthChild(0)
-            p.h = '#%s: %s' % (n, title)
+            p.h = f"#{n}: {title}"
             p.b = '%s\n\n' % (html_url)
             p.b += d.get('body').strip()
         link = r.headers.get('Link')
@@ -5349,7 +5353,7 @@ def idleTimeHookHandler(timer):
 #@+node:ekr.20040917061619: *3* g.cantImport
 def cantImport(moduleName, pluginName=None, verbose=True):
     """Print a "Can't Import" message and return None."""
-    s = "Can not import %s" % moduleName
+    s = f"Can not import {moduleName}"
     if pluginName: s = s + " from %s" % pluginName
     if not g.app or not g.app.gui:
         print(s)
@@ -5373,7 +5377,7 @@ def importModule(moduleName, pluginName=None, verbose=False):
     module = sys.modules.get(moduleName)
     if module:
         return module
-    if verbose: g.blue('loading %s' % moduleName)
+    if verbose:g.blue(f"loading {moduleName}")
     exceptions = []
     try:
         theFile = None
@@ -5432,8 +5436,7 @@ def importExtension(moduleName, pluginName=None, verbose=False, required=False):
     '''
     module = g.importModule(moduleName, pluginName=pluginName, verbose=verbose)
     if not module and verbose:
-        g.pr("Warning: '%s' failed to import '%s'" % (
-            pluginName, moduleName))
+        g.pr(f"Warning: '{pluginName}' failed to import '{moduleName}'")
     return module
 #@+node:ekr.20031218072017.2278: *3* g.importFromPath
 def importFromPath(moduleName, path, verbose=False):
@@ -5457,14 +5460,12 @@ def importFromPath(moduleName, path, verbose=False):
             if trace: g.trace('loaded', moduleName, 'from', path)
         except ImportError:
             if trace or verbose:
-                g.error('no module %s in path %s' % (moduleName, path))
+                g.error(f"no module {moduleName} in path {path}")
         except UiTypeException:
             if not g.unitTesting and not g.app.batchMode:
-                g.es_print('Plugin %s does not support %s gui' % (
-                    moduleName, g.app.gui.guiName()))
+                g.es_print(f"Plugin {moduleName} does not support {g.app.gui.guiName()} gui")
         except Exception:
-            g.error("unexpected exception in g.importFromPath(%s)" %
-                (moduleName))
+            g.error(f"unexpected exception in g.importFromPath({moduleName})")
             g.es_exception()
     # Put no return statements before here!
     finally:
@@ -5547,7 +5548,7 @@ def toPythonIndex(s, index):
         row, col = int(row), int(col)
         i = g.convertRowColToPythonIndex(s, row - 1, col)
         return i
-    g.trace('bad string index: %s' % index)
+    g.trace(f"bad string index: {index}")
     return 0
 #@+node:ekr.20150722051946.1: *3* g.List composition (deprecated)
 # These functions are deprecated.
@@ -5622,11 +5623,11 @@ def isascii(s):
     # s.isascii() is defined in Python 3.7.
     return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20031218072017.3106: *4* g.angleBrackets & virtual_event_name
-# Returns < < s > >
-
 def angleBrackets(s):
-    return ("<<" + s +
-        ">>") # must be on a separate line.
+    """Returns < < s > >"""
+    lt = "<<"
+    rt = ">>"
+    return lt + s + rt
 
 virtual_event_name = angleBrackets
 #@+node:ekr.20090516135452.5777: *4* g.ensureLeading/TrailingNewlines
@@ -5859,7 +5860,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     except UnicodeError:
         s = s.encode(encoding, "replace")
         if reportErrors:
-            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
+            g.error(f"Error converting {s} from unicode to {encoding} encoding")
     # Tracing these calls directly yields thousands of calls.
     # Never call g.trace here!
         # g.dump_encoded_string(encoding,s)
@@ -6272,7 +6273,7 @@ def es_clickable_link(c, p, line_number, message):
     log = c.frame.log
     unl = p.get_UNL(with_proto=True, with_count=True)
     if unl:
-        nodeLink = "%s,%d" % (unl, line_number)
+        nodeLink = f"{unl},{line_number}"
         log.put(message, nodeLink=nodeLink)
     else:
         log.put(message)
@@ -6347,7 +6348,7 @@ def es_exception(full=True, c=None, color="red"):
 def es_exception_type(c=None, color="red"):
     # exctype is a Exception class object; value is the error message.
     exctype, value = sys.exc_info()[: 2]
-    g.es_print('', '%s, %s' % (exctype.__name__, value), color=color)
+    g.es_print('', f"{exctype.__name__}, {value}", color=color)
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -6666,7 +6667,7 @@ def actualColor(color):
         # Fall back to log_text_foreground_color.
         color2 = c.config.getColor('log-text-foreground-color')
         return color2 or 'black'
-    color2 = c.config.getColor('log_%s_color' % color)
+    color2 = c.config.getColor(f"log_{color}_color")
     return color2 or color
 #@+node:ekr.20060921100435: *3* g.CheckVersion & helpers
 # Simplified version by EKR: stringCompare not used.
@@ -6942,8 +6943,13 @@ def replace_path_expression(c, expr):
         'sep': os.sep,
         'sys': sys,
     }
-    val = eval(expr, d)
-    return g.toUnicode(val, encoding='utf-8', reportErrors=True)
+    # #1338: Don't report errors when called by g.getUrlFromNode.
+    try:
+        val = eval(expr, d)
+        return g.toUnicode(val, encoding='utf-8')
+    except Exception as e:
+        g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
+        return expr
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""
@@ -7145,9 +7151,9 @@ def os_startfile(fname):
     #@-others
 
     if fname.find('"') > -1:
-        quoted_fname = "'%s'" % fname
+        quoted_fname = f"'{fname}'"
     else:
-        quoted_fname = '"%s"' % fname
+        quoted_fname = f'"{fname}"'
     if sys.platform.startswith('win'):
         # pylint: disable=no-member
         os.startfile(quoted_fname)
@@ -7161,7 +7167,7 @@ def os_startfile(fname):
         except OSError:
             pass # There may be a spurious "Interrupted system call"
         except ImportError:
-            os.system('open %s' % (quoted_fname))
+            os.system(f"open {quoted_fname}")
     else:
         # Linux
         # The buffering argument to NamedTempFile does not exist on Python 2.
@@ -7362,7 +7368,7 @@ def computeBaseDir(c, base_dir, path_setting, trace=False):
         if g.os_path_exists(base_dir):
             return base_dir
         return g.es_print('base_dir not found: %r' % base_dir)
-    return g.es_print('Please use @string %s' % path_setting)
+    return g.es_print(f"Please use @string {path_setting}")
 #@+node:ekr.20180217153459.1: *4* g.computeCommands
 def computeCommands(c, commands, command_setting, trace=False):
     '''
@@ -7396,7 +7402,7 @@ def executeFile(filename, options=''):
         stdo, stde = p.communicate()
         return p.wait(), stdo, stde
 
-    rc, so, se = subprocess_wrapper('%s %s %s' % (sys.executable, fname, options))
+    rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
     if rc: g.pr('return code', rc)
     g.pr(so, se)
 #@+node:ekr.20031218072017.3138: *3* g.executeScript
@@ -7673,7 +7679,7 @@ def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
         except UnicodeError:
             s = s.encode(encoding, "replace")
             if reportErrors:
-                g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
+                g.error(f"Error converting {s} from unicode to {encoding} encoding")
             ok = False
     return s, ok
 #@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
@@ -7689,7 +7695,7 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     except UnicodeError:
         s = str(s, encoding, 'replace')
         if reportErrors:
-            g.error("Error converting %s from %s encoding to unicode" % (s, encoding))
+            g.error(f"Error converting {s} from {encoding} encoding to unicode")
         return s, False
 #@+node:ekr.20120311151914.9916: ** g.Urls
 unl_regex = re.compile(r'\bunl:.*$')
@@ -7704,21 +7710,20 @@ def unquoteUrl(url):
 def computeFileUrl(fn, c=None, p=None):
     '''
     Compute finalized url for filename fn.
-    This involves adding url escapes and evaluating Leo expressions.
     '''
     # First, replace special characters (especially %20, by their equivalent).
     url = urllib.parse.unquote(fn)
     # Finalize the path *before* parsing the url.
     i = url.find('~')
     if i > -1:
-        # Expand '~' and handle Leo expressions.
+        # Expand '~'.
         path = url[i:]
         path = g.os_path_expanduser(path)
-        path = g.os_path_expandExpression(path, c=c)
+        # #1338: This is way too dangerous, and a serious security violation.
+            # path = g.os_path_expandExpression(path, c=c)
         path = g.os_path_finalize(path)
         url = url[: i] + path
     else:
-        # Handle Leo expressions.
         tag = 'file://'
         tag2 = 'file:///'
         if sys.platform.startswith('win') and url.startswith(tag2):
@@ -7727,14 +7732,15 @@ def computeFileUrl(fn, c=None, p=None):
             path = url[len(tag):].lstrip()
         else:
             path = url
-        path = g.os_path_expandExpression(path, c=c)
+        # #1338: This is way too dangerous, and a serious security violation.
+            # path = g.os_path_expandExpression(path, c=c)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
             path = g.os_path_finalize_join(c.openDirectory, base, path)
         else:
             path = g.os_path_finalize(path)
-        url = '%s%s' % (tag, path)
+        url = f"{tag}{path}"
     return url
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p):
@@ -7818,7 +7824,7 @@ def handleUrlHelper(url, c, p):
         elif g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
-            g.es("File '%s' does not exist" % leo_path)
+            g.es(f"File '{leo_path}' does not exist")
     else:
         import webbrowser
         if g.unitTesting:

@@ -1,0 +1,25 @@
+Directory contains native GIMP files:
+ 
+90x30.xcf - Fixed width icon is 90px by 30px. Also creates box07/box15
+box00.xcf - Creates a 5px placeholder (box00) and a dirty bit (box08)
+box03.xcf - Creates box03 and box11
+box04.xcf - Creates box04 and box12
+box05.xcf - Creates box05 and box13
+box06.xcf - Creates box06 and box14
+
+There are eight states and a toggle involved. Output should be .png.
+
+States
+
+box00 = not a clone, not marked, no text in body
+box01 = not a clone, not marked, is text in body
+box02 = not a clone, is marked, no text in body
+box03 = not a clone, is marked, is text in body
+box04 = is a clone, not marked, no text in body
+box05 = is a clone, not marked, is text in body
+box06 = is a clone, is marked, no text in body
+box07 = is a clone, is marked, is text in body
+
+Toggle Clean/Dirty
+
+box00 to box07 are clean. box08 to box15 are dirty. They share a state with box00-07.

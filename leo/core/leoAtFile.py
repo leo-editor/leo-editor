@@ -244,7 +244,7 @@ class AtFile:
         path = g.os_path_dirname(c.mFileName)
         fn = g.os_path_finalize_join(g.app.loadDir, path, fn)
         if not g.os_path_exists(fn):
-            return g.error('file not found: %s' % (fn))
+            return g.error(f"file not found: {fn}")
         s, e = g.readFileIntoString(fn)
         if s is None:
             return None
@@ -286,7 +286,7 @@ class AtFile:
                 # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             at.warnOnReadOnlyFile(fn)
         except IOError:
-            at.error("can not open: '@file %s'" % (fn))
+            at.error(f"can not open: '@file {fn}'")
             at.inputFile = None
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
@@ -303,8 +303,7 @@ class AtFile:
         if not shadow_exists:
             g.trace('can not happen: no private file',
                 shadow_fn, g.callers())
-            at.error('can not happen: private file does not exist: %s' % (
-                shadow_fn))
+            at.error(f"can not happen: private file does not exist: {shadow_fn}")
             return None
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
@@ -402,7 +401,7 @@ class AtFile:
         def callback(p, r=r.copy(), root=root):
             '''The resurrected nodes callback.'''
             child = r.insertAsLastChild()
-            child.h = 'From %s' % root.h
+            child.h = f"From {root.h}"
             v = p.v
             if 1: # new code: based on vnodes.
                 import leo.core.leoNodes as leoNodes
@@ -576,7 +575,7 @@ class AtFile:
             g.es_print('Unexpected exception importing', fileName)
             g.es_exception()
         if ic.errors:
-            g.error('errors inhibited read @auto %s' % (fileName))
+            g.error(f"errors inhibited read @auto {fileName}")
         elif c.persistenceController:
             c.persistenceController.update_after_read_foreign_file(p)
         # Finish.
@@ -643,8 +642,7 @@ class AtFile:
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
         if not g.os_path_exists(fileName):
-            g.es_print('not found: %s' % (fileName), color='red',
-                nodeLink=root.get_UNL(with_proto=True))
+            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL(with_proto=True))
             return False
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
@@ -703,8 +701,7 @@ class AtFile:
 
         at = self; c = at.c; x = c.shadowController
         if not fn == p.atShadowFileNodeName():
-            return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-                fn, p.atShadowFileNodeName()))
+            return at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
@@ -857,9 +854,9 @@ class AtFile:
             with open(fileName, 'rb') as f:
                 s = f.read()
         except IOError:
-            at.error('can not open %s' % (fileName))
+            at.error(f"can not open {fileName}")
         except Exception:
-            at.error('Exception reading %s' % (fileName))
+            at.error(f"Exception reading {fileName}")
             g.es_exception()
         return s
     #@+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
@@ -925,7 +922,7 @@ class AtFile:
             at.startSentinelComment = start
             at.endSentinelComment = end
         elif giveErrors:
-            at.error("No @+leo sentinel in: %s" % fileName)
+            at.error(f"No @+leo sentinel in: {fileName}")
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
@@ -1109,7 +1106,7 @@ class AtFile:
         Give a more urgent, more specific, more helpful message.
         '''
         g.es_exception()
-        g.es('Internal error writing: %s' % (p.h), color='red')
+        g.es(f"Internal error writing: {p.h}", color='red')
         g.es('Please report this error to:', color='blue')
         g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
         g.es('Warning: changes to this file will be lost', color='red')
@@ -1125,7 +1122,7 @@ class AtFile:
             if report:
                 g.es("finished")
             elif at.sameFiles:
-                g.es('finished. %s unchanged files' % at.sameFiles)
+                g.es(f"finished. {at.sameFiles} unchanged files")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
             # g.es("to write an unchanged @auto node,\nselect it directly.")
@@ -1746,12 +1743,12 @@ class AtFile:
                 if p == self.root:
                     at.putAtAllLine(s, i, p)
                 else:
-                    at.error('@all not valid in: %s' % (p.h))
+                    at.error(f"@all not valid in: {p.h}")
             else: at.putDocLine(s, i)
         elif kind == at.othersDirective:
             if status.in_code:
                 if status.has_at_others:
-                    at.error('multiple @others in: %s' % (p.h))
+                    at.error(f"multiple @others in: {p.h}")
                 else:
                     at.putAtOthersLine(s, i, p)
                     status.has_at_others = True
@@ -1769,7 +1766,7 @@ class AtFile:
                 # A hack: unit tests for @shadow use @verbatim as a kind of directive.
                 pass
             else:
-                at.error('@verbatim is not a Leo directive: %s' % p.h)
+                at.error(f"@verbatim is not a Leo directive: {p.h}")
         elif kind == at.miscDirective:
             # Fix bug 583878: Leo should warn about @comment/@delims clashes.
             if g.match_word(s, i, '@comment'):
@@ -1782,10 +1779,10 @@ class AtFile:
                 status.at_warning_given
             ):
                 status.at_warning_given = True
-                at.error('@comment and @delims in node %s' % p.h)
+                at.error(f"@comment and @delims in node {p.h}")
             at.putDirective(s, i, p)
         else:
-            at.error('putBody: can not happen: unknown directive kind: %s' % kind)
+            at.error(f"putBody: can not happen: unknown directive kind: {kind}")
     #@+node:ekr.20041005105605.164: *5* writing code lines...
     #@+node:ekr.20041005105605.165: *6* at.@all
     #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
@@ -2092,7 +2089,7 @@ class AtFile:
         gnx = p.v.fileIndex
         level = 1 + p.level() - self.root.level()
         if level > 2:
-            return "%s: *%s* %s" % (gnx, level, h)
+            return f"{gnx}: *{level}* {h}"
         return "%s: %s %s" % (gnx, '*' * level, h)
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
@@ -2244,7 +2241,7 @@ class AtFile:
         at = self
         try:
             body = body.replace('\r', '')
-            fn = '<node: %s>' % p.h
+            fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
             return True
         except SyntaxError:
@@ -2257,7 +2254,7 @@ class AtFile:
     #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
     def syntaxError(self, p, body):
         '''Report a syntax error.'''
-        g.error("Syntax error in: %s" % (p.h))
+        g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
         message = hasattr(val, 'message') and val.message
         if message: g.es_print(message)
@@ -2665,7 +2662,7 @@ class AtFile:
             if ok:
                 c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
-                    g.es('%screated: %s' % (timestamp, fileName))
+                    g.es(f"{timestamp}created: {fileName}")
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
@@ -2685,7 +2682,7 @@ class AtFile:
         if unchanged:
             at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
-                g.es('%sunchanged: %s' % (timestamp, sfn))
+                g.es(f"{timestamp}unchanged: {sfn}")
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False # No change to original file.
@@ -2703,7 +2700,7 @@ class AtFile:
         if ok:
             c.setFileTimeStamp(fileName)
             if not g.unitTesting:
-                g.es('%swrote: %s' % (timestamp, sfn))
+                g.es(f"{timestamp}wrote: {sfn}")
         else:
             g.error('error writing', sfn)
             g.es('not written:', sfn)
@@ -2814,7 +2811,7 @@ class AtFile:
             return True
         except Exception:
             if verbose:
-                self.error("exception removing: %s" % fileName)
+                self.error(f"exception removing: {fileName}")
                 g.es_exception()
                 g.trace(g.callers(5))
             return False
@@ -3064,24 +3061,24 @@ class FastAtRead:
         # This must be a function, because of @comments & @delims.
         delim_start, delim_end = delims
         delims = re.escape(delim_start), re.escape(delim_end or '')
-        delim_start, delim_end = delims
+        delim1, delim2 = delims
+        ref = g.angleBrackets(r'(.*)')
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
-            r'^\s*%s@afterref%s$'%delims,               # @afterref
-            r'^(\s*)%s@(\+|-)all\b(.*)%s$'%delims,      # @all
-            r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
-            r'^\s*%s@comment(.*)%s'%delims,             # @comment
-            r'^\s*%s@delims(.*)%s'%delims,              # @delims
-            r'^\s*%s@\+(at|doc)?(\s.*?)?%s\n'%delims,   # @doc or @
-            r'^\s*%s@end_raw\s*%s'%delims,              # @end_raw
-            r'^\s*%s@@first%s$'%delims,                 # @first
-            r'^\s*%s@@last%s$'%delims,                  # @last
-            r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,   # @others
-            r'^\s*%s@raw(.*)%s'%delims,                 # @raw
-            r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
-                delim_start, g.angleBrackets('(.*)'), delim_end)
+            fr'^\s*{delim1}@afterref{delim2}$',             # @afterref
+            fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$',    # @all
+            fr'^\s*{delim1}@@c(ode)?{delim2}$',             # @c and @code
+            fr'^\s*{delim1}@comment(.*){delim2}',           # @comment
+            fr'^\s*{delim1}@delims(.*){delim2}',            # @delims
+            fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n', # @doc or @
+            fr'^\s*{delim1}@end_raw\s*{delim2}',            # @end_raw
+            fr'^\s*{delim1}@@first{delim2}$',               # @first
+            fr'^\s*{delim1}@@last{delim2}$',                # @last
+            fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$', # @node
+            fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$', # @others
+            fr'^\s*{delim1}@raw(.*){delim2}',               # @raw
+            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'      # section ref
         )
         # Return the compiled patterns, in alphabetical order.
         return (re.compile(pattern) for pattern in patterns)
@@ -3582,7 +3579,7 @@ class FastAtRead:
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
             # This trace is less important, but interesting.
-            g.trace('UNEXPECTED LINE:', repr(sentinel), repr(line), g.shortFileName(self.path))
+            g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
             body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:
@@ -3610,7 +3607,7 @@ class FastAtRead:
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if not data:
-            g.trace('Invalid external file: %s' % sfn)
+            g.trace(f"Invalid external file: {sfn}")
             return False
         # Clear all children.
         # Previously, this had been done in readOpenFile.
@@ -3620,7 +3617,7 @@ class FastAtRead:
             delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.process_time()
-            g.trace('%5.3f sec. %s' % ((t2-t1), path))
+            g.trace('%5.2f sec. %s' % ((t2-t1), path))
         return True
     #@-others
 #@-others

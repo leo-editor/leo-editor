@@ -3207,7 +3207,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if 'size' in g.app.debug:
             g.trace('\n', w, h, x, y)
         return w, h, x, y
-
     #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
@@ -4758,7 +4757,7 @@ class TabbedFrameFactory:
     with multiple tabs for documents
     """
     #@+others
-    #@+node:ekr.20110605121601.18465: *3* frameFactory.__init__	
+    #@+node:ekr.20110605121601.18465: *3* frameFactory.__init__	 & __repr__
     def __init__(self):
         # will be created when first frame appears
         # DynamicWindow => Leo frame map
@@ -4769,7 +4768,7 @@ class TabbedFrameFactory:
             # Keys are DynamicWindows, values are frames.
         self.masterFrame = None
         self.createTabCommands()
-
+        
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame):
 

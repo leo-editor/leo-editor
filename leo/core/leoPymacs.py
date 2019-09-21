@@ -56,7 +56,7 @@ def script_result():
 #@+node:ekr.20061024060248.3: ** hello (pymacs)
 def hello():
     init()
-    return 'Hello from Leo.  g.app: %s' % g.app
+    return f"Hello from Leo.  g.app: {g.app}"
 #@+node:ekr.20061024075542: ** init  (pymacs)
 def init():
     global inited

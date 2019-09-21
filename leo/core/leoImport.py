@@ -77,7 +77,7 @@ class FreeMindImporter:
             root = htmltree.getroot()
             body = root.findall('body')[0]
             if body is None:
-                g.error('no body in: %s' % sfn)
+                g.error(f"no body in: {sfn}")
             else:
                 root_p = c.lastTopLevel().insertAfter()
                 root_p.h = g.shortFileName(path)
@@ -87,7 +87,7 @@ class FreeMindImporter:
                 c.selectPosition(root_p)
                 c.redraw()
         else:
-            g.error('file not found: %s' % sfn)
+            g.error(f"file not found: {sfn}")
     #@+node:ekr.20160503145113.1: *3* freemind.import_files
     def import_files(self, files):
         '''Import a list of FreeMind (.mmap) files.'''
@@ -263,9 +263,8 @@ class LeoImportCommands:
                 head_ref = file_name or "*"
             else:
                 head_ref = "@others"
-            result += ("<<" + head_ref +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12
+            result += (g.angleBrackets(head_ref) + "=" + nl)
     #@+node:ekr.20140630085837.16719: *5* ic.appendRefToFileName
     def appendRefToFileName(self, file_name, result):
         ic = self
@@ -279,9 +278,10 @@ class LeoImportCommands:
         else:
             if not file_name:
                 file_name = "*"
-            result += ("<<" + file_name +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12.
+            lt = "<<"
+            rt = ">>"
+            result += (lt + file_name + rt + "=" + nl)
     #@+node:ekr.20140630085837.16721: *5* ic.getHeadRef
     def getHeadRef(self, p):
         '''
@@ -402,9 +402,10 @@ class LeoImportCommands:
                 g.match_word(s, i, "@code") # 2/25/03
             ):
                 return i, result
-            if(g.match(s, i, "<<") and # must be on separate lines.
-                g.find_on_line(s, i, ">>=") > -1
-            ):
+             # 2019/09/12
+            lt = "<<"
+            rt = ">>="
+            if g.match(s, i, lt) and g.find_on_line(s, i, rt) > -1:
                 return i, result
             # Copy the entire line, escaping '@' and
             # Converting @others to < < @ others > >
@@ -831,7 +832,7 @@ class LeoImportCommands:
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAsLastChild()
-                p.h = '%s %s' % (treeType, fn)
+                p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(fn, parent=p)
                     #  force_at_others=force_at_others) #tag:no-longer-used
@@ -1154,7 +1155,7 @@ class LeoImportCommands:
             cs = self.cstCanonicalize(s)
             if cs[: len(ctarget)] == ctarget:
                 if found:
-                    g.es('', "****** %s" % (target), "is also a prefix of", s)
+                    g.es('', f"****** {target}", 'is also a prefix of', s)
                 else:
                     found = True; result = s
                     # g.es("replacing",target,"with",s)
@@ -1303,7 +1304,7 @@ class LeoImportCommands:
         else:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
-        parent.h = '%s %s' % (kind, fileName)
+        parent.h = f"{kind} {fileName}"
         self.createOutline(
             ext = ext,
             fileName = title.strip(),
@@ -1952,9 +1953,9 @@ class RecursiveImportController:
                 if p.h.startswith(class_name):
                     m = class_paren_pattern.match(p.h)
                     if m:
-                        p.h = ('%s.%s' % (m.group(1), m.group(2))).rstrip()
+                        p.h = f"{m.group(1)}.{m.group(2)}".rstrip()
                 else:
-                    p.h = '%s.%s' % (class_name, p.h)
+                    p.h = f"{class_name}.{p.h}"
             else:
                 m = paren_pattern.match(p.h)
                 if m:
@@ -1992,7 +1993,7 @@ class RecursiveImportController:
             kind = m.group(0)
             path = p.h[len(kind):].strip()
             stripped = self.strip_prefix(path, prefix)
-            p.h = '%s %s' % (kind, stripped or path)
+            p.h = f"{kind} {stripped or path}"
             # Put the *full* @path directive in the body.
             if self.add_path and prefix:
                 tail = g.os_path_dirname(stripped).rstrip('/')
@@ -2225,13 +2226,13 @@ class ZimImportController:
         pathToZim = g.os_path_abspath(self.pathToZim)
         pathToIndex = g.os_path_join(pathToZim, 'index.rst')
         if not g.os_path_exists(pathToIndex):
-            g.es('not found: %s' % (pathToIndex), color='red')
+            g.es(f"not found: {pathToIndex}", color='red')
             return None
         index = open(pathToIndex).read()
         # pylint: disable=anomalous-backslash-in-string
         parse = re.findall('(\t*)-\s`(.+)\s<(.+)>`_', index)
         if not parse:
-            g.es('invalid index: %s' % (pathToIndex), color='red')
+            g.es(f"invalid index: {pathToIndex}", color='red')
             return None
         results = []
         for result in parse:
@@ -2314,7 +2315,7 @@ class ZimImportController:
             rstNodes = {'0': zimNode,}
             for level, name, rst in files:
                 if level == self.rstLevel:
-                    name = "%s %s" % (self.rstType, name)
+                    name = f"{self.rstType} {name}"
                 rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')

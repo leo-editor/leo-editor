@@ -169,9 +169,9 @@ class Undoer:
         # bunch = u.beads[n]
         result = []
         result.append('-' * 10)
-        result.append('len(u.beads): %s, n: %s' % (len(u.beads), n))
+        result.append(f"len(u.beads): {len(u.beads)}, n: {n}")
         for ivar in ('kind', 'newP', 'newN', 'p', 'oldN', 'undoHelper'):
-            result.append('%s = %s' % (ivar, getattr(self, ivar)))
+            result.append(f"{ivar} = {getattr(self, ivar)}")
         return '\n'.join(result)
 
     def dumpTopBead(self):
@@ -449,7 +449,7 @@ class Undoer:
         if bunch.kind == 'beforeGroup':
             bunch.kind = 'afterGroup'
         else:
-            g.trace('oops: expecting beforeGroup, got %s' % bunch.kind)
+            g.trace(f"oops: expecting beforeGroup, got {bunch.kind}")
         # Set the types & helpers.
         bunch.kind = 'afterGroup'
         bunch.undoType = undoType
@@ -1175,7 +1175,7 @@ class Undoer:
         if u.redoHelper:
             u.redoHelper()
         else:
-            g.trace('no redo helper for %s %s' % (u.kind, u.undoType))
+            g.trace(f"no redo helper for {u.kind} {u.undoType}")
         c.checkOutline()
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
@@ -1275,7 +1275,7 @@ class Undoer:
         u.groupCount += 1
         bunch = u.beads[u.bead+1]; count = 0
         if not hasattr(bunch, 'items'):
-            g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
             g.trace(bunch)
         else:
             for z in bunch.items:
@@ -1283,7 +1283,7 @@ class Undoer:
                 if z.redoHelper:
                     z.redoHelper(); count += 1
                 else:
-                    g.trace('oops: no redo helper for %s %s' % (u.undoType, p.h))
+                    g.trace(f"oops: no redo helper for {u.undoType} {p.h}")
         u.groupCount -= 1
         u.updateMarks('new') # Bug fix: Leo 4.4.6.
         for v in dirtyVnodeList:
@@ -1453,7 +1453,7 @@ class Undoer:
         if u.undoHelper:
             u.undoHelper()
         else:
-            g.trace('no undo helper for %s %s' % (u.kind, u.undoType))
+            g.trace(f"no undo helper for {u.kind} {u.undoType}")
         c.checkOutline()
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
@@ -1565,7 +1565,7 @@ class Undoer:
         u.groupCount += 1
         bunch = u.beads[u.bead]; count = 0
         if not hasattr(bunch, 'items'):
-            g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
             g.trace(bunch)
         else:
             # Important bug fix: 9/8/06: reverse the items first.
@@ -1576,7 +1576,7 @@ class Undoer:
                 if z.undoHelper:
                     z.undoHelper(); count += 1
                 else:
-                    g.trace('oops: no undo helper for %s %s' % (u.undoType, p.v))
+                    g.trace(f"oops: no undo helper for {u.undoType} {p.v}")
         u.groupCount -= 1
         u.updateMarks('old') # Bug fix: Leo 4.4.6.
         for v in dirtyVnodeList:

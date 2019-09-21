@@ -60,7 +60,7 @@ class ChapterController:
     def makeCommand(self, chapterName, binding=None):
         '''Make chapter-select-<chapterName> command.'''
         c, cc = self.c, self
-        commandName = 'chapter-select-%s' % chapterName
+        commandName = f"chapter-select-{chapterName}"
         #
         # For tracing:
         # inverseBindingsDict = c.k.computeInverseBindingDict()
@@ -135,7 +135,7 @@ class ChapterController:
             return
         chapter = cc.getChapter(name)
         if not chapter:
-            g.es_print('no such @chapter node: %s' % name)
+            g.es_print(f"no such @chapter node: {name}")
             return
         try:
             cc.selectChapterLockout = True
@@ -180,7 +180,7 @@ class ChapterController:
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):
-        g.error('Error: %s' % (s))
+        g.error(f"Error: {s}")
 
     def note(self, s, killUnitTest=False):
         if g.unitTesting:
@@ -189,10 +189,10 @@ class ChapterController:
             if killUnitTest:
                 assert False, s
         else:
-            g.note('Note: %s' % (s))
+            g.note(f"Note: {s}")
 
     def warning(self, s):
-        g.es_print('Warning: %s' % (s))
+        g.es_print(f"Warning: {s}")
     #@+node:ekr.20160402025448.1: *4* cc.findAnyChapterNode
     def findAnyChapterNode(self):
         '''Return True if the outline contains any @chapter node.'''
@@ -353,7 +353,7 @@ class Chapter:
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__
     def __str__(self):
         '''Chapter.__str__'''
-        return '<chapter: %s, p: %s>' % (self.name, repr(self.p and self.p.h))
+        return f"<chapter: {self.name}, p: {repr(self.p and self.p.h)}>"
 
     __repr__ = __str__
     #@+node:ekr.20110607182447.16464: *3* chapter.findRootNode

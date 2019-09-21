@@ -213,7 +213,7 @@ class ExternalFilesController:
         c, p = ef.c, ef.p.copy()
         # Ask the user how to resolve the conflict.
         if self.ask(c, ef.path, p=p):
-            g.blue('updated %s' % p.h)
+            g.blue(f"updated {p.h}")
             s, e = g.readFileIntoString(ef.path)
             p.b = s
             if c.config.getBool('open-with-goto-node-on-update'):
@@ -327,7 +327,7 @@ class ExternalFilesController:
         except Exception:
             leoTempDir = "LeoTemp"
             g.es("Could not retrieve your user name.")
-            g.es("Temporary files will be stored in: %s" % leoTempDir)
+            g.es(f"Temporary files will be stored in: {leoTempDir}")
         td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
         if not os.path.exists(td):
             os.mkdir(td)
@@ -356,7 +356,7 @@ class ExternalFilesController:
                     f.write(s)
                     f.flush()
             except IOError:
-                g.error('exception creating temp file: %s' % path)
+                g.error(f"exception creating temp file: {path}")
                 g.es_exception()
                 return None
         # Add or update the external file entry.
@@ -402,7 +402,7 @@ class ExternalFilesController:
                 g.es_print('open-with exec no longer valid.')
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
-                command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
+                command = f"os.spawnl({arg},{filename},{fn})"
                 if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
             elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0])
@@ -411,12 +411,12 @@ class ExternalFilesController:
                     # add the name of the program as the first argument.
                     # Change suggested by Jim Sizelove.
                 vtuple.append(fn)
-                command = 'os.spawnv(%s)' % (vtuple)
+                command = f"os.spawnv({vtuple})"
                 if not testing:
                     os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
             elif kind == 'subprocess.Popen':
                 c_arg = self.join(arg, fn)
-                command = 'subprocess.Popen(%s)' % c_arg
+                command = f"subprocess.Popen({c_arg})"
                 if not testing:
                     try:
                         subprocess.Popen(c_arg, shell=True)
@@ -436,7 +436,7 @@ class ExternalFilesController:
         except Exception:
             g.es('exception executing open-with command:', command)
             g.es_exception()
-            return 'oops: %s' % command
+            return f"oops: {command}"
     #@+node:ekr.20190123051253.1: *5* efc.remove_temp_file
     def remove_temp_file(self, p, path):
         '''
@@ -486,13 +486,13 @@ class ExternalFilesController:
         _is_leo = path.endswith(('.leo', '.db'))
         if _is_leo:
             s = '\n'.join([
-                '%s has changed outside Leo.' %(g.splitLongFileName(path)),
+                f'{g.splitLongFileName(path)} has changed outside Leo.',
                 'Overwrite it?'
             ])
         else:
             s = '\n'.join([
-                '%s has changed outside Leo.' % (g.splitLongFileName(path)),
-                'Reload %s in Leo?' % (where),
+                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"Reload {where} in Leo?",
             ])
         result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
             yes_all=not _is_leo, no_all=not _is_leo)
@@ -575,7 +575,7 @@ class ExternalFilesController:
     #@+node:ekr.20150404083049.1: *4* efc.join
     def join(self, s1, s2):
         '''Return s1 + ' ' + s2'''
-        return '%s %s' % (s1, s2)
+        return f"{s1} {s2}"
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
     def set_time(self, path, new_time=None):
         '''

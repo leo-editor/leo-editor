@@ -19,7 +19,7 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 
 #@+others
-#@+node:ekr.20190816163728.1: ** close_handler (to do)
+#@+node:ekr.20190816163728.1: ** close_handler
 def close_handler():
     """
     Shut down pyzo.
@@ -98,7 +98,8 @@ def init(): # pyzo_in_leo.py
         global init_warning_given
         if not init_warning_given:
             init_warning_given = True
-            print('\n%s %s\n' % (__name__, message))
+            print(f"\n{__name__} not loaded")
+            print(f"{__name__} {message}\n")
         return False
         
     if g.app.gui.guiName() != "qt":
@@ -317,7 +318,7 @@ def main_window_ctor():
         # bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
             # # Default: solarized base00
         # try:
-            # self.setStyleSheet("background: %s" % bg) 
+            # self.setStyleSheet(f"background: {bg}") 
         # except Exception:
             # g.es_exception()
 

@@ -288,7 +288,7 @@ class AutoCompleterClass:
         '''Show the autocompleter status.'''
         k = self.k
         if not g.unitTesting:
-            s = 'calltips %s' % 'On' if k.enable_calltips else 'Off'
+            s = f"calltips {'On'}" if k.enable_calltips else 'Off'
             g.red(s)
     #@+node:ekr.20061031131434.16: *3* ac.Helpers
     #@+node:ekr.20110512212836.14469: *4* ac.exit
@@ -400,7 +400,7 @@ class AutoCompleterClass:
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
             kind = 'ON' if self.verbose else 'OFF'
-            message = 'verbose completions %s' % (kind)
+            message = f"verbose completions {kind}"
             g.es_print(message)
             # This doesn't work because compute_completion_list clears the autocomplete tab.
             # self.put('', message, tabName=self.tabName)
@@ -592,7 +592,7 @@ class AutoCompleterClass:
             else:
                 hits = []
         if 1: # A kludge: add the prefix to each hit.
-            hits = ['%s.%s' % (varname, z) for z in hits]
+            hits = [f"{varname}.{z}" for z in hits]
         return hits
     #@+node:ekr.20110510120621.14540: *6* ac.clean
     def clean(self, hits):
@@ -613,7 +613,7 @@ class AutoCompleterClass:
                 sig = fn[2: -4].strip()
             else:
                 sig = fn
-            aList.append('%s: %s' % (s, sig))
+            aList.append(f"{s}: {sig}")
         aList = list(set(aList))
         aList.sort()
         return aList
@@ -812,7 +812,7 @@ class AutoCompleterClass:
                 put('    (none)')
             for i in range(defn):
                 arg = argspec.args[-defn + i]
-                put("    %s = %s" % (arg, repr(argspec.defaults[i])))
+                put(f"    {arg} = {repr(argspec.defaults[i])}")
             if argspec.varargs:
                 put("varargs: *" + argspec.varargs)
             if argspec.keywords:
@@ -954,7 +954,7 @@ class AutoCompleterClass:
             if ch:
                 n = d.get(ch, 0)
                 d[ch] = n + 1
-        aList = ['%s %d' % (ch2, d.get(ch2)) for ch2 in sorted(d)]
+        aList = [f"{ch2} {d.get(ch2)}" for ch2 in sorted(d)]
         if len(aList) > 1:
             tabList = aList
         else:
@@ -1553,7 +1553,7 @@ class GetArg:
             if dataList:
                 for z in dataList:
                     pane, key = z
-                    s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
+                    s1a = '' if pane in ('all:', 'button:') else f"{pane} "
                     s1b = k.prettyPrintKey(key)
                     s1 = s1a + s1b
                     s2 = self.command_source(commandName)
@@ -1952,7 +1952,7 @@ class KeyHandlerClass:
         action = c.config.getString('default-editing-state') or 'insert'
         action.lower()
         if action not in ('command', 'insert', 'overwrite'):
-            g.trace('ignoring default_editing_state: %s' % (action))
+            g.trace(f"ignoring default_editing_state: {action}")
             action = 'insert'
         self.defaultEditingAction = action
     #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
@@ -1965,7 +1965,7 @@ class KeyHandlerClass:
         elif defaultAction in ('command', 'insert', 'overwrite'):
             self.unboundKeyAction = defaultAction
         else:
-            g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
+            g.trace(f"ignoring top_level_unbound_key_action setting: {defaultAction}")
             self.unboundKeyAction = 'insert'
         self.defaultUnboundKeyAction = self.unboundKeyAction
         k.setInputState(self.defaultUnboundKeyAction)
@@ -2035,8 +2035,7 @@ class KeyHandlerClass:
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
             if stroke.lower().find(s) > -1:
-                g.warning('ignoring invalid key binding:', '%s = %s' % (
-                    commandName, stroke))
+                g.warning('ignoring invalid key binding:', f"{commandName} = {stroke}")
                 return False
         if pane.endswith('-mode'):
             g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
@@ -2122,10 +2121,9 @@ class KeyHandlerClass:
             key = key.replace('&', '')
             if not c.config.exists(key, 'shortcut'):
                 if abbrev:
-                    g.trace('No shortcut for abbrev %s -> %s = %s' % (
-                        name, abbrev, key))
+                    g.trace(f"No shortcut for abbrev {name} -> {abbrev} = {key}")
                 else:
-                    g.trace('No shortcut for %s = %s' % (name, key))
+                    g.trace(f"No shortcut for {name} = {key}")
     #@+node:ekr.20061031131434.97: *4* k.completeAllBindings
     def completeAllBindings(self, w=None):
         '''New in 4.4b3: make an actual binding in *all* the standard places.
@@ -2197,7 +2195,7 @@ class KeyHandlerClass:
                         setattr(k, ivar, bi.stroke)
                         found = True; break
             if not found and warn:
-                g.trace('no setting for %s' % commandName)
+                g.trace(f"no setting for {commandName}")
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
@@ -2443,7 +2441,7 @@ class KeyHandlerClass:
             k.doTabCompletion(list(c.commandsDict.keys()))
         else: # Annoying.
             k.keyboardQuit()
-            k.setStatusLabel('Command does not exist: %s' % commandName)
+            k.setStatusLabel(f"Command does not exist: {commandName}")
             c.bodyWantsFocus()
         return False
     #@+node:ekr.20061031131434.113: *4* k.endCommand
@@ -2567,7 +2565,7 @@ class KeyHandlerClass:
         for aList in [g.app.config.atLocalButtonsList, g.app.config.atLocalCommandsList]:
             for p in aList:
                 data.append((p.h, 'L'),)
-        result = ['%s %s' % (z[1], z[0]) for z in sorted(data)]
+        result = [f"{z[1]} {z[0]}" for z in sorted(data)]
         result.extend([
             '',
             'legend:',
@@ -2588,7 +2586,7 @@ class KeyHandlerClass:
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
                 pane, key = z
-                pane = '%s ' % (pane) if pane != 'all:' else ''
+                pane = f"{pane} " if pane != 'all:' else ''
                 key = k.prettyPrintKey(key).replace('+Key', '')
                 s1 = pane + key
                 s2 = commandName
@@ -2843,7 +2841,7 @@ class KeyHandlerClass:
             g.app.gui.set_focus(c, w)
             g.app.gui.event_generate(c, None, shortcut, w)
         else:
-            message = 'no shortcut for %s' % (commandName)
+            message = f"no shortcut for {commandName}"
             if g.app.unitTesting:
                 raise AttributeError(message)
             g.error(message)
@@ -2892,7 +2890,7 @@ class KeyHandlerClass:
             shortcut = None
         for arg, val in kwargs.items():
             if val is not None:
-                g.es_print('The "%s" keyword arg to k.registerCommand is deprecated' % arg)
+                g.es_print(f'The "{arg}" keyword arg to k.registerCommand is deprecated')
                 g.es_print('Called from', g.callers())
         # Make requested bindings, even if a warning has been given.
         # This maintains strict compatibility with existing plugins and scripts.
@@ -2963,10 +2961,10 @@ class KeyHandlerClass:
                 return k.funcReturn
             return None
         if g.app.unitTesting:
-            raise AttributeError('no such command: %s' % commandName)
+            raise AttributeError(f"no such command: {commandName}")
         if g.app.inBridge:
-            raise AttributeError('no such command: %s' % commandName)
-        g.error('simulateCommand: no command for %s' % (commandName))
+            raise AttributeError(f"no such command: {commandName}")
+        g.error(f"simulateCommand: no command for {commandName}")
         return None
     #@+node:ekr.20170324143353.1: *5* k.commandExists
     def commandExists(self, commandName):
@@ -3172,7 +3170,7 @@ class KeyHandlerClass:
                 if d:
                     bi = d.get(stroke)
                     if bi:
-                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
+                        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
                         if bi.commandName == 'auto-complete':
                             return True
         return False
@@ -3371,7 +3369,7 @@ class KeyHandlerClass:
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
             assert m # edit-shortcut was invoked on a malformed body line
-            sel = '%s %s' % (m.group(0), stroke.s)
+            sel = f"{m.group(0)} {stroke.s}"
             udata = c.undoer.beforeChangeNodeContents(p)
             w.setSelectionAreas(before, sel, after)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
@@ -3382,7 +3380,7 @@ class KeyHandlerClass:
         if p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
             cmd = p.h.split('@key',1)[0]
-            p.h = '%s @key=%s' % (cmd, stroke.s)
+            p.h = f"{cmd} @key={stroke.s}"
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
             try:
                 cmdname = cmd.split(' ', 1)[1].strip()
@@ -3471,7 +3469,7 @@ class KeyHandlerClass:
         bi = d.get(stroke)
         if not bi:
             return 'continue'
-        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
+        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
         #
         # Special case the replace-string command in the minibuffer.
         #
@@ -3877,7 +3875,7 @@ class KeyHandlerClass:
         k = self
         k.clearState()
         if modeName.endswith('-mode'): modeName = modeName[: -5]
-        k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
+        k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
     #@+node:ekr.20061031131434.158: *4* k.createModeBindings
     def createModeBindings(self, modeName, d, w):
         '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
@@ -3903,7 +3901,7 @@ class KeyHandlerClass:
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
                     d2[stroke] = g.BindingInfo(
-                        kind='mode<%s>' % (modeName), # 2012/01/23
+                        kind=f"mode<{modeName}>",
                         commandName=commandName,
                         func=func,
                         nextMode=bi.nextMode,
@@ -4490,8 +4488,7 @@ class ModeInfo:
         for commandName in d:
             func = c.commandsDict.get(commandName)
             if not func:
-                g.es_print('no such command: %s Referenced from %s' % (
-                    commandName, modeName))
+                g.es_print(f"no such command: {commandName} Referenced from {modeName}")
                 continue
             aList = d.get(commandName, [])
             for bi in aList:
@@ -4505,7 +4502,7 @@ class ModeInfo:
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
                     d2[stroke] = g.BindingInfo(
-                        kind='mode<%s>' % (modeName), # 2012/01/23
+                        kind=f"mode<{modeName}>",
                         commandName=commandName,
                         func=func,
                         nextMode=bi.nextMode,

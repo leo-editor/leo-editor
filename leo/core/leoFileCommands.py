@@ -144,7 +144,7 @@ class FastRead:
             if g.unitTesting:
                 assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
             else:
-                g.trace('can not unhexlify %s=%s' % (attr, val))
+                g.trace(f"can not unhexlify {attr}={val}")
             return val
         try:
             # No change needed to support protocols.
@@ -158,7 +158,7 @@ class FastRead:
                 val2 = self.bytesToUnicode(val2)
                 return val2
             except Exception:
-                g.trace('can not unpickle %s=%s' % (attr, val))
+                g.trace(f"can not unpickle {attr}={val}")
                 return val
     #@+node:ekr.20180606044154.1: *6* fast.bytesToUnicode
     def bytesToUnicode(self, ob):
@@ -193,7 +193,7 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed) ** (Likely bug)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         trace = 'size' in g.app.debug
@@ -213,17 +213,22 @@ class FastRead:
         if g.app.use_global_docks:
             mf = getattr(g.app.gui, 'main_window', None)
             if not mf:
-                return
+                g.trace('*** no main_window ***')
+                return ####
             g.app.gui.set_top_geometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
         else:
+            # c.frame may be a NullFrame.
+            ### g.trace('***c.frame.top', c.frame.top)
             c.frame.setTopGeometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)
             frameFactory = getattr(g.app.gui, 'frameFactory', None)
             if not frameFactory:
-                return
+                return ####
+            assert frameFactory is not None
+            ### g.trace("Has frame factory:", c.shortFileName())
             mf = frameFactory.masterFrame
         if trace: g.trace('sizing screen')
         if g.app.start_minimized:
@@ -616,7 +621,7 @@ class FileCommands:
             b2, h2 = bunch.get('b_new'), bunch.get('h_new')
             root_v = bunch.get('root_v') or ''
             child = root.insertAsLastChild()
-            h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
+            h = f'Recovered node "{h1}" from {g.shortFileName(fn)}'
             child.setHeadString(h)
             if b1 == b2:
                 lines = [
@@ -1166,7 +1171,7 @@ class FileCommands:
         else:
             timestamp = ''
         zipMark = '[zipped] ' if c.isZipped else ''
-        g.es("%ssaved: %s%s" % (timestamp, zipMark, g.shortFileName(fileName)))
+        g.es(f"{timestamp} saved: {zipMark}{g.shortFileName(fileName)}")
     #@+node:ekr.20050404190914.2: *4* fc.deleteFileWithMessage
     def deleteFileWithMessage(self, fileName, unused_kind):
         try:
@@ -1296,7 +1301,7 @@ class FileCommands:
         # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
         # sheet = sheet or sheet2
         if sheet:
-            s = '<?xml-stylesheet %s ?>' % sheet
+            s = f"<?xml-stylesheet {sheet} ?>"
             self.put(s)
             self.put_nl()
     #@+node:ekr.20031218072017.1577: *5* fc.putTnode
@@ -1594,7 +1599,7 @@ class FileCommands:
                 # 2010/01/21: always write in binary mode.
                 theActualFile = open(fileName, 'wb')
             except IOError:
-                g.es('can not open %s' % fileName)
+                g.es(f"can not open {fileName}")
                 g.es_exception()
                 theActualFile = None
         return fileName, theActualFile
@@ -1888,7 +1893,7 @@ class FileCommands:
             s = pickle.dumps(val, protocol=1)
             s2 = binascii.hexlify(s)
             s3 = g.toUnicode(s2, 'utf-8')
-            field = ' %s="%s"' % (tag, s3)
+            field = f' {tag}="{s3}"'
             return field
         except pickle.PicklingError:
             if tag: # The caller will print the error if tag is None.
@@ -1964,20 +1969,20 @@ class FileCommands:
             aList = [int(z) for z in archivedPosition.split('.')]
             aList.reverse()
         except Exception:
-            return oops('"%s"' % archivedPosition)
+            return oops(f'"{archivedPosition}"')
         if not aList:
             return oops('empty')
         last_v = root_v
         n = aList.pop()
         if n != 0:
-            return oops('root index="%s"' % n)
+            return oops(f'root index="{n}"')
         while aList:
             n = aList.pop()
             children = last_v.children
             if n < len(children):
                 last_v = children[n]
             else:
-                return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
+                return oops(f'bad index="{n}", len(children)="{len(children)}"')
         return last_v
     #@+node:ekr.20060919110638.11: *4* fc.resolveTnodeLists
     def resolveTnodeLists(self):
@@ -1996,7 +2001,7 @@ class FileCommands:
                     if v:
                         result.append(v)
                     else:
-                        g.trace('*** No VNode for %s' % tnx)
+                        g.trace(f"*** No VNode for {tnx}")
                 if result:
                     p.v.tnodeList = result
                 delattr(p.v, 'tempTnodeList')

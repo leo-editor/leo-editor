@@ -98,7 +98,7 @@ class LeoMenu:
             commandKeys = list(c.commandsDict.keys())
             for key in sorted(d.keys()):
                 if key not in commandKeys:
-                    g.trace('*** bad entry for %s' % (key))
+                    g.trace(f"*** bad entry for {key}")
     #@+node:ekr.20031218072017.3775: *3* LeoMenu.error and oops
     def oops(self):
         g.pr("LeoMenu oops:", g.callers(4), "should be overridden in subclass")
@@ -156,7 +156,7 @@ class LeoMenu:
                     else:
                         g.trace('no menu', name)
             else:
-                self.error('%s %s not valid outside @menu tree' % (kind, val))
+                self.error(f"{kind} {val} not valid outside @menu tree")
         aList = c.config.getOpenWith()
         if aList:
             # a list of dicts.

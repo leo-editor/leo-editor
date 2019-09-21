@@ -1,7 +1,7 @@
 # Leo colorizer control file for tex mode.
 # This file is in the public domain.
 
-print('tex.py')
+# print('tex.py')
 
 # Properties for tex mode.
 properties = {

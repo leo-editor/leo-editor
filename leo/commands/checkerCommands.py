@@ -6,13 +6,6 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import leo.core.leoGlobals as g
-from leo.core.leoBeautify import should_beautify
-try:
-    # pylint: disable=import-error
-        # We can't assume the user has this.
-    import black
-except Exception:
-    black = None
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
@@ -23,85 +16,12 @@ try:
     import pyflakes
 except ImportError:
     pyflakes = None
-# import os
-import re
 import shlex
-# import subprocess
 import sys
 import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
-#@+node:ekr.20190830043650.1: *3* blacken-check-tree
-@g.command('blkc')
-@g.command('blacken-check-tree')
-def blacken_check_tree(event):
-    '''
-    Run black on all nodes of the selected tree, reporting only errors.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=False, check_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190829163640.1: *3* blacken-diff-node
-@g.command('blacken-diff-node')
-def blacken_diff_node(event):
-    '''
-    Run black on all nodes of the selected node.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_node(c.p, diff_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190829163652.1: *3* blacken-diff-tree
-@g.command('blkd')
-@g.command('blacken-diff-tree')
-def blacken_diff_tree(event):
-    '''
-    Run black on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=True)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190725155006.1: *3* blacken-node
-@g.command('blacken-node')
-def blacken_node(event):
-    '''
-    Run black on all nodes of the selected node.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_node(c.p, diff_flag=False)
-    else:
-        g.es_print('can not import black')
-#@+node:ekr.20190729105252.1: *3* blacken-tree
-@g.command('blk')
-@g.command('blacken-tree')
-def blacken_tree(event):
-    '''
-    Run black on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    if black:
-        BlackCommand(c).blacken_tree(c.p, diff_flag=False)
-    else:
-        g.es_print('can not import black')
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
 @g.command('check-conventions')
 @g.command('cc')
@@ -136,7 +56,6 @@ def find_long_lines(event):
             if '@nopylint' in parent.h:
                 return True
         return False
-        
     #@-others
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
@@ -208,9 +127,9 @@ def find_missing_docstrings(event):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
     #@+node:ekr.20190615180900.1: *4* function: clickable_link 
-    def clickable_link (p, i):
+    def clickable_link(p, i):
         '''Return a clickable link to line i of p.b.'''
-        link =  p.get_UNL(with_proto=True, with_count=True, with_index=True)
+        link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
         return "%s,%d" % (link, i)
     #@-others
 
@@ -226,14 +145,13 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es(line, nodeLink=clickable_link(p, i+1))
+                    g.es(line, nodeLink=clickable_link(p, i + 1))
                     break
     g.es_print('')
     g.es_print('found %s missing docstring%s in %s file%s in %5.2f sec.' % (
         count, g.plural(count),
         len(found), g.plural(len(found)),
         (time.process_time() - t1)))
-        
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -282,184 +200,6 @@ def pylint_command(event):
         if c.isChanged():
             c.save()
         PylintCommand(c).run()
-#@+node:ekr.20190725154916.1: ** class BlackCommand
-class BlackCommand:
-    '''A class to run black on all Python @<file> nodes in c.p's tree.'''
-    
-    # tag1 must be executable, and can't be pass.
-    tag1 = "if xxx: print('') # black-tag1:::"
-    tag2 = ":::black-tag2"
-    tag3 = "# black-tag3:::"
-
-    def __init__(self, c):
-        '''ctor for PyflakesCommand class.'''
-        self.c = c
-        self.language = None
-        self.mode = black.FileMode()
-        self.wrapper = c.frame.body.wrapper
-        self.mode.line_length = c.config.getInt("black-line-length") or 88
-        self.mode.string_normalization = c.config.getBool("black-string-normalization", default=False)
-        
-        # self.mode.target_versions = set(black.PY36_VERSIONS)
-
-    #@+others
-    #@+node:ekr.20190725154916.7: *3* black.blacken_node
-    def blacken_node(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
-        c = self.c
-        if not black or not root:
-            return
-        t1 = time.clock()
-        self.changed, self.errors, self.total = 0, 0, 0
-        self.undo_type = 'blacken-node'
-        self.blacken_node_helper(root, check_flag, diff_flag)
-        t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors}error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3} sec.'
-        )
-        if self.changed:
-            c.redraw()
-    #@+node:ekr.20190729065756.1: *3* black.blacken_tree
-    def blacken_tree(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
-        c = self.c
-        if not black or not root:
-            return
-        t1 = time.clock()
-        self.changed, self.errors, self.total = 0, 0, 0
-        undo_type = 'blacken-tree'
-        bunch = c.undoer.beforeChangeTree(root)
-        # Blacken *only* the selected tree.
-        changed = False
-        for p in root.self_and_subtree():
-            if self.blacken_node_helper(p, check_flag, diff_flag):
-                changed = True
-        if changed:
-            c.setChanged(True)
-            c.undoer.afterChangeTree(root, undo_type, bunch)
-        t2 = time.clock()
-        print(
-            f'scanned {self.total} node{g.plural(self.total)}, '
-            f'changed {self.changed} node{g.plural(self.changed)}, '
-            f'{self.errors} error{g.plural(self.errors)} '
-            f'in {t2-t1:5.3} sec.'
-        )
-        if self.changed:
-            if not c.changed: c.setChanged(True)
-            c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper & helpers
-    def blacken_node_helper(self, p, check_flag, diff_flag):
-        '''blacken p.b, incrementing counts and stripping unnecessary blank lines.'''
-        trace = 'black' in g.app.debug and not g.unitTesting
-        if not should_beautify(p):
-            return False
-        c = self.c
-        self.total += 1
-        self.language = g.findLanguageDirectives(c, p)
-        body = p.b.rstrip()+'\n'
-        body2 = self.replace_leo_constructs(body)
-        try:
-            body3 = black.format_str(body2, mode=self.mode)
-        except Exception:
-            self.errors += 1
-            print('\n===== error', p.h, '\n')
-            g.es_print_exception()
-            self.dump_lines(body2, 'after-replace-leo-constructs')
-            return False
-        if trace:
-            self.dump_lines(body2, 'after-replace-leo-constructs')
-        result = self.restore_leo_constructs(body3)
-        # if trace:
-            # self.dump_lines(result, 'after-restore-leo-constructs')
-        if check_flag:
-            return False
-        if result == body:
-            return False
-        if g.unitTesting:
-            return False
-        if diff_flag:
-            print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
-            return False
-        # Update p.b and set undo params.
-        self.changed += 1
-        p.b = result
-        c.frame.body.updateEditors()
-        p.v.contentModified()
-        c.undoer.setUndoTypingParams(p, 'blacken-node',
-            oldText=body, newText=result)
-        if not p.v.isDirty():
-            p.v.setDirty()
-        return True
-    #@+node:ekr.20190830045147.1: *4* black.dump_lines
-    def dump_lines(self, s, tag):
-        """Dump all lines in s, with line numbers."""
-        print(f'\n{tag}...\n')
-        for i, line in enumerate(g.splitLines(s)):
-            print(f'{i:3}: {line:!r}')
-        print('')
-    #@+node:ekr.20190829212933.1: *4* black.replace_leo_constructs
-    c_pat = re.compile(r'^\s*@c\s*\n')
-    dir_pat = re.compile(r'\s*@(%s)' % '|'.join([r'\b%s\b' % (z) for z in g.globalDirectiveList]))
-    ref_pat = re.compile(r'.*\<\<.*\>\>')
-    doc_pat = re.compile(r'^\s*(@\s+|@doc\s+)')
-    lang_pat = re.compile(r'@language\s+(\w+)')
-
-    def replace_leo_constructs(self, s):
-        """Replace Leo constructs with special lines."""
-        in_python = self.language == 'python'
-        in_doc, result = False, []
-        for line in g.splitLines(s):
-            # @language...
-            m = self.lang_pat.match(line)
-            if m:
-                in_python = m.group(1).lower() == 'python'
-                result.append(self.tag3 + line)
-                continue
-            # Non-python line...
-            if not in_python:
-                result.append(self.tag3 + line)
-                continue
-            # Handle all Leo constructs
-            for pat in (self.c_pat, self.dir_pat, self.ref_pat, self.doc_pat):
-                m = pat.match(line)
-                if m:
-                    ### g.trace('=====', repr(line), pat)
-                    if pat == self.doc_pat:
-                        in_doc = True
-                        result.append(self.tag3 + line)
-                    elif pat == self.c_pat:
-                        in_doc = False
-                        result.append(self.tag3 + line)
-                    else:
-                        lws = g.get_leading_ws(line)
-                        result.append(lws + self.tag1 + line.rstrip() + self.tag2 + '\n')
-                    break
-            else: # Not a Leo consruct.
-                if in_doc:
-                    result.append(self.tag3 + line)
-                else:
-                    result.append(line)
-        return ''.join(result)
-        
-    #@+node:ekr.20190829212936.1: *4* black.restore_leo_constructs
-    tag1_pat = re.compile(r'\s*%s(.+)%s' % (tag1, tag2))
-
-    def restore_leo_constructs(self, s):
-        """Restore all Leo constructs from the tags."""
-        result = []
-        for line in g.splitLines(s):
-            m = self.tag1_pat.match(line)
-            if m:
-                line = m.group(1)+'\n'
-            elif line.strip().startswith(self.tag3):
-                line = line.lstrip()[len(self.tag3):]
-            result.append(line)
-        return ''.join(result)
-    #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
@@ -573,9 +313,9 @@ class PyflakesCommand:
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
     class LogStream:
-        
+
         '''A log stream for pyflakes.'''
-         
+
         def __init__(self, fn_n=0, roots=None):
              self.fn_n = fn_n
              self.roots = roots
@@ -592,7 +332,7 @@ class PyflakesCommand:
                     line = int(s.split(':')[1])
                     unl = root.get_UNL(with_proto=True, with_count=True)
                     g.es(s, nodeLink="%s,%d" % (unl, -line))
-                except (IndexError, TypeError, ValueError):
+                except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail
                     g.es(s)
             else:
@@ -695,11 +435,11 @@ class PyflakesCommand:
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
-    
+
     regex = r'^.*:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
         # m.group(1) is the line number.
         # m.group(2) is the (unused) test name.
-        
+
     # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
 
     def __init__(self, c):
@@ -721,7 +461,7 @@ class PylintCommand:
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-            
+
         # Ignore @nopylint trees.
 
         def predicate(p):
@@ -738,7 +478,6 @@ class PylintCommand:
             return
         for fn, p in data:
             self.run_pylint(fn, p)
-        
     #@+node:ekr.20190605183824.1: *3* 2. pylint.import_lint
     def import_lint(self):
         '''Make sure lint can be imported.'''
@@ -791,9 +530,9 @@ class PylintCommand:
         #
         # Invoke pylint directly.
         is_win = sys.platform.startswith('win')
-        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+        args = ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
         if is_win:
-            args = args.replace('\\','\\\\')
+            args = args.replace('\\', '\\\\')
         command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
             sys.executable, args)
         if not is_win:
@@ -804,10 +543,10 @@ class PylintCommand:
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern = self.regex,
-            link_root = p,
+            link_pattern=self.regex,
+            link_root=p,
         )
-        
+
         # Old code: Invoke g.run_pylint.
             # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
             # # When shell is True, it's recommended to pass a string, not a sequence.
@@ -818,5 +557,4 @@ class PylintCommand:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo
