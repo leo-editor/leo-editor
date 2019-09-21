@@ -549,7 +549,8 @@ class AtFile:
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fileName = c.os_path_finalize_join(at.default_directory, fileName)
+        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
         if not g.os_path_exists(fileName):
             g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
             return p
@@ -594,7 +595,8 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -624,7 +626,8 @@ class AtFile:
         '''Read one @asis node. Used only by refresh-from-disk'''
         at, c = self, self.c
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -708,7 +711,8 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = g.os_path_expanduser(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
         # Delete all children.
