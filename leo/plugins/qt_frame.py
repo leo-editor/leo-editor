@@ -1060,6 +1060,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return max_row2
     #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
     def create_find_buttons(self, grid, parent, max_row2, row):
+        '''
+        Per #1342, this method now creates labels, not real buttons.
+        '''
         c, dw = self.leo_c, self
         k = c.k
         ftm = c.findCommands.ftm
@@ -1081,37 +1084,34 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         # findTabHandler does not exist yet.
         for row2, col, func_name, label, cmd_name in table:
+        
+            if 0: # #1342: No longer needed.
 
-            def find_tab_button_callback(event, c=c, func_name=func_name):
-                # h will exist when the Find Tab is open.
-                fc = c.findCommands
-                func = getattr(fc, func_name, None)
-                if func: func()
-                else:
-                    g.trace('* does not exist:', func_name)
-
+                def find_tab_button_callback(event, c=c, func_name=func_name):
+                    # h will exist when the Find Tab is open.
+                    fc = c.findCommands
+                    func = getattr(fc, func_name, None)
+                    if func: func()
+                    else: g.trace('* does not exist:', func_name)
+        
             name = mungeName(label)
             # Prepend the shortcut if it exists:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
                 label = '%s:  %s' % (label, k.prettyPrintKey(stroke))
-            if 1: # Not bad.
-                w = dw.createButton(parent, name, label)
-                grid.addWidget(w, row + row2, col)
-            else:
-                # grid.addLayout(layout,row+row2,col)
-                # layout = dw.createHLayout(frame,name='button_layout',margin=0,spacing=0)
-                # frame.setLayout(layout)
-                frame = dw.createFrame(parent, name='button:%s' % label)
-                w = dw.createButton(frame, name, label)
-                grid.addWidget(frame, row + row2, col)
-            # Connect the button with the command.
-            w.clicked.connect(find_tab_button_callback)
-            # Set the ivar.
-            ivar = '%s-%s' % (cmd_name, 'button')
-            ivar = ivar.replace('-', '_')
-            assert getattr(ftm, ivar) is None
-            setattr(ftm, ivar, w)
+            # #1342: Create a label, not a button.
+            w = dw.createLabel(parent, name, label)
+            w.setObjectName('find-label')
+                # Useful, to highlight these labels.
+            grid.addWidget(w, row + row2, col)
+            if 0: # #1342: No longer needed.
+                # Connect the button with the command.
+                w.clicked.connect(find_tab_button_callback)
+                # Set the ivar.
+                ivar = '%s-%s' % (cmd_name, 'button')
+                ivar = ivar.replace('-', '_')
+                assert getattr(ftm, ivar) is None
+                setattr(ftm, ivar, w)
         row += max_row2
         row += 2
         return row
@@ -1232,24 +1232,26 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #@-others
         EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
-        table = (
-            ('findNextCommand', 'find-next'),
-            ('findPrevCommand', 'find-prev'),
-            ('findAll', 'find-all'),
-            ('changeCommand', 'replace'),
-            ('changeThenFind', 'replace-then-find'),
-            ('changeAll', 'replace-all'),
-        )
-        for func_name, cmd_name in table:
-            ivar = '%s-%s' % (cmd_name, 'button')
-            ivar = ivar.replace('-', '_')
-            w = getattr(ftm, ivar, None)
-            func = getattr(fc, func_name, None)
-            if w and func:
-                next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
-                EventWrapper(c, w=w, next_w=next_w, func=func)
-            else:
-                g.trace('**oops**')
+        
+        if 0: # #1342: These are no longer needed, because there are no buttons.
+            table = (
+                ('findNextCommand', 'find-next'),
+                ('findPrevCommand', 'find-prev'),
+                ('findAll', 'find-all'),
+                ('changeCommand', 'replace'),
+                ('changeThenFind', 'replace-then-find'),
+                ('changeAll', 'replace-all'),
+            )
+            for func_name, cmd_name in table:
+                ivar = '%s-%s' % (cmd_name, 'button')
+                ivar = ivar.replace('-', '_')
+                w = getattr(ftm, ivar, None)
+                func = getattr(fc, func_name, None)
+                if w and func:
+                    next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
+                    EventWrapper(c, w=w, next_w=next_w, func=func)
+                else:
+                    g.trace('**oops**')
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
