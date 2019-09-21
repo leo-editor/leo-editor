@@ -1896,10 +1896,11 @@ class Commands:
         c.os_path_finalize is deprecated.
         It no longer evaluates path expressions.
         '''
-        callers = g.callers(1).strip()
-        if callers not in self.deprecated_messages:
-            self.deprecated_messages.append(callers)
-            g.es_print(f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
+        callers1 = g.callers(1)
+        callers2 = g.callers(2)
+        if callers1 not in self.deprecated_messages:
+            self.deprecated_messages.append(callers1)
+            g.es_print(f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers2}")
         return g.os_path_finalize(path, **keys)
 
     def os_path_finalize_join(self, *args, **keys):
@@ -1907,10 +1908,11 @@ class Commands:
         c.os_path_finalize_join is deprecated.
         It no longer evaluates path expressions.
         '''
-        callers = g.callers(1).strip()
-        if callers not in self.deprecated_messages:
-            self.deprecated_messages.append(callers)
-            g.es_print(f"\nc.os_path_finalize_join is deprecated. called from: {callers}")
+        callers1 = g.callers(1)
+        callers2 = g.callers(2)
+        if callers1 not in self.deprecated_messages:
+            self.deprecated_messages.append(callers1)
+            g.es_print(f"\nc.os_path_finalize_join is deprecated. called from: {callers2}")
         return g.os_path_finalize_join(*args, **keys)
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
