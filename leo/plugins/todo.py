@@ -511,7 +511,7 @@ class todoController:
             elif which == 'progress':
                 prog = self.getat(p.v, 'progress')
                 # pylint: disable=literal-comparison
-                if prog is not '':
+                if prog != '':
                     prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
