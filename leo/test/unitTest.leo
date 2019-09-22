@@ -235,15 +235,6 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20181102063435.1"><vh>Recent...</vh>
-<v t="ekr.20190509044054.1"><vh>@test print gui name</vh></v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190319020829.1"><vh>A</vh></v>
-<v t="ekr.20190319020829.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190319020829.2"><vh>B</vh></v>
-</v>
-</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
@@ -696,58 +687,6 @@ for h in sorted(d2.keys()):
 
 Important: this may cause crashes on some platforms.
 </t>
-<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
-assert p.h == '@test insert node',repr(p.h)
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    assert p.h == '@test insert node',repr(p.h)
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p.expand()
-    c.setCurrentPosition(p2)
-    p4 = c.insertHeadline()
-    assert p4 == c.p
-    p = c.p
-    assert p,'no p'
-    p.setHeadString('inserted')
-    assert p.back(),'no p.back(): %s' % (p)
-    assert p.back().h == 'A', 'fail 1'
-    assert p.next().h == 'B', 'fail 2'
-    c.undoer.undo()
-    # With the new undo logic, it takes 2 undoes.
-    # The first undo undoes the headline changes,
-    # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser', 'nullGui'):
-        # The situation is different in a null Gui.
-        pass
-    else:
-        c.undoer.undo() 
-    p = c.p
-    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
-    assert p.next() == p3,  'fail 4'
-    c.undoer.redo()
-    p = c.p
-    assert p.back(),          'fail 0-2'
-    assert p.back().h == 'A', 'fail 1-2'
-    assert p.next().h == 'B', 'fail 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p2,         'fail 3-2'
-    assert p.next() == p3,  'fail 3-2'
-    c.undoer.redo()
-    p = c.p
-    assert p.back().h == 'A', 'fail 1-3'
-    assert p.next().h == 'B', 'fail 2-3'
-finally:
-    if 0:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
 for p in c.all_unique_positions():
@@ -954,44 +893,6 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
-<t tx="ekr.20100131171342.5482">ivars = (
-    # Global managers.
-    'config',
-    # 'externalFilesController',
-    'loadManager','pluginsController','recentFilesManager',
-    # Official ivars.
-    'gui',
-    'initing','killed','quitting',
-    'leoID',
-    'log','logIsLocked','logWaiting',
-    'nodeIndices',
-    'unitTesting','unitTestDict',
-    'windowList',
-    # Less-official and might be removed...
-    'batchMode',
-    # 'debugSwitch',
-    'disableSave',
-    'hookError','hookFunction',
-    'numberOfUntitledWindows',
-    'realMenuNameDict',
-    'searchDict','scriptDict',
-    'use_psyco',
-)
-if g.app.isExternalUnitTest or g.in_bridge or g.app.gui.guiName() == 'browser':
-    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
-else:
-    mayBeNone = ('hookFunction','openWithInstance')
-fails = []
-for ivar in ivars:
-    assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone and getattr(g.app, 'old_gui_name', None) != 'browser':
-        val = getattr(g.app, ivar)
-        if val is None:
-            fails.append(ivar)
-assert not fails, 'old gui: %s: null g.app ivars in %s...\n%s' % (
-    g.app.old_gui_name, g.app, g.objToString(fails))
-
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
@@ -1497,7 +1398,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20181102063435.1"># These are first, to save time.</t>
 <t tx="ekr.20181116142416.1">gnx: ekr.20090627070131.4975
 </t>
 <t tx="ekr.20181116142416.2">gnx: ekr.20090627070131.4975
@@ -1640,12 +1540,6 @@ unl: eggs
 unl: spam
 gnx: ekr.20190113124246.31
 unl: eggs
-</t>
-<t tx="ekr.20190319020829.1"></t>
-<t tx="ekr.20190319020829.2"></t>
-<t tx="ekr.20190319020829.3"></t>
-<t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
-    getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
 </tnodes>
 </leo_file>
