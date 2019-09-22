@@ -710,10 +710,11 @@ class AtFile:
         if not fn == p.atShadowFileNodeName():
             return at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
         # Fix bug 889175: Remember the full fileName.
+        fn = c.expand_path_expression(fn) # #1341.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
-        fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
         # Delete all children.
