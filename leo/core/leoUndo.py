@@ -1191,8 +1191,9 @@ class Undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        if u.inHead: # 2013/08/26.
-            c.editHeadline()
+        if u.inHead:
+            # #1333 claims this is annoying.
+            # c.editHeadline()
             u.inHead = False
         else:
             c.bodyWantsFocus()
@@ -1431,7 +1432,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* u.undo (changed)
+    #@+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
@@ -1471,7 +1472,8 @@ class Undoer:
         c.redraw()
         c.recolor()
         if u.inHead:
-            c.editHeadline()
+            # #1333 claims this is annoying.
+            # c.editHeadline()
             u.inHead = False
         else:
             c.bodyWantsFocus()
