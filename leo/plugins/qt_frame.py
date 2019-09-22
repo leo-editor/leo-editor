@@ -1067,17 +1067,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0, 2, 'findButton', 'Find Next', 'find-next'),
-            (1, 2, 'findPreviousButton', 'Find Previous', 'find-prev'),
-            (2, 2, 'findAllButton', 'Find All', 'find-all'),
-            (3, 2, 'changeButton', 'Replace', 'replace'),
-            (4, 2, 'changeThenFindButton', 'Replace Then Find', 'replace-then-find'),
-            (5, 2, 'changeAllButton', 'Replace All', 'replace-all'),
-            # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
+            (0, 2, 'findButton', 'find-next'),
+            (1, 2, 'findPreviousButton', 'find-prev'),
+            (2, 2, 'findAllButton', 'find-all'),
+            (3, 2, 'changeButton', 'replace'),
+            (4, 2, 'changeThenFindButton', 'replace-then-find'),
+            (5, 2, 'changeAllButton', 'replace-all'),
         )
-        # findTabHandler does not exist yet.
-        for row2, col, func_name, label, cmd_name in table:
-            # Prepend the shortcut if it exists:
+        for row2, col, func_name, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
                 label = '%s:  %s' % (cmd_name, k.prettyPrintKey(stroke))
@@ -1086,7 +1083,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # #1342: Create a label, not a button.
             w = dw.createLabel(parent, cmd_name, label)
             w.setObjectName('find-label')
-                # Useful, to highlight these labels.
             grid.addWidget(w, row + row2, col)
         row += max_row2
         row += 2
