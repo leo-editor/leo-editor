@@ -817,7 +817,7 @@ class LeoQtGui(leoGui.LeoGui):
         dock = self.create_dock_widget(
             closeable=not is_central,
             moveable=not is_central,
-            height=100,
+            height=50, # was 100: #1339.
             name="Leo Outlines")
         if is_central:
             main_window.setCentralWidget(dock)

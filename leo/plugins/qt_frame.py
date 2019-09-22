@@ -114,7 +114,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
-            height=100,
+            height=50, # was 100: #1339.
             name='body-%s' % (self.added_bodies),
         )
         self.leo_docks.append(dock)
@@ -298,9 +298,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
-            (True, 100, lt, 'outline', self.createOutlineDock),
-            (True, 100, bottom, 'body', self.createBodyPane),
-            (True, 20, rt, 'tabs', self.createTabsDock),
+            (True, 50, lt, 'outline', self.createOutlineDock), # was 100: #1339.
+            (True, 50, bottom, 'body', self.createBodyPane), # was 100: #1339.
+            (True, 50, rt, 'tabs', self.createTabsDock), # was 20: #1339.
             (dockable, 20, rt, 'find', self.createFindDockOrTab),
             (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
         ]
@@ -3546,7 +3546,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
                 dock = g.app.gui.create_dock_widget(
-                    closeable=True, moveable=True, height=200, name=tabName)
+                    closeable=True, moveable=True, height=50, name=tabName) # was 100: #1339.
                         # #1207: all plugins docks should be closeable.
                 dock.setWidget(contents)
                 area = QtCore.Qt.RightDockWidgetArea
