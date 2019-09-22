@@ -148,8 +148,9 @@ class LeoQtEventFilter(QtCore.QObject):
                 # QLineEdit: ignore all key events except keyRelease events.
         if t == ev.KeyPress:
             return False # Never ignore KeyPress events.
-        if False: ### t == ev.ShortcutOverride and event.text():
-            return False # Don't ignore shortcut overrides with a real value.
+        ### This doesn't work. Two shortcut-override events are generated!
+            # if t == ev.ShortcutOverride and event.text():
+                # return False # Don't ignore shortcut overrides with a real value.
         return True # Ignore everything else.
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
