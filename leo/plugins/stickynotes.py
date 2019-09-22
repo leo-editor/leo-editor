@@ -242,8 +242,10 @@ if encOK:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
+
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
+            # pylint: disable=no-member
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
                 # #1265: When in doubt, use MODE_EAX.
                 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
