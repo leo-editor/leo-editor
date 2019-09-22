@@ -85,7 +85,7 @@ class LeoQtEventFilter(QtCore.QObject):
         try:
             binding, ch = self.toBinding(event)
             if not binding:
-                return False # Allow Qt to handle the key event.
+                return False # Not the correct event type.
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -130,7 +130,7 @@ class LeoQtEventFilter(QtCore.QObject):
         elif eventType == ev.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
         return eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease)
-            # Return True if the event has been handled.
+            # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
         '''
@@ -141,13 +141,16 @@ class LeoQtEventFilter(QtCore.QObject):
         '''
         c = self.c
         ev = QtCore.QEvent
-        eventType = event.type()
+        t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
-            return eventType != ev.KeyRelease
+            return t != ev.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
-        return eventType != ev.KeyPress
-            # QTextEdit: ignore all key events except keyPress events.
+        if t == ev.KeyPress:
+            return False # Never ignore KeyPress events.
+        if False: ### t == ev.ShortcutOverride and event.text():
+            return False # Don't ignore shortcut overrides with a real value.
+        return True # Ignore everything else.
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
         '''
