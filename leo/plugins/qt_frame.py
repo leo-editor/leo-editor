@@ -1063,16 +1063,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         Per #1342, this method now creates labels, not real buttons.
         '''
-        c, dw = self.leo_c, self
-        k = c.k
-        ftm = c.findCommands.ftm
+        dw, k = self, self.leo_c.k
 
-        def mungeName(label):
-            kind = 'push-button'
-            name = label.replace(' ', '').replace('&', '')
-            return '%s%s' % (kind, name)
         # Create Buttons in column 2 (Leo 4.11.1.)
-
         table = (
             (0, 2, 'findButton', 'Find Next', 'find-next'),
             (1, 2, 'findPreviousButton', 'Find Previous', 'find-prev'),
@@ -1084,34 +1077,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         # findTabHandler does not exist yet.
         for row2, col, func_name, label, cmd_name in table:
-        
-            if 0: # #1342: No longer needed.
-
-                def find_tab_button_callback(event, c=c, func_name=func_name):
-                    # h will exist when the Find Tab is open.
-                    fc = c.findCommands
-                    func = getattr(fc, func_name, None)
-                    if func: func()
-                    else: g.trace('* does not exist:', func_name)
-        
-            name = mungeName(label)
             # Prepend the shortcut if it exists:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
-                label = '%s:  %s' % (label, k.prettyPrintKey(stroke))
+                label = '%s:  %s' % (cmd_name, k.prettyPrintKey(stroke))
+            else:
+                label = cmd_name
             # #1342: Create a label, not a button.
-            w = dw.createLabel(parent, name, label)
+            w = dw.createLabel(parent, cmd_name, label)
             w.setObjectName('find-label')
                 # Useful, to highlight these labels.
             grid.addWidget(w, row + row2, col)
-            if 0: # #1342: No longer needed.
-                # Connect the button with the command.
-                w.clicked.connect(find_tab_button_callback)
-                # Set the ivar.
-                ivar = '%s-%s' % (cmd_name, 'button')
-                ivar = ivar.replace('-', '_')
-                assert getattr(ftm, ivar) is None
-                setattr(ftm, ivar, w)
         row += max_row2
         row += 2
         return row
