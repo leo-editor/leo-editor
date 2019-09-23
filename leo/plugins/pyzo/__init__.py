@@ -131,14 +131,16 @@ def banner(message): #EKR:change-new.
     print('')
     print(message)
     print('')
-def pyzo_excepthook(type, value, tb):
+if 0: # Leo now installs its own excepthook.
 
-    out = 'Uncaught Python exception: ' + str(value) + '\n'
-    out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
-    out += '\n'
-    sys.stderr.write(out)
+    def pyzo_excepthook(type, value, tb):
 
-sys.excepthook = pyzo_excepthook
+        out = 'Uncaught Python exception: ' + str(value) + '\n'
+        out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
+        out += '\n'
+        sys.stderr.write(out)
+    
+    sys.excepthook = pyzo_excepthook
 ## Define some functions
 
 # todo: move some stuff out of this module ...
