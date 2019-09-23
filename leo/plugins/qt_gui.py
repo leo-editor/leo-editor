@@ -787,7 +787,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (new)
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (changed)
     def create_dock_widget(self, closeable, moveable, height, name):
         '''Make a new dock widget in the main window'''
         dock = QtWidgets.QDockWidget(parent=self.main_window)
@@ -802,8 +802,9 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName(f'dock.{name.lower()}')
         dock.setWindowTitle(name.capitalize())
-        if g.app.use_global_docks:
-            dock.show() # Essential!
+        # #1327: frameFactory.createFrame now ensures that the main window is visible.
+            # g.app.use_global_docks:
+                # dock.show() # Essential!
         return dock
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
     def make_outlines_dock(self):

@@ -320,6 +320,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if name == central_widget:
                 self.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
+                dock.show() # #1327.
             else:
                 self.addDockWidget(area, dock)
         #
@@ -4767,7 +4768,7 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if g.app.use_global_docks:
+        if True: # #1327: Must always do this.
             dw.show()
             tabw.show()
         return dw
