@@ -363,6 +363,8 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
+    g.trace(tag, title, len(s))
+    vr.show_dock_or_pane() # #1332.
     vr.update(
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
@@ -395,7 +397,12 @@ def viewrendered(event):
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
     if g.app.dock:
-        vr.show_dock_or_pane()
+        dock = vr.leo_dock
+        if not c.mFileName:
+            # #1318 and #1332: Tricky init code for new windows.
+            g.app.restoreWindowState(c)
+            dock.hide()
+            dock.raise_()
         return vr
     #
     # Legacy code: add the pane to the splitter.
@@ -1485,18 +1492,22 @@ if QtWidgets: # NOQA
                 splitter.load_layout(loo)
         #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane
         def show_dock_or_pane(self):
-            
+
             c, vr = self.c, self
+            g.trace(g.callers())
             if g.app.dock:
                 dock = vr.leo_dock
                 if dock:
-                    # g.trace('hidden', dock.isHidden(), dock.objectName(), g.callers(2))
-                    if dock.isHidden():
+                    ### g.trace('g.app.dock', g.app.dock, 'hidden', dock.isHidden())
+                    ### if dock.isHidden():
                         # dock.show()
-                        g.app.restoreWindowState(c)
+                        ### g.app.restoreWindowState(c)
                             # #1318.
-                        dock.hide()
+                        ### dock.hide()
                             # #1318.
+                    ###else: dock.show()
+                            # #1332.
+                    dock.show()
                     dock.raise_()
                         # #1230.
             else:
