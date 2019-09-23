@@ -310,7 +310,7 @@ class BridgeController:
         g = self.g
         try:
             g.app.db.get('dummy')
-        except:
+        except Exception:
             g.app.global_cacher = leoCache.GlobalCacher()
             g.app.db = g.app.global_cacher.db
             g.app.commander_cacher = leoCache.CommanderCacher()
