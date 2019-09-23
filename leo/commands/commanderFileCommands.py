@@ -171,9 +171,11 @@ def new(self, event=None, gui=None):
         ))    
     frame = c.frame
     g.app.unlockLog()
-    frame.setInitialWindowGeometry()
-    g.app.restoreWindowState(c)
-        # #1198: New documents have collapsed body pane.
+    if not old_c:
+        frame.setInitialWindowGeometry()
+    # #1340: Don't do this. It is no longer needed.
+        # g.app.restoreWindowState(c, use_default=True)
+            # #1198: New documents have collapsed body pane.
     frame.deiconify()
     frame.lift()
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)

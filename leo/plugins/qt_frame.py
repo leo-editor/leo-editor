@@ -2878,6 +2878,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         x = c.config.getInt("initial-window-left") or 50 # #1190: was 10
         y = c.config.getInt("initial-window-top") or 50 # #1190: was 10
         if h and w and x and y:
+            if 'size' in g.app.debug:
+                g.trace(w, h, x, y)
             self.setTopGeometry(w, h, x, y)
     #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
     def setTabWidth(self, w):

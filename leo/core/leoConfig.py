@@ -980,8 +980,10 @@ class ActiveSettingsOutline:
         g.es(fileName, color='red')
         c = g.app.newCommander(fileName=fileName)
         # Restore the layout of docks, if we have ever saved this file.
-        c.frame.setInitialWindowGeometry()
-        g.app.restoreWindowState(c)
+        if not old_c:
+            c.frame.setInitialWindowGeometry()
+        # #1340: Don't do this. It is no longer needed.
+            # g.app.restoreWindowState(c)
         c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
         # From file-new...
         g.app.unlockLog()
