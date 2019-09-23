@@ -200,11 +200,15 @@ class FastRead:
         c = self.c   
         d = self.getGlobalData()
         windowSize = g.app.loadManager.options.get('windowSize')
+        windowSpot = g.app.loadManager.options.get('windowSpot')
         if windowSize is not None:
             h, w = windowSize # checked in LM.scanOption.
         else:
             w, h = d.get('width'), d.get('height')
-        x, y = d.get('left'), d.get('top')
+        if windowSpot is None:
+            x, y = d.get('left'), d.get('top')
+        else:
+            y, x = windowSpot # #1263: (top, left)
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
         #

@@ -65,6 +65,7 @@ def profile_leo():
 prof = profile_leo
 #@+node:ekr.20190923093951.1: ** leo_excepthook
 def leo_excepthook(type, value, tb):
+    # Note: Leo will still exit!
     g.trace(f"Uncaught Python exception: {value}\n")
     g.es_exception()
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)

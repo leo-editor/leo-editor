@@ -2951,6 +2951,7 @@ class LoadManager:
                 # --version: print the version and exit.
             'windowFlag': script and options.script_window,
             'windowSize': lm.doWindowSizeOption(options),
+            'windowSpot': lm.doWindowSpotOption(options),
         }
         return d
     #@+node:ekr.20180312150559.1: *6* LM.addOptionsToParser
@@ -2991,6 +2992,7 @@ class LoadManager:
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
+        add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
             help='print version number and exit')
@@ -3120,6 +3122,20 @@ class LoadManager:
         # --trace-setting=setting
         g.app.trace_setting = options.trace_setting
             # g.app.config does not exist yet.
+    #@+node:ekr.20190923170528.1: *6* LM.doWindowSpotOption
+    def doWindowSpotOption(self, options):
+
+        # --window-spot
+        spot = options.window_spot
+        if spot:
+            try:
+                top, left = spot.split('x')
+                spot = int(top), int(left)
+            except ValueError:
+                print('scanOptions: bad --window-spot:', spot)
+                spot = None
+        
+        return spot
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
 
