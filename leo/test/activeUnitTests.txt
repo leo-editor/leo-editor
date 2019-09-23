@@ -6465,6 +6465,8 @@ d = g.app.config.unitTestDict # Always created for this unit test.
 keys = ('config.doButtons-file-names','config.doCommands-file-names')
 for key in keys:
     aList = d.get(key,[])
+    if 'leoSettings' not in aList:
+        self.skipTest('no settings') # #1345
     for base in ('leoSettings', 'unitTest'):
         for ext in ('.leo', '.db'):
             if base+ext in aList:
@@ -6492,6 +6494,9 @@ import sys
 
 win32  = c.config.getBool('test_win32_setting')
 darwin = c.config.getBool('test_darwin_setting')
+
+if win32 is None and darwin is None:
+    self.skipTest('settings not loaded') # #1345
 
 if sys.platform == 'win32':
     assert(win32)
@@ -8450,7 +8455,9 @@ c.goNextVisitedNode()
 p3 = c.p
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
 result = c.helpCommands.getBindingsForCommand('help')
-assert result.strip().lower()=='f1'
+if not result:
+    self.skipTest('no settings')
+assert result.strip().lower()=='f1', repr(result)
 #@+node:ekr.20061101121602.266: *5* @test indent-relative
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.267: *6* work
@@ -10776,6 +10783,8 @@ Next Paragraph.
 #@+node:ekr.20150430053825.1: *5* @test abbrevCommands.next_place
 ac = c.abbrevCommands
 assert ac
+if c.abbrev_place_start is None or c.abbrev_place_end is None:
+    self.skipTest('no abbreviation settings') # #1345.
 child = g.findNodeInTree(c,p,'child')
 assert child
 old_b = child.b
@@ -10984,6 +10993,8 @@ line 1.
 line 2(xxx).
 line 3.
 #@+node:ekr.20100204165850.5373: *5* @test most toggle commands
+if g.app.inBridge:
+    self.skipTest('in bridge')
 k = c.k
 colorizer = c.frame.body.getColorizer()
 ed = c.editCommands
@@ -11108,6 +11119,9 @@ try:
     if g.app.gui.guiName() == 'curses':
         c.frame.pasteText(event=g.Bunch(widget=w))
     else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
         k.manufactureKeyPressForCommandName(w,'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
     assert p.h == h + paste,'oops2 got: %s' % p.h
@@ -11138,6 +11152,9 @@ else:
         if g.app.gui.guiName() == 'curses':
             c.frame.pasteText(event=g.Bunch(widget=w))
         else:
+            stroke = k.getStrokeForCommandName('paste-text')
+            if stroke is None:
+                self.skipTest('no binding for paste-text') # #1345
             k.manufactureKeyPressForCommandName(w,'paste-text')
             g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h[0] + paste + h[2:]
@@ -11171,6 +11188,9 @@ try:
     if g.app.gui.guiName() == 'curses':
         c.frame.pasteText(event=g.Bunch(widget=w))
     else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
         k.manufactureKeyPressForCommandName(w,'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
     assert p.h == h + paste,'Expected: %s, got %s' % (
@@ -11285,42 +11305,45 @@ if k.defaultUnboundKeyAction == 'insert':
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
-elif g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() == 'curses':
     # This could be adapted, but not now.
     self.skipTest('Not for curses gui')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redrawAndEdit(p) # To make the node visible.
-        w = c.edit_widget(p)
-        try:
-            assert w, 'oops1'
-            wName = g.app.gui.widget_name(w)
-            assert wName.startswith('head'),'w.name:%s' % wName
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ',(
-                'oops2: expected: %s, got: %s' % (
-                    h + 'XYZ',p.h))
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
-                    c.undoer.undoMenuLabel)
-            k.manufactureKeyPressForCommandName(w,'undo')
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-            assert p.h == h,'oops5 got: %s, expected: %s' % (
-                p.h,h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
+k = c.k
+if k.defaultUnboundKeyAction != 'insert':
+    self.skipTest('defaultUnboundKeyAction != insert')
+if not k.getStrokeForCommandName('undo'):
+    self.skipTest('no settings')
+
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make the node visible.
+w = c.edit_widget(p)
+try:
+    assert w, 'oops1'
+    wName = g.app.gui.widget_name(w)
+    assert wName.startswith('head'),'w.name:%s' % wName
+    w.setSelectionRange('end','end')
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + 'XYZ',(
+        'oops2: expected: %s, got: %s' % (
+            h + 'XYZ',p.h))
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+            c.undoer.undoMenuLabel)
+    k.manufactureKeyPressForCommandName(w,'undo')
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+    assert p.h == h,'oops5 got: %s, expected: %s' % (
+        p.h,h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
 #@+node:ekr.20051109091731: *5* @test typing in non-empty body text does not redraw the screen
 h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)

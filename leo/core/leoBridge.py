@@ -257,6 +257,7 @@ class BridgeController:
         g.app.silentMode = self.silentMode
         useLog = False
         if self.isOpen():
+            self.reopen_cachers()
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
             g.app.nodeIndices.compute_last_index(c)
@@ -303,6 +304,17 @@ class BridgeController:
         # 2011/11/07: Do this only if plugins have been loaded.
         g.doHook("new", old_c=None, c=c, new_c=c)
         return c
+    #@+node:vitalije.20190923081235.1: *4* reopen_cachers
+    def reopen_cachers(self):
+        import leo.core.leoCache as leoCache
+        g = self.g
+        try:
+            g.app.db.get('dummy')
+        except Exception:
+            g.app.global_cacher = leoCache.GlobalCacher()
+            g.app.db = g.app.global_cacher.db
+            g.app.commander_cacher = leoCache.CommanderCacher()
+            g.app.commander_db = g.app.commander_cacher.db
     #@-others
 #@-others
 #@-leo
