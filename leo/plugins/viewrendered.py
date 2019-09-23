@@ -363,7 +363,6 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    g.trace(tag, title, len(s))
     vr.show_dock_or_pane() # #1332.
     vr.update(
         tag='show-scrolled-message',
@@ -1494,19 +1493,9 @@ if QtWidgets: # NOQA
         def show_dock_or_pane(self):
 
             c, vr = self.c, self
-            g.trace(g.callers())
             if g.app.dock:
                 dock = vr.leo_dock
                 if dock:
-                    ### g.trace('g.app.dock', g.app.dock, 'hidden', dock.isHidden())
-                    ### if dock.isHidden():
-                        # dock.show()
-                        ### g.app.restoreWindowState(c)
-                            # #1318.
-                        ### dock.hide()
-                            # #1318.
-                    ###else: dock.show()
-                            # #1332.
                     dock.show()
                     dock.raise_()
                         # #1230.
