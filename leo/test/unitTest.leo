@@ -238,6 +238,19 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20190923014948.1"><vh>Failures when run from bridge w/ readSettings=False</vh>
+<v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
+<v t="ekr.20150430061225.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
+<v t="ekr.20060325071703.1"><vh>@test ifplatform</vh></v>
+<v t="ekr.20111124090010.3939"><vh>@test g.app.config @buttons and @commands logic</vh></v>
+<v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
+<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -504,6 +517,169 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20051107115231.16">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+g.app.gui.set_focus(c,w)
+w2 = g.app.gui.get_focus(c)
+try:
+    assert w
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    w.setSelectionRange('end','end')
+    if g.app.gui.guiName() == 'curses':
+        c.frame.pasteText(event=g.Bunch(widget=w))
+    else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + paste,'Expected: %s, got %s' % (
+        h + paste,p.h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.17">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+if g.app.gui.guiName() == 'curses':
+    # This could be adapted, but not now.
+    self.skipTest('Not for curses gui')
+k = c.k
+if k.defaultUnboundKeyAction != 'insert':
+    self.skipTest('defaultUnboundKeyAction != insert')
+if not k.getStrokeForCommandName('undo'):
+    self.skipTest('no settings')
+
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make the node visible.
+w = c.edit_widget(p)
+try:
+    assert w, 'oops1'
+    wName = g.app.gui.widget_name(w)
+    assert wName.startswith('head'),'w.name:%s' % wName
+    w.setSelectionRange('end','end')
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + 'XYZ',(
+        'oops2: expected: %s, got: %s' % (
+            h + 'XYZ',p.h))
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+            c.undoer.undoMenuLabel)
+    k.manufactureKeyPressForCommandName(w,'undo')
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+    assert p.h == h,'oops5 got: %s, expected: %s' % (
+        p.h,h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.18">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+
+k = c.keyHandler
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+frame = c.frame
+tree = frame.tree
+canvas = tree.canvas
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+try:
+    assert w,'oops1'
+    w.setSelectionRange('end','end')
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('end','end')
+    if g.app.gui.guiName() == 'curses':
+        c.frame.pasteText(event=g.Bunch(widget=w))
+    else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + paste,'oops2 got: %s' % p.h
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.h == h,'oops3 got: %s' % p.h
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.20">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.keyHandler
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w, 'Null w'
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        w.setSelectionRange('1.1','1.2')
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            stroke = k.getStrokeForCommandName('paste-text')
+            if stroke is None:
+                self.skipTest('no binding for paste-text') # #1345
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h[0] + paste + h[2:]
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.h == h, 'head mismatch'
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
+</t>
+<t tx="ekr.20060325071703.1">import sys
+
+win32  = c.config.getBool('test_win32_setting')
+darwin = c.config.getBool('test_darwin_setting')
+
+if win32 is None and darwin is None:
+    self.skipTest('settings not loaded') # #1345
+
+if sys.platform == 'win32':
+    assert(win32)
+    assert(not darwin)
+
+elif sys.platform== 'darwin':
+    assert(not win32)
+    assert(darwin)
+
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -894,6 +1070,48 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100204165850.5373">if g.app.inBridge:
+    self.skipTest('in bridge')
+k = c.k
+colorizer = c.frame.body.getColorizer()
+ed = c.editCommands
+# These don't set ivars
+    # 'toggle-active-pane'),
+    # 'toggle-angle-brackets',
+    # 'toggle-input-state'),
+    # 'toggle-mini-buffer'),
+    # 'toggle-split-direction'),
+table = [
+    (k,'abbrevOn','toggle-abbrev-mode'),
+    (ed,'extendMode','toggle-extend-mode'),
+]
+# Not valid for external tests.
+table2 = [
+    (k,'enable_autocompleter','toggle-autocompleter'),
+    (k,'enable_calltips','toggle-calltips'),
+    (c,'sparse_find','toggle-find-collapses-nodes'),
+    (colorizer,'showInvisibles','toggle-invisibles'),
+    (c,'sparse_move','toggle-sparse-move'),
+]
+if not g.app.isExternalUnitTest:
+    table.extend(table2)
+for obj,ivar,command in table:
+    val1 = getattr(obj,ivar)
+    try:
+        k.simulateCommand(command)
+        val2 = getattr(obj,ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        k.simulateCommand(command)
+        val3 = getattr(obj,ivar)
+        assert val3 == val1,'failed 2 %s' % command
+    finally:
+        setattr(obj,ivar,val1)
+</t>
+<t tx="ekr.20100212104817.5351">result = c.helpCommands.getBindingsForCommand('help')
+if not result:
+    self.skipTest('no settings')
+assert result.strip().lower()=='f1', repr(result)
+</t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
 
@@ -945,6 +1163,28 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
+</t>
+<t tx="ekr.20111124090010.3939">if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+if getattr(g.app, 'isBrowserTest', None):
+    # Set only in test_browser_gui.py.
+    self.skipTest('Browser Gui test')
+d = g.app.config.unitTestDict # Always created for this unit test.
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+for key in keys:
+    aList = d.get(key,[])
+    if 'leoSettings' not in aList:
+        self.skipTest('no settings') # #1345
+    for base in ('leoSettings', 'unitTest'):
+        for ext in ('.leo', '.db'):
+            if base+ext in aList:
+                break
+        else:
+            print('key', key, 'ext', ext, 'base', base)
+            g.printObj(aList)
+            assert False,'%s not in unitTestDict[%s]' % (base,key)
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -1263,6 +1503,30 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150430053825.1">ac = c.abbrevCommands
+assert ac
+if c.abbrev_place_start is None or c.abbrev_place_end is None:
+    self.skipTest('no abbreviation settings') # #1345.
+child = g.findNodeInTree(c,p,'child')
+assert child
+old_b = child.b
+try:
+    i,j,val = 0,0,child.b
+    # ac.make_script_substitutions(i,j,val)
+    # ac.find_place_holder(child,True)
+    new_s,i,j = ac.next_place(child.b,offset=0)
+    assert i == 34 and j == 40,(i,j)
+    new_s2,i,j = ac.next_place(new_s,offset=40)
+    assert i == 54 and j == 58,(i,j)
+finally:
+    child.b = old_b
+</t>
+<t tx="ekr.20150430061225.1">def spam ():
+    """None - Return &lt;|return|&gt;
+    """
+
+    &lt;|code|&gt;
+</t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
@@ -1541,5 +1805,6 @@ unl: spam
 gnx: ekr.20190113124246.31
 unl: eggs
 </t>
+<t tx="ekr.20190923014948.1"></t>
 </tnodes>
 </leo_file>
