@@ -2490,13 +2490,13 @@ class AtFile:
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20190111045822.1: *5* at.precheck
+    #@+node:ekr.20190111045822.1: *5* at.precheck (changed)
     def precheck(self, fileName, root):
         '''
         Check for dangerous writes.
         Return False if the user declines to do the write.
         '''
-        at = self
+        at, c = self, self.c
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
@@ -2507,6 +2507,9 @@ class AtFile:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
+        # #1347: Prompt if the external file is newer.
+        if not c.checkFileTimeStamp(fileName):
+            return False
         # Fix #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False
