@@ -219,7 +219,7 @@ class LeoMenu:
         name2 = name.replace('&', '').replace(' ', '').lower()
         if name2 == 'plugins':
             # Create the plugins menu using a hook.
-            g.doHook("create-optional-menus", c=c)
+            g.doHook("create-optional-menus", c=c, menu_name=name)
             return True
         if name2.startswith('recentfiles'):
             # Just create the menu.
