@@ -7,10 +7,6 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 '''
-# pylint: disable=eval-used
-# pylint: disable=global-variable-not-assigned
-# pylint: disable=import-self
-# pylint: disable=deprecated-method
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 minimum_python_version = '3.6'
@@ -2863,6 +2859,7 @@ def printGcObjects(tag=''):
             #@+node:ekr.20040703065638: *5* << print added functions >>
             global lastFunctionsDict
             funcDict = {}
+            getspec = inspect.getfullargspec
             n = 0 # Don't print more than 50 objects.
             for obj in gc.get_objects():
                 if isinstance(obj, types.FunctionType):
@@ -2871,7 +2868,7 @@ def printGcObjects(tag=''):
                     funcDict[key] = None
                     if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
-                        args, varargs, varkw, defaults = inspect.getargspec(obj)
+                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(obj)
                         g.pr("args", args)
                         if varargs: g.pr("varargs", varargs)
                         if varkw: g.pr("varkw", varkw)
@@ -7177,7 +7174,7 @@ def getDocStringForFunction(func):
         return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
 
     def get_defaults(func, i):
-        args, varargs, keywords, defaults = inspect.getargspec(func)
+        defaults = inspect.getfullargspec(func)[3]
         return defaults[i]
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
@@ -7527,46 +7524,6 @@ def handleScriptException(c, p, script, script1):
         except Exception:
             g.es_print('Unexpected exception in g.handleScriptException')
             g.es_exception()
-#@+node:ekr.20031218072017.2418: *3* g.initScriptFind (no longer used)
-def initScriptFind(c,
-    findHeadline,
-    changeHeadline=None,
-    firstNode=None,
-    script_search=True,
-    script_change=True,
-):
-    import leo.core.leoGlobals as g
-    # Find the scripts.
-    p = c.p
-    tm = c.testManager
-    find_p = tm.findNodeInTree(p, findHeadline)
-    if find_p:
-        find_text = find_p.b
-    else:
-        g.error("no Find script node")
-        return
-    if changeHeadline:
-        change_p = tm.findNodeInTree(p, changeHeadline)
-    else:
-        change_p = None
-    if change_p:
-        change_text = change_p.b
-    else:
-        change_text = ""
-    # g.pr(find_p,change_p)
-    # Initialize the find panel.
-    c.script_search_flag = script_search
-    c.script_change_flag = script_change and change_text
-    if script_search:
-        c.find_text = find_text.strip() + "\n"
-    else:
-        c.find_text = find_text
-    if script_change:
-        c.change_text = change_text.strip() + "\n"
-    else:
-        c.change_text = change_text
-    c.frame.findPanel.init(c)
-    c.showFindPanel()
 #@+node:ekr.20140209065845.16767: *3* g.insertCodingLine
 def insertCodingLine(encoding, script):
     '''

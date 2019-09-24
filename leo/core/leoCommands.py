@@ -2064,8 +2064,8 @@ class Commands:
             'sys': sys,
         }
         # #1338: Don't report errors when called by g.getUrlFromNode.
-        # # pylint: disable=eval-used
         try:
+            # pylint: disable=eval-used
             val = eval(expr, d)
             return g.toUnicode(val, encoding='utf-8')
         except Exception as e:

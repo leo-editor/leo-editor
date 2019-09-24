@@ -3879,6 +3879,47 @@ def make_all_global_docks(self):
         w = QtWidgets.QFrame()
         dock.setWidget(w)
         self.main_window.addDockWidget(area, dock)
+#@+node:ekr.20031218072017.2418: ** g.initScriptFind (no longer used)
+def initScriptFind(c,
+    findHeadline,
+    changeHeadline=None,
+    firstNode=None,
+    script_search=True,
+    script_change=True,
+):
+    # pylint: disable=import-self
+    import leo.core.leoGlobals as g
+    # Find the scripts.
+    p = c.p
+    tm = c.testManager
+    find_p = tm.findNodeInTree(p, findHeadline)
+    if find_p:
+        find_text = find_p.b
+    else:
+        g.error("no Find script node")
+        return
+    if changeHeadline:
+        change_p = tm.findNodeInTree(p, changeHeadline)
+    else:
+        change_p = None
+    if change_p:
+        change_text = change_p.b
+    else:
+        change_text = ""
+    # g.pr(find_p,change_p)
+    # Initialize the find panel.
+    c.script_search_flag = script_search
+    c.script_change_flag = script_change and change_text
+    if script_search:
+        c.find_text = find_text.strip() + "\n"
+    else:
+        c.find_text = find_text
+    if script_change:
+        c.change_text = change_text.strip() + "\n"
+    else:
+        c.change_text = change_text
+    c.frame.findPanel.init(c)
+    c.showFindPanel()
 #@-all
 #@@nosearch
 #@-leo
