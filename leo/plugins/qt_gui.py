@@ -260,15 +260,6 @@ class LeoQtGui(leoGui.LeoGui):
             # This makes most standard bindings available.
         d.setModal(False)
         return d
-    #@+node:ekr.20150619053840.1: *5* qt_gui.findDialogSelectCommander
-    def findDialogSelectCommander(self, c):
-        '''Update the Find Dialog when c changes.'''
-        if self.globalFindDialog:
-            c.ftm = g.app.globalFindTabManager
-            d = self.globalFindDialog
-            fn = c.shortFileName() or 'Untitled'
-            d.setWindowTitle('Find in %s' % fn)
-            c.inCommand = False
     #@+node:ekr.20150619131141.1: *5* qt_gui.hideFindDialog
     def hideFindDialog(self):
         d = self.globalFindDialog

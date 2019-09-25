@@ -2340,13 +2340,14 @@ class LeoFind:
     def showStatus(self, found):
         '''Show the find status the Find dialog, if present, and the status line.'''
         c = self.c
-        d = getattr(g.app.gui, 'globalFindDialog', None)
         status = 'found' if found else 'not found'
         options = self.getFindResultStatus()
         s = f"{status}:{options} {self.find_text}"
-        if d:
-            top = c.frame.top
-            top.find_status_edit.setText(s)
+        ###
+            # d = getattr(g.app.gui, 'globalFindDialog', None)
+            # if d:
+                # top = c.frame.top
+                # top.find_status_edit.setText(s)
         # Set colors.
         found_bg = c.config.getColor('find-found-bg') or 'blue'
         not_found_bg = c.config.getColor('find-not-found-bg') or 'red'

@@ -950,8 +950,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row = dw.create_find_buttons(grid, parent, max_row2, row)
         row = dw.create_help_row(grid, parent, row)
         # Status row
-        dw.create_find_status(grid, parent, row)
-        row += 1
+        ### dw.create_find_status(grid, parent, row)
+        ### row += 1
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -1098,16 +1098,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
             row += 1
         return row
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
-    def create_find_status(self, grid, parent, row):
-        '''Create the status line.'''
-        dw = self
-        status_label = dw.createLabel(parent, 'status-label', 'Status')
-        status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
-        grid.addWidget(status_label, row, 0)
-        grid.addWidget(status_line, row, 1, 1, 2)
-        # Official ivars.
-        dw.find_status_label = status_label
-        dw.find_status_edit = status_line
+    if 0:
+        def create_find_status(self, grid, parent, row):
+            '''Create the status line.'''
+            dw = self
+            status_label = dw.createLabel(parent, 'status-label', 'Status')
+            status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
+            grid.addWidget(status_label, row, 0)
+            grid.addWidget(status_line, row, 1, 1, 2)
+            # Official ivars.
+            dw.find_status_label = status_label
+            dw.find_status_edit = status_line
     #@+node:ekr.20131118172620.16891: *6* dw.override_events
     def override_events(self):
         # dw = self
@@ -4911,8 +4912,9 @@ class TabbedFrameFactory:
         if not f:
             return
         tabw.setWindowTitle(f.title)
-        if hasattr(g.app.gui, 'findDialogSelectCommander'):
-            g.app.gui.findDialogSelectCommander(f.c)
+        ###
+            # if hasattr(g.app.gui, 'findDialogSelectCommander'):
+                # g.app.gui.findDialogSelectCommander(f.c)
         # g.app.selectLeoWindow(f.c)
             # would break --minimize
         # Fix bug 690260: correct the log.
