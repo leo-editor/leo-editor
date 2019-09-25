@@ -260,11 +260,6 @@ class LeoQtGui(leoGui.LeoGui):
             # This makes most standard bindings available.
         d.setModal(False)
         return d
-    #@+node:ekr.20150619131141.1: *5* qt_gui.hideFindDialog
-    def hideFindDialog(self):
-        d = self.globalFindDialog
-        if d:
-            d.hide()
     #@+node:ekr.20110605121601.18492: *4* qt_gui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
