@@ -712,6 +712,64 @@ class Commands:
         if c.exists and c.config.redirect_execute_script_output_to_log_pane:
             g.restoreStderr()
             g.restoreStdout()
+    #@+node:vitalije.20190924191405.1: *3* @cmd c.execute_pytest
+    @cmd('execute-pytest')
+    def execute_pytest(self, event=None):
+        c = self
+        def it(p):
+            for p1 in p.self_and_parents():
+                if p1.h.startswith('@test '):
+                    yield p1
+                    return
+            for p1 in p.subtree():
+                if p1.h.startswith('@test '):
+                    yield p1
+        try:
+            for p in it(c.p):
+                self.execute_single_pytest(p)
+        except ImportError:
+            g.es('pytest needs to be installed')
+            return
+
+    def execute_single_pytest(self, p):
+        c = self
+        from _pytest.config import get_config
+        from _pytest.assertion.rewrite import rewrite_asserts
+        import ast
+        cfg = get_config()
+        script = g.getScript(c, p, useSentinels=False) + (
+            '\n'
+            'ls = dict(locals())\n'
+            'failed = 0\n'
+            'for x in ls:\n'
+            '    if x.startswith("test_") and callable(ls[x]):\n'
+            '        try:\n'
+            '            ls[x]()\n'
+            '        except AssertionError as e:\n'
+            '            failed += 1\n'
+            '            g.es("----------Failure-------------")\n'
+            '            g.es(str(e))\n'
+            'if failed == 0:\n'
+            '    g.es("all tests passed")\n'
+            'else:\n'
+            '    g.es(f"failed:{failed} tests")\n')
+
+        fname = g.os_path_finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
+        with open(fname, 'wt', encoding='utf8') as out:
+            out.write(script)
+        tree = ast.parse(script, filename=fname)
+        rewrite_asserts(tree, script, config=cfg)
+        co = compile(tree, fname, "exec", dont_inherit=True)
+        sys.path.insert(0, '.')
+        sys.path.insert(0, c.frame.openDirectory)
+        try:
+            exec(co, {'c': c, 'g': g, 'p': p})
+        except KeyboardInterrupt:
+            g.es('interrupted')
+        except Exception:
+            g.handleScriptException(c, p, script, script)
+        finally:
+            del sys.path[:2]
     #@+node:ekr.20080514131122.12: *3* @cmd c.recolorCommand
     @cmd('recolor')
     def recolorCommand(self, event=None):
