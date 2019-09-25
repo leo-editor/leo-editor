@@ -949,9 +949,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         max_row2 = dw.create_find_checkboxes(grid, parent, max_row2, row)
         row = dw.create_find_buttons(grid, parent, max_row2, row)
         row = dw.create_help_row(grid, parent, row)
-        # Status row
-        ### dw.create_find_status(grid, parent, row)
-        ### row += 1
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -4912,11 +4909,8 @@ class TabbedFrameFactory:
         if not f:
             return
         tabw.setWindowTitle(f.title)
-        ###
-            # if hasattr(g.app.gui, 'findDialogSelectCommander'):
-                # g.app.gui.findDialogSelectCommander(f.c)
-        # g.app.selectLeoWindow(f.c)
-            # would break --minimize
+        # Don't do this: it would break --minimize.
+            # g.app.selectLeoWindow(f.c)
         # Fix bug 690260: correct the log.
         g.app.log = f.log
         # Redraw the tab.

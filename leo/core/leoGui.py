@@ -27,7 +27,6 @@ class LeoGui:
         self.active = None # Used only by qt_gui.
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
-        ### self.globalFindDialog = None
         self.globalFindTab = None
         self.idleTimeClass = None
         self.isNullGui = False
