@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:lkj.20190925184105.1: * @file add-desktop-links-pyshort.leox
+#@+node:mhw.20190827134123.1: * @file remove-desktop-links-pyshort.leox
 """Create Leo Editor desktop shortcut link
   Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
 """
@@ -39,7 +39,10 @@ Notes:
 3. executable defaults to the Python executable used to make shortcut.
 """
 
-g.es_print(f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}")
+lnkfiles = [os.path.join(scut.desktop_dir, scut.target), os.path.join(scut.startmenu_dir, scut.target)]
+for fil in lnkfiles:
+    os.remove(fil)
+    g.es_print(f"Removed '{fil}' ")
 
 if debug:
     g.es_print(f"\n*** debug:\n{(scut)}")
