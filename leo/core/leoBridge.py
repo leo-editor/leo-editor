@@ -75,7 +75,10 @@ class BridgeController:
     '''Creates a way for host programs to access Leo.'''
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
-    def __init__(self, guiName, loadPlugins, readSettings, silent, tracePlugins, verbose):
+    def __init__(self,
+        guiName, loadPlugins, readSettings, silent, tracePlugins, verbose,
+        useCaches=True, #1350
+    ):
         '''Ctor for the BridgeController class.'''
         self.g = None
         self.gui = None
@@ -84,6 +87,7 @@ class BridgeController:
         self.readSettings = readSettings
         self.silentMode = silent
         self.tracePlugins = tracePlugins
+        self.useCaches = useCaches
         self.verbose = verbose
         self.mainLoop = False # True only if a non-null-gui mainloop is active.
         self.initLeo()
@@ -147,7 +151,10 @@ class BridgeController:
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
-        g.app.setGlobalDb() # Fix #556.
+        if self.useCaches:
+            g.app.setGlobalDb() # Fix #556.
+        else:
+            g.app.db = g.NullObject()
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
@@ -257,9 +264,12 @@ class BridgeController:
         g.app.silentMode = self.silentMode
         useLog = False
         if self.isOpen():
-            self.reopen_cachers()
+            if self.useCaches:
+                self.reopen_cachers()
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
+            if not self.useCaches:
+                c.db = g.NullObject()
             g.app.nodeIndices.compute_last_index(c)
                 # New in Leo 5.1. An alternate fix for bug #130.
                 # When using a bridge Leo might open a file, modify it,
@@ -307,6 +317,7 @@ class BridgeController:
     #@+node:vitalije.20190923081235.1: *4* reopen_cachers
     def reopen_cachers(self):
         import leo.core.leoCache as leoCache
+        
         g = self.g
         try:
             g.app.db.get('dummy')
