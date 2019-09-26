@@ -2501,12 +2501,6 @@ class AtFile:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        # Prompt if the write would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fileName, kind='@asis')
-        if ok:
-            # Fix bug 889175: Remember the full fileName.
-            at.rememberReadPath(fileName, root)
-            return True
         # #1347: Prompt if the external file is newer.
         if not c.checkFileTimeStamp(fileName):
             return False
