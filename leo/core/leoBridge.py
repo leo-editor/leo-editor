@@ -266,6 +266,8 @@ class BridgeController:
         if self.isOpen():
             if self.useCaches:
                 self.reopen_cachers()
+            else:
+                g.app.db = g.NullObject()
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
             if not self.useCaches:
