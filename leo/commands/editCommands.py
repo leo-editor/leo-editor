@@ -473,26 +473,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     def focusToTree(self, event=None):
         '''Put the keyboard focus in Leo's outline pane.'''
         self.c.treeWantsFocus()
-    #@+node:ekr.20150514063305.200: *4* ec.clicks in the headline
-    # These call wrappers that trigger hooks.
-
-    @cmd('click-headline')
-    def clickHeadline(self, event=None):
-        '''Simulate a click in the headline of the presently selected node.'''
-        c = self.c
-        c.frame.tree.onHeadlineClick(event, c.p)
-
-    @cmd('double-click-headline')
-    def doubleClickHeadline(self, event=None):
-        '''Simulate a double click in headline of the presently selected node.'''
-        c = self.c
-        return c.frame.tree.onDoubleClickHeadline(event, c.p)
-
-    @cmd('right-click-headline')
-    def rightClickHeadline(self, event=None):
-        '''Simulate a right click in the headline of the presently selected node.'''
-        c = self.c
-        c.frame.tree.onHeadlineRightClick(event, c.p)
     #@+node:ekr.20150514063305.201: *4* ec.clicks in the icon box
     # These call the actual event handlers so as to trigger hooks.
 
@@ -530,21 +510,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         '''
         c = self.c
         c.frame.tree.onClickBoxClick(event, p=c.p)
-    #@+node:ekr.20150514063305.203: *4* ec.simulate...Drag
-    # These call the drag setup methods which in turn trigger hooks.
-
-    @cmd('simulate-begin-drag')
-    def simulateBeginDrag(self, event=None):
-        '''Simulate the start of a drag in the presently selected node.'''
-        c = self.c
-        c.frame.tree.startDrag(event, p=c.p)
-
-    @cmd('simulate-end-drag')
-    def simulateEndDrag(self, event=None):
-        '''Simulate the end of a drag in the presently selected node.'''
-        c = self.c
-        # Note: this assumes that tree.startDrag has already been called.
-        c.frame.tree.endDrag(event)
     #@+node:ekr.20150514063305.207: *3* ec: comment column
     #@+node:ekr.20150514063305.208: *4* ec.setCommentColumn
     @cmd('set-comment-column')
