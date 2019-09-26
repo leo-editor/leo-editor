@@ -747,7 +747,7 @@ class Commands:
             '            ls[x]()\n'
             '        except AssertionError as e:\n'
             '            failed += 1\n'
-            '            g.es("----------Failure-------------")\n'
+            '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
             '            g.es(str(e))\n'
             'if failed == 0:\n'
             '    g.es("all tests passed")\n'
