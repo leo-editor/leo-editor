@@ -229,8 +229,10 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        targetFileName = c.expand_path_expression(targetFileName) # #1341.
         return g.os_path_realpath(
-            c.os_path_finalize_join(at.default_directory, targetFileName))
+            g.os_path_finalize_join(at.default_directory, targetFileName)) # #1341.
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -424,18 +426,20 @@ class AtFile:
     #@+node:ekr.20041005105605.22: *6* at.initFileName
     def initFileName(self, fromString, importFileName, root):
         '''Return the fileName to be used in messages.'''
-        at = self
+        # at = self
+        c = self.c
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
             fileName = importFileName
         elif root.isAnyAtFileNode():
             fileName = root.anyAtFileNodeName()
+            # #102, #1341: expand user expression.
+            fileName = c.expand_path_expression(fileName) # #1341:
         else:
             fileName = None
         if fileName:
-            # Fix bug 102: call the commander method, not the global funtion.
-            fileName = at.c.os_path_finalize(fileName)
+            fileName = g.os_path_finalize(fileName) # #1341:
         return fileName
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
@@ -546,7 +550,8 @@ class AtFile:
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fileName = c.os_path_finalize_join(at.default_directory, fileName)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
         if not g.os_path_exists(fileName):
             g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
             return p
@@ -591,7 +596,8 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -621,7 +627,8 @@ class AtFile:
         '''Read one @asis node. Used only by refresh-from-disk'''
         at, c = self, self.c
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -703,9 +710,11 @@ class AtFile:
         if not fn == p.atShadowFileNodeName():
             return at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
         # Fix bug 889175: Remember the full fileName.
+        fn = c.expand_path_expression(fn) # #1341.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
         # Delete all children.
@@ -1313,11 +1322,13 @@ class AtFile:
         c.init_error_dialogs()
         p = p.copy()
         after = p.nodeAfterTree()
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
-                    fileName = c.os_path_finalize_join(at.default_directory, fileName)
+                    fileName = c.expand_path_expression(fileName) # #1341
+                    fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True
@@ -2479,13 +2490,13 @@ class AtFile:
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20190111045822.1: *5* at.precheck
+    #@+node:ekr.20190111045822.1: *5* at.precheck (changed)
     def precheck(self, fileName, root):
         '''
         Check for dangerous writes.
         Return False if the user declines to do the write.
         '''
-        at = self
+        at, c = self, self.c
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
@@ -2496,6 +2507,9 @@ class AtFile:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
+        # #1347: Prompt if the external file is newer.
+        if not c.checkFileTimeStamp(fileName):
+            return False
         # Fix #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False

@@ -1191,7 +1191,7 @@ class Undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        if u.inHead: # 2013/08/26.
+        if u.inHead:
             c.editHeadline()
             u.inHead = False
         else:
@@ -1355,7 +1355,11 @@ class Undoer:
         c.selectPosition(u.newP)
     #@+node:ekr.20050318085432.7: *4* u.redoNodeContents
     def redoNodeContents(self):
-        u = self; c = u.c; w = c.frame.body.wrapper
+        c, u = self.c, self
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p: # #1333.
+            c.selectPosition(u.p)
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
@@ -1431,7 +1435,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* u.undo (changed)
+    #@+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
@@ -1648,8 +1652,11 @@ class Undoer:
         '''Undo all changes to the contents of a node,
         including headline and body text, and marked bits.
         '''
-        u = self; c = u.c
+        c, u = self.c, self
         w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p: # #1333.
+            c.selectPosition(u.p)
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p)
@@ -1761,10 +1768,10 @@ class Undoer:
             c.frame.body.wrapper.setSelectionRange(i, j)
     #@+node:EKR.20040526090701.4: *4* u.undoTyping
     def undoTyping(self):
-        u = self; c = u.c; current = c.p
+        c, u = self.c, self
         w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
-        if current != u.p:
+        if c.p != u.p:
             c.selectPosition(u.p)
         self.undoRedoText(
             u.p, u.leading, u.trailing,

@@ -1,0 +1,26 @@
+                            Bugs and Known Problems
+
+   AsciiDoc3 Version 3.1.0, 12 April 2019
+   __________________________________________________________________
+
+1. AsciiDoc3
+
+     * Reported line numbers in diagnostic messages are sometimes wrong.
+     * Attribute references in macro attribute lists can’t be unescaped
+       (with the exception of attribute list entry {0}).
+     * Section numbering is incorrect when outputting HTML from a
+       multi-part book type document. This is not a biggy since multi-part
+       books are generally processed to DocBook.
+     * A row of apostrophes in an inline context throws AsciiDoc3 into an
+       endless loop. The problem seems to be in the input file Reader.
+       (workaround: begin the line with a space or \)       
+
+2. dblatex
+
+   See ./dblatex/dblatex-readme.txt.
+
+3. AsciiDoc3 running under Windows
+
+   ... there are some limitations. See https://asciidoc3.org/windows.html
+
+   __________________________________________________________________

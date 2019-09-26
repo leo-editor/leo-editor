@@ -1527,7 +1527,7 @@ class RstCommands:
         c = self.c
         # Create the directory if it doesn't exist.
         theDir, junk = g.os_path_split(fn)
-        theDir = c.os_path_finalize(theDir)
+        theDir = g.os_path_finalize(theDir) # 1341
         if g.os_path_exists(theDir):
             return True
         ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
@@ -1721,7 +1721,7 @@ class RstCommands:
         '''Issue a report to the log pane.'''
         if self.getOption(p, 'silent'):
             return
-        name = self.c.os_path_finalize(name)
+        name = g.os_path_finalize(name) # 1341
         f = g.blue if self.getOption(p, 'verbose') else g.pr
         f(f"wrote: {name}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment

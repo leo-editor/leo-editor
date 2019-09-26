@@ -976,13 +976,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(p)
         if not aList:
             return
-        basePath = c.os_path_finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = c.os_path_finalize_join(basePath, relPath)
-        name = c.os_path_finalize(name)
+        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons") # #1341.
+        absRelPath = g.os_path_finalize_join(basePath, relPath) # #1341
+        name = g.os_path_finalize(name) # #1341
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = c.os_path_finalize(name2)
+            name2 = g.os_path_finalize(name2) # #1341
             name2rel = d.get('relPath')
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
                 newList.append(d)
@@ -1019,7 +1019,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertIcon(self, event=None):
         '''Prompt for an icon, and insert it into the node's icon list.'''
         c, p = self.c, self.c.p
-        iconDir = c.os_path_finalize_join(g.app.loadDir, "..", "Icons")
+        iconDir = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
         os.chdir(iconDir)
         paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',

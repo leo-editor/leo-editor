@@ -260,20 +260,6 @@ class LeoQtGui(leoGui.LeoGui):
             # This makes most standard bindings available.
         d.setModal(False)
         return d
-    #@+node:ekr.20150619053840.1: *5* qt_gui.findDialogSelectCommander
-    def findDialogSelectCommander(self, c):
-        '''Update the Find Dialog when c changes.'''
-        if self.globalFindDialog:
-            c.ftm = g.app.globalFindTabManager
-            d = self.globalFindDialog
-            fn = c.shortFileName() or 'Untitled'
-            d.setWindowTitle('Find in %s' % fn)
-            c.inCommand = False
-    #@+node:ekr.20150619131141.1: *5* qt_gui.hideFindDialog
-    def hideFindDialog(self):
-        d = self.globalFindDialog
-        if d:
-            d.hide()
     #@+node:ekr.20110605121601.18492: *4* qt_gui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
@@ -621,12 +607,13 @@ class LeoQtGui(leoGui.LeoGui):
             '''
             # Adjust sys.path.
             g.trace()
-            path = g.os_path_finalize_join(g.app.loadDir,'..','external')
+            path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
             assert g.os_path_exists(path), repr(path)
             if not path in sys.path:
                 sys.path.append(path)
             #
             # Imports.
+            # pylint: disable=import-error
             import pyzo
             import pyzo.core.menu as menu
             pyzo.core.menu = menu
@@ -642,6 +629,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20190518110307.1: *7* pfd.init_real_pyzo
         def init_real_pyzo(self):
             '''Init the real pyzo, which has already been inited by pyzo_support.py'''
+            # pylint: disable=import-error
             g.trace()
             if 0: # Probably already done.
                 import pyzo
@@ -785,7 +773,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (new)
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (changed)
     def create_dock_widget(self, closeable, moveable, height, name):
         '''Make a new dock widget in the main window'''
         dock = QtWidgets.QDockWidget(parent=self.main_window)
@@ -800,8 +788,9 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName(f'dock.{name.lower()}')
         dock.setWindowTitle(name.capitalize())
-        if g.app.use_global_docks:
-            dock.show() # Essential!
+        # #1327: frameFactory.createFrame now ensures that the main window is visible.
+            # g.app.use_global_docks:
+                # dock.show() # Essential!
         return dock
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
     def make_outlines_dock(self):
@@ -815,7 +804,7 @@ class LeoQtGui(leoGui.LeoGui):
         dock = self.create_dock_widget(
             closeable=not is_central,
             moveable=not is_central,
-            height=100,
+            height=50, # was 100: #1339.
             name="Leo Outlines")
         if is_central:
             main_window.setCentralWidget(dock)

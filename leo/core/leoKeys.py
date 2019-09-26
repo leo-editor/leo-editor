@@ -2834,7 +2834,7 @@ class KeyHandlerClass:
         '''
         c, k = self.c, self
         stroke = k.getStrokeForCommandName(commandName)
-        assert g.isStroke(stroke), stroke.__class__.__name__
+        assert g.isStroke(stroke), (commandName, stroke.__class__.__name__)
         shortcut = stroke.s
         shortcut = g.checkUnicode(shortcut)
         if shortcut and w:

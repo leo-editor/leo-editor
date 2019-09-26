@@ -315,17 +315,17 @@ class Connection(object):
 
     ## Methods to overload
     def _bind(self, hostname, port, max_tries):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _connect(self, hostname, port, timeout):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _flush(self, timeout):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _notify_other_end_of_closing(self):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _send_package(self, package):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _inject_package(self, package):
-        raise NotImplemented()
+        raise NotImplementedError()
     def _set_status(self, status):
         """ Used to change the status. Subclasses can reimplement this
         to get the desired behavior.

@@ -1,0 +1,105 @@
+= AsciiDoc3 Quickstart
+
+== Start with AsciiDoc3
+- You don't need admin/root-access to try AsciiDoc3 - you have to install 'local'. 
+- Download the tarball / zip-file of the current AsciiDoc3 distribution, see link:download.html[here].
+- Deflate the tarball / zip-file in an appropriate directory, see link:install.html[here].
+- Be sure 'python3' is in your PATH and starts Python3, see link:install.html[here].
+- To uninstall, see link:install.html[here].
+
+
+[NOTE]
+Experienced AsciiDoc (Python2) users please note: +
+The use of a file named 'asciidoc.conf' is not allowed in AsciiDoc3 - a file with this name will be ignored! +
+Use 'asciidoc3.conf' instead.
+
+
+== Testing your installation
+In your new directory, e.g. 'asciidoc3', you'll find the following input files: +
+- ./doc/test.txt: a small doc to see everything's ok (-> asciidoc3.py works ...), +
+- ./doc/userguide.txt: this is nothing else than the 'AsciiDoc3' - User Guide.
+
+
+=== First Test
+
+Open a terminal, go to your directory and start
+
+------------
+$ cd ~/asciidoc3-3.0.1/doc
+
+$ python3 ../asciidoc3.py -n -a icons -a toc -o test.html test.txt
+------------
+
+or, when you have installed AsciiDoc3 system wide (su ./installscript) 
+
+------------
+$ asciidoc3 -n -a icons -a toc -o test.html test.txt
+------------
+
+You'll find a new file test.html. It shows only a few features of AsciiDoc3. 
+
+=== UserGuide
+
+Open a terminal, go to your directory and start
+
+------------
+$ cd ~/asciidoc3-3.0.1/doc
+
+$ python3 ../asciidoc3.py -a toc -n -a icons -o userguide.html userguide.txt
+------------
+
+or 
+
+------------
+$ asciidoc3 -a toc -n -a icons -o userguide.html userguide.txt
+------------
+
+The new file 'userguide.html' contains the current version of the user guide ... almost complete now. To see the insignificant differences between AsciiDoc3 and AsciiDoc2, take a look link:userguide.html[here]. Processing 'userguide.txt' makes use of many AsciiDoc3-features. 
+
+To make a "good-looking" pdf out of userguide.txt, try
+
+------------
+$ a2x3 -f pdf userguide.txt
+------------
+
+or
+
+------------
+$ python3 ../a2x3.py -f pdf userguide.txt
+------------
+
+[NOTE]
+Depending on your directory layout - when your AsciiDoc3-folder is not a subdirectory of your home-directory - you may encounter an error message like this: +
+Error: [Errno 1] Operation not permitted: <your_asciidoc3-folder_not_under_home>/test.pdf +
+You can ignore that, the pdf is there and complete. That's probably a dblatex-issue (or a vfat partition?) - I am working on it ... +
+As a workaround you may use 'sudo python3 a2x3.py -f pdf userguide.txt' or the system wide command 'a2x3.py -f pdf userguide.txt' or the following option --fop.
+
+To make an even better(?) looking pdf, you may use option 'fop' - this requires that you have installed 'fop'.
+
+------------
+$ a2x3 -f pdf --fop userguide.txt
+------------
+
+or
+
+------------
+$ python3 ../a2x3.py -f pdf --fop userguide.txt
+------------
+
+
+=== Verbose Option
+
+To see what is going on when asciidoc3.py or a2x3.py works, add the option 'verbose':
+
+------------
+$ asciidoc3 -v -n -a icons -o test.html test.txt
+
+$ a2x3 -f pdf -v --fop userguide.txt
+------------
+
+
+
+== More Examples and Further Information
+
+In the directory ~/asciidoc3/doc you find some more files you may use as examples to study the features of AsciiDoc3. +
+Please take a closer look at 'asciidoc3port.txt': this file contains a detailed report on the porting efforts. Try 'a2x3 -f pdf -v --fop asciidoc3port.txt' to produce a PDF.

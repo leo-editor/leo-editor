@@ -499,6 +499,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         and start, end are the positions of the beginning and end of block.
         """
         c = self.c
+        if c.abbrev_place_start is None or c.abbrev_place_end is None:
+            return s, None, None # #1345.
         new_pos = s.find(c.abbrev_place_start, offset)
         new_end = s.find(c.abbrev_place_end, offset)
         if (new_pos < 0 or new_end < 0) and offset:

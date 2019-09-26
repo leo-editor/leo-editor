@@ -1,0 +1,85 @@
+AsciiDoc3 ChangeLog
+===================
+
+website: https://asciidoc3.org/
+
+
+Version 3.1.0 (2019-04-12)
+
+Additions and changes
+- You need Python3.4 to run AsciiDoc3
+  (consider updating since 3.4 has reached EOL)
+- Typos, pylint3
+
+Bug fixes
+- ...
+
+
+
+Version 3.0.3 (2019-01-05)
+
+Additions and changes
+- FASTER ~15%! (by using lru_cache)
+- Test are back (but most users don't need them)
+- Typos
+
+Bug fixes
+- asciidoc3.py:
+  ... /usr/bin/asciidoc3:569: DeprecationWarning:
+  Flags not at the start of the expression '^(?u)[^\\W\\d][-\\w]*$'
+  return re.match(r'^'+NAME_RE+r'$', s) is not None
+
+
+
+Version 3.0.2 (2018-06-15)
+
+Additions and changes
+- Adding some files to /doc 
+- Remove files in dir /tests (to come back later ...)
+- Re-adding some files
+- Typos
+
+Bug fixes
+- asciidoc3.py: ... /usr/lib/python3.6/sre_parse.py", line 401, in _escape
+  raise source.error("bad escape %s" % escape, len(escape))
+  sre_constants.error: bad escape \i at position 28 ...
+  
+  
+Version 3.0.1a (2018-06-11)
+
+Additions and changes
+- License changed from GPLv3 to GPLv2+ 
+- Adjust copyright byline
+- Repo github.com/asciidoc3/asciidoc3: adding history (AsciiDoc 8.6.9)
+
+Bug fixes
+- None
+
+
+Version 3.0.1 (2018-05-16)
+
+Additions and changes
+- License changed from AGPLv3 to GPLv3
+- Typos, pylint messages edited in asciidoc3.py, a2x3.py, asciidoc3api.py
+- README(.txt) updated
+- doc/readme-doc.txt updated
+- INSTALL updated
+- installscript added
+- UNINSTALL, uninstallscript added
+- lang-fi.conf, lang-id.conf added
+- Vim syntax file added: ./vim/syntax/asciidoc3.vim
+- Vim syntax README file added ./vim/readme-vim.txt
+- Detailed description of the porting procedure: ./doc/asciidoc3port.txt
+- Documentation updates, typos
+- File BUGS.txt added
+- Files customers.csv, test.txt, userguide.txt move to ./doc
+- Reduce many file-permissions
+
+Bug fixes
+- None
+
+
+
+Version 3.0.1rc (2018-04-13)
+
+This is the first version (release canidate) of AsciiDoc3 using Python3.

@@ -103,7 +103,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
         debuggers = (
-            c.config.getString('debugger-path'),
+            # #1431: only expand path expression in @string debugger-path.
+            c.expand_path_expression(c.config.getString('debugger-path')),
             g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'), # winpdb 1.1.2 or newer
             g.os_path_join(pythonDir, 'scripts', '_winpdb.py'), # oder version.
         )

@@ -147,7 +147,7 @@ class AsciiDoctorCommands:
         '''
         c = self.c
         theDir, junk = g.os_path_split(fn)
-        theDir = c.os_path_finalize(theDir)
+        theDir = g.os_path_finalize(theDir) # #1341.
         if g.os_path_exists(theDir):
             return True
         ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)

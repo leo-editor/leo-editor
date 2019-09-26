@@ -810,18 +810,21 @@ class LeoQtTree(leoFrame.LeoTree):
                     # Fix #1049.
                 self.prev_v = p.v
                 event = None
-                mods = g.app.gui.qtApp.keyboardModifiers()
-                isCtrl = bool(mods & QtConst.ControlModifier)
-                # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
-                # & QtConst.MetaModifier.
-                if isCtrl:
-                    if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
-                        c.frame.tree.OnIconCtrlClick(p) # Call the base class method.
-                    g.doHook("iconctrlclick2", c=c, p=p, event=event)
-                else:
-                    # 2014/02/21: generate headclick1/2 instead of iconclick1/2
-                    g.doHook("headclick1", c=c, p=p, event=event)
-                    g.doHook("headclick2", c=c, p=p, event=event)
+                #
+                # Careful. We may have switched gui during unit testing.
+                if hasattr(g.app.gui, 'qtApp'):
+                    mods = g.app.gui.qtApp.keyboardModifiers()
+                    isCtrl = bool(mods & QtConst.ControlModifier)
+                    # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
+                    # & QtConst.MetaModifier.
+                    if isCtrl:
+                        if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
+                            c.frame.tree.OnIconCtrlClick(p) # Call the base class method.
+                        g.doHook("iconctrlclick2", c=c, p=p, event=event)
+                    else:
+                        # 2014/02/21: generate headclick1/2 instead of iconclick1/2
+                        g.doHook("headclick1", c=c, p=p, event=event)
+                        g.doHook("headclick2", c=c, p=p, event=event)
             else:
                 auto_edit = None
                 g.trace('*** no p')

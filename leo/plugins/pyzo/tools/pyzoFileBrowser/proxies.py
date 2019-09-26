@@ -327,23 +327,23 @@ class BaseFSProxy(threading.Thread):
 
     # To overload ...
     def listDirs(self, path):
-        raise NotImplemented() # Should rerurn None if it does not exist
+        raise NotImplementedError() # Should rerurn None if it does not exist
     def listFiles(self, path):
-        raise NotImplemented() # Should rerurn None if it does not exist
+        raise NotImplementedError() # Should rerurn None if it does not exist
     def modified(self, path):
-        raise NotImplemented() # Should rerurn None if it does not exist
+        raise NotImplementedError() # Should rerurn None if it does not exist
     def fileSize(self, path):
-        raise NotImplemented() # Should rerurn None if it does not exist
+        raise NotImplementedError() # Should rerurn None if it does not exist
     def read(self, path):
-        raise NotImplemented() # Should rerurn None if it does not exist
+        raise NotImplementedError() # Should rerurn None if it does not exist
     def write(self, path, bb):
-        raise NotImplemented()
+        raise NotImplementedError()
     def rename(self, path):
-        raise NotImplemented()
+        raise NotImplementedError()
     def remove(self, path):
-        raise NotImplemented()
+        raise NotImplementedError()
     def createDir(self, path):
-        raise NotImplemented()
+        raise NotImplementedError()
 import os
 class NativeFSProxy(BaseFSProxy):
     """ File system proxy for the native file system.

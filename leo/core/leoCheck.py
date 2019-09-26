@@ -204,7 +204,7 @@ class ConventionChecker:
 
         cct = self.CCTraverser(controller=self)
         for n in 1, 2:
-            if self.test_kind is 'test':
+            if self.test_kind == 'test':
                 g.trace('===== PASS', n)
             # Init this pass.
             self.file_name = fn
@@ -473,7 +473,7 @@ class ConventionChecker:
         for i, arg in enumerate(args):
             if i < len(signature):
                 result = self.check_arg(node, func, args, arg, signature[i])
-                if result is 'fail':
+                if result == 'fail':
                     self.fail(node, '\n%s(%s) incompatible with %s(%s)' % (
                         func, ','.join(args),
                         func, ','.join(signature),
@@ -537,7 +537,7 @@ class ConventionChecker:
     def before_Assign(self, node):
         
         s = self.format(node)
-        if self.test_kind is 'test': print(s)
+        if self.test_kind == 'test': print(s)
         if self.pass_n == 1:
             return
         self.stats.assignments += 1
@@ -605,7 +605,7 @@ class ConventionChecker:
 
     def before_Call(self, node):
 
-        if self.test_kind is 'test':
+        if self.test_kind == 'test':
             print(self.format(node))
         if self.pass_n == 1:
             return
@@ -633,7 +633,7 @@ class ConventionChecker:
     def before_ClassDef(self, node):
 
         s = self.format(node, print_body=False)
-        if self.test_kind is 'test': print(s)
+        if self.test_kind == 'test': print(s)
         self.indent += 1
         self.context_stack.append(node)
         self.class_name = name = node.name
@@ -664,7 +664,7 @@ class ConventionChecker:
     def before_FunctionDef(self, node):
 
         s = self.format(node, print_body=False)
-        if self.test_kind is 'test': print(s)
+        if self.test_kind == 'test': print(s)
         self.indent += 1
         self.context_stack.append(node)
         if self.pass_n == 1:

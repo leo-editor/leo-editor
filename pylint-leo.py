@@ -53,7 +53,7 @@ def run(fn, verbose):
     assert lint
     # Note: g.app does not exist.
     base_dir = os.path.dirname(__file__)
-    home_dir = os.path.expanduser('~') if hasattr(os.path, 'expanduser') else ''
+    home_dir = os.path.expanduser('~')
     rc_fn = 'pylint-leo-rc.txt'
     table = (
         os.path.abspath(os.path.join(home_dir, '.leo', rc_fn)),

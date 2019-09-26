@@ -532,10 +532,10 @@ class LeoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = c.os_path_finalize_join(path, fileName + ext)
+                newFileName = g.os_path_finalize_join(path, fileName + ext) # 1341
             else:
                 head, ext2 = g.os_path_splitext(fileName)
-                newFileName = c.os_path_finalize_join(path, head + ext + ext2)
+                newFileName = g.os_path_finalize_join(path, head + ext + ext2) # 1341
             if toString:
                 return s
             #@+<< Write s into newFileName >>
@@ -675,7 +675,7 @@ class LeoImportCommands:
         '''Return the absolute path of the file and set .default_directory.'''
         c = self.c
         self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = c.os_path_finalize_join(self.default_directory, fileName)
+        fileName = g.os_path_finalize_join(self.default_directory, fileName) # 1341
         fileName = fileName.replace('\\', '/') # 2011/11/25
         return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
@@ -1858,7 +1858,7 @@ class RecursiveImportController:
             try:
                 # Fix #408. Catch path exceptions.
                 # The idea here is to keep going on small errors.
-                path = g.os_path_join(dir_, path, expanduser=False)
+                path = g.os_path_join(dir_, path)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(path)
                     if ext in self.theTypes:

@@ -16,6 +16,8 @@ plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
+# pylint: disable=import-error
+    # pylint doesn't know that we have just patched sys.path.
 import pyzo
 
 #@+others

@@ -466,7 +466,7 @@ class Demo:
             event=None,
             c=self.c,
             w=w,
-            ch=shortcut if len(shortcut) is 1 else '',
+            ch=shortcut if len(shortcut) == 1 else '',
             tkKey=None,
             shortcut=shortcut,
         )

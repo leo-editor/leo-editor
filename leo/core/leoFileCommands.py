@@ -193,18 +193,22 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed) ** (Likely bug)
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         trace = 'size' in g.app.debug
         c = self.c   
         d = self.getGlobalData()
         windowSize = g.app.loadManager.options.get('windowSize')
+        windowSpot = g.app.loadManager.options.get('windowSpot')
         if windowSize is not None:
             h, w = windowSize # checked in LM.scanOption.
         else:
             w, h = d.get('width'), d.get('height')
-        x, y = d.get('left'), d.get('top')
+        if windowSpot is None:
+            x, y = d.get('left'), d.get('top')
+        else:
+            y, x = windowSpot # #1263: (top, left)
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
         #
@@ -213,8 +217,7 @@ class FastRead:
         if g.app.use_global_docks:
             mf = getattr(g.app.gui, 'main_window', None)
             if not mf:
-                g.trace('*** no main_window ***')
-                return ####
+                return
             g.app.gui.set_top_geometry(w, h, x, y)
             r1, r2 = d.get('r1'), d.get('r2')
             c.frame.resizePanesToRatio(r1, r2)

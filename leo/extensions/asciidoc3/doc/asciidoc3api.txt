@@ -1,0 +1,51 @@
+AsciiDoc3 API
+=============
+
+'asciidoc3api' -- a Python API module for 'AsciiDoc3'.
+
+
+Introduction
+------------
+The 'asciidoc3api' module implements a Python API for AsciiDoc3. It
+allows you to set `asciidoc3(1)` program options, compile an AsciiDoc3
+source file and then interrogate the results.  The `asciidoc3api.py`
+module file contains the `AsciiDoc3API` wrapper class for
+`asciidoc3.py`.
+
+.Benefits
+- Stable API Shields the user from the undocumented and possibly
+  volatile `asciidoc3.py` internals.
+- Easier to use and more flexible than the alternative of running
+  `asciidoc3(1)` as a separate process.
+- Executes inside your application (better performance than running
+  separate `asciidoc3(1)` command processes).
+
+
+Using asciidoc3api
+------------------
+To use the API just drop the `asciidoc3api.py` file into your
+application directory, import it and use the `AsciiDoc3API` class.  The
+only requirement is that a compatible version of 'AsciiDoc3' is already
+installed -- simple, no setuptools to run, no non-standard library
+dependencies.
+
+You can find `asciidoc3api.py` in the AsciiDoc3 tarball
+http://asciidoc3.org/.
+
+
+The following minimal example compiles `mydoc.txt` to `mydoc.html`:
+
+[source,python]
+-------------------------------------------------------------------------------
+from asciidoc3api import AsciiDoc3API
+asciidoc3 = AsciiDoc3API()
+asciidoc3.execute('mydoc.txt')
+-------------------------------------------------------------------------------
+
+
+Obtaining More Information
+--------------------------
+Take a look at './doc/asciidoc3port.txt' chapter '6. asciidoc3api.py'. You may
+translate 'asciidoc3port.txt' to html 'asciidoc3 -a toc -a icons -n asciidoc3port.txt'
+or to pdf 'a2x3 -f pdf asciidoc3port.txt'
+

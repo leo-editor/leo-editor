@@ -448,7 +448,7 @@ class Commands:
     def hash(self):
         c = self
         if c.mFileName:
-            return c.os_path_finalize(c.mFileName).lower()
+            return g.os_path_finalize(c.mFileName).lower() # #1341.
         return 0
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
@@ -712,6 +712,64 @@ class Commands:
         if c.exists and c.config.redirect_execute_script_output_to_log_pane:
             g.restoreStderr()
             g.restoreStdout()
+    #@+node:vitalije.20190924191405.1: *3* @cmd c.execute_pytest
+    @cmd('execute-pytest')
+    def execute_pytest(self, event=None):
+        c = self
+        def it(p):
+            for p1 in p.self_and_parents():
+                if p1.h.startswith('@test '):
+                    yield p1
+                    return
+            for p1 in p.subtree():
+                if p1.h.startswith('@test '):
+                    yield p1
+        try:
+            for p in it(c.p):
+                self.execute_single_pytest(p)
+        except ImportError:
+            g.es('pytest needs to be installed')
+            return
+
+    def execute_single_pytest(self, p):
+        c = self
+        from _pytest.config import get_config
+        from _pytest.assertion.rewrite import rewrite_asserts
+        import ast
+        cfg = get_config()
+        script = g.getScript(c, p, useSentinels=False) + (
+            '\n'
+            'ls = dict(locals())\n'
+            'failed = 0\n'
+            'for x in ls:\n'
+            '    if x.startswith("test_") and callable(ls[x]):\n'
+            '        try:\n'
+            '            ls[x]()\n'
+            '        except AssertionError as e:\n'
+            '            failed += 1\n'
+            '            g.es("----------Failure-------------")\n'
+            '            g.es(str(e))\n'
+            'if failed == 0:\n'
+            '    g.es("all tests passed")\n'
+            'else:\n'
+            '    g.es(f"failed:{failed} tests")\n')
+
+        fname = g.os_path_finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
+        with open(fname, 'wt', encoding='utf8') as out:
+            out.write(script)
+        tree = ast.parse(script, filename=fname)
+        rewrite_asserts(tree, script, config=cfg)
+        co = compile(tree, fname, "exec", dont_inherit=True)
+        sys.path.insert(0, '.')
+        sys.path.insert(0, c.frame.openDirectory)
+        try:
+            exec(co, {'c': c, 'g': g, 'p': p})
+        except KeyboardInterrupt:
+            g.es('interrupted')
+        except Exception:
+            g.handleScriptException(c, p, script, script)
+        finally:
+            del sys.path[:2]
     #@+node:ekr.20080514131122.12: *3* @cmd c.recolorCommand
     @cmd('recolor')
     def recolorCommand(self, event=None):
@@ -1872,7 +1930,9 @@ class Commands:
             if name: break
         if name:
             # The commander method supports {{expr}}; the global function does not.
-            name = c.os_path_finalize_join(path, name)
+            path = c.expand_path_expression(path) # #1341.
+            name = c.expand_path_expression(name) # #1341.
+            name = g.os_path_finalize_join(path, name)
         return name
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
@@ -1886,15 +1946,29 @@ class Commands:
                 word = s[i: j]
                 languages.add(word)
         return len(list(languages)) > 1
-    #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join
+    #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join (deprecated)
+    deprecated_messages = []
+
     def os_path_finalize(self, path, **keys):
-        c = self
-        keys['c'] = c
+        '''
+        c.os_path_finalize is deprecated.
+        It no longer evaluates path expressions.
+        '''
+        callers = g.callers(2)
+        if callers not in self.deprecated_messages:
+            self.deprecated_messages.append(callers)
+            g.es_print(f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
         return g.os_path_finalize(path, **keys)
 
     def os_path_finalize_join(self, *args, **keys):
-        c = self
-        keys['c'] = c
+        '''
+        c.os_path_finalize_join is deprecated.
+        It no longer evaluates path expressions.
+        '''
+        callers = g.callers(2)
+        if callers not in self.deprecated_messages:
+            self.deprecated_messages.append(callers)
+            g.es_print(f"\nc.os_path_finalize_join is deprecated. called from: {callers}")
         return g.os_path_finalize_join(*args, **keys)
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
@@ -1955,9 +2029,12 @@ class Commands:
             base = c.openDirectory
         else:
             base = g.app.config.relative_path_base_directory
-            if base and base == "!": base = g.app.loadDir
-            elif base and base == ".": base = c.openDirectory
-        absbase = c.os_path_finalize_join(g.app.loadDir, base)
+            if base and base == "!":
+                base = g.app.loadDir
+            elif base and base == ".":
+                base = c.openDirectory
+        base = c.expand_path_expression(base) # #1341:
+        absbase = g. os_path_finalize_join(g.app.loadDir, base)  # #1341:
         # Step 2: look for @path directives.
         paths = []
         for d in aList:
@@ -1968,13 +2045,14 @@ class Commands:
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
                 if path and not warning:
+                    path = c.expand_path_expression(path) # #1341.
                     paths.append(path)
                 # We will silently ignore empty @path directives.
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = c.os_path_finalize_join(*paths)
+        path = g.os_path_finalize_join(*paths) # #1341.
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
@@ -1995,6 +2073,62 @@ class Commands:
             if 'root' in d:
                 return 'doc' if start_in_doc else 'code'
         return None
+    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression (new)
+    def expand_path_expression(self, s):
+        '''Expand all {{anExpression}} in c's context.'''
+        c = self
+        if not s:
+            return ''
+        s = g.toUnicode(s)
+        # find and replace repeated path expressions
+        previ, aList = 0, []
+        while previ < len(s):
+            i = s.find('{{', previ)
+            j = s.find('}}', previ)
+            if -1 < i < j:
+                # Add anything from previous index up to '{{'
+                if previ < i:
+                    aList.append(s[previ:i])
+                # Get expression and find substitute
+                exp = s[i + 2: j].strip()
+                if exp:
+                    try:
+                        s2 = c.replace_path_expression(exp)
+                        aList.append(s2)
+                    except Exception:
+                        g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
+                        g.es_exception(full=True, c=c)
+                # Prepare to search again after the last '}}'
+                previ = j+2
+            else:
+                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
+                aList.append(s[previ:])
+                break
+        val = ''.join(aList)
+        if g.isWindows:
+            val = val.replace('\\','/')
+        return val
+    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression (new)
+    def replace_path_expression(self, expr):
+        ''' local function to replace a single path expression.'''
+        c = self
+        d = {
+            'c': c,
+            'g': g,
+            # 'getString': c.config.getString,
+            'p': c.p,
+            'os': os,
+            'sep': os.sep,
+            'sys': sys,
+        }
+        # #1338: Don't report errors when called by g.getUrlFromNode.
+        try:
+            # pylint: disable=eval-used
+            val = eval(expr, d)
+            return g.toUnicode(val, encoding='utf-8')
+        except Exception as e:
+            g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
+            return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
@@ -2151,7 +2285,7 @@ class Commands:
     #fix bobjack's spelling error
 
     universallCallback = universalCallback
-    #@+node:ekr.20070115135502: *4* c.writeScriptFile
+    #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
     def writeScriptFile(self, script):
 
         # Get the path to the file.
@@ -2167,10 +2301,9 @@ class Commands:
                 # make the first element absolute
                 parts[0] = driveSpec + os.sep + parts[0]
             allParts = [path] + parts
-            path = c.os_path_finalize_join(*allParts)
+            path = g.os_path_finalize_join(*allParts) # #1431
         else:
-            path = c.os_path_finalize_join(
-                g.app.homeLeoDir, 'scriptFile.py')
+            path = g.os_path_finalize_join(g.app.homeLeoDir, 'scriptFile.py') # #1431
         #
         # Write the file.
         try:

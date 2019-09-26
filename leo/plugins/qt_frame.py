@@ -114,7 +114,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
-            height=100,
+            height=50, # was 100: #1339.
             name='body-%s' % (self.added_bodies),
         )
         self.leo_docks.append(dock)
@@ -298,9 +298,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
-            (True, 100, lt, 'outline', self.createOutlineDock),
-            (True, 100, bottom, 'body', self.createBodyPane),
-            (True, 20, rt, 'tabs', self.createTabsDock),
+            (True, 50, lt, 'outline', self.createOutlineDock), # was 100: #1339.
+            (True, 50, bottom, 'body', self.createBodyPane), # was 100: #1339.
+            (True, 50, rt, 'tabs', self.createTabsDock), # was 20: #1339.
             (dockable, 20, rt, 'find', self.createFindDockOrTab),
             (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
         ]
@@ -320,6 +320,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if name == central_widget:
                 self.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
+                dock.show() # #1327.
             else:
                 self.addDockWidget(area, dock)
         #
@@ -948,9 +949,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         max_row2 = dw.create_find_checkboxes(grid, parent, max_row2, row)
         row = dw.create_find_buttons(grid, parent, max_row2, row)
         row = dw.create_help_row(grid, parent, row)
-        # Status row
-        dw.create_find_status(grid, parent, row)
-        row += 1
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -1060,58 +1058,30 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return max_row2
     #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
     def create_find_buttons(self, grid, parent, max_row2, row):
-        c, dw = self.leo_c, self
-        k = c.k
-        ftm = c.findCommands.ftm
+        '''
+        Per #1342, this method now creates labels, not real buttons.
+        '''
+        dw, k = self, self.leo_c.k
 
-        def mungeName(label):
-            kind = 'push-button'
-            name = label.replace(' ', '').replace('&', '')
-            return '%s%s' % (kind, name)
         # Create Buttons in column 2 (Leo 4.11.1.)
-
         table = (
-            (0, 2, 'findButton', 'Find Next', 'find-next'),
-            (1, 2, 'findPreviousButton', 'Find Previous', 'find-prev'),
-            (2, 2, 'findAllButton', 'Find All', 'find-all'),
-            (3, 2, 'changeButton', 'Replace', 'replace'),
-            (4, 2, 'changeThenFindButton', 'Replace Then Find', 'replace-then-find'),
-            (5, 2, 'changeAllButton', 'Replace All', 'replace-all'),
-            # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
+            (0, 2, 'findButton', 'find-next'),
+            (1, 2, 'findPreviousButton', 'find-prev'),
+            (2, 2, 'findAllButton', 'find-all'),
+            (3, 2, 'changeButton', 'replace'),
+            (4, 2, 'changeThenFindButton', 'replace-then-find'),
+            (5, 2, 'changeAllButton', 'replace-all'),
         )
-        # findTabHandler does not exist yet.
-        for row2, col, func_name, label, cmd_name in table:
-
-            def find_tab_button_callback(event, c=c, func_name=func_name):
-                # h will exist when the Find Tab is open.
-                fc = c.findCommands
-                func = getattr(fc, func_name, None)
-                if func: func()
-                else:
-                    g.trace('* does not exist:', func_name)
-
-            name = mungeName(label)
-            # Prepend the shortcut if it exists:
+        for row2, col, func_name, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
-                label = '%s:  %s' % (label, k.prettyPrintKey(stroke))
-            if 1: # Not bad.
-                w = dw.createButton(parent, name, label)
-                grid.addWidget(w, row + row2, col)
+                label = '%s:  %s' % (cmd_name, k.prettyPrintKey(stroke))
             else:
-                # grid.addLayout(layout,row+row2,col)
-                # layout = dw.createHLayout(frame,name='button_layout',margin=0,spacing=0)
-                # frame.setLayout(layout)
-                frame = dw.createFrame(parent, name='button:%s' % label)
-                w = dw.createButton(frame, name, label)
-                grid.addWidget(frame, row + row2, col)
-            # Connect the button with the command.
-            w.clicked.connect(find_tab_button_callback)
-            # Set the ivar.
-            ivar = '%s-%s' % (cmd_name, 'button')
-            ivar = ivar.replace('-', '_')
-            assert getattr(ftm, ivar) is None
-            setattr(ftm, ivar, w)
+                label = cmd_name
+            # #1342: Create a label, not a button.
+            w = dw.createLabel(parent, cmd_name, label)
+            w.setObjectName('find-label')
+            grid.addWidget(w, row + row2, col)
         row += max_row2
         row += 2
         return row
@@ -1125,16 +1095,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
             row += 1
         return row
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
-    def create_find_status(self, grid, parent, row):
-        '''Create the status line.'''
-        dw = self
-        status_label = dw.createLabel(parent, 'status-label', 'Status')
-        status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
-        grid.addWidget(status_label, row, 0)
-        grid.addWidget(status_line, row, 1, 1, 2)
-        # Official ivars.
-        dw.find_status_label = status_label
-        dw.find_status_edit = status_line
+    if 0:
+        def create_find_status(self, grid, parent, row):
+            '''Create the status line.'''
+            dw = self
+            status_label = dw.createLabel(parent, 'status-label', 'Status')
+            status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
+            grid.addWidget(status_label, row, 0)
+            grid.addWidget(status_line, row, 1, 1, 2)
+            # Official ivars.
+            dw.find_status_label = status_label
+            dw.find_status_edit = status_line
     #@+node:ekr.20131118172620.16891: *6* dw.override_events
     def override_events(self):
         # dw = self
@@ -1232,24 +1203,26 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #@-others
         EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
-        table = (
-            ('findNextCommand', 'find-next'),
-            ('findPrevCommand', 'find-prev'),
-            ('findAll', 'find-all'),
-            ('changeCommand', 'replace'),
-            ('changeThenFind', 'replace-then-find'),
-            ('changeAll', 'replace-all'),
-        )
-        for func_name, cmd_name in table:
-            ivar = '%s-%s' % (cmd_name, 'button')
-            ivar = ivar.replace('-', '_')
-            w = getattr(ftm, ivar, None)
-            func = getattr(fc, func_name, None)
-            if w and func:
-                next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
-                EventWrapper(c, w=w, next_w=next_w, func=func)
-            else:
-                g.trace('**oops**')
+        
+        if 0: # #1342: These are no longer needed, because there are no buttons.
+            table = (
+                ('findNextCommand', 'find-next'),
+                ('findPrevCommand', 'find-prev'),
+                ('findAll', 'find-all'),
+                ('changeCommand', 'replace'),
+                ('changeThenFind', 'replace-then-find'),
+                ('changeAll', 'replace-all'),
+            )
+            for func_name, cmd_name in table:
+                ivar = '%s-%s' % (cmd_name, 'button')
+                ivar = ivar.replace('-', '_')
+                w = getattr(ftm, ivar, None)
+                func = getattr(fc, func_name, None)
+                if w and func:
+                    next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
+                    EventWrapper(c, w=w, next_w=next_w, func=func)
+                else:
+                    g.trace('**oops**')
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
@@ -2904,6 +2877,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         x = c.config.getInt("initial-window-left") or 50 # #1190: was 10
         y = c.config.getInt("initial-window-top") or 50 # #1190: was 10
         if h and w and x and y:
+            if 'size' in g.app.debug:
+                g.trace(w, h, x, y)
             self.setTopGeometry(w, h, x, y)
     #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
     def setTabWidth(self, w):
@@ -3572,7 +3547,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 # #1154: Support docks in the Log pane.
                 dw = c.frame.top
                 dock = g.app.gui.create_dock_widget(
-                    closeable=True, moveable=True, height=200, name=tabName)
+                    closeable=True, moveable=True, height=50, name=tabName) # was 100: #1339.
                         # #1207: all plugins docks should be closeable.
                 dock.setWidget(contents)
                 area = QtCore.Qt.RightDockWidgetArea
@@ -4791,7 +4766,7 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if g.app.use_global_docks:
+        if True: # #1327: Must always do this.
             dw.show()
             tabw.show()
         return dw
@@ -4934,10 +4909,8 @@ class TabbedFrameFactory:
         if not f:
             return
         tabw.setWindowTitle(f.title)
-        if hasattr(g.app.gui, 'findDialogSelectCommander'):
-            g.app.gui.findDialogSelectCommander(f.c)
-        # g.app.selectLeoWindow(f.c)
-            # would break --minimize
+        # Don't do this: it would break --minimize.
+            # g.app.selectLeoWindow(f.c)
         # Fix bug 690260: correct the log.
         g.app.log = f.log
         # Redraw the tab.

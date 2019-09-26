@@ -692,7 +692,6 @@
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
-<v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
@@ -9984,8 +9983,6 @@ except KeyError:
     return ""
 </t>
 <t tx="ekr.20150618105435.1"></t>
-<t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
-False: leave the Find Dialog open after any search.</t>
 <t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
 
 /* alternative active pane highlighting */

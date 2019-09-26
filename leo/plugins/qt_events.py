@@ -44,6 +44,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
+
     #@+others
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
@@ -68,7 +69,9 @@ class LeoQtEventFilter(QtCore.QObject):
         # Handle non-key events first.
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
-        if 'events' in g.app.debug:
+        if 'keys' in g.app.debug and isinstance(event, QtGui.QKeyEvent):
+            self.traceKeys(obj, event)
+        elif 'events' in g.app.debug:
             self.traceEvent(obj, event)
             self.traceWidget(event)
         if self.doNonKeyEvent(event, obj):
@@ -82,7 +85,7 @@ class LeoQtEventFilter(QtCore.QObject):
         try:
             binding, ch = self.toBinding(event)
             if not binding:
-                return False # Allow Qt to handle the key event.
+                return False # Not the correct event type.
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -127,8 +130,8 @@ class LeoQtEventFilter(QtCore.QObject):
         elif eventType == ev.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
         return eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease)
-            # Return True if the event has been handled.
-    #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
+            # Return True unless we have a key event.
+    #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent (changed)
     def shouldIgnoreKeyEvent(self, event, obj):
         '''
         Return True if we should ignore the key event.
@@ -138,13 +141,17 @@ class LeoQtEventFilter(QtCore.QObject):
         '''
         c = self.c
         ev = QtCore.QEvent
-        eventType = event.type()
+        t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
-            return eventType != ev.KeyRelease
+            return t != ev.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
-        return eventType != ev.KeyPress
-            # QTextEdit: ignore all key events except keyPress events.
+        if t == ev.KeyPress:
+            return False # Never ignore KeyPress events.
+        ### This doesn't work. Two shortcut-override events are generated!
+            # if t == ev.ShortcutOverride and event.text():
+                # return False # Don't ignore shortcut overrides with a real value.
+        return True # Ignore everything else.
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
         '''
@@ -296,25 +303,21 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
-        # c = self.c
         qt = QtCore.Qt
         modifiers = event.modifiers()
-        #
-        # The order of this table no longer matters.
-        qt = QtCore.Qt
-        table = (
+        mod_table = (
             (qt.AltModifier, 'Alt'),
             (qt.ControlModifier, 'Control'),
             (qt.MetaModifier, 'Meta'),
             (qt.ShiftModifier, 'Shift'),
             (qt.KeypadModifier, 'KeyPad'),
         )
-        mods = [b for a, b in table if (modifiers & a)]
-        if not g.isMac:
-            return mods
+        mods = [b for a, b in mod_table if (modifiers & a)]
         #
         # MacOS: optionally convert Meta (Ctrl key) to Alt.
         # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
+        # if g.isMac:
+            # c = self.c
             # if c.k.replace_meta_with_alt:
                 # if 'Meta' in mods:
                     # mods.remove('Meta')
@@ -330,6 +333,21 @@ class LeoQtEventFilter(QtCore.QObject):
                     # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
+    #@+node:ekr.20190922075339.1: *4* filter.traceKeys (new)
+    def traceKeys(self, obj, event):
+        if g.unitTesting:
+            return
+        e = QtCore.QEvent
+        key_events = {
+            e.KeyPress: 'key-press', # 6
+            e.KeyRelease: 'key-release', # 7
+            e.Shortcut: 'shortcut', # 117
+            e.ShortcutOverride: 'shortcut-override', # 51
+        }
+        kind = key_events.get(event.type())
+        if kind:
+            mods = ','.join(self.qtMods(event))
+            g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
         if g.unitTesting: return

@@ -385,9 +385,12 @@ class PyflakesCommand:
     #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
     def finalize(self, p):
         '''Finalize p's path.'''
+        c = self.c
         aList = g.get_directives_dict_list(p)
         path = self.c.scanAtPathDirectives(aList)
+        path = c.expand_path_expression(path) # #1341.
         fn = p.anyAtFileNodeName()
+        fn = c.expand_path_expression(fn) # #1341.
         return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20160516072613.3: *3* pyflakes.find (no longer used)
     def find(self, p):

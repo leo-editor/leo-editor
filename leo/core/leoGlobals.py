@@ -7,10 +7,6 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 '''
-# pylint: disable=eval-used
-# pylint: disable=global-variable-not-assigned
-# pylint: disable=import-self
-# pylint: disable=deprecated-method
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 minimum_python_version = '3.6'
@@ -2269,7 +2265,6 @@ class TypedDict:
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
     def add_to_list(self, key, val):
         """Update the *list*, self.d [key]"""
-        ### g.trace(g.callers())
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
@@ -2393,17 +2388,12 @@ def _assert(condition, show_callers=True):
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     '''
-    Return a list containing the callers of the function that called g.callerList.
+    Return a string containing a comma-separated list of the callers
+    of the function that called g.callerList.
 
     excludeCaller: True (the default), g.callers itself is not on the list.
     
-    If the `verbose` keyword is True, or the caller name is in the `names`
-    list, return:
-    
-        line N <file name> <class_name>.<caller_name> # methods
-        line N <file name> <caller_name>              # functions.
-        
-    Otherwise, just return the <caller name>
+    If the `verbose` keyword is True, return a list separated by newlines.
     '''
     # Be careful to call g._callerName with smaller values of i first:
     # sys._getframe throws ValueError if there are less than i entries.
@@ -2869,6 +2859,7 @@ def printGcObjects(tag=''):
             #@+node:ekr.20040703065638: *5* << print added functions >>
             global lastFunctionsDict
             funcDict = {}
+            getspec = inspect.getfullargspec
             n = 0 # Don't print more than 50 objects.
             for obj in gc.get_objects():
                 if isinstance(obj, types.FunctionType):
@@ -2877,7 +2868,7 @@ def printGcObjects(tag=''):
                     funcDict[key] = None
                     if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
-                        args, varargs, varkw, defaults = inspect.getargspec(obj)
+                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(obj)
                         g.pr("args", args)
                         if varargs: g.pr("varargs", varargs)
                         if varkw: g.pr("varkw", varkw)
@@ -3645,8 +3636,9 @@ def fullPath(c, p, simulate=False):
         fn = p.h if simulate else p.anyAtFileNodeName()
             # Use p.h for unit tests.
         if fn:
-            # Fix #102: call commander method, not the global function.
-            return c.os_path_finalize_join(path, fn)
+            # Fix #102: expand path expressions.
+            fn = c.expand_path_expression(fn) # #1341.
+            return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory, kinds=None, recursive=True):
@@ -6893,63 +6885,20 @@ def os_path_exists(path):
     path = g.toUnicodeFileEncoding(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     return os.path.exists(path)
-#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper
+#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper (deprecated)
+deprecated_messages = []
+
 def os_path_expandExpression(s, **keys):
     '''Expand all {{anExpression}} in c's context.'''
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c', g.callers())
         return s
-    if not s:
-        return ''
-    s = g.toUnicode(s)
-    # find and replace repeated path expressions
-    previ, aList = 0, []
-    while previ < len(s):
-        i = s.find('{{', previ)
-        j = s.find('}}', previ)
-        if -1 < i < j:
-            # Add anything from previous index up to '{{'
-            if previ < i:
-                aList.append(s[previ:i])
-            # Get expression and find substitute
-            exp = s[i + 2: j].strip()
-            if exp:
-                try:
-                    s2 = replace_path_expression(c, exp)
-                    aList.append(s2)
-                except Exception:
-                    g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
-                    g.es_exception(full=True, c=c)
-            # Prepare to search again after the last '}}'
-            previ = j+2
-        else:
-            # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
-            aList.append(s[previ:])
-            break
-    val = ''.join(aList)
-    if g.isWindows:
-        val = val.replace('\\','/')
-    return val
-#@+node:ekr.20180120140558.1: *4* g.replace_path_expression
-def replace_path_expression(c, expr):
-    ''' local function to replace a single path expression.'''
-    d = {
-        'c': c,
-        'g': g,
-        # 'getString': c.config.getString,
-        'p': c.p,
-        'os': os,
-        'sep': os.sep,
-        'sys': sys,
-    }
-    # #1338: Don't report errors when called by g.getUrlFromNode.
-    try:
-        val = eval(expr, d)
-        return g.toUnicode(val, encoding='utf-8')
-    except Exception as e:
-        g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
-        return expr
+    callers = g.callers(2)
+    if callers not in deprecated_messages:
+        deprecated_messages.append(callers)
+        g.es_print(f"\nos_path_expandExpression is deprecated. called from: {callers}")
+    return c.expand_path_expression(s)
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""
@@ -6964,12 +6913,6 @@ def os_path_finalize(path, **keys):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     '''
-    c = keys.get('c')
-    expanduser = keys.get('expanduser', True)
-        # 2014/09/17: Allow expanduser to be False.
-    if c: path = g.os_path_expandExpression(path, **keys)
-    if expanduser:
-        path = g.os_path_expanduser(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -6980,12 +6923,7 @@ def os_path_finalize(path, **keys):
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join(*args, **keys):
     '''Do os.path.join(*args), then finalize the result.'''
-    c = keys.get('c')
-    if c:
-        args = [g.os_path_expandExpression(z, **keys)
-            for z in args if z]
-    path = os.path.normpath(os.path.abspath(
-        g.os_path_join(*args, **keys))) # Handles expanduser
+    path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys))) 
     if g.isWindows:
         path = path.replace('\\','/')
     return path
@@ -7024,8 +6962,6 @@ def os_path_join(*args, **keys):
     In addition, it supports the !! and . conventions.
     '''
     c = keys.get('c')
-    expanduser = keys.get('expanduser', True)
-        # 2014/09/17: Allow expanduser to be False.
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
@@ -7034,8 +6970,6 @@ def os_path_join(*args, **keys):
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-    if expanduser:
-        uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if uargs:
         try:
             path = os.path.join(*uargs)
@@ -7043,7 +6977,7 @@ def os_path_join(*args, **keys):
             g.trace(uargs, args, keys, g.callers())
             raise
     else:
-        path = '' # 2017/11/12: don't crash.
+        path = ''
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
@@ -7240,7 +7174,7 @@ def getDocStringForFunction(func):
         return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
 
     def get_defaults(func, i):
-        args, varargs, keywords, defaults = inspect.getargspec(func)
+        defaults = inspect.getfullargspec(func)[3]
         return defaults[i]
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
@@ -7590,46 +7524,6 @@ def handleScriptException(c, p, script, script1):
         except Exception:
             g.es_print('Unexpected exception in g.handleScriptException')
             g.es_exception()
-#@+node:ekr.20031218072017.2418: *3* g.initScriptFind (no longer used)
-def initScriptFind(c,
-    findHeadline,
-    changeHeadline=None,
-    firstNode=None,
-    script_search=True,
-    script_change=True,
-):
-    import leo.core.leoGlobals as g
-    # Find the scripts.
-    p = c.p
-    tm = c.testManager
-    find_p = tm.findNodeInTree(p, findHeadline)
-    if find_p:
-        find_text = find_p.b
-    else:
-        g.error("no Find script node")
-        return
-    if changeHeadline:
-        change_p = tm.findNodeInTree(p, changeHeadline)
-    else:
-        change_p = None
-    if change_p:
-        change_text = change_p.b
-    else:
-        change_text = ""
-    # g.pr(find_p,change_p)
-    # Initialize the find panel.
-    c.script_search_flag = script_search
-    c.script_change_flag = script_change and change_text
-    if script_search:
-        c.find_text = find_text.strip() + "\n"
-    else:
-        c.find_text = find_text
-    if script_change:
-        c.change_text = change_text.strip() + "\n"
-    else:
-        c.change_text = change_text
-    c.frame.findPanel.init(c)
-    c.showFindPanel()
 #@+node:ekr.20140209065845.16767: *3* g.insertCodingLine
 def insertCodingLine(encoding, script):
     '''
