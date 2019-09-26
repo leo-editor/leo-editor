@@ -59,6 +59,18 @@ def find_trace_block(i, j, s):
     assert n >= 1
     result_lines = lines[:n]
     return i + len(''.join(result_lines))
+#@+node:ekr.20190926103141.1: *3* lineScrollHelper
+# by Brian Theado.
+
+def lineScrollHelper(c, prefix1, prefix2, suffix):
+    w = c.frame.body.wrapper
+    ins = w.getInsertPoint()
+    c.inCommand = False
+    c.executeMinibufferCommand(prefix1 + 'line' + suffix)
+    ins2 = w.getInsertPoint()
+    # If the cursor didn't change, then go to beginning/end of line
+    if ins == ins2:
+        c.executeMinibufferCommand(prefix2 + 'of-line' + suffix)
 #@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
 def delete_trace_statements(event=None):
@@ -106,6 +118,33 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
+#@+node:ekr.20190926103245.1: ** @g.command('next-or-end-of-line')
+# by Brian Theado.
+
+@g.command('next-or-end-of-line')
+def nextOrEndOfLine(event):
+    lineScrollHelper(event['c'], 'next-', 'end-', '')
+
+#@+node:ekr.20190926103246.2: ** @g.command('next-or-end-of-line-extend-selection')
+# by Brian Theado.
+
+@g.command('next-or-end-of-line-extend-selection')
+def nextOrEndOfLineExtendSelection(event):
+    lineScrollHelper(event['c'], 'next-', 'end-', '-extend-selection')
+
+#@+node:ekr.20190926103246.1: ** @g.command('previous-or-beginning-of-line')
+# by Brian Theado.
+
+@g.command('previous-or-beginning-of-line')
+def previousOrBeginningOfLine(event):
+    lineScrollHelper(event['c'], 'previous-', 'beginning-', '')
+
+#@+node:ekr.20190926103246.3: ** @g.command('previous-or-beginning-of-line-extend-selection')
+# by Brian Theado.
+
+@g.command('previous-or-beginning-of-line-extend-selection')
+def previousOrBeginningOfLineExtendSelection(event):
+    lineScrollHelper(event['c'], 'previous-', 'beginning-', '-extend-selection')
 #@+node:ekr.20190323084957.1: ** @g.command('promote-bodies')
 @g.command('promote-bodies')
 def promoteBodies(event):

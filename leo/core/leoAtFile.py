@@ -1196,7 +1196,7 @@ class AtFile:
                 return
             if leoBeautify.should_kill_beautify(p):
                 return
-            if c.config.getBool('tidy-autobeautify'):
+            if c.config.getBool('beautify-autobeautify'):
                 leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
         except Exception:
             g.es('unexpected exception')

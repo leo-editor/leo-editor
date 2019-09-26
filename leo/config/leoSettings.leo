@@ -519,10 +519,14 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
+<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
+<v t="ekr.20190926110021.1"><vh>@bool beautify-autobeautify = False</vh></v>
 <v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
+<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
+<v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
 </v>
 <v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
 <v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
@@ -2037,9 +2041,6 @@
 <v t="peckj.20140218151502.4819"><vh>sftp plugin</vh>
 <v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
 </v>
-<v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
-<v t="tbrown.20130310101647.34744"><vh>@bool valuespace-vs-eval-redirect = True</vh></v>
-</v>
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
 <v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
 <v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
@@ -3146,9 +3147,7 @@ configuration value.</t>
 
 Clicks
 
-click-headline
 click-icon-box
-double-click-headline
 double-click-icon-box
 
 Cursor moves and selection (Basic Emacs commands)
@@ -3507,10 +3506,19 @@ goto-global-line                    = Alt-g
 # match-brackets                    = Ctrl-K    # kill-line
 move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
 move-past-close-extend-selection    = None
+
+# Brian Theado
+# next-or-end-of-line                 ! text = Down
+# next-or-end-of-line-extend-selection ! text = Shift-Down
+
 # next-line                         = Ctrl-N
 # next-line-extend-selection        = Ctrl-Shift-N
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
+
+# Brian Theado
+# previous-or-beginning-of-line                   ! text = Up
+# previous-or-beginning-of-line-extend-selection  ! text = Shift-Up
 select-all                          = Ctrl-a</t>
 <t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
 # expand-pane         = Alt-Ctrl-=
@@ -6639,8 +6647,8 @@ clear-kill-ring                     = None
 clear-recent-files                  = None
 clear-selected-text                 = None
 click-click-box                     = None
-click-headline                      = None
-click-icon-box                      = None
+# click-headline                    = None
+# click-icon-box                    = None
 clone-find-all                      = None
 clone-node                          = None
 close-window                        = None
@@ -6687,7 +6695,7 @@ disable-calltips                    = None
 do-nothing                          = None
 downcase-region                     = None
 downcase-word                       = None
-double-click-headline               = None
+# double-click-headline             = None
 double-click-icon-box               = None
 dump-outline                        = None
 edit-headline                       = None
@@ -6884,6 +6892,8 @@ new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
+next-or-end-of-line                 = None # ! text = Down      # Brian Theado
+next-or-end-of-line-extend-selection= None #! text = Shift-Down # Brian Theado
 open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-plugins-leo                = None
@@ -6901,6 +6911,8 @@ paste-retaining-clones              = None
 paste-text                          = None
 previous-line                       = None
 previous-line-extend-selection      = None
+previous-or-beginning-of-line                   = None # ! text = Up        # Brian Theado
+previous-or-beginning-of-line-extend-selection  = None # ! text = Shift-Up  # Brian Theado
 show-bindings                       = None
 show-commands                       = None
 show-focus                          = None
@@ -6984,8 +6996,8 @@ show-color-wheel                    = None
 show-find-options                   = None
 show-fonts                          = None
 show-invisibles                     = None
-simulate-begin-drag                 = None
-simulate-end-drag                   = None
+# simulate-begin-drag               = None
+# simulate-end-drag                 = None
 sort-children                       = None
 sort-columns                        = None
 sort-fields                         = None
@@ -11761,6 +11773,10 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20190915192705.1"></t>
 <t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
+<t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
+<t tx="ekr.20190926110217.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -11969,9 +11985,6 @@ the ``&lt;|`` in::
 This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``,
 if that's an abbreviation linked to next_place(), see 
 ``@@data abbreviations examples``, would select ``&lt;|code|&gt;``.</t>
-<t tx="tbrown.20130310101647.34743"></t>
-<t tx="tbrown.20130310101647.34744"># if set to True, g.redirectStdout/err will be used to
-# redirect stdout and stderr to the log pane when vs-eval is used</t>
 <t tx="tbrown.20130813134319.7223"></t>
 <t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
 
