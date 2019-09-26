@@ -49,6 +49,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.active = True
         self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
+        self.globalFindDialog = None
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
         self.mGuiName = 'qt'
