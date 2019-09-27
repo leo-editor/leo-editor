@@ -50,6 +50,32 @@ except ImportError:
 g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
+#@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
+@g.command("ipython-new")
+def qtshell_f(event):
+    """ Launch new ipython shell window, associated with the same ipython kernel """
+    ipk = getattr(g.app, 'ipk', None)
+    if not ipk:
+        g.es_print('ipython commands require --ipython')
+        return
+    g.app.ipk.new_qt_console(event=event)
+#@+node:ekr.20190927110150.1: ** @g.command("ipython-exec")
+@g.command("ipython-exec")
+def ipython_exec(event):
+    """ Execute script in current node in ipython namespace """
+    ipk = getattr(g.app, 'ipk', None)
+    if not ipk:
+        g.es_print('ipython commands require --ipython')
+        return
+    c = event and event.get('c')
+    if not c:
+        g.es_print('no c')
+        return
+    script = g.getScript(c, c.p, useSentinels=False)
+    if not script.strip():
+        g.es_print('no script')
+        return
+    g.app.ipk.run_script(file_name=c.p.h,script=script)
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
 class InternalIPKernel:
     '''
@@ -101,7 +127,7 @@ class InternalIPKernel:
         
         Called from qt_gui.runWithIpythonKernel.
         '''
-        trace = 'ipython' in g.app.debug
+        trace = True ### 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()
@@ -204,6 +230,13 @@ class InternalIPKernel:
         else:
             g.trace('IPKernelApp.instance failed!')
         return kernelApp
+    #@+node:ekr.20190927100624.1: *3* ileo.run (new)
+    def run(self):
+        '''Start the IPython kernel.  This does not return.'''
+        g.es_print(self.kernelApp)
+        ### self.new_qt_console(event=None)
+        self.kernelApp.start()
+            # This does not return.
     #@+node:ekr.20160329053849.1: *3* ileo.run_script
     def run_script(self, file_name, script):
         '''

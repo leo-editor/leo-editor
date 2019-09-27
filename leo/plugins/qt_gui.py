@@ -1323,28 +1323,12 @@ class LeoQtGui(leoGui.LeoGui):
         '''Init Leo to run in an IPython shell.'''
         try:
             import leo.core.leoIPython as leoIPython
-            g.app.ipk = ipk = leoIPython.InternalIPKernel()
-            ipk.new_qt_console(event=None)
+            g.app.ipk = leoIPython.InternalIPKernel()
+            g.app.ipk.run()
         except Exception:
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
-
-        @g.command("ipython-new")
-        def qtshell_f(event):
-            """ Launch new ipython shell window, associated with the same ipython kernel """
-            g.app.ipk.new_qt_console(event=event)
-
-        @g.command("ipython-exec")
-        def ipython_exec_f(event):
-            """ Execute script in current node in ipython namespace """
-            c = event and event.get('c')
-            if c:
-                script = g.getScript(c, c.p, useSentinels=False)
-                if script.strip():
-                    g.app.ipk.run_script(file_name=c.p.h,script=script)
-
-        ipk.kernelApp.start()
     #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
     def set_top_geometry(self, w, h, x, y):
         """Set the geometry of the main window."""
