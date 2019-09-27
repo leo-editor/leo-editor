@@ -355,16 +355,18 @@ class BlackCommand:
         self.wrapper = c.frame.body.wrapper
         self.reloadSettings()
 
+    #@+others
+    #@+node:ekr.20190926105124.1: *3* black.reloadSettings
+    #@@nobeautify
+
     def reloadSettings(self):
         c = self.c
         keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
         self.line_length = c.config.getInt("black-line-length") or 88
-        self.normalize_strings = c.config.getBool(
-            "black-string-normalization", default=False
-        )
-
-    #@+others
+        # This should be on a single line,
+        # so the check-settings script in leoSettings.leo will see them.
+        self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
     def blacken_node(self, root, diff_flag, check_flag=False):
         '''Run black on all Python @<file> nodes in root's tree.'''
@@ -801,6 +803,8 @@ class PythonTokenBeautifier:
 
         __str__ = __repr__
     #@+node:ekr.20150519111713.1: *3* ptb.ctor
+    #@@nobeautify
+
     def __init__(self, c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
@@ -868,12 +872,10 @@ class PythonTokenBeautifier:
     def reloadSettings(self):
         c = self.c
         if c:
-            keep_comments = c.config.getBool(
-                'beautify-keep-comment-indentation', default=True
-            )
-            self.delete_blank_lines = not c.config.getBool(
-                'beautify-keep-blank-lines', default=True
-            )
+            # These should be on the same line,
+            # so the check-settings script in leoSettings.leo will see them.
+            keep_comments = c.config.getBool('beautify-keep-comment-indentation', default=True)
+            self.delete_blank_lines = not c.config.getBool('beautify-keep-blank-lines', default=True)
             # Join.
             n = c.config.getInt('beautify-max-join-line-length')
             self.max_join_line_length = 88 if n is None else n

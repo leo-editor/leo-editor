@@ -24,15 +24,12 @@ Leo commanders.
 #@-<< leoIpython docstring >>
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
-from __future__ import print_function
 import sys
 import leo.core.leoGlobals as g
-# Switches...
-import_trace = True and not g.unitTesting
 
 def import_fail(s):
-    if import_trace:
-        print(f"===== leoIpython.py: can not import {s}")
+    if not g.unitTesting:
+        print(f"leoIpython.py: can not import {s}")
 
 try:
     from ipykernel.connect import connect_qtconsole
@@ -40,8 +37,6 @@ except ImportError:
     connect_qtconsole = None
     import_fail('connect_qtconsole')
 try:
-    # https://github.com/ipython/ipykernel/tree/master/ipykernel
-    # from IPython.core.interactiveshell import ExecutionResult
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
     IPKernelApp = None
@@ -50,6 +45,32 @@ except ImportError:
 g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
+#@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
+@g.command("ipython-new")
+def qtshell_f(event):
+    """ Launch new ipython shell window, associated with the same ipython kernel """
+    ipk = getattr(g.app, 'ipk', None)
+    if not ipk:
+        g.es_print('ipython commands require --ipython')
+        return
+    g.app.ipk.new_qt_console(event=event)
+#@+node:ekr.20190927110150.1: ** @g.command("ipython-exec")
+@g.command("ipython-exec")
+def ipython_exec(event):
+    """ Execute script in current node in ipython namespace """
+    ipk = getattr(g.app, 'ipk', None)
+    if not ipk:
+        g.es_print('ipython commands require --ipython')
+        return
+    c = event and event.get('c')
+    if not c:
+        g.es_print('no c')
+        return
+    script = g.getScript(c, c.p, useSentinels=False)
+    if not script.strip():
+        g.es_print('no script')
+        return
+    g.app.ipk.run_script(file_name=c.p.h,script=script)
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
 class InternalIPKernel:
     '''
@@ -101,7 +122,7 @@ class InternalIPKernel:
         
         Called from qt_gui.runWithIpythonKernel.
         '''
-        trace = 'ipython' in g.app.debug
+        trace = True ### 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()
@@ -204,6 +225,12 @@ class InternalIPKernel:
         else:
             g.trace('IPKernelApp.instance failed!')
         return kernelApp
+    #@+node:ekr.20190927100624.1: *3* ileo.run (new)
+    def run(self):
+        '''Start the IPython kernel.  This does not return.'''
+        self.new_qt_console(event=None)
+        self.kernelApp.start()
+            # This does not return.
     #@+node:ekr.20160329053849.1: *3* ileo.run_script
     def run_script(self, file_name, script):
         '''
@@ -212,22 +239,14 @@ class InternalIPKernel:
         '''
         # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
         # https://github.com/ipython/ipython/blob/master/IPython/core/interactiveshell.py
-        shell = self.kernelApp.shell # ZMQInteractiveShell
-        old_show = getattr(shell, '_showtraceback', None)
-        code = compile(script, file_name, 'exec')
-        #@+<< define show_traceback >>
-        #@+node:ekr.20160402124159.1: *4* << define show_traceback >>
-        def show_traceback(etype, evalue, stb, shell=shell):
-            '''Monkey-patched replacement for ZMQInteractiveShell._showtraceback.'''
-            # stb is an internal representation of the traceback...
-            # was: print(self.InteractiveTB.stb2text(stb), file=io.stdout)
-            print(shell.InteractiveTB.stb2text(stb), file=sys.stderr)
-            sys.stderr.flush()
-        #@-<< define show_traceback >>
-        shell._showtraceback = show_traceback
-        shell.run_code(code)
-        if old_show:
-            shell._showtraceback = old_show
+        shell = self.kernelApp.shell
+            # A ZMQInteractiveShell, defined in ipkernel.zmqshell.py,
+            # a subclass of InteractiveShell, defined in ipython.core.interactiveshell.py.
+        try:
+            code = compile(script, file_name, 'exec')
+            exec(code, shell.user_global_ns, shell.user_ns)
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20171115090205.1: *3* ileo.test
     def test(self):
         
