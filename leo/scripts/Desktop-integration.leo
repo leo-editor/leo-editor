@@ -46,8 +46,6 @@
 </v>
 <v t="lkj.20190712001203.1"><vh>scripts</vh>
 <v t="mhw.20190808082948.1"><vh>Any</vh>
-<v t="lkj.20190925184105.1"><vh>@file add-desktop-links-pyshort.leox</vh></v>
-<v t="mhw.20190827134123.1"><vh>@file remove-desktop-links-pyshort.leox</vh></v>
 <v t="mhw.20190808083008.1"><vh>@file add-desktop-links.leox</vh></v>
 <v t="mhw.20190808083026.1"><vh>@file remove-desktop-links.leox</vh></v>
 </v>
@@ -361,33 +359,30 @@ False: (Good for files like unitTest.leo)
 @others
 </t>
 <t tx="mhw.20190808082948.1"></t>
-<t tx="mhw.20190808083214.1">"""Create Leo Editor desktop and system menu shortcut links"""
-
+<t tx="mhw.20190808083214.1">"""Create Leo Editor desktop shortcut link
+  Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
+"""
+import os
+import shutil
+import platform
 import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
 
+debug = False
 iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-g.es_print("Running add-desktop-links...")
-import sys
-import platform
-from shortcutter import ShortCutter
+g.es_print(f"\n----- Running add-desktop-links -----")
 
-sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
-
-leocmd = "leo"
+leocmd = shutil.which("leo")
 if platform.system() == "Windows":
-    leocmd = "leo-messages"
+    leocmd = shutil.which("leo-messages")
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor", icon=iconpath)
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor", icon=iconpath)
-term = sc.create_shortcut_to_env_terminal()
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
-if desktop:
-    g.es_print("Created shortcut: {} - {}".format(desktop[0], desktop[2]))
-if menu:
-    g.es_print("Created shortcut: {} - {}".format(menu[0], menu[2]))
-if term:
-    g.es_print("Created shortcut: terminal   - {}".format(term))
+g.es_print(f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}")
+
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
 </t>
 <t tx="mhw.20190808083336.1">"""Remove Leo Editor shortcuts from desktop and system menu
 
@@ -398,31 +393,30 @@ The approach is naive:
 So this won't delete links created from a different Leo directory or source code
 checkout (unless they have same filename).
 """
-import leo.core.leoGlobals as g
-
-g.es_print("Running remove-desktop-links...")
 import os
-import sys
+import shutil
 import platform
-from shortcutter import ShortCutter
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
 
-sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-leocmd = "leo"
+g.es_print(f"\n----- Running add-desktop-links -----")
+
+leocmd = shutil.which("leo")
 if platform.system() == "Windows":
-    leocmd = "leo-messages"
+    leocmd = shutil.which("leo-messages")
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
-term = sc.create_shortcut_to_env_terminal()
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
-if desktop:
-    g.es_print("Removing shortcut: {} - {}".format(desktop[0], desktop[2]))
-    os.remove(desktop[2])
+lnkfiles = [os.path.join(scut.desktop_dir, scut.target), os.path.join(scut.startmenu_dir, scut.target)]
+for fil in lnkfiles:
+    os.remove(fil)
+    g.es_print(f"Removed '{fil}' ")
 
-if menu:
-    g.es_print("Removing shortcut: {} - {}".format(menu[0], menu[2]))
-    os.remove(menu[2])
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
 </t>
 </tnodes>
 </leo_file>
