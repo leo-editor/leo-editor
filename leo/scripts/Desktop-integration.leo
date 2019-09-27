@@ -102,20 +102,20 @@ Example of success:
 </t>
 <t tx="lkj.20190712001203.1"></t>
 <t tx="maphew.20130509185752.1607">def register_leo(pyexe, launchLeo, icon):
-    '''Create registry key for Leo file type, set default icon and launch command    
-    '''    
+    """Create registry key for Leo file type, set default icon and launch command    
+    """
     g.es_print("Attempting to register leo filetype with Windows...")
     g.es_print("  Python:", pyexe)
     g.es_print("  Leo:", launchLeo)
-    
+
     if g.os_path_exists(icon):
         g.es_print("  Found:", icon)
         &lt;&lt;filetype&gt;&gt;
         &lt;&lt;association&gt;&gt;
     else:
-        g.es_print("  LeoDoc.ico not in expected location, can't continue.")  
+        g.es_print("  LeoDoc.ico not in expected location, can't continue.")
 </t>
-<t tx="maphew.20130510011223.1645">'''Tell Windows how to handle .leo files, enables double clicking on them to open.
+<t tx="maphew.20130510011223.1645">"""Tell Windows how to handle .leo files, enables double clicking on them to open.
 
 To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
         
@@ -126,7 +126,7 @@ Resources used:
    @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
    @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
-'''
+"""
 </t>
 <t tx="maphew.20130510011223.1646">This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code for Open Command is:
@@ -171,15 +171,21 @@ Windows Registry Editor Version 5.00
 
     SetValue(leoKey, None, REG_SZ, "Leo Editor File")
     SetValue(iconKey, None, REG_SZ, icon)
-    
-    if 'launchLeo.py' in launchLeo:
-        SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
+
+    if "launchLeo.py" in launchLeo:
+        SetValueEx(
+            cmdKey,
+            None,
+            None,
+            REG_EXPAND_SZ,
+            '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo),
+        )
     else:
         SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "%1" %*'.format(launchLeo))
-        
+
     for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
         CloseKey(k)
-        
+
     g.es_print("  Registered!")
 
 except WindowsError as e:
@@ -190,12 +196,12 @@ except WindowsError as e:
     SetValue(leoKey, None, REG_SZ, "Leo.File")
     # SetValue(leoKey, "Content Type", REG_SZ, "text/xml")  #creates a sub_key instead of a value :(
     CloseKey(leoKey)
-    
+
     leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leox")
     SetValue(leoKey, None, REG_SZ, "Leo.File")
     CloseKey(leoKey)
-    
-    g.es_print("  .leo, .leox files associated as 'Leo.File'")        
+
+    g.es_print("  .leo, .leox files associated as 'Leo.File'")
 
 except WindowsError as e:
     g.es_print("  Failed:", e)
@@ -261,12 +267,13 @@ Todo: move desktop-links code into external files also (enables running from com
 </t>
 <t tx="maphew.20190712113401.1"></t>
 <t tx="maphew.20190712113412.1"></t>
-<t tx="mhw-debug-1081.20190216130451.1">#py2 shims
+<t tx="mhw-debug-1081.20190216130451.1"># py2 shims
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
 
 import leo
@@ -276,7 +283,6 @@ import sys
 import shutil
 import subprocess
 from winreg import *
-
 </t>
 <t tx="mhw-debug-1081.20190216145532.1">def unregister_leo():
     try:
@@ -285,11 +291,11 @@ from winreg import *
         DeleteKey(leoKey, "Shell\\Open")
         DeleteKey(leoKey, "Shell")
         DeleteKey(leoKey, "DefaultIcon")
-        DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
+        DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")
         # CloseKey(leoKey)
         g.es_print("  Leo file type has been removed from registry")
     except WindowsError as e:
-        g.es_print("  Unregistering Leo file type failed: ", e)  
+        g.es_print("  Unregistering Leo file type failed: ", e)
 
     try:
         DeleteKey(HKEY_CLASSES_ROOT, ".leo")
@@ -299,44 +305,42 @@ from winreg import *
         g.es_print("  Removing .leo, leox associations failed: ", e)
 </t>
 <t tx="mhw-debug-1081.20190221070850.1">def get_launch_leo():
-    '''Prefer leo exe script in PATH over launchLeo.py relative to Leo library'''
-    leo_script = os.path.join(sys.exec_prefix, 'Scripts', 'leo.exe')
+    """Prefer leo exe script in PATH over launchLeo.py relative to Leo library"""
+    leo_script = os.path.join(sys.exec_prefix, "Scripts", "leo.exe")
     if os.path.isfile(leo_script):
         return leo_script
     else:
-        leo_script = os.path.join(get_leo_libpath(), '../launchLeo.py')
+        leo_script = os.path.join(get_leo_libpath(), "../launchLeo.py")
     if os.path.isfile(leo_script):
         return leo_script
     return None
 </t>
 <t tx="mhw-debug-1081.20190227224730.1">def get_leo_libpath():
-    '''Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)'''
+    """Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)"""
     import leo
+
     return leo.__path__[0]
 </t>
 <t tx="mhw-debug-1081.20190310203401.1">Scripts only of interest when on Microsoft Windows platform.
 @path win
 </t>
 <t tx="mhw-debug-1081.20190314004045.1">def get_my_path():
-    '''Return full path of currently running script or executable
+    """Return full path of currently running script or executable
     
    Thanks to
         https://stackoverflow.com/questions/2632199/
             how-do-i-get-the-path-of-the-current-executed-file-in-python
         @jose-crespo-barrios, https://stackoverflow.com/a/44592299/14420
-    '''
+    """
     import inspect
+
     filename = inspect.getframeinfo(inspect.currentframe()).filename
     return filename
 </t>
 <t tx="mhw-debug-1081.20190314005003.1">def relaunch_elevated(script):
-    g.es_print('--- Relaunching and asking for elevated permissions')
-    g.execute_shell_commands(['&amp;{} {} {}'.format(
-        sys.executable,
-        elevate,
-        script)])
-    g.es_print('---')
-    
+    g.es_print("--- Relaunching and asking for elevated permissions")
+    g.execute_shell_commands(["&amp;{} {} {}".format(sys.executable, elevate, script)])
+    g.es_print("---")
 </t>
 <t tx="mhw.20181210131101.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -355,29 +359,34 @@ False: (Good for files like unitTest.leo)
 @others
 </t>
 <t tx="mhw.20190808082948.1"></t>
-<t tx="mhw.20190808083214.1">'''Create Leo Editor desktop and system menu shortcut links'''
-
-g.es_print("Running add-desktop-links...")
-import sys
+<t tx="mhw.20190808083214.1">"""Create Leo Editor desktop shortcut link
+  Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
+"""
+import os
+import shutil
 import platform
-from shortcutter import ShortCutter
-sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
 
-leocmd = "leo"
-if platform.system() == 'Windows':
-    leocmd = "leo-messages"
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
-term = sc.create_shortcut_to_env_terminal()
+g.es_print(f"\n----- Running add-desktop-links -----")
 
-if desktop:
-    g.es_print("Created shortcut: {} - {}".format(desktop[0],desktop[2]))
+leocmd = shutil.which("leo")
+if platform.system() == "Windows":
+    leocmd = shutil.which("leo-messages")
 
-if menu:
-    g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
+
+g.es_print(
+    f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}"
+)
+
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
 </t>
-<t tx="mhw.20190808083336.1">'''Remove Leo Editor shortcuts from desktop and system menu
+<t tx="mhw.20190808083336.1">"""Remove Leo Editor shortcuts from desktop and system menu
 
 The approach is naive:
     first we create links for the current environment, overwriting if already exist
@@ -385,29 +394,34 @@ The approach is naive:
 
 So this won't delete links created from a different Leo directory or source code
 checkout (unless they have same filename).
-'''
-g.es_print("Running remove-desktop-links...")
+"""
 import os
-import sys
+import shutil
 import platform
-from shortcutter import ShortCutter
-sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
 
-leocmd = "leo"
-if platform.system() == 'Windows':
-    leocmd = "leo-messages"
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
-term = sc.create_shortcut_to_env_terminal()
+g.es_print(f"\n----- Running add-desktop-links -----")
 
-if desktop:
-    g.es_print("Removing shortcut: {} - {}".format(desktop[0],desktop[2]))
-    os.remove(desktop[2])
+leocmd = shutil.which("leo")
+if platform.system() == "Windows":
+    leocmd = shutil.which("leo-messages")
 
-if menu:
-    g.es_print("Removing shortcut: {} - {}".format(menu[0],menu[2]))
-    os.remove(menu[2])
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
+
+lnkfiles = [
+    os.path.join(scut.desktop_dir, scut.target),
+    os.path.join(scut.startmenu_dir, scut.target),
+]
+for fil in lnkfiles:
+    os.remove(fil)
+    g.es_print(f"Removed '{fil}' ")
+
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
 </t>
 </tnodes>
 </leo_file>

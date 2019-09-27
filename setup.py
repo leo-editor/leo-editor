@@ -110,7 +110,7 @@ setup_requires = []
     # setup_requires no longer needed with PEP-518 and pip >v10
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'PyQt5>=5.12; python_version >= "3.0"', # v5.12+ to close #1217
+    'PyQt5>=5.12; python_version >= "3.6"', # v5.12+ to close #1217
     'PyQtWebEngine', # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'docutils', # used by Sphinx, rST plugin
     'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
@@ -118,7 +118,7 @@ user_requires = [
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes','black', # coding syntax standards
     'setupext-janitor >= 1.1', # extend `setup.py clean` #1055,#1255
-    'shortcutter', # desktop integration (#1243)
+    'pyshortcuts', # desktop integration (#1243)
     'sphinx', # rST plugin
     'future', # python 2/3 compatibility layer, same with 'six'
     'six',
