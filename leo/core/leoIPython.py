@@ -248,19 +248,20 @@ class InternalIPKernel:
         shell = self.kernelApp.shell # ZMQInteractiveShell
         old_show = getattr(shell, '_showtraceback', None)
         code = compile(script, file_name, 'exec')
-        #@+<< define show_traceback >>
-        #@+node:ekr.20160402124159.1: *4* << define show_traceback >>
+        
         def show_traceback(etype, evalue, stb, shell=shell):
             '''Monkey-patched replacement for ZMQInteractiveShell._showtraceback.'''
             # stb is an internal representation of the traceback...
             # was: print(self.InteractiveTB.stb2text(stb), file=io.stdout)
             print(shell.InteractiveTB.stb2text(stb), file=sys.stderr)
             sys.stderr.flush()
-        #@-<< define show_traceback >>
-        shell._showtraceback = show_traceback
-        shell.run_code(code)
-        if old_show:
-            shell._showtraceback = old_show
+
+        try:
+            shell._showtraceback = show_traceback
+            shell.run_code(code)
+        finally:
+            if old_show:
+                shell._showtraceback = old_show
     #@+node:ekr.20171115090205.1: *3* ileo.test
     def test(self):
         
