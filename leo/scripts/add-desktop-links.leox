@@ -4,89 +4,52 @@
 #@@tabwidth -4
 #@+others
 #@+node:mhw.20190808083214.1: ** main
-'''Create Leo Editor desktop and system menu shortcut links'''
-
-g.es_print("Running add-desktop-links...")
-import sys
+"""Create Leo Editor desktop shortcut link
+  Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
+"""
+import os
+import shutil
 import platform
-from shortcutter import ShortCutter
-sc = ShortCutter(raise_errors=True, error_log=sys.stderr, activate=False)
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
 
-leocmd = "leo"
-if platform.system() == 'Windows':
-    leocmd = "leo-messages"
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-desktop = sc.create_desktop_shortcut(leocmd, shortcut_name="Leo Editor")
-menu = sc.create_menu_shortcut(leocmd, shortcut_name="Leo Editor")
-term = sc.create_shortcut_to_env_terminal()
+g.es_print(f"\n----- Running add-desktop-links -----")
 
-if desktop:
-    g.es_print("Created shortcut: {} - {}".format(desktop[0],desktop[2]))
+leocmd = shutil.which("leo")
+if platform.system() == "Windows":
+    leocmd = shutil.which("leo-messages")
 
-if menu:
-    g.es_print("Created shortcut: {} - {}".format(menu[0],menu[2]))
-#@+node:mhw.20190730142513.1: ** Notes
-#@+at
-# Example straight from docs creates a .lnk file like:
-#     
-#     Name: Terminal at leo-dev
-#     Command: C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
-# 
-# and the bat file:
-#     
-#     @echo off
-#     set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-#     set PYTHONNOUSERSITE=1
-#     call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-#     set "u=chcp 65001 && set PYTHONIOENCODING=utf-8"
-#     set "a=chcp 1252 && set PYTHONIOENCODING="
-#     set "b=set LANG=C.UTF-8 && set PYTHONIOENCODING=utf-8 && "%PROGRAMFILES%\Git\git-bash.exe""
-#     cd /d %USERPROFILE%
-#     cmd /k
-# 
-# ------
-# Using `leo` instead of Python or `Leo Editor`:
-# 
-# C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
-# 
-# Contents:
-#     @language batch
-#     @echo off
-#     set PYTHONNOUSERSITE=1
-#     call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-#     "c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-#     call "c:\tools\miniconda3\Scripts\deactivate.bat"
-# 
-# ----
-# passing `activate=False` bypasses creation of .bat file, this is what we need. It Just Works. :-)
-# 
-#     C:\tools\miniconda3\envs\leo-dev\Scripts\leo-messages.exe
-# 
-# 
-# -----
-# # What's Next
-# 
-#  - Record location of the created shortcuts so they can be removed later with a script
-#  - Add icons (this will be more work as Shortcutter doesn't have that concept yet)
-# 
-#@@c
-#@+node:mhw.20190730140619.1: *3* @@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__Terminal_at_leo_dev.bat
-#@@language batch
-@echo off
-set "PATH=c:\tools\miniconda3\Scripts;%PATH%"
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-set "u=chcp 65001 && set PYTHONIOENCODING=utf-8"
-set "a=chcp 1252 && set PYTHONIOENCODING="
-set "b=set LANG=C.UTF-8 && set PYTHONIOENCODING=utf-8 && "%PROGRAMFILES%\Git\git-bash.exe""
-cd /d %USERPROFILE%
-cmd /k
-#@+node:mhw.20190730141446.1: *3* @@clean C:\tools\miniconda3\envs\leo-dev\Scripts\shortcutter__leo_exe__at__leo_dev_Scripts.bat
-#@@language batch
-@echo off
-set PYTHONNOUSERSITE=1
-call "c:\tools\miniconda3\Scripts\activate.bat" "leo-dev"
-"c:\tools\miniconda3\envs\leo-dev\Scripts\leo.exe" %*
-call "c:\tools\miniconda3\Scripts\deactivate.bat"
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
+
+g.es_print(
+    f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}"
+)
+
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
+#@+node:lkj.20190926225552.1: ** usage
+"""make_shortcut() arguments:
+---------
+script      (str) path to script, may include command-line arguments
+name        (str, None) name to display for shortcut [name of script]
+description (str, None) longer description of script [`name`]
+icon        (str, None) path to icon file [python icon]
+folder      (str, None) subfolder of Desktop for shortcut [None] (See Note 1)
+terminal    (bool) whether to run in a Terminal [True]
+desktop     (bool) whether to add shortcut to Desktop [True]
+startmenu   (bool) whether to add shortcut to Start Menu [True] (See Note 2)
+executable  (str, None) name of executable to use [this Python] (see Note 3)
+
+Notes:
+------
+1. `folder` will place shortcut in a subfolder of Desktop and/or Start Menu
+2. Start Menu does not exist for Darwin / MacOSX
+3. executable defaults to the Python executable used to make shortcut.
+
+Avoid 'terminal' and 'executable' when 'script' is a binary exe
+"""
 #@-others
 #@-leo
