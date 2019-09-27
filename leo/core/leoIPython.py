@@ -24,15 +24,12 @@ Leo commanders.
 #@-<< leoIpython docstring >>
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
-from __future__ import print_function
 import sys
 import leo.core.leoGlobals as g
-# Switches...
-import_trace = True and not g.unitTesting
 
 def import_fail(s):
-    if import_trace:
-        print(f"===== leoIpython.py: can not import {s}")
+    if not g.unitTesting:
+        print(f"leoIpython.py: can not import {s}")
 
 try:
     from ipykernel.connect import connect_qtconsole
@@ -40,8 +37,6 @@ except ImportError:
     connect_qtconsole = None
     import_fail('connect_qtconsole')
 try:
-    # https://github.com/ipython/ipykernel/tree/master/ipykernel
-    # from IPython.core.interactiveshell import ExecutionResult
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
     IPKernelApp = None
@@ -233,8 +228,7 @@ class InternalIPKernel:
     #@+node:ekr.20190927100624.1: *3* ileo.run (new)
     def run(self):
         '''Start the IPython kernel.  This does not return.'''
-        g.es_print(self.kernelApp)
-        ### self.new_qt_console(event=None)
+        self.new_qt_console(event=None)
         self.kernelApp.start()
             # This does not return.
     #@+node:ekr.20160329053849.1: *3* ileo.run_script
@@ -245,23 +239,14 @@ class InternalIPKernel:
         '''
         # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
         # https://github.com/ipython/ipython/blob/master/IPython/core/interactiveshell.py
-        shell = self.kernelApp.shell # ZMQInteractiveShell
-        old_show = getattr(shell, '_showtraceback', None)
-        code = compile(script, file_name, 'exec')
-        
-        def show_traceback(etype, evalue, stb, shell=shell):
-            '''Monkey-patched replacement for ZMQInteractiveShell._showtraceback.'''
-            # stb is an internal representation of the traceback...
-            # was: print(self.InteractiveTB.stb2text(stb), file=io.stdout)
-            print(shell.InteractiveTB.stb2text(stb), file=sys.stderr)
-            sys.stderr.flush()
-
+        shell = self.kernelApp.shell
+            # A ZMQInteractiveShell, defined in ipkernel.zmqshell.py,
+            # a subclass of InteractiveShell, defined in ipython.core.interactiveshell.py.
         try:
-            shell._showtraceback = show_traceback
-            shell.run_code(code)
-        finally:
-            if old_show:
-                shell._showtraceback = old_show
+            code = compile(script, file_name, 'exec')
+            exec(code, shell.user_global_ns, shell.user_ns)
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20171115090205.1: *3* ileo.test
     def test(self):
         
