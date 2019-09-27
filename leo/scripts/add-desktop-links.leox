@@ -24,7 +24,9 @@ if platform.system() == "Windows":
 
 scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
-g.es_print(f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}")
+g.es_print(
+    f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}"
+)
 
 if debug:
     g.es_print(f"\n*** debug:\n{(scut)}")

@@ -30,7 +30,10 @@ if platform.system() == "Windows":
 
 scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
-lnkfiles = [os.path.join(scut.desktop_dir, scut.target), os.path.join(scut.startmenu_dir, scut.target)]
+lnkfiles = [
+    os.path.join(scut.desktop_dir, scut.target),
+    os.path.join(scut.startmenu_dir, scut.target),
+]
 for fil in lnkfiles:
     os.remove(fil)
     g.es_print(f"Removed '{fil}' ")
