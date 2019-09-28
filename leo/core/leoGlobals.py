@@ -2049,19 +2049,19 @@ class NullObject:
     def __repr__(self): return "NullObject"
     def __str__(self): return "NullObject"
     # Attribute access...
-    def __delattr__(self, attr): return self
+    def __delattr__(self, attr): return None
     def __getattr__(self, attr):
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
-        return self
+        return self # Required.
     def __setattr__(self, attr, val):
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
-        return self
     # Container methods..
     def __bool__(self): return False
     def __contains__(self, item): return False
     def __getitem__(self, key): raise KeyError
+    def __setitem__(self, key, val): pass
     def __iter__(self): return self
     def __len__(self): return 0
     # Iteration methods: 
@@ -2098,12 +2098,11 @@ class TracingNullObject:
         null_object_print_attr(id(self), attr)
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
-        return self
+        return self # Required.
     def __setattr__(self, attr, val):
         g.null_object_print(id(self), '__setattr__', attr, val)
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
-        return self
     #
     # All other methods...
     def __bool__(self):
@@ -5864,7 +5863,9 @@ def toUnicode(s, encoding=None, reportErrors=False):
         return s
     tag = 'g.toUnicode'
     if not isinstance(s, bytes):
-        g.error('%s: unexpected argument: %r' % (tag, s))
+        if not isinstance(s, (NullObject, TracingNullObject)):
+            g.error(f"{tag}: unexpected argument of type {s.__class__.__name__}")
+            g.trace(g.callers())
         return ''
     if not encoding:
         encoding = 'utf-8'
@@ -5874,12 +5875,12 @@ def toUnicode(s, encoding=None, reportErrors=False):
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if reportErrors:
+            g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
             g.trace(g.callers())
-            g.error('%s: unicode error. encoding: %r, s:\n%r' % (tag, encoding, s))
     except Exception:
-        g.trace(g.callers())
         g.es_exception()
-        g.error('%s: unexpected error! encoding: %r, s:\n%r' % (tag, encoding, s))
+        g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+        g.trace(g.callers())
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u (deprecated)
 def u(s):
