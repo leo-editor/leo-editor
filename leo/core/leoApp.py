@@ -1452,7 +1452,7 @@ class LeoApp:
         ):
             return
         aList = g.app.db.get(tag) or []
-        if fn in aList:
+        if [x for x in aList if os.path.samefile(x, fn)]:
             # The file may be open in another copy of Leo, or not:
             # another Leo may have been killed prematurely.
             # Put the file on the global list.
