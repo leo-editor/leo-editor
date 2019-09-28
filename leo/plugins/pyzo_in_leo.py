@@ -119,7 +119,7 @@ def init(): # pyzo_in_leo.py
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     # Init pyzo only once!
     g.registerHandler('start2', onCreate)
-    
+    print('\nRunning pyzo_in_leo\n')
     return True
 #@+node:ekr.20190813161639.5: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
@@ -138,12 +138,13 @@ def pyzo_start():
     Copyright (C) 2013-2019 by Almar Klein.
     """
     
-    # print('\nBEGIN pyzo_start\n')
-
     # Do some imports
     from pyzo.core import pyzoLogging  # to start logging asap
-        # EKK: All print statements after this will appear in the logging dock.
+        # EKK: All print statements after this will appear in the Logger dock.
+        # Unless we change pyzoLogging itself, this import will happen soon anyway.
     assert pyzoLogging
+
+    # print('\nBEGIN pyzo_start\n')
     
     # EKR:change.
     # from pyzo.core.main import MainWindow
@@ -177,8 +178,8 @@ def pyzo_start():
         # QtWidgets.qApp.exec_()
 
     # print('END pyzo_start\n')
-#@+node:ekr.20190814050859.1: *3* load_all_docks
-def load_all_docks():
+#@+node:ekr.20190814050859.1: *3* load_all_pyzo_docks
+def load_all_pyzo_docks():
 
     tm = pyzo.toolManager
     table = (
@@ -434,7 +435,7 @@ def main_window_populate():
     pyzo.shells.addContextMenu()
     
     # EKR:change
-    load_all_docks()
+    load_all_pyzo_docks()
         # # Load tools
         # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
             # pyzo.toolManager.loadTool('pyzosourcestructure')
