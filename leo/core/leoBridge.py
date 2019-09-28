@@ -57,6 +57,7 @@ def controller(
     readSettings=True,
     silent=False,
     tracePlugins=False,
+    useCaches=True,
     verbose=False
 ):
     '''Create an singleton instance of a bridge controller.'''
@@ -68,6 +69,7 @@ def controller(
             readSettings,
             silent,
             tracePlugins,
+            useCaches,
             verbose)
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class BridgeController
@@ -76,9 +78,7 @@ class BridgeController:
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, verbose,
-        useCaches=True, #1350
-    ):
+        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose):
         '''Ctor for the BridgeController class.'''
         self.g = None
         self.gui = None
@@ -155,6 +155,9 @@ class BridgeController:
             g.app.setGlobalDb() # Fix #556.
         else:
             g.app.db = g.NullObject()
+                # g.TracingNullObject(tag='g.app.db')
+            g.app.commander_cacher = g.NullObject()
+                # g.TracingNullObject(tag='g.app.commander_cacher')
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
@@ -264,10 +267,12 @@ class BridgeController:
                 self.reopen_cachers()
             else:
                 g.app.db = g.NullObject()
+                    # g.TracingNullObject(tag='g.app.db')
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
             if not self.useCaches:
                 c.db = g.NullObject()
+                    # g.TracingNullObject(tag='c.db')
             g.app.nodeIndices.compute_last_index(c)
                 # New in Leo 5.1. An alternate fix for bug #130.
                 # When using a bridge Leo might open a file, modify it,
