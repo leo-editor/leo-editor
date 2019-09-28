@@ -2049,7 +2049,7 @@ class NullObject:
     def __repr__(self): return "NullObject"
     def __str__(self): return "NullObject"
     # Attribute access...
-    def __delattr__(self, attr): return None ### self
+    def __delattr__(self, attr): return None
     def __getattr__(self, attr):
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
@@ -2057,12 +2057,11 @@ class NullObject:
     def __setattr__(self, attr, val):
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
-        ### return self
     # Container methods..
     def __bool__(self): return False
     def __contains__(self, item): return False
     def __getitem__(self, key): raise KeyError
-    def __setitem__(self, key, val): pass ### New
+    def __setitem__(self, key, val): pass
     def __iter__(self): return self
     def __len__(self): return 0
     # Iteration methods: 
@@ -2104,7 +2103,6 @@ class TracingNullObject:
         g.null_object_print(id(self), '__setattr__', attr, val)
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
-        ### return self
     #
     # All other methods...
     def __bool__(self):
