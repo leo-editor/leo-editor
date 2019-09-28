@@ -3078,6 +3078,7 @@
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
+<v t="vitalije.20190928154420.1"><vh>@file history_tracer.py</vh></v>
 <v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
@@ -9309,14 +9310,16 @@ Qt = QtCore.Qt
     self._description = description
     self._defaultFormat = StyleFormat(defaultFormat)
 </t>
-<t tx="ekr.20190812072047.9">def pyzo_excepthook(type, value, tb):
+<t tx="ekr.20190812072047.9">if 0: # Leo now installs its own excepthook.
 
-    out = 'Uncaught Python exception: ' + str(value) + '\n'
-    out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
-    out += '\n'
-    sys.stderr.write(out)
+    def pyzo_excepthook(type, value, tb):
 
-sys.excepthook = pyzo_excepthook
+        out = 'Uncaught Python exception: ' + str(value) + '\n'
+        out += ''.join(traceback.format_list(traceback.extract_tb(tb)))
+        out += '\n'
+        sys.stderr.write(out)
+    
+    sys.excepthook = pyzo_excepthook
 ## Define some functions
 
 # todo: move some stuff out of this module ...
@@ -23945,10 +23948,12 @@ so you don't have to depend on IPython.
 </t>
 <t tx="ekr.20190812072049.271">@path pyzo/pyzokernel/
 # -*- coding: utf-8 -*-
+
 @others
 @language python
 @tabwidth -4
-@nopyflakes</t>
+@nopyflakes
+</t>
 <t tx="ekr.20190812072049.272">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.pyzokernel.interpreter.py')
@@ -31455,10 +31460,12 @@ def closed(self):
 </t>
 <t tx="ekr.20190812072049.77">@path pyzo/core/
 # -*- coding: utf-8 -*-
+
 @others
 @language python
 @tabwidth -4
-@nopyflakes</t>
+@nopyflakes
+</t>
 <t tx="ekr.20190812072049.78">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.core.shellInfoDialog.py')
@@ -35677,6 +35684,7 @@ from . import PYSIDE2
 #
 # Licensed under the terms of the MIT License
 # (see LICENSE.txt for details)
+
 @others
 if PYQT5:
     from PyQt5.QtPrintSupport import *
@@ -35694,7 +35702,8 @@ else:
     raise PythonQtError('No Qt bindings could be found')
 @language python
 @tabwidth -4
-@nopyflakes</t>
+@nopyflakes
+</t>
 <t tx="ekr.20190812072050.349">"""
 Provides QtPrintSupport classes and functions.
 """
@@ -37059,7 +37068,7 @@ def is_connected(self):
     self._error = None
 </t>
 <t tx="ekr.20190812072050.40">def listDirs(self, path):
-    raise NotImplemented() # Should rerurn None if it does not exist
+    raise NotImplementedError() # Should rerurn None if it does not exist
 </t>
 <t tx="ekr.20190812072050.400">@property
 def is_waiting(self):
@@ -37226,25 +37235,25 @@ def name():
 ## Methods to overload
 </t>
 <t tx="ekr.20190812072050.409">def _bind(self, hostname, port, max_tries):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.41">def listFiles(self, path):
-    raise NotImplemented() # Should rerurn None if it does not exist
+    raise NotImplementedError() # Should rerurn None if it does not exist
 </t>
 <t tx="ekr.20190812072050.410">def _connect(self, hostname, port, timeout):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.411">def _flush(self, timeout):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.412">def _notify_other_end_of_closing(self):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.413">def _send_package(self, package):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.414">def _inject_package(self, package):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.415">def _set_status(self, status):
     """ Used to change the status. Subclasses can reimplement this
@@ -37310,7 +37319,7 @@ from yoton.connection import STATUS_CLOSED, STATUS_WAITING, STATUS_HOSTING
 from yoton.connection import STATUS_CONNECTED, STATUS_CLOSING
 </t>
 <t tx="ekr.20190812072050.42">def modified(self, path):
-    raise NotImplemented() # Should rerurn None if it does not exist
+    raise NotImplementedError() # Should rerurn None if it does not exist
 </t>
 <t tx="ekr.20190812072050.420">class ItcConnection(Connection):
     """ ItcConnection(context, hostname, port, name='')
@@ -37601,7 +37610,7 @@ SOCKET_BUFFERS_SIZE = 10*1024
             raise RuntimeError('Sending the packages timed out.')
 </t>
 <t tx="ekr.20190812072050.43">def fileSize(self, path):
-    raise NotImplemented() # Should rerurn None if it does not exist
+    raise NotImplementedError() # Should rerurn None if it does not exist
 </t>
 <t tx="ekr.20190812072050.430">def _send_package(self, package):
     """ Put package on the queue, where the sending thread will
@@ -37807,7 +37816,7 @@ SOCKET_BUFFERS_SIZE = 10*1024
         return False, STOP_HANDSHAKE_FAILED
 </t>
 <t tx="ekr.20190812072050.44">def read(self, path):
-    raise NotImplemented() # Should rerurn None if it does not exist
+    raise NotImplementedError() # Should rerurn None if it does not exist
 </t>
 <t tx="ekr.20190812072050.440">def _send_during_handshaking(self, text, shutdown=False):
     return send_all(self._bsd_socket, text+'\r\n', shutdown)
@@ -37999,7 +38008,7 @@ SOCKET_BUFFERS_SIZE = 10*1024
             print(getErrorMsg())
 </t>
 <t tx="ekr.20190812072050.45">def write(self, path, bb):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.450">def _getPackage(self, socket_recv, HS, package_from_header):
     """ Get exactly one package from the socket. Blocking.
@@ -38252,7 +38261,7 @@ def connections(self):
         self._connections_lock.release()
 </t>
 <t tx="ekr.20190812072050.46">def rename(self, path):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.460">@property
 def connection_count(self):
@@ -38567,7 +38576,7 @@ def id(self):
                 channel._recv_package(package)
 </t>
 <t tx="ekr.20190812072050.47">def remove(self, path):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.470">def _recv_context_package(self, package):
     """ _recv_context_package(package)
@@ -38879,7 +38888,7 @@ PACKAGE_CLOSE       = Package(bytes(), SLOT_DUMMY, 0, 1, 0, 0, 0)
     return header, self._data
 </t>
 <t tx="ekr.20190812072050.48">def createDir(self, path):
-    raise NotImplemented()
+    raise NotImplementedError()
 </t>
 <t tx="ekr.20190812072050.480">def __str__(self):
     """ Representation of the package. Mainly for debugging. """
@@ -39562,10 +39571,12 @@ def running(self):
 </t>
 <t tx="ekr.20190812072050.526">@path pyzo/yoton/
 # -*- coding: utf-8 -*-
+
 @others
 @language python
 @tabwidth -4
-@nopyflakes</t>
+@nopyflakes
+</t>
 <t tx="ekr.20190812072050.527">try:
     import leo.core.leoGlobals as leo_g
     # leo_g.pr('pyzo.yoton.misc.py')

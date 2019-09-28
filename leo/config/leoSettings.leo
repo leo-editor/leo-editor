@@ -1955,6 +1955,9 @@
 <v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
 <v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
 </v>
+<v t="vitalije.20190928173155.1"><vh>history_tracer plugin</vh>
+<v t="vitalije.20190928173236.1"><vh>@int history-tracer-port=8087</vh></v>
+</v>
 <v t="ekr.20181018105515.1"><vh>leo_babel plugin</vh>
 <v t="ekr.20181018105529.1"><vh>@bool Leo-Babel-Node-Creation-Default = True</vh></v>
 </v>
@@ -12445,5 +12448,7 @@ paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
 <t tx="vitalije.20170811125150.1"></t>
+<t tx="vitalije.20190928173155.1"></t>
+<t tx="vitalije.20190928173236.1"></t>
 </tnodes>
 </leo_file>
