@@ -3027,6 +3027,9 @@ class AtFile:
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
+            for k in d:
+                if os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                    return False
             aSet = d.get(fn, set())
             return p.h not in aSet
         return True
