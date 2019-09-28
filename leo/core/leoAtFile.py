@@ -1213,7 +1213,7 @@ class AtFile:
             return False
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
-        pathChanged = oldPath and oldPath != newPath
+        pathChanged = oldPath and not os.path.samefile(oldPath, newPath)
         # 2010/01/27: suppress this message during save-as and save-to commands.
         if pathChanged and not c.ignoreChangedPaths:
             ok = at.promptForDangerousWrite(
