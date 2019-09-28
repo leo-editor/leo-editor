@@ -2028,7 +2028,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.moveToHelper(event, i, extend=extend)
             elif spot == 'end-line':
                 # Bug fix: 2011/11/13: Significant in external tests.
-                if g.match(s, j - 1, '\n'): j -= 1
+                if g.match(s, j - 1, '\n') and i != j: j -= 1
                 self.moveToHelper(event, j, extend=extend)
             elif spot == 'finish-line':
                 if not line.isspace():

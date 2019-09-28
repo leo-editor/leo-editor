@@ -7841,6 +7841,81 @@ line 1
         line b
 line c
 last line
+#@+node:btheado.20190926223006.1: *5* @test end-of-line (internal blank line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926223006.2: *6* work
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926223006.3: *6* before sel=2.0,2.0
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926223006.4: *6* after sel=2.0,2.0
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926182937.1: *5* @test end-of-line (blank last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926182937.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926182937.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926182937.4: *6* after sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926224744.1: *5* @test end-of-line (single char last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926224744.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
+#@+node:btheado.20190926224744.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
+#@+node:btheado.20190926224744.4: *6* after sel=7.1,7.1
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
 #@+node:ekr.20061101121602.194: *5* @test end-of-line-extend-selection
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.195: *6* work
@@ -7864,6 +7939,29 @@ line 1
         line b
 line c
 last line
+#@+node:btheado.20190927201634.1: *5* @test end-of-line-extend-selection (blank last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190927201634.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190927201634.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190927201634.4: *6* after sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
 #@+node:ekr.20061101121602.198: *5* @test exchange-point-mark
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.199: *6* work
