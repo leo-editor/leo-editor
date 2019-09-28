@@ -3029,6 +3029,7 @@ class AtFile:
             d = p.v.at_read
             for k in d:
                 if os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                    d[fn] = d[k]
                     return False
             aSet = d.get(fn, set())
             return p.h not in aSet
