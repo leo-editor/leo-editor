@@ -918,7 +918,7 @@ class PythonShell(BaseShell):
     def __init__(self, parent, info):
         BaseShell.__init__(self, parent)
 
-        leo_g.trace('\n(PythonShell)', leo_g.callers())
+        ### leo_g.trace('\n(PythonShell)', leo_g.callers())
 
         # Get standard info if not given.
         if info is None and pyzo.config.shellConfigs2:

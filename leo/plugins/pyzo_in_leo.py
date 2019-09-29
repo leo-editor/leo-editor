@@ -258,11 +258,12 @@ def pyzo_start():
 
     # Set to be aware of the systems native colors, fonts, etc.
     QtWidgets.QApplication.setDesktopSettingsAware(True)
-    
-    # EKR:change.
-    # Instantiate the application.
+
+    # EKR-change: the only remaining code from my_app_ctor.
+    sys.argv = sys.argv[:1]
+        # Instantiate the application.
         # QtWidgets.qApp = MyApp(sys.argv)
-    my_app_ctor(sys.argv)
+        # my_app_ctor(sys.argv)
 
     # EKR:change.
         # # Choose language, get locale
@@ -277,33 +278,6 @@ def pyzo_start():
         # QtWidgets.qApp.exec_()
 
     # print('END pyzo_start\n')
-#@+node:ekr.20190816131934.1: *3* 1: my_app_ctor
-def my_app_ctor(argv):
-    """
-    Simulate MyApp.__init__().
-    
-    This code, included commented-out code, is based on pyzo.
-    Copyright (C) 2013-2019 by Almar Klein.
-    """
-
-    # EKR:change.
-    sys.argv = sys.argv[:1]
-        # Avoid problems when multiple copies of Leo are open.
-    
-    # The MyApp class only defines this:
-    
-    # def event(self, event):
-        # if isinstance(event, QtGui.QFileOpenEvent):
-            # fname = str(event.file())
-            # if fname and fname != 'pyzo':
-                # sys.argv[1:] = []
-                # sys.argv.append(fname)
-                # res = commandline.handle_cmd_args()
-                # if not commandline.is_our_server_running():
-                    # print(res)
-                    # sys.exit()
-        # return QtWidgets.QApplication.event(self, event)
-    
 #@+node:ekr.20190816131753.1: *3* 2: main_window_ctor
 def main_window_ctor():
     """
@@ -537,99 +511,15 @@ def main_window_populate():
     # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
     g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
     
-    # EKR:change
-    if 0: # This hack doesn't really work.
-        menu_build_menus()
-            # Create menu
-            # menu.buildMenus(self.menuBar())
-    if 0: # Try to do this later.
-        # Add the context menu to the editor
-        pyzo.editors.addContextMenu()
-        pyzo.shells.addContextMenu()
+    # EKR-change: init_pyzo_menu does this later.
+        # # Add the context menu to the editor
+        # pyzo.editors.addContextMenu()
+        # pyzo.shells.addContextMenu()
     
     # EKR:change
     load_all_pyzo_docks()
             
     # print('END main_window_populate\n')
-#@+node:ekr.20190816170034.1: *3* 2.1.1: menu_build_menus (no longer used)
-def menu_build_menus():
-    """
-    Build only the desired menus, in a top-level Pyzo menu.
-    
-    Based on menu.buildMenus function in pyzo/core/menu.py.
-    Copyright (C) 2013-2019 by Almar Klein.
-    """
-
-    # EKR:change.
-    main_window = g.app.gui.main_window
-    
-    # EKR:change-new imports.
-        # from pyzo import translate
-        # from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
-            # # Testing.
-        # from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
-            # # Permanent.
-
-    # EKR:change
-    menuBar = main_window.menuBar()
-        # menu.buildMenus(self.menuBar())
-    
-    # This hack allows pyzo to complete startup, without actually initing menus.
-    menuBar._menumap = {
-        'shell': g.Bunch(
-            _shellActions = [],
-            _shellDebugActions = [],
-        )
-    }
-   
-    ### Now in init_pyzo_menu. 
-    
-        # # EKR:change. Create a top-level Pyzo menu.
-        # pyzoMenu = menuBar.addMenu("Pyzo")
-        # menus = [
-            # # Testing only...
-            # FileMenu(menuBar, translate("menu", "File")),
-            # EditMenu(menuBar, translate("menu", "Edit")),
-            # SettingsMenu(menuBar, translate("menu", "Settings")),
-            # # Permanent...
-            # ViewMenu(menuBar, translate("menu", "View")),
-            # ShellMenu(menuBar, translate("menu", "Shell")),
-            # RunMenu(menuBar, translate("menu", "Run")),
-            # RunMenu(menuBar, translate("menu", "Tools")),
-            # HelpMenu(menuBar, translate("menu", "Help")),
-        # ]
-        # menuBar._menumap = {}
-        # menuBar._menus = menus
-        # for menu in menuBar._menus:
-            # pyzoMenu.addMenu(menu)
-                # # menuBar.addMenu(menu)
-            # menuName = menu.__class__.__name__.lower().split('menu')[0]
-            # menuBar._menumap[menuName] = menu
-    
-        # # Enable tooltips
-        # def onHover(action):
-            # # This ugly bit of code makes sure that the tooltip is refreshed
-            # # (thus raised above the submenu). This happens only once and after
-            # # ths submenu has become visible.
-            # if action.menu():
-                # if not hasattr(menuBar, '_lastAction'):
-                    # menuBar._lastAction = None
-                    # menuBar._haveRaisedTooltip = False
-                # if action is menuBar._lastAction:
-                    # if ((not menuBar._haveRaisedTooltip) and
-                                # action.menu().isVisible()):
-                        # QtWidgets.QToolTip.hideText()
-                        # menuBar._haveRaisedTooltip = True
-                # else:
-                    # menuBar._lastAction = action
-                    # menuBar._haveRaisedTooltip = False
-            # # Set tooltip
-            # tt = action.statusTip()
-            # if hasattr(action, '_shortcutsText'):
-                # tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
-            # QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
-    
-        # menuBar.hovered.connect(onHover)
 #@+node:ekr.20190814050859.1: *3* 2.1.2: load_all_pyzo_docks
 def load_all_pyzo_docks():
 
