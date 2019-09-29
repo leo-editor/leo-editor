@@ -87,6 +87,8 @@ class ShellStackWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         
         # if leo_g: leo_g.pr('\nShellStackWidget.__init__', leo_g.callers())
+        
+        self._debugActions = [] ### EKR: changed.
 
         # create toolbar
         self._toolbar = QtWidgets.QToolBar(self)

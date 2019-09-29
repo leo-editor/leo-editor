@@ -20,7 +20,7 @@ sys.path.insert(0, plugins_dir)
     # pylint doesn't know that we have just patched sys.path.
 import pyzo
 
-controllers = {}
+### controllers = {}
     # Keys are c.hash(), values are PyzoControllers.
 
 #@+others
@@ -63,8 +63,6 @@ def onCreate(tag, keys): # pyzo_in_leo.py
 #@+node:ekr.20190813161639.5: ** onStart2
 def onStart2(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
-    ### c = keys.get('c')
-    ### if c:
     pyzo_start()
 #@+node:ekr.20190929140133.1: ** Helper functions
 #@+node:ekr.20190816163728.1: *3* close_handler
@@ -375,7 +373,7 @@ def main_window_ctor():
     commandline.handle_cmd_args()
     
     # print('END main_window_ctor\n')
-#@+node:ekr.20190816132847.1: *3* 2.1: main_window_populate
+#@+node:ekr.20190816132847.1: *3* 2.1: main_window_populate & helpers
 def main_window_populate():
     """
     Simulate MainWindow._populate().
@@ -383,6 +381,9 @@ def main_window_populate():
     This code, included commented-out code, is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
+    # EKR:change.
+    main_window = g.app.gui.main_window
+
     # print('\nBEGIN main_window_populate\n')
 
     # EKR:change: Don't use self *anywhere* here.
@@ -437,7 +438,7 @@ def main_window_populate():
         # dock.setWindowTitle('Shells')
     
     # EKR:change: Make the dock a *global* dock.
-    g.app.gui.main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+    main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
         # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
@@ -459,22 +460,23 @@ def main_window_populate():
         # else:
             # pyzo.status = None
             # self.setStatusBar(None)
+            
+    if 1: ### Build menus in each Outline (singular) dock
 
-    from pyzo.core import menu
-    pyzo.keyMapper = menu.KeyMapper()
-    
-    # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
-    g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
-
-    # EKR:change
-    menu_build_menus()
-        # Create menu
-        # menu.buildMenus(self.menuBar())
-    
-    # Add the context menu to the editor
-    pyzo.editors.addContextMenu()
-    pyzo.shells.addContextMenu()
-    
+        from pyzo.core import menu
+        pyzo.keyMapper = menu.KeyMapper()
+        
+        # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
+        g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
+    if 1: ### To do: do this somewhere else??
+        # EKR:change
+        menu_build_menus()
+            # Create menu
+            # menu.buildMenus(self.menuBar())
+    if 1:
+        # Add the context menu to the editor
+        pyzo.editors.addContextMenu()
+        pyzo.shells.addContextMenu()
     # EKR:change
     load_all_pyzo_docks()
         # # Load tools
@@ -486,7 +488,7 @@ def main_window_populate():
                 # pyzo.toolManager.loadTool(toolId)
             
     # print('END main_window_populate\n')
-#@+node:ekr.20190816170034.1: *3* 2.1.1: menu_build_menus
+#@+node:ekr.20190816170034.1: *4* 2.1.1: menu_build_menus
 def menu_build_menus():
     """
     Build only the desired menus, in a top-level Pyzo menu.
@@ -497,7 +499,6 @@ def menu_build_menus():
 
     # EKR:change.
     self = g.app.gui.main_window
-    g.trace() ###
     
     # EKR:change-new imports.
     from pyzo import translate
@@ -510,7 +511,7 @@ def menu_build_menus():
     #### Maybe this should be c.frame.top.leo_menuBar.
     menuBar = self.menuBar()
         # menu.buildMenus(self.menuBar())
-    ### g.pdb()
+    g.trace('===== menuBar.objectName()', repr(menuBar.objectName()))
         
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = menuBar.addMenu("Pyzo")
@@ -558,7 +559,7 @@ def menu_build_menus():
         QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
 
     menuBar.hovered.connect(onHover)
-#@+node:ekr.20190814050859.1: *3* 2.1.2: load_all_pyzo_docks
+#@+node:ekr.20190814050859.1: *4* 2.1.2: load_all_pyzo_docks
 def load_all_pyzo_docks():
 
     tm = pyzo.toolManager
