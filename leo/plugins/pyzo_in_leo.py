@@ -21,6 +21,7 @@ sys.path.insert(0, plugins_dir)
 import pyzo
 
 pyzo_inited = False
+menus_inited = False
 
 #@+others
 #@+node:ekr.20190813161639.4: ** init
@@ -50,9 +51,7 @@ def init(): # pyzo_in_leo.py
     # This replaces MainWindow.closeEvent.
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
-    # Init pyzo only once!
-    print('\npyzo_in_leo.py: init\n')
-    ### g.registerHandler('start1', onStart)
+    ### print('\npyzo_in_leo.py: init\n')
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
 #@+node:ekr.20190928061911.1: ** onCreate
@@ -63,7 +62,8 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     if not pyzo_inited:
         pyzo_inited = True
         pyzo_start()
-    init_pyzo_outline(c)
+    init_pyzo_menu(c)
+    # init_pyzo_outline(c)
 #@+node:ekr.20190929140133.1: ** Helper functions
 #@+node:ekr.20190816163728.1: *3* close_handler
 def close_handler():
@@ -153,14 +153,17 @@ def make_global_dock(name, widget): # pyzo_in_leo.py
 def setShortcut(self, action):
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
-#@+node:ekr.20190929151031.1: ** init_pyzo_outline & helpers *** To do ***
-def init_pyzo_outline(c):
-    '''Init pyzo for the given commanders.'''
-    g.trace(c.shortFileName())
-    init_pyzo_menu(c)
-#@+node:ekr.20190929180053.1: *3* init_pyzo_menu
+#@+node:ekr.20190929180053.1: ** init_pyzo_menu
 def init_pyzo_menu(c):
     '''Add a Pyzo menu to c's menu bar.'''
+    global menus_inited
+
+    dw = c.frame.top
+    leo_menu_bar = dw.leo_menubar
+        # Create the Pyzo menu in *Leo's* per-commander menu bar.
+    menuBar = pyzo.main.menuBar()
+        # Use *pyzo's* main menuBar to get data.
+    ### g.trace('leo_menu_bar', id(leo_menu_bar))
 
     # EKR:change-new imports.
     from pyzo import translate
@@ -168,13 +171,9 @@ def init_pyzo_menu(c):
         # Testing.
     from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
         # Permanent.
-    
-    dw = c.frame.top
-    menuBar = dw.leo_menubar
-    g.trace('menuBar', id(menuBar))
 
     # EKR:change. Create a top-level Pyzo menu.
-    pyzoMenu = menuBar.addMenu("Pyzo")
+    pyzoMenu = leo_menu_bar.addMenu("Pyzo")
     menus = [
         # Testing only...
         FileMenu(menuBar, translate("menu", "File")),
@@ -219,6 +218,12 @@ def init_pyzo_menu(c):
         QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
 
     menuBar.hovered.connect(onHover)
+
+    if not menus_inited:
+        menus_inited = True
+        g.trace('\nADD CONTEXT MENUS')
+        pyzo.editors.addContextMenu()
+        pyzo.shells.addContextMenu()
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start():
     """
@@ -439,7 +444,7 @@ def main_window_ctor():
     commandline.handle_cmd_args()
     
     # print('END main_window_ctor\n')
-#@+node:ekr.20190816132847.1: *3* 2.1: main_window_populate & helpers
+#@+node:ekr.20190816132847.1: *3* 2.1: main_window_populate
 def main_window_populate():
     """
     Simulate MainWindow._populate().
@@ -487,7 +492,6 @@ def main_window_populate():
 
     # Create floater for shell
     # EKR:change: use a global *Leo* dock
-    ### self._shellDock = dock = g.app.gui.create_dock_widget(
     dock = g.app.gui.create_dock_widget(
         closeable=True,
         moveable=True,
@@ -527,33 +531,27 @@ def main_window_populate():
             # pyzo.status = None
             # self.setStatusBar(None)
             
-    if 1: ### Build menus in each Outline (singular) dock
-        from pyzo.core import menu
-        pyzo.keyMapper = menu.KeyMapper()
-        
-        # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
-        g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
-    if 1:
-        # EKR:change
+    from pyzo.core import menu
+    pyzo.keyMapper = menu.KeyMapper()
+    
+    # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
+    g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
+    
+    # EKR:change
+    if 0: # This hack doesn't really work.
         menu_build_menus()
             # Create menu
             # menu.buildMenus(self.menuBar())
-    if 1:
+    if 0: # Try to do this later.
         # Add the context menu to the editor
         pyzo.editors.addContextMenu()
         pyzo.shells.addContextMenu()
+    
     # EKR:change
     load_all_pyzo_docks()
-        # # Load tools
-        # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
-            # pyzo.toolManager.loadTool('pyzosourcestructure')
-            # pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
-        # elif pyzo.config.state.loadedTools:
-            # for toolId in pyzo.config.state.loadedTools:
-                # pyzo.toolManager.loadTool(toolId)
             
     # print('END main_window_populate\n')
-#@+node:ekr.20190816170034.1: *4* 2.1.1: menu_build_menus
+#@+node:ekr.20190816170034.1: *3* 2.1.1: menu_build_menus (no longer used)
 def menu_build_menus():
     """
     Build only the desired menus, in a top-level Pyzo menu.
@@ -563,7 +561,6 @@ def menu_build_menus():
     """
 
     # EKR:change.
-    ### self = g.app.gui.main_window
     main_window = g.app.gui.main_window
     
     # EKR:change-new imports.
@@ -575,9 +572,7 @@ def menu_build_menus():
 
     # EKR:change
     menuBar = main_window.menuBar()
-            # # menu.buildMenus(self.menuBar())
-        # g.trace('menuBar', id(menuBar))
-            # ### Menu bars are create by the commanders ###
+        # menu.buildMenus(self.menuBar())
     
     # This hack allows pyzo to complete startup, without actually initing menus.
     menuBar._menumap = {
@@ -635,7 +630,7 @@ def menu_build_menus():
             # QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
     
         # menuBar.hovered.connect(onHover)
-#@+node:ekr.20190814050859.1: *4* 2.1.2: load_all_pyzo_docks
+#@+node:ekr.20190814050859.1: *3* 2.1.2: load_all_pyzo_docks
 def load_all_pyzo_docks():
 
     tm = pyzo.toolManager
@@ -651,6 +646,15 @@ def load_all_pyzo_docks():
     assert pyzo.main == g.app.gui.main_window
     for tool_id in table:
         tm.loadTool(tool_id)
+        
+    ### Old code
+        # # Load tools
+        # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
+            # pyzo.toolManager.loadTool('pyzosourcestructure')
+            # pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
+        # elif pyzo.config.state.loadedTools:
+            # for toolId in pyzo.config.state.loadedTools:
+                # pyzo.toolManager.loadTool(toolId)
 #@-others
 #@@language python
 #@@tabwidth -4
