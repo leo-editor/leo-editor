@@ -462,7 +462,6 @@ def main_window_populate():
             # self.setStatusBar(None)
             
     if 1: ### Build menus in each Outline (singular) dock
-
         from pyzo.core import menu
         pyzo.keyMapper = menu.KeyMapper()
         
@@ -498,7 +497,8 @@ def menu_build_menus():
     """
 
     # EKR:change.
-    self = g.app.gui.main_window
+    ### self = g.app.gui.main_window
+    main_window = g.app.gui.main_window
     
     # EKR:change-new imports.
     from pyzo import translate
@@ -506,13 +506,13 @@ def menu_build_menus():
         # Testing.
     from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
         # Permanent.
-    
+
     # EKR:change
     #### Maybe this should be c.frame.top.leo_menuBar.
-    menuBar = self.menuBar()
+    menuBar = main_window.menuBar()
         # menu.buildMenus(self.menuBar())
     g.trace('===== menuBar.objectName()', repr(menuBar.objectName()))
-        
+    
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = menuBar.addMenu("Pyzo")
     menus = [
