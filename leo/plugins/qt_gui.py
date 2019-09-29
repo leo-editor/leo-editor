@@ -138,9 +138,9 @@ class LeoQtGui(leoGui.LeoGui):
         if g.app.use_global_docks:
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_outlines_dock()
-        ###
-        ### else:
-        ###     self.main_window = ???
+            g.trace('(QtGui): g.app.gui.main_window:', g.app.gui.main_window)
+        else:
+            pass # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
             # qtFrame.finishCreate does all the other work.
         
