@@ -1173,6 +1173,7 @@ class LeoQtGui(leoGui.LeoGui):
     def make_main_window(self):
         '''Make the *singleton* QMainWindow.'''
         window = QtWidgets.QMainWindow()
+        g.trace(id(window.menuBar()))
         window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() causes flash.
             # window.show()

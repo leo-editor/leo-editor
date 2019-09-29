@@ -20,8 +20,7 @@ sys.path.insert(0, plugins_dir)
     # pylint doesn't know that we have just patched sys.path.
 import pyzo
 
-### controllers = {}
-    # Keys are c.hash(), values are PyzoControllers.
+pyzo_inited = False
 
 #@+others
 #@+node:ekr.20190813161639.4: ** init
@@ -53,17 +52,18 @@ def init(): # pyzo_in_leo.py
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     # Init pyzo only once!
     print('\npyzo_in_leo.py: init\n')
-    g.registerHandler('start2', onStart2)
+    ### g.registerHandler('start1', onStart)
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
-#@+node:ekr.20190928061911.1: ** onCreate (do do)
+#@+node:ekr.20190928061911.1: ** onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
+    global pyzo_inited
     c = keys.get('c')
     g.trace(tag, c and c.shortFileName())
-#@+node:ekr.20190813161639.5: ** onStart2
-def onStart2(tag, keys): # pyzo_in_leo.py
-    '''Create pyzo docks in Leo's own main window'''
-    pyzo_start()
+    if not pyzo_inited:
+        pyzo_inited = True
+        pyzo_start()
+    init_pyzo_outline(c)
 #@+node:ekr.20190929140133.1: ** Helper functions
 #@+node:ekr.20190816163728.1: *3* close_handler
 def close_handler():
@@ -153,6 +153,72 @@ def make_global_dock(name, widget): # pyzo_in_leo.py
 def setShortcut(self, action):
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
+#@+node:ekr.20190929151031.1: ** init_pyzo_outline & helpers *** To do ***
+def init_pyzo_outline(c):
+    '''Init pyzo for the given commanders.'''
+    g.trace(c.shortFileName())
+    init_pyzo_menu(c)
+#@+node:ekr.20190929180053.1: *3* init_pyzo_menu
+def init_pyzo_menu(c):
+    '''Add a Pyzo menu to c's menu bar.'''
+
+    # EKR:change-new imports.
+    from pyzo import translate
+    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
+        # Testing.
+    from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
+        # Permanent.
+    
+    dw = c.frame.top
+    menuBar = dw.leo_menubar
+    g.trace('menuBar', id(menuBar))
+
+    # EKR:change. Create a top-level Pyzo menu.
+    pyzoMenu = menuBar.addMenu("Pyzo")
+    menus = [
+        # Testing only...
+        FileMenu(menuBar, translate("menu", "File")),
+        EditMenu(menuBar, translate("menu", "Edit")),
+        SettingsMenu(menuBar, translate("menu", "Settings")),
+        # Permanent...
+        ViewMenu(menuBar, translate("menu", "View")),
+        ShellMenu(menuBar, translate("menu", "Shell")),
+        RunMenu(menuBar, translate("menu", "Run")),
+        RunMenu(menuBar, translate("menu", "Tools")),
+        HelpMenu(menuBar, translate("menu", "Help")),
+    ]
+    menuBar._menumap = {}
+    menuBar._menus = menus
+    for menu in menuBar._menus:
+        pyzoMenu.addMenu(menu)
+            # menuBar.addMenu(menu)
+        menuName = menu.__class__.__name__.lower().split('menu')[0]
+        menuBar._menumap[menuName] = menu
+
+    # Enable tooltips
+    def onHover(action):
+        # This ugly bit of code makes sure that the tooltip is refreshed
+        # (thus raised above the submenu). This happens only once and after
+        # ths submenu has become visible.
+        if action.menu():
+            if not hasattr(menuBar, '_lastAction'):
+                menuBar._lastAction = None
+                menuBar._haveRaisedTooltip = False
+            if action is menuBar._lastAction:
+                if ((not menuBar._haveRaisedTooltip) and
+                            action.menu().isVisible()):
+                    QtWidgets.QToolTip.hideText()
+                    menuBar._haveRaisedTooltip = True
+            else:
+                menuBar._lastAction = action
+                menuBar._haveRaisedTooltip = False
+        # Set tooltip
+        tt = action.statusTip()
+        if hasattr(action, '_shortcutsText'):
+            tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
+        QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
+
+    menuBar.hovered.connect(onHover)
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
 def pyzo_start():
     """
@@ -467,14 +533,13 @@ def main_window_populate():
         
         # EKR:change: Monkey-patch pyzo.keyMapper.setShortcut.
         g.funcToMethod(setShortcut, pyzo.keyMapper.__class__)
-    if 1: ### To do: do this somewhere else??
+    if 1:
         # EKR:change
         menu_build_menus()
             # Create menu
             # menu.buildMenus(self.menuBar())
     if 1:
         # Add the context menu to the editor
-        # g.trace('pyzo.shells', pyzo.shells)
         pyzo.editors.addContextMenu()
         pyzo.shells.addContextMenu()
     # EKR:change
@@ -502,73 +567,74 @@ def menu_build_menus():
     main_window = g.app.gui.main_window
     
     # EKR:change-new imports.
-    from pyzo import translate
-    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
-        # Testing.
-    from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
-        # Permanent.
+        # from pyzo import translate
+        # from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
+            # # Testing.
+        # from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
+            # # Permanent.
 
     # EKR:change
-    #### Maybe this should be c.frame.top.leo_menuBar.
     menuBar = main_window.menuBar()
-        # menu.buildMenus(self.menuBar())
-    g.trace('===== menuBar.objectName()', repr(menuBar.objectName()))
+            # # menu.buildMenus(self.menuBar())
+        # g.trace('menuBar', id(menuBar))
+            # ### Menu bars are create by the commanders ###
     
-    if 1: ### experimental.
-        menuBar._menumap = {
-            'shell': g.Bunch(
-                _shellActions = [],
-                _shellDebugActions = [],
-            )
-        }
-        return ###
+    # This hack allows pyzo to complete startup, without actually initing menus.
+    menuBar._menumap = {
+        'shell': g.Bunch(
+            _shellActions = [],
+            _shellDebugActions = [],
+        )
+    }
+   
+    ### Now in init_pyzo_menu. 
     
-    # EKR:change. Create a top-level Pyzo menu.
-    pyzoMenu = menuBar.addMenu("Pyzo")
-    menus = [
-        # Testing only...
-        FileMenu(menuBar, translate("menu", "File")),
-        EditMenu(menuBar, translate("menu", "Edit")),
-        SettingsMenu(menuBar, translate("menu", "Settings")),
-        # Permanent...
-        ViewMenu(menuBar, translate("menu", "View")),
-        ShellMenu(menuBar, translate("menu", "Shell")),
-        RunMenu(menuBar, translate("menu", "Run")),
-        RunMenu(menuBar, translate("menu", "Tools")),
-        HelpMenu(menuBar, translate("menu", "Help")),
-    ]
-    menuBar._menumap = {}
-    menuBar._menus = menus
-    for menu in menuBar._menus:
-        pyzoMenu.addMenu(menu)
-            # menuBar.addMenu(menu)
-        menuName = menu.__class__.__name__.lower().split('menu')[0]
-        menuBar._menumap[menuName] = menu
-
-    # Enable tooltips
-    def onHover(action):
-        # This ugly bit of code makes sure that the tooltip is refreshed
-        # (thus raised above the submenu). This happens only once and after
-        # ths submenu has become visible.
-        if action.menu():
-            if not hasattr(menuBar, '_lastAction'):
-                menuBar._lastAction = None
-                menuBar._haveRaisedTooltip = False
-            if action is menuBar._lastAction:
-                if ((not menuBar._haveRaisedTooltip) and
-                            action.menu().isVisible()):
-                    QtWidgets.QToolTip.hideText()
-                    menuBar._haveRaisedTooltip = True
-            else:
-                menuBar._lastAction = action
-                menuBar._haveRaisedTooltip = False
-        # Set tooltip
-        tt = action.statusTip()
-        if hasattr(action, '_shortcutsText'):
-            tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
-        QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
-
-    menuBar.hovered.connect(onHover)
+        # # EKR:change. Create a top-level Pyzo menu.
+        # pyzoMenu = menuBar.addMenu("Pyzo")
+        # menus = [
+            # # Testing only...
+            # FileMenu(menuBar, translate("menu", "File")),
+            # EditMenu(menuBar, translate("menu", "Edit")),
+            # SettingsMenu(menuBar, translate("menu", "Settings")),
+            # # Permanent...
+            # ViewMenu(menuBar, translate("menu", "View")),
+            # ShellMenu(menuBar, translate("menu", "Shell")),
+            # RunMenu(menuBar, translate("menu", "Run")),
+            # RunMenu(menuBar, translate("menu", "Tools")),
+            # HelpMenu(menuBar, translate("menu", "Help")),
+        # ]
+        # menuBar._menumap = {}
+        # menuBar._menus = menus
+        # for menu in menuBar._menus:
+            # pyzoMenu.addMenu(menu)
+                # # menuBar.addMenu(menu)
+            # menuName = menu.__class__.__name__.lower().split('menu')[0]
+            # menuBar._menumap[menuName] = menu
+    
+        # # Enable tooltips
+        # def onHover(action):
+            # # This ugly bit of code makes sure that the tooltip is refreshed
+            # # (thus raised above the submenu). This happens only once and after
+            # # ths submenu has become visible.
+            # if action.menu():
+                # if not hasattr(menuBar, '_lastAction'):
+                    # menuBar._lastAction = None
+                    # menuBar._haveRaisedTooltip = False
+                # if action is menuBar._lastAction:
+                    # if ((not menuBar._haveRaisedTooltip) and
+                                # action.menu().isVisible()):
+                        # QtWidgets.QToolTip.hideText()
+                        # menuBar._haveRaisedTooltip = True
+                # else:
+                    # menuBar._lastAction = action
+                    # menuBar._haveRaisedTooltip = False
+            # # Set tooltip
+            # tt = action.statusTip()
+            # if hasattr(action, '_shortcutsText'):
+                # tt = tt + ' ({})'.format(action._shortcutsText) # Add shortcuts text in it
+            # QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), tt)
+    
+        # menuBar.hovered.connect(onHover)
 #@+node:ekr.20190814050859.1: *4* 2.1.2: load_all_pyzo_docks
 def load_all_pyzo_docks():
 
