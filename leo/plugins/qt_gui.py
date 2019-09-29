@@ -137,8 +137,9 @@ class LeoQtGui(leoGui.LeoGui):
             self.splashScreen = self.createSplashScreen()
         if g.app.use_global_docks:
             self.main_window = self.make_main_window()
-            self.outlines_dock = self.make_outlines_dock()
-            g.trace('(QtGui): g.app.gui.main_window:', g.app.gui.main_window)
+            self.outlines_dock = self.make_global_outlines_dock()
+            # Careful: g.app.gui does not exist yet.
+            g.trace('(QtGui): g.app.gui.main_window:', self.main_window)
         else:
             pass # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -793,10 +794,11 @@ class LeoQtGui(leoGui.LeoGui):
             # g.app.use_global_docks:
                 # dock.show() # Essential!
         return dock
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_outlines_dock (new)
-    def make_outlines_dock(self):
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock (new)
+    def make_global_outlines_dock(self):
         """
-        Create the top-level Outlines dock.
+        Create the top-level Outlines (plural) dock,
+        containing the 
         The dock's widget will be set later.
         """
         main_window = self.main_window
@@ -1169,7 +1171,7 @@ class LeoQtGui(leoGui.LeoGui):
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
     def make_main_window(self):
-        '''Make the  QMainWindow, to be embedded in the Outlines dock.'''
+        '''Make the *singleton* QMainWindow.'''
         window = QtWidgets.QMainWindow()
         window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() causes flash.

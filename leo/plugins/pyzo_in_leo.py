@@ -118,10 +118,9 @@ def init(): # pyzo_in_leo.py
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     # Init pyzo only once!
-    g.trace('pyzo_in_leo.init', g.app.gui.main_window)
+    print('\npyzo_in_leo.py\n')
     g.registerHandler('start2', onStart2)
     g.registerHandler('after-create-leo-frame', onCreate) 
-    ### g.registerHandler('after-create-leo-frame', onCreate)
     print('\nRunning pyzo_in_leo\n')
     return True
 #@+node:ekr.20190928061911.1: ** onCreate (do do)
