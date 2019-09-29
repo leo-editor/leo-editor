@@ -474,6 +474,7 @@ def main_window_populate():
             # menu.buildMenus(self.menuBar())
     if 1:
         # Add the context menu to the editor
+        # g.trace('pyzo.shells', pyzo.shells)
         pyzo.editors.addContextMenu()
         pyzo.shells.addContextMenu()
     # EKR:change
@@ -512,6 +513,15 @@ def menu_build_menus():
     menuBar = main_window.menuBar()
         # menu.buildMenus(self.menuBar())
     g.trace('===== menuBar.objectName()', repr(menuBar.objectName()))
+    
+    if 1: ### experimental.
+        menuBar._menumap = {
+            'shell': g.Bunch(
+                _shellActions = [],
+                _shellDebugActions = [],
+            )
+        }
+        return ###
     
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = menuBar.addMenu("Pyzo")
