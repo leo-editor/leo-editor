@@ -68,6 +68,7 @@ def leo_excepthook(type, value, tb):
     # Note: Leo will still exit!
     g.trace(f"Uncaught Python exception: {value}\n")
     g.es_exception()
+    g.trace("Callers", g.callers(6))
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
 def run(fileName=None, pymacs=None, *args, **keywords):
     """Initialize and run Leo"""
