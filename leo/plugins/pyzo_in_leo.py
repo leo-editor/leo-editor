@@ -118,25 +118,36 @@ def init(): # pyzo_in_leo.py
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     # Init pyzo only once!
-    g.registerHandler('start2', onCreate)
+    g.registerHandler('start2', onStart2)
+    g.registerHandler('after-create-leo-frame', onCreate) 
+    ### g.registerHandler('after-create-leo-frame', onCreate)
     print('\nRunning pyzo_in_leo\n')
     return True
-#@+node:ekr.20190813161639.5: ** onCreate
+#@+node:ekr.20190928061911.1: ** onCreate (do do)
 def onCreate(tag, keys): # pyzo_in_leo.py
+    g.trace(tag, keys)
+#@+node:ekr.20190813161639.5: ** onStart2
+def onStart2(tag, keys): # pyzo_in_leo.py
     '''Create pyzo docks in Leo's own main window'''
-    pyzo_start()
+    c = keys.get('c')
+    if c:
+        pyzo_start(c)
 #@+node:ekr.20190816193033.1: ** patched: setShortcut
 def setShortcut(self, action):
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
-def pyzo_start():
+def pyzo_start(c):
     """
     A copy of pyzo.start, adapted for Leo.
+    
+    Called at start2 time.  c is not available.
     
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
+    
+    g.trace(c.shortFileName())
     
     # Do some imports
     from pyzo.core import pyzoLogging  # to start logging asap
@@ -447,7 +458,7 @@ def main_window_populate():
     # print('END main_window_populate\n')
 #@+node:ekr.20190813161921.1: *3* make_dock
 def make_dock(name, widget): # pyzo_in_leo.py
-    """Create a dock with the given name and widget the global main window."""
+    """Create a dock with the given name and widget in the global main window."""
     # Called from main_window_populate.
     main_window = g.app.gui.main_window
     dock = g.app.gui.create_dock_widget(
@@ -471,6 +482,7 @@ def menu_build_menus():
 
     # EKR:change.
     self = g.app.gui.main_window
+    g.trace() ###
     
     # EKR:change-new imports.
     from pyzo import translate
@@ -480,8 +492,10 @@ def menu_build_menus():
         # Permanent.
     
     # EKR:change
+    #### Maybe this should be c.frame.top.leo_menuBar.
     menuBar = self.menuBar()
         # menu.buildMenus(self.menuBar())
+    ### g.pdb()
         
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = menuBar.addMenu("Pyzo")

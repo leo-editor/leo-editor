@@ -194,6 +194,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         '''
+        g.trace('(dw)', self.leo_c.shortFileName(), g.callers()) ###
         self.setMainWindowOptions()
         if g.app.dock:
             # Widgets.
