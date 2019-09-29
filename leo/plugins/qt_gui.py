@@ -139,7 +139,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_global_outlines_dock()
             # Careful: g.app.gui does not exist yet.
-            g.trace('(QtGui): g.app.gui.main_window:', self.main_window)
+            g.trace(f"(QtGui): g.app.gui.main_window: {self.main_window.objectName()}\n")
         else:
             pass # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
