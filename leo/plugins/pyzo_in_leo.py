@@ -155,7 +155,12 @@ def setShortcut(self, action):
     pass
 #@+node:ekr.20190929180053.1: ** init_pyzo_menu
 def init_pyzo_menu(c):
-    '''Add a Pyzo menu to c's menu bar.'''
+    """
+    Add a Pyzo menu to c's menu bar.
+    
+    This code is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
     global menus_inited
 
     dw = c.frame.top
@@ -163,7 +168,6 @@ def init_pyzo_menu(c):
         # Create the Pyzo menu in *Leo's* per-commander menu bar.
     menuBar = pyzo.main.menuBar()
         # Use *pyzo's* main menuBar to get data.
-    ### g.trace('leo_menu_bar', id(leo_menu_bar))
 
     # EKR:change-new imports.
     from pyzo import translate
@@ -221,7 +225,7 @@ def init_pyzo_menu(c):
 
     if not menus_inited:
         menus_inited = True
-        g.trace('\nADD CONTEXT MENUS')
+        ### g.trace('\nADD CONTEXT MENUS')
         pyzo.editors.addContextMenu()
         pyzo.shells.addContextMenu()
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
@@ -234,8 +238,6 @@ def pyzo_start():
     This code is based on pyzo.
     Copyright (C) 2013-2019 by Almar Klein.
     """
-    
-    g.trace('\n=====\n')
     
     # Do some imports
     from pyzo.core import pyzoLogging  # to start logging asap

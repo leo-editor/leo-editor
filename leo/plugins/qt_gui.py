@@ -139,7 +139,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_global_outlines_dock()
             # Careful: g.app.gui does not exist yet.
-            g.trace('(QtGui): id(main_window):', id(self.main_window))
+            ### g.trace('(QtGui): id(main_window):', id(self.main_window))
         else:
             pass # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -1173,7 +1173,7 @@ class LeoQtGui(leoGui.LeoGui):
     def make_main_window(self):
         '''Make the *singleton* QMainWindow.'''
         window = QtWidgets.QMainWindow()
-        g.trace(id(window.menuBar()))
+        ### g.trace(id(window.menuBar()))
         window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() causes flash.
             # window.show()
