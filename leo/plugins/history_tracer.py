@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:vitalije.20190928154420.1: * @file history_tracer.py
-#@+others
-#@+node:vitalije.20190928154420.2: ** About history_tracer plugin
+#@+<< docstring >>
+#@+node:vitalije.20190928154420.2: ** << docstring >>
 """This plugin cooperates with leo-ver-serv utilty.
 
    To install leo-ver-serv visit https://crates.io/crates/leo-ver-serv
@@ -28,7 +28,9 @@
    Author: vitalije(at)kviziracija.net
 """
 __version__ = "0.1"
-#@+node:vitalije.20190928154420.3: ** imports
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:vitalije.20190928154420.3: ** << imports >>
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore
 import datetime
@@ -36,6 +38,11 @@ import time
 from urllib.request import urlopen
 from urllib.error import URLError
 import threading
+#@-<< imports >>
+#@afterref
+ # history_tracer.py
+idle_checker = None
+#@+others
 #@+node:vitalije.20190928154420.4: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
