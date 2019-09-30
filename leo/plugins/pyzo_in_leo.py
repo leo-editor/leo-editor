@@ -20,10 +20,8 @@ sys.path.insert(0, plugins_dir)
     # pylint doesn't know that we have just patched sys.path.
 import pyzo
 
+# The singleton PyzoController instance.
 pyzo_controller = None
-
-pyzo_inited = False
-menus_inited = False
 
 #@+others
 #@+node:ekr.20190930051422.1: ** Top-level functions (pyzo_in_leo)
@@ -58,19 +56,14 @@ def init(): # pyzo_in_leo.py
     return True
 #@+node:ekr.20190928061911.1: *3* onCreate (pyzo_in_leo)
 def onCreate(tag, keys): # pyzo_in_leo.py
-    ### global pyzo_inited
     global pyzo_controller
     c = keys.get('c')
     g.trace(tag, c and c.shortFileName())
-    ### if not pyzo_inited:
     if not pyzo_controller:
-        ### pyzo_inited = True
         pyzo_controller = PyzoController()
-        ### pyzo_start()
         pyzo_controller.pyzo_start()
         main_window = g.app.gui.main_window
         main_window.setWindowTitle(c.frame.title)
-    ### init_pyzo_menu(c)
     pyzo_controller.init_pyzo_menu(c)
    
 #@+node:ekr.20190816163728.1: *3* close_handler (pyzo_in_leo)
@@ -149,7 +142,7 @@ def setShortcut(self, action):
 #@+node:ekr.20190930051034.1: ** class PyzoController
 class PyzoController:
     
-    inited = None
+    menus_inited = False
     
     #@+others
     #@+node:ekr.20190929180053.1: *3* pz.init_pyzo_menu
@@ -160,8 +153,6 @@ class PyzoController:
         This code is based on pyzo.
         Copyright (C) 2013-2019 by Almar Klein.
         """
-        global menus_inited
-
         dw = c.frame.top
         leo_menu_bar = dw.leo_menubar
             # Create the Pyzo menu in *Leo's* per-commander menu bar.
@@ -222,8 +213,8 @@ class PyzoController:
 
         menuBar.hovered.connect(onHover)
 
-        if not menus_inited:
-            menus_inited = True
+        if not self.menus_inited:
+            self.menus_inited = True
             pyzo.editors.addContextMenu()
             pyzo.shells.addContextMenu()
     #@+node:ekr.20190814050859.1: *3* pz.load_all_pyzo_docks
@@ -412,12 +403,10 @@ class PyzoController:
         This code, included commented-out code, is based on pyzo.
         Copyright (C) 2013-2019 by Almar Klein.
         """
-        # EKR:change.
+        # EKR:change: replaces self in most places.
         main_window = g.app.gui.main_window
 
         # print('\nBEGIN main_window_populate\n')
-
-        # EKR:change: Don't use self *anywhere* here.
         
         # EKR:change-new imports
         from pyzo.core.main import callLater
