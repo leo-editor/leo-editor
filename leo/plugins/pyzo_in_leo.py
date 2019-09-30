@@ -524,7 +524,13 @@ def main_window_populate():
     # print('END main_window_populate\n')
 #@+node:ekr.20190814050859.1: *4* load_all_pyzo_docks
 def load_all_pyzo_docks():
-
+    """
+    Load all pyzo docks into the singleton QMainWindow.
+    
+    This code, included commented-out code, is based on pyzo.
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
+    assert pyzo.main == g.app.gui.main_window
     tm = pyzo.toolManager
     table = (
         'PyzoFileBrowser',
@@ -535,7 +541,6 @@ def load_all_pyzo_docks():
         'PyzoWebBrowser',
         'PyzoWorkspace',
     )
-    assert pyzo.main == g.app.gui.main_window
     for tool_id in table:
         tm.loadTool(tool_id)
         
