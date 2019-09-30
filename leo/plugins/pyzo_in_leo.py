@@ -56,8 +56,13 @@ def init(): # pyzo_in_leo.py
     return True
 #@+node:ekr.20190928061911.1: *3* onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
+    """
+    Init another commander, and pyzo itself if this is the first commander.
+    """
     global pyzo_controller
     c = keys.get('c')
+    if not c:
+        return
     if not pyzo_controller:
         pyzo_controller = PyzoController()
         pyzo_controller.pyzo_start()
