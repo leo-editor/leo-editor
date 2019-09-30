@@ -6,7 +6,7 @@
 
    To install leo-ver-serv visit https://crates.io/crates/leo-ver-serv
    
-   In iddle time, whenever user has no activity in last 5 seconds,
+   In idle time, whenever user has no activity in last 5 seconds,
    this plugin will send the snapshot of Leo outline to the local
    leo-ver-serv server and it will record snapshot in sqlite3 database
    named after the Leo file by adding '.history' to file name. For example
