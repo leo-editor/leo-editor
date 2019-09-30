@@ -1331,11 +1331,15 @@ class LeoQtGui(leoGui.LeoGui):
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
     #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
+    already_sized = False
+
     def set_top_geometry(self, w, h, x, y):
         """Set the geometry of the main window."""
         if 'size' in g.app.debug:
-            g.trace('(qt_gui)', w, h, x, y)
-        self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
+            g.trace('(qt_gui) already_sized', self.already_sized, w, h, x, y)
+        if not self.already_sized:
+            self.already_sized = True
+            self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):

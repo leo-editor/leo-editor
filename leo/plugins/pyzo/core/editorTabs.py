@@ -1427,7 +1427,7 @@ class EditorTabs(QtWidgets.QWidget):
         # if leo_g: leo_g.printObj(pyzo.config.settings)
         
         if 1: ### Ignore the config setting.
-            leo_g.trace(leo_g.callers())
+            # leo_g.trace(leo_g.callers())
             self.newFile()
             return
         
