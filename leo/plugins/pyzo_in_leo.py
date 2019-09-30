@@ -24,7 +24,7 @@ pyzo_inited = False
 menus_inited = False
 
 #@+others
-#@+node:ekr.20190813161639.4: ** init
+#@+node:ekr.20190813161639.4: ** init (pyzo_in_leo)
 init_warning_given = False
 
 def init(): # pyzo_in_leo.py
@@ -54,7 +54,7 @@ def init(): # pyzo_in_leo.py
     ### print('\npyzo_in_leo.py: init\n')
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
-#@+node:ekr.20190928061911.1: ** onCreate
+#@+node:ekr.20190928061911.1: ** onCreate (pyzo_in_leo)
 def onCreate(tag, keys): # pyzo_in_leo.py
     global pyzo_inited
     c = keys.get('c')
