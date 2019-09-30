@@ -27,7 +27,7 @@
    
    Author: vitalije(at)kviziracija.net
 """
-__version__ = "0.1"
+
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vitalije.20190928154420.3: ** << imports >>
@@ -41,6 +41,7 @@ import threading
 #@-<< imports >>
 #@afterref
  # history_tracer.py
+__version__ = "0.1"
 idle_checker = None
 #@+others
 #@+node:vitalije.20190928154420.4: ** init
