@@ -196,7 +196,6 @@ class FastRead:
     #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
-        trace = 'size' in g.app.debug
         c = self.c   
         d = self.getGlobalData()
         windowSize = g.app.loadManager.options.get('windowSize')
@@ -231,7 +230,6 @@ class FastRead:
                 return
             assert frameFactory is not None
             mf = frameFactory.masterFrame
-        if trace: g.trace('sizing screen')
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:
