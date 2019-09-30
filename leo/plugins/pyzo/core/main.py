@@ -31,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None, locale=None):
         
-        # if leo_g: leo_g.pr('\nBEGIN MainWindow.__init__')
+        if leo_g: leo_g.pr('\nBEGIN MainWindow.__init__')
 
         QtWidgets.QMainWindow.__init__(self, parent)
         

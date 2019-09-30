@@ -305,8 +305,11 @@ def main_window_ctor():
     # EKR:change.
         # # Init window title and application icon
         # self.setMainTitle()
+    
     # EKR:change.
     main.loadAppIcons()
+    pyzo.iconRunning = pyzo.icon = g.app.gui.appIcon
+    
         # loadAppIcons()
     # EKR:change.
         # self.setWindowIcon(pyzo.icon)

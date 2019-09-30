@@ -172,12 +172,13 @@ class ShellStackWidget(QtWidgets.QWidget):
         by onCurrentChanged. Sets the mainwindow's icon if busy.
         """
         
-        # leo_g.pr('ShellStackWidget.onShellStateChange', repr(pyzo.main))
 
         # Keep shell button and its menu up-to-date
         self._shellButton.updateShellMenu(shell)
 
         if shell is self.getCurrentShell(): # can be None
+            ### if shell and shell._state:
+            ###    leo_g.pr('ShellStackWidget.onShellStateChange', shell and shell._state)
             # Update application icon
             if shell and shell._state in ['Busy']:
                 pyzo.main.setWindowIcon(pyzo.iconRunning)
