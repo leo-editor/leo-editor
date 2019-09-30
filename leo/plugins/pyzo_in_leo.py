@@ -25,7 +25,7 @@ pyzo_controller = None
 
 #@+others
 #@+node:ekr.20190930051422.1: ** Top-level functions (pyzo_in_leo)
-#@+node:ekr.20190813161639.4: *3* init (pyzo_in_leo)
+#@+node:ekr.20190813161639.4: *3* init
 init_warning_given = False
 
 def init(): # pyzo_in_leo.py
@@ -54,7 +54,7 @@ def init(): # pyzo_in_leo.py
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
-#@+node:ekr.20190928061911.1: *3* onCreate (pyzo_in_leo)
+#@+node:ekr.20190928061911.1: *3* onCreate
 def onCreate(tag, keys): # pyzo_in_leo.py
     global pyzo_controller
     c = keys.get('c')
@@ -64,9 +64,8 @@ def onCreate(tag, keys): # pyzo_in_leo.py
         main_window = g.app.gui.main_window
         main_window.setWindowTitle(c.frame.title)
     pyzo_controller.init_pyzo_menu(c)
-   
-#@+node:ekr.20190816163728.1: *3* close_handler (pyzo_in_leo)
-def close_handler():
+#@+node:ekr.20190816163728.1: *3* close_handler
+def close_handler(): # pyzo_in_leo.py
     """
     Shut down pyzo.
     
@@ -134,8 +133,8 @@ def close_handler():
         # if sys.version_info >= (3,3,0): # and not restarting:
             # if hasattr(os, '_exit'):
                 # os._exit(0)
-#@+node:ekr.20190816193033.1: *3* patched: setShortcut (pyzo_in_leo)
-def setShortcut(self, action):
+#@+node:ekr.20190816193033.1: *3* patched: setShortcut
+def setShortcut(self, action): # pyzo_in_leo.py
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
 #@+node:ekr.20190930051034.1: ** class PyzoController
