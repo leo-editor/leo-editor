@@ -58,7 +58,6 @@ def init(): # pyzo_in_leo.py
 def onCreate(tag, keys): # pyzo_in_leo.py
     global pyzo_controller
     c = keys.get('c')
-    g.trace(tag, c and c.shortFileName())
     if not pyzo_controller:
         pyzo_controller = PyzoController()
         pyzo_controller.pyzo_start()
