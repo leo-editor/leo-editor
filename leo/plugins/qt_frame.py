@@ -194,7 +194,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         '''
-        ### g.trace('(dw)', self.leo_c.shortFileName()) ###
         self.setMainWindowOptions()
         if g.app.dock:
             # Widgets.
@@ -491,7 +490,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
         dw.setMenuBar(w)
-        ### g.trace('\n(dw)', self.leo_c.shortFileName(), id(w))
         # Official ivars.
         self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
