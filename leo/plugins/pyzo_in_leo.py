@@ -62,6 +62,8 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     if not pyzo_inited:
         pyzo_inited = True
         pyzo_start()
+        main_window = g.app.gui.main_window
+        main_window.setWindowTitle(c.frame.title)
     init_pyzo_menu(c)
     # init_pyzo_outline(c)
 #@+node:ekr.20190929140133.1: ** Helper functions
