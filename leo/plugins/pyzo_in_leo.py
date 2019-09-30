@@ -280,7 +280,7 @@ def pyzo_start():
         # QtWidgets.qApp.exec_()
 
     # print('END pyzo_start\n')
-#@+node:ekr.20190816131753.1: *3* 2: main_window_ctor
+#@+node:ekr.20190816131753.1: *3* main_window_ctor & helpers
 def main_window_ctor():
     """
     Simulate MainWindow.__init__().
@@ -347,10 +347,10 @@ def main_window_ctor():
     # Init dockwidget settings
     self.setTabPosition(QtCore.Qt.AllDockWidgetAreas,QtWidgets.QTabWidget.South)
     self.setDockOptions(
-            QtWidgets.QMainWindow.AllowNestedDocks |
-            QtWidgets.QMainWindow.AllowTabbedDocks
-            #|  QtWidgets.QMainWindow.AnimatedDocks
-        )
+        QtWidgets.QMainWindow.AllowNestedDocks |
+        QtWidgets.QMainWindow.AllowTabbedDocks
+        #|  QtWidgets.QMainWindow.AnimatedDocks
+    )
 
     # Set window atrributes
     self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
@@ -375,6 +375,9 @@ def main_window_ctor():
     # Populate the window (imports more code)
     main_window_populate()
         # self._populate()
+        
+    # EKR:change: new code.
+    load_all_pyzo_docks()
 
     # EKR:change.
     # Revert to normal background, and enable updates
@@ -388,7 +391,7 @@ def main_window_ctor():
         # self.restoreState()
 
     # EKR:change.
-    # Present user with wizard if he/she is new.
+        # Present user with wizard if he/she is new.
         # if pyzo.config.state.newUser:
             # from pyzo.util.pyzowizard import PyzoWizard
             # w = PyzoWizard(self)
@@ -420,7 +423,7 @@ def main_window_ctor():
     commandline.handle_cmd_args()
     
     # print('END main_window_ctor\n')
-#@+node:ekr.20190816132847.1: *3* 2.1: main_window_populate
+#@+node:ekr.20190816132847.1: *4* main_window_populate
 def main_window_populate():
     """
     Simulate MainWindow._populate().
@@ -517,12 +520,9 @@ def main_window_populate():
         # # Add the context menu to the editor
         # pyzo.editors.addContextMenu()
         # pyzo.shells.addContextMenu()
-    
-    # EKR:change
-    load_all_pyzo_docks()
             
     # print('END main_window_populate\n')
-#@+node:ekr.20190814050859.1: *3* 2.1.2: load_all_pyzo_docks
+#@+node:ekr.20190814050859.1: *4* load_all_pyzo_docks
 def load_all_pyzo_docks():
 
     tm = pyzo.toolManager
