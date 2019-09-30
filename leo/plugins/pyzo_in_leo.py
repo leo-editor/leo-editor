@@ -51,7 +51,6 @@ def init(): # pyzo_in_leo.py
     # This replaces MainWindow.closeEvent.
     g.app.pyzo_close_handler = close_handler
         # LeoApp.finishQuit calls this late in Leo's shutdown logic.
-    ### print('\npyzo_in_leo.py: init\n')
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
 #@+node:ekr.20190928061911.1: ** onCreate (pyzo_in_leo)
@@ -113,9 +112,9 @@ def close_handler():
     for shell in pyzo.shells:
         shell._context.close()
 
-    # EKR:change-no-config
+    # EKR:change: This doesn't work.
     # Close tools
-    ### close_all_pyzo_tools()
+        # close_all_pyzo_tools()
         # for toolname in pyzo.toolManager.getLoadedTools():
             # tool = pyzo.toolManager.getTool(toolname)
             # tool.close()
@@ -227,7 +226,6 @@ def init_pyzo_menu(c):
 
     if not menus_inited:
         menus_inited = True
-        ### g.trace('\nADD CONTEXT MENUS')
         pyzo.editors.addContextMenu()
         pyzo.shells.addContextMenu()
 #@+node:ekr.20190816131343.1: ** pyzo_start & helpers
@@ -310,7 +308,9 @@ def main_window_ctor():
     
     # EKR:change.
     main.loadAppIcons()
-    pyzo.iconRunning = pyzo.icon = g.app.gui.appIcon
+    pyzo.icon = g.app.gui.appIcon
+    # Don't patch this now. It might be a good indicator.
+    # pyzo.iconRunning = g.app.gui.appIcon
     
         # loadAppIcons()
     # EKR:change.
@@ -549,7 +549,7 @@ def load_all_pyzo_docks():
     for tool_id in table:
         tm.loadTool(tool_id)
         
-    ### Old code
+    # EKR-change: old code.
         # # Load tools
         # if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
             # pyzo.toolManager.loadTool('pyzosourcestructure')

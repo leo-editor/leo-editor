@@ -88,8 +88,6 @@ class ShellStackWidget(QtWidgets.QWidget):
         
         # if leo_g: leo_g.pr('\nShellStackWidget.__init__', leo_g.callers())
         
-        self._debugActions = [] ### EKR: changed.
-
         # create toolbar
         self._toolbar = QtWidgets.QToolBar(self)
         self._toolbar.setMaximumHeight(26)
@@ -197,12 +195,10 @@ class ShellStackWidget(QtWidgets.QWidget):
             if shell and shell._debugState:
                 info = shell._debugState
                 self._debugmode = info['debugmode']
-                ### EKR:change: add guard.
-                if self._debugActions:
-                    for action in self._debugActions:
-                        action.setEnabled(self._debugmode==2)
-                    self._debugActions[-1].setEnabled(self._debugmode>0)  # Stop
-                    self._dbs.setTrace(shell._debugState)
+                for action in self._debugActions:
+                    action.setEnabled(self._debugmode==2)
+                self._debugActions[-1].setEnabled(self._debugmode>0)  # Stop
+                self._dbs.setTrace(shell._debugState)
             else:
                 for action in self._debugActions:
                     action.setEnabled(False)
