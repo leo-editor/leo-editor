@@ -3,6 +3,12 @@
 Defined ustr (Unicode string) class and the option property decorator.
 """
 
+try:
+    import leo.core.leoGlobals as leo_g
+    # leo_g.pr('pyzo.core.main.py (MainWindow)')
+except Exception:
+    leo_g = None
+
 import sys
 from .qt import QtGui, QtCore, QtWidgets  # noqa
 
@@ -78,6 +84,7 @@ def callLater(callback, *args):
     Post a callback to be called in the main thread.
 
     """
+    leo_g.trace(f"{callback.__name__:20}", args or '', leo_g.callers()) ###
     _callbackEventHandler.postEventWithCallback(callback, *args)
 
 # Create callback event handler instance and insert function in Pyzo namespace

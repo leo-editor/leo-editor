@@ -63,12 +63,23 @@ def onCreate(tag, keys): # pyzo_in_leo.py
     c = keys.get('c')
     if not c:
         return
+    g.trace('=====', c.shortFileName())
+    if 0:
+        import time
+        g.trace('SLEEP')
+        time.sleep(3.0)
+    ### return ###
     if not pyzo_controller:
         pyzo_controller = PyzoController()
         pyzo_controller.pyzo_start()
         main_window = g.app.gui.main_window
         main_window.setWindowTitle(c.frame.title)
+    if 0: # Redraws, gives exception:
+        # 'ShellStackWidget' object has no attribute '_debugActions'
+        g.app.gui.qtApp.processEvents()
+                
     pyzo_controller.init_pyzo_menu(c)
+    ### g.pdb() ### This keeps the windows in the right place!
 #@+node:ekr.20190816163728.1: *3* close_handler
 def close_handler(): # pyzo_in_leo.py
     """
@@ -156,6 +167,7 @@ class PyzoController:
         This code is based on pyzo.
         Copyright (C) 2013-2019 by Almar Klein.
         """
+        g.trace(c.shortFileName())
         dw = c.frame.top
         leo_menu_bar = dw.leo_menubar
             # Create the Pyzo menu in *Leo's* per-commander menu bar.
