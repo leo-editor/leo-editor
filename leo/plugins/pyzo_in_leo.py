@@ -156,7 +156,6 @@ class PyzoController:
         This code is based on pyzo.
         Copyright (C) 2013-2019 by Almar Klein.
         """
-        g.trace(c.shortFileName())
         dw = c.frame.top
         leo_menu_bar = dw.leo_menubar
             # Create the Pyzo menu in *Leo's* per-commander menu bar.
@@ -566,4 +565,5 @@ class PyzoController:
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify # Indentation of comments is important.
 #@-leo
