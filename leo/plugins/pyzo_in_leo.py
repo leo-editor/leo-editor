@@ -35,8 +35,8 @@ def init(): # pyzo_in_leo.py
         global init_warning_given
         if not init_warning_given:
             init_warning_given = True
-            print(f"\n{__name__} not loaded")
-            print(f"{__name__} {message}\n")
+            print(f"\npyzo_in_leo not loaded: {message}\n")
+            g.es('pyzo_in_leo', message, color='red')
         return False
         
     if g.app.gui.guiName() != "qt":
