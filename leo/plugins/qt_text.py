@@ -8,6 +8,47 @@ import time
 assert time
 from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 #@+others
+#@+node:ekr.20191001084541.1: **  zoom commands
+#@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
+
+    @font-size-body must be present in the stylesheet
+    """
+    zoom_helper(event, delta=1)
+
+#@+node:ekr.20191001084646.1: *3* @g.command("zoom-out")
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
+
+    @font-size-body must be present in the stylesheet
+    """
+    # zoom_in(event=event, delta=-1)
+    zoom_helper(event=event, delta=-1)
+    
+#@+node:ekr.20191001084612.1: *3* zoom_helper
+def zoom_helper(event, delta):
+    """
+    Common helper for zoom commands.
+    """
+    c = event.get('c')
+    if not  c:
+        return
+    c._style_deltas['font-size-body'] += delta
+    ssm = c.styleSheetManager
+    # for performance, don't c.styleSheetManager.reload_style_sheets()
+    sheet = ssm.expand_css_constants(c.active_stylesheet)
+    # and apply to body widget directly
+    c.frame.body.wrapper.widget.setStyleSheet(sheet)
+    #
+    # #490: pay attention to language-specific settings.
+    colorizer = getattr(c.frame.body, 'colorizer', None)
+    if not colorizer:
+        return
+    if 0: # test the old way first.
+        colorizer.configure_fonts()
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
@@ -1580,29 +1621,6 @@ class QTextEditWrapper(QTextMixin):
         col = i - bl.position()
         return i, row, col
     #@-others
-#@+node:tbrown.20130411145310.18857: ** zoom_in & zoom_out commands (qt_text.py)
-@g.command("zoom-in")
-def zoom_in(event=None, delta=1):
-    """increase body font size by one
-
-    requires that @font-size-body is being used in stylesheet
-    """
-    c = event.get('c')
-    if c:
-        c._style_deltas['font-size-body'] += delta
-        ssm = c.styleSheetManager
-        # for performance, don't c.styleSheetManager.reload_style_sheets()
-        sheet = ssm.expand_css_constants(c.active_stylesheet)
-        # and apply to body widget directly
-        c.frame.body.wrapper.widget.setStyleSheet(sheet)
-
-@g.command("zoom-out")
-def zoom_out(event=None):
-    """decrease body font size by one
-
-    requires that @font-size-body is being used in stylesheet
-    """
-    zoom_in(event=event, delta=-1)
 #@-others
 #@@language python
 #@@tabwidth -4

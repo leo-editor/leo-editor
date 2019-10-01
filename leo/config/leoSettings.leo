@@ -2140,7 +2140,7 @@
 <v t="ekr.20190325052226.1"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
-<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
 <v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
 <v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
