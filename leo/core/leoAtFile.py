@@ -3023,19 +3023,19 @@ class AtFile:
         Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
+        c = self.c
+        efc = g.app.externalFilesController
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             return False
         # #1347: Prompt if the external file is newer.
-        if 1: # Like c.checkFileTimeStamp.
-            c = self.c
-            efc = g.app.externalFilesController
+        if 1:
+            # Like c.checkFileTimeStamp.
             if c.sqlite_connection and c.mFileName == fn:
-                # sqlite database file is never actually overwriten by Leo
-                # so no need to check its timestamp. It is modified through
-                # sqlite methods.
-                return False
-            if efc.has_changed(c, fn):
+                # sqlite database file is never actually overwriten by Leo,
+                # so do *not* check its timestamp.
+                pass
+            elif efc.has_changed(c, fn):
                 return True
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
