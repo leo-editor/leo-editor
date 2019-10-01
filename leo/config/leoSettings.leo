@@ -3447,7 +3447,7 @@ aquamarine1</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
-php_keyword1_font_size = None
+php_keyword1_font_size = 12
 php_keyword1_font_slant = roman
     # roman, italic
 php_keyword1_font_weight = normal
@@ -4564,28 +4564,28 @@ right clicks in the body pane.
 <t tx="ekr.20080703111151.12"># bold words in forth
 
 forth_keyword3_family = None
-forth_keyword3_font_size = None
+forth_keyword3_font_size = 12
 forth_keyword3_font_slant = roman
 forth_keyword3_font_weight = bold
 </t>
 <t tx="ekr.20080703111151.14"># bold-italic words in forth
 
 forth_keyword4_family = None
-forth_keyword4_size = None
+forth_keyword4_size = 12
 forth_keyword4_slant = slant
 forth_keyword4_weight = bold
 </t>
 <t tx="ekr.20080703111151.15"># italic words in forth
 
 forth_keyword5_family = None
-forth_keyword5_size = None
+forth_keyword5_size = 12
 forth_keyword5_slant = slant
 forth_keyword5_weight = normal
 </t>
 <t tx="ekr.20080703111151.17"># defining words in forth
 
 forth_keyword2_family = None
-forth_keyword2_size = None
+forth_keyword2_size = 12
 forth_keyword2_slant = None
 forth_keyword2_weight = None
 </t>
