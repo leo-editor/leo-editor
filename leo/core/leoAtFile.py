@@ -1201,7 +1201,7 @@ class AtFile:
         except Exception:
             g.es('unexpected exception')
             g.es_exception()
-    #@+node:ekr.20190108105509.1: *7* at.writePathChanged (changed)
+    #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''
         Return True if the path has changed and the user allows it.
@@ -2489,7 +2489,7 @@ class AtFile:
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20190111045822.1: *5* at.precheck (#1361)
+    #@+node:ekr.20190111045822.1: *5* at.precheck
     def precheck(self, fileName, root):
         '''
         Check for dangerous writes.
