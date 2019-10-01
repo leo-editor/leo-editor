@@ -36,26 +36,23 @@ def zoom_helper(event, delta):
     c = event.get('c')
     if not  c:
         return
+    wrapper = c.frame.body.wrapper
+    #
+    # For performance, don't c.styleSheetManager.reload_style_sheets().
+    # Apply to body widget directly
+    c._style_deltas['font-size-body'] += delta
+    ssm = c.styleSheetManager
+    sheet = ssm.expand_css_constants(c.active_stylesheet)
+    wrapper.widget.setStyleSheet(sheet)
+    #
+    # #490: Honor language-specific settings.
     colorizer = getattr(c.frame.body, 'colorizer', None)
     if not colorizer:
         return
-    #
-    # #490: Honor language-specific settings.
     c.zoom_delta = delta
-    g.trace(f"\nc.zoom_delta: {c.zoom_delta}\n") ###
     colorizer.configure_fonts()
-    #
-    # Existing code.
-    wrapper = c.frame.body.wrapper
-    c._style_deltas['font-size-body'] += delta
-    ssm = c.styleSheetManager
-    # for performance, don't c.styleSheetManager.reload_style_sheets()
-    sheet = ssm.expand_css_constants(c.active_stylesheet)
-    # and apply to body widget directly
-    wrapper.widget.setStyleSheet(sheet)
-    #
-    # Recolor everything.
     wrapper.setAllText(wrapper.getAllText())
+        # Recolor everything.
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
