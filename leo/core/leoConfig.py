@@ -1192,14 +1192,14 @@ class GlobalConfigManager:
     """A class to manage configuration settings."""
     # Class data...
     #@+<< gcm.defaultsDict >>
-    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
+    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >> (changed)
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
-    defaultBodyFontSize = 9 if sys.platform == "win32" else 12
-    defaultLogFontSize = 8 if sys.platform == "win32" else 12
-    defaultMenuFontSize = 9 if sys.platform == "win32" else 12
-    defaultTreeFontSize = 9 if sys.platform == "win32" else 12
+    defaultBodyFontSize = 12 # 9 if sys.platform == "win32" else 12
+    defaultLogFontSize =  12 # 8 if sys.platform == "win32" else 12
+    defaultMenuFontSize = 12 # 9 if sys.platform == "win32" else 12
+    defaultTreeFontSize = 12 # 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
         keyType=str,
