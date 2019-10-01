@@ -1201,7 +1201,7 @@ class AtFile:
         except Exception:
             g.es('unexpected exception')
             g.es_exception()
-    #@+node:ekr.20190108105509.1: *7* at.writePathChanged
+    #@+node:ekr.20190108105509.1: *7* at.writePathChanged (changed)
     def writePathChanged(self, p):
         '''
         Return True if the path has changed and the user allows it.
@@ -1218,7 +1218,6 @@ class AtFile:
         if pathChanged and not c.ignoreChangedPaths:
             ok = at.promptForDangerousWrite(
                 fileName=None,
-                kind=None,
                 message='%s\n%s' % (
                     g.tr('path changed for %s' % (p.h)),
                     g.tr('write this file anyway?')))
@@ -2490,20 +2489,23 @@ class AtFile:
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20190111045822.1: *5* at.precheck (changed)
+    #@+node:ekr.20190111045822.1: *5* at.precheck (#1361)
     def precheck(self, fileName, root):
         '''
         Check for dangerous writes.
         Return False if the user declines to do the write.
         '''
-        at, c = self, self.c
+        at = self
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        # #1347: Prompt if the external file is newer.
-        if not c.checkFileTimeStamp(fileName):
-            return False
+        # Prompt if the write would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fileName)
+        if ok:
+            # Fix bug 889175: Remember the full fileName.
+            at.rememberReadPath(fileName, root)
+            return True
         # Fix #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False
@@ -2861,7 +2863,7 @@ class AtFile:
             return n, s2[i:]
         return 0, s
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(self, fileName, kind, message=None):
+    def promptForDangerousWrite(self, fileName, message=None):
         '''Raise a dialog asking the user whether to overwrite an existing file.'''
         at, c, root = self, self.c, self.root
         if g.app.unitTesting:
@@ -2886,8 +2888,8 @@ class AtFile:
                     c.redraw()
                     return False
         if message is None:
-            message = '%s %s\n%s\n%s' % (
-                kind, g.splitLongFileName(fileName),
+            message = '%s\n%s\n%s' % (
+                g.splitLongFileName(fileName),
                 g.tr('already exists.'),
                 g.tr('Overwrite this file?'))
         result = g.app.gui.runAskYesNoCancelDialog(c,
@@ -3015,7 +3017,7 @@ class AtFile:
             "tabwidth": at.tab_width,
         }
         return d
-    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
+    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite (#1361)
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
         Return True if a prompt should be issued
@@ -3024,6 +3026,17 @@ class AtFile:
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             return False
+        # #1347: Prompt if the external file is newer.
+        if 1: # Like c.checkFileTimeStamp.
+            c = self.c
+            efc = g.app.externalFilesController
+            if c.sqlite_connection and c.mFileName == fn:
+                # sqlite database file is never actually overwriten by Leo
+                # so no need to check its timestamp. It is modified through
+                # sqlite methods.
+                return False
+            if efc.has_changed(c, fn):
+                return True
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
