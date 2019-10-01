@@ -3029,7 +3029,7 @@ class AtFile:
             # No danger of overwriting fn.
             return False
         # #1347: Prompt if the external file is newer.
-        if 1:
+        if efc:
             # Like c.checkFileTimeStamp.
             if c.sqlite_connection and c.mFileName == fn:
                 # sqlite database file is never actually overwriten by Leo,
