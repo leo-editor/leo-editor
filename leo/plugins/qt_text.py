@@ -47,8 +47,9 @@ def zoom_helper(event, delta):
     colorizer = getattr(c.frame.body, 'colorizer', None)
     if not colorizer:
         return
-    if 0: # test the old way first.
-        colorizer.configure_fonts()
+    c.zoom_delta = delta
+    g.trace('\nc.zoom_delta', repr(c.zoom_delta), '\n')
+    colorizer.configure_fonts()
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''

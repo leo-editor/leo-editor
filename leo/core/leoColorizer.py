@@ -336,27 +336,51 @@ class BaseJEditColorizer (BaseColorizer):
                 self.fonts[key] = None # Essential
                 wrapper.tag_configure(key, font=defaultBodyfont)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
+    zoom_dict = {} # Keys are key::settings_names, values are cumulative font size.
+
     def find_font(self, key, setting_name):
         '''
         Return the font for the given setting name.
-        Key is for debugging only.
         '''
         c, get = self.c, self.c.config.get
+        trace = setting_name.startswith('php') ###
         for name in (setting_name, setting_name.rstrip('_font')):
+            size_error = False
             family = get(name + '_family', 'family')
             size   = get(name + '_size', 'size')
             slant  = get(name + '_slant', 'slant')
             weight = get(name + '_weight', 'weight')
             if family or slant or weight or size:
                 family = family or g.app.config.defaultFontFamily
-                size = size or c.config.defaultBodyFontSize
-                    # It's almost certainly a good idea to set size explicitly.
+                # It's almost certainly a good idea to set size explicitly.
+                key = f"{key}::{setting_name}"
+                old_size = self.zoom_dict.get(key, size or c.config.defaultBodyFontSize)
+                if isinstance(old_size, str):
+                    if old_size.endswith(('pt', 'px'),):
+                        old_size = old_size[:-2]
+                    try:
+                        old_size = int(old_size)
+                    except ValueError:
+                        g.trace('bad size', repr(old_size))
+                        size_error = True
+                        size = old_size
+                elif not isinstance(old_size, int):
+                    g.trace('bad old_size:', old_size.__class__, old_size)
+                    size_error = True
+                    size = old_size
+                # #490: Use c.zoom_size if it exists.
+                zoom_delta = getattr(c, 'zoom_delta', 0)
+                if zoom_delta and not size_error:
+                    size = old_size + zoom_delta
+                    self.zoom_dict[key] = size
                 slant = slant or 'roman'
                 weight = weight or 'normal'
                 font = g.app.gui.getFontFromParams(family, size, slant, weight)
                 # A good trace: the key shows what is happening.
-                    # g.trace('%20s %5s %20s %10s %5s %6s %s' % (
-                        # key, bool(font), setting_name, family, size, slant, weight))
+                if font and trace:
+                    g.trace(
+                        f"key: {key:30} family: {family or 'None'} "
+                        f"size: {size or 'None'} {slant} {weight}")
                 return font
         return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
