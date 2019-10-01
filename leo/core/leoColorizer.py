@@ -343,7 +343,8 @@ class BaseJEditColorizer (BaseColorizer):
         Return the font for the given setting name.
         '''
         c, get = self.c, self.c.config.get
-        trace = setting_name.startswith('php') ###
+        default_size = c.config.defaultBodyFontSize
+        trace = False and not g.unitTesting # and setting_name.startswith('php')
         for name in (setting_name, setting_name.rstrip('_font')):
             size_error = False
             family = get(name + '_family', 'family')
@@ -352,36 +353,43 @@ class BaseJEditColorizer (BaseColorizer):
             weight = get(name + '_weight', 'weight')
             if family or slant or weight or size:
                 family = family or g.app.config.defaultFontFamily
-                # It's almost certainly a good idea to set size explicitly.
                 key = f"{key}::{setting_name}"
-                old_size = self.zoom_dict.get(key, size or c.config.defaultBodyFontSize)
+                if key in self.zoom_dict:
+                    old_size = self.zoom_dict.get(key)
+                else:
+                    # It's a good idea to set size explicitly.
+                    old_size = size or default_size
+                    if trace: g.trace("STARTING SIZE", old_size, repr(size), default_size)
                 if isinstance(old_size, str):
-                    if old_size.endswith(('pt', 'px'),):
-                        old_size = old_size[:-2]
+                    # All settings should be in units of points.
                     try:
-                        old_size = int(old_size)
+                        if old_size.endswith(('pt', 'px'),):
+                            old_size = int(old_size[:-2])
+                        else:
+                            old_size = int(old_size)
                     except ValueError:
-                        g.trace('bad size', repr(old_size))
                         size_error = True
-                        size = old_size
                 elif not isinstance(old_size, int):
-                    g.trace('bad old_size:', old_size.__class__, old_size)
                     size_error = True
+                if size_error:
+                    g.trace('bad old_size:', old_size.__class__, old_size)
                     size = old_size
-                # #490: Use c.zoom_size if it exists.
-                zoom_delta = getattr(c, 'zoom_delta', 0)
-                if zoom_delta and not size_error:
-                    size = old_size + zoom_delta
-                    self.zoom_dict[key] = size
+                else:
+                    # #490: Use c.zoom_size if it exists.
+                    zoom_delta = getattr(c, 'zoom_delta', 0)
+                    if zoom_delta:
+                        size = old_size + zoom_delta
+                        self.zoom_dict[key] = size
                 slant = slant or 'roman'
                 weight = weight or 'normal'
+                size = str(size)
                 font = g.app.gui.getFontFromParams(family, size, slant, weight)
                 # A good trace: the key shows what is happening.
-                if font and trace:
-                    g.trace(
+                if font:
+                    if trace: g.trace(
                         f"key: {key:30} family: {family or 'None'} "
                         f"size: {size or 'None'} {slant} {weight}")
-                return font
+                    return font
         return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
     def configure_variable_tags(self):
