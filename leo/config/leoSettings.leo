@@ -3448,6 +3448,7 @@ aquamarine1</t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
 php_keyword1_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 php_keyword1_font_slant = roman
     # roman, italic
 php_keyword1_font_weight = normal
@@ -4565,29 +4566,41 @@ right clicks in the body pane.
 
 forth_keyword3_family = None
 forth_keyword3_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword3_font_slant = roman
+    # roman, italic
 forth_keyword3_font_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.14"># bold-italic words in forth
 
 forth_keyword4_family = None
 forth_keyword4_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword4_slant = slant
+    # roman, italic
 forth_keyword4_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.15"># italic words in forth
 
 forth_keyword5_family = None
 forth_keyword5_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword5_slant = slant
+    # roman, italic
 forth_keyword5_weight = normal
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.17"># defining words in forth
 
 forth_keyword2_family = None
 forth_keyword2_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword2_slant = None
+    # roman, italic
 forth_keyword2_weight = None
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.18">@language text</t>
 <t tx="ekr.20080703111151.21"># bold keywords defined in forth-bold-words</t>
@@ -5104,7 +5117,7 @@ To set fonts in Leo's widgets, change Leo's master style sheet::
     
     family: a font family name.
             None is the default, indicating the default font.
-    size:   an integer, optinally followed by px or pt.
+    size:   an integer.  Leo will ignore suffixes like pt and px.
     weight: bold, normal, None.'
             Default is normal.
     slant:  roman, italic, None.
@@ -5116,22 +5129,22 @@ To set fonts in Leo's widgets, change Leo's master style sheet::
 Example 1: Sets the comment1 font, for python only:
 
 python_comment1_family = None
-python_comment1_size = 12pt
+python_comment1_size = 12
 python_comment1_slant = italic
 python_comment1_weight = None
 
 Example 2: Sets the comment1 font for all languages:
 
 comment1_family = None
-comment1_size = 12pt
+comment1_size = 12
 comment1_slant = italic
 comment1_weight = bold
 
 Example 3: Combining the previous two examples:
 
-python_comment1_size = 12pt
+python_comment1_size = 12
 python_comment1_slant = italic
-comment1_size = 12pt
+comment1_size = 12
 comment1_slant = italic
 
 Use the show-fonts command to pick fonts, then copy the values shown by the
