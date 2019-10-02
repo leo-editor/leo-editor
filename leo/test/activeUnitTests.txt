@@ -2266,6 +2266,10 @@ try:
     import black
 except ImportError:
     self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
 
 for child in p.subtree():
     child_s = child.b
@@ -3384,6 +3388,10 @@ try:
     import black
 except ImportError:
     self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
 fails = []
 try:
     for peeve in p.children():
