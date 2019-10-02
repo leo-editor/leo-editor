@@ -520,10 +520,9 @@ def revert(self, event=None):
     if not fn:
         g.es('can not revert unnamed file.')
     if not g.os_path_exists(fn):
-        g.es('Can not revert unsaved file: %s' % fn)
+        g.es(f"Can not revert unsaved file: {fn}")
         return
-    reply = g.app.gui.runAskYesNoDialog(c, "Revert",
-        "Revert to previous version of %s?" % fn)
+    reply = g.app.gui.runAskYesNoDialog(c, 'Revert', f"Revert to previous version of {fn}?")
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
@@ -999,7 +998,7 @@ def open_theme_file(self, event):
         return
     leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    command = 'python launchLeo.py "%s"' % fn
+    command = f'python launchLeo.py "{fn}"'
     os.system(command)
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle

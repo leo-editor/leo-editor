@@ -965,7 +965,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     strip_comments=False,
                     strip_data=False)
                 if not aList:
-                    g.trace('warning: no @data %s node' % kind)
+                    g.trace(f"warning: no @data {kind} node")
                 return aList
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
             def scan_d(self, kind):
@@ -974,7 +974,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
                 if aList is None:
-                    g.trace('warning: no @data %s node' % kind)
+                    g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
                     name, value = s.split(':',1)
                     d[name.strip()] = value.strip()

@@ -47,7 +47,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         '''Dump c.p.v, including gnx, uA's, etc.'''
         p = self.c.p
         if p:
-            g.es_print('gnx: %s %s' % (p.v.gnx, p.v.h))
+            g.es_print(f"gnx: {p.v.gnx} {p.v.h}")
             if p.v.u:
                 g.es_print('uAs')
                 g.printDict(p.v.u)
@@ -92,7 +92,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         # Invoke the debugger, retaining the present environment.
         os.chdir(g.app.loadDir)
         if False and subprocess:
-            cmdline = '%s %s -t %s' % (python, winpdb, filename)
+            cmdline = f"{python} {winpdb} -t {filename}"
             subprocess.Popen(cmdline)
         else:
             args = [sys.executable, winpdb, '-t', filename]

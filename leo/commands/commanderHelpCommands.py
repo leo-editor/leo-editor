@@ -97,7 +97,7 @@ def openCheatSheet(self, event=None, redraw=True):
                 p.expand()
             c2.redraw()
         return c2
-    g.es('file not found: %s' % fn)
+    g.es(f"file not found: {fn}")
     return None
 #@+node:lkj.20190714022527.1: *3* c_help.openDesktopIntegration
 @g.commander_command('open-desktop-integration-leo')
@@ -201,8 +201,8 @@ def createMyLeoSettings(c):
         if g.os_path_exists(fileName):
             return None
     ok = g.app.gui.runAskYesNoDialog(c,
-        title = 'Create myLeoSettings.leo?',
-        message = 'Create myLeoSettings.leo in %s?' % (homeLeoDir),
+        title='Create myLeoSettings.leo?',
+        message=f"Create myLeoSettings.leo in {homeLeoDir}?",
     )
     if ok == 'no':
         return None

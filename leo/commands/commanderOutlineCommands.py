@@ -957,7 +957,7 @@ def cloneMarked(self, event=None):
         parent.doDelete()
         c.selectPosition(p1)
     if not g.unitTesting:
-        g.blue('cloned %s nodes' % (n))
+        g.blue(f"cloned {n} nodes")
     c.redraw()
 #@+node:ekr.20160502090456.1: *3* c_oc.copyMarked
 @g.commander_command('copy-marked-nodes')
@@ -989,7 +989,7 @@ def copyMarked(self, event=None):
         parent.doDelete()
         c.selectPosition(p1)
     if not g.unitTesting:
-        g.blue('copied %s nodes' % (n))
+        g.blue(f"copied {n} nodes")
     c.redraw()
 #@+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
 @g.commander_command('delete-marked-nodes')
@@ -1430,7 +1430,7 @@ def toggleSparseMove(self, event=None):
     c = self
     c.sparse_move = not c.sparse_move
     if not g.unitTesting:
-        g.blue('sparse-move: %s' % c.sparse_move)
+        g.blue(f"sparse-move: {c.sparse_move}")
 #@+node:ekr.20080425060424.1: ** c_oc.Sort commands
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')

@@ -82,8 +82,10 @@ def find_long_lines(event):
                     print(short_s)
                     g.es_clickable_link(c, p, line_number=i, message=short_s)
                 break
-    g.es_print('found %s long line%s longer than %s characters in %s file%s' % (
-        count, g.plural(count), max_line, len(files), g.plural(len(files))))
+    g.es_print(
+        f"found {count} long line{g.plural(count)} "
+        f"longer than {max_line} characters in "
+        f"{len(files)} file{g.plural(len(files))}")
 #@+node:ekr.20190615180048.1: *3* find-missing-docstrings
 @g.command('find-missing-docstrings')
 def find_missing_docstrings(event):
@@ -130,7 +132,7 @@ def find_missing_docstrings(event):
     def clickable_link(p, i):
         '''Return a clickable link to line i of p.b.'''
         link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
-        return "%s,%d" % (link, i)
+        return f"{link},{i}"
     #@-others
 
     count, found, t1 = 0, [], time.process_time()
@@ -298,8 +300,7 @@ class Flake8Command:
         paths = list(set(self.seen))
         if paths:
             self.check_all(paths)
-        g.es_print('flake8: %s file%s in %s' % (
-            len(paths), g.plural(paths), g.timeSince(t1)))
+        g.es_print(f"flake8: {len(paths)} file{g.plural(paths)} in {g.timeSince(t1)}")
     #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
 class PyflakesCommand:
@@ -331,7 +332,7 @@ class PyflakesCommand:
                     root = roots[fn_n]
                     line = int(s.split(':')[1])
                     unl = root.get_UNL(with_proto=True, with_count=True)
-                    g.es(s, nodeLink="%s,%d" % (unl, -line))
+                    g.es(s, nodeLink=f"{unl},{(-line)}")
                 except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail
                     g.es(s)
@@ -355,7 +356,7 @@ class PyflakesCommand:
             s = g.readFileIntoEncodedString(fn)
             if s and s.strip():
                 if not pyflakes_errors_only:
-                    g.es('Pyflakes: %s' % sfn)
+                    g.es(f"Pyflakes: {sfn}")
                 # Send all output to the log pane.
                 r = reporter.Reporter(
                     errorStream=self.LogStream(i, roots),
@@ -423,11 +424,9 @@ class PyflakesCommand:
             log_flag = not force
             total_errors = self.check_all(log_flag, pyflakes_errors_only, roots)
             if total_errors > 0:
-                g.es('ERROR: pyflakes: %s error%s' % (
-                    total_errors, g.plural(total_errors)))
+                g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
             elif force:
-                g.es('OK: pyflakes: %s file%s in %s' % (
-                    len(roots), g.plural(roots), g.timeSince(t1)))
+                g.es(f"OK: pyflakes: {len(roots)} file{g.plural(roots)} in {g.timeSince(t1)}")
             elif not pyflakes_errors_only:
                 g.es('OK: pyflakes')
             ok = total_errors == 0
@@ -533,11 +532,10 @@ class PylintCommand:
         #
         # Invoke pylint directly.
         is_win = sys.platform.startswith('win')
-        args = ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+        args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
         if is_win:
             args = args.replace('\\', '\\\\')
-        command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
-            sys.executable, args)
+        command = (f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)
         #

@@ -546,8 +546,7 @@ def justify_toggle_auto(self, event=None):
     if c.editCommands.autojustify == 0:
         c.editCommands.autojustify = abs(c.config.getInt("autojustify") or 0)
         if c.editCommands.autojustify:
-            g.es("Autojustify on, @int autojustify == %s" %
-            c.editCommands.autojustify)
+            g.es(f"Autojustify on, @int autojustify == {c.editCommands.autojustify}")
         else:
             g.es("Set @int autojustify in @settings")
     else:

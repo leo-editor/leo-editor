@@ -44,7 +44,7 @@ def cloneFindParents(self, event=None):
     p = c.p
     if not p: return
     if not p.isCloned():
-        g.es('not a clone: %s' % p.h)
+        g.es(f"not a clone: {p.h}")
         return
     p0 = p.copy()
     undoType = 'Find Clone Parents'
@@ -60,7 +60,7 @@ def cloneFindParents(self, event=None):
         top.moveToNext()
     b = u.beforeInsertNode(p0)
     found = top.insertAfter()
-    found.h = 'Found: parents of %s' % p.h
+    found.h = f"Found: parents of {p.h}"
     u.afterInsertNode(found, 'insert', b)
     seen = []
     for p2 in aList:

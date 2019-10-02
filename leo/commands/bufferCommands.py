@@ -51,7 +51,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         if s and p:
             w = self.w
             c.selectPosition(p)
-            self.beginCommand(w, 'append-to-buffer: %s' % p.h)
+            self.beginCommand(w, f"append-to-buffer: {p.h}")
             w.insert('end', s)
             w.setInsertPoint('end')
             w.seeInsertPoint()
@@ -73,7 +73,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand(w, 'copy-to-buffer: %s' % p.h)
+            self.beginCommand(w, f"copy-to-buffer: {p.h}")
             w.insert('end', s)
             w.setInsertPoint('end')
             self.endCommand()
@@ -94,7 +94,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand(w, undoType=('insert-to-buffer: %s' % p.h))
+            self.beginCommand(w, undoType=f"insert-to-buffer: {p.h}")
             i = w.getInsertPoint()
             w.insert(i, s)
             w.seeInsertPoint()
@@ -116,9 +116,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
             h = p.h
             current = c.p
             c.selectPosition(p)
-            c.deleteOutline(op_name='kill-buffer: %s' % h)
+            c.deleteOutline(op_name=f"kill-buffer: {h}")
             c.selectPosition(current)
-            self.c.k.setLabelBlue('Killed buffer: %s' % h)
+            self.c.k.setLabelBlue(f"Killed buffer: {h}")
             c.redraw(current)
     #@+node:ekr.20150514045829.10: *4* listBuffers & listBuffersAlphabetically
     @cmd('buffers-list')
@@ -159,7 +159,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand(w, 'prepend-to-buffer: %s' % p.h)
+            self.beginCommand(w, f"prepend-to-buffer: {p.h}")
             w.insert(0, s)
             w.setInsertPoint(0)
             w.seeInsertPoint()
@@ -176,7 +176,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     def renameBufferFinisher1(self, name):
         self.fromName = name
-        self.c.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
+        self.c.k.setLabelBlue(f"Rename buffer from: {name} to: ")
         event = None
         self.getBufferName(event, self.renameBufferFinisher2)
 
@@ -212,9 +212,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
             nameList = self.names.get(h, [])
             if nameList:
                 if p.parent():
-                    key = '%s, parent: %s' % (h, p.parent().h)
+                    key = f"{h}, parent: {p.parent().h}"
                 else:
-                    key = '%s, child index: %d' % (h, p.childIndex())
+                    key = f"{h}, child index: {p.childIndex()}"
             else:
                 key = h
             self.nameList.append(key)

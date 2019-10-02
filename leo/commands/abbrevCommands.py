@@ -161,7 +161,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if c.config:
             key = 'abbreviations-subst-env'
             if c.config.isLocalSetting(key, 'data'):
-                g.issueSecurityWarning('@data %s' % key)
+                g.issueSecurityWarning(f"@data {key}")
                 self.subst_env = ""
             else:
                 self.subst_env = c.config.getData(key, strip_data=False)
@@ -218,7 +218,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                             d[abbrev_name] = abbrev_s
                             break
                     else:
-                        g.trace('no definition for %s' % abbrev_name)
+                        g.trace(f"no definition for {abbrev_name}")
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''
@@ -317,7 +317,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         '''
         c, u = self.c, self.c.undoer
         if not c.canPasteOutline(tree_s):
-            g.trace('bad copied outline: %s' % tree_s)
+            g.trace(f"bad copied outline: {tree_s}")
             return
         old_p = c.p.copy()
         bunch = u.beforeChangeTree(old_p)
@@ -427,7 +427,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 self.expanding = False
             x = c.abbrev_subst_env.get('x')
             if x is None: x = ''
-            val = "%s%s%s" % (prefix, x, rest)
+            val = f"{prefix}{x}{rest}"
             # Save the selection range.
             w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
@@ -723,7 +723,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     '\nfrom', repr(old), 'to', repr(val))
             d[name] = val, tag
         except ValueError:
-            g.es_print('bad abbreviation: %s' % s)
+            g.es_print(f"bad abbreviation: {s}")
     #@+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
     def killAllAbbrevs(self, event):
@@ -743,7 +743,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 val = val.replace('\n', '\\n')
                 tag = tag or ''
                 tag = tag + ': ' if tag else ''
-                g.es_print('', '%s%s=%s' % (tag, name, val))
+                g.es_print('', f"{tag}{name}={val}")
         else:
             g.es_print('No present abbreviations')
     #@+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
