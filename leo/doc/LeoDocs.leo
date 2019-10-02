@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="rkeeney.20190823135126.4"><vh>@persistence</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
@@ -456,9 +457,9 @@
 </v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
-<v t="ville.20090609182215.5676" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d7105285804000000747970657106580400000066696c6571076807583c0000002f55736572732f726b65656e65792f6c656f2d656469746f722f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f2e706e677108580700000072656c506174687109581800000066696c655f69636f6e732f66696c655f6175746f2e706e67710a58050000007768657265710b580e0000006265666f7265486561646c696e65710c5807000000796f6666736574710d4b005807000000786f6666736574710e4b02580400000078706164710f4b0158020000006f6e71105805000000766e6f64657111580a00000076697375616c49636f6e71125801000000317113756173732e"><vh>@auto-rst treecaching.txt</vh></v>
+<v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d7105285804000000747970657106580400000066696c6571076807583c0000002f55736572732f726b65656e65792f6c656f2d656469746f722f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c652e706e677108580700000072656c506174687109581800000066696c655f69636f6e732f66696c655f66696c652e706e67710a58050000007768657265710b580e0000006265666f7265486561646c696e65710c5807000000796f6666736574710d4b005807000000786f6666736574710e4b02580400000078706164710f4b0158020000006f6e71105805000000766e6f64657111580a00000076697375616c49636f6e71125801000000317113756173732e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
@@ -481,8 +482,8 @@
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-<v t="ekr.20170130080532.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d7105285804000000747970657106580400000066696c6571076807583c0000002f55736572732f726b65656e65792f6c656f2d656469746f722f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f2e706e677108580700000072656c506174687109581800000066696c655f69636f6e732f66696c655f6175746f2e706e67710a58050000007768657265710b580e0000006265666f7265486561646c696e65710c5807000000796f6666736574710d4b005807000000786f6666736574710e4b02580400000078706164710f4b0158020000006f6e71105805000000766e6f64657111580a00000076697375616c49636f6e71125801000000317113756173732e"><vh>@auto-md ../doc/demo.md</vh></v>
-<v t="ekr.20170202125807.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d7105285804000000747970657106580400000066696c6571076807583c0000002f55736572732f726b65656e65792f6c656f2d656469746f722f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f2e706e677108580700000072656c506174687109581800000066696c655f69636f6e732f66696c655f6175746f2e706e67710a58050000007768657265710b580e0000006265666f7265486561646c696e65710c5807000000796f6666736574710d4b005807000000786f6666736574710e4b02580400000078706164710f4b0158020000006f6e71105805000000766e6f64657111580a00000076697375616c49636f6e71125801000000317113756173732e"><vh>@auto-md ../doc/colorizer.md</vh></v>
+<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
+<v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
 </v>
@@ -715,6 +716,7 @@
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
+<v t="ekr.20191002072123.1"><vh>Themes aren't working for me. What should I do?</vh></v>
 <v t="ekr.20170612101117.1"><vh>What about code that looks like a section reference?</vh></v>
 <v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
@@ -2317,7 +2319,8 @@
 </v>
 <v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
-<v t="rkeeney.20190823135126.4"><vh>@persistence</vh></v>
+<v t="ekr.20050831195331.1"></v>
+<v t="ekr.20191002072123.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4638,7 +4641,7 @@ What People are Saying about Leo
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449" icons="5d71007d7101285804000000747970657102580400000066696c657103680358400000002f55736572732f726b65656e65792f6c656f2d656469746f722f6c656f2f49636f6e732f54616e676f2f31367831362f616374696f6e732f73746f702e706e677104580700000072656c506174687105581c00000054616e676f2f31367831362f616374696f6e732f73746f702e706e677106580500000077686572657107580e0000006265666f7265486561646c696e6571085807000000796f666673657471094b005807000000786f6666736574710a4b02580400000078706164710b4b0158020000006f6e710c5805000000766e6f6465710d580a00000076697375616c49636f6e710e580100000031710f75612e">For instruction about installing Leo see:
+<t tx="ekr.20050831195449">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -30663,6 +30666,22 @@ In the outline you can find build server implemented in Coffeescript. You have t
 
 There is one more thing I use for sharing outlines. There are three commands `set-reference-file`, `update-ref-file` and `read-ref-file`. The first lets you choose a reference file for this outline, i.e. public shared outline. It adds a top level headline `---begin-private-area---` to the outline. In the body of this node is the path to the public Leo file. Everything below this node is private, and above is public. The public file should be added to version control (git, fossil,...) and the private file should be added to ignored files for version control tool. And then in the script bound to Ctrl-s you can add `c.fileCommands.save_ref()`, so every time you save your private Leo file, at the same time is updated the public Leo file. That way they never get out of sync.</t>
 <t tx="ekr.20190802082825.1"></t>
+<t tx="ekr.20191002072123.1">1. The directory leo-editor/leo/themes contains various theme files. You can load these files from the File:Open Outline menu.
+
+Opening a theme outline automatically loads the theme. Keep opening outlines until you find one you like.
+
+2. Close all of the theme files.
+
+3. Copy the theme file you chose from leo-editor/leo/themes to ~/.leo/themes (you will have to create the themes folder here) and rename it something like myTheme.leo.  Note that the folder is ~/.leo, not ~.
+
+4. Open your myLeoSettings.leo file.
+
+Add the following to the headline of a new node as a child of your @settings node:
+@string theme-name = myTheme.leo
+
+5. Save the file and restart Leo.
+
+You should now be using myTheme.leo. You can load myTheme.leo from Leo. The font sizing and colors are under Theme Settings in the tree.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
