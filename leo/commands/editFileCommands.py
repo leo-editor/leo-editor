@@ -39,10 +39,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         n += 1
                         total += 1
                         c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
-                g.es_print('%s node%s %s' % (n, g.plural(n), p.h))
+                g.es_print(f"{n} node{g.plural(n)} {p.h}")
         if total > 0:
             c.undoer.afterChangeGroup(c.p, undoType)
-        g.es_print('%s total node%s' % (total, g.plural(total)))
+        g.es_print(f"{total} total node{g.plural(total)}")
     #@+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p, undoType):
         '''Adjust whitespace in p, part of an @clean tree.'''
@@ -82,7 +82,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if n > 0:
             c.setChanged(True)
             c.undoer.afterChangeTree(p, undoType, bunch)
-        g.es_print('%s node%s cleaned' % (n, g.plural(n)))
+        g.es_print(f"{n} node{g.plural(n)} cleaned")
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')
     @cmd('compare-two-leo-files')
@@ -299,9 +299,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.clearState()
         try:
             os.remove(k.arg)
-            k.setStatusLabel('Deleted: %s' % k.arg)
+            k.setStatusLabel(f"Deleted: {k.arg}")
         except Exception:
-            k.setStatusLabel('Not Deleted: %s' % k.arg)
+            k.setStatusLabel(f"Not Deleted: {k.arg}")
     #@+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
     def diff(self, event=None):
@@ -368,9 +368,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.clearState()
         try:
             os.mkdir(k.arg)
-            k.setStatusLabel("Created: %s" % k.arg)
+            k.setStatusLabel(f"Created: {k.arg}")
         except Exception:
-            k.setStatusLabel("Not Created: %s" % k.arg)
+            k.setStatusLabel(f"Not Created: {k.arg}")
     #@+node:ekr.20170806094318.12: *3* efc.openOutlineByName
     @cmd('file-open-by-name')
     def openOutlineByName(self, event):
@@ -393,7 +393,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             except Exception:
                 pass
         else:
-            g.es('ignoring: %s' % fn)
+            g.es(f"ignoring: {fn}")
     #@+node:ekr.20170806094318.14: *3* efc.removeDirectory
     @cmd('directory-remove')
     def removeDirectory(self, event):
@@ -409,9 +409,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.clearState()
         try:
             os.rmdir(k.arg)
-            k.setStatusLabel('Removed: %s' % k.arg)
+            k.setStatusLabel(f"Removed: {k.arg}")
         except Exception:
-            k.setStatusLabel('Not Removed: %s' % k.arg)
+            k.setStatusLabel(f"Not Removed: {k.arg}")
     #@+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
     @cmd('file-save-by-name')
     @cmd('save-file-by-name')
@@ -519,7 +519,7 @@ class GitDiffController:
         if not self.set_directory(directory):
             return
         self.root = p = c.lastTopLevel().insertAfter()
-        p.h = 'git-diff-branches %s %s' % (branch1, branch2)
+        p.h = f"git-diff-branches {branch1} {branch2}"
         s1 = self.get_file_from_branch(branch1, fn)
         s2 = self.get_file_from_branch(branch2, fn)
         lines1 = g.splitLines(s1)
@@ -561,7 +561,7 @@ class GitDiffController:
         g.es_print('diffing %s files. This may take awhile' % len(files))
         # Create the root node.
         self.root = c.lastTopLevel().insertAfter()
-        self.root.h = 'git diff revs: %s %s' % (rev1, rev2)
+        self.root.h = f"git diff revs: {rev1} {rev2}"
         self.root.b = '@ignore\n@nosearch\n'
         # Create diffs of all files.
         for fn in files:
@@ -815,7 +815,7 @@ class GitDiffController:
         c = self.c
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
-        p.h = 'git diff %s %s' % (r1, r2)
+        p.h = f"git diff {r1} {r2}"
         p.b = '@ignore\n@nosearch\n'
         if r1 and r2:
             p.b += '%s=%s\n%s=%s' % (
@@ -823,7 +823,7 @@ class GitDiffController:
                 r2, self.get_revno(r2),
             )
         else:
-            p.b += '%s=%s' % (r1, self.get_revno(r1))
+            p.b += f"{r1}={self.get_revno(r1)}"
         return p
     #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
     def find_gnx(self, c, gnx):
@@ -884,7 +884,7 @@ class GitDiffController:
                     return False
             return True
 
-        command = 'git diff --name-only %s %s' % (rev1 or '', rev2 or '')
+        command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
         files = [
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
                 if readable(z)

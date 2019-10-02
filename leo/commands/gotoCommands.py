@@ -221,7 +221,7 @@ class GoToCommands:
             else:
                 g.warning('line', n, 'not found')
         c.frame.clearStatusLine()
-        c.frame.putStatusLine('goto-global-line not found: %s' % (n))
+        c.frame.putStatusLine(f"goto-global-line not found: {n}")
         # Put the cursor on the last line of body text.
         w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
@@ -356,7 +356,7 @@ class GoToCommands:
         s = w.getAllText()
         ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
         c.frame.clearStatusLine()
-        c.frame.putStatusLine('goto-global-line found: %s' % (n2))
+        c.frame.putStatusLine(f"goto-global-line found: {n2}")
         w.setInsertPoint(ins)
         c.bodyWantsFocus()
         w.seeInsertPoint()

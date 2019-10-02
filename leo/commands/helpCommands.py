@@ -348,7 +348,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             aList = d.get(stroke, [])
             for bi in aList:
                 if bi.commandName == commandName:
-                    pane = '' if bi.pane == 'all' else ' %s:' % (bi.pane)
+                    pane = '' if bi.pane == 'all' else f" {bi.pane}:"
                     s1 = pane
                     s2 = k.prettyPrintKey(stroke)
                     s3 = bi.commandName
@@ -356,7 +356,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                     n2 = max(n2, len(s2))
                     data.append((s1, s2, s3),)
         data.sort(key=lambda x: x[1])
-        return ','.join(['%s %s' % (z1, z2) for z1, z2, z3 in data]).strip()
+        return ','.join([f"{z1} {z2}" for z1, z2, z3 in data]).strip()
     #@+node:ekr.20150514063305.383: *4* helpForCommandFinisher
     def helpForCommandFinisher(self, commandName):
         c, s = self.c, None
@@ -373,7 +373,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 else:
                     s = 'no docstring available'
                 # Create the title.
-                s2 = '%s (%s)' % (commandName, bindings) if bindings else commandName
+                s2 = f"{commandName} ({bindings})" if bindings else commandName
                 underline = '+' * len(s2)
                 title = '%s\n%s\n\n' % (s2, underline)
                 if 1: # 2015/03/24
@@ -770,8 +770,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
             result = []
             for bi in d.get(event.stroke, []): # a list of BindingInfo objects.
                 pane, cmd = bi.pane, bi.commandName
-                result.append(cmd if pane == 'all' else '%s: %s' % (pane, cmd))
-            s = '%s: %s' % (event.stroke.s, ','.join(result))
+                result.append(cmd if pane == 'all' else f"{pane}: {cmd}")
+            s = f"{event.stroke.s}: {','.join(result)}"
             k.showStateAndMode()
             c.frame.putStatusLine(s, bg='blue', fg='white')
             c.bodyWantsFocus()

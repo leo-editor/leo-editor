@@ -55,11 +55,11 @@ class BaseSpellWrapper:
         try:
             f = open(fn, mode='wb')
             f.close()
-            g.note('created: %s' % (fn))
+            g.note(f"created: {fn}")
         except IOError:
-            g.error('can not create: %s' % (fn))
+            g.error(f"can not create: {fn}")
         except Exception:
-            g.error('unexpected error creating: %s' % (fn))
+            g.error(f"unexpected error creating: {fn}")
             g.es_exception()
     #@+node:ekr.20180207072351.1: *3* spell.find_user_dict
     def find_user_dict(self):
@@ -238,7 +238,7 @@ class DefaultWrapper(BaseSpellWrapper):
                 for line in g.splitLines(s):
                     self.add_expanded_line(line, words)
         except Exception:
-            g.es_print('can not open %s dictionary: %s' % (kind, fn))
+            g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
     #@+node:ekr.20180207132550.1: *4* default.add_expanded_line
     def add_expanded_line(self, s, words):
@@ -308,8 +308,7 @@ class DefaultWrapper(BaseSpellWrapper):
                 ('user', self.user_fn),
             )
         for kind, fn in table:
-            g.es_print('%s dictionary: %s' % (
-                kind, g.os_path_normpath(fn) if fn else 'None'))
+            g.es_print(f"{kind} dictionary: {(g.os_path_normpath(fn) if fn else 'None')}")
     #@-others
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
