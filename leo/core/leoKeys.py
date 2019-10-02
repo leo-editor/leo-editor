@@ -4139,7 +4139,7 @@ class KeyHandlerClass:
                 bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
                     # Important: only bi.pane is required below.
                 for bi in bi_list:
-                    pane = '%s:' % (bi.pane)
+                    pane = f"{bi.pane}:"
                     data = (pane, stroke)
                     if data not in shortcutList:
                         shortcutList.append(data)
@@ -4439,7 +4439,7 @@ class KeyHandlerClass:
 class ModeInfo:
 
     def __repr__(self):
-        return '<ModeInfo %s>' % self.name
+        return f"<ModeInfo {self.name}>"
 
     __str__ = __repr__
     #@+others

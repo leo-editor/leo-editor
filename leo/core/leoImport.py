@@ -688,7 +688,7 @@ class LeoImportCommands:
             p = parent.insertAsLastChild()
         else:
             p = c.lastTopLevel().insertAfter()
-        p.h = '@url file://%s' % fileName
+        p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
     def init_import(self, atShadow, ext, fileName, s):

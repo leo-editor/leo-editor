@@ -240,7 +240,7 @@ def beautify(options, path):
     s, e = g.readFileIntoString(path)
     if not s:
         return
-    print('beautifying %s' % fn)
+    print(f"beautifying {fn}")
     try:
         s1 = g.toEncodedString(s)
         node1 = ast.parse(s1, filename='before', mode='exec')
@@ -276,7 +276,7 @@ def beautify(options, path):
     try:
         beautifier.compare_two_asts(node1, node2)
     except Exception:
-        print('failed to beautify %s' % fn)
+        print(f"failed to beautify {fn}")
         return
     with open(path, 'wb') as f:
         f.write(s2_e)
@@ -1994,7 +1994,7 @@ class SyntaxSanitizer:
             if i < len(lines) and lines[i].lstrip().startswith('pass'):
                 i += 1
             else:
-                g.trace('*** no pass after %s: %s' % (kind, p.h))
+                g.trace(f"*** no pass after {kind}: {p.h}")
         else:
             # A directive line or a comment line.
             result.append(s)
