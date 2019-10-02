@@ -3,6 +3,9 @@
 #@@language python
 #@@tabwidth -4
 
+# **Warning**: Use at your own risk.
+# Numerous significant problems have been reported, including segfaults.
+
 # This code from http://stackoverflow.com/questions/12431555
 # with modifications from Jake Peck and EKR.
 
