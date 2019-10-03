@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
-'''This file contains the gui wrapper for Qt: g.app.gui.'''
+"""This file contains the gui wrapper for Qt: g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
 import leo.core.leoColor as leoColor
@@ -39,11 +39,11 @@ def init():
     return True
 #@+node:ekr.20140907085654.18700: ** class LeoQtGui(leoGui.LeoGui)
 class LeoQtGui(leoGui.LeoGui):
-    '''A class implementing Leo's Qt gui.'''
+    """A class implementing Leo's Qt gui."""
     #@+others
     #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp) (changed)
     def __init__(self):
-        '''Ctor for LeoQtGui class.'''
+        """Ctor for LeoQtGui class."""
         super().__init__('qt')
              # Initialize the base class.
         self.active = True
@@ -158,7 +158,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
     def replaceClipboardWith(self, s):
-        '''Replace the clipboard with the string s.'''
+        """Replace the clipboard with the string s."""
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
@@ -171,7 +171,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace('no clipboard!')
     #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
     def getTextFromClipboard(self):
-        '''Get a unicode string from the clipboard.'''
+        """Get a unicode string from the clipboard."""
         cb = self.qtApp.clipboard()
         if cb:
             QtWidgets.QApplication.processEvents()
@@ -180,10 +180,10 @@ class LeoQtGui(leoGui.LeoGui):
         return ''
     #@+node:ekr.20160917130023.1: *4* qt_gui.setClipboardSelection
     def setClipboardSelection(self, s):
-        '''
+        """
         Set the clipboard selection to s.
         There are problems with PyQt5.
-        '''
+        """
         if isQt5:
             # Alas, returning s reopens #218.
             return
@@ -206,7 +206,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
     def makeFilter(self, filetypes):
-        '''Return the Qt-style dialog filter from filetypes list.'''
+        """Return the Qt-style dialog filter from filetypes list."""
         filters = ['%s (%s)' % (z) for z in filetypes]
         return ';;'.join(filters)
     #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helpers
@@ -237,7 +237,7 @@ class LeoQtGui(leoGui.LeoGui):
             d.exec_()
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
     def createFindDialog(self, c):
-        '''Create and init a non-modal Find dialog.'''
+        """Create and init a non-modal Find dialog."""
         g.app.globalFindTabManager = c.findCommands.ftm
         top = c.frame.top
             # top is the DynamicWindow class.
@@ -585,7 +585,7 @@ class LeoQtGui(leoGui.LeoGui):
         return s
     #@+node:ekr.20190518102229.1: *5* class PyzoFileDialog
     class PyzoFileDialog:
-        '''A class supporting the pyzo file dialog.'''
+        """A class supporting the pyzo file dialog."""
 
         file_browser = None
             # A module.
@@ -593,19 +593,19 @@ class LeoQtGui(leoGui.LeoGui):
         #@+others
         #@+node:ekr.20190518102720.1: *6* pfd.init & helpers
         def init(self):
-            '''
+            """
             Initialize the browser code, using the actual pyzo if possible, or the
             code in leo/external/pyzo otherwise.    
-            '''
+            """
             if g.app.pluginsController.isLoaded('pyzo_support.py'):
                 self.init_real_pyzo()
             else:
                 self.init_internal_pyzo()
         #@+node:ekr.20190518102823.1: *7* pfd.init_internal_pyzo
         def init_internal_pyzo(self):
-            '''
+            """
             Init the internal version of pyzo in leo/external/pyzo.
-            '''
+            """
             # Adjust sys.path.
             g.trace()
             path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
@@ -629,7 +629,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # Required to instantiate PyzoFileBrowser.
         #@+node:ekr.20190518110307.1: *7* pfd.init_real_pyzo
         def init_real_pyzo(self):
-            '''Init the real pyzo, which has already been inited by pyzo_support.py'''
+            """Init the real pyzo, which has already been inited by pyzo_support.py"""
             # pylint: disable=import-error
             g.trace()
             if 0: # Probably already done.
@@ -642,7 +642,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # For open_dialog.
         #@+node:ekr.20190518103005.1: *6* pfd.open_dialog
         def open_dialog(self, c, callback, defaultextension, startpath, parent=None):
-            '''Open pyzo's file browser.'''
+            """Open pyzo's file browser."""
             w = self.file_browser.PyzoFileBrowser(parent=parent)
                 # Instantiate a file browser.
             g.app.permanentScriptDict ['file_browser'] = w
@@ -776,7 +776,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
     #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (changed)
     def create_dock_widget(self, closeable, moveable, height, name):
-        '''Make a new dock widget in the main window'''
+        """Make a new dock widget in the main window"""
         dock = QtWidgets.QDockWidget(parent=self.main_window)
             # The parent must be a QMainWindow.
         features = dock.NoDockWidgetFeatures
@@ -834,10 +834,10 @@ class LeoQtGui(leoGui.LeoGui):
     deactivated_widget = None
 
     def onDeactivateEvent(self, event, c, obj, tag):
-        '''
+        """
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
-        '''
+        """
         w = self.get_focus()
         w_name = w and w.objectName()
         if 'focus' in g.app.debug:
@@ -861,10 +861,10 @@ class LeoQtGui(leoGui.LeoGui):
     # Called from eventFilter
 
     def onActivateEvent(self, event, c, obj, tag):
-        '''
+        """
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
-        '''
+        """
         trace = 'focus' in g.app.debug
         w = self.get_focus() or self.deactivated_widget
         self.deactivated_widget = None
@@ -905,10 +905,10 @@ class LeoQtGui(leoGui.LeoGui):
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 
     def setFilter(self, c, obj, w, tag):
-        '''
+        """
         Create an event filter in obj.
         w is a wrapper object, not necessarily a QWidget.
-        '''
+        """
         # gui = self
         assert isinstance(obj, QtWidgets.QWidget), obj
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
@@ -961,7 +961,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     #@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
     def raise_dock(self, widget):
-        '''Raise the nearest parent QDockWidget, if any.'''
+        """Raise the nearest parent QDockWidget, if any."""
         while widget:
             if isinstance(widget, QtWidgets.QDockWidget):
                 widget.raise_()
@@ -989,7 +989,7 @@ class LeoQtGui(leoGui.LeoGui):
     size_warnings = []
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        '''Required to handle syntax coloring.'''
+        """Required to handle syntax coloring."""
         if isinstance(size, str):
             if size.endswith('pt'):
                 size = size[: -2].strip()
@@ -1029,7 +1029,7 @@ class LeoQtGui(leoGui.LeoGui):
             return g.app.config.defaultFont
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
     def getFullVersion(self, c=None):
-        '''Return the PyQt version (for signon)'''
+        """Return the PyQt version (for signon)"""
         try:
             qtLevel = 'version %s' % QtCore.QT_VERSION_STR
         except Exception:
@@ -1045,7 +1045,7 @@ class LeoQtGui(leoGui.LeoGui):
             window.setWindowIcon(self.appIcon)
     #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
     def getIconImage(self, name):
-        '''Load the icon and return it.'''
+        """Load the icon and return it."""
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
@@ -1072,7 +1072,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
     #@+node:ekr.20110605121601.18517: *4* qt_gui.getImageImage
     def getImageImage(self, name):
-        '''Load the image in file named `name` and return it.'''
+        """Load the image in file named `name` and return it."""
         fullname = self.getImageFinder(name)
         try:
             pixmap = QtGui.QPixmap()
@@ -1086,7 +1086,7 @@ class LeoQtGui(leoGui.LeoGui):
     dump_given = False
 
     def getImageFinder(self, name):
-        '''Theme aware image (icon) path searching.'''
+        """Theme aware image (icon) path searching."""
         trace = 'themes' in g.app.debug
         exists = g.os_path_exists
         getString = g.app.config.getString
@@ -1149,7 +1149,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None, None
     #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
     def insertKeyEvent(self, event, i):
-        '''Insert the key given by event in location i of widget event.w.'''
+        """Insert the key given by event in location i of widget event.w."""
         import leo.core.leoGui as leoGui
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
@@ -1170,7 +1170,7 @@ class LeoQtGui(leoGui.LeoGui):
                 g.app.gui.insert_char_flag = True
     #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
     def make_main_window(self):
-        '''Make the *singleton* QMainWindow.'''
+        """Make the *singleton* QMainWindow."""
         window = QtWidgets.QMainWindow()
         window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() causes flash.
@@ -1204,8 +1204,9 @@ class LeoQtGui(leoGui.LeoGui):
         shortcut=None, bg='LightSteelBlue1',
         define_g=True, define_name='__main__', silent=False, # Passed on to c.executeScript.
     ):
-        '''Create a script button for the script in node p.
-        The button's text defaults to p.headString'''
+        """
+        Create a script button for the script in node p.
+        The button's text defaults to p.headString."""
         k = c.k
         if p and not buttonText: buttonText = p.h.strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
@@ -1261,7 +1262,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< create press-buttonText-button command >>
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
-        '''Put the help command.'''
+        """Put the help command."""
         s = g.adjustTripleString(s.rstrip(), c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
@@ -1298,12 +1299,12 @@ class LeoQtGui(leoGui.LeoGui):
         return vr # For unit tests
     #@+node:ekr.20110605121601.18521: *3* qt_gui.runAtIdle
     def runAtIdle(self, aFunc):
-        '''This can not be called in some contexts.'''
+        """This can not be called in some contexts."""
         QtCore.QTimer.singleShot(0, aFunc)
     #@+node:ekr.20110605121601.18483: *3* qt_gui.runMainLoop & runWithIpythonKernel
     #@+node:ekr.20130930062914.16000: *4* qt_gui.runMainLoop
     def runMainLoop(self):
-        '''Start the Qt main loop.'''
+        """Start the Qt main loop."""
         g.app.gui.dismiss_splash_screen()
         g.app.gui.show_tips()
         if self.script:
@@ -1321,7 +1322,7 @@ class LeoQtGui(leoGui.LeoGui):
             sys.exit(self.qtApp.exec_())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self):
-        '''Init Leo to run in an IPython shell.'''
+        """Init Leo to run in an IPython shell."""
         try:
             import leo.core.leoIPython as leoIPython
             g.app.ipk = leoIPython.InternalIPKernel()
@@ -1423,7 +1424,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
-        '''Put up a splash screen with the Leo logo.'''
+        """Put up a splash screen with the Leo logo."""
         from leo.core.leoQt import QtCore
         qt = QtCore.Qt
         splash = None
@@ -1458,13 +1459,13 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20140825042850.18411: *3* qt_gui.Utils...
     #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
     def isTextWidget(self, w):
-        '''Return True if w is some kind of Qt text widget.'''
+        """Return True if w is some kind of Qt text widget."""
         if Qsci:
             return isinstance(w, (Qsci.QsciScintilla, QtWidgets.QTextEdit)), w
         return isinstance(w, QtWidgets.QTextEdit), w
 
     def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and hasattr(w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
@@ -1549,7 +1550,7 @@ class LeoQtGui(leoGui.LeoGui):
         shadow=QtWidgets.QFrame.Plain,
         shape=QtWidgets.QFrame.NoFrame,
     ):
-        '''Create a Qt Frame.'''
+        """Create a Qt Frame."""
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -1734,12 +1735,12 @@ class StyleClassManager:
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
 class StyleSheetManager:
-    '''A class to manage (reload) Qt style sheets.'''
+    """A class to manage (reload) Qt style sheets."""
     #@+others
     #@+node:ekr.20180316091829.1: *3*  ssm.Birth
     #@+node:ekr.20140912110338.19371: *4* ssm.__init__
     def __init__(self, c, safe=False):
-        '''Ctor the ReloadStyle class.'''
+        """Ctor the ReloadStyle class."""
         self.c = c
         self.color_db = leoColor.leo_color_database
         self.safe = safe
@@ -1751,10 +1752,10 @@ class StyleSheetManager:
                 # g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
     #@+node:ekr.20170222051716.1: *4* ssm.reload_settings
     def reload_settings(self, sheet=None):
-        '''
+        """
         Recompute and apply the stylesheet.
         Called automatically by the reload-settings commands.
-        '''
+        """
         if not sheet:
             sheet = self.get_style_sheet_from_settings()
         if sheet:
@@ -1766,9 +1767,9 @@ class StyleSheetManager:
     #@+node:ekr.20180316091500.1: *3* ssm.Paths...
     #@+node:ekr.20180316065346.1: *4* ssm.compute_icon_directories
     def compute_icon_directories(self):
-        '''
+        """
         Return a list of *existing* directories that could contain theme-related icons.
-        '''
+        """
         exists = g.os_path_exists
         home = g.app.homeDir
         join = g.os_path_finalize_join
@@ -1790,9 +1791,9 @@ class StyleSheetManager:
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
     def compute_theme_directories(self):
-        '''
+        """
         Return a list of *existing* directories that could contain theme .leo files.
-        '''
+        """
         lm = g.app.loadManager
         table = lm.computeThemeDirectories()[:]
         directory = g.os_path_normslashes(g.app.theme_directory)
@@ -1802,7 +1803,7 @@ class StyleSheetManager:
             # All entries are known to exist and have normalized slashes.
     #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
     def find_icon_path(self, setting):
-        '''Return the path to the open/close indicator icon.'''
+        """Return the path to the open/close indicator icon."""
         c = self.c
         s = c.config.getString(setting)
         if not s:
@@ -1816,7 +1817,7 @@ class StyleSheetManager:
     #@+node:ekr.20180316091920.1: *3* ssm.Settings
     #@+node:ekr.20110605121601.18176: *4* ssm.default_style_sheet
     def default_style_sheet(self):
-        '''Return a reasonable default style sheet.'''
+        """Return a reasonable default style sheet."""
         # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
         g.trace('===== using default style sheet =====')
         return '''\
@@ -1840,15 +1841,15 @@ class StyleSheetManager:
     '''
     #@+node:ekr.20140916170549.19551: *4* ssm.get_data
     def get_data(self, setting):
-        '''Return the value of the @data node for the setting.'''
+        """Return the value of the @data node for the setting."""
         c = self.c
         return c.config.getData(setting, strip_comments=False, strip_data=False) or []
     #@+node:ekr.20140916170549.19552: *4* ssm.get_style_sheet_from_settings
     def get_style_sheet_from_settings(self):
-        '''
+        """
         Scan for themes or @data qt-gui-plugin-style-sheet nodes.
         Return the text of the relevant node.
-        '''
+        """
         aList1 = self.get_data('qt-gui-plugin-style-sheet')
         aList2 = self.get_data('qt-gui-user-style-sheet')
         if aList2: aList1.extend(aList2)
@@ -1857,13 +1858,13 @@ class StyleSheetManager:
         return sheet
     #@+node:ekr.20140915194122.19476: *4* ssm.print_style_sheet
     def print_style_sheet(self):
-        '''Show the top-level style sheet.'''
+        """Show the top-level style sheet."""
         w = self.get_master_widget()
         sheet = w.styleSheet()
         print('style sheet for: %s...\n\n%s' % (w, sheet))
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
-        '''Set the master style sheet for all widgets using config settings.'''
+        """Set the master style sheet for all widgets using config settings."""
         if g.app.loadedThemes:
             return
         c = self.c
@@ -1899,7 +1900,7 @@ class StyleSheetManager:
     css_warning_given = False
 
     def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
-        '''Expand @ settings into their corresponding constants.'''
+        """Expand @ settings into their corresponding constants."""
         trace_dict = False
         c = self.c
         # Warn once if the stylesheet uses old style style-sheet comment
@@ -1928,7 +1929,7 @@ class StyleSheetManager:
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
     def adjust_sizes(self, font_size_delta, settingsDict):
-        '''Adjust constants to reflect c._style_deltas.'''
+        """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {} # old: self.find_constants_defined(sheet)
         deltas = c._style_deltas
@@ -2061,7 +2062,7 @@ class StyleSheetManager:
         return ans
     #@+node:ekr.20150617090104.1: *5* ssm.replace_indicator_constants
     def replace_indicator_constants(self, sheet):
-        '''
+        """
         In the stylesheet, replace (if they exist)::
 
             image: @tree-image-closed
@@ -2080,7 +2081,7 @@ class StyleSheetManager:
             @string tree-image-closed = myIcons/closed.png
 
         Return the updated stylesheet.
-        '''
+        """
         close_path = self.find_icon_path('tree-image-closed')
         open_path = self.find_icon_path('tree-image-open')
         # Make all substitutions in the stylesheet.
@@ -2098,7 +2099,7 @@ class StyleSheetManager:
         return sheet
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
-        '''Resolve all relative url's so they use absolute paths.'''
+        """Resolve all relative url's so they use absolute paths."""
         trace = 'themes' in g.app.debug
         pattern = re.compile(r'url\((.*)\)')
         join = g.os_path_finalize_join
@@ -2137,12 +2138,12 @@ class StyleSheetManager:
         return sheet
     #@+node:ekr.20140912110338.19372: *4* ssm.munge
     def munge(self, stylesheet):
-        '''
+        """
         Return the stylesheet without extra whitespace.
 
         To avoid false mismatches, this should approximate what Qt does.
         To avoid false matches, this should not munge too much.
-        '''
+        """
         s = ''.join([s.lstrip().replace('  ', ' ').replace(' \n', '\n')
             for s in g.splitLines(stylesheet)])
         return s.rstrip()
@@ -2151,17 +2152,17 @@ class StyleSheetManager:
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
     def get_master_widget(self, top=None):
-        '''
+        """
         Carefully return the master widget.
         c.frame.top is a DynamicWindow.
-        '''
+        """
         if top is None:
             top = self.c.frame.top
         master = top.leo_master or top
         return master
     #@+node:ekr.20140913054442.19391: *4* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
-        '''For manual testing: update the stylesheet using c.p.b.'''
+        """For manual testing: update the stylesheet using c.p.b."""
         if not g.unitTesting:
             c = self.c
             sheet = c.p.b

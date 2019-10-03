@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:maphew.20180224170853.1: * @file ../../setup.py
 #@@first
-'''setup.py for leo'''
+"""setup.py for leo"""
 #@+others
 #@+node:maphew.20180305124637.1: ** imports
 from codecs import open # To use a consistent encoding
@@ -34,7 +34,7 @@ if CleanCommand is not None:
 
 #@+node:maphew.20181010203342.385: ** get_version & helper (setup.py)
 def get_version(file, version=None):
-    '''Determine current Leo version. Use git if in checkout, else internal Leo'''
+    """Determine current Leo version. Use git if in checkout, else internal Leo"""
     root = os.path.dirname(os.path.realpath(file))
     if os.path.exists(os.path.join(root,'.git')):
         version = git_version(file)
@@ -43,8 +43,10 @@ def get_version(file, version=None):
     return version
 #@+node:maphew.20181010203342.386: *3* git_version
 def git_version(file, version=None):
-    '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-       Return as semantic version string compliant with PEP440'''
+    """
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as semantic version string compliant with PEP440
+    """
     root = os.path.dirname(os.path.realpath(file))
     try:
         tag, distance, commit = g.gitDescribe(root)
@@ -62,19 +64,19 @@ def git_version(file, version=None):
 
 #@+node:maphew.20180224170257.1: *4* clean_git_tag
 def clean_git_tag(tag):
-    '''Return only version number from tag name. Ignore unknown formats.
+    """Return only version number from tag name. Ignore unknown formats.
        Is specific to tags in Leo's repository.
             5.7b1          -->	5.7b1
             Leo-4-4-8-b1   -->	4-4-8-b1
             v5.3           -->	5.3
             Fixed-bug-149  -->  Fixed-bug-149
-    '''
+    """
     if tag.lower().startswith('leo-'): tag = tag[4:]
     if tag.lower().startswith('v'): tag = tag[1:]
     return tag
 #@+node:maphew.20180224170149.1: *3* get_semver
 def get_semver(tag):
-    '''Return 'Semantic Version' from tag string'''
+    """Return 'Semantic Version' from tag string"""
     try:
         import semantic_version
         version = str(semantic_version.Version.coerce(tag, partial=True))
@@ -125,9 +127,10 @@ user_requires = [
     ]
 #@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
-    '''1. Define scripts that get installed to PYTHONHOME/Scripts.
-       2. Extend `python setup.py clean` to remove more files (issue #1055)
-    '''
+    """
+    1. Define scripts that get installed to PYTHONHOME/Scripts.
+    2. Extend `python setup.py clean` to remove more files (issue #1055)
+    """
     print('Creating entry_points for [OS name - system]: {} - {}'.format(
         platform.os.name, platform.system()))
     entry_points={'console_scripts': [

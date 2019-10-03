@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
 #@@first
-'''Leo's vim emulator.'''
+"""Leo's vim emulator."""
 import leo.core.leoGlobals as g
 import os
 import string
@@ -11,7 +11,7 @@ import string
 #@@nobeautify
 
 def show_stroke(stroke):
-    '''Return the best human-readable form of stroke.'''
+    """Return the best human-readable form of stroke."""
     s = stroke.s if g.isStroke(stroke) else stroke
     d = {
         '\n':           r'<NL>',
@@ -31,10 +31,10 @@ def show_stroke(stroke):
     return d.get(s, s)
 #@+node:ekr.20140802183521.17996: ** class VimEvent
 class VimEvent:
-    '''A class to contain the components of the dot.'''
+    """A class to contain the components of the dot."""
 
     def __init__(self, c, char, stroke, w):
-        '''ctor for the VimEvent class.'''
+        """ctor for the VimEvent class."""
         self.c = c
         self.char = char # For Leo's core.
         self.stroke = stroke
@@ -42,17 +42,17 @@ class VimEvent:
         self.widget = w # For Leo's core.
 
     def __repr__(self):
-        '''Return the representation of the stroke.'''
+        """Return the representation of the stroke."""
         return show_stroke(self.stroke)
 
     __str__ = __repr__
 #@+node:ekr.20131113045621.16547: ** class VimCommands
 class VimCommands:
-    '''A class that handles vim simulation in Leo.'''
+    """A class that handles vim simulation in Leo."""
     #@+others
     #@+node:ekr.20131109170017.16507: *3*  vc.ctor & helpers
     def __init__(self, c):
-        '''The ctor for the VimCommands class.'''
+        """The ctor for the VimCommands class."""
         self.c = c
         self.k = c.k
         self.trace_flag = 'keys' in g.app.debug
@@ -65,7 +65,7 @@ class VimCommands:
     #@+node:ekr.20140805130800.18157: *4* dispatch dicts...
     #@+node:ekr.20140805130800.18162: *5* vc.create_dispatch_dicts
     def create_dispatch_dicts(self):
-        '''Create all dispatch dicts.'''
+        """Create all dispatch dicts."""
         self.normal_mode_dispatch_d = d1 = self.create_normal_dispatch_d()
             # Dispatch table for normal mode.
         self.motion_dispatch_d = d2 = self.create_motion_dispatch_d()
@@ -99,10 +99,10 @@ class VimCommands:
     #@@nobeautify
 
     def create_motion_dispatch_d(self):
-        '''
+        """
         Return the dispatch dict for motions.
         Keys are strokes, values are methods.
-        '''
+        """
         d = {
         '^': self.vim_caret,
         '~': None,
@@ -191,10 +191,10 @@ class VimCommands:
         return d
     #@+node:ekr.20131111061547.16460: *5* vc.create_normal_dispatch_d
     def create_normal_dispatch_d(self):
-        '''
+        """
         Return the dispatch dict for normal mode.
         Keys are strokes, values are methods.
-        '''
+        """
         d = {
         # Vim hard-coded control characters...
         # 'Ctrl+r': self.vim_ctrl_r,
@@ -294,10 +294,10 @@ class VimCommands:
         return d
     #@+node:ekr.20140222064735.16630: *5* vc.create_vis_dispatch_d
     def create_vis_dispatch_d(self):
-        '''
+        """
         Create a dispatch dict for visual mode.
         Keys are strokes, values are methods.
-        '''
+        """
         d = {
         '\n': self.vim_return,
         ' ': self.vim_l,
@@ -344,7 +344,7 @@ class VimCommands:
         return d
     #@+node:ekr.20140805130800.18161: *5* vc.create_arrow_d
     def create_arrow_d(self):
-        '''Return a dict binding *all* arrows to self.arrow.'''
+        """Return a dict binding *all* arrows to self.arrow."""
         d = {}
         for arrow in ('Left', 'Right', 'Up', 'Down'):
             for mod in ('',
@@ -355,7 +355,7 @@ class VimCommands:
         return d
     #@+node:ekr.20140804222959.18930: *4* vc.finishCreate
     def finishCreate(self):
-        '''Complete the initialization for the VimCommands class.'''
+        """Complete the initialization for the VimCommands class."""
         # Set the widget for set_border.
         c = self.c
         if c.vim_mode:
@@ -371,7 +371,7 @@ class VimCommands:
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
     def init_dot_ivars(self):
-        '''Init all dot-related ivars.'''
+        """Init all dot-related ivars."""
         self.in_dot = False
             # True if we are executing the dot command.
         self.dot_list = []
@@ -380,14 +380,14 @@ class VimCommands:
             # The dot_list saved at the start of visual mode.
     #@+node:ekr.20140803220119.18109: *5* vc.init_constant_ivars
     def init_constant_ivars(self):
-        '''Init ivars whose values never change.'''
+        """Init ivars whose values never change."""
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
             # List of printable characters
         self.register_names = string.ascii_letters
             # List of register names.
     #@+node:ekr.20140803220119.18106: *5* vc.init_state_ivars
     def init_state_ivars(self):
-        '''Init all ivars related to command state.'''
+        """Init all ivars related to command state."""
         self.ch = None
             # The incoming character.
         self.command_i = None
@@ -439,7 +439,7 @@ class VimCommands:
             # The widget in effect at the start of visual mode.
     #@+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(self):
-        '''Init ivars that are never re-inited.'''
+        """Init ivars that are never re-inited."""
         c = self.c
         self.colon_w = None
             # The widget that has focus when a ':' command begins.  May be None.
@@ -462,7 +462,7 @@ class VimCommands:
     # Called from command handlers or the ctor.
     #@+node:ekr.20150509040011.1: *3*  vc.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the VimCommands class.'''
+        """Command decorator for the VimCommands class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'vimCommands', ])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
@@ -471,11 +471,11 @@ class VimCommands:
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(self, add_to_dot=True, handler=None):
-        '''
+        """
         Accept the present stroke.
         Optionally, this can set the dot or change self.handler.
         This can be a no-op, but even then it is recommended.
-        '''
+        """
         self.do_trace()
         if handler:
             if self.in_motion:
@@ -491,13 +491,13 @@ class VimCommands:
         self.return_value = True
     #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(self):
-        '''Delegate the present key to k.masterKeyHandler.'''
+        """Delegate the present key to k.masterKeyHandler."""
         self.do_trace()
         self.show_status()
         self.return_value = False
     #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(self, add_to_dot=True, return_value=True, set_dot=True, stroke=None):
-        '''Complete a command, preserving text and optionally updating the dot.'''
+        """Complete a command, preserving text and optionally updating the dot."""
         self.do_trace()
         if self.state == 'visual':
             self.handler = self.do_visual_mode
@@ -524,12 +524,12 @@ class VimCommands:
             self.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(self):
-        '''
+        """
         Ignore the present key without passing it to k.masterKeyHandler.
 
         **Important**: all code now calls quit() after ignore().
         This code could do that, but calling quit() emphasizes what happens.
-        '''
+        """
         self.do_trace()
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.command_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
@@ -545,12 +545,12 @@ class VimCommands:
         self.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
     def not_ready(self):
-        '''Print a not ready message and quit.'''
+        """Print a not ready message and quit."""
         g.es('not ready', g.callers(1))
         self.quit()
     #@+node:ekr.20160918060654.1: *5* vc.on_activate
     def on_activate(self):
-        '''Handle an activate event.'''
+        """Handle an activate event."""
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         self.quit()
         self.show_status()
@@ -558,10 +558,10 @@ class VimCommands:
             # self.c.k.keyboardQuit(setFocus=True)
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(self):
-        '''
+        """
         Abort any present command.
         Don't set the dot and enter normal mode.
-        '''
+        """
         self.do_trace()
         # Undoably preserve any changes to the body.
         self.save_body()
@@ -571,10 +571,10 @@ class VimCommands:
         self.return_value = True
     #@+node:ekr.20140807070500.18163: *5* vc.reset
     def reset(self, setFocus):
-        '''
+        """
         Called from k.keyboardQuit when the user types Ctrl-G (setFocus = True).
         Also called when the user clicks the mouse (setFocus = False).
-        '''
+        """
         self.do_trace()
         if setFocus:
             # A hard reset.
@@ -585,7 +585,7 @@ class VimCommands:
     #@+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(self, i=None, w=None):
-        '''Common code for beginning insert mode.'''
+        """Common code for beginning insert mode."""
         self.do_trace()
         # c = self.c
         if not w: w = self.w
@@ -601,7 +601,7 @@ class VimCommands:
             self.accept(handler=self.do_insert_mode, add_to_dot=True)
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(self, motion_func):
-        '''Start an inner motion.'''
+        """Start an inner motion."""
         self.do_trace()
         w = self.w
         self.command_w = w
@@ -615,7 +615,7 @@ class VimCommands:
             self.do_inner_motion()
     #@+node:ekr.20140801121720.18076: *5* vc.end_insert_mode
     def end_insert_mode(self):
-        '''End an insert mode started with the a,A,i,o and O commands.'''
+        """End an insert mode started with the a,A,i,o and O commands."""
         # Called from vim_esc.
         self.do_trace()
         w = self.w
@@ -632,7 +632,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16629: *5* vc.vim_digits
     def vim_digits(self):
-        '''Handle a digit that starts an outer repeat count.'''
+        """Handle a digit that starts an outer repeat count."""
         self.do_trace()
         self.repeat_list = []
         self.repeat_list.append(self.stroke)
@@ -666,10 +666,10 @@ class VimCommands:
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140805130800.18158: *4* vc.arrow...
     def vim_arrow(self):
-        '''
+        """
         Handle all non-Alt arrows in any mode.
         This method attempts to leave focus unchanged.
-        '''
+        """
         # pylint: disable=maybe-no-member
         s = self.stroke.s if g.isStroke(self.stroke) else self.stroke
         if s.find('Alt+') > -1:
@@ -689,10 +689,10 @@ class VimCommands:
             self.delegate()
     #@+node:ekr.20140806075456.18152: *4* vc.vim_return
     def vim_return(self):
-        '''
+        """
         Handle a return key, regardless of mode.
         In the body pane only, it has special meaning.
-        '''
+        """
         if self.w:
             if self.is_body(self.w):
                 if self.state == 'normal':
@@ -712,11 +712,11 @@ class VimCommands:
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
     #@+node:ekr.20140810181832.18220: *5* vc.update_dot_before_search
     def update_dot_before_search(self, find_pattern, change_pattern):
-        '''
+        """
         A callback that updates the dot just before searching.
         At present, this **leaves the dot unchanged**.
         Use the n or N commands to repeat searches,
-        '''
+        """
         self.command_list = []
         if 0: # Don't do anything else!
 
@@ -755,10 +755,10 @@ class VimCommands:
                 self.search_stroke = None
     #@+node:ekr.20140811044942.18243: *5* vc.update_selection_after_search
     def update_selection_after_search(self):
-        '''
+        """
         Extend visual mode's selection after a search.
         Called from leoFind.showSuccess.
-        '''
+        """
         if self.state == 'visual':
             w = self.w
             if w == g.app.gui.get_focus():
@@ -771,7 +771,7 @@ class VimCommands:
                 g.trace('Search has changed nodes.')
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(self):
-        '''Handle zero, either the '0' command or part of a repeat count.'''
+        """Handle zero, either the '0' command or part of a repeat count."""
         if self.is_text_wrapper(self.w):
             if self.repeat_list:
                 self.vim_digits()
@@ -788,7 +788,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16614: *5* vc.vim_a
     def vim_a(self):
-        '''Append text after the cursor N times.'''
+        """Append text after the cursor N times."""
         if self.in_tree(self.w):
             c = self.c
             c.bodyWantsFocusNow()
@@ -802,7 +802,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140730175636.17981: *5* vc.vim_A
     def vim_A(self):
-        '''Append text at the end the line N times.'''
+        """Append text at the end the line N times."""
         if self.in_tree(self.w):
             c = self.c
             c.bodyWantsFocusNow()
@@ -816,7 +816,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16618: *5* vc.vim_b
     def vim_b(self):
-        '''N words backward.'''
+        """N words backward."""
         if self.is_text_wrapper(self.w):
             for z in range(self.n1 * self.n):
                 if self.state == 'visual':
@@ -828,11 +828,11 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16619: *5* vc.vim_c (to do)
     def vim_c(self):
-        '''
+        """
         N   cc        change N lines
         N   c{motion} change the text that is moved over with {motion}
         VIS c         change the highlighted text
-        '''
+        """
         self.not_ready()
         # self.accept(handler=self.vim_c2)
 
@@ -844,7 +844,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140807152406.18128: *5* vc.vim_caret
     def vim_caret(self):
-        '''Move to start of line.'''
+        """Move to start of line."""
         if self.is_text_wrapper(self.w):
             if self.state == 'visual':
                 self.do('back-to-home-extend-selection')
@@ -855,7 +855,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140730175636.17983: *5* vc.vim_colon
     def vim_colon(self):
-        '''Enter the minibuffer.'''
+        """Enter the minibuffer."""
         k = self.k
         self.colon_w = self.w # A scratch ivar, for :gt & gT commands.
         self.quit()
@@ -866,7 +866,7 @@ class VimCommands:
     # This was an attempt to be clever: two commas would switch to insert mode.
 
     def vim_comma(self):
-        '''Handle a comma in normal mode.'''
+        """Handle a comma in normal mode."""
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_comma2)
         else:
@@ -882,15 +882,15 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140730175636.17992: *5* vc.vim_ctrl_r
     def vim_ctrl_r(self):
-        '''Redo the last command.'''
+        """Redo the last command."""
         self.c.undoer.redo()
         self.done()
     #@+node:ekr.20131111171616.16498: *5* vc.vim_d & helpers
     def vim_d(self):
-        '''
+        """
         N dd      delete N lines
         d{motion} delete the text that is moved over with {motion}
-        '''
+        """
         if self.is_text_wrapper(self.w):
             self.n = 1
             self.accept(handler=self.vim_d2)
@@ -898,7 +898,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140811175537.18146: *6* vc.vim_d2
     def vim_d2(self):
-        '''Handle the second stroke of the d command.'''
+        """Handle the second stroke of the d command."""
         w = self.w
         if self.is_text_wrapper(w):
             if self.stroke == 'd':
@@ -923,7 +923,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140811175537.18147: *6* vc.vim_d3
     def vim_d3(self):
-        '''Complete the d command after the cursor has moved.'''
+        """Complete the d command after the cursor has moved."""
         # d2w doesn't extend to line.  d2j does.
         w = self.w
         if self.is_text_wrapper(w):
@@ -952,7 +952,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140811175537.18145: *6* vc.vim_di
     def vim_di(self):
-        '''Handle delete inner commands.'''
+        """Handle delete inner commands."""
         w = self.w
         if self.is_text_wrapper(w):
             if self.stroke == 'w':
@@ -968,7 +968,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140730175636.17991: *5* vc.vim_dollar
     def vim_dollar(self):
-        '''Move the cursor to the end of the line.'''
+        """Move the cursor to the end of the line."""
         if self.is_text_wrapper(self.w):
             if self.state == 'visual':
                 self.do('end-of-line-extend-selection')
@@ -979,7 +979,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20131111105746.16544: *5* vc.vim_dot
     def vim_dot(self):
-        '''Repeat the last command.'''
+        """Repeat the last command."""
         if self.in_dot:
             return
         try:
@@ -1006,7 +1006,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16623: *5* vc.vim_e
     def vim_e(self):
-        '''Forward to the end of the Nth word.'''
+        """Forward to the end of the Nth word."""
         if self.is_text_wrapper(self.w):
             for z in range(self.n1 * self.n):
                 if self.state == 'visual':
@@ -1021,13 +1021,13 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16632: *5* vc.vim_esc
     def vim_esc(self):
-        '''
+        """
         Handle Esc while accumulating a normal mode command.
 
         Esc terminates the a,A,i,o and O commands normally.
         Call self.end_insert command to support repeat counts
         such as 5a<lots of typing><esc>
-        '''
+        """
         if self.state == 'insert':
             self.end_insert_mode()
         elif self.state == 'visual':
@@ -1038,14 +1038,14 @@ class VimCommands:
             self.quit() # It's helpful to clear everything.
     #@+node:ekr.20140222064735.16687: *5* vc.vim_F
     def vim_F(self):
-        '''Back to the Nth occurrence of <char>.'''
+        """Back to the Nth occurrence of <char>."""
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_F2)
         else:
             self.quit()
 
     def vim_F2(self):
-        '''Handle F <stroke>'''
+        """Handle F <stroke>"""
         if self.is_text_wrapper(self.w):
             w = self.w
             s = w.getAllText()
@@ -1071,14 +1071,14 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
     def vim_f(self):
-        '''move past the Nth occurrence of <stroke>.'''
+        """move past the Nth occurrence of <stroke>."""
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_f2)
         else:
             self.quit()
 
     def vim_f2(self):
-        '''Handle f <stroke>'''
+        """Handle f <stroke>"""
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
@@ -1104,7 +1104,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140803220119.18112: *5* vc.vim_G
     def vim_G(self):
-        '''Put the cursor on the last character of the file.'''
+        """Put the cursor on the last character of the file."""
         if self.is_text_wrapper(self.w):
             if self.state == 'visual':
                 self.do('end-of-buffer-extend-selection')
@@ -1115,11 +1115,11 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16621: *5* vc.vim_g
     def vim_g(self):
-        '''
+        """
         N ge backward to the end of the Nth word
         N gg goto line N (default: first line), on the first non-blank character
           gv start highlighting on previous visual area
-        '''
+        """
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_g2)
         else:
@@ -1172,7 +1172,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(self):
-        '''Move the cursor left n chars, but not out of the present line.'''
+        """Move the cursor left n chars, but not out of the present line."""
         if self.is_text_wrapper(self.w):
             w = self.w
             s = w.getAllText()
@@ -1197,7 +1197,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16618: *5* vc.vim_i
     def vim_i(self):
-        '''Insert text before the cursor N times.'''
+        """Insert text before the cursor N times."""
         if self.in_tree(self.w):
             c = self.c
             c.bodyWantsFocusNow()
@@ -1210,7 +1210,7 @@ class VimCommands:
             self.done()
     #@+node:ekr.20140220134748.16617: *5* vc.vim_j
     def vim_j(self):
-        '''N j  Down n lines.'''
+        """N j  Down n lines."""
         if self.is_text_wrapper(self.w):
             for z in range(self.n1 * self.n):
                 if self.state == 'visual':
@@ -1225,7 +1225,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16628: *5* vc.vim_k
     def vim_k(self):
-        '''Cursor up N lines.'''
+        """Cursor up N lines."""
         if self.is_text_wrapper(self.w):
             for z in range(self.n1 * self.n):
                 if self.state == 'visual':
@@ -1240,7 +1240,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16627: *5* vc.vim_l
     def vim_l(self):
-        '''Move the cursor right self.n chars, but not out of the present line.'''
+        """Move the cursor right self.n chars, but not out of the present line."""
         if self.is_text_wrapper(self.w):
             w = self.w
             s = w.getAllText()
@@ -1265,7 +1265,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20131111171616.16497: *5* vc.vim_m (to do)
     def vim_m(self):
-        '''m<a-zA-Z> mark current position with mark.'''
+        """m<a-zA-Z> mark current position with mark."""
         self.not_ready()
         # self.accept(handler=self.vim_m2)
 
@@ -1274,7 +1274,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140220134748.16625: *5* vc.vim_n
     def vim_n(self):
-        '''Repeat last search N times.'''
+        """Repeat last search N times."""
         fc = self.c.findCommands
         fc.setup_command()
         old_node_only = fc.node_only
@@ -1286,7 +1286,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140823045819.18292: *5* vc.vim_N
     def vim_N(self):
-        '''Repeat last search N times (reversed).'''
+        """Repeat last search N times (reversed)."""
         fc = self.c.findCommands
         fc.setup_command()
         old_node_only = fc.node_only
@@ -1301,7 +1301,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16692: *5* vc.vim_O
     def vim_O(self):
-        '''Open a new line above the current line N times.'''
+        """Open a new line above the current line N times."""
         if self.in_tree(self.w):
             c = self.c
             c.bodyWantsFocusNow()
@@ -1313,7 +1313,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16619: *5* vc.vim_o
     def vim_o(self):
-        '''Open a new line below the current line N times.'''
+        """Open a new line below the current line N times."""
         if self.in_tree(self.w):
             c = self.c
             c.bodyWantsFocusNow()
@@ -1327,7 +1327,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16622: *5* vc.vim_p
     def vim_p(self):
-        '''Paste after the cursor.'''
+        """Paste after the cursor."""
         if self.in_tree(self.w):
             self.do('paste-node')
             self.done()
@@ -1338,7 +1338,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140807152406.18125: *5* vc.vim_P
     def vim_P(self):
-        '''Paste text at the cursor or paste a node before the present node.'''
+        """Paste text at the cursor or paste a node before the present node."""
         if self.in_tree(self.w):
             self.do(['goto-prev-visible', 'paste-node'])
             self.done()
@@ -1349,7 +1349,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(self):
-        '''Find previous occurance of word under the cursor.'''
+        """Find previous occurance of word under the cursor."""
         # ec = self.c.editCommands
         w = self.w
         if self.is_text_wrapper(w):
@@ -1373,11 +1373,11 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16623: *5* vc.vim_q (registers)
     def vim_q(self):
-        '''
+        """
         q       stop recording
         q<A-Z>  record typed characters, appended to register <a-z>
         q<a-z>  record typed characters into register <a-z>
-        '''
+        """
         self.not_ready()
         # self.accept(handler=self.vim_q2)
 
@@ -1387,7 +1387,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140807152406.18127: *5* vc.vim_question
     def vim_question(self):
-        '''Begin a search.'''
+        """Begin a search."""
         if self.is_text_wrapper(self.w):
             fc = self.c.findCommands
             self.search_stroke = self.stroke
@@ -1405,7 +1405,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
     def vim_r(self):
-        '''Replace next N characters with <char>'''
+        """Replace next N characters with <char>"""
         self.not_ready()
         # self.accept(handler=self.vim_r2)
 
@@ -1414,11 +1414,11 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16625: *5* vc.vim_redo (to do)
     def vim_redo(self):
-        '''N Ctrl-R redo last N changes'''
+        """N Ctrl-R redo last N changes"""
         self.not_ready()
     #@+node:ekr.20140222064735.16626: *5* vc.vim_s (to do)
     def vim_s(self):
-        '''Change N characters'''
+        """Change N characters"""
         self.not_ready()
         # self.accept(handler=self.vim_s2)
 
@@ -1427,7 +1427,7 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16622: *5* vc.vim_slash
     def vim_slash(self):
-        '''Begin a search.'''
+        """Begin a search."""
         if self.is_text_wrapper(self.w):
             fc = self.c.findCommands
             self.search_stroke = self.stroke
@@ -1446,7 +1446,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140810210411.18239: *5* vc.vim_star
     def vim_star(self):
-        '''Find previous occurance of word under the cursor.'''
+        """Find previous occurance of word under the cursor."""
         # ec = self.c.editCommands
         w = self.w
         if self.is_text_wrapper(w):
@@ -1469,14 +1469,14 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(self):
-        '''Move before the Nth occurrence of <char> to the right.'''
+        """Move before the Nth occurrence of <char> to the right."""
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_t2)
         else:
             self.quit()
 
     def vim_t2(self):
-        '''Handle t <stroke>'''
+        """Handle t <stroke>"""
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
@@ -1505,14 +1505,14 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16686: *5* vc.vim_T
     def vim_T(self):
-        '''Back before the Nth occurrence of <char>.'''
+        """Back before the Nth occurrence of <char>."""
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_T2)
         else:
             self.quit()
 
     def vim_T2(self):
-        '''Handle T <stroke>'''
+        """Handle T <stroke>"""
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
@@ -1541,12 +1541,12 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16626: *5* vc.vim_u
     def vim_u(self):
-        '''U undo the last command.'''
+        """U undo the last command."""
         self.c.undoer.undo()
         self.quit()
     #@+node:ekr.20140220134748.16627: *5* vc.vim_v
     def vim_v(self):
-        '''Start visual mode.'''
+        """Start visual mode."""
         if self.n1_seen:
             self.ignore()
             self.quit()
@@ -1564,7 +1564,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140811110221.18250: *5* vc.vim_V
     def vim_V(self):
-        '''Visually select line.'''
+        """Visually select line."""
         if self.is_text_wrapper(self.w):
             if self.state == 'visual':
                 self.visual_line_flag = not self.visual_line_flag
@@ -1590,7 +1590,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
     def vim_w(self):
-        '''N words forward.'''
+        """N words forward."""
         if self.is_text_wrapper(self.w):
             for z in range(self.n1 * self.n):
                 if self.state == 'visual':
@@ -1602,10 +1602,10 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16629: *5* vc.vim_x
     def vim_x(self):
-        '''
+        """
         Works like Del if there is a character after the cursor.
         Works like Backspace otherwise.
-        '''
+        """
         w = self.w
         if self.is_text_wrapper(w):
             delete_flag = False
@@ -1632,10 +1632,10 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140220134748.16630: *5* vc.vim_y
     def vim_y(self):
-        '''
+        """
         N   yy          yank N lines
         N   y{motion}   yank the text moved over with {motion}
-        '''
+        """
         if self.is_text_wrapper(self.w):
             self.accept(handler=self.vim_y2)
         elif self.in_tree(self.w):
@@ -1668,7 +1668,7 @@ class VimCommands:
             self.quit()
 
     def vim_y3(self):
-        '''Complete the y command after the cursor has moved.'''
+        """Complete the y command after the cursor has moved."""
         # The motion is responsible for all repeat counts.
         # y2w doesn't extend to line.  y2j does.
         if self.is_text_wrapper(self.w):
@@ -1697,15 +1697,15 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140807152406.18126: *5* vc.vim_Y
     def vim_Y(self):
-        '''Yank a Leo outline.'''
+        """Yank a Leo outline."""
         self.not_ready()
     #@+node:ekr.20140220134748.16631: *5* vc.vim_z (to do)
     def vim_z(self):
-        '''
+        """
         zb redraw current line at bottom of window
         zz redraw current line at center of window
         zt redraw current line at top of window
-        '''
+        """
         self.not_ready()
         # self.accept(handler=self.vim_z2)
 
@@ -1805,24 +1805,24 @@ class VimCommands:
     # Terminating commands call self.done().
     #@+node:ekr.20140222064735.16684: *5* vis_escape
     def vis_escape(self):
-        '''Handle Escape in visual mode.'''
+        """Handle Escape in visual mode."""
         self.state = 'normal'
         self.done()
     #@+node:ekr.20140222064735.16661: *5* vis_J
     def vis_J(self):
-        '''Join the highlighted lines.'''
+        """Join the highlighted lines."""
         self.state = 'normal'
         self.not_ready()
         # self.done(set_dot=True)
     #@+node:ekr.20140222064735.16656: *5* vis_c (to do)
     def vis_c(self):
-        '''Change the highlighted text.'''
+        """Change the highlighted text."""
         self.state = 'normal'
         self.not_ready()
         # self.done(set_dot=True)
     #@+node:ekr.20140222064735.16657: *5* vis_d
     def vis_d(self):
-        '''Delete the highlighted text and terminate visual mode.'''
+        """Delete the highlighted text and terminate visual mode."""
         w = self.vis_mode_w
         if self.is_text_wrapper(w):
             i1 = self.vis_mode_i
@@ -1835,13 +1835,13 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140222064735.16659: *5* vis_u
     def vis_u(self):
-        '''Make highlighted text lowercase.'''
+        """Make highlighted text lowercase."""
         self.state = 'normal'
         self.not_ready()
         # self.done(set_dot=True)
     #@+node:ekr.20140222064735.16681: *5* vis_v
     def vis_v(self):
-        '''End visual mode.'''
+        """End visual mode."""
         if 1:
             # End visual node, retain the selection, and set the dot.
             # This makes much more sense in Leo.
@@ -1859,7 +1859,7 @@ class VimCommands:
                 self.done(set_dot=False)
     #@+node:ekr.20140222064735.16660: *5* vis_y
     def vis_y(self):
-        '''Yank the highlighted text.'''
+        """Yank the highlighted text."""
         if self.is_text_wrapper(self.w):
             self.c.frame.copyText(event=self.event)
             self.state = 'normal'
@@ -1868,12 +1868,12 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140221085636.16685: *3* vc.do_key & helpers
     def do_key(self, event):
-        '''
+        """
         Handle the next key in vim mode:
         - Set event, w, stroke and ch ivars for *all* handlers.
         - Call handler().
         Return True if k.masterKeyHandler should handle this key.
-        '''
+        """
         try:
             self.init_scanner_vars(event)
             self.do_trace(blank_line=True)
@@ -1891,7 +1891,7 @@ class VimCommands:
         return self.return_value
     #@+node:ekr.20140802225657.18021: *4* vc.handle_specials
     def handle_specials(self):
-        '''Return True self.stroke is an Escape or a Return in the outline pane.'''
+        """Return True self.stroke is an Escape or a Return in the outline pane."""
         if self.stroke == 'Escape':
             # k.masterKeyHandler handles Ctrl-G.
             # Escape will end insert mode.
@@ -1905,7 +1905,7 @@ class VimCommands:
         return False
     #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars
     def init_scanner_vars(self, event):
-        '''Init all ivars used by the scanner.'''
+        """Init all ivars used by the scanner."""
         assert event
         self.event = event
         stroke = event.stroke
@@ -1919,13 +1919,13 @@ class VimCommands:
     #@+node:ekr.20140815160132.18821: *3* vc.external commands
     #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
     class LoadFileAtCursor:
-        '''
+        """
         A class to handle Vim's :r command.
         This class supports the do_tab callback.
-        '''
+        """
 
         def __init__(self, vc):
-            '''Ctor for VimCommands.LoadFileAtCursor class.'''
+            """Ctor for VimCommands.LoadFileAtCursor class."""
             self.vc = vc
 
         __name__ = ':r'
@@ -1933,7 +1933,7 @@ class VimCommands:
         #@+others
         #@+node:ekr.20140820034724.18316: *5* :r.__call__
         def __call__(self, event=None):
-            '''Prompt for a file name, then load it at the cursor.'''
+            """Prompt for a file name, then load it at the cursor."""
             self.vc.c.k.getFileName(event, callback=self.load_file_at_cursor)
         #@+node:ekr.20140820034724.18317: *5* :r.load_file_at_cursor
         def load_file_at_cursor(self, fn):
@@ -1952,15 +1952,15 @@ class VimCommands:
                 g.es('does not exist:' % fn)
         #@+node:ekr.20140820034724.18318: *5* :r.tab_callback
         def tab_callback(self):
-            '''Called when the user types :r<tab>'''
+            """Called when the user types :r<tab>"""
             self.vc.c.k.getFileName(event=None, callback=self.load_file_at_cursor)
         #@-others
     #@+node:ekr.20140815160132.18828: *4* class vc.Substitution (:%s & :s)
     class Substitution:
-        '''A class to handle Vim's :% command.'''
+        """A class to handle Vim's :% command."""
 
         def __init__(self, vc, all_lines):
-            '''Ctor for VimCommands.tabnew class.'''
+            """Ctor for VimCommands.tabnew class."""
             self.all_lines = all_lines
                 # True: :%s command.  False: :s command.
             self.vc = vc
@@ -1970,7 +1970,7 @@ class VimCommands:
         #@+others
         #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self, event=None):
-            '''Handle the :s and :%s commands. Neither command affects the dot.'''
+            """Handle the :s and :%s commands. Neither command affects the dot."""
             vc = self.vc
             c, w = vc.c, vc.w
             w = vc.w if c.vim_mode else c.frame.body
@@ -1996,10 +1996,10 @@ class VimCommands:
             # It will just confuse real vim users.
 
             def tab_callback(self):
-                '''
+                """
                 Called when the user types :%<tab> or :%/x<tab>.
                 This never ends the command: only return does that.
-                '''
+                """
                 k = self.vc.k
                 tail = k.functionTail
                 tail = tail[1:] if tail.startswith(' ') else tail
@@ -2010,13 +2010,13 @@ class VimCommands:
         #@-others
     #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:e & :tabnew)
     class Tabnew:
-        '''
+        """
         A class to handle Vim's :tabnew command.
         This class supports the do_tab callback.
-        '''
+        """
 
         def __init__(self, vc):
-            '''Ctor for VimCommands.tabnew class.'''
+            """Ctor for VimCommands.tabnew class."""
             self.vc = vc
 
         __name__ = ':tabnew'
@@ -2024,7 +2024,7 @@ class VimCommands:
         #@+others
         #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
         def __call__(self, event=None):
-            '''Prompt for a file name, the open a new Leo tab.'''
+            """Prompt for a file name, the open a new Leo tab."""
             self.vc.c.k.getFileName(event, callback=self.open_file_by_name)
         #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
         def open_file_by_name(self, fn):
@@ -2047,7 +2047,7 @@ class VimCommands:
                 pass
         #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
         def tab_callback(self):
-            '''Called when the user types :tabnew<tab>'''
+            """Called when the user types :tabnew<tab>"""
             self.vc.c.k.getFileName(event=None, callback=self.open_file_by_name)
         #@-others
     #@+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
@@ -2061,7 +2061,7 @@ class VimCommands:
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     @cmd(':print-dot')
     def print_dot(self, event=None):
-        '''Print the dot.'''
+        """Print the dot."""
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.dot_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
         if self.n1 > 1:
@@ -2074,12 +2074,12 @@ class VimCommands:
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     @cmd(':q')
     def q_command(self, event=None):
-        '''Quit the present Leo outline, prompting for saves.'''
+        """Quit the present Leo outline, prompting for saves."""
         g.app.closeLeoWindow(self.c.frame, new_c=None)
 
     @cmd(':qa')
     def qa_command(self, event=None):
-        '''Quit only if there are no unsaved changes.'''
+        """Quit only if there are no unsaved changes."""
         for c in g.app.commanders():
             if c.isChanged():
                 return
@@ -2087,7 +2087,7 @@ class VimCommands:
 
     @cmd(':q!')
     def quit_now(self, event=None):
-        '''Quit immediately.'''
+        """Quit immediately."""
         g.app.forceShutdown()
     #@+node:ekr.20150509050918.1: *4* vc.r_command
     @cmd(':r')
@@ -2096,7 +2096,7 @@ class VimCommands:
     #@+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
     @cmd(':e!')
     def revert(self, event=None):
-        '''Revert all changes to a .leo file, prompting if there have been changes.'''
+        """Revert all changes to a .leo file, prompting if there have been changes."""
         self.c.revert()
     #@+node:ekr.20150509050755.1: *4* vc.s_command & percent_s_command
     @cmd(':%s')
@@ -2109,7 +2109,7 @@ class VimCommands:
     #@+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
     @cmd(':!')
     def shell_command(self, event=None):
-        '''Execute a shell command.'''
+        """Execute a shell command."""
         c, k = self.c, self.c.k
         if k.functionTail:
             command = k.functionTail
@@ -2120,7 +2120,7 @@ class VimCommands:
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     @cmd(':toggle-vim-mode')
     def toggle_vim_mode(self, event=None):
-        '''toggle vim-mode.'''
+        """toggle vim-mode."""
         c = self.c
         c.vim_mode = not c.vim_mode
         g.es('vim-mode: %s' % (
@@ -2140,13 +2140,13 @@ class VimCommands:
     #@+node:ekr.20140909140052.18128: *4* vc.toggle_vim_trace
     @cmd(':toggle-vim-trace')
     def toggle_vim_trace(self, event=None):
-        '''toggle vim tracing.'''
+        """toggle vim tracing."""
         self.trace_flag = not self.trace_flag
         g.es_print('vim tracing: %s' % ('On' if self.trace_flag else 'Off'))
     #@+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
     def toggle_vim_trainer_mode(self, event=None):
-        '''toggle vim-trainer mode.'''
+        """toggle vim-trainer mode."""
         self.trainer = not self.trainer
         g.es('vim-trainer-mode: %s' % (
             'on' if self.trainer else 'off'),
@@ -2154,19 +2154,19 @@ class VimCommands:
     #@+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
     @cmd(':w')
     def w_command(self, event=None):
-        '''Save the .leo file.'''
+        """Save the .leo file."""
         self.c.save()
 
     @cmd(':xa')
     def xa_command(self, event=None): # same as :xa
-        '''Save all open files and keep working.'''
+        """Save all open files and keep working."""
         for c in g.app.commanders():
             if c.isChanged():
                 c.save()
 
     @cmd(':wq')
     def wq_command(self, event=None):
-        '''Save all open files and exit.'''
+        """Save all open files and exit."""
         for c in g.app.commanders():
             c.save()
         g.app.onQuit(event)
@@ -2174,7 +2174,7 @@ class VimCommands:
     # Neither state handler nor key handlers ever return non-None.
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion
     def do_inner_motion(self, restart=False):
-        '''Handle strokes in motions.'''
+        """Handle strokes in motions."""
         try:
             assert self.in_motion
             if restart:
@@ -2197,7 +2197,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode & helper
     def do_insert_mode(self):
-        '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
+        """Handle insert mode: delegate all strokes to k.masterKeyHandler."""
         # Support the jj abbreviation when there is no selection.
         self.do_trace()
         try:
@@ -2216,7 +2216,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140807112800.18122: *5* vc.test_for_insert_escape
     def test_for_insert_escape(self, w):
-        '''Return True if the j,j escape sequence has ended insert mode.'''
+        """Return True if the j,j escape sequence has ended insert mode."""
         c = self.c
         s = w.getAllText()
         i = w.getInsertPoint()
@@ -2236,13 +2236,13 @@ class VimCommands:
         return False
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(self):
-        '''Handle strokes in normal mode.'''
+        """Handle strokes in normal mode."""
         # Unlike visual mode, there is no need to init anything,
         # because all normal mode commands call self.done.
         self.do_state(self.normal_mode_dispatch_d, 'normal')
     #@+node:ekr.20140802225657.18029: *4* vc.do_state
     def do_state(self, d, mode_name):
-        '''General dispatcher code. d is a dispatch dict.'''
+        """General dispatcher code. d is a dispatch dict."""
         try:
             func = d.get(self.stroke)
             if func:
@@ -2258,7 +2258,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140803220119.18092: *4* vc.do_visual_mode
     def do_visual_mode(self):
-        '''Handle strokes in visual mode.'''
+        """Handle strokes in visual mode."""
         try:
             self.n1 = self.n = 1
             self.do_state(self.vis_dispatch_d,
@@ -2271,11 +2271,11 @@ class VimCommands:
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140802183521.17998: *4* vc.add_to_dot
     def add_to_dot(self, stroke=None):
-        '''
+        """
         Add a new VimEvent to self.command_list.
         Never change self.command_list if self.in_dot is True
         Never add . to self.command_list
-        '''
+        """
         if not self.in_dot:
             s = stroke or self.stroke
             # Never add '.' to the dot list.
@@ -2284,14 +2284,14 @@ class VimCommands:
                 self.command_list.append(event)
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot
     def compute_dot(self, stroke):
-        '''Compute the dot and set the dot ivar.'''
+        """Compute the dot and set the dot ivar."""
         if stroke:
             self.add_to_dot(stroke)
         if self.command_list:
             self.dot_list = self.command_list[:]
     #@+node:ekr.20140810214537.18241: *4* vc.do
     def do(self, o, event=None):
-        '''Do one or more Leo commands by name.'''
+        """Do one or more Leo commands by name."""
         if not event:
             event = self.event
         if isinstance(o, (tuple, list)):
@@ -2308,32 +2308,32 @@ class VimCommands:
             g.es_print('%20s: %r' % (g.caller(), self.stroke))
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(self, w):
-        '''Return True if we are in a headline edit widget.'''
+        """Return True if we are in a headline edit widget."""
         return self.widget_name(w).startswith('head')
 
     def in_tree(self, w):
-        '''Return True if we are in the outline pane, but not in a headline.'''
+        """Return True if we are in the outline pane, but not in a headline."""
         return self.widget_name(w).startswith('canvas')
     #@+node:ekr.20140806081828.18157: *4* vc.is_body & is_head
     def is_body(self, w):
-        '''Return True if w is the QTextBrowser of the body pane.'''
+        """Return True if w is the QTextBrowser of the body pane."""
         w2 = self.c.frame.body.wrapper
         return w == w2
 
     def is_head(self, w):
-        '''Return True if w is an headline edit widget.'''
+        """Return True if w is an headline edit widget."""
         return self.widget_name(w).startswith('head')
     #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_wrapper
     def is_plain_key(self, stroke):
-        '''Return True if stroke is a plain key.'''
+        """Return True if stroke is a plain key."""
         return self.k.isPlainKey(stroke)
 
     def is_text_wrapper(self, w=None):
-        '''Return True if w is a text widget.'''
+        """Return True if w is a text widget."""
         return self.is_body(w) or self.is_head(w) or g.isTextWrapper(w)
     #@+node:ekr.20140805064952.18153: *4* vc.on_idle (no longer used)
     def on_idle(self, tag, keys):
-        '''The idle-time handler for the VimCommands class.'''
+        """The idle-time handler for the VimCommands class."""
         c = keys.get('c')
         if c and c.vim_mode and self == c.vimCommands:
             # #1273: only for vim mode.
@@ -2352,7 +2352,7 @@ class VimCommands:
                 self.set_border()
     #@+node:ekr.20140801121720.18079: *4* vc.on_same_line
     def on_same_line(self, s, i1, i2):
-        '''Return True if i1 and i2 are on the same line.'''
+        """Return True if i1 and i2 are on the same line."""
         # Ensure that i1 <= i2 and that i1 and i2 are in range.
         if i1 > i2: i1, i2 = i2, i1
         if i1 < 0: i1 = 0
@@ -2363,11 +2363,11 @@ class VimCommands:
         return s[i1: i2].count('\n') == 0
     #@+node:ekr.20140802225657.18022: *4* vc.oops
     def oops(self, message):
-        '''Report an internal error'''
+        """Report an internal error"""
         g.warning(f"Internal vim-mode error: {message}")
     #@+node:ekr.20140802120757.18001: *4* vc.save_body (handles undo)
     def save_body(self):
-        '''Undoably preserve any changes to body text.'''
+        """Undoably preserve any changes to body text."""
         c = self.c
         w = self.command_w or self.w
         name = c.widget_name(w)
@@ -2383,10 +2383,10 @@ class VimCommands:
                     oldSel=oldSel, oldText=oldText, oldYview=None)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(self, kind=None, w=None, activeFlag=None):
-        '''
+        """
         Set the border color of self.w, depending on state.
         Called from qtBody.onFocusColorHelper and self.show_status.
-        '''
+        """
         if not w:
             w = g.app.gui.get_focus()
         if not w:
@@ -2405,7 +2405,7 @@ class VimCommands:
                 pass
     #@+node:ekr.20140807070500.18161: *5* vc.set_property
     def set_property(self, w, focus_flag):
-        '''Set the property of w, depending on focus and state.'''
+        """Set the property of w, depending on focus and state."""
         c, state = self.c, self.state
         #
         # #1221: Use a style sheet based on new settings.
@@ -2436,18 +2436,18 @@ class VimCommands:
             # w.style().polish(w)
     #@+node:ekr.20140802142132.17981: *4* vc.show_dot & show_list
     def show_command(self):
-        '''Show the accumulating command.'''
+        """Show the accumulating command."""
         return ''.join([repr(z) for z in self.command_list])
 
     def show_dot(self):
-        '''Show the dot.'''
+        """Show the dot."""
         s = ''.join([repr(z) for z in self.dot_list[: 10]])
         if len(self.dot_list) > 10:
             s = s + '...'
         return s
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(self):
-        '''Show self.state and self.command_list'''
+        """Show self.state and self.command_list"""
         k = self.k
         self.set_border()
         if k.state.kind:
@@ -2470,20 +2470,20 @@ class VimCommands:
             k.setLabelBlue(s)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s, i):
-        '''Return the index of the first character on the line containing s[i]'''
+        """Return the index of the first character on the line containing s[i]"""
         if i >= len(s): i = len(s)
         while i > 0 and s[i - 1] != '\n':
             i -= 1
         return i
 
     def to_eol(self, s, i):
-        '''Return the index of the last character on the line containing s[i]'''
+        """Return the index of the last character on the line containing s[i]"""
         while i < len(s) and s[i] != '\n':
             i += 1
         return i
     #@+node:ekr.20140822072856.18256: *4* vc.visual_line_helper
     def visual_line_helper(self):
-        '''Extend the selection as necessary in visual line mode.'''
+        """Extend the selection as necessary in visual line mode."""
         bx = 'beginning-of-line-extend-selection'
         ex = 'end-of-line-extend-selection'
         w = self.w

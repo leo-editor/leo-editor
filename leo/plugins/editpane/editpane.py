@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
-'''Support for the edit-pane-test-open command and window.'''
+"""Support for the edit-pane-test-open command and window."""
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
 import leo.core.leoGlobals as g
@@ -234,7 +234,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
     #@+node:tbrown.20171028115438.11: *3* _find_gnx_node
     def _find_gnx_node(self, gnx):
-        '''Return the first position having the given gnx.'''
+        """Return the first position having the given gnx."""
         if self.c.p.gnx == gnx:
             return self.c.p
         for p in self.c.all_unique_positions():

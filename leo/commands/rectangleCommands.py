@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040146.1: * @file ../commands/rectangleCommands.py
 #@@first
-'''Leo's rectangle commands.'''
+"""Leo's rectangle commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050446.1: ** << imports >> (rectangleCommands.py)
 import leo.core.leoGlobals as g
@@ -10,7 +10,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 #@-<< imports >>
 
 def cmd(name):
-    '''Command decorator for the RectangleCommandsClass class.'''
+    """Command decorator for the RectangleCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'rectangleCommands',])
 
 #@+others
@@ -19,7 +19,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.448: *3* rectangle.ctor
     def __init__(self, c):
-        '''Ctor for RectangleCommandsClass.'''
+        """Ctor for RectangleCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
         self.theKillRectangle = []
@@ -36,16 +36,16 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         }
     #@+node:ekr.20150514063305.451: *3* check
     def check(self, event, warning='No rectangle selected'):
-        '''
+        """
         Return True if there is a selection.
         Otherwise, return False and issue a warning.
-        '''
+        """
         return self._chckSel(event, warning)
     #@+node:ekr.20150514063305.453: *3* rectangle.Entries
     #@+node:ekr.20150514063305.454: *4* clearRectangle
     @cmd('rectangle-clear')
     def clearRectangle(self, event):
-        '''Clear the rectangle defined by the start and end of selected text.'''
+        """Clear the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
@@ -61,7 +61,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
     def closeRectangle(self, event):
-        '''Delete the rectangle if it contains nothing but whitespace..'''
+        """Delete the rectangle if it contains nothing but whitespace.."""
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
@@ -85,7 +85,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.456: *4* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle(self, event):
-        '''Delete the rectangle defined by the start and end of selected text.'''
+        """Delete the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
@@ -100,7 +100,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.457: *4* killRectangle
     @cmd('rectangle-kill')
     def killRectangle(self, event):
-        '''Kill the rectangle defined by the start and end of selected text.'''
+        """Kill the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
@@ -119,10 +119,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.458: *4* openRectangle
     @cmd('rectangle-open')
     def openRectangle(self, event):
-        '''
+        """
         Insert blanks in the rectangle defined by the start and end of selected
         text. This pushes the previous contents of the rectangle rightward.
-        '''
+        """
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
@@ -138,10 +138,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.459: *4* stringRectangle
     @cmd('rectangle-string')
     def stringRectangle(self, event):
-        '''
+        """
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
-        '''
+        """
         k = self.c.k
         if g.app.unitTesting:
             k.arg = 's...s' # This string is known to the unit test.
@@ -180,7 +180,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.460: *4* yankRectangle
     @cmd('rectangle-yank')
     def yankRectangle(self, event, killRect=None):
-        '''Yank into the rectangle defined by the start and end of selected text.'''
+        """Yank into the rectangle defined by the start and end of selected text."""
         # c = self.c
         k = self.c.k
         w = self.editWidget(event)

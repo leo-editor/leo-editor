@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
-'''Configuration classes for Leo.'''
+"""Configuration classes for Leo."""
 # pylint: disable=unsubscriptable-object
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
@@ -41,7 +41,7 @@ class ParserBaseClass:
     #@@nobeautify
 
     def __init__ (self,c,localFlag):
-        '''Ctor for the ParserBaseClass class.'''
+        """Ctor for the ParserBaseClass class."""
         self.c = c
         self.clipBoard = []
         self.localFlag = localFlag
@@ -127,7 +127,7 @@ class ParserBaseClass:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20070925144337: *4* pbc.doButtons
     def doButtons(self, p, kind, name, val):
-        '''Create buttons for each @button node in an @buttons tree.'''
+        """Create buttons for each @button node in an @buttons tree."""
         c, tag = self.c, '@button'
         aList, seen = [], []
         after = p.nodeAfterTree()
@@ -168,7 +168,7 @@ class ParserBaseClass:
         self.set(p, kind, name, val)
     #@+node:ekr.20080312071248.6: *4* pbc.doCommands
     def doCommands(self, p, kind, name, val):
-        '''Handle an @commands tree.'''
+        """Handle an @commands tree."""
         aList = []; c = self.c; tag = '@command'
         seen = []
         after = p.nodeAfterTree()
@@ -262,7 +262,7 @@ class ParserBaseClass:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041120094940.4: *4* pbc.doFont
     def doFont(self, p, kind, name, val):
-        '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
+        """Handle an @font node. Such nodes affect syntax coloring *only*."""
         d = self.parseFont(p)
         # Set individual settings.
         for key in ('family', 'size', 'slant', 'weight'):
@@ -273,11 +273,11 @@ class ParserBaseClass:
                 self.set(p, setKind, name, val)
     #@+node:ekr.20150426034813.1: *4* pbc.doIfEnv
     def doIfEnv(self, p, kind, name, val):
-        '''
+        """
         Support @ifenv in @settings trees.
 
         Enable descendant settings if the value of os.getenv is in any of the names.
-        '''
+        """
         aList = name.split(',')
         if not aList:
             return 'skip'
@@ -290,7 +290,7 @@ class ParserBaseClass:
         return 'skip'
     #@+node:dan.20080410121257.2: *4* pbc.doIfHostname
     def doIfHostname(self, p, kind, name, val):
-        '''
+        """
         Support @ifhostname in @settings trees.
 
         Examples: Let h = os.environ('HOSTNAME')
@@ -299,7 +299,7 @@ class ParserBaseClass:
             Enable descendant settings if h == 'bob'
         @ifhostname !harry
             Enable descendant settings if h != 'harry'
-        '''
+        """
         lm = g.app.loadManager
         h = lm.computeMachineName().strip()
         s = name.strip()
@@ -311,7 +311,7 @@ class ParserBaseClass:
         return None
     #@+node:ekr.20041120104215: *4* pbc.doIfPlatform
     def doIfPlatform(self, p, kind, name, val):
-        '''Support @ifplatform in @settings trees.'''
+        """Support @ifplatform in @settings trees."""
         platform = sys.platform.lower()
         for s in name.split(','):
             if platform == s.lower():
@@ -329,9 +329,11 @@ class ParserBaseClass:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041217132253: *4* pbc.doInts
     def doInts(self, p, kind, name, val):
-        '''We expect either:
+        """
+        We expect either:
         @ints [val1,val2,...]aName=val
-        @ints aName[val1,val2,...]=val'''
+        @ints aName[val1,val2,...]=val
+        """
         name = name.strip() # The name indicates the valid values.
         i = name.find('[')
         j = name.find(']')
@@ -358,7 +360,7 @@ class ParserBaseClass:
             self.set(p, kind, name, val)
     #@+node:tbrown.20080514112857.124: *4* pbc.doMenuat
     def doMenuat(self, p, kind, name, val):
-        '''Handle @menuat setting.'''
+        """Handle @menuat setting."""
         if g.app.config.menusList:
             # get the patch fragment
             patch = []
@@ -520,7 +522,7 @@ class ParserBaseClass:
                 p.moveToThreadNext()
     #@+node:ekr.20060102103625.1: *4* pbc.doMode
     def doMode(self, p, kind, name, val):
-        '''Parse an @mode node and create the enter-<name>-mode command.'''
+        """Parse an @mode node and create the enter-<name>-mode command."""
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
@@ -612,7 +614,7 @@ class ParserBaseClass:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041120105609: *4* pbc.doShortcuts
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
-        '''Handle an @shortcut or @shortcuts node.'''
+        """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
         if s is None: s = p.b
         fn = d.name()
@@ -631,7 +633,7 @@ class ParserBaseClass:
                             c.k.killedBindings.append(commandName)
     #@+node:ekr.20111020144401.9585: *5* pbc.doOneShortcut
     def doOneShortcut(self, bi, commandName, p):
-        '''Handle a regular shortcut.'''
+        """Handle a regular shortcut."""
         d = self.shortcutsDict
         aList = d.get(commandName, [])
         aList.append(bi)
@@ -642,9 +644,11 @@ class ParserBaseClass:
         self.set(p, kind, name, val)
     #@+node:ekr.20041120094940.8: *4* pbc.doStrings
     def doStrings(self, p, kind, name, val):
-        '''We expect one of the following:
+        """
+        We expect one of the following:
         @strings aName[val1,val2...]=val
-        @strings [val1,val2,...]aName=val'''
+        @strings [val1,val2,...]aName=val
+        """
         name = name.strip()
         i = name.find('[')
         j = name.find(']')
@@ -782,14 +786,14 @@ class ParserBaseClass:
             d['command'] = s
     #@+node:ekr.20041120112043: *4* pbc.parseShortcutLine
     def parseShortcutLine(self, kind, s):
-        '''Parse a shortcut line.  Valid forms:
+        """Parse a shortcut line.  Valid forms:
 
         --> entry-command
         settingName = shortcut
         settingName ! paneName = shortcut
         command-name --> mode-name = binding
         command-name --> same = binding
-        '''
+        """
         # c = self.c
         s = s.replace('\x7f', '')
             # Can happen on MacOS. Very weird.
@@ -867,7 +871,7 @@ class ParserBaseClass:
             unl=(p and p.get_UNL(with_proto=True)))
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self, theme=False):
-        '''Traverse the entire settings tree.'''
+        """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
@@ -1369,7 +1373,7 @@ class GlobalConfigManager:
             self.initIvar(ivar)
     #@+node:ekr.20041117065611.1: *5* initEncoding
     def initEncoding(self, key):
-        '''Init g.app.config encoding ivars during initialization.'''
+        """Init g.app.config encoding ivars during initialization."""
         # Important: The key is munged.
         gs = self.encodingIvarsDict.get(key)
         setattr(self, gs.ivar, gs.encoding)
@@ -1377,11 +1381,13 @@ class GlobalConfigManager:
             g.es('g.app.config: bad encoding:', f"{gs.ivar}: {gs.encoding}")
     #@+node:ekr.20041117065611: *5* initIvar
     def initIvar(self, key):
-        '''Init g.app.config ivars during initialization.
+        """
+        Init g.app.config ivars during initialization.
 
         This does NOT init the corresponding commander ivars.
 
-        Such initing must be done in setIvarsFromSettings.'''
+        Such initing must be done in setIvarsFromSettings.
+        """
         # Important: the key is munged.
         d = self.ivarsDict
         gs = d.get(key)
@@ -1391,11 +1397,12 @@ class GlobalConfigManager:
         self.recentFiles = []
     #@+node:ekr.20041228042224: *4* gcm.setIvarsFromSettings
     def setIvarsFromSettings(self, c):
-        '''Init g.app.config ivars or c's ivars from settings.
+        """
+        Init g.app.config ivars or c's ivars from settings.
 
         - Called from c.initSettings with c = None to init g.app.config ivars.
         - Called from c.initSettings to init corresponding commmander ivars.
-        '''
+        """
         if g.app.loadedThemes:
             return
         if not self.inited:
@@ -1431,7 +1438,7 @@ class GlobalConfigManager:
     munge = canonicalizeSettingName
     #@+node:ekr.20051011105014: *4* gcm.exists
     def exists(self, setting, kind):
-        '''Return true if a setting of the given kind exists, even if it is None.'''
+        """Return true if a setting of the given kind exists, even if it is None."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict
         if d:
@@ -1452,9 +1459,11 @@ class GlobalConfigManager:
         return None
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
-        '''Look up the setting in d. If warn is True, warn if the requested type
+        """
+        Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
-        returns (val,exists)'''
+        returns (val,exists)
+        """
         gs = d.get(self.munge(setting))
         if not gs:
             return None, False
@@ -1476,7 +1485,7 @@ class GlobalConfigManager:
         return val, True
     #@+node:ekr.20051015093141: *5* gcm.typesMatch
     def typesMatch(self, type1, type2):
-        '''
+        """
         Return True if type1, the actual type, matches type2, the requeseted type.
 
         The following equivalences are allowed:
@@ -1484,7 +1493,7 @@ class GlobalConfigManager:
         - None matches anything.
         - An actual type of string or strings matches anything *except* shortcuts.
         - Shortcut matches shortcuts.
-        '''
+        """
         # The shortcuts logic no longer uses the get/set code.
         shortcuts = ('shortcut', 'shortcuts',)
         if type1 in shortcuts or type2 in shortcuts:
@@ -1503,29 +1512,29 @@ class GlobalConfigManager:
         return d or {}
     #@+node:ekr.20041117081009.3: *4* gcm.getBool
     def getBool(self, setting, default=None):
-        '''Return the value of @bool setting, or the default if the setting is not found.'''
+        """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
             return val
         return default
     #@+node:ekr.20070926082018: *4* gcm.getButtons
     def getButtons(self):
-        '''Return a list of tuples (x,y) for common @button nodes.'''
+        """Return a list of tuples (x,y) for common @button nodes."""
         return g.app.config.atCommonButtonsList
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting):
-        '''Return the value of @color setting.'''
+        """Return the value of @color setting."""
         col = self.get(setting, "color")
         while col and col.startswith('@'):
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands(self):
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
+        """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
     def getData(self, setting, strip_comments=True, strip_data=True):
-        '''Return a list of non-comment strings in the body text of @data setting.'''
+        """Return a list of non-comment strings in the body text of @data setting."""
         data = self.get(setting, "data")
         # New in Leo 4.12.1: add two keyword arguments, with legacy defaults.
         if data and strip_comments:
@@ -1535,11 +1544,11 @@ class GlobalConfigManager:
         return data
 
     def getOutlineData(self, setting):
-        '''Return the pastable (xml text) of the entire @outline-data tree.'''
+        """Return the pastable (xml text) of the entire @outline-data tree."""
         return self.get(setting, "outlinedata")
     #@+node:ekr.20041117093009.1: *4* gcm.getDirectory
     def getDirectory(self, setting):
-        '''Return the value of @directory setting, or None if the directory does not exist.'''
+        """Return the value of @directory setting, or None if the directory does not exist."""
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
@@ -1547,11 +1556,11 @@ class GlobalConfigManager:
         return None
     #@+node:ekr.20070224075914.1: *4* gcm.getEnabledPlugins
     def getEnabledPlugins(self):
-        '''Return the body text of the @enabled-plugins node.'''
+        """Return the body text of the @enabled-plugins node."""
         return g.app.config.enabledPluginsString
     #@+node:ekr.20041117082135: *4* gcm.getFloat
     def getFloat(self, setting):
-        '''Return the value of @float setting.'''
+        """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
             val = float(val)
@@ -1578,7 +1587,7 @@ class GlobalConfigManager:
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20041117081513: *4* gcm.getInt
     def getInt(self, setting):
-        '''Return the value of @int setting.'''
+        """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
             val = int(val)
@@ -1587,25 +1596,25 @@ class GlobalConfigManager:
             return None
     #@+node:ekr.20041117093009.2: *4* gcm.getLanguage
     def getLanguage(self, setting):
-        '''Return the setting whose value should be a language known to Leo.'''
+        """Return the setting whose value should be a language known to Leo."""
         language = self.getString(setting)
         return language
     #@+node:ekr.20070926070412: *4* gcm.getMenusList
     def getMenusList(self):
-        '''Return the list of entries for the @menus tree.'''
+        """Return the list of entries for the @menus tree."""
         aList = self.get('menus', 'menus')
         # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20070411101643: *4* gcm.getOpenWith
     def getOpenWith(self):
-        '''Return a list of dictionaries corresponding to @openwith nodes.'''
+        """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
     #@+node:ekr.20041122070752: *4* gcm.getRatio
     def getRatio(self, setting):
-        '''Return the value of @float setting.
+        """Return the value of @float setting.
 
-        Warn if the value is less than 0.0 or greater than 1.0.'''
+        Warn if the value is less than 0.0 or greater than 1.0."""
         val = self.get(setting, "ratio")
         try:
             val = float(val)
@@ -1616,21 +1625,21 @@ class GlobalConfigManager:
         return None
     #@+node:ekr.20041117062717.11: *4* gcm.getRecentFiles
     def getRecentFiles(self):
-        '''Return the list of recently opened files.'''
+        """Return the list of recently opened files."""
         return self.recentFiles
     #@+node:ekr.20041117081009.4: *4* gcm.getString
     def getString(self, setting):
-        '''Return the value of @string setting.'''
+        """Return the value of @string setting."""
         return self.get(setting, "string")
     #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
     def config_iter(self, c):
-        '''Letters:
+        """Letters:
           leoSettings.leo
         D default settings
         F loaded .leo File
         M myLeoSettings.leo
         @ @button, @command, @mode.
-        '''
+        """
         lm = g.app.loadManager
         d = c.config.settingsDict if c else lm.globalSettingsDict
         limit = c.config.getInt('print-settings-at-data-limit')
@@ -1661,7 +1670,7 @@ class GlobalConfigManager:
                 yield key2, val, c, letter
     #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName):
-        '''Return the value of the setting, if any, in myLeoSettings.leo.'''
+        """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict.d
         gs = d.get(self.munge(settingName))
@@ -1796,7 +1805,7 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
     def settingsRoot(self, theme=False):
-        '''Return the position of the @settings tree.'''
+        """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
             if p.h.rstrip() == "@settings":
@@ -1839,9 +1848,11 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20120215072959.12520: *6* getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
-        '''Look up the setting in d. If warn is True, warn if the requested type
+        """
+        Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
-        returns (val,exists)'''
+        returns (val,exists)
+        """
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None, False
         assert isinstance(gs, g.GeneralSetting), repr(gs)
@@ -1862,7 +1873,7 @@ class LocalConfigManager:
         return val, True
     #@+node:ekr.20120215072959.12521: *6* typesMatch
     def typesMatch(self, type1, type2):
-        '''
+        """
         Return True if type1, the actual type, matches type2, the requeseted type.
 
         The following equivalences are allowed:
@@ -1870,7 +1881,7 @@ class LocalConfigManager:
         - None matches anything.
         - An actual type of string or strings matches anything *except* shortcuts.
         - Shortcut matches shortcuts.
-        '''
+        """
         # The shortcuts logic no longer uses the get/set code.
         shortcuts = ('shortcut', 'shortcuts',)
         if type1 in shortcuts or type2 in shortcuts:
@@ -1889,21 +1900,21 @@ class LocalConfigManager:
         return d or {}
     #@+node:ekr.20120215072959.12523: *5* c.config.getBool
     def getBool(self, setting, default=None):
-        '''Return the value of @bool setting, or the default if the setting is not found.'''
+        """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
             return val
         return default
     #@+node:ekr.20120215072959.12525: *5* c.config.getColor
     def getColor(self, setting):
-        '''Return the value of @color setting.'''
+        """Return the value of @color setting."""
         col = self.get(setting, "color")
         while col and col.startswith('@'):
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self, setting, strip_comments=True, strip_data=True):
-        '''Return a list of non-comment strings in the body text of @data setting.'''
+        """Return a list of non-comment strings in the body text of @data setting."""
         # 904: Add local abbreviations to global settings.
         append = setting == 'global-abbreviations'
         if append:
@@ -1928,7 +1939,7 @@ class LocalConfigManager:
         return data
     #@+node:ekr.20131114051702.16542: *5* c.config.getOutlineData
     def getOutlineData(self, setting):
-        '''Return the pastable (xml) text of the entire @outline-data tree.'''
+        """Return the pastable (xml) text of the entire @outline-data tree."""
         data = self.get(setting, "outlinedata")
         if setting == 'tree-abbreviations':
             # 904: Append local tree abbreviations to the global abbreviations.
@@ -1942,7 +1953,7 @@ class LocalConfigManager:
         return data
     #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
     def getDirectory(self, setting):
-        '''Return the value of @directory setting, or None if the directory does not exist.'''
+        """Return the value of @directory setting, or None if the directory does not exist."""
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
@@ -1950,7 +1961,7 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
     def getFloat(self, setting):
-        '''Return the value of @float setting.'''
+        """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
             val = float(val)
@@ -1983,7 +1994,7 @@ class LocalConfigManager:
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20120215072959.12532: *5* c.config.getInt
     def getInt(self, setting):
-        '''Return the value of @int setting.'''
+        """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
             val = int(val)
@@ -1992,25 +2003,27 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12533: *5* c.config.getLanguage
     def getLanguage(self, setting):
-        '''Return the setting whose value should be a language known to Leo.'''
+        """Return the setting whose value should be a language known to Leo."""
         language = self.getString(setting)
         return language
     #@+node:ekr.20120215072959.12534: *5* c.config.getMenusList
     def getMenusList(self):
-        '''Return the list of entries for the @menus tree.'''
+        """Return the list of entries for the @menus tree."""
         aList = self.get('menus', 'menus')
         # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
     def getOpenWith(self):
-        '''Return a list of dictionaries corresponding to @openwith nodes.'''
+        """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
     #@+node:ekr.20120215072959.12536: *5* c.config.getRatio
     def getRatio(self, setting):
-        '''Return the value of @float setting.
+        """
+        Return the value of @float setting.
 
-        Warn if the value is less than 0.0 or greater than 1.0.'''
+        Warn if the value is less than 0.0 or greater than 1.0.
+        """
         val = self.get(setting, "ratio")
         try:
             val = float(val)
@@ -2021,7 +2034,7 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
     def getSettingSource(self, setting):
-        '''return the name of the file responsible for setting.'''
+        """return the name of the file responsible for setting."""
         d = self.settingsDict
         if d:
             assert isinstance(d, g.TypedDict), repr(d)
@@ -2039,7 +2052,7 @@ class LocalConfigManager:
         # Keys are file names.
 
     def getShortcut(self, commandName):
-        '''Return rawKey,accel for shortcutName'''
+        """Return rawKey,accel for shortcutName"""
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
@@ -2063,27 +2076,27 @@ class LocalConfigManager:
         return None, []
     #@+node:ekr.20120215072959.12540: *5* c.config.getString
     def getString(self, setting):
-        '''Return the value of @string setting.'''
+        """Return the value of @string setting."""
         return self.get(setting, "string")
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
     def getButtons(self):
-        '''Return a list of tuples (x,y) for common @button nodes.'''
+        """Return a list of tuples (x,y) for common @button nodes."""
         return g.app.config.atCommonButtonsList # unusual.
 
     def getCommands(self):
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
+        """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList # unusual.
 
     def getEnabledPlugins(self):
-        '''Return the body text of the @enabled-plugins node.'''
+        """Return the body text of the @enabled-plugins node."""
         return g.app.config.enabledPluginsString # unusual.
 
     def getRecentFiles(self):
-        '''Return the list of recently opened files.'''
+        """Return the list of recently opened files."""
         return g.app.config.getRecentFiles() # unusual
     #@+node:ekr.20140114145953.16691: *4* c.config.isLocalSetting
     def isLocalSetting(self, setting, kind):
-        '''Return True if the indicated setting comes from a local .leo file.'''
+        """Return True if the indicated setting comes from a local .leo file."""
         if not kind or kind in ('shortcut', 'shortcuts', 'openwithtable'):
             return False
         key = g.app.config.munge(setting)
@@ -2102,7 +2115,7 @@ class LocalConfigManager:
         return True
     #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile
     def isLocalSettingsFile(self):
-        '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
+        """Return true if c is not leoSettings.leo or myLeoSettings.leo"""
         c = self.c
         fn = c.shortFileName().lower()
         for fn2 in ('leoSettings.leo', 'myLeoSettings.leo'):
@@ -2111,7 +2124,7 @@ class LocalConfigManager:
         return True
     #@+node:ekr.20120224140548.10528: *4* c.exists
     def exists(self, c, setting, kind):
-        '''Return true if a setting of the given kind exists, even if it is None.'''
+        """Return true if a setting of the given kind exists, even if it is None."""
         d = self.settingsDict
         if d:
             junk, found = self.getValFromDict(d, setting, kind)
@@ -2119,7 +2132,7 @@ class LocalConfigManager:
         return False
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self):
-        '''Prints the value of every setting, except key bindings and commands and open-with tables.
+        """Prints the value of every setting, except key bindings and commands and open-with tables.
         The following shows where the active setting came from:
 
         -     leoSettings.leo,
@@ -2128,7 +2141,7 @@ class LocalConfigManager:
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
 
-        '''
+        """
         legend = '''\
     legend:
         leoSettings.leo
@@ -2171,10 +2184,10 @@ class LocalConfigManager:
         return gs.path == target_path
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
-        '''
+        """
         Find and set the indicated setting, either in the local file or in
         myLeoSettings.leo.
-        '''
+        """
         c = self.c
         p = self.findSettingsPosition(setting)
         if not p:
@@ -2201,9 +2214,9 @@ class LocalConfigManager:
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):
-    '''A class that inits settings found in an @settings tree.
+    """A class that inits settings found in an @settings tree.
 
-    Used by read settings logic.'''
+    Used by read settings logic."""
     
     # def __init__(self, c, localFlag=True):
         # super().__init__(c, localFlag)

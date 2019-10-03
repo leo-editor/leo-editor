@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.2: * @file leoBridgeTest.py
-'''
+"""
 A module that runs unit tests with the leoBridge module.
 
 All options come from sys.argv.  See scan_options for the available options.
 
 **Important**: Leo's core does not use this module in any way.
-'''
+"""
 import leo.core.leoBridge as leoBridge
 import optparse
 import sys
@@ -16,7 +16,7 @@ import sys
 #@@nobeautify
 
 def main():
-    '''The main line of leoBridgeTest.py.'''
+    """The main line of leoBridgeTest.py."""
     tag = 'leoTestBridge'
     options = scanOptions()
     bridge = leoBridge.controller(
@@ -36,7 +36,7 @@ def main():
     g.pr(tag, 'done')
 #@+node:ekr.20080730161153.4: *3* runUnitTests (leoBridgeTest.py)
 def runUnitTests(c, g):
-    '''Run all the unit tests from the leoBridge.'''
+    """Run all the unit tests from the leoBridge."""
     nodeName = 'All unit tests' # The tests to run.
     try:
         p = g.findNodeAnywhere(c, nodeName)
@@ -53,7 +53,7 @@ def runUnitTests(c, g):
         raise
 #@+node:ekr.20090121164439.6177: *3* scanOptions (leoBridgeTest.py)
 def scanOptions():
-    '''Handle all options and remove them from sys.argv.'''
+    """Handle all options and remove them from sys.argv."""
     parser = optparse.OptionParser()
     parser.add_option('--gui', dest='gui')
     parser.add_option('--path', dest='path')

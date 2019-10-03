@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.5: * @file leoDynamicTest.py
-'''
+"""
 A module to run unit tests with the leoBridge module.
 Leo's unit test code uses this module when running unit tests externally.
-'''
+"""
 g_trace = False
     # Enables the trace in main.
 trace_argv = False
@@ -28,7 +28,7 @@ import leo.core.leoBridge as leoBridge
 #@+others
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
 def main():
-    '''Run a dynamic test using the Leo bridge.'''
+    """Run a dynamic test using the Leo bridge."""
     tag = 'leoDynamicTests.leo'
     if g_trace: t1 = time.time()
     options = scanOptions()
@@ -73,7 +73,7 @@ def runUnitTests(c, g):
 #@@nobeautify
 
 def scanOptions():
-    '''Handle all options and remove them from sys.argv.'''
+    """Handle all options and remove them from sys.argv."""
     parser = optparse.OptionParser()
     parser.add_option('--path', dest='path')
     parser.add_option('--gui',  dest='gui')

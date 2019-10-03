@@ -33,7 +33,7 @@ class RopeController:
 
     #@+node:ekr.20140525065558.15806: *3* modules (RopeController)
     def modules(self):
-        '''Return full path names of all Leo modules.'''
+        """Return full path names of all Leo modules."""
         aList = g.glob_glob(g.os_path_join(g.app.loadDir, '*.py'))
         return sorted(aList)
     #@+node:ekr.20140525065558.15808: *3* path
@@ -41,7 +41,7 @@ class RopeController:
         return g.os_path_join(g.app.loadDir, fn)
     #@+node:ekr.20140525065558.15805: *3* refactor
     def refactor(self):
-        '''Perform refactorings.'''
+        """Perform refactorings."""
         proj = self.proj
         if not proj:
             g.es_print('rope not found')
@@ -61,7 +61,7 @@ class RopeController:
         # prog.do(changes)
     #@+node:ekr.20140525065558.15810: *3* run
     def run(self):
-        '''run the refactorings.'''
+        """run the refactorings."""
         proj = self.proj
         if proj:
             proj.validate(proj.root)

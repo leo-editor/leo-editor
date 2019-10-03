@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160517182239.1: * @file ../../flake8-leo.py
-'''
+"""
 This file runs flake8 on predefined lists of files.
 
 On windows, the following .bat file runs this file::
@@ -8,7 +8,7 @@ On windows, the following .bat file runs this file::
 
 On Ubuntu, the following alias runs this file::
     pyflake="python pyflake-leo.py"
-'''
+"""
 #@@language python
 #@@tabwidth -4
 # pylint: disable=invalid-name
@@ -22,7 +22,7 @@ import time
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
-    '''Call run on all tables in tables_table.'''
+    """Call run on all tables in tables_table."""
     try:
         from flake8 import engine
     except Exception:
@@ -54,7 +54,7 @@ def get_home():
     return home
 #@+node:ekr.20160517222236.1: *3* get_flake8_config
 def get_flake8_config():
-    '''Return the path to the flake8 configuration file.'''
+    """Return the path to the flake8 configuration file."""
     join = g.os_path_finalize_join
     homeDir = get_home()
     loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
@@ -73,7 +73,7 @@ def get_flake8_config():
     return None
 #@+node:ekr.20160517222332.1: *3* check_all
 def check_all(files, style):
-    '''Run flake8 on all paths.'''
+    """Run flake8 on all paths."""
     from flake8 import main
 
     report = style.check_files(paths=files)
@@ -88,7 +88,7 @@ def report_version():
         g.trace('can not import flake8')
 #@+node:ekr.20160517182239.15: ** scanOptions
 def scanOptions():
-    '''Handle all options, remove them from sys.argv.'''
+    """Handle all options, remove them from sys.argv."""
     global g_option_fn
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()

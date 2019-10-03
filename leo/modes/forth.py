@@ -159,7 +159,7 @@ rulesDictDict = {
 # Import dict for forth mode.
 importDict = {}
 class extendForth:
-    '''A helper class to extend the mode tables from @data forth-x settings.'''
+    """A helper class to extend the mode tables from @data forth-x settings."""
     def __init__(self):
         self.c = None # set by pre_init_mode function.
         #
@@ -206,7 +206,7 @@ class extendForth:
         self.verbose = False # True: tell when extending forth words.
 
     def init(self):
-        '''Set our ivars from settings.'''
+        """Set our ivars from settings."""
         c = self.c
         assert(c)
         table = (
@@ -240,9 +240,9 @@ class extendForth:
         for(ivar, setting) in table2:
             self.splitList(ivar, setting)
     def splitList(self, ivar, setting):
-        '''Process lines containing pairs of entries
+        """Process lines containing pairs of entries
         in a list whose *name* is ivar.
-        Put the results in ivars whose names are ivar1 and ivar2.'''
+        Put the results in ivars whose names are ivar1 and ivar2."""
         result1 = []; result2 = []
         aList = getattr(self, ivar)
         # Look for pairs.  Comments have already been removed.
@@ -293,8 +293,10 @@ class extendForth:
 
         return forth_defining_word_rule
     def createKeywords(self):
-        '''Create the mode keyword table and
-        entries in the rulesDict for the forth_keyword_rule'''
+        """
+        Create the mode keyword table and
+        entries in the rulesDict for the forth_keyword_rule.
+        """
         # global forth_main_keywords_dict
         # global forth_keyword_rule
         table = (
@@ -317,7 +319,7 @@ class extendForth:
                 d[z] = kind
                 self.extendRulesDict(ch=z[0], func=func)
     def createStringRule(self, d, pair):
-        '''Create an entry in d for a string keyword.'''
+        """Create an entry in d for a string keyword."""
         aList = pair.split(' ')
         if len(aList) != 2:
             g.trace('can not happen: expecting pair of forth strings:', pair)

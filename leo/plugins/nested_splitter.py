@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
-'''Nested splitter classes.'''
+"""Nested splitter classes."""
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
 try:
@@ -28,7 +28,7 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
         def __init__(self, parent=None, color=None):
-            '''Ctor for DemoWidget class.'''
+            """Ctor for DemoWidget class."""
             super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
@@ -112,7 +112,7 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
         def __init__(self, parent=None):
-            '''ctor for NestedSplitterChoice class.'''
+            """ctor for NestedSplitterChoice class."""
             super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
             button = QtWidgets.QPushButton("Action", self) # EKR: 2011/03/15
@@ -133,7 +133,7 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
-            '''Ctor for NestedSplitterHandle class.'''
+            """Ctor for NestedSplitterHandle class."""
             super().__init__(owner.orientation(), owner)
             # Confusing!
                 # self.setStyleSheet("background-color: green;")
@@ -412,7 +412,7 @@ if QtWidgets: # NOQA
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
-            '''Ctor for NestedSplitter class.'''
+            """Ctor for NestedSplitter class."""
             super().__init__(orientation, parent)
                 # This creates a NestedSplitterHandle.
             if root is None:
@@ -1014,7 +1014,7 @@ if QtWidgets: # NOQA
             return self.get_layout(_saveable=True)
         #@+node:ekr.20160416083415.1: *3* ns.get_splitter_by_name
         def get_splitter_by_name(self, name):
-            '''Return the splitter with the given objectName().'''
+            """Return the splitter with the given objectName()."""
             if self.objectName() == name:
                 return self
             for i in range(self.count()):
@@ -1208,7 +1208,7 @@ if QtWidgets: # NOQA
         #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
-    '''The main top-level function executed when this file is executed stand-alone.'''
+    """The main top-level function executed when this file is executed stand-alone."""
     app = Qt.QApplication(sys.argv)
     wdg = DemoWidget()
     wdg2 = DemoWidget()

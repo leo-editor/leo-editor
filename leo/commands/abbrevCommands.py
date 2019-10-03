@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035236.1: * @file ../commands/abbrevCommands.py
 #@@first
-'''Leo's abbreviations commands.'''
+"""Leo's abbreviations commands."""
 #@+<< imports >>
 #@+node:ekr.20150514045700.1: ** << imports >> (abbrevCommands.py)
 import leo.core.leoGlobals as g
@@ -14,21 +14,21 @@ import string
 
 
 def cmd(name):
-    '''Command decorator for the abbrevCommands class.'''
+    """Command decorator for the abbrevCommands class."""
     return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 
 #@+others
 #@+node:ekr.20160514095531.1: ** class AbbrevCommands
 class AbbrevCommandsClass(BaseEditCommandsClass):
-    '''
+    """
     A class to handle user-defined abbreviations.
     See apropos-abbreviations for details.
-    '''
+    """
     #@+others
     #@+node:ekr.20150514043850.2: *3* abbrev.Birth
     #@+node:ekr.20150514043850.3: *4* abbrev.ctor
     def __init__(self, c):
-        '''Ctor for AbbrevCommandsClass class.'''
+        """Ctor for AbbrevCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
@@ -49,7 +49,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.w = None
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self):
-        '''AbbrevCommandsClass.finishCreate.'''
+        """AbbrevCommandsClass.finishCreate."""
         self.reload_settings()
         # Annoying.
             # c = self.c
@@ -59,7 +59,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 # g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
     #@+node:ekr.20170221035644.1: *5* abbrev.reload_settings & helpers
     def reload_settings(self):
-        '''Reload all abbreviation settings.'''
+        """Reload all abbreviation settings."""
         self.abbrevs = {}
         self.init_settings()
         self.init_abbrev()
@@ -69,10 +69,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     reloadSettings = reload_settings
     #@+node:ekr.20150514043850.6: *6* abbrev.init_abbrev
     def init_abbrev(self):
-        '''
+        """
         Init the user abbreviations from @data global-abbreviations
         and @data abbreviations nodes.
-        '''
+        """
         c = self.c
         table = (
             ('global-abbreviations', 'global'),
@@ -105,10 +105,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 c.config.getString("abbreviations-next-placeholder"), 'global')
     #@+node:ekr.20150514043850.7: *6* abbrev.init_env
     def init_env(self):
-        '''
+        """
         Init c.abbrev_subst_env by executing the contents of the
         @data abbreviations-subst-env node.
-        '''
+        """
         c = self.c
         at = c.atFileCommands
         if c.abbrev_place_start and self.enabled:
@@ -141,7 +141,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.abbrev_subst_start = False
     #@+node:ekr.20150514043850.8: *6* abbrev.init_settings (called from reload_settings)
     def init_settings(self):
-        '''Called from AbbrevCommands.reload_settings aka reloadSettings.'''
+        """Called from AbbrevCommands.reload_settings aka reloadSettings."""
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
         # Init these here for k.masterCommand.
@@ -167,7 +167,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 self.subst_env = c.config.getData(key, strip_data=False)
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
-        '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
+        """Init tree_abbrevs_d from @data tree-abbreviations nodes."""
         c = self.c
         #
         # Careful. This happens early in startup.
@@ -201,7 +201,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
-        '''Init d from tree_s, the text of a copied outline.'''
+        """Init d from tree_s, the text of a copied outline."""
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
         if not hidden_root:
@@ -221,12 +221,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                         g.trace(f"no definition for {abbrev_name}")
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
-        '''
+        """
         Not a command.  Called from k.masterCommand to expand
         abbreviations in event.widget.
 
         Words start with '@'.
-        '''
+        """
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
@@ -289,10 +289,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return True
     #@+node:ekr.20161121121636.1: *4* abbrev.exec_content
     def exec_content(self, content):
-        '''Execute the content in the environment, and return the result.'''
+        """Execute the content in the environment, and return the result."""
     #@+node:ekr.20150514043850.12: *4* abbrev.expand_text
     def expand_text(self, w, i, j, val, word, expand_search=False):
-        '''Make a text expansion at location i,j of widget w.'''
+        """Make a text expansion at location i,j of widget w."""
         c = self.c
         if word == c.config.getString("abbreviations-next-placeholder"):
             val = ''
@@ -311,10 +311,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.find_place_holder(p, do_placeholder)
     #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
     def expand_tree(self, w, i, j, tree_s, word):
-        '''
+        """
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
-        '''
+        """
         c, u = self.c, self.c.undoer
         if not c.canPasteOutline(tree_s):
             g.trace(f"bad copied outline: {tree_s}")
@@ -337,7 +337,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
     #@+node:ekr.20150514043850.17: *5* abbrev.paste_tree
     def paste_tree(self, old_p, s):
-        '''Paste the tree corresponding to s (xml) into the tree.'''
+        """Paste the tree corresponding to s (xml) into the tree."""
         c = self.c
         c.fileCommands.leo_file_encoding = 'utf-8'
         p = c.pasteOutline(s=s, redrawFlag=False, undoFlag=False)
@@ -352,10 +352,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.trace('paste failed')
     #@+node:ekr.20150514043850.14: *4* abbrev.find_place_holder
     def find_place_holder(self, p, do_placeholder):
-        '''
+        """
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
-        '''
+        """
         c = self.c
         # Do #438: Search for placeholder in headline.
         s = p.h
@@ -400,7 +400,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
-        '''Make scripting substitutions in node p.'''
+        """Make scripting substitutions in node p."""
         c = self.c
         if not c.abbrev_subst_start:
             return val, False
@@ -445,7 +445,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
-        '''Make scripting substitutions in p.h.'''
+        """Make scripting substitutions in p.h."""
         c = self.c
         pattern = re.compile(r'^(.*)%s(.+)%s(.*)$' % (
             re.escape(c.abbrev_subst_start),
@@ -470,7 +470,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
     def match_prefix(self, ch, i, j, prefix, s):
-        '''A match helper.'''
+        """A match helper."""
         i = j - len(prefix)
         word = g.checkUnicode(prefix) + g.checkUnicode(ch)
         tag = 'tree'
@@ -519,7 +519,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return s2, start, end
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self):
-        '''The post pass: make script substitutions in all headlines.'''
+        """The post pass: make script substitutions in all headlines."""
         c = self.c
         if self.root:
             bunch = c.undoer.beforeChangeTree(c.p)
@@ -531,7 +531,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w, i, j, s):
-        '''Replace w[i:j] by s.'''
+        """Replace w[i:j] by s."""
         w_name = g.app.gui.widget_name(w)
         c = self.c
         if i == j:
@@ -557,7 +557,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_ins = ins + delta
     #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
     def get_ch(self, event, stroke, w):
-        '''Get the ch from the stroke.'''
+        """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
         if self.expanding: return None
         if w.hasSelection(): return None
@@ -580,7 +580,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return ch
     #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
     def get_prefixes(self, w):
-        '''Return the prefixes at the current insertion point of w.'''
+        """Return the prefixes at the current insertion point of w."""
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
         s = w.getAllText()
@@ -597,11 +597,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
     def dynamicCompletion(self, event=None):
-        '''
+        """
         dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
-        '''
+        """
         c, p = self.c, self.c.p
         w = self.editWidget(event)
         if not w: return
@@ -629,12 +629,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
     def dynamicExpansion(self, event=None):
-        '''
+        """
         dabbrev-expands (M-/ in Emacs).
 
         Inserts the longest common prefix of the word at the cursor. Displays
         all possible completions if the prefix is the same as the word.
-        '''
+        """
         w = self.editWidget(event)
         if not w:
             return
@@ -655,7 +655,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.dynamicExpandHelper(event, prefix, aList, w)
     #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(self, event, prefix=None, aList=None, w=None):
-        '''State handler for dabbrev-expands command.'''
+        """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
         self.w = w
         if prefix is None: prefix = ''
@@ -668,7 +668,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
 
     def dynamicExpandHelper1(self, event):
-        '''Finisher for dabbrev-expands.'''
+        """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
         p = c.p
         c.frame.log.deleteTab('Completion')
@@ -692,7 +692,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
     def getDynamicList(self, w, s):
-        '''Return a list of dynamic abbreviations.'''
+        """Return a list of dynamic abbreviations."""
         if self.globalDynamicAbbrevs:
             # Look in all nodes.h
             items = []
@@ -706,7 +706,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.24: *3* abbrev.static abbrevs
     #@+node:ekr.20150514043850.25: *4* abbrev.addAbbrevHelper
     def addAbbrevHelper(self, s, tag=''):
-        '''Enter the abbreviation 's' into the self.abbrevs dict.'''
+        """Enter the abbreviation 's' into the self.abbrevs dict."""
         if not s.strip():
             return
         try:
@@ -727,12 +727,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
     def killAllAbbrevs(self, event):
-        '''Delete all abbreviations.'''
+        """Delete all abbreviations."""
         self.abbrevs = {}
     #@+node:ekr.20150514043850.29: *4* abbrev.listAbbrevs
     @cmd('abbrev-list')
     def listAbbrevs(self, event=None):
-        '''List all abbreviations.'''
+        """List all abbreviations."""
         d = self.abbrevs
         if d:
             g.es_print('Abbreviations...')
@@ -749,7 +749,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
     def toggleAbbrevMode(self, event=None):
-        '''Toggle abbreviation mode.'''
+        """Toggle abbreviation mode."""
         k = self.c.k
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit()

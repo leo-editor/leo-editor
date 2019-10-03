@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
-'''Handling background processes'''
+"""Handling background processes"""
 
 import leo.core.leoGlobals as g
 import re
@@ -13,7 +13,7 @@ import subprocess
 class BackgroundProcessManager:
     #@+<< BPM docstring>>
     #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
-    '''
+    """
     #@@language rest
     #@@wrap
 
@@ -48,12 +48,12 @@ class BackgroundProcessManager:
     To run processes that *don't* produce output, just call subprocess.Popen.
     You can run as many of these process as you like, without involving the BPM
     in any way.
-    '''
+    """
     #@-<< BPM docstring>>
     #@+others
     #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self):
-        '''Ctor for the base BackgroundProcessManager class.'''
+        """Ctor for the base BackgroundProcessManager class."""
         self.data = None
             # a ProcessData instance.
         self.process_queue = []
@@ -63,10 +63,10 @@ class BackgroundProcessManager:
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20161028090624.1: *3* class ProcessData
     class ProcessData:
-        '''A class to hold data about running or queued processes.'''
+        """A class to hold data about running or queued processes."""
 
         def __init__(self, c, kind, fn, link_pattern, link_root, shell):
-            '''Ctor for the ProcessData class.'''
+            """Ctor for the ProcessData class."""
             self.c = c
             self.callback = None
             self.fn = fn
@@ -95,7 +95,7 @@ class BackgroundProcessManager:
         __str__ = __repr__
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
-        '''Check the running process, and switch if necessary.'''
+        """Check the running process, and switch if necessary."""
         if self.pid:
             if self.pid.poll() is None:
                 pass
@@ -106,7 +106,7 @@ class BackgroundProcessManager:
             self.start_next() # Start the next process.
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
-        '''End the present process.'''
+        """End the present process."""
         # Send the output to the log.
         for s in self.pid.stdout:
             self.put_log(s)
@@ -118,7 +118,7 @@ class BackgroundProcessManager:
         self.pid = None
     #@+node:ekr.20161028063800.1: *4* bpm.start_next
     def start_next(self):
-        '''The previous process has finished. Start the next one.'''
+        """The previous process has finished. Start the next one."""
         if self.process_queue:
             self.data = self.process_queue.pop(0)
             self.data.callback()
@@ -128,7 +128,7 @@ class BackgroundProcessManager:
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
-        '''Kill the presently running process, if any.'''
+        """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
         if kind == 'all':
@@ -145,15 +145,15 @@ class BackgroundProcessManager:
         self.put_log(f"{kind} finished")
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
-        '''The idle-time callback for leo.commands.checkerCommands.'''
+        """The idle-time callback for leo.commands.checkerCommands."""
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     def put_log(self, s):
-        '''
+        """
         Put a string to the originating log.
         This is not what g.es_print does!
-        '''
+        """
         # Warning: don't use g.es or g.es_print here!
         data = self.data
         s = s and s.rstrip()
@@ -200,7 +200,7 @@ class BackgroundProcessManager:
         link_root=None,
         shell=False,
     ):
-        '''Start or queue a process described by command and fn.'''
+        """Start or queue a process described by command and fn."""
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
             # 2019/06/05: don't set self.data unless we start the process!
         if self.pid:
@@ -208,7 +208,7 @@ class BackgroundProcessManager:
             # g.trace('\nQUEUE', link_root.h)
 
             def callback(data=data, kind=kind):
-                '''This is called when a process ends.'''
+                """This is called when a process ends."""
                 self.put_log('%s: %s\n' % (kind, g.shortFileName(data.fn)))
                 self.pid = subprocess.Popen(
                     command,

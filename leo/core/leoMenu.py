@@ -128,7 +128,7 @@ class LeoMenu:
         return ''.join(result)
     #@+node:ekr.20031218072017.3785: *4* LeoMenu.createMenusFromTables & helpers
     def createMenusFromTables(self):
-        '''(leoMenu) Usually over-ridden.'''
+        """(leoMenu) Usually over-ridden."""
         c = self.c
         aList = c.config.getMenusList()
         if aList:
@@ -137,10 +137,10 @@ class LeoMenu:
             g.es_print('No @menu setting found')
     #@+node:ekr.20070926135612: *5* LeoMenu.createMenusFromConfigList & helpers
     def createMenusFromConfigList(self, aList):
-        '''
+        """
         Create menus from aList.
         The 'top' menu has already been created.
-        '''
+        """
         # Called from createMenuBar.
         c = self.c
         for z in aList:
@@ -210,10 +210,10 @@ class LeoMenu:
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
     def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
-        '''
+        """
         Handle a special menu if name is the name of a special menu.
         return True if this method handles the menu.
-        '''
+        """
         c = self.c
         if table is None: table = []
         name2 = name.replace('&', '').replace(' ', '').lower()
@@ -258,14 +258,16 @@ class LeoMenu:
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
     #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey
     def computeOldStyleShortcutKey(self, s):
-        '''Compute the old-style shortcut key for @shortcuts entries.'''
+        """Compute the old-style shortcut key for @shortcuts entries."""
         # #1121: Allow Chinese characters in command names
         return s.strip()
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
     def createMenuEntries(self, menu, table, dynamicMenu=False):
-        '''Create a menu entry from the table.
+        """
+        Create a menu entry from the table.
         New in 4.4: this method shows the shortcut in the menu,
-        but this method **never** binds any shortcuts.'''
+        but this method **never** binds any shortcuts.
+        """
         c = self.c
         if g.app.unitTesting: return
         if not menu: return
@@ -335,7 +337,7 @@ class LeoMenu:
             return masterStaticMenuCallback
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
     def getMenuEntryBindings(self, command, dynamicMenu, label):
-        '''Compute commandName from command.'''
+        """Compute commandName from command."""
         c = self.c
         if isinstance(command, str):
             # Command is really a command name.
@@ -434,7 +436,7 @@ class LeoMenu:
             return None
     #@+node:ekr.20031218072017.4116: *4* LeoMenu.createOpenWithMenuFromTable & helpers
     def createOpenWithMenuFromTable(self, table):
-        '''
+        """
         Table is a list of dictionaries, created from @openwith settings nodes.
 
         This menu code uses these keys:
@@ -447,7 +449,7 @@ class LeoMenu:
             'args':     the command-line arguments to be used to open the file.
             'ext':      the file extension.
             'kind':     the method used to open the file, such as subprocess.Popen.
-        '''
+        """
         k = self.c.k
         if not table: return
         g.app.openWithTable = table # Override any previous table.
@@ -483,7 +485,7 @@ class LeoMenu:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
     def createOpenWithMenuItemsFromTable(self, menu, table):
-        '''
+        """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
         Each dictionary d has the following keys:
@@ -493,7 +495,7 @@ class LeoMenu:
         'kind':     not used here: used by efc.open_temp_file.
         'name':     menu label.
         'shortcut': optional menu shortcut.
-        '''
+        """
         c = self.c
         if g.app.unitTesting: return
         for d in table:

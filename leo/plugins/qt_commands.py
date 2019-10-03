@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
-'''Leo's Qt-related commands defined by @g.command.'''
+"""Leo's Qt-related commands defined by @g.command."""
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoConfig as leoConfig
@@ -8,7 +8,7 @@ from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init():
-    '''Top-level init function for qt_commands.py.'''
+    """Top-level init function for qt_commands.py."""
     ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
@@ -68,7 +68,7 @@ def undetach_editor(c):
 #@+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
 def showColorNames(event=None):
-    '''Put up a dialog showing color names.'''
+    """Put up a dialog showing color names."""
     c = event.get('c')
     template = '''
         QComboBox {
@@ -109,7 +109,7 @@ def showColorNames(event=None):
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
 def showColorWheel(self, event=None):
-    '''Show a Qt color dialog.'''
+    """Show a Qt color dialog."""
     c = self.c; p = c.p
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
@@ -137,7 +137,7 @@ def showColorWheel(self, event=None):
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
 def showFonts(self, event=None):
-    '''Open a tab in the log pane showing a font picker.'''
+    """Open a tab in the log pane showing a font picker."""
     c = self.c; p = c.p
 
     picker = QtWidgets.QFontDialog()
@@ -172,7 +172,7 @@ def showFonts(self, event=None):
 #@+node:ekr.20190724172314.1: ** qt: show-hide-body-dock
 @g.command('show-hide-body-dock')
 def show_hide_body_dock(event):
-    '''Show or hide the Tabs dock.'''
+    """Show or hide the Tabs dock."""
     c = event.get('c')
     dw = c and c.frame.top
     if not dw:
@@ -193,7 +193,7 @@ def show_hide_body_dock(event):
 #@+node:ekr.20190724172258.1: ** qt: show-hide-outline-dock
 @g.command('show-hide-outline-dock')
 def show_hide_outline_dock(event):
-    '''Show or hide the Outline dock.'''
+    """Show or hide the Outline dock."""
     c = event.get('c')
     dw = c and c.frame.top
     if not dw:
@@ -214,7 +214,7 @@ def show_hide_outline_dock(event):
 #@+node:ekr.20190724172547.1: ** qt: show-hide-render-dock
 @g.command('show-hide-render-dock')
 def show_hide_render_dock(event):
-    '''Show or hide the Tabs dock.'''
+    """Show or hide the Tabs dock."""
     c = event.get('c')
     dw = c and c.frame.top
     if not dw:
@@ -235,7 +235,7 @@ def show_hide_render_dock(event):
 #@+node:ekr.20190724170436.1: ** qt: show-hide-tabs-dock
 @g.command('show-hide-tabs-dock')
 def show_hide_tabs_dock(event):
-    '''Show or hide the Tabs dock.'''
+    """Show or hide the Tabs dock."""
     c = event.get('c')
     dw = c and c.frame.top
     if not dw:
@@ -256,7 +256,7 @@ def show_hide_tabs_dock(event):
 #@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
 def print_style_sheet(event):
-    '''show-style-sheet command.'''
+    """show-style-sheet command."""
     c = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()
@@ -277,7 +277,7 @@ def style_reload(event):
 #@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):
-    '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
+    """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
     c = event.get('c')
     if c:
         c.styleSheetManager.set_selected_style_sheet()

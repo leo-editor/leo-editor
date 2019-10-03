@@ -37,7 +37,7 @@ import json
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init():
-    '''Return True if the free_layout plugin can be loaded.'''
+    """Return True if the free_layout plugin can be loaded."""
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
@@ -66,7 +66,7 @@ class FreeLayoutController:
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
-        '''Ctor for FreeLayoutController class.'''
+        """Ctor for FreeLayoutController class."""
 
         # if hasattr(c,'free_layout'):
             # return
@@ -151,13 +151,13 @@ class FreeLayoutController:
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter & helper
     def get_main_splitter(self, w=None):
-        '''
+        """
         Return the splitter the main splitter, or None. The main splitter is a
         NestedSplitter that contains the body pane.
 
         Yes, the user could delete the secondary splitter but if so, there is
         not much we can do here.
-        '''
+        """
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, "bodyFrame")
@@ -168,13 +168,13 @@ class FreeLayoutController:
         return None
     #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter & helper
     def get_secondary_splitter(self):
-        '''
+        """
         Return the secondary splitter, if it exists. The secondary splitter
         contains the outline pane.
 
         Yes, the user could delete the outline pane, but if so, there is not
         much we can do here.
-        '''
+        """
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
@@ -185,7 +185,7 @@ class FreeLayoutController:
         return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
-        '''Return the top splitter of c.frame.top.'''
+        """Return the top splitter of c.frame.top."""
         # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
@@ -460,7 +460,7 @@ def free_layout_zoom(event):
     c.free_layout.get_top_splitter().zoom_toggle()
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c, provider_instance):
-    '''Register the provider instance with the top splitter.'''
+    """Register the provider instance with the top splitter."""
     # Careful: c.free_layout may not exist during unit testing.
     if c and hasattr(c, 'free_layout'):
         splitter = c.free_layout.get_top_splitter()

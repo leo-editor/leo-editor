@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3603: * @file leoUndo.py
-'''Leo's undo/redo manager.'''
+"""Leo's undo/redo manager."""
 #@+<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
 #@+at Think of the actions that may be Undone or Redone as a string of beads
@@ -121,7 +121,7 @@ class Undoer:
         self.reloadSettings()
         
     def reloadSettings(self):
-        '''Undoer.reloadSettings.'''
+        """Undoer.reloadSettings."""
         c = self.c
         self.granularity = c.config.getString('undo-granularity')
         if self.granularity:
@@ -136,7 +136,7 @@ class Undoer:
         pass
     #@+node:ekr.20150509193222.1: *4* u.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the Undoer class.'''
+        """Command decorator for the Undoer class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'undoer', ])
     #@+node:ekr.20050416092908.1: *3* u.Internal helpers
@@ -182,7 +182,7 @@ class Undoer:
         return '<no top bead>'
     #@+node:EKR.20040526150818: *4* u.getBead
     def getBead(self, n):
-        '''Set Undoer ivars from the bunch at the top of the undo stack.'''
+        """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
             return None
@@ -216,7 +216,8 @@ class Undoer:
         new_lines, new_row, new_col, new_ch,
         prev_row, prev_col
     ):
-        ''' A potentially user-modifiable method that should return True if the
+        """
+        A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
         undo with 'word' granularity.
 
@@ -228,7 +229,8 @@ class Undoer:
         new_ch is the char at the given (Tk) row, col of new_lines.
 
         The present code uses only old_ch and new_ch. The other arguments are given
-        for use by more sophisticated algorithms.'''
+        for use by more sophisticated algorithms.
+        """
         # Start a word if new_ch begins whitespace + word
         new_word_started = not old_ch.isspace() and new_ch.isspace()
         # Start a word if the cursor has been moved since the last change
@@ -418,7 +420,7 @@ class Undoer:
             g.pr(ivar, getattr(self, ivar))
     #@+node:ekr.20050410095424: *4* u.updateMarks
     def updateMarks(self, oldOrNew):
-        '''Update dirty and marked bits.'''
+        """Update dirty and marked bits."""
         u = self; c = u.c
         if oldOrNew not in ('new', 'old'):
             g.trace("can't happen")
@@ -436,7 +438,7 @@ class Undoer:
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False, dirtyVnodeList=None):
-        '''Create an undo node for general tree operations using d created by beforeChangeGroup'''
+        """Create an undo node for general tree operations using d created by beforeChangeGroup"""
         u = self; c = self.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:
@@ -470,7 +472,7 @@ class Undoer:
         u.setUndoTypes()
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
     def afterChangeNodeContents(self, p, command, bunch, dirtyVnodeList=None, inHead=False):
-        '''Create an undo node using d created by beforeChangeNode.'''
+        """Create an undo node using d created by beforeChangeNode."""
         u = self; c = self.c; w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
@@ -496,7 +498,7 @@ class Undoer:
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
     def afterChangeTree(self, p, command, bunch):
-        '''Create an undo node for general tree operations using d created by beforeChangeTree'''
+        """Create an undo node for general tree operations using d created by beforeChangeTree"""
         u = self; c = self.c; w = c.frame.body.wrapper
         if u.redoing or u.undoing: return
         # Set the types & helpers.
@@ -633,7 +635,7 @@ class Undoer:
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.8: *5* u.afterDemote
     def afterDemote(self, p, followingSibs, dirtyVnodeList):
-        '''Create an undo node for demote operations.'''
+        """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
         # Set types.
@@ -690,7 +692,7 @@ class Undoer:
         u.pushBead(bunch)
     #@+node:ekr.20050526124257: *5* u.afterMark
     def afterMark(self, p, command, bunch, dirtyVnodeList=None):
-        '''Create an undo node for mark and unmark commands.'''
+        """Create an undo node for mark and unmark commands."""
         # 'command' unused, but present for compatibility with similar methods.
         u = self
         if u.redoing or u.undoing: return
@@ -725,7 +727,7 @@ class Undoer:
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.12: *5* u.afterPromote
     def afterPromote(self, p, children, dirtyVnodeList):
-        '''Create an undo node for demote operations.'''
+        """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
         # Set types.
@@ -741,7 +743,7 @@ class Undoer:
         u.setUndoTypes()
     #@+node:ekr.20080425060424.2: *5* u.afterSort
     def afterSort(self, p, bunch, dirtyVnodeList):
-        '''Create an undo node for sort operations'''
+        """Create an undo node for sort operations"""
         u = self
         # c = self.c
         if u.redoing or u.undoing: return
@@ -752,7 +754,7 @@ class Undoer:
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
-        '''Prepare to undo a group of undoable operations.'''
+        """Prepare to undo a group of undoable operations."""
         u = self
         bunch = u.createCommonBunch(p)
         # Set types.
@@ -769,7 +771,7 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
     def beforeChangeNodeContents(self, p, oldBody=None, oldHead=None, oldYScroll=None):
-        '''Return data that gets passed to afterChangeNode'''
+        """Return data that gets passed to afterChangeNode"""
         u = self
         bunch = u.createCommonBunch(p)
         bunch.oldBody = oldBody or p.b
@@ -829,7 +831,7 @@ class Undoer:
         return bunch
     #@+node:ekr.20080425060424.3: *5* u.beforeSort
     def beforeSort(self, p, undoType, oldChildren, newChildren, sortChildren):
-        '''Create an undo node for sort operations.'''
+        """Create an undo node for sort operations."""
         u = self
         bunch = u.createCommonBunch(p)
         # Set types.
@@ -846,8 +848,8 @@ class Undoer:
         return bunch
     #@+node:ekr.20050318085432.2: *5* u.createCommonBunch
     def createCommonBunch(self, p):
-        '''Return a bunch containing all common undo info.
-        This is mostly the info for recreating an empty node at position p.'''
+        """Return a bunch containing all common undo info.
+        This is mostly the info for recreating an empty node at position p."""
         u = self; c = u.c; w = c.frame.body.wrapper
         return g.Bunch(
             oldChanged=c.isChanged(),
@@ -916,12 +918,12 @@ class Undoer:
     def setUndoTypingParams(self, p, undo_type, oldText, newText,
         oldSel=None, newSel=None, oldYview=None,
     ):
-        '''
+        """
         Save enough information to undo or redo typing operation.
 
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
-        '''
+        """
         u = self; c = u.c
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
@@ -1159,7 +1161,7 @@ class Undoer:
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event=None):
-        '''Redo the operation undone by the last undo.'''
+        """Redo the operation undone by the last undo."""
         u = self; c = u.c
         w = c.frame.body.wrapper
         if not c.p:
@@ -1265,7 +1267,7 @@ class Undoer:
         c.setCurrentPosition(u.p)
     #@+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self):
-        '''Process beads until the matching 'afterGroup' bead is seen.'''
+        """Process beads until the matching 'afterGroup' bead is seen."""
         u = self
         # Remember these values.
         c = u.c
@@ -1406,7 +1408,7 @@ class Undoer:
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self):
-        '''Redo replacement of an entire tree.'''
+        """Redo replacement of an entire tree."""
         u = self; c = u.c
         u.p = self.undoRedoTree(u.p, u.oldTree, u.newTree)
         c.selectPosition(u.p) # Does full recolor.
@@ -1559,7 +1561,7 @@ class Undoer:
         c.setCurrentPosition(u.p)
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
-        '''Process beads until the matching 'beforeGroup' bead is seen.'''
+        """Process beads until the matching 'beforeGroup' bead is seen."""
         u = self
         # Remember these values.
         c = u.c
@@ -1649,9 +1651,10 @@ class Undoer:
         c.selectPosition(u.p)
     #@+node:ekr.20050318085713.1: *4* u.undoNodeContents
     def undoNodeContents(self):
-        '''Undo all changes to the contents of a node,
+        """
+        Undo all changes to the contents of a node,
         including headline and body text, and marked bits.
-        '''
+        """
         c, u = self.c, self
         w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
@@ -1699,7 +1702,7 @@ class Undoer:
         tag="undo", # "undo" or "redo"
         undoType=None
     ):
-        '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+        """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.
         u = self; c = u.c; w = c.frame.body.wrapper
         #@+<< Compute the result using p's body text >>
@@ -1737,7 +1740,7 @@ class Undoer:
         w.seeInsertPoint() # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
     def undoRedoTree(self, p, new_data, old_data):
-        '''Replace p and its subtree using old_data during undo.'''
+        """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
         u = self; c = u.c
         if new_data is None:
@@ -1759,7 +1762,7 @@ class Undoer:
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self):
-        '''Redo replacement of an entire tree.'''
+        """Redo replacement of an entire tree."""
         u = self; c = u.c
         u.p = self.undoRedoTree(u.p, u.newTree, u.oldTree)
         c.selectPosition(u.p) # Does full recolor.

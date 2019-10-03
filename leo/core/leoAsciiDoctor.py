@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20190515070742.1: * @file leoAsciiDoctor.py
 #@@first
-'''Supports AsciiDoctor by defining the adoc command.'''
+"""Supports AsciiDoctor by defining the adoc command."""
 #@+<< imports >>
 #@+node:ekr.20190515070742.3: ** << imports >> (AsciiDoctor)
 import io
@@ -14,12 +14,12 @@ import leo.core.leoGlobals as g
 #@+<< define cmd decorator >>
 #@+node:ekr.20190515074440.1: ** << define cmd decorator >> (AsciiDoctor)
 def cmd(name):
-    '''Command decorator for the AsiiDoctorCommands class.'''
+    """Command decorator for the AsiiDoctorCommands class."""
     return g.new_cmd_decorator(name, ['c', 'asciiDoctorCommands',])
 #@-<< define cmd decorator >>
 
 class AsciiDoctorCommands:
-    '''A class to write AsiiDoctor markup in Leo outlines.'''
+    """A class to write AsiiDoctor markup in Leo outlines."""
     
     def __init__(self, c):
         self.c = c
@@ -33,7 +33,7 @@ class AsciiDoctorCommands:
     def ad_command(self, event=None):
         #@+<< adoc command docstring >>
         #@+node:ekr.20190515115100.1: *3* << adoc command docstring >>
-        '''
+        """
         The adoc command writes all @adoc nodes in the selected tree to the
         files given in each @doc node. If no @adoc nodes are found, the
         command looks up the tree.
@@ -83,7 +83,7 @@ class AsciiDoctorCommands:
             input_paths = ' '.join(paths)
             g.execute_shell_commands(['asciidoctor %s' % input_paths])
 
-        '''
+        """
         #@-<< adoc command docstring >>
 
         def predicate(p):
@@ -117,7 +117,7 @@ class AsciiDoctorCommands:
     ad_pattern = re.compile(r'^@(adoc|ascii-doctor)')
 
     def ad_filename(self, p):
-        '''Return the filename of the @ad node, or None.'''
+        """Return the filename of the @ad node, or None."""
         h = p.h.rstrip()
         m = self.ad_pattern.match(h)
         if not m:
@@ -126,7 +126,7 @@ class AsciiDoctorCommands:
         return h[1+len(prefix):].strip()
     #@+node:ekr.20190515091706.1: ** adoc.open_file & helper
     def open_file(self, fn):
-        '''Open the file, returning (fn, f)'''
+        """Open the file, returning (fn, f)"""
         fn = g.os_path_finalize_join(self.base_directory, fn)
         if not self.create_directory(fn):
             return fn, None
@@ -138,13 +138,13 @@ class AsciiDoctorCommands:
             return fn, None
     #@+node:ekr.20190515070742.79: *3* adoc.create_directory
     def create_directory(self, fn):
-        '''
+        """
         Create the directory for fn if
         a) it doesn't exist and
         b) the user options allow it.
 
         Return True if the directory existed or was made.
-        '''
+        """
         c = self.c
         theDir, junk = g.os_path_split(fn)
         theDir = g.os_path_finalize(theDir) # #1341.
@@ -156,7 +156,7 @@ class AsciiDoctorCommands:
         return ok
     #@+node:ekr.20190515070742.24: ** adoc.write_root & helpers
     def write_root(self, root):
-        '''Process all nodes in an @ad tree.'''
+        """Process all nodes in an @ad tree."""
         fn =  self.ad_filename(root)
         if not fn:
             g.es_print('Can not happen: not a @ad node: %r' % root.h)
@@ -189,22 +189,22 @@ class AsciiDoctorCommands:
     title_pattern = re.compile(r'^= ')
 
     def compute_level_offset(self, root):
-        '''
+        """
         Return 1 if the root.b contains a title.  Otherwise 0.
-        '''
+        """
         for line in g.splitLines(root.b):
             if self.title_pattern.match(line):
                 return 1
         return 0
     #@+node:ekr.20190515070742.38: *3* adoc.write_body
     def write_body(self, p):
-        '''Write p.b'''
+        """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
         self.output_file.write(g.ensureTrailingNewlines(p.b, 2))
     #@+node:ekr.20190515070742.47: *3* adoc.write_headline
     def write_headline(self, p):
-        '''Generate an AsciiDoctor section'''
+        """Generate an AsciiDoctor section"""
         if not p.h.strip():
             return
         section = '=' * max(0, self.level_offset + p.level() - self.root_level)

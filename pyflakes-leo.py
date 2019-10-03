@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160518000549.1: * @file ../../pyflakes-leo.py
-'''
+"""
 This file runs pyflakes on predefined lists of files.
 
 On windows, the following .bat file runs this file::
@@ -8,7 +8,7 @@ On windows, the following .bat file runs this file::
 
 On Ubuntu, the following alias runs this file::
     pyflake="python pyflake-leo.py"
-'''
+"""
 #@@language python
 #@@tabwidth -4
 # pylint: disable=invalid-name
@@ -25,7 +25,7 @@ import time
 #@+others
 #@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
-    '''Call main in all given files.'''
+    """Call main in all given files."""
     t1 = time.time()
     for fn in files:
         # Report the file name.
@@ -48,7 +48,7 @@ def report_version():
         g.trace('can not import flake8')
 #@+node:ekr.20160518000549.15: ** scanOptions
 def scanOptions():
-    '''Handle all options, remove them from sys.argv.'''
+    """Handle all options, remove them from sys.argv."""
     global g_option_fn
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()

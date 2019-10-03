@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
-'''Leo's beautification classes.'''
+"""Leo's beautification classes."""
 #@+<< imports >>
 #@+node:ekr.20150530081336.1: ** << imports >>
 try:
@@ -38,7 +38,7 @@ except Exception:
 @g.command('beautify-c')
 @g.command('pretty-print-c')
 def beautifyCCode(event):
-    '''Beautify all C code in the selected tree.'''
+    """Beautify all C code in the selected tree."""
     c = event.get('c')
     if not c:
         return
@@ -69,7 +69,7 @@ def beautifyCCode(event):
 @g.command('beautify-node')
 @g.command('pretty-print-node')
 def prettyPrintPythonNode(event):
-    '''Beautify a single Python node.'''
+    """Beautify a single Python node."""
     c = event.get('c')
     if not c:
         return
@@ -93,7 +93,7 @@ def prettyPrintPythonNode(event):
 @g.command('beautify-tree')
 @g.command('pretty-print-tree')
 def beautifyPythonTree(event):
-    '''Beautify the Python code in the selected outline.'''
+    """Beautify the Python code in the selected outline."""
     c = event.get('c')
     p0 = event.get('p0')
     # is_auto = bool(p0)
@@ -156,9 +156,9 @@ def beautifyPythonTree(event):
 @g.command('blkc')
 @g.command('blacken-check-tree')
 def blacken_check_tree(event):
-    '''
+    """
     Run black on all nodes of the selected tree, reporting only errors.
-    '''
+    """
     c = event.get('c')
     if not c:
         return
@@ -169,9 +169,9 @@ def blacken_check_tree(event):
 #@+node:ekr.20190829163640.1: *3* blacken-diff-node
 @g.command('blacken-diff-node')
 def blacken_diff_node(event):
-    '''
+    """
     Run black on all nodes of the selected node.
-    '''
+    """
     c = event.get('c')
     if not c:
         return
@@ -183,10 +183,10 @@ def blacken_diff_node(event):
 @g.command('blkd')
 @g.command('blacken-diff-tree')
 def blacken_diff_tree(event):
-    '''
+    """
     Run black on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
-    '''
+    """
     c = event.get('c')
     if not c:
         return
@@ -197,9 +197,9 @@ def blacken_diff_tree(event):
 #@+node:ekr.20190725155006.1: *3* blacken-node
 @g.command('blacken-node')
 def blacken_node(event):
-    '''
+    """
     Run black on all nodes of the selected node.
-    '''
+    """
     c = event.get('c')
     if not c:
         return
@@ -211,10 +211,10 @@ def blacken_node(event):
 @g.command('blk')
 @g.command('blacken-tree')
 def blacken_tree(event):
-    '''
+    """
     Run black on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
-    '''
+    """
     c = event.get('c')
     if not c:
         return
@@ -225,7 +225,7 @@ def blacken_tree(event):
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
-    '''External entry point for Leo's beautifier.'''
+    """External entry point for Leo's beautifier."""
     t1 = time.time()
     base = g.os_path_abspath(os.curdir)
     files, options = scan_options()
@@ -235,7 +235,7 @@ def main():
     print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
-    '''Beautify the file with the given path.'''
+    """Beautify the file with the given path."""
     fn = g.shortFileName(path)
     s, e = g.readFileIntoString(path)
     if not s:
@@ -282,7 +282,7 @@ def beautify(options, path):
         f.write(s2_e)
 #@+node:ekr.20150601162203.1: *4* scan_options (stand alone)
 def scan_options():
-    '''Handle all options. Return a list of files.'''
+    """Handle all options. Return a list of files."""
     # This automatically implements the --help option.
     usage = "usage: python -m leo.core.leoBeautify file1, file2, ..."
     parser = optparse.OptionParser(usage=usage)
@@ -305,10 +305,10 @@ def scan_options():
     return files, options
 #@+node:ekr.20150602154951.1: *3* should_beautify
 def should_beautify(p):
-    '''
+    """
     Return True if @beautify is in effect for node p.
     Ambiguous directives have no effect.
-    '''
+    """
     for p2 in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p2)
         if 'killbeautify' in d:
@@ -336,14 +336,14 @@ def should_beautify(p):
     return True
 #@+node:ekr.20150602204440.1: *3* should_kill_beautify
 def should_kill_beautify(p):
-    '''Return True if p.b contains @killbeautify'''
+    """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
 #@+node:ekr.20190908033048.1: ** class AstNotEqual (Exception)
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
-    '''A class to run black on all Python @<file> nodes in c.p's tree.'''
+    """A class to run black on all Python @<file> nodes in c.p's tree."""
 
     # tag1 must be executable, and can't be pass.
     tag1 = "if 1: print('') # black-tag1:::"
@@ -369,7 +369,7 @@ class BlackCommand:
         self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
     #@+node:ekr.20190725154916.7: *3* black.blacken_node
     def blacken_node(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
+        """Run black on all Python @<file> nodes in root's tree."""
         c = self.c
         if not black or not root:
             return
@@ -389,7 +389,7 @@ class BlackCommand:
             c.redraw()
     #@+node:ekr.20190729065756.1: *3* black.blacken_tree
     def blacken_tree(self, root, diff_flag, check_flag=False):
-        '''Run black on all Python @<file> nodes in root's tree.'''
+        """Run black on all Python @<file> nodes in root's tree."""
         c = self.c
         if not black or not root:
             return
@@ -419,11 +419,11 @@ class BlackCommand:
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
     def blacken_node_helper(self, p, check_flag, diff_flag):
-        '''
+        """
         blacken p.b, incrementing counts and stripping unnecessary blank lines.
         
         Return True if p.b was actually changed.
-        '''
+        """
         trace = 'black' in g.app.debug and not g.unitTesting
         if not should_beautify(p):
             return False
@@ -493,7 +493,7 @@ class CPrettyPrinter:
     #@+others
     #@+node:ekr.20110917174948.6904: *3* cpp.__init__
     def __init__(self, c):
-        '''Ctor for CPrettyPrinter class.'''
+        """Ctor for CPrettyPrinter class."""
         self.c = c
         self.brackets = 0
             # The brackets indentation level.
@@ -509,7 +509,7 @@ class CPrettyPrinter:
             # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
-        '''Beautify a node with @language C in effect.'''
+        """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return None
         if not p.b:
@@ -600,9 +600,9 @@ class CPrettyPrinter:
         return i
     #@+node:ekr.20110918225821.6817: *5* skip_parens
     def skip_parens(self, s, i):
-        '''Skips from the opening ( to the matching ).
+        """Skips from the opening ( to the matching ).
 
-        If no matching is found i is set to len(s)'''
+        If no matching is found i is set to len(s)"""
         assert self.match(s, i, '(')
         level = 0
         while i < len(s):
@@ -620,7 +620,7 @@ class CPrettyPrinter:
         return i
     #@+node:ekr.20110918225821.6818: *5* skip_statement
     def skip_statement(self, s, i):
-        '''Skip to the next ';' or '}' token.'''
+        """Skip to the next ';' or '}' token."""
         while i < len(s):
             if s[i] in ';}':
                 i += 1
@@ -630,12 +630,12 @@ class CPrettyPrinter:
         return i
     #@+node:ekr.20110917204542.6967: *4* put_token & helpers
     def put_token(self, s):
-        '''Append token s to self.result as is,
+        """Append token s to self.result as is,
         *except* for adjusting leading whitespace and comments.
 
         '{' tokens bump self.brackets or self.ignored_brackets.
         self.brackets determines leading whitespace.
-        '''
+        """
         if s == '{':
             self.brackets += 1
         elif s == '}':
@@ -664,7 +664,7 @@ class CPrettyPrinter:
             self.result.append(s)
     #@+node:ekr.20110917204542.6968: *5* prev_token
     def prev_token(self, s):
-        '''Return the previous token, ignoring whitespace and comments.'''
+        """Return the previous token, ignoring whitespace and comments."""
         i = len(self.result) - 1
         while i >= 0:
             s2 = self.result[i]
@@ -679,7 +679,7 @@ class CPrettyPrinter:
         return s
     #@+node:ekr.20110917204542.6969: *5* remove_indent
     def remove_indent(self):
-        '''Remove one tab-width of blanks from the previous token.'''
+        """Remove one tab-width of blanks from the previous token."""
         w = abs(self.tab_width)
         if self.result:
             s = self.result[-1]
@@ -696,7 +696,7 @@ class CPrettyPrinter:
         return i < len(s) and s[i] == pat
     #@+node:ekr.20110917174948.6930: *3* cpp.tokenize & helper
     def tokenize(self, s):
-        '''Tokenize comments, strings, identifiers, whitespace and operators.'''
+        """Tokenize comments, strings, identifiers, whitespace and operators."""
         i, result = 0, []
         while i < len(s):
             # Loop invariant: at end: j > i and s[i:j] is the new token.
@@ -747,12 +747,12 @@ class CPrettyPrinter:
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
-    '''A token-based Python beautifier.'''
+    """A token-based Python beautifier."""
 
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
     class OutputToken:
-        '''A class representing Output Tokens'''
+        """A class representing Output Tokens"""
 
         def __init__(self, kind, value):
             self.kind = kind
@@ -768,14 +768,14 @@ class PythonTokenBeautifier:
             return f"{self.kind} {val}"
 
         def to_string(self):
-            '''
+            """
             Convert an output token to a string.
             Note: repr shows the length of line-indent string.
-            '''
+            """
             return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
-        '''
+        """
         A class representing items in the parse state stack.
         
         The present states:
@@ -792,7 +792,7 @@ class PythonTokenBeautifier:
             do_name():      push_state('indent', self.level)
             do_dendent():   pops the stack once or twice if state.value == self.level.
 
-        '''
+        """
 
         def __init__(self, kind, value):
             self.kind = kind
@@ -806,7 +806,7 @@ class PythonTokenBeautifier:
     #@@nobeautify
 
     def __init__(self, c):
-        '''Ctor for PythonPrettyPrinter class.'''
+        """Ctor for PythonPrettyPrinter class."""
         self.c = c
         #
         # Globals...
@@ -955,10 +955,10 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
     def prettyPrintNode(self, p):
-        '''
+        """
         The driver for beautification: beautify a single node.
         Return True if the node was actually changed.
-        '''
+        """
         if not should_beautify(p):
             # @nobeautify is in effect.
             return False
@@ -1092,10 +1092,10 @@ class PythonTokenBeautifier:
         return changed
     #@+node:ekr.20150526194715.1: *4* ptb.run
     def run(self, tokens):
-        '''
+        """
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
-        '''
+        """
 
         def oops():
             g.trace('unknown kind', self.kind)
@@ -1139,7 +1139,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
-        '''Handle a comment token.'''
+        """Handle a comment token."""
         raw_val = self.raw_val.rstrip()
         val = self.val.rstrip()
         entire_line = raw_val.lstrip().startswith('#')
@@ -1153,17 +1153,17 @@ class PythonTokenBeautifier:
             self.add_token('comment', val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
-        '''Handle an endmarker token.'''
+        """Handle an endmarker token."""
         pass
     #@+node:ekr.20041021102340.1: *4* ptb.do_errortoken
     def do_errortoken(self):
-        '''Handle an errortoken token.'''
+        """Handle an errortoken token."""
         # This code is executed for versions of Python earlier than 2.4
         if self.val == '@':
             self.op(self.val)
     #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
     def do_dedent(self):
-        '''Handle dedent token.'''
+        """Handle dedent token."""
         self.level -= 1
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
@@ -1179,14 +1179,14 @@ class PythonTokenBeautifier:
                     # self.blank_lines(2 if self.level == 0 else 1)
 
     def do_indent(self):
-        '''Handle indent token.'''
+        """Handle indent token."""
         self.level += 1
         self.lws = self.val
         self.line_indent()
             # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
-        '''Handle a name token.'''
+        """Handle a name token."""
         name = self.val
         if name in ('class', 'def'):
             self.decorator_seen = False
@@ -1208,20 +1208,20 @@ class PythonTokenBeautifier:
             self.word(name)
     #@+node:ekr.20041021101911.3: *4* ptb.do_newline
     def do_newline(self):
-        '''Handle a regular newline.'''
+        """Handle a regular newline."""
         self.line_end()
     #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
     def do_nl(self):
-        '''Handle a continuation line.'''
+        """Handle a continuation line."""
         self.line_end()
     #@+node:ekr.20041021101911.6: *4* ptb.do_number
     def do_number(self):
-        '''Handle a number token.'''
+        """Handle a number token."""
         assert isinstance(self.val, str), repr(self.val)
         self.add_token('number', self.val)
     #@+node:ekr.20040711135244.11: *4* ptb.do_op
     def do_op(self):
-        '''Handle an op token.'''
+        """Handle an op token."""
         val = self.val
         if val == '.':
             self.op_no_blanks(val)
@@ -1267,7 +1267,7 @@ class PythonTokenBeautifier:
             self.op(val)
     #@+node:ekr.20150526204248.1: *4* ptb.do_string (sets backslash_seen)
     def do_string(self):
-        '''Handle a 'string' token.'''
+        """Handle a 'string' token."""
         self.add_token('string', self.val)
         if self.val.find('\\\n'):
             self.backslash_seen = False
@@ -1276,33 +1276,33 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
-        '''
+        """
         Add a token to the code list.
         
         The blank-lines token is the only token whose value isn't a string.
         OutputToken.to_string() ignores such tokens.
-        '''
+        """
         if kind != 'blank-lines':
             assert isinstance(value, str), g.callers()
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
-        '''
+        """
         Add a backslash token and clear .backslash_seen.
         
         Called in two places:
             
         - run()         if srow != last_line_number.
         - line_end()    if backslash_seen.
-        '''
+        """
         self.add_token('backslash', '\\')
         self.add_token('line-end', '\n')
         self.line_indent()
         self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
-        '''Add a blank request on the code list.'''
+        """Add a blank request on the code list."""
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
@@ -1317,7 +1317,7 @@ class PythonTokenBeautifier:
             self.add_token('blank', ' ')
     #@+node:ekr.20190915083748.1: *4* ptb.blank_before_end_line_comment
     def blank_before_end_line_comment(self):
-        '''Add two blanks before an end-of-line comment.'''
+        """Add two blanks before an end-of-line comment."""
         prev = self.code_list[-1]
         self.clean('blank')
         if prev.kind not in ('blank-lines', 'file-start', 'line-end', 'line-indent'):
@@ -1325,10 +1325,10 @@ class PythonTokenBeautifier:
             self.add_token('blank', ' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
     def blank_lines(self, n):
-        '''
+        """
         Add a request for n blank lines to the code list.
         Multiple blank-lines request yield at least the maximum of all requests.
-        '''
+        """
         self.clean_blank_lines()
         kind = self.code_list[-1].kind
         if kind == 'file-start':
@@ -1341,19 +1341,19 @@ class PythonTokenBeautifier:
         self.line_indent()
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self, kind):
-        '''Remove the last item of token list if it has the given kind.'''
+        """Remove the last item of token list if it has the given kind."""
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
     #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
     def clean_blank_lines(self):
-        '''Remove all vestiges of previous lines.'''
+        """Remove all vestiges of previous lines."""
         table = ('blank-lines', 'line-end', 'line-indent')
         while self.code_list[-1].kind in table:
             self.code_list.pop()
     #@+node:ekr.20190915120431.1: *4* ptb.colon
     def colon(self, val):
-        '''Handle a colon.'''
+        """Handle a colon."""
         if self.square_brackets_level > 0:
             # Put blanks on either side of the colon,
             # but not between commas, and not next to [.
@@ -1368,29 +1368,29 @@ class PythonTokenBeautifier:
             self.op_blank(val)
     #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
     def file_end(self):
-        '''
+        """
         Add a file-end token to the code list.
         Retain exactly one line-end token.
-        '''
+        """
         self.clean_blank_lines()
         self.add_token('line-end', '\n')
         self.add_token('line-end', '\n')
         self.add_token('file-end')
 
     def file_start(self):
-        '''Add a file-start token to the code list and the state stack.'''
+        """Add a file-start token to the code list and the state stack."""
         self.add_token('file-start')
         self.push_state('file-start')
     #@+node:ekr.20150530190758.1: *4* ptb.line_indent
     def line_indent(self, ws=None):
-        '''Add a line-indent token if indentation is non-empty.'''
+        """Add a line-indent token if indentation is non-empty."""
         self.clean('line-indent')
         ws = ws or self.lws
         if ws:
             self.add_token('line-indent', ws)
     #@+node:ekr.20150526201701.9: *4* ptb.line_end & split/join helpers
     def line_end(self):
-        '''Add a line-end request to the code list.'''
+        """Add a line-end request to the code list."""
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
             return
@@ -1412,11 +1412,11 @@ class PythonTokenBeautifier:
             # until the next indent or unindent token.
     #@+node:ekr.20190908054807.1: *5* ptb.break_line (new) & helpers
     def break_line(self):
-        '''
+        """
         Break the preceding line, if necessary.
         
         Return True if the line was broken into two or more lines.
-        '''
+        """
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
             # Must be called just after inserting the line-end token.
         #
@@ -1452,7 +1452,7 @@ class PythonTokenBeautifier:
         return True
     #@+node:ekr.20190908065154.1: *6* ptb.append_tail
     def append_tail(self, prefix, tail):
-        '''Append the tail tokens, splitting the line further as necessary.'''
+        """Append the tail tokens, splitting the line further as necessary."""
         tail_s = ''.join([z.to_string() for z in tail])
         if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
@@ -1519,7 +1519,7 @@ class PythonTokenBeautifier:
         g.trace('BAD DELIMS', delim_count)
     #@+node:ekr.20190908050434.1: *6* ptb.find_prev_line (new)
     def find_prev_line(self):
-        '''Return the previous line, as a list of tokens.'''
+        """Return the previous line, as a list of tokens."""
         line = []
         for t in reversed(self.code_list[: -1]):
             if t.kind == 'line-end':
@@ -1554,10 +1554,10 @@ class PythonTokenBeautifier:
         )
     #@+node:ekr.20190909020458.1: *5* ptb.join_lines (new) & helpers
     def join_lines(self):
-        '''
+        """
         Join preceding lines, if the result would be short enough.
         Should be called only at the end of a line.
-        '''
+        """
         # Must be called just after inserting the line-end token.
         trace = False and not g.unitTesting
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
@@ -1577,7 +1577,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):
-        '''Generate code for a left paren or curly/square bracket.'''
+        """Generate code for a left paren or curly/square bracket."""
         assert s in '([{', repr(s)
         if s == '(':
             self.paren_level += 1
@@ -1603,7 +1603,7 @@ class PythonTokenBeautifier:
             self.op_no_blanks(s)
     #@+node:ekr.20190915070502.1: *5* ptb.rt
     def rt(self, s):
-        '''Generate code for a right paren or curly/square bracket.'''
+        """Generate code for a right paren or curly/square bracket."""
         assert s in ')]}', repr(s)
         if s == ')':
             self.paren_level -= 1
@@ -1623,7 +1623,7 @@ class PythonTokenBeautifier:
         self.add_token('rt', s)
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self, s):
-        '''Add op token to code list.'''
+        """Add op token to code list."""
         assert s and isinstance(s, str), repr(s)
         if self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
             # Treat arithmetic ops differently.
@@ -1635,7 +1635,7 @@ class PythonTokenBeautifier:
             self.blank()
 
     def op_blank(self, s):
-        '''Remove a preceding blank token, then add op and blank tokens.'''
+        """Remove a preceding blank token, then add op and blank tokens."""
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
         if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
@@ -1645,12 +1645,12 @@ class PythonTokenBeautifier:
             self.blank()
 
     def op_no_blanks(self, s):
-        '''Add an operator *not* surrounded by blanks.'''
+        """Add an operator *not* surrounded by blanks."""
         self.clean('blank')
         self.add_token('op-no-blanks', s)
     #@+node:ekr.20150527213419.1: *4* ptb.possible_unary_op & unary_op
     def possible_unary_op(self, s):
-        '''Add a unary or binary op to the token list.'''
+        """Add a unary or binary op to the token list."""
         self.clean('blank')
         prev = self.code_list[-1]
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
@@ -1667,13 +1667,13 @@ class PythonTokenBeautifier:
             self.op(s)
 
     def unary_op(self, s):
-        '''Add an operator request to the code list.'''
+        """Add an operator request to the code list."""
         assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20150531051827.1: *4* ptb.star_op (no change)
     def star_op(self):
-        '''Put a '*' op, with special cases for *args.'''
+        """Put a '*' op, with special cases for *args."""
         val = '*'
         if self.paren_level > 0:
             i = len(self.code_list) - 1
@@ -1691,7 +1691,7 @@ class PythonTokenBeautifier:
             self.op(val)
     #@+node:ekr.20150531053417.1: *4* ptb.star_star_op (no changed)
     def star_star_op(self):
-        '''Put a ** operator, with a special case for **kwargs.'''
+        """Put a ** operator, with a special case for **kwargs."""
         val = '**'
         if self.paren_level > 0:
             i = len(self.code_list) - 1
@@ -1707,7 +1707,7 @@ class PythonTokenBeautifier:
             self.op(val)
     #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
     def word(self, s):
-        '''Add a word request to the code list.'''
+        """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         if self.in_arg_list > 0:
             pass
@@ -1717,7 +1717,7 @@ class PythonTokenBeautifier:
         self.blank()
 
     def word_op(self, s):
-        '''Add a word-op request to the code list.'''
+        """Add a word-op request to the code list."""
         assert s and isinstance(s, str), repr(s)
         self.blank()
         self.add_token('word-op', s)
@@ -1725,7 +1725,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
     #@+node:ekr.20150528171420.1: *4* ptb.replace_body
     def replace_body(self, p, s):
-        '''Replace the body with the pretty version.'''
+        """Replace the body with the pretty version."""
         c, u = self.c, self.c.undoer
         undoType = 'Pretty Print'
         if p.b == s:
@@ -1743,7 +1743,7 @@ class PythonTokenBeautifier:
         u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150528180738.1: *4* ptb.end_undo
     def end_undo(self):
-        '''Complete undo processing.'''
+        """Complete undo processing."""
         c = self.c
         u = c.undoer
         undoType = 'Pretty Print'
@@ -1753,11 +1753,11 @@ class PythonTokenBeautifier:
             u.afterChangeGroup(current, undoType, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20190909072007.1: *4* ptb.find_delims (new)
     def find_delims(self, tokens):
-        '''
+        """
         Compute the net number of each kind of delim in the given range of tokens.
         
         Return (curlies, parens, squares)
-        '''
+        """
         parens, curlies, squares = 0, 0, 0
         for token in tokens:
             value = token.value
@@ -1795,7 +1795,7 @@ class PythonTokenBeautifier:
         )
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
-        '''Append a state to the state stack.'''
+        """Append a state to the state stack."""
         state = self.ParseState(kind, value)
         self.state_stack.append(state)
     #@-others
@@ -1842,7 +1842,7 @@ class SyntaxSanitizer:
     #@+others
     #@+node:ekr.20190910022637.2: *3* sanitize.comment_leo_lines
     def comment_leo_lines(self, p=None, s0=None):
-        '''
+        """
         Replace lines containing Leonine syntax with **special comment lines** of the form:
             
             {lws}#{marker}{line}
@@ -1853,7 +1853,7 @@ class SyntaxSanitizer:
         - line is the original line, unchanged.
         
         This convention allows uncomment_special_lines to restore these lines.
-        '''
+        """
         # Choose a marker that appears nowhere in s.
         if p:
             s0 = p.b
@@ -1917,15 +1917,15 @@ class SyntaxSanitizer:
         return comment, ''.join(result)
     #@+node:ekr.20190910022637.3: *3* sanitize.starts_doc_part & ends_doc_part
     def starts_doc_part(self, s):
-        '''Return True if s word matches @ or @doc.'''
+        """Return True if s word matches @ or @doc."""
         return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
 
     def ends_doc_part(self, s):
-        '''Return True if s word matches @c or @code.'''
+        """Return True if s word matches @c or @code."""
         return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
     #@+node:ekr.20190910022637.4: *3* sanitize.uncomment_leo_lines
     def uncomment_leo_lines(self, comment, p, s0):
-        '''Reverse the effect of comment_leo_lines.'''
+        """Reverse the effect of comment_leo_lines."""
         lines = g.splitLines(s0)
         i, result = 0, []
         while i < len(lines):
@@ -1942,7 +1942,7 @@ class SyntaxSanitizer:
         return ''.join(result).rstrip() + '\n'
     #@+node:ekr.20190910022637.5: *3* sanitize.uncomment_special_line & helpers
     def uncomment_special_lines(self, comment, i, lines, p, result, s):
-        '''
+        """
         This method restores original lines from the special comment lines
         created by comment_leo_lines. These lines have the form:
             
@@ -1956,7 +1956,7 @@ class SyntaxSanitizer:
         s is a line containing the comment delim.
         i points at the *next* line.
         Handle one or more lines, appending stripped lines to result.
-        '''
+        """
         #
         # Delete the lws before the comment.
         # This works because the tail contains the original whitespace.

@@ -2,13 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181202062518.1: * @file leoFastRedraw.py
 #@@first
-'''
+"""
 Gui-independent fast-redraw code.
 
 For an explanation, see this thread:
 https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
 
-'''
+"""
 import leo.core.leoGlobals as g
 import difflib
 import re
@@ -18,7 +18,7 @@ class FastRedraw:
     #@+others
     #@+node:ekr.20181202060924.4: ** LeoGui.dump_diff_op_codes
     def dump_diff_op_codes(self, a, b, op_codes):
-        '''Dump the opcodes returned by difflib.SequenceMatcher.'''
+        """Dump the opcodes returned by difflib.SequenceMatcher."""
         
         def summarize(aList):
             pat = re.compile(r'.*:.*:(.*)')
@@ -38,7 +38,7 @@ class FastRedraw:
                 print('unknown tag')
     #@+node:ekr.20181202060924.5: ** LeoGui.dump_opcodes
     def dump_opcodes(self, opcodes):
-        '''Dump the opcodes returned by app.peep_hole and app.make_redraw_list.'''
+        """Dump the opcodes returned by app.peep_hole and app.make_redraw_list."""
         for z in opcodes:
             kind = z[0]
             if kind == 'replace':
@@ -54,7 +54,7 @@ class FastRedraw:
                 print(z)
     #@+node:ekr.20181202060924.2: ** LeoGui.flatten_outline
     def flatten_outline (self, c):
-        '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
+        """Return a flat list of strings "level:gnx" for all *visible* positions."""
         trace = False and not g.unitTesting
         t1 = time.process_time()
         aList = []
@@ -67,7 +67,7 @@ class FastRedraw:
         return aList
             
     def extend_flattened_outline(self, aList, p):
-        '''Add p and all p's visible descendants to aList.'''
+        """Add p and all p's visible descendants to aList."""
         aList.append('%s:%s:%s\n' % (p.level(), p.gnx, p.h))
             # Padding the fields causes problems later.
         if p.isExpanded():
@@ -75,16 +75,16 @@ class FastRedraw:
                 self.extend_flattened_outline(aList, child)
     #@+node:ekr.20181202060924.3: ** LeoGui.make_redraw_list
     def make_redraw_list(self, a, b):
-        '''
+        """
         Diff the a (old) and b (new) outline lists.
         Then optimize the diffs to create a redraw instruction list.
-        '''
+        """
         trace = False and not g.unitTesting
         if a == b:
             return []
 
         def gnxs(aList):
-            '''Return the gnx list. Do not try to remove this!'''
+            """Return the gnx list. Do not try to remove this!"""
             return [z.strip() for z in aList]
             
         #@+others # Define local helpers
@@ -114,7 +114,7 @@ class FastRedraw:
         return opcodes
     #@+node:ekr.20181202060924.6: ** LeoGui.peep_hole
     def peep_hole(self, opcodes):
-        '''Scan the list of opcodes, merging adjacent op-codes.'''
+        """Scan the list of opcodes, merging adjacent op-codes."""
         i, result = 0, []
         while i < len(opcodes):
             op0 = opcodes[i]

@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040138.1: * @file ../commands/helpCommands.py
 #@@first
-'''Leo's help commands.'''
+"""Leo's help commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050337.1: ** << imports >> (helpCommands.py)
 import leo.core.leoGlobals as g
@@ -12,19 +12,19 @@ import sys
 #@-<< imports >>
 
 def cmd(name):
-    '''Command decorator for the helpCommands class.'''
+    """Command decorator for the helpCommands class."""
     return g.new_cmd_decorator(name, ['c', 'helpCommands',])
 
 #@+others
 #@+node:ekr.20160514121110.1: ** class HelpCommandsClass
 class HelpCommandsClass(BaseEditCommandsClass):
-    '''A class to load files into buffers and save buffers to files.'''
+    """A class to load files into buffers and save buffers to files."""
     # pylint: disable=anomalous-backslash-in-string
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
     def help(self, event=None):
-        '''Prints and introduction to Leo's help system.'''
+        """Prints and introduction to Leo's help system."""
         #@+<< define rst_s >>
         #@+node:ekr.20150514063305.374: *4* << define rst_s >> (F1)
         #@@language rest
@@ -63,7 +63,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.375: *3* helpForAbbreviations
     @cmd('help-for-abbreviations')
     def helpForAbbreviations(self, event=None):
-        '''Prints a discussion of abbreviations.'''
+        """Prints a discussion of abbreviations."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.376: *4* << define s >> (helpForAbbreviations)
         #@@language rest
@@ -126,7 +126,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.377: *3* helpForAutocompletion
     @cmd('help-for-autocompletion')
     def helpForAutocompletion(self, event=None):
-        '''Prints a discussion of autocompletion.'''
+        """Prints a discussion of autocompletion."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.378: *4* << define s >> (helpForAutocompletion)
         # @pagewidth 40
@@ -242,7 +242,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.379: *3* helpForBindings
     @cmd('help-for-bindings')
     def helpForBindings(self, event=None):
-        '''Prints a discussion of keyboard bindings.'''
+        """Prints a discussion of keyboard bindings."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.380: *4* << define s >> (helpForBindings)
         # @pagewidth 40
@@ -327,7 +327,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.381: *3* helpForCommand & helpers
     @cmd('help-for-command')
     def helpForCommand(self, event):
-        '''Prompts for a command name and prints the help message for that command.'''
+        """Prompts for a command name and prints the help message for that command."""
         c, k = self.c, self.c.k
         s = '''\
     Alt-0 (vr-toggle) hides this help message.
@@ -421,8 +421,10 @@ class HelpCommandsClass(BaseEditCommandsClass):
             c.putHelpFor(s) # calls g.adjustTripleString.
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
     def replaceBindingPatterns(self, s):
-        '''For each instance of the pattern !<command-name>! is s,
-        replace the pattern by the key binding for command-name.'''
+        """
+        For each instance of the pattern !<command-name>! is s,
+        replace the pattern by the key binding for command-name.
+        """
         c = self.c
         pattern = re.compile(r'!<(.*)>!')
         while True:
@@ -440,7 +442,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles
     @cmd('help-for-creating-external-files')
     def helpForCreatingExternalFiles(self, event=None):
-        '''Prints a discussion of creating external files.'''
+        """Prints a discussion of creating external files."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.387: *4* << define s >> (helpForCreatingExternalFiles)
         #@@language rest
@@ -576,7 +578,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.388: *3* helpForDebuggingCommands
     @cmd('help-for-debugging-commands')
     def helpForDebuggingCommands(self, event=None):
-        '''Prints a discussion of of Leo's debugging commands.'''
+        """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.389: *4* << define s >> (helpForDebuggingCommands)
         # @pagewidth 40
@@ -612,7 +614,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.390: *3* helpForDragAndDrop
     @cmd('help-for-drag-and-drop')
     def helpForDragAndDrop(self, event=None):
-        '''Prints a discussion of of Leo's debugging commands.'''
+        """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.391: *4* << define s >> (helpForDragAndDrop
         # @pagewidth 40
@@ -651,7 +653,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.392: *3* helpForDynamicAbbreviations
     @cmd('help-for-dynamic-abbreviations')
     def helpForDynamicAbbreviations(self, event=None):
-        '''Prints a discussion of abbreviations.'''
+        """Prints a discussion of abbreviations."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.393: *4* << define s >> (helpForDynamicAbbreviations)
         #@@language rest
@@ -697,7 +699,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.394: *3* helpForFindCommands
     @cmd('help-for-find-commands')
     def helpForFindCommands(self, event=None):
-        '''Prints a discussion of of Leo's find commands.'''
+        """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.395: *4* << define s >> (help-for-find-commands)
         #@@language rest
@@ -756,7 +758,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150628161341.1: *3* helpForKeystroke
     @cmd('help-for-keystroke')
     def helpForKeystroke(self, event):
-        '''Prompts for any key and prints the bindings for that key.'''
+        """Prompts for any key and prints the bindings for that key."""
         c, k = self.c, self.c.k
         state_name = 'help-for-keystroke'
         state = k.getState(state_name)
@@ -778,7 +780,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event=None):
-        '''Print a messages telling you how to get started with Leo.'''
+        """Print a messages telling you how to get started with Leo."""
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
         #@+<< define s >>
@@ -815,7 +817,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.398: *3* helpForRegularExpressions
     @cmd('help-for-regular-expressions')
     def helpForRegularExpressions(self, event=None):
-        '''Prints a discussion of of Leo's find commands.'''
+        """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.399: *4* << define s >> (helpForRegularExpressions)
         #@@language rest
@@ -886,7 +888,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.400: *3* helpForScripting
     @cmd('help-for-scripting')
     def helpForScripting(self, event=None):
-        '''Prints a discussion of Leo scripting.'''
+        """Prints a discussion of Leo scripting."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.401: *4* << define s >> (helpForScripting)
         #@@language rest
@@ -1107,7 +1109,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170823084423.1: *3* helpForSettings
     @cmd('help-for-settings')
     def helpForSettings(self, event=None):
-        '''Prints a discussion of of Leo's find commands.'''
+        """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20170823084456.1: *4* << define s >> (helpForSettings)
         #@@language rest
@@ -1136,7 +1138,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
     def showSettings(self, event=None):
-        '''
+        """
         Prints the value of every setting, except key bindings and commands and
         open-with tables. The following shows where the active setting came
         from:
@@ -1146,7 +1148,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
-        '''
+        """
         self.c.config.printSettings()
     #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)
     @cmd('show-settings-outline')
@@ -1163,7 +1165,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
     def pythonHelp(self, event=None):
-        '''Prompt for a arg for Python's help function, and put it to the log pane.'''
+        """Prompt for a arg for Python's help function, and put it to the log pane."""
         c, k = self.c, self.c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')

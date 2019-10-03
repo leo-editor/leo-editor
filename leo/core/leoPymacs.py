@@ -4,7 +4,7 @@
 #@@first
 #@+<< docstring>>
 #@+node:ekr.20061024060248.2: ** << docstring >> (leoPymacs.py)
-'''A module to allow the Pymacs bridge to access Leo data.
+"""A module to allow the Pymacs bridge to access Leo data.
 
 All code in this module must be called *from* Emacs:
 calling Pymacs.lisp in other situations will hang Leo.
@@ -23,7 +23,7 @@ Notes:
 
   Note that full path names are required in each case.
 
-'''
+"""
 #@-<< docstring>>
 # As in leo.py we must be very careful about imports.
 # pylint: disable = global-variable-not-assigned
@@ -39,7 +39,7 @@ def dump(anObject):
     return str(g.toEncodedString(repr(anObject), encoding='ascii'))
 #@+node:ekr.20061024130957: ** getters (pymacs)
 def get_app():
-    '''Scripts can use g.app.scriptDict for communication with pymacs.'''
+    """Scripts can use g.app.scriptDict for communication with pymacs."""
     global g
     init()
     return g.app

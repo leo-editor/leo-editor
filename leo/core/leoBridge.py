@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20070227091955.1: * @file leoBridge.py
 #@@first
-'''A module to allow full access to Leo commanders from outside Leo.'''
+"""A module to allow full access to Leo commanders from outside Leo."""
 #@@language python
 #@@tabwidth -4
 #@+<< about the leoBridge module >>
@@ -60,7 +60,7 @@ def controller(
     useCaches=True,
     verbose=False
 ):
-    '''Create an singleton instance of a bridge controller.'''
+    """Create an singleton instance of a bridge controller."""
     global gBridgeController
     if not gBridgeController:
         gBridgeController = BridgeController(
@@ -74,12 +74,12 @@ def controller(
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class BridgeController
 class BridgeController:
-    '''Creates a way for host programs to access Leo.'''
+    """Creates a way for host programs to access Leo."""
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
         guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose):
-        '''Ctor for the BridgeController class.'''
+        """Ctor for the BridgeController class."""
         self.g = None
         self.gui = None
         self.guiName = guiName or 'nullGui'
@@ -93,14 +93,14 @@ class BridgeController:
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* bridge.globals
     def globals(self):
-        '''Return a fully initialized leoGlobals module.'''
+        """Return a fully initialized leoGlobals module."""
         return self.isOpen() and self.g
     #@+node:ekr.20070227093530: *3* bridge.initLeo & helpers
     def initLeo(self):
-        '''
+        """
         Init the Leo app to which this class gives access.
         This code is based on leo.run().
-        '''
+        """
         if not self.isValidPython():
             return
         #@+<< initLeo imports >>
@@ -184,7 +184,7 @@ class BridgeController:
         g.doHook("start2", c=None, p=None, v=None, fileName=None)
     #@+node:ekr.20070302061713: *4* bridge.adjustSysPath
     def adjustSysPath(self):
-        '''Adjust sys.path to enable imports as usual with Leo.'''
+        """Adjust sys.path to enable imports as usual with Leo."""
         import sys
         g = self.g
         leoDirs = ('config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test') # 2008/7/30
@@ -253,12 +253,12 @@ class BridgeController:
                 g.blue('', kind, 'directory', '', ':', theDir)
     #@+node:ekr.20070227093918: *3* bridge.isOpen
     def isOpen(self):
-        '''Return True if the bridge is open.'''
+        """Return True if the bridge is open."""
         g = self.g
         return bool(g and g.app and g.app.gui)
     #@+node:ekr.20070227092442.5: *3* bridge.openLeoFile & helpers
     def openLeoFile(self, fileName):
-        '''Open a .leo file, or create a new Leo frame if no fileName is given.'''
+        """Open a .leo file, or create a new Leo frame if no fileName is given."""
         g = self.g
         g.app.silentMode = self.silentMode
         useLog = False
@@ -296,8 +296,8 @@ class BridgeController:
         return fileName
     #@+node:ekr.20070227093629.6: *4* bridge.createFrame
     def createFrame(self, fileName):
-        '''Create a commander and frame for the given file.
-        Create a new frame if the fileName is empty or non-exisent.'''
+        """Create a commander and frame for the given file.
+        Create a new frame if the fileName is empty or non-exisent."""
         g = self.g
         if fileName.strip():
             if g.os_path_exists(fileName):

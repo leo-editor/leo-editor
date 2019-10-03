@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20171123095353.1: * @file ../commands/commanderFileCommands.py
 #@@first
-'''File commands that used to be defined in leoCommands.py'''
+"""File commands that used to be defined in leoCommands.py"""
 import leo.core.leoGlobals as g
 import os
 # import time
@@ -10,13 +10,13 @@ import os
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
-    '''Reload settings for the selected outline, saving it if necessary.'''
+    """Reload settings for the selected outline, saving it if necessary."""
     c = self
     reloadSettingsHelper(c, all=False)
 
 @g.commander_command('reload-all-settings')
 def reloadAllSettings(self, event=None):
-    '''Reload settings for all open outlines, saving them if necessary.'''
+    """Reload settings for all open outlines, saving them if necessary."""
     c = self
     reloadSettingsHelper(c, all=True)
 #@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
@@ -52,12 +52,12 @@ def reloadSettingsHelper(c, all):
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
 def close(self, event=None, new_c=None):
-    '''Close the Leo window, prompting to save it if it has been changed.'''
+    """Close the Leo window, prompting to save it if it has been changed."""
     g.app.closeLeoWindow(self.frame, new_c=new_c)
 #@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile
 @g.commander_command('import-file')
 def importAnyFile(self, event=None):
-    '''Import one or more files.'''
+    """Import one or more files."""
     c = self
     ic = c.importCommands
     types = [
@@ -150,7 +150,7 @@ g.command_alias('importTabFiles', importAnyFile)
 @g.commander_command('file-new')
 @g.commander_command('new')
 def new(self, event=None, gui=None):
-    '''Create a new Leo window.'''
+    """Create a new Leo window."""
     import leo.core.leoApp as leoApp
     lm = g.app.loadManager
     old_c = self
@@ -193,7 +193,7 @@ def new(self, event=None, gui=None):
 #@+node:ekr.20031218072017.2821: *3* c_file.open_outline & callback
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
-    '''Open a Leo window containing the contents of a .leo file.'''
+    """Open a Leo window containing the contents of a .leo file."""
     c = self
     #@+others
     #@+node:ekr.20190518121302.1: *4* function: open_completer
@@ -265,7 +265,7 @@ def open_outline(self, event=None):
 
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self, event=None):
-    '''Refresh an @<file> node from disk.'''
+    """Refresh an @<file> node from disk."""
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()
@@ -320,7 +320,7 @@ def refreshFromDisk(self, event=None):
 @g.commander_command('file-save')
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
-    '''Save a Leo outline to a file.'''
+    """Save a Leo outline to a file."""
     if False and g.app.gui.guiName() == 'curses':
         g.trace('===== Save disabled in curses gui =====')
         return
@@ -401,7 +401,7 @@ def save(self, event=None, fileName=None):
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self, event=None):
-    '''Save all open tabs windows/tabs.'''
+    """Save all open tabs windows/tabs."""
     c = self
     c.save() # Force a write of the present window.
     for f in g.app.windowList:
@@ -416,7 +416,7 @@ def saveAll(self, event=None):
 @g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
-    '''Save a Leo outline to a file with a new filename.'''
+    """Save a Leo outline to a file with a new filename."""
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
@@ -474,7 +474,7 @@ def saveAs(self, event=None, fileName=None):
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None, silent=False):
-    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+    """Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged."""
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
@@ -513,7 +513,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self, event=None):
-    '''Revert the contents of a Leo outline to last saved contents.'''
+    """Revert the contents of a Leo outline to last saved contents."""
     c = self
     # Make sure the user wants to Revert.
     fn = c.mFileName
@@ -530,20 +530,20 @@ def revert(self, event=None):
 @g.commander_command('file-save-as-unzipped')
 @g.commander_command('save-file-as-unzipped')
 def saveAsUnzipped(self, event=None):
-    '''
+    """
     Save a Leo outline to a file with a new filename,
     ensuring that the file is not compressed.
-    '''
+    """
     c = self
     saveAsZippedHelper(c, False)
 
 g.commander_command('file-save-as-zipped')
 @g.commander_command('save-file-as-zipped')
 def saveAsZipped(self, event=None):
-    '''
+    """
     Save a Leo outline to a file with a new filename,
     ensuring that the file is compressed.
-    '''
+    """
     c = self
     saveAsZippedHelper(c, True)
 
@@ -558,7 +558,7 @@ def saveAsZippedHelper(c, isZipped):
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')
 def exportHeadlines(self, event=None):
-    '''Export all headlines to an external file.'''
+    """Export all headlines to an external file."""
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
@@ -574,10 +574,10 @@ def exportHeadlines(self, event=None):
 #@+node:ekr.20031218072017.2851: *3* c_file.flattenOutline
 @g.commander_command('flatten-outline')
 def flattenOutline(self, event=None):
-    '''
+    """
     Export the selected outline to an external file.
     The outline is represented in MORE format.
-    '''
+    """
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
@@ -593,10 +593,10 @@ def flattenOutline(self, event=None):
 #@+node:ekr.20141030120755.12: *3* c_file.flattenOutlineToNode
 @g.commander_command('flatten-outline-to-node')
 def flattenOutlineToNode(self, event=None):
-    '''
+    """
     Append the body text of all descendants of the selected node to the
     body text of the selected node.
-    '''
+    """
     c, root, u = self, self.p, self.undoer
     if not root.hasChildren():
         return
@@ -620,10 +620,10 @@ def flattenOutlineToNode(self, event=None):
 #@+node:ekr.20031218072017.2857: *3* c_file.outlineToCWEB
 @g.commander_command('outline-to-cweb')
 def outlineToCWEB(self, event=None):
-    '''
+    """
     Export the selected outline to an external file.
     The outline is represented in CWEB format.
-    '''
+    """
     c = self
     filetypes = [
         ("CWEB files", "*.w"),
@@ -642,10 +642,10 @@ def outlineToCWEB(self, event=None):
 #@+node:ekr.20031218072017.2858: *3* c_file.outlineToNoweb
 @g.commander_command('outline-to-noweb')
 def outlineToNoweb(self, event=None):
-    '''
+    """
     Export the selected outline to an external file.
     The outline is represented in noweb format.
-    '''
+    """
     c = self
     filetypes = [
         ("Noweb files", "*.nw"),
@@ -665,7 +665,7 @@ def outlineToNoweb(self, event=None):
 #@+node:ekr.20031218072017.2859: *3* c_file.removeSentinels
 @g.commander_command('remove-sentinels')
 def removeSentinels(self, event=None):
-    '''Import one or more files, removing any sentinels.'''
+    """Import one or more files, removing any sentinels."""
     c = self
     types = [
         ("All files", "*"),
@@ -689,7 +689,7 @@ def removeSentinels(self, event=None):
 #@+node:ekr.20031218072017.2860: *3* c_file.weave
 @g.commander_command('weave')
 def weave(self, event=None):
-    '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
+    """Simulate a literate-programming weave operation by writing the outline to a text file."""
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
@@ -706,7 +706,7 @@ def weave(self, event=None):
 #@+node:ekr.20070806105721.1: *3* c_file.readAtAutoNodes
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self, event=None):
-    '''Read all @auto nodes in the presently selected outline.'''
+    """Read all @auto nodes in the presently selected outline."""
     c = self; u = c.undoer; p = c.p
     c.endEditing()
     c.init_error_dialogs()
@@ -718,7 +718,7 @@ def readAtAutoNodes(self, event=None):
 #@+node:ekr.20031218072017.1839: *3* c_file.readAtFileNodes
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self, event=None):
-    '''Read all @file nodes in the presently selected outline.'''
+    """Read all @file nodes in the presently selected outline."""
     c = self; u = c.undoer; p = c.p
     c.endEditing()
     # c.init_error_dialogs() # Done in at.readAll.
@@ -730,7 +730,7 @@ def readAtFileNodes(self, event=None):
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
-    '''Read all @shadow nodes in the presently selected outline.'''
+    """Read all @shadow nodes in the presently selected outline."""
     c = self; u = c.undoer; p = c.p
     c.endEditing()
     c.init_error_dialogs()
@@ -742,7 +742,7 @@ def readAtShadowNodes(self, event=None):
 #@+node:ekr.20070915134101: *3* c_file.readFileIntoNode
 @g.commander_command('read-file-into-node')
 def readFileIntoNode(self, event=None):
-    '''Read a file into a single node.'''
+    """Read a file into a single node."""
     c = self
     undoType = 'Read File Into Node'
     c.endEditing()
@@ -766,7 +766,7 @@ def readFileIntoNode(self, event=None):
 #@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
 @g.commander_command('read-outline-only')
 def readOutlineOnly(self, event=None):
-    '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+    """Open a Leo outline from a .leo file, but do not read any derived files."""
     c = self
     c.endEditing()
     fileName = g.app.gui.runOpenFileDialog(c,
@@ -790,9 +790,10 @@ def readOutlineOnly(self, event=None):
 #@+node:ekr.20070915142635: *3* c_file.writeFileFromNode
 @g.commander_command('write-file-from-node')
 def writeFileFromNode(self, event=None):
-    '''If node starts with @read-file-into-node, use the full path name in the headline.
+    """
+    If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
-    '''
+    """
     c = self; p = c.p
     c.endEditing()
     h = p.h.rstrip()
@@ -825,12 +826,12 @@ def writeFileFromNode(self, event=None):
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
 def cleanRecentFiles(self, event=None):
-    '''
+    """
     Remove items from the recent files list that no longer exist.
     
     This almost never does anything because Leo's startup logic removes
     nonexistent files from the recent files list.
-    '''
+    """
     c = self
     g.app.recentFilesManager.cleanRecentFiles(c)
 #@+node:ekr.20031218072017.2080: *3* c_file.clearRecentFiles
@@ -842,7 +843,7 @@ def clearRecentFiles(self, event=None):
 #@+node:vitalije.20170703115710.1: *3* c_file.editRecentFiles
 @g.commander_command('edit-recent-files')
 def editRecentFiles(self, event=None):
-    '''Opens recent files list in a new node for editing.'''
+    """Opens recent files list in a new node for editing."""
     c = self
     g.app.recentFilesManager.editRecentFiles(c)
 #@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
@@ -870,23 +871,23 @@ def openRecentFile(self, event=None, fn=None):
 #@+node:tbrown.20080509212202.8: *3* c_file.sortRecentFiles
 @g.commander_command('sort-recent-files')
 def sortRecentFiles(self, event=None):
-    '''Sort the recent files list.'''
+    """Sort the recent files list."""
     c = self
     g.app.recentFilesManager.sortRecentFiles(c)
 #@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):
-    ''' 
+    """ 
     Write content of "edit_headline" node as recentFiles and recreates
     menues.
-    '''
+    """
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
 #@+node:vitalije.20170831154859.1: ** Reference outline commands
 #@+node:vitalije.20170831154830.1: *3* c_file.updateRefLeoFile
 @g.commander_command('update-ref-file')
 def updateRefLeoFile(self, event=None):
-    '''
+    """
     Saves only the **public part** of this outline to the reference Leo
     file. The public part consists of all nodes above the **special
     separator node**, a top-level node whose headline is
@@ -896,13 +897,13 @@ def updateRefLeoFile(self, event=None):
     changes that should not be copied (published) to the reference Leo file.
     
     **Note**: Use the set-reference-file command to create the separator node.
-    '''
+    """
     c = self
     c.fileCommands.save_ref()
 #@+node:vitalije.20170831154840.1: *3* c_file.readRefLeoFile
 @g.commander_command('read-ref-file')
 def readRefLeoFile(self, event=None):
-    '''
+    """
     This command *completely replaces* the **public part** of this outline
     with the contents of the reference Leo file. The public part consists
     of all nodes above the top-level node whose headline is
@@ -912,13 +913,13 @@ def readRefLeoFile(self, event=None):
     changes that should not be copied (published) to the reference Leo file.
     
     **Note**: Use the set-reference-file command to create the separator node.
-    '''
+    """
     c = self
     c.fileCommands.updateFromRefFile()
 #@+node:vitalije.20170831154850.1: *3* c_file.setReferenceFile
 @g.commander_command('set-reference-file')
 def setReferenceFile(self, event=None):
-    '''
+    """
     Shows a file open dialog allowing you to select a **reference** Leo
     document to which this outline will be connected.
        
@@ -935,7 +936,7 @@ def setReferenceFile(self, event=None):
     public part of the outline to reference Leo file. The read-ref-file
     command *completely replaces* the public part of the outline with the
     contents of reference Leo file.
-    '''
+    """
     c = self
     fileName = g.app.gui.runOpenFileDialog(c,
             title="Select reference Leo file",
@@ -947,41 +948,41 @@ def setReferenceFile(self, event=None):
 #@+node:ekr.20031218072017.2842: *3* c_file.tangleAll
 @g.commander_command('tangle-all')
 def tangleAll(self, event=None):
-    '''
+    """
     Tangle all @root nodes in the entire outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.tangleAll()
 #@+node:ekr.20031218072017.2843: *3* c_file.tangleMarked
 @g.commander_command('tangle-marked')
 def tangleMarked(self, event=None):
-    '''
+    """
     Tangle all marked @root nodes in the entire outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.tangleMarked()
 #@+node:ekr.20031218072017.2844: *3* c_file.tangle
 @g.commander_command('tangle')
 def tangle(self, event=None):
-    '''
+    """
     Tangle all @root nodes in the selected outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.tangle()
 #@+node:ekr.20180312043352.1: ** Themes
 #@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
 def open_theme_file(self, event):
-    '''Open a theme file and apply the theme.'''
+    """Open a theme file and apply the theme."""
     c = event and event.get('c')
     if not c: return
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
@@ -1005,35 +1006,35 @@ def open_theme_file(self, event):
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
 @g.commander_command('untangle-all')
 def untangleAll(self, event=None):
-    '''
+    """
     Untangle all @root nodes in the entire outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.untangleAll()
     c.undoer.clearUndoState()
 #@+node:ekr.20031218072017.2847: *3* c_file.untangleMarked
 @g.commander_command('untangle-marked')
 def untangleMarked(self, event=None):
-    '''
+    """
     Untangle all marked @root nodes in the entire outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.untangleMarked()
     c.undoer.clearUndoState()
 #@+node:ekr.20031218072017.2848: *3* c_file.untangle
 @g.commander_command('untangle')
 def untangle(self, event=None):
-    '''Untangle all @root nodes in the selected outline.
+    """Untangle all @root nodes in the selected outline.
 
     **Important**: @root and all tangle and untangle commands are
     deprecated. They are documented nowhere but in these docstrings.
-    '''
+    """
     c = self
     c.tangleCommands.untangle()
     c.undoer.clearUndoState()

@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150605175037.1: * @file leoCheck.py
 #@@first
-'''Experimental code checking for Leo.'''
+"""Experimental code checking for Leo."""
 # To do:
 # - Option to ignore defs without args if all calls have no args.
 # * explain typical entries
@@ -19,7 +19,7 @@ import time
 #@+others
 #@+node:ekr.20171207095816.1: ** class ConventionChecker
 class ConventionChecker:
-    '''
+    """
     A prototype of an extensible convention-checking tool.
     See: https://github.com/leo-editor/leo-editor/issues/632
     
@@ -34,7 +34,7 @@ class ConventionChecker:
         
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
         leoCheck.ConventionChecker(c).check(fn=fn)
-    '''
+    """
     # pylint: disable=literal-comparison
         # What's wrong with `if self.test_kind is 'test'`?
 
@@ -70,9 +70,9 @@ class ConventionChecker:
         self.unknowns = {} # Keys are expression, values are (line, fn) pairs.
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
-        '''
+        """
         Init the symbol tables with known classes.
-        '''
+        """
         return {
             # Pre-enter known classes.
             'Commands': {
@@ -113,7 +113,7 @@ class ConventionChecker:
         
     #@+node:ekr.20171210133853.1: *4* checker.init_special_names
     def init_special_names(self):
-        '''Init known special names.'''
+        """Init known special names."""
         t = self.Type
         return {
             'c': t('instance', 'Commands'),
@@ -124,7 +124,7 @@ class ConventionChecker:
         }
     #@+node:ekr.20171212015700.1: *3* checker.check & helpers (main entry)
     def check(self):
-        '''
+        """
         The main entry point for the convention checker.
 
         A stand-alone version of the @button node that tested the
@@ -133,7 +133,7 @@ class ConventionChecker:
         The check-conventions command in checkerCommands.py saves c and
         reloads the leoCheck module before instantiating this class and
         calling this method.
-        '''
+        """
         g.cls()
         c = self.c
         kind = 'production' # <----- Change only this line.
@@ -164,7 +164,7 @@ class ConventionChecker:
             self.stats.report()
     #@+node:ekr.20171207100432.1: *4* checker.check_file
     def check_file(self, fn=None, s=None, test_kind=None, trace_fn=False):
-        '''Check the contents of fn or the string s.'''
+        """Check the contents of fn or the string s."""
         # Get the source.
         if test_kind:
             self.test_kind = test_kind
@@ -326,17 +326,17 @@ class ConventionChecker:
         print('')
     #@+node:ekr.20171215080831.1: *3* checker.dump, format
     def dump(self, node, annotate_fields=True, level=0, **kwargs):
-        '''Dump the node.'''
+        """Dump the node."""
         d = leoAst.AstDumper(annotate_fields=annotate_fields,**kwargs) 
         return d.dump(node, level=level)
 
     def format(self, node, *args, **kwargs):
-        '''Format the node and possibly its descendants, depending on args.'''
+        """Format the node and possibly its descendants, depending on args."""
         s = leoAst.AstFormatter().format(node, level=self.indent, *args, **kwargs)
         return s.rstrip()
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, node, name, context, trace=False):
-        '''Resolve name in the given context to a Type.'''
+        """Resolve name in the given context to a Type."""
         self.stats.resolve += 1
         assert isinstance(name, str), (repr(name), g.callers())
         if context:
@@ -359,7 +359,7 @@ class ConventionChecker:
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def resolve_call(self, node):
-        '''Resolve the head of the call's chain to a Type.'''
+        """Resolve the head of the call's chain to a Type."""
         assert self.pass_n == 2
         self.stats.resolve_call += 1
         chain = self.get_chain(node.func)
@@ -384,7 +384,7 @@ class ConventionChecker:
         return result
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, node, chain, context, trace=False):
-        '''Resolve the chain to a Type.'''
+        """Resolve the chain to a Type."""
         self.stats.resolve_chain += 1
         name = '<no name>'
         for obj in chain:
@@ -395,7 +395,7 @@ class ConventionChecker:
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar & helpers
     def resolve_ivar(self, node, ivar, context):
-        '''Resolve context.ivar to a Type.'''
+        """Resolve context.ivar to a Type."""
         assert self.pass_n == 2, repr(self.pass_n)
         self.stats.resolve_ivar += 1
         class_name = 'Commands' if context.name == 'c' else context.name
@@ -488,11 +488,11 @@ class ConventionChecker:
             self.stats.sig_unknown += 1
     #@+node:ekr.20171212034531.1: *5* checker.check_arg (Finish)
     def check_arg(self, node, func, args, call_arg, sig_arg):
-        '''
+        """
         Check call_arg and sig_arg with arg (a list).
         
         To do: check keyword args.
-        '''
+        """
         return self.check_arg_helper(node, func, call_arg, sig_arg)
 
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
@@ -685,7 +685,7 @@ class ConventionChecker:
         assert node == top, (node, top)
     #@+node:ekr.20171216110107.1: *4* checker.get_chain
     def get_chain(self,node):
-        '''Scan node for a chain of names.'''
+        """Scan node for a chain of names."""
         chain, node1 = [], node
         while not isinstance(node, ast.Name):
             if isinstance(node, ast.Attribute):
@@ -718,14 +718,14 @@ class ConventionChecker:
             ])
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats:
-        '''
+        """
         A basic statistics class.  Use this way:
             
             stats = Stats()
             stats.classes += 1
             stats.defs += 1
             stats.report()
-        '''
+        """
         # Big sigh: define these to placate pylint.
         assignments = 0
         calls = 0
@@ -752,7 +752,7 @@ class ConventionChecker:
     #@+node:ekr.20171214151001.1: *3* class CCTraverser (AstFullTraverser)
     class CCTraverser (leoAst.AstFullTraverser):
         
-        '''A traverser class that *only* calls controller methods.'''
+        """A traverser class that *only* calls controller methods."""
 
         def __init__(self, controller):
 
@@ -760,10 +760,10 @@ class ConventionChecker:
             self.cc = controller
         
         def visit(self, node):
-            '''
+            """
             Visit a *single* ast node.
             Visitors are responsible for visiting children!
-            '''
+            """
             name = node.__class__.__name__
             assert isinstance(node, ast.AST), repr(node)
             before_method = getattr(self.cc, 'before_'+name, None)
@@ -776,7 +776,7 @@ class ConventionChecker:
                 after_method(node)
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type:
-        '''A class to hold all type-related data.'''
+        """A class to hold all type-related data."""
 
         kinds = ('error', 'class', 'func', 'instance', 'module', 'unknown')
         
@@ -798,17 +798,17 @@ class ConventionChecker:
     #@-others
 #@+node:ekr.20160109102859.1: ** class Context
 class Context:
-    '''
+    """
     Context class (NEW)
 
     Represents a binding context: module, class or def.
 
     For any Ast context node N, N.cx is a reference to a Context object.
-    '''
+    """
     #@+others
     #@+node:ekr.20160109103533.1: *3* Context.ctor
     def __init__ (self, fn, kind, name, node, parent_context):
-        '''Ctor for Context class.'''
+        """Ctor for Context class."""
         self.fn = fn
         self.kind = kind
         self.name = name
@@ -838,13 +838,13 @@ class Context:
             parent_context.inner_contexts_list.append(self)
     #@+node:ekr.20160109134527.1: *3* Context.define_name
     def define_name(self, name):
-        '''Define a name in this context.'''
+        """Define a name in this context."""
         self.defined_names.add(name)
         if name in self.referenced_names:
             self.referenced_names.remove(name)
     #@+node:ekr.20160109143040.1: *3* Context.global_name
     def global_name(self, name):
-        '''Handle a global name in this context.'''
+        """Handle a global name in this context."""
         self.global_names.add(name)
         # Not yet.
             # Both Python 2 and 3 generate SyntaxWarnings when a name
@@ -875,14 +875,14 @@ class Context:
 #@+node:ekr.20160108105958.1: ** class Pass1 (AstFullTraverser)
 class Pass1 (leoAst.AstFullTraverser): # V2
 
-    ''' Pass1 does the following:
+    """ Pass1 does the following:
 
     1. Creates Context objects and injects them into the new_cx field of
        ast.Class, ast.FunctionDef and ast.Lambda nodes.
 
     2. Calls the following Context methods: cx.define/global/import/reference_name.
        These methods update lists used later to bind names to objects.
-    '''
+    """
     # pylint: disable=no-member
         # Stats class defines __setattr__
         # This is a known limitation of pylint.
@@ -909,7 +909,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.visit(root)
     #@+node:ekr.20160109125654.1: *3*  p1.visit
     def visit(self, node):
-        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        """Visit a *single* ast node.  Visitors are responsible for visiting children!"""
         assert isinstance(node, ast.AST), node.__class__.__name__
         # Visit the children with the new parent.
         old_parent = self.parent
@@ -1093,9 +1093,10 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@@c
 
     def do_Import(self,node):
-        '''
+        """
         Add the imported file to u.files_list if needed
-        and create a context for the file.'''
+        and create a context for the file.
+        """
         cx = self.context
         cx.statements_list.append(node)
         # e_list, names = [],[]
@@ -1141,10 +1142,10 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@@c
 
     def do_ImportFrom(self,node):
-        '''
+        """
         Add the imported file to u.files_list if needed
         and add the imported symbols to the *present* context.
-        '''
+        """
         cx = self.context
         cx.statements_list.append(node)
         self.resolve_import_name(node.module)
@@ -1153,7 +1154,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             cx.import_name(fn2)
     #@+node:ekr.20160108105958.9: *5* p1.get_import_names
     def get_import_names (self,node):
-        '''Return a list of the the full file names in the import statement.'''
+        """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
 
@@ -1165,7 +1166,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         return result
     #@+node:ekr.20160108105958.10: *5* p1.resolve_import_name
     def resolve_import_name (self,spec):
-        '''Return the full path name corresponding to the import spec.'''
+        """Return the full path name corresponding to the import spec."""
         if not spec:
             return ''
         # This may not work for leading dots.
@@ -1336,16 +1337,16 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:
-    '''A class to compute the files in a project.'''
+    """A class to compute the files in a project."""
     # To do: get project info from @data nodes.
     #@+others
     #@+node:ekr.20150525123715.2: *3* pu.files_in_dir
     def files_in_dir(self, theDir, recursive=True, extList=None, excludeDirs=None):
-        '''
+        """
         Return a list of all Python files in the directory.
         Include all descendants if recursiveFlag is True.
         Include all file types if extList is None.
-        '''
+        """
         # import glob
         import os
         # if extList is None: extList = ['.py']
@@ -1390,7 +1391,7 @@ class ProjectUtils:
         return dir_ or ''
     #@+node:ekr.20171213071416.1: *3* pu.leo_core_files
     def leo_core_files(self):
-        '''Return all the files in Leo's core.'''
+        """Return all the files in Leo's core."""
         loadDir = g.app.loadDir
         # Compute directories.
         commands_dir = g.os_path_finalize_join(loadDir, '..', 'commands')
@@ -1409,7 +1410,7 @@ class ProjectUtils:
     #@@nobeautify
 
     def project_files(self, name, force_all=False):
-        '''Return a list of all files in the named project.'''
+        """Return a list of all files in the named project."""
         # Ignore everything after the first space.
         i = name.find(' ')
         if i > -1:
@@ -1452,7 +1453,7 @@ class ProjectUtils:
     #@-others
 #@+node:ekr.20171213155537.1: ** class NewShowData
 class NewShowData:
-    '''The driver class for analysis project.'''
+    """The driver class for analysis project."""
     assigns_d = {}
     calls_d = {}
     classes_d = {}
@@ -1511,7 +1512,7 @@ class NewShowData:
         return g.truncate(line1, 80)
     #@+node:ekr.20171213155537.3: *3* sd.run
     def run(self, files, dump=False, show_results=True):
-        '''Process all files'''
+        """Process all files"""
         t1 = time.time()
         for fn in files:
             s, e = g.readFileIntoString(fn)
@@ -1531,7 +1532,7 @@ class NewShowData:
         g.trace('done: %s files in %4.1f sec.' % (len(files), (t2 - t1)))
     #@+node:ekr.20171213155537.7: *3* sd.show_results
     def show_results(self):
-        '''Print a summary of the test results.'''
+        """Print a summary of the test results."""
         table = (
             ('assignments', self.assigns_d),
             ('calls', self.calls_d),
@@ -1549,11 +1550,11 @@ class NewShowData:
     #@-others
 #@+node:ekr.20150604164113.1: ** class ShowData
 class ShowData:
-    '''The driver class for analysis project.'''
+    """The driver class for analysis project."""
     #@+others
     #@+node:ekr.20150604165500.1: *3*  ctor
     def __init__(self, c):
-        '''Ctor for ShowData controller class.'''
+        """Ctor for ShowData controller class."""
         self.c = c
         self.files = None
         # Data.
@@ -1570,7 +1571,7 @@ class ShowData:
         self.tot_s = 0
     #@+node:ekr.20150604163903.1: *3* run & helpers
     def run(self, files):
-        '''Process all files'''
+        """Process all files"""
         self.files = files
         t1 = time.time()
         for fn in files:
@@ -1622,7 +1623,7 @@ class ShowData:
                     self.match(fn, i, m, s)
     #@+node:ekr.20150605063318.1: *4* match
     def match(self, fn, i, m, s):
-        '''Handle the next match.'''
+        """Handle the next match."""
         self.n_matches += 1
         indent = g.skip_ws(s, 0)
         # Update the context and enter data.
@@ -1670,7 +1671,7 @@ class ShowData:
                     break
     #@+node:ekr.20150605074749.1: *4* update_context
     def update_context(self, fn, indent, kind, s):
-        '''Update context info when a class or def is seen.'''
+        """Update context info when a class or def is seen."""
         while self.context_stack:
             fn2, kind2, indent2, s2 = self.context_stack[-1]
             if indent <= indent2:
@@ -1682,7 +1683,7 @@ class ShowData:
         self.context_indent = indent
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
-        '''Print a summary of the test results.'''
+        """Print a summary of the test results."""
         make = True
         multiple_only = False # True only show defs defined in more than one place.
         c = self.c
@@ -1779,7 +1780,7 @@ class ShowData:
             result.append('%s%s: %s' % (' ' * (8 + pad), context, s))
     #@+node:ekr.20150606092147.1: *4* show_undefined_calls
     def show_undefined_calls(self, result):
-        '''Show all calls to undefined functions.'''
+        """Show all calls to undefined functions."""
         call_tuples = []
         for s in self.calls_d:
             i = 0
@@ -1834,7 +1835,7 @@ class ShowData:
                         ' ' * (2 + pad), context1, s))
     #@+node:ekr.20150605140911.1: *3* context_names
     def context_names(self):
-        '''Return the present context name.'''
+        """Return the present context name."""
         if self.context_stack:
             result = []
             for stack_i in -1, -2:
@@ -1855,13 +1856,13 @@ class ShowData:
     #@-others
 #@+node:ekr.20150606024455.1: ** class ShowDataTraverser (AstFullTraverser)
 class ShowDataTraverser(leoAst.AstFullTraverser):
-    '''
+    """
     Add data about classes, defs, returns and calls to controller's
     dictionaries.
-    '''
+    """
 
     def __init__(self, controller, fn):
-        '''Ctor for ShopDataTraverser class.'''
+        """Ctor for ShopDataTraverser class."""
         super().__init__()
         module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
             # fn, kind, s.
@@ -1874,7 +1875,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     #@+node:ekr.20150609053332.1: *3* sd.Helpers
     #@+node:ekr.20150606035006.1: *4* sd.context_names
     def context_names(self):
-        '''Return the present context names.'''
+        """Return the present context names."""
         result = []
         n = len(self.context_stack)
         for i in n - 1, n - 2:
@@ -1896,24 +1897,24 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         return reversed(result)
     #@+node:ekr.20150609053010.1: *4* sd.format
     def format(self, node, level, *args, **kwargs):
-        '''Return the formatted version of an Ast Node.'''
+        """Return the formatted version of an Ast Node."""
         return self.formatter.format(node, level, *args, **kwargs).strip()
     #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
-        '''
+        """
         Visit a *single* ast node. Visitors must visit their children
         explicitly.
-        '''
+        """
         method = getattr(self, 'do_' + node.__class__.__name__)
         method(node)
 
     def visit_children(self, node):
-        '''Override to ensure this method is never called.'''
+        """Override to ensure this method is never called."""
         assert False, 'must visit children explicitly'
     #@+node:ekr.20150609052952.1: *3* sd.Visitors
     #@+node:ekr.20150607200422.1: *4* sd.Assign
     def do_Assign(self, node):
-        '''Handle an assignment statement: Assign(expr* targets, expr value)'''
+        """Handle an assignment statement: Assign(expr* targets, expr value)"""
         value = self.format(self.visit(node.value), self.level)
         assign_tuples = []
         for target in node.targets:
@@ -1927,10 +1928,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.controller.calls_d[target] = aList
     #@+node:ekr.20150607200439.1: *4* sd.AugAssign
     def do_AugAssign(self, node):
-        '''
+        """
         Handle an augmented assignement:
         AugAssign(expr target, operator op, expr value).
-        '''
+        """
         target = self.format(self.visit(node.target), self.level)
         s = '%s=%s' % (target, self.format(self.visit(node.value), self.level))
         context2, context1 = self.context_names()
@@ -1940,10 +1941,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.controller.calls_d[target] = aList
     #@+node:ekr.20150606024455.16: *4* sd.Call
     def do_Call(self, node):
-        '''
+        """
         Handle a call statement:
         Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-        '''
+        """
         # Update data.
         s = self.format(node, self.level)
         name = self.format(node.func, self.level)
@@ -1964,10 +1965,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(node.kwargs)
     #@+node:ekr.20150606024455.3: *4* sd.ClassDef
     def do_ClassDef(self, node):
-        '''
+        """
         Handle a class defintion:
         ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-        '''
+        """
         # pylint: disable=arguments-differ
         # Format.
         if node.bases:
@@ -1994,10 +1995,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.context_stack.pop()
     #@+node:ekr.20150606024455.4: *4* sd.FunctionDef
     def do_FunctionDef(self, node):
-        '''
+        """
         Visit a function defintion:
         FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-        '''
+        """
         # pylint: disable=arguments-differ
         # Format.
         args = self.format(node.args, self.level) if node.args else ''
@@ -2020,7 +2021,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.context_stack.pop()
     #@+node:ekr.20150606024455.55: *4* sd.Return
     def do_Return(self, node):
-        '''Handle a 'return' statement: Return(expr? value)'''
+        """Handle a 'return' statement: Return(expr? value)"""
         # Update data.
         s = self.format(node, self.level)
         context, name = self.context_names()
@@ -2034,14 +2035,14 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     #@-others
 #@+node:ekr.20171211163833.1: ** class Stats
 class Stats:
-    '''
+    """
     A basic statistics class.  Use this way:
         
         stats = Stats()
         stats.classes += 1
         stats.defs += 1
         stats.report()
-    '''
+    """
 
     d = {}
     
@@ -2061,7 +2062,7 @@ class Stats:
 #@+node:ekr.20171211061816.1: ** top-level test functions
 #@+node:ekr.20150704135836.1: *3* testShowData (leoCheck.py)
 def test(c, files):
-    r'''
+    r"""
     A stand-alone version of @button show-data.  Call as follows:
 
         import leo.core.leoCheck as leoCheck
@@ -2072,7 +2073,7 @@ def test(c, files):
             leoCheck.ProjectUtils().project_files('leo')
         )
         leoCheck.test(files)
-    '''
+    """
     # pylint: disable=import-self
     import leo.core.leoCheck as leoCheck
     leoCheck.ShowData(c=c).run(files)

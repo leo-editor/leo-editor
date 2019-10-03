@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
 #@@first
-'''Leo's Qt event handling code.'''
+"""Leo's Qt event handling code."""
 #@+<< about internal bindings >>
 #@+node:ekr.20110605121601.18538: ** << about internal bindings >>
 #@@nocolor-node
@@ -48,7 +48,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+others
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
-        '''Ctor for LeoQtEventFilter class.'''
+        """Ctor for LeoQtEventFilter class."""
         super().__init__()
         self.c = c
         self.w = w # A leoQtX object, *not* a Qt object.
@@ -113,7 +113,7 @@ class LeoQtEventFilter(QtCore.QObject):
         )
     #@+node:ekr.20180413180751.2: *4* filter.doNonKeyEvent
     def doNonKeyEvent(self, event, obj):
-        '''Handle all non-key event. '''
+        """Handle all non-key event. """
         c = self.c
         ev = QtCore.QEvent
         eventType = event.type()
@@ -133,12 +133,12 @@ class LeoQtEventFilter(QtCore.QObject):
             # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent (changed)
     def shouldIgnoreKeyEvent(self, event, obj):
-        '''
+        """
         Return True if we should ignore the key event.
         
         Alas, QLineEdit *only* generates ev.KeyRelease on Windows, Ubuntu,
         so the following hack is required.
-        '''
+        """
         c = self.c
         ev = QtCore.QEvent
         t = event.type()
@@ -154,13 +154,13 @@ class LeoQtEventFilter(QtCore.QObject):
         return True # Ignore everything else.
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
-        '''
+        """
         Return (binding, actual_ch):
 
         binding:    A user binding, to create g.KeyStroke.
                     Spelling no longer fragile.
         actual_ch:  The insertable key, or ''.
-        '''
+        """
         mods = self.qtMods(event)
         keynum, text, toString, ch = self.qtKey(event)
         actual_ch = text or toString
@@ -184,7 +184,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return binding, actual_ch
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
-        '''Turn AltGr and some Alt-Ctrl keys into plain keys.'''
+        """Turn AltGr and some Alt-Ctrl keys into plain keys."""
         qt = QtCore.Qt
        
         def removeAltCtrl(mods):
@@ -208,7 +208,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return mods
     #@+node:ekr.20180417161548.1: *5* filter.doLateTweaks
     def doLateTweaks(self, binding, ch):
-        '''Make final tweaks. g.KeyStroke does other tweaks later.'''
+        """Make final tweaks. g.KeyStroke does other tweaks later."""
         #
         # These are needed  because ch is separate from binding.
         if ch == '\r':
@@ -224,7 +224,7 @@ class LeoQtEventFilter(QtCore.QObject):
         
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
-        '''Replace MacOS Alt characters.'''
+        """Replace MacOS Alt characters."""
         if not g.isMac:
             return actual_ch, ch, mods
         if ch == 'Backspace':
@@ -250,7 +250,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return actual_ch, ch, mods
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
-        '''
+        """
         Return the components of a Qt key event.
 
         Modifiers are handled separately.
@@ -263,7 +263,7 @@ class LeoQtEventFilter(QtCore.QObject):
             For special keys: made-up spelling that become part of the setting.
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
-        '''
+        """
         keynum = event.key()
         text = event.text() # This is the unicode character!
         qt = QtCore.Qt
@@ -302,7 +302,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
-        '''Return the text version of the modifiers of the key event.'''
+        """Return the text version of the modifiers of the key event."""
         qt = QtCore.Qt
         modifiers = event.modifiers()
         mod_table = (
@@ -482,7 +482,7 @@ class LeoQtEventFilter(QtCore.QObject):
             g.trace('%-25s %-25s %s' % (eventType, self.tag, tag))
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
-        '''Show unexpected events in unusual widgets.'''
+        """Show unexpected events in unusual widgets."""
         verbose = False
             # Not good for --trace-events
         e = QtCore.QEvent

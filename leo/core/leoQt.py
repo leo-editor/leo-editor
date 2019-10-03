@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
-'''
+"""
 A module to allow careful, uniform imports from PyQt4 or PyQt5.
 The isQt5 constant is True only if all important PyQt5 modules were imported.
 Optional modules may fail to load without affecting the isQt5 constant.
@@ -9,7 +9,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtWidgets, not QtGui, for all widget classes.
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
-'''
+"""
 # pylint: disable=unused-import, no-member
 
 # Define...

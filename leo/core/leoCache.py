@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100208065621.5894: * @file leoCache.py
-'''A module encapsulating Leo's file caching'''
+"""A module encapsulating Leo's file caching"""
 #@+<< imports >>
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
 import leo.core.leoGlobals as g
@@ -23,7 +23,7 @@ split = g.os_path_split
 #@+others
 #@+node:ekr.20100208062523.5885: ** class CommanderCacher
 class CommanderCacher:
-    '''A class to manage per-commander caches.'''
+    """A class to manage per-commander caches."""
 
     def __init__(self):
         try:
@@ -35,7 +35,7 @@ class CommanderCacher:
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
-        '''Clear the cache for all commanders.'''
+        """Clear the cache for all commanders."""
         # Careful: self.db may be a Python dict.
         try:
             self.db.clear()
@@ -58,11 +58,11 @@ class CommanderCacher:
             self.db.conn.commit()
     #@+node:ekr.20180611054447.1: *3* cacher.dump
     def dump(self):
-        '''Dump the indicated cache if --trace-cache is in effect.'''
+        """Dump the indicated cache if --trace-cache is in effect."""
         dump_cache(g.app.commander_db, tag='Commander Cache')
     #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
     def get_wrapper(self, c, fn=None):
-        '''Return a new wrapper for c.'''
+        """Return a new wrapper for c."""
         return CommanderWrapper(c, fn=fn)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
@@ -89,20 +89,20 @@ class CommanderCacher:
         return True
     #@+node:ekr.20100210163813.5747: *3* cacher.save
     def save(self, c, fn, changeName):
-        '''
+        """
         Save the per-commander cache.
         
         Change the cache prefix if changeName is True.
         
         save and save-as set changeName to True, save-to does not.
-        '''
+        """
         self.commit()
         if changeName:
             c.db = self.get_wrapper(c, fn=fn)
     #@-others
 #@+node:ekr.20180627052459.1: ** class CommanderWrapper
 class CommanderWrapper:
-    '''A class to distinguish keys from separate commanders.'''
+    """A class to distinguish keys from separate commanders."""
 
     def __init__(self, c, fn=None):
         self.c = c
@@ -134,10 +134,10 @@ class CommanderWrapper:
         self.db[f"{self.key}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher:
-    '''A singleton global cacher, g.app.db'''
+    """A singleton global cacher, g.app.db"""
     
     def __init__(self):
-        '''Ctor for the GlobalCacher class.'''
+        """Ctor for the GlobalCacher class."""
         trace = 'cache' in g.app.debug
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
@@ -154,7 +154,7 @@ class GlobalCacher:
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
-        '''Clear the global cache.'''
+        """Clear the global cache."""
         # Careful: self.db may be a Python dict.
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
@@ -177,7 +177,7 @@ class GlobalCacher:
             self.db.conn.close()
     #@+node:ekr.20180627045953.1: *3* g_cacher.dump
     def dump(self, tag=''):
-        '''Dump the indicated cache if --trace-cache is in effect.'''
+        """Dump the indicated cache if --trace-cache is in effect."""
         tag0 = 'Global Cache'
         tag2 = f"{tag0}: {tag}" if tag else tag0
         dump_cache(self.db, tag2)
@@ -674,7 +674,7 @@ class SqlitePickleShare:
     #@-others
 #@+node:ekr.20180627050237.1: ** function: dump_cache
 def dump_cache(db, tag):
-    '''Dump the given cache.'''
+    """Dump the given cache."""
     print('\n===== %s =====\n' % tag)
     if db is None:
         print('db is None!')

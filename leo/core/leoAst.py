@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
-'''AST (Abstract Syntax Tree) related classes.'''
+"""AST (Abstract Syntax Tree) related classes."""
 import ast
 # import re
 import xml.sax.saxutils as saxutils
@@ -59,7 +59,7 @@ _op_names = {
 }
 #@+node:ekr.20160521103254.1: *3* leoAst.unit_test
 def unit_test(raise_on_fail=True):
-    '''Run basic unit tests for this file.'''
+    """Run basic unit tests for this file."""
     import _ast
     # import leo.core.leoAst as leoAst
     # Compute all fields to test.
@@ -98,11 +98,11 @@ def unit_test(raise_on_fail=True):
         print(s)
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
-    '''
+    """
     Return a formatted dump (a string) of the AST node.
 
     Adapted from Python's ast.dump.
-    '''
+    """
     def __init__(self,
         annotate_fields=False, # True: show names of fields.
         disabled_fields=None, # List of names of fields not to show.
@@ -148,13 +148,13 @@ class AstDumper:
     #@-others
 #@+node:ekr.20141012064706.18399: ** class AstFormatter
 class AstFormatter:
-    '''
+    """
     A class to recreate source code from an AST.
 
     This does not have to be perfect, but it should be close.
 
     Also supports optional annotations such as line numbers, file names, etc.
-    '''
+    """
     # No ctor.
     # pylint: disable=consider-using-enumerate
     
@@ -165,13 +165,13 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18400: *3*  f.Entries
     #@+node:ekr.20141012064706.18402: *4* f.format
     def format(self, node, level, *args, **keys):
-        '''Format the node and possibly its descendants, depending on args.'''
+        """Format the node and possibly its descendants, depending on args."""
         self.level = level
         val = self.visit(node, *args, **keys)
         return val.rstrip() if val else ''
     #@+node:ekr.20141012064706.18403: *4* f.visit
     def visit(self, node, *args, **keys):
-        '''Return the formatted version of an Ast node, or list of Ast nodes.'''
+        """Return the formatted version of an Ast node, or list of Ast nodes."""
         if isinstance(node, (list, tuple)):
             return ','.join([self.visit(z) for z in node])
         if node is None:
@@ -221,7 +221,7 @@ class AstFormatter:
     #                expr? returns)
 
     def do_FunctionDef(self, node, async_flag=False, print_body=True):
-        '''Format a FunctionDef node.'''
+        """Format a FunctionDef node."""
         result = []
         if node.decorator_list:
             for z in node.decorator_list:
@@ -262,7 +262,7 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18410: *3* f.Expressions
     #@+node:ekr.20141012064706.18411: *4* f.Expr
     def do_Expr(self, node):
-        '''An outer expression: must be indented.'''
+        """An outer expression: must be indented."""
         assert not self.in_expr
         self.in_expr = True
         value = self.visit(node.value)
@@ -270,7 +270,7 @@ class AstFormatter:
         return self.indent('%s\n' % value)
     #@+node:ekr.20141012064706.18412: *4* f.Expression
     def do_Expression(self, node):
-        '''An inner expression: do not indent.'''
+        """An inner expression: do not indent."""
         return '%s\n' % self.visit(node.body)
     #@+node:ekr.20141012064706.18413: *4* f.GeneratorExp
     def do_GeneratorExp(self, node):
@@ -302,7 +302,7 @@ class AstFormatter:
     #                arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
-        '''Format the arguments node.'''
+        """Format the arguments node."""
         kind = self.kind(node)
         assert kind == 'arguments', kind
         args = [self.visit(z) for z in node.args]
@@ -483,7 +483,7 @@ class AstFormatter:
         return '%s:%s' % (lower, upper)
     #@+node:ekr.20141012064706.18433: *4* f.Str
     def do_Str(self, node):
-        '''This represents a string constant.'''
+        """This represents a string constant."""
         return repr(node.s)
     #@+node:ekr.20141012064706.18434: *4* f.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -499,7 +499,7 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18436: *3* f.Operators
     #@+node:ekr.20160521104724.1: *4* f.op_name
     def op_name (self,node,strict=True):
-        '''Return the print name of an operator node.'''
+        """Return the print name of an operator node."""
         name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
@@ -668,7 +668,7 @@ class AstFormatter:
             ','.join(names)))
     #@+node:ekr.20141012064706.18455: *5* f.get_import_names
     def get_import_names(self, node):
-        '''Return a list of the the full file names in the import statement.'''
+        """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
             if self.kind(ast2) == 'alias':
@@ -870,7 +870,7 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18467: *3* f.Utils
     #@+node:ekr.20141012064706.18468: *4* f.kind
     def kind(self, node):
-        '''Return the name of node's class.'''
+        """Return the name of node's class."""
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18469: *4* f.indent
     def indent(self, s):
@@ -878,14 +878,14 @@ class AstFormatter:
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
 class AstFullTraverser:
-    '''
+    """
     A fast traverser for AST trees: it visits every node (except node.ctx fields).
 
     Sets .context and .parent ivars before visiting each node.
-    '''
+    """
 
     def __init__(self):
-        '''Ctor for AstFullTraverser class.'''
+        """Ctor for AstFullTraverser class."""
         self.context = None
         self.level = 0 # The context level only.
         self.parent = None
@@ -985,13 +985,13 @@ class AstFullTraverser:
         return node.__class__.__name__
     #@+node:ekr.20171214200319.1: *3* ft.format
     def format(self, node, level, *args, **keys):
-        '''Format the node and possibly its descendants, depending on args.'''
+        """Format the node and possibly its descendants, depending on args."""
         s = AstFormatter().format(node, level, *args, **keys)
         return s.rstrip()
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20160521102250.1: *4* ft.op_name
     def op_name (self,node,strict=True):
-        '''Return the print name of an operator node.'''
+        """Return the print name of an operator node."""
         name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
@@ -1141,7 +1141,7 @@ class AstFullTraverser:
         self.visit(node.value)
     #@+node:ekr.20141012064706.18491: *4* ft.Expression
     def do_Expression(self, node):
-        '''An inner expression'''
+        """An inner expression"""
         self.visit(node.body)
     #@+node:ekr.20141012064706.18492: *4* ft.ExtSlice
     def do_ExtSlice(self, node):
@@ -1487,7 +1487,7 @@ class AstFullTraverser:
     do_Await = do_YieldFrom = do_Yield
     #@+node:ekr.20141012064706.18528: *3* ft.visit (supports before_* & after_*)
     def visit(self, node):
-        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        """Visit a *single* ast node.  Visitors are responsible for visiting children!"""
         name = node.__class__.__name__
         assert isinstance(node, ast.AST), repr(node)
         # Visit the children with the new parent.
@@ -1509,7 +1509,7 @@ class AstFullTraverser:
         assert False, 'must visit children explicitly'
     #@+node:ekr.20141012064706.18529: *3* ft.visit_list
     def visit_list(self, aList):
-        '''Visit all ast nodes in aList or ast.node.'''
+        """Visit all ast nodes in aList or ast.node."""
         if isinstance(aList, (list, tuple)):
             for z in aList:
                 self.visit(z)
@@ -1521,10 +1521,10 @@ class AstFullTraverser:
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
-    '''
+    """
     A subclass of AstFormatter that replaces values of constants by Bool,
     Bytes, Int, Name, Num or Str.
-    '''
+    """
     # No ctor.
     #@+others
     #@+node:ekr.20141012064706.18531: *3* Constants & Name
@@ -1550,12 +1550,12 @@ class AstPatternFormatter(AstFormatter):
         return 'Num' # return repr(node.n)
 
     def do_Str(self, node):
-        '''This represents a string constant.'''
+        """This represents a string constant."""
         return 'Str' # return repr(node.s)
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
 class HTMLReportTraverser:
-    '''
+    """
     Create html reports from an AST tree.
 
     Inspired by Paul Boddie.
@@ -1564,12 +1564,12 @@ class HTMLReportTraverser:
 
     At present, this code does not show comments.
     The TokenSync class is probably the best way to do this.
-    '''
+    """
     # To do: revise report-traverser-debug.css.
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
     def __init__(self, debug=False):
-        '''Ctor for the NewHTMLReportTraverser class.'''
+        """Ctor for the NewHTMLReportTraverser class."""
         self.code_list = []
         self.debug = debug
         self.div_stack = []
@@ -1602,13 +1602,13 @@ class HTMLReportTraverser:
     #@+node:ekr.20150723094359.1: *3* rt.code generators
     #@+node:ekr.20150723100236.1: *4* rt.blank
     def blank(self):
-        '''Insert a single blank.'''
+        """Insert a single blank."""
         self.clean(' ')
         if self.code_list[-1] not in ' \n':
             self.gen(' ')
     #@+node:ekr.20150723100208.1: *4* rt.clean
     def clean(self, s):
-        '''Remove s from the code list.'''
+        """Remove s from the code list."""
         s2 = self.code_list[-1]
         if s2 == s:
             self.code_list.pop()
@@ -1645,7 +1645,7 @@ class HTMLReportTraverser:
         self.gen("</pre>")
     #@+node:ekr.20150722211115.1: *4* rt.gen
     def gen(self, s):
-        '''Append s to the global code list.'''
+        """Append s to the global code list."""
         if s:
             self.code_list.append(s)
     #@+node:ekr.20150722204300.23: *4* rt.keyword (code generator)
@@ -1687,7 +1687,7 @@ class HTMLReportTraverser:
     #@@nobeautify
 
     def op_name (self, node,strict=True):
-        '''Return the print name of an operator node.'''
+        """Return the print name of an operator node."""
         d = {
             # Binary operators.
             'Add':       '+',
@@ -1765,7 +1765,7 @@ class HTMLReportTraverser:
         self.newline()
     #@+node:ekr.20150722204300.20: *4* rt.div
     def div(self, class_name, extra=None, wrap=False):
-        '''Generate the start of a div element.'''
+        """Generate the start of a div element."""
         if class_name in self.enable_list:
             if class_name:
                 full_class_name = class_name if wrap else class_name + ' nowrap'
@@ -1884,7 +1884,7 @@ class HTMLReportTraverser:
             classes)
     #@+node:ekr.20160315161259.1: *3* rt.main
     def main(self, fn, node):
-        '''Return a report for the given ast node as a string.'''
+        """Return a report for the given ast node as a string."""
         self.gen(self.html_header % {
                 'css-fn': self.css_fn,
                 'title': 'Module: %s' % fn
@@ -2219,7 +2219,7 @@ class HTMLReportTraverser:
         self.div_node('expr', node.value)
     #@+node:ekr.20160523103429.1: *4* rf.Expression
     def do_Expression(self, node):
-        '''An inner expression: do not indent.'''
+        """An inner expression: do not indent."""
         return '%s' % self.visit(node.body)
     #@+node:ekr.20160523103751.1: *4* rt.ExtSlice
     def do_ExtSlice(self, node):
@@ -2302,7 +2302,7 @@ class HTMLReportTraverser:
         # self.end_span('genexpr')
     #@+node:ekr.20150722204300.71: *4* rt.get_import_names
     def get_import_names(self, node):
-        '''Return a list of the the full file names in the import statement.'''
+        """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
             if isinstance(ast2, ast.alias):
@@ -2539,7 +2539,7 @@ class HTMLReportTraverser:
         self.visit(node.value)
     #@+node:ekr.20150722204300.88: *4* rt.Str
     def do_Str(self, node):
-        '''This represents a string constant.'''
+        """This represents a string constant."""
 
         def clean(s):
             return s.replace(' ','').replace('\n','').replace('"','').replace("'",'')
@@ -2689,12 +2689,12 @@ class HTMLReportTraverser:
     #@-others
 #@+node:ekr.20160225102931.1: ** class TokenSync
 class TokenSync:
-    '''A class to sync and remember tokens.'''
+    """A class to sync and remember tokens."""
     # To do: handle comments, line breaks...
     #@+others
     #@+node:ekr.20160225102931.2: *3*  ts.ctor & helpers
     def __init__(self, s, tokens):
-        '''Ctor for TokenSync class.'''
+        """Ctor for TokenSync class."""
         assert isinstance(tokens, list) # Not a generator.
         self.s = s
         self.first_leading_line = None
@@ -2707,7 +2707,7 @@ class TokenSync:
         self.ignored_lines = self.make_ignored_lines()
     #@+node:ekr.20160225102931.3: *4* ts.make_blank_lines
     def make_blank_lines(self):
-        '''Return of list of line numbers of blank lines.'''
+        """Return of list of line numbers of blank lines."""
         result = []
         for i, aList in enumerate(self.line_tokens):
             # if any([self.token_kind(z) == 'nl' for z in aList]):
@@ -2716,11 +2716,11 @@ class TokenSync:
         return result
     #@+node:ekr.20160225102931.4: *4* ts.make_ignored_lines
     def make_ignored_lines(self):
-        '''
+        """
         Return a copy of line_tokens containing ignored lines,
         that is, full-line comments or blank lines.
         These are the lines returned by leading_lines().
-        '''
+        """
         result = []
         for i, aList in enumerate(self.line_tokens):
             for z in aList:
@@ -2742,10 +2742,10 @@ class TokenSync:
         return result
     #@+node:ekr.20160225102931.5: *4* ts.make_line_tokens (trace tokens)
     def make_line_tokens(self, tokens):
-        '''
+        """
         Return a list of lists of tokens for each list in self.lines.
         The strings in self.lines may end in a backslash, so care is needed.
-        '''
+        """
         n, result = len(self.lines), []
         for i in range(0, n + 1):
             result.append([])
@@ -2760,7 +2760,7 @@ class TokenSync:
         return result
     #@+node:ekr.20160225102931.6: *4* ts.make_nl_token
     def make_nl_token(self):
-        '''Return a newline token with '\n' as both val and raw_val.'''
+        """Return a newline token with '\n' as both val and raw_val."""
         t1 = token_module.NEWLINE
         t2 = '\n'
         t3 = (0, 0) # Not used.
@@ -2769,7 +2769,7 @@ class TokenSync:
         return t1, t2, t3, t4, t5
     #@+node:ekr.20160225102931.7: *4* ts.make_string_tokens
     def make_string_tokens(self):
-        '''Return a copy of line_tokens containing only string tokens.'''
+        """Return a copy of line_tokens containing only string tokens."""
         result = []
         for aList in self.line_tokens:
             result.append([z for z in aList if self.token_kind(z) == 'string'])
@@ -2777,13 +2777,13 @@ class TokenSync:
         return result
     #@+node:ekr.20160225102931.8: *3* ts.check_strings
     def check_strings(self):
-        '''Check that all strings have been consumed.'''
+        """Check that all strings have been consumed."""
         for i, aList in enumerate(self.string_tokens):
             if aList:
                 g.trace('warning: line %s. unused strings: %s' % (i, aList))
     #@+node:ekr.20160225102931.9: *3* ts.dump_token
     def dump_token(self, token, verbose=False):
-        '''Dump the token. It is either a string or a 5-tuple.'''
+        """Dump the token. It is either a string or a 5-tuple."""
         if isinstance(token, str):
             return token
         t1, t2, t3, t4, t5 = token
@@ -2795,14 +2795,14 @@ class TokenSync:
         return val
     #@+node:ekr.20160225102931.10: *3* ts.is_line_comment
     def is_line_comment(self, token):
-        '''Return True if the token represents a full-line comment.'''
+        """Return True if the token represents a full-line comment."""
         t1, t2, t3, t4, t5 = token
         kind = token_module.tok_name[t1].lower()
         raw_val = t5
         return kind == 'comment' and raw_val.lstrip().startswith('#')
     #@+node:ekr.20160225102931.11: *3* ts.join
     def join(self, aList, sep=','):
-        '''return the items of the list joined by sep string.'''
+        """return the items of the list joined by sep string."""
         tokens = []
         for i, token in enumerate(aList or []):
             tokens.append(token)
@@ -2811,17 +2811,17 @@ class TokenSync:
         return tokens
     #@+node:ekr.20160225102931.12: *3* ts.last_node
     def last_node(self, node):
-        '''Return the node of node's tree with the largest lineno field.'''
+        """Return the node of node's tree with the largest lineno field."""
 
         class LineWalker(ast.NodeVisitor):
 
             def __init__(self):
-                '''Ctor for LineWalker class.'''
+                """Ctor for LineWalker class."""
                 self.node = None
                 self.lineno = -1
 
             def visit(self, node):
-                '''LineWalker.visit.'''
+                """LineWalker.visit."""
                 if hasattr(node, 'lineno'):
                     if node.lineno > self.lineno:
                         self.lineno = node.lineno
@@ -2837,7 +2837,7 @@ class TokenSync:
         return w.node
     #@+node:ekr.20160225102931.13: *3* ts.leading_lines
     def leading_lines(self, node):
-        '''Return a list of the preceding comment and blank lines'''
+        """Return a list of the preceding comment and blank lines"""
         # This can be called on arbitrary nodes.
         leading = []
         if hasattr(node, 'lineno'):
@@ -2852,11 +2852,11 @@ class TokenSync:
         return leading
     #@+node:ekr.20160225102931.14: *3* ts.leading_string
     def leading_string(self, node):
-        '''Return a string containing all lines preceding node.'''
+        """Return a string containing all lines preceding node."""
         return ''.join(self.leading_lines(node))
     #@+node:ekr.20160225102931.15: *3* ts.line_at
     def line_at(self, node, continued_lines=True):
-        '''Return the lines at the node, possibly including continuation lines.'''
+        """Return the lines at the node, possibly including continuation lines."""
         n = getattr(node, 'lineno', None)
         if n is None:
             return '<no line> for %s' % node.__class__.__name__
@@ -2874,7 +2874,7 @@ class TokenSync:
         return self.lines[n - 1]
     #@+node:ekr.20160225102931.16: *3* ts.sync_string
     def sync_string(self, node):
-        '''Return the spelling of the string at the given node.'''
+        """Return the spelling of the string at the given node."""
         n = node.lineno
         tokens = self.string_tokens[n - 1]
         if tokens:
@@ -2885,17 +2885,17 @@ class TokenSync:
         return node.s
     #@+node:ekr.20160225102931.17: *3* ts.token_kind/raw_val/val
     def token_kind(self, token):
-        '''Return the token's type.'''
+        """Return the token's type."""
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(token_module.tok_name[t1].lower())
 
     def token_raw_val(self, token):
-        '''Return the value of the token.'''
+        """Return the value of the token."""
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(t5)
 
     def token_val(self, token):
-        '''Return the raw value of the token.'''
+        """Return the raw value of the token."""
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(t2)
     #@+node:ekr.20160225102931.18: *3* ts.tokens_for_statement
@@ -2909,17 +2909,17 @@ class TokenSync:
             g.trace('no lineno', name)
     #@+node:ekr.20160225102931.19: *3* ts.trailing_comment
     def trailing_comment(self, node):
-        '''
+        """
         Return a string containing the trailing comment for the node, if any.
         The string always ends with a newline.
-        '''
+        """
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
         g.trace('no lineno', node.__class__.__name__, g.callers())
         return '\n'
     #@+node:ekr.20160225102931.20: *3* ts.trailing_comment_at_lineno
     def trailing_comment_at_lineno(self, lineno):
-        '''Return any trailing comment at the given node.lineno.'''
+        """Return any trailing comment at the given node.lineno."""
         tokens = self.line_tokens[lineno - 1]
         for token in tokens:
             if self.token_kind(token) == 'comment':
@@ -2931,7 +2931,7 @@ class TokenSync:
         return '\n'
     #@+node:ekr.20160225102931.21: *3* ts.trailing_lines
     def trailing_lines(self):
-        '''return any remaining ignored lines.'''
+        """return any remaining ignored lines."""
         trailing = []
         i = self.first_leading_line
         while i < len(self.ignored_lines):

@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
-'''
+"""
 A module holding the following version-related info:
 
 leoVersion.static_date: The date of official releases.
                         Also used when the git repo is not available.
 leoVersion.version:     Leo's version number.
-'''
+"""
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node

@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20051104075904: * @file leoTest.py
-'''Classes for Leo's unit testing.
+"""Classes for Leo's unit testing.
 
 Run the unit tests in test.leo using the Execute Script command.
-'''
+"""
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
@@ -145,7 +145,7 @@ class GeneralTestCase(unittest.TestCase):
     #@+others
     #@+node:ekr.20051104075904.6: *3* __init__ (GeneralTestCase)
     def __init__(self, c, p, setup_script=None):
-        '''Ctor for the GeneralTestCase class.'''
+        """Ctor for the GeneralTestCase class."""
         super().__init__()
         self.c = c
         self.p = p.copy()
@@ -166,7 +166,7 @@ class GeneralTestCase(unittest.TestCase):
         self.c.selectPosition(self.p.copy()) # 2010/02/03
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
-        '''Run a Leo GeneralTestCase test.'''
+        """Run a Leo GeneralTestCase test."""
         trace_time = False
         tm = self
         c = tm.c
@@ -296,21 +296,21 @@ class ImportExportTestCase(unittest.TestCase):
     #@-others
 #@+node:ekr.20160518074224.1: ** class LinterTable
 class LinterTable():
-    '''A class to encapsulate lists of leo modules under test.'''
+    """A class to encapsulate lists of leo modules under test."""
     def __init__(self):
-        '''Ctor for LinterTable class.'''
+        """Ctor for LinterTable class."""
         # Define self. relative to leo.core.leoGlobals
         self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
 
     #@+others
     #@+node:ekr.20160518074545.2: *3* commands
     def commands(self):
-        '''Return list of all command modules in leo/commands.'''
+        """Return list of all command modules in leo/commands."""
         pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
         return self.get_files(pattern)
     #@+node:ekr.20160518074545.3: *3* core
     def core(self):
-        '''Return list of all of Leo's core files.'''
+        """Return list of all of Leo's core files."""
         pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
         aList = self.get_files(pattern)
         for fn in ['runLeo.py',]:
@@ -318,7 +318,7 @@ class LinterTable():
         return sorted(aList)
     #@+node:ekr.20160518074545.4: *3* external
     def external(self):
-        '''Return list of files in leo/external'''
+        """Return list of files in leo/external"""
         pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
         aList = self.get_files(pattern)
         remove = [
@@ -329,7 +329,7 @@ class LinterTable():
         return sorted([z for z in aList if z not in remove])
     #@+node:ekr.20160518074545.5: *3* gui_plugins
     def gui_plugins(self):
-        '''Return list of all of Leo's gui-related files.'''
+        """Return list of all of Leo's gui-related files."""
         pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
         aList = self.get_files(pattern)
         # These are not included, because they don't start with 'qt_':
@@ -343,7 +343,7 @@ class LinterTable():
         return sorted(set([z for z in aList if z not in remove]))
     #@+node:ekr.20160518074545.6: *3* modes
     def modes(self):
-        '''Return list of all files in leo/modes'''
+        """Return list of all files in leo/modes"""
         pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
         return self.get_files(pattern)
     #@+node:ekr.20160518074545.7: *3* ignores (not used!)
@@ -377,7 +377,7 @@ class LinterTable():
         )
     #@+node:ekr.20160518074545.8: *3* plugins (LinterTable)
     def plugins(self):
-        '''Return a list of all important plugins.'''
+        """Return a list of all important plugins."""
         aList = []
         for theDir in ('', 'importers', 'writers'):
             pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
@@ -404,14 +404,14 @@ class LinterTable():
         return sorted(set(aList))
     #@+node:ekr.20160520093506.1: *3* get_files (LinterTable)
     def get_files(self, pattern):
-        '''Return the list of absolute file names matching the pattern.'''
+        """Return the list of absolute file names matching the pattern."""
         aList = sorted([
             fn for fn in g.glob_glob(pattern)
                 if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
         return aList
     #@+node:ekr.20160518074545.9: *3* get_files_for_scope
     def get_files_for_scope(self, scope, fn):
-        '''Return a list of absolute filenames for external linters.'''
+        """Return a list of absolute filenames for external linters."""
         d = {
             'all':      [self.core, self.commands, self.external, self.plugins], #  self.modes
             'commands': [self.commands],
@@ -442,11 +442,11 @@ class LinterTable():
     #@-others
 #@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
 class RunTestExternallyHelperClass:
-    '''A helper class to run tests externally.'''
+    """A helper class to run tests externally."""
     #@+others
     #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
     def __init__(self, c, all, marked):
-        '''Ctor for RunTextExternallyHelperClass class.'''
+        """Ctor for RunTextExternallyHelperClass class."""
         self.c = c
         self.all = all
         self.copyRoot = None # The root of copied tree.
@@ -457,10 +457,10 @@ class RunTestExternallyHelperClass:
     #@+node:ekr.20070627140344.2: *3* runTests & helpers
     def runTests(self):
         # 2010/09/09: removed the gui arg: there is no way to set it.
-        '''
+        """
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
-        '''
+        """
         c = self.c; p = c.p
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
@@ -482,7 +482,7 @@ class RunTestExternallyHelperClass:
             )
     #@+node:ekr.20070627135336.10: *4* createFileFromOutline (RunTestExternallyHelperClass)
     def createFileFromOutline(self, c2):
-        '''Write c's outline to test/dynamicUnitTest.leo.'''
+        """Write c's outline to test/dynamicUnitTest.leo."""
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', self.fileName)
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
@@ -490,11 +490,11 @@ class RunTestExternallyHelperClass:
         c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
     #@+node:ekr.20070627135336.9: *4* createOutline & helpers (RunTestExternallyHelperClass)
     def createOutline(self, c2):
-        '''
+        """
         Create a unit test ouline containing:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
         - all @test and @suite nodes in p's outline.
-        '''
+        """
         c = self.c
         self.copyRoot = root = c2.rootPosition()
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
@@ -522,10 +522,10 @@ class RunTestExternallyHelperClass:
             # return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self, p, last):
-        '''
+        """
         Copy p's tree as the last child of root.
         Warning: p is a position in self.c, **not** c2.
-        '''
+        """
         p2 = last.insertAfter()
         p.copyTreeFromSelfTo(p2)
         return p2
@@ -540,7 +540,7 @@ class RunTestExternallyHelperClass:
         tracePlugins=False, # This is a bit too much.
         verbose=True,
     ):
-        '''Run all unit tests in path (a .leo file) in a pristine environment.'''
+        """Run all unit tests in path (a .leo file) in a pristine environment."""
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', path)
         leo = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoDynamicTest.py')
@@ -563,7 +563,7 @@ class RunTestExternallyHelperClass:
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
 class TestManager:
-    '''A controller class to encapuslate test-runners.'''
+    """A controller class to encapuslate test-runners."""
     #@+others
     #@+node:ekr.20120220070422.10418: *3*  ctor (TestManager)
     def __init__(self, c):
@@ -574,12 +574,12 @@ class TestManager:
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
     def doTests(self, all=None, marked=None, verbosity=1):
-        '''
+        """
         Run any kind of local unit test.
 
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
-        '''
+        """
         c = self.c
         p1 = c.p.copy()
             # Always restore the selected position.
@@ -605,14 +605,14 @@ class TestManager:
             c.redraw(p1)
     #@+node:ekr.20170504130531.1: *5* class LoggingLog
     class LoggingStream:
-        '''A class that can searve as a logging stream.'''
+        """A class that can searve as a logging stream."""
 
         def __init__(self, logger):
             self.aList = []
             self.logger = logger
 
         def write(self, s):
-            '''Called from pr and also unittest.addSuccess/addFailure.'''
+            """Called from pr and also unittest.addSuccess/addFailure."""
             if 0: # Write everything on a new line.
                 if not s.isspace():
                     self.logger.info(s.rstrip())
@@ -738,13 +738,13 @@ class TestManager:
         return g.adjustTripleString(s, self.c.tab_width)
     #@+node:ekr.20181121030240.1: *5* tm.instantiate_gui
     def instantiate_gui(self):
-        '''
+        """
         Subclasses may override to provide a "live" gui instance.
-        '''
+        """
         return leoGui.NullGui()
     #@+node:ekr.20181102030001.1: *5* tm.make_test_suite
     def make_test_suite(self, all, marked):
-        '''Return the test suite or None.'''
+        """Return the test suite or None."""
         c, tm = self.c, self
         suite = unittest.makeSuite(unittest.TestCase)
         aList = tm.findAllUnitTestNodes(all, marked)
@@ -851,7 +851,7 @@ class TestManager:
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
     def runTestsExternally(self, all, marked):
-        '''Run any kind of external unit test.'''
+        """Run any kind of external unit test."""
         c = self.c
         if c.isChanged():
             c.save() # Eliminate the need for ctrl-s.
@@ -1055,7 +1055,7 @@ class TestManager:
         # Don't redraw.
     #@+node:ekr.20051104075904.42: *4* TM.runLeoTest
     def runLeoTest(self, path):
-        '''Run a unit test that opens a .leo file.'''
+        """Run a unit test that opens a .leo file."""
         c = self.c
         # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
         assert g.app.unitTesting
@@ -1247,7 +1247,7 @@ class TestManager:
     #@+node:ekr.20051104075904.2: *3* TM.Utils
     #@+node:ekr.20051104075904.93: *4* TM.checkFileSyntax
     def checkFileSyntax(self, fileName, s, reraise=True, suppress=False):
-        '''Called by a unit test to check the syntax of a file.'''
+        """Called by a unit test to check the syntax of a file."""
         try:
             s = s.replace('\r', '')
             compile(s + '\n', fileName, 'exec')
@@ -1467,7 +1467,7 @@ class TestManager:
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
-        '''return the position of *all* non-ignored @mark-for-unit-test nodes.'''
+        """return the position of *all* non-ignored @mark-for-unit-test nodes."""
         c = self.c
         p, result, seen = c.rootPosition(), [], []
         while p:
@@ -1563,15 +1563,15 @@ class TestManager:
         return g.match_word(p.h.lower(), 0, "@suite")
 
     def isTestClassNode(self, p):
-        '''Return True if p is an @testclass node'''
+        """Return True if p is an @testclass node"""
         return g.match_word(p.h.lower(), 0, "@testclass")
 
     def isTestNode(self, p):
-        '''Return True if p is an @test node'''
+        """Return True if p is an @test node"""
         return g.match_word(p.h.lower(), 0, "@test")
 
     def isTestSetupNode(self, p):
-        '''Return True if p is an @test-setup node'''
+        """Return True if p is an @test-setup node"""
         return g.match_word(p.h.lower(), 0, "@testsetup")
     #@+node:ekr.20051104075904.33: *4* TM.numberOfClonesInOutline
     def numberOfClonesInOutline(self):
@@ -1643,7 +1643,7 @@ class TestManager:
         output.scriptSetBodyString(result)
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
     def writeNodeToNode(self, c, p, output, sentinels=True):
-        '''Write the p's tree to the body text of the output node.'''
+        """Write the p's tree to the body text of the output node."""
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
@@ -1749,7 +1749,7 @@ def makeObjectList(message):
     g.pr("%25s: %d new, %d total objects" % (message, len(newObjects), len(objects)))
 #@+node:ekr.20051104075904.20: *4* printGc
 def printGc(message=None):
-    '''Called from unit tests.'''
+    """Called from unit tests."""
     if not message:
         message = g.callers(2)
     global lastObjectCount
