@@ -2302,6 +2302,7 @@
 </v>
 <v t="ekr.20191003051240.1"></v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
+<v t="ekr.20191003061641.1"><vh>Acknowledgements (to do)</vh></v>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
 <v t="ekr.20191003060551.1"><vh>pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
@@ -2318,6 +2319,7 @@
 <v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
+<v t="ekr.20191003061641.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30543,6 +30545,7 @@ https://github.com/leo-editor/leo-editor/issues/1325
 <t tx="ekr.20191003060551.1">https://github.com/leo-editor/leo-editor/issues/1093
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 </t>
+<t tx="ekr.20191003061641.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
