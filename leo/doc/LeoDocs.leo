@@ -1565,6 +1565,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
@@ -2299,28 +2300,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190616175854.1"></v>
-<v t="ekr.20190616175944.1"><vh>Leo 6.0 release notes</vh>
-<v t="ekr.20190617064101.1"><vh>Acknowledgements</vh></v>
-<v t="ekr.20190616182152.1"><vh>6.0: Major features</vh>
-<v t="ekr.20190616180552.119"><vh>Leo requires python 3</vh></v>
-<v t="ekr.20190616180552.196"><vh>Leo uses a dock-based gui by default</vh></v>
+<v t="ekr.20191003051240.1"></v>
+<v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
+<v t="ekr.20191003050703.2"><vh>Acknowledgements</vh></v>
+<v t="ekr.20191003050703.3"><vh>6.1: Major features</vh></v>
+<v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh></v>
+<v t="ekr.20191003050703.11"><vh>6.0: Features</vh></v>
+<v t="ekr.20191003050703.15"><vh>6.0: Settings and command-line arguments</vh></v>
 </v>
-<v t="ekr.20190616182221.1"><vh>6.0: Bugs</vh>
-<v t="ekr.20190617012909.1"><vh>Bugs related to transition to python 3</vh></v>
-<v t="ekr.20190617012812.1"><vh>Bugs related to Qt docks</vh></v>
-<v t="ekr.20190617012953.1"><vh>Fixes to LeoWapp</vh></v>
-<v t="ekr.20190617013257.1"><vh>Other bugs</vh></v>
-</v>
-<v t="ekr.20190616183951.1"><vh>6.0: Features</vh>
-<v t="ekr.20190617014858.1"><vh>New and improved commands</vh></v>
-<v t="ekr.20190616182340.1"><vh>Code features</vh></v>
-<v t="ekr.20190617015847.1"><vh>Other features</vh></v>
-</v>
-<v t="ekr.20190616183759.1"><vh>6.0: Settings and command-line arguments</vh></v>
-</v>
-<v t="ekr.20050831195331.1"></v>
-<v t="ekr.20191002072123.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30260,287 +30247,6 @@ For docks:
 @bool dockable-log-tabs = False
 @string central-dock-widget = outline
 </t>
-<t tx="ekr.20190616175944.1">Leo 6.0 final, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
-
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
-
-**The highlights of Leo 6.0**
-
-- Leo now requires python 3.6 or above.
-  This greatly simplifies Leo's code.
-- Leo's default gui uses Qt Docks.
-  Use --no-dock to use Leo's legacy gui.
-- Several commands now generate clickable links in the Log pane.
-  This greatly speeds navigation.
-- The usual assortment of bug fixes and minor improvements.
-
-**Links**
-
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20190616180552.119">Complete transition to python 3
-https://github.com/leo-editor/leo-editor/issues/1137
-
-Chinese characters in command names
-https://github.com/leo-editor/leo-editor/issues/1121
-
-Use super wherever possible
-https://github.com/leo-editor/leo-editor/issues/1169
-</t>
-<t tx="ekr.20190616180552.196">Leo now uses Qt dock widgets by default.
-
-With default settings, Leo looks very much like it always has, but using Qt
-docks allows you to rearrange the screen to your liking.
-
-Leo remembers the layout of docks when you close Leo, and restores that
-layout when you restart layout.
-
-Two new settings customize the appearance of docks::
-
-    @bool dockable-log-tabs = False
-    @string central-dock-widget = outline
-    
-See the corresponding nodes in leoSettings.leo for full details.
-
-**Note**: When changing the above settings, it's best to add the
---init-docks setting the next time you run Leo.
-
-**Note**: Right-clicking the title area of any dock brings up a menu of
-docks. You can show or hide any dock (except the central widget) using this
-menu. Don't be afraid to hide any dock. You can restore it at any later
-time, including after restarting Leo.
-
-Issues related to Leo docks:
-
-Support docks in Leo's core
-https://github.com/leo-editor/leo-editor/issues/1150
-
-Use --no-dock to use Leo's legacy Qt gui.
-https://github.com/leo-editor/leo-editor/issues/1171
-</t>
-<t tx="ekr.20190616182152.1"></t>
-<t tx="ekr.20190616182221.1">This page shows all bugs related to Leo 6.0:
-https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.0+label%3Abug</t>
-<t tx="ekr.20190616182340.1">Reform how Leo handles git time stamps
-https://github.com/leo-editor/leo-editor/issues/1126
-
-Added unit tests for find methods
-https://github.com/leo-editor/leo-editor/issues/1179
-
-Suppress menu items at load time
-https://github.com/leo-editor/leo-editor/issues/1199
-
-Added g.es_clickable_link.
-
-Added g.GetRepresentativeObjects</t>
-<t tx="ekr.20190616183759.1">New command-line arguments:
-
---init-docks
-https://github.com/leo-editor/leo-editor/issues/1205
-
---no-dock
-Use Leo's legacy gui instead of the new Qt docks gui.
-
---trace=aList
-https://github.com/leo-editor/leo-editor/issues/1145
-
-New settings:
-
-For the find-long-lines command:
-@bool max-find-long-lines-length = 110
-    
-For docks:
-@bool dockable-log-tabs = False
-@string central-dock-widget = outline</t>
-<t tx="ekr.20190616183951.1">This page shows all enhancements related to Leo 6.0:
-https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.0+label%3Aenhancement
-</t>
-<t tx="ekr.20190617012812.1">As you can see from this bug list, adding support for Qt docks took a lot of work.
-
-Support docks in "Log pane" plugins
-https://github.com/leo-editor/leo-editor/issues/1154
-
-Raise dock with focus
-https://github.com/leo-editor/leo-editor/issues/1159
-
-Completion tab is not visible
-https://github.com/leo-editor/leo-editor/issues/1163
-
-Can't reopen a closed dock
-https://github.com/leo-editor/leo-editor/issues/1167
-
-Random dock layout for new users
-https://github.com/leo-editor/leo-editor/issues/1190
-
-Allow the user to choose central widget
-https://github.com/leo-editor/leo-editor/issues/1192
-
-Allow Render dock.
-https://github.com/leo-editor/leo-editor/issues/1193
-
-Phantom dock widget
-https://github.com/leo-editor/leo-editor/issues/1196
-
-Find and spell tabs
-https://github.com/leo-editor/leo-editor/issues/1197
-
-New documents have collapsed body pane
-https://github.com/leo-editor/leo-editor/issues/1198
-
-Always split body dock
-https://github.com/leo-editor/leo-editor/issues/1206
-
-Docks created by plugins can't be closed
-https://github.com/leo-editor/leo-editor/issues/1207
-
-free-layout plugin with docks
-https://github.com/leo-editor/leo-editor/issues/1216
-
-Render widget not visible: Plugins
-https://github.com/leo-editor/leo-editor/issues/1230
-</t>
-<t tx="ekr.20190617012909.1">@command vs @item
-https://github.com/leo-editor/leo-editor/issues/1117
-
-Recent changes probably broke settings_finder.py
-https://github.com/leo-editor/leo-editor/issues/1144
-
-</t>
-<t tx="ekr.20190617012953.1">Duplicate headlines
-https://github.com/leo-editor/leo-editor/issues/1127
-
-LeoWapp key handling in minibuffer
-https://github.com/leo-editor/leo-editor/issues/1131
-
-insert-child duplicates p.b
-https://github.com/leo-editor/leo-editor/issues/1142
-
-Ctrl-S doesn't save
-https://github.com/leo-editor/leo-editor/issues/1143
-
-LeoWapp focus issues
-https://github.com/leo-editor/leo-editor/issues/1146
-</t>
-<t tx="ekr.20190617013257.1">Problems syntax coloring TeX and LaTeX files
-https://github.com/leo-editor/leo-editor/issues/1088
-
-git-diff crash
-https://github.com/leo-editor/leo-editor/issues/1136
-
-Fixed a serious crasher
-https://github.com/leo-editor/leo-editor/issues/1161
-
-Ctrl-minus selects multiple nodes
-https://github.com/leo-editor/leo-editor/issues/1168
-
-Recent files menu
-https://github.com/leo-editor/leo-editor/issues/1188
-
---maximize doesn't work
-https://github.com/leo-editor/leo-editor/issues/1189
-
-open-outline buglet
-https://github.com/leo-editor/leo-editor/issues/1200
-
-Log pane does not report full commit number
-https://github.com/leo-editor/leo-editor/issues/1209
-
-Never crash during startup
-https://github.com/leo-editor/leo-editor/issues/1215
-
-Fix the ctagscompleter plugin
-https://github.com/leo-editor/leo-editor/issues/1211
-
-Status Bar Won't Accept Style
-https://github.com/leo-editor/leo-editor/issues/1218
-
-vim-mode-*-border settings do not work on Qt 5
-https://github.com/leo-editor/leo-editor/issues/1221
-
-gui=console. delete line command d is not working
-https://github.com/leo-editor/leo-editor/issues/1224
-
-gui=console. Backspace, delete keys not working
-https://github.com/leo-editor/leo-editor/issues/1238
-
-The bookmarks plugin is polluting the .leo file with inappropriate data
-https://github.com/leo-editor/leo-editor/issues/1247
-
-vr-lock gets overwritten
-https://github.com/leo-editor/leo-editor/issues/1256
-
-Hard crash in @contextmenu plugin if file not found
-https://github.com/leo-editor/leo-editor/issues/1257
-
-stickynoteenc traceback
-https://github.com/leo-editor/leo-editor/issues/1265
-
-Fixed misalignment in LeoQtLog.put</t>
-<t tx="ekr.20190617014858.1">Huge speed up of replace-all
-https://github.com/leo-editor/leo-editor/issues/1152
-
-Added find-long-lines. Uses @bool max-find-long-lines-length = 110
-
-Added find-missing-docstrings. Honors @nopylint.
-https://github.com/leo-editor/leo-editor/issues/1178
-
-Added import-free-mind-files
-
-Added print-window-state. This command is for Leo's developers.
-
-The pylint command generates clickable log messages.
-https://github.com/leo-editor/leo-editor/issues/1173
-  
-The pylint command honors @nopylint.
-https://github.com/leo-editor/leo-editor/issues/1178
-
-Improved python_terminal plugin.
-*Important*: this plugin segfaults when Leo starts up on some machines.
-https://github.com/leo-editor/leo-editor/issues/1212</t>
-<t tx="ekr.20190617015847.1">Disallow nested @&lt;file&gt; nodes: a failed experiment
-https://github.com/leo-editor/leo-editor/issues/1134
-
-Support colorizing of Lua long brackets
-https://github.com/leo-editor/leo-editor/issues/1175
-
-Add dock commands to Window Menu
-https://github.com/leo-editor/leo-editor/issues/1261
-</t>
-<t tx="ekr.20190617064101.1">The following people contributed significantly to Leo 6.0:
-
-Terry Brown: Born in New Zealand, living in Duluth, Minnesota for 22 years.
-Ross Burnett
-Josef Dalcolmo: Born in Italy, living and working in Germany.
-Chris George: Notch Hill, British Columbia, Canada.
-Bob Hossley
-Seth Johnson
-Rob Keeney: Suwanee, Georgia, USA.
-John Lunzer.
-Виталије Милошевић (Vitalije Milosevitch): Serbia.
-Lewis Neal, Sydney, Australia.
-Viktor Ransmayr: Munich, Germany. 
-Matt Wilkie: Whitehorse, Yukon, Canada.
-周琦 (ZoomQuiet): China.
-
-The following people have made numerous contributions to Leo throughout the years:
-
-Offray Vladimir Luna Cárdenas: Bogotá, Colombia.
-Kent Tenney: Ashland Wisconsin, USA.
-Ville M. Vainio.
-
-EKR lives in Madison, Wisconsin, USA
-</t>
 <t tx="ekr.20190620113133.1">In the directory leo-editor/leo/themes are a number of theme files. These
 can be loaded using the File, Open Outline menu option in Leo. Opening an
 outline automatically loads it. Keep opening outlines until you find one
@@ -30682,6 +30388,40 @@ Add the following to the headline of a new node as a child of your @settings nod
 5. Save the file and restart Leo.
 
 You should now be using myTheme.leo. You can load myTheme.leo from Leo. The font sizing and colors are under Theme Settings in the tree.</t>
+<t tx="ekr.20191003050703.1">Leo 6.1 b1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.1**
+
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20191003050703.11">This page shows all enhancements related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aenhancement</t>
+<t tx="ekr.20191003050703.15">New command-line arguments:
+
+New settings:
+</t>
+<t tx="ekr.20191003050703.2">The following people contributed significantly to Leo 6.1:
+</t>
+<t tx="ekr.20191003050703.3"></t>
+<t tx="ekr.20191003050703.6">This page shows all bugs related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Abug</t>
+<t tx="ekr.20191003051240.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
