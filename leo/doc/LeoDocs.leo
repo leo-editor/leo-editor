@@ -2302,8 +2302,8 @@
 </v>
 <v t="ekr.20191003051240.1"></v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
-<v t="ekr.20191003050703.2"><vh>Acknowledgements</vh></v>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
+<v t="ekr.20191003060551.1"><vh>pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
 </v>
 <v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
@@ -30405,6 +30405,10 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 6.1**
 
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for black.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
 
 **Links**
 
@@ -30426,9 +30430,6 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+
 #1297: warnings about @first &amp; @last
 https://github.com/leo-editor/leo-editor/issues/1297
 
-#1325: preserve over-indented comments
-https://github.com/leo-editor/leo-editor/issues/1325
-
 #1342: use labels in Find Tab
 https://github.com/leo-editor/leo-editor/issues/1342
 
@@ -30439,12 +30440,20 @@ https://github.com/leo-editor/leo-editor/issues/1351
 https://github.com/leo-editor/leo-editor/issues/1353
 </t>
 <t tx="ekr.20191003050703.15"></t>
-<t tx="ekr.20191003050703.2">The following people contributed significantly to Leo 6.1:
-</t>
 <t tx="ekr.20191003050703.3"></t>
 <t tx="ekr.20191003050703.6">This page shows all bugs related to Leo 6.1:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Abug</t>
-<t tx="ekr.20191003051240.1"></t>
+<t tx="ekr.20191003051240.1">The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
+
+Added support for black: https://pypi.org/project/black/.
+
+Added @nopyflakes directive.
+
+New command-line arguments::
+
+  --global-docks
+  --window-spot
+</t>
 <t tx="ekr.20191003051510.1274">https://github.com/leo-editor/leo-editor/issues/1289</t>
 <t tx="ekr.20191003051510.14">https://github.com/leo-editor/leo-editor/issues/1263
 </t>
@@ -30525,11 +30534,14 @@ https://github.com/leo-editor/leo-editor/issues/1362</t>
 <t tx="ekr.20191003055249.1">#1266: orange (beautify &amp; blacken)
 https://github.com/leo-editor/leo-editor/issues/1266
 
-#1272: Added support for black
+#1272: Added support for black (https://pypi.org/project/black/)
 https://github.com/leo-editor/leo-editor/issues/1272
 
 #1325: black keeps overindent comments:
 https://github.com/leo-editor/leo-editor/issues/1325
+</t>
+<t tx="ekr.20191003060551.1">https://github.com/leo-editor/leo-editor/issues/1093
+The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
