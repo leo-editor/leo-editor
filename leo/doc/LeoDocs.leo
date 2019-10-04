@@ -2325,6 +2325,7 @@
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
 <v t="ekr.20191003060551.1"><vh>pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003061844.1"><vh>The history_tracer plugin animates git commits</vh></v>
+<v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
 </v>
 <v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
@@ -8744,7 +8745,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
     A node may contain multiple @language directives.
 
-    The valid language names include the following: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlist, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.
+    The valid language names include the following: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asciidoc, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlist, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.
 
     **Note**: Shell files have comments that start with #.
 
@@ -30428,6 +30429,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 6.1**
 
 - Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
 - Added support for black.
 - The history_tracer plugin animates git commits.
 - New command-line arguments: --global-docks and --window-spot.
@@ -30849,6 +30851,8 @@ https://github.com/leo-editor/leo-editor/issues/1143
 
 LeoWapp focus issues
 https://github.com/leo-editor/leo-editor/issues/1146
+</t>
+<t tx="ekr.20191004072604.1">https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
