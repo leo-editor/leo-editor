@@ -155,9 +155,8 @@ class BridgeController:
             g.app.setGlobalDb() # Fix #556.
         else:
             g.app.db = g.NullObject()
-                # g.TracingNullObject(tag='g.app.db')
             g.app.commander_cacher = g.NullObject()
-                # g.TracingNullObject(tag='g.app.commander_cacher')
+            g.app.global_cacher = g.NullObject()
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
