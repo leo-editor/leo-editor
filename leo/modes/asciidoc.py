@@ -1,6 +1,9 @@
 # Leo colorizer control file for asciidoc mode.
 # This file is in the public domain.
 
+# Changes from asciidoc.xml:
+# - Use "markup" rather than "function" tag.
+
 # Properties for asciidoc mode.
 properties = {
 	"commentEnd": "*/",
