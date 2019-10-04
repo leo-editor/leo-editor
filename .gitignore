@@ -3,6 +3,7 @@ profile.txt
 __pycache__/
 .cache/
 *.py[cod]
+*.history
 
 # .db files
 *.db
