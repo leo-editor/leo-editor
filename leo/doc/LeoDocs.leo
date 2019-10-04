@@ -1062,6 +1062,7 @@
 <v t="ekr.20131002055813.19036"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131002055813.19037"><vh>Moving the cursor</vh></v>
 <v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
+<v t="ekr.20191004123555.1"><vh>Formatting text</vh></v>
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
@@ -2341,6 +2342,7 @@
 </v>
 </v>
 <v t="ekr.20191003061641.1"></v>
+<v t="ekr.20191004072604.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30852,8 +30854,32 @@ https://github.com/leo-editor/leo-editor/issues/1143
 LeoWapp focus issues
 https://github.com/leo-editor/leo-editor/issues/1146
 </t>
-<t tx="ekr.20191004072604.1">https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
+<t tx="ekr.20191004072604.1">See https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
+
+Leo now supports syntax coloring when @language asciidoc is in effect.
+
+Leo's new adoc command rocesses one or more @adoc trees, writing .adoc
+files. @button scripts can easily convert the .adoc files to .html files
+using asciidoctor or asciidoc3.
+   
+Like the rst3 command, the adoc command understands the structure of Leo
+outlines. That is, the adoc command will generate asciidoc markup for
+sections based on outline level.
+
+**Background**
+
+asciidoc3 is a python tool. asciidoctor is a ruby tool, claiming to be 100
+times faster than asciidoc.
+
+The asciidoc markup language is virtually identical, regardless of the tool
+used. For full details, see the asciidoctor User manual:
+https://asciidoctor.org/docs/user-manual/
 </t>
+<t tx="ekr.20191004123555.1">``rst3``
+    Converts @rst nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.
+    
+``adoc``
+     Converts @adoc nodes to asciidoc text. This command automatically creates markeup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
