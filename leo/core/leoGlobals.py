@@ -5874,6 +5874,8 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
+unicode_warnings = {} # Keys are g.callers.
+
 def toUnicode(s, encoding=None, reportErrors=False):
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
@@ -5881,8 +5883,11 @@ def toUnicode(s, encoding=None, reportErrors=False):
     tag = 'g.toUnicode'
     if not isinstance(s, bytes):
         if not isinstance(s, (NullObject, TracingNullObject)):
-            g.error(f"{tag}: unexpected argument of type {s.__class__.__name__}")
-            g.trace(g.callers())
+            callers = g.callers()
+            if callers not in unicode_warnings:
+                unicode_warnings [callers] = True
+                g.error(f"{tag}: unexpected argument of type {s.__class__.__name__}")
+                g.trace(callers)
         return ''
     if not encoding:
         encoding = 'utf-8'
