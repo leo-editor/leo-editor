@@ -474,8 +474,6 @@
 <v t="ekr.20060824111500.181"><vh>getMode</vh></v>
 </v>
 </v>
-<v t="ekr.20160319081141.1"></v>
-<v t="ekr.20060824111500.114"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20060824111500.108">'''Convert jEdit language description file to an equivalent .py file.'''
@@ -705,8 +703,6 @@ def putTripleString(self,s):
                 else: val = g.choose(val,val,'')
             # if val: g.trace(key,repr(val))
             d [key] = val
-
-
         self.putDict('%s_attributes_dict' % (prefix),d)
         dd [ prefix ] = '%s_attributes_dict' % (prefix)
 
@@ -717,14 +713,11 @@ def putTripleString(self,s):
 
     esc = self.escapeString
     esc2 = g.choose(escape,self.escapeString,lambda a: a)
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
-    s = ''.join(['\t%s: %s,\n' % (esc(key),esc2(theDict.get(key))) for key in keys])
-    # if escape:
-        # s = ''.join(['\t%s: %s,\n' % (esc(key),esc(theDict.get(key))) for key in keys])
-    # else:
-        # s = ''.join(['\t%s: %s,\n' % (esc(key),theDict.get(key)) for key in keys])
+    keys = list(set((theDict.keys())))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
+    s = ''.join([
+        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
+            for key in keys])
     if s:
         s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
@@ -732,9 +725,8 @@ def putTripleString(self,s):
 def putDictOfLists (self,name,theDict,strings=False):
 
     esc = self.escapeString
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
+    keys = list(set(theDict.keys()))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
     theList = []
     for key in keys:
         if strings:
@@ -775,26 +767,23 @@ def putDictOfLists (self,name,theDict,strings=False):
         prefix = '%s_%s' % (self.modeName,ruleset.name)
         prefix = g.toUnicode(prefix)
         ignore_case = ruleset.attributes.get('ignore_case','false')
-        if type(ignore_case) != type(True): # Bug fix: 2013/08/03.
+        if not isinstance(ignore_case, bool):
             ignore_case = ignore_case.lower() == 'false'
         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             if rule.name == 'keywords':
-                d = rule.keywordsDict
-                # g.trace([z for z in d.keys() if not g.isString(z)])
-                for key in list(d.keys()):
-                    key = g.toUnicode(key)
-                    if not key.strip():
-                        if key in d:
-                            del d [key]
-                    elif key.find(' ') != -1 or key.find('\t') != -1:
+                # d = rule.keywordsDict
+                d = { g.toUnicode(key): g.toUnicode(val)
+                    for key, val in rule.keywordsDict.items() if key.strip() }
+                # g.trace()
+                # g.printObj(d)
+                for key in sorted(set(d.keys())):
+                    if ' ' in key or '\t' in key:
                         del d [key]
-                        g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
-                            repr(key)))
+                        g.es_print(f"Ignoring keyword containing whitespace: {key!r}")
                     elif ignore_case: # New in 4.4.1 final.
                         # Downcase all keys.
                         val = d.get(key)
-                        val = g.toUnicode(val)
                         key2 = key.lower()
                         if key2 != key:
                             if key in d: del d[key]
@@ -1150,9 +1139,7 @@ def %s_rule%d(colorer, s, i):
                         self.keywordChars.append(ch)
         
     # g.trace('keywordChars',repr(self.keywordChars))
-    self.keywordChars = ''.join(self.keywordChars)
-    
-
+    self.keywordChars = ''.join(list(set(self.keywordChars)))
     self.outputFile = theFile
     self.put('# Leo colorizer control file for %s mode.\n' % language)
     self.put('# This file is in the public domain.\n\n')
