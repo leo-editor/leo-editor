@@ -28,7 +28,7 @@ class AsciiDoctorCommands:
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515070742.22: ** adoc.ad_command
+    #@+node:ekr.20190515070742.22: ** @cmd('adoc')
     @cmd('adoc')
     def ad_command(self, event=None):
         #@+<< adoc command docstring >>
