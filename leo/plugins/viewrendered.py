@@ -706,6 +706,7 @@ if QtWidgets: # NOQA
         def create_dispatch_dict(self):
             pc = self
             d = {
+                'asciidoc': pc.update_asciidoc,
                 'big': pc.update_rst,
                 'html': pc.update_html,
                 'graphics-script': pc.update_graphics_script,
@@ -969,6 +970,49 @@ if QtWidgets: # NOQA
             # This trace would be called at idle time.
                 # g.trace('no change')
             return False
+        #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
+        def update_asciidoc(self, s, keywords):
+            '''Update asciidoc in the vr pane.'''
+            c, p, pc = self.c, self.c.p, self
+            force = keywords.get('force')
+            colorizer = c.frame.body.colorizer
+            language = colorizer.scanLanguageDirectives(p)
+            # Do this regardless of whether we show the widget or not.
+            w = pc.ensure_text_widget()
+            assert pc.w
+            if s:
+                pc.show()
+            if True: ### got_asciidoctor:
+                if force or language == 'asciidoc':
+                    s = self.convert_to_asciidoctor(s)
+                    self.set_html(s,w)
+                    return
+            # g.trace('asciidoc not available: using rst')
+            self.update_rst(s,keywords)
+        #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor (to do)
+        def convert_to_asciidoctor(self, s):
+            '''Convert s to html using the asciidoc processor.'''
+            pc = self
+            c, p = pc.c, pc.c.p
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            if pc.title:
+                s = pc.asciidoc_underline(pc.title) + s
+                pc.title = None
+            s = pc.run_asciidoctor(s)
+            return g.toUnicode(s)
+        #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor(to do)
+        def run_asciidoctor(self, s):
+            g.trace(len(s))
+            
+        #@+node:ekr.20191004144242.1: *5* vr.asciidoc_make_title
+        def asciidoc_make_title(self, s):
+            '''Generate asciiidoc underlining for s.'''
+            ch = '#'
+            return f"{ch * 4}\n{s}\n{ch * 4}\n\n"
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
@@ -1358,7 +1402,9 @@ if QtWidgets: # NOQA
             c, p = self.c, self.c.p
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p)
-            if language in ('rest', 'rst'):
+            if language == 'asciidoc':
+                p.update_asciidoc(s, keywords)
+            elif language in ('rest', 'rst'):
                 pc.update_rst(s, keywords)
             elif language in ('markdown', 'md'):
                 pc.update_md(s, keywords)
