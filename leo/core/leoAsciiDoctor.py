@@ -10,7 +10,10 @@ StringIO = io.StringIO
 import re
 import time
 import leo.core.leoGlobals as g
+from distutils.spawn import find_executable
 #@-<< imports >>
+asciidoctord_exec = find_executable('asciidoctor')
+asciidoc3_exec = find_executable('asciidoc3')
 #@+<< define cmd decorator >>
 #@+node:ekr.20190515074440.1: ** << define cmd decorator >> (AsciiDoctor)
 def cmd(name):
@@ -28,9 +31,9 @@ class AsciiDoctorCommands:
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515070742.22: ** @cmd('adoc')
+    #@+node:ekr.20190515070742.22: ** ad_command
     @cmd('adoc')
-    def ad_command(self, event=None):
+    def ad_command(self, event=None, verbose=True):
         #@+<< adoc command docstring >>
         #@+node:ekr.20190515115100.1: *3* << adoc command docstring >>
         """
@@ -109,8 +112,9 @@ class AsciiDoctorCommands:
             if path:
                 paths.append(path)
         t2 = time.time()
-        g.es_print('adoc: wrote %s file%s in %4.2f sec.' % (
-            len(paths), g.plural(len(paths)), t2 - t1))
+        if verbose:
+            g.es_print('adoc: wrote %s file%s in %4.2f sec.' % (
+                len(paths), g.plural(len(paths)), t2 - t1))
         return paths
 
     #@+node:ekr.20190515084219.1: ** adoc.ad_filename
