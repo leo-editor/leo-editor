@@ -10,10 +10,8 @@ StringIO = io.StringIO
 import re
 import time
 import leo.core.leoGlobals as g
-from distutils.spawn import find_executable
+
 #@-<< imports >>
-asciidoctord_exec = find_executable('asciidoctor')
-asciidoc3_exec = find_executable('asciidoc3')
 #@+<< define cmd decorator >>
 #@+node:ekr.20190515074440.1: ** << define cmd decorator >> (AsciiDoctor)
 def cmd(name):

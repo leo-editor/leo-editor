@@ -208,6 +208,7 @@ try:
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
     QtWidgets = False
+from distutils.spawn import find_executable
 try:
     import docutils
     import docutils.core
@@ -249,6 +250,9 @@ except ImportError:
     except ImportError:
         urllib = None
 #@-<< imports >>
+asciidoctord_exec = find_executable('asciidoctor')
+asciidoc3_exec = find_executable('asciidoc3')
+pandoc_exec = find_executable('pandoc')
 #@+<< set BaseTextWidget >>
 #@+node:ekr.20190424081947.1: ** << set BaseTextWidget >> (vr)
 if QtWidgets:
