@@ -1034,7 +1034,8 @@ if QtWidgets: # NOQA
                 f.write(s)
             # Call the external program to write the output file.
             prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
-            command = f"{prog} {i_path} -e -b html5 -o {o_path}"
+            command = f"{prog} {i_path} -b html5 -o {o_path}"
+                # The -e option deletes css.
             g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
@@ -1336,13 +1337,8 @@ if QtWidgets: # NOQA
             if pc.title:
                 s = pc.make_pandoc_title(pc.title) + s
                 pc.title = None
-            s = pc.run_asciidoctor(s)
+            s = pc.run_pandoc(s)
             return g.toUnicode(s)
-        #@+node:ekr.20191006155748.2: *5* vr.make_pandoc_title
-        def make_pandoc_title(self, s):
-            '''Generate asciiidoc underlining for s.'''
-            line = '#' * (min(4, len(s)))
-            return f"{line}\n{s}\n{line}\n\n"
         #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
         def run_pandoc(self, s):
             """
@@ -1359,12 +1355,12 @@ if QtWidgets: # NOQA
             with open(i_path, 'w') as f:
                 f.write(s)
             # Call pandoc to write the output file.
-            command = f"pandoc --quiet {i_path} -b html5 -o {o_path}"
+            command = f"pandoc {i_path} -t html5 -o {o_path}"
+                # --quiet does no harm.
             g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
                 return f.read()
-          
         #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
