@@ -2324,8 +2324,9 @@
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
 <v t="ekr.20191003061641.1"><vh>Acknowledgements (to do)</vh></v>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
-<v t="ekr.20191003060551.1"><vh>pyzo_in_leo plugin</vh></v>
-<v t="ekr.20191003061844.1"><vh>The history_tracer plugin animates git commits</vh></v>
+<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+<v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
+<v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
 <v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
 </v>
@@ -30434,6 +30435,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Added support for asciidoc and asciidoctor.
 - Added support for black.
 - The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
 - New command-line arguments: --global-docks and --window-spot.
 - New cursor-movement commands.
 
@@ -30854,7 +30856,8 @@ https://github.com/leo-editor/leo-editor/issues/1143
 LeoWapp focus issues
 https://github.com/leo-editor/leo-editor/issues/1146
 </t>
-<t tx="ekr.20191004072604.1">See https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
+<t tx="ekr.20191004072604.1">Issues related to asciidoc:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
 
 Leo now supports syntax coloring when @language asciidoc is in effect.
 
@@ -30880,6 +30883,7 @@ https://asciidoctor.org/docs/user-manual/
     
 ``adoc``
      Converts @adoc nodes to asciidoc text. This command automatically creates markeup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>
+<t tx="ekr.20191006113015.1">https://github.com/leo-editor/leo-editor/issues/1281</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
