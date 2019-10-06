@@ -250,7 +250,7 @@ except ImportError:
     except ImportError:
         urllib = None
 #@-<< imports >>
-asciidoctord_exec = find_executable('asciidoctor')
+asciidoctor_exec = find_executable('asciidoctor')
 asciidoc3_exec = find_executable('asciidoc3')
 pandoc_exec = find_executable('pandoc')
 #@+<< set BaseTextWidget >>
@@ -977,6 +977,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
         def update_asciidoc(self, s, keywords):
             '''Update asciidoc in the vr pane.'''
+            global asciidoctor_exec, asciidoc3_exec
             c, p, pc = self.c, self.c.p, self
             force = keywords.get('force')
             colorizer = c.frame.body.colorizer
@@ -986,16 +987,19 @@ if QtWidgets: # NOQA
             assert pc.w
             if s:
                 pc.show()
-            if True: ### got_asciidoctor:
+            if asciidoctor_exec or asciidoc3_exec:
                 if force or language == 'asciidoc':
-                    s = self.convert_to_asciidoctor(s)
-                    self.set_html(s,w)
-                    return
+                    try:
+                        s = self.convert_to_asciidoctor(s)
+                        self.set_html(s,w)
+                        return
+                    except Exception:
+                        g.es_exception()
             # g.trace('asciidoc not available: using rst')
             self.update_rst(s,keywords)
-        #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor (to do)
+        #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
         def convert_to_asciidoctor(self, s):
-            '''Convert s to html using the asciidoc processor.'''
+            '''Convert s to html using the asciidoctor or asciidoc processor.'''
             pc = self
             c, p = pc.c, pc.c.p
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1008,15 +1012,35 @@ if QtWidgets: # NOQA
                 pc.title = None
             s = pc.run_asciidoctor(s)
             return g.toUnicode(s)
-        #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor(to do)
+        #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor
         def run_asciidoctor(self, s):
-            g.trace(len(s))
-            
+            """
+            Process s with asciidoctor or asciidoc3.
+            return the contents of the html file.
+            The caller handles all exceptions.
+            """
+            global asciidoctor_exec, asciidoc3_exec
+            assert asciidoctor_exec or asciidoc3_exec, g.callers()
+            home = g.os.path.expanduser('~')
+            i_path = g.os_path_finalize_join(home, 'vr_input.adoc')
+            o_path = g.os_path_finalize_join(home, 'vr_output.html')
+            # Write the input file.
+            with open(i_path, 'w') as f:
+                f.write(s)
+            # Call the external program to write the output file.
+            prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
+            command = f"{prog} {i_path} -b html5 -o {o_path}"
+            g.execute_shell_commands(command, trace=True)
+            # Read the output file and return it.
+            with open(o_path, 'r') as f:
+                s = f.read()
+            return g.toUnicode(s)
+          
         #@+node:ekr.20191004144242.1: *5* vr.asciidoc_make_title
         def asciidoc_make_title(self, s):
             '''Generate asciiidoc underlining for s.'''
-            ch = '#'
-            return f"{ch * 4}\n{s}\n{ch * 4}\n\n"
+            line = '#' * (min(4, len(s)))
+            return f"{line}\n{s}\n{line}\n\n"
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
