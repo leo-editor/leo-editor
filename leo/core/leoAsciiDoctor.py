@@ -29,7 +29,7 @@ class AsciiDoctorCommands:
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515070742.22: ** ad_command
+    #@+node:ekr.20190515070742.22: ** adoc.ad_command: @cmd('adoc')
     @cmd('adoc')
     def ad_command(self, event=None, verbose=True):
         #@+<< adoc command docstring >>
@@ -209,6 +209,8 @@ class AsciiDoctorCommands:
         """Generate an AsciiDoctor section"""
         if not p.h.strip():
             return
+        ### '=' * 4 should work for asciidoc.
+        ### ' ' + ('#' * level) should work for pandoc.
         section = '=' * max(0, self.level_offset + p.level() - self.root_level)
         self.output_file.write('%s %s\n' % (section, p.h))
     #@-others
