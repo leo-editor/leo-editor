@@ -1035,7 +1035,7 @@ if QtWidgets: # NOQA
             # Call the external program to write the output file.
             prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
             command = f"{prog} {i_path} -e -b html5 -o {o_path}"
-            g.execute_shell_commands(command, trace=True)
+            g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
                 return f.read()
@@ -1303,27 +1303,25 @@ if QtWidgets: # NOQA
             pc.show()
         #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
         def update_pandoc(self, s, keywords):
-            '''Update an @pandoc in the vr pane.'''
+            '''
+            Update an @pandoc in the vr pane.
+            
+            There is no such thing as @language pandoc,
+            so only @pandoc nodes trigger this code.
+            '''
             global pandoc_exec
-            g.trace(len(s))
             pc = self
-            ### c, p, pc = self.c, self.c.p, self
-            ### force = keywords.get('force')
-            ### colorizer = c.frame.body.colorizer
-            ### language = colorizer.scanLanguageDirectives(p)
-            # Do this regardless of whether we show the widget or not.
             w = pc.ensure_text_widget()
             assert pc.w
             if s:
                 pc.show()
             if pandoc_exec:
-                ### if force or language == 'pandoc':
                 try:
                     s2 = self.convert_to_pandoc(s)
                     self.set_html(s2,w)
-                    return
                 except Exception:
                     g.es_exception()
+                return
             self.update_rst(s,keywords)
         #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
         def convert_to_pandoc(self, s):
@@ -1360,9 +1358,9 @@ if QtWidgets: # NOQA
             # Write the input file.
             with open(i_path, 'w') as f:
                 f.write(s)
-            # Call the external program to write the output file.
+            # Call pandoc to write the output file.
             command = f"pandoc --quiet {i_path} -b html5 -o {o_path}"
-            g.execute_shell_commands(command, trace=True)
+            g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
                 return f.read()
