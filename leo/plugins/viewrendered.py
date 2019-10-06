@@ -721,6 +721,7 @@ if QtWidgets: # NOQA
                 'md': pc.update_md,
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
+                'pandoc': pc.update_pandoc,
                 'pyplot': pc.update_pyplot,
                 'rest': pc.update_rst,
                 'rst': pc.update_rst,
@@ -990,13 +991,17 @@ if QtWidgets: # NOQA
             if asciidoctor_exec or asciidoc3_exec:
                 if force or language == 'asciidoc':
                     try:
-                        s = self.convert_to_asciidoctor(s)
-                        self.set_html(s,w)
+                        s2 = self.convert_to_asciidoctor(s)
+                        self.set_html(s2,w)
                         return
                     except Exception:
                         g.es_exception()
-            # g.trace('asciidoc not available: using rst')
             self.update_rst(s,keywords)
+        #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
+        def make_asciidoc_title(self, s):
+            '''Generate an asciiidoc title for s.'''
+            line = '#' * (min(4, len(s)))
+            return f"{line}\n{s}\n{line}\n\n"
         #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
         def convert_to_asciidoctor(self, s):
             '''Convert s to html using the asciidoctor or asciidoc processor.'''
@@ -1008,7 +1013,7 @@ if QtWidgets: # NOQA
             if os.path.isdir(path):
                 os.chdir(path)
             if pc.title:
-                s = pc.asciidoc_underline(pc.title) + s
+                s = pc.make_asciidoc_title(pc.title) + s
                 pc.title = None
             s = pc.run_asciidoctor(s)
             return g.toUnicode(s)
@@ -1029,18 +1034,12 @@ if QtWidgets: # NOQA
                 f.write(s)
             # Call the external program to write the output file.
             prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
-            command = f"{prog} {i_path} -b html5 -o {o_path}"
+            command = f"{prog} {i_path} -e -b html5 -o {o_path}"
             g.execute_shell_commands(command, trace=True)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
-                s = f.read()
-            return g.toUnicode(s)
+                return f.read()
           
-        #@+node:ekr.20191004144242.1: *5* vr.asciidoc_make_title
-        def asciidoc_make_title(self, s):
-            '''Generate asciiidoc underlining for s.'''
-            line = '#' * (min(4, len(s)))
-            return f"{line}\n{s}\n{line}\n\n"
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
@@ -1302,6 +1301,72 @@ if QtWidgets: # NOQA
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
+        #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
+        def update_pandoc(self, s, keywords):
+            '''Update an @pandoc in the vr pane.'''
+            global pandoc_exec
+            g.trace(len(s))
+            pc = self
+            ### c, p, pc = self.c, self.c.p, self
+            ### force = keywords.get('force')
+            ### colorizer = c.frame.body.colorizer
+            ### language = colorizer.scanLanguageDirectives(p)
+            # Do this regardless of whether we show the widget or not.
+            w = pc.ensure_text_widget()
+            assert pc.w
+            if s:
+                pc.show()
+            if pandoc_exec:
+                ### if force or language == 'pandoc':
+                try:
+                    s2 = self.convert_to_pandoc(s)
+                    self.set_html(s2,w)
+                    return
+                except Exception:
+                    g.es_exception()
+            self.update_rst(s,keywords)
+        #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
+        def convert_to_pandoc(self, s):
+            '''Convert s to html using the asciidoctor or asciidoc processor.'''
+            pc = self
+            c, p = pc.c, pc.c.p
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            if pc.title:
+                s = pc.make_pandoc_title(pc.title) + s
+                pc.title = None
+            s = pc.run_asciidoctor(s)
+            return g.toUnicode(s)
+        #@+node:ekr.20191006155748.2: *5* vr.make_pandoc_title
+        def make_pandoc_title(self, s):
+            '''Generate asciiidoc underlining for s.'''
+            line = '#' * (min(4, len(s)))
+            return f"{line}\n{s}\n{line}\n\n"
+        #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
+        def run_pandoc(self, s):
+            """
+            Process s with pandoc.
+            return the contents of the html file.
+            The caller handles all exceptions.
+            """
+            global pandoc_exec
+            assert pandoc_exec, g.callers()
+            home = g.os.path.expanduser('~')
+            i_path = g.os_path_finalize_join(home, 'vr_input.pandoc')
+            o_path = g.os_path_finalize_join(home, 'vr_output.html')
+            # Write the input file.
+            with open(i_path, 'w') as f:
+                f.write(s)
+            # Call the external program to write the output file.
+            command = f"pandoc --quiet {i_path} -b html5 -o {o_path}"
+            g.execute_shell_commands(command, trace=True)
+            # Read the output file and return it.
+            with open(o_path, 'r') as f:
+                return f.read()
+          
         #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
