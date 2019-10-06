@@ -1213,8 +1213,11 @@ class AtFile:
             return False
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
-        pathChanged = oldPath and not os.path.samefile(oldPath, newPath)
-        # 2010/01/27: suppress this message during save-as and save-to commands.
+        try: # #1367: samefile can throw IOError!
+            pathChanged = oldPath and not os.path.samefile(oldPath, newPath)
+        except IOError:
+            pathChanged = True
+        # Suppress this message during save-as and save-to commands.
         if pathChanged and not c.ignoreChangedPaths:
             ok = at.promptForDangerousWrite(
                 fileName=None,

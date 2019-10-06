@@ -1136,7 +1136,7 @@ class FileCommands:
                     c.setChanged(False) # Clears all dirty bits.
                     self.putSavedMessage(fileName)
             finally:
-                c.ignoreChangedPaths = True
+                c.ignoreChangedPaths = False
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
