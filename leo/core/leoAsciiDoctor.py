@@ -227,10 +227,8 @@ class AsciiDoctorCommands:
             g.execute_shell_commands(o_paths)
         t2 = time.time()
         if verbose:
-            g.es_print(
-                f"{kind}: "
-                f"wrote {len(i_paths)} file{g.plural(len(i_paths))} "
-                f"in {(t2-t1):4.2f} sec.")
+            n = len(i_paths)
+            g.es_print(f"{kind}: wrote {n} file{g.plural(n)} in {(t2-t1):4.2f} sec.")
         return i_paths
     #@+node:ekr.20191007053522.1: *4* adoc.compute_opath
     def compute_opath(self, i_path):
