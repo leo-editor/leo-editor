@@ -30916,7 +30916,7 @@ The VR plugin renders only p.b.
 
 Much like the corresponding adoc commands, but uses pandoc markup, which is a variant of markdown.
 
-The pandoc tool must exist.</t>
+The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
