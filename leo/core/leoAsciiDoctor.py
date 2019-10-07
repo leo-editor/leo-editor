@@ -227,21 +227,20 @@ class AsciiDoctorCommands:
             g.execute_shell_commands(o_paths)
         t2 = time.time()
         if verbose:
-            g.es_print('adoc: wrote %s file%s in %4.2f sec.' % (
-                len(i_paths), g.plural(len(i_paths)), t2 - t1))
+            g.es_print(
+                f"{kind}: "
+                f"wrote {len(i_paths)} file{g.plural(len(i_paths))} "
+                f"in {(t2-t1):4.2f} sec.")
         return i_paths
     #@+node:ekr.20191007053522.1: *4* adoc.compute_opath
     def compute_opath(self, i_path):
         """
-        A workaround to an apparent asciidoctor glitch.
-        For some reason asciidoctor doesn't handle the .adoc.html extention well.
+        Neither asciidoctor nor pandoc handles extra extentions well.
         """
-        if self.kind == 'adoc':
-            for i in range(3):
-                i_path, ext = os.path.splitext(i_path)
-                if not ext:
-                    break
-            return i_path + '.html'
+        for i in range(3):
+            i_path, ext = os.path.splitext(i_path)
+            if not ext:
+                break
         return i_path + '.html'
     #@+node:ekr.20191006155051.1: *3* adoc.commands
     def adoc_command(self, event=None, preview=False, verbose=True):
