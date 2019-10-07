@@ -2377,7 +2377,7 @@ border-top-right-radius: 5px;
 border-bottom-color: @dark-base8;
 border-bottom-width: 2px;
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-stop:0 @dark-base0, stop: 0.8 @dark-base9, stop:1 @dark-base5)
+stop:0 @dark-base5, stop: 0.8 @dark-base9, stop:1 @dark-base0)
 }
 
 QTabBar::tab:!selected
@@ -2399,6 +2399,7 @@ QTreeView
 {
 color: @dark-base0;
 background: @dark-base5;
+selection-background-color: transparent;
 }
 
 QTreeView::branch:has-siblings:!adjoins-item
@@ -2430,8 +2431,8 @@ border-image: url(dark/branch_open.svg) 0;;
 
 QTreeView::item:hover
 {
-border-width: 1px;
-padding: 4px;
+border-width: 0px;
+padding: 0px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
@@ -2441,21 +2442,20 @@ stop:0 @dark-base5, stop: 0.2 @dark-base9, stop:1 @dark-base1)
 }
 
 QTreeView::item:selected
+
 {
-border-width: 1px;
-padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
-color: @dark-base2;
+color: @dark-base6;
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-stop:0 @dark-base1, stop: 0.8 @dark-base9, stop:1 @dark-base5)
+stop:0 @dark-base5, stop: 0.2 @dark-base9, stop:1 @dark-base1)
 }
 
 QTreeView::item:selected:hover
 {
-border-width: 1px;
-padding: 4px;
+border-width: 0px;
+padding: 0px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
@@ -2472,7 +2472,9 @@ selection-color: @dark-base5;
 selection-background-color: @dark-base1;
 font-family: @font-family-tree;
 font-size: @font-size-tree;
-}</t>
+}
+
+</t>
 <t tx="chris.20190619152603.15">/* The background color and the text color are both set in
 
 ZephyrDarkThemeLocal.leo#at-settings--&gt;
@@ -2502,7 +2504,7 @@ border-style: solid;
 <t tx="chris.20190619152603.2">*
 {
 background: @dark-base3;
-font: 14px @dark-base1 @font-family;
+font: 12px @dark-base0 @font-family;
 }
 
 /*
@@ -2689,12 +2691,17 @@ font-style: normal; /* normal, italic,oblique */
 }
 
 
-/*
+
 QWidget#qt_scrollarea_viewport {
+  border: 0px;
   background-color: @dark-base5;
 }
-*/
-</t>
+
+
+QGridLayout
+{
+border: 0px;
+}</t>
 <t tx="chris.20190619152603.9">QMenuBar
 {
 background-color: @dark-base3;
@@ -2832,6 +2839,12 @@ padding: 3px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
+font: 11px @dark-base0 @font-family;
+}
+
+QLabel#find-label
+{
+font: 11px @dark-base0 @font-family;
 }
 
 QLabel#changeLabel {
@@ -2841,24 +2854,29 @@ padding: 3px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
+font: 11px @dark-base0 @font-family;
 }
 
 QLineEdit#findPattern {
+color: @dark-base0;
 border-width: 1px;
 padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
 background-color: @dark-base5;
+font: 11px @dark-base0 @font-family;
 }
 
 QLineEdit#findChange {
+color: @dark-base0;
 border-width: 1px;
 padding: 4px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
 background-color: @dark-base5;
+font: 11px @dark-base0 @font-family;
 }
 
 QCheckBox {
@@ -2886,6 +2904,7 @@ padding: 3px;
 border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
+font: 11px @dark-base0 @font-family;
 }
 
 QLineEdit#find-status {
@@ -2895,6 +2914,7 @@ border-style: solid;
 border-color: @dark-base1;
 border-radius: 5px;
 background-color: @dark-base4;
+font: 11px @dark-base0 @font-family;
 }
 
 QScrollArea#findScrollArea
