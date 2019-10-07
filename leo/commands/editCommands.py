@@ -205,9 +205,11 @@ def show_clones(event=None):
     c = event.get('c')
     if not c:
         return
+    seen = []
     for clone in c.vnode2allPositions(c.p.v):
         parent = clone.parent()
-        if parent:
+        if parent and parent not in seen:
+            seen.append(parent)
             g.es_clickable_link(c, clone, 1, f"{parent.h} -> {clone.h}\n")
 #@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
