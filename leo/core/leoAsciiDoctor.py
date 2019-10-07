@@ -159,7 +159,7 @@ def pandoc_with_preview_command(event=None, verbose=True):
     return c.asciiDoctorCommands.pandoc_command(event, preview=True, verbose=verbose)
 #@+node:ekr.20191006154236.1: ** class AsciiDoctorCommands
 class AsciiDoctorCommands:
-    """A class to write AsiiDoctor markup in Leo outlines."""
+    """A class to write AsiiDoctor or docutils markup in Leo outlines."""
     
     def __init__(self, c):
         self.c = c
