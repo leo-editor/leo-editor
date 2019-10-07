@@ -286,14 +286,16 @@ class AsciiDoctorCommands:
             self.write_body(p)
             p.moveToThreadNext()
     #@+node:ekr.20190515114836.1: *4* adoc.compute_level_offset
-    title_pattern = re.compile(r'^= ')
+    adoc_title_pat = re.compile(r'^= ')
+    pandoc_title_pat = re.compile(r'^= ')
 
     def compute_level_offset(self, root):
         """
         Return 1 if the root.b contains a title.  Otherwise 0.
         """
+        pattern = self.adoc_title_pat if self.kind == 'adoc' else self.pandoc_title_pat
         for line in g.splitLines(root.b):
-            if self.title_pattern.match(line):
+            if pattern.match(line):
                 return 1
         return 0
     #@+node:ekr.20190515070742.38: *4* adoc.write_body
@@ -313,7 +315,7 @@ class AsciiDoctorCommands:
             section = '#' * min(level, 6)
         else:
             section = '=' * level
-        self.output_file.write(f"{section} {p.h}")
+        self.output_file.write(f"{section} {p.h}\n\n")
     #@+node:ekr.20191007054942.1: *4* adoc.remove_directives
     def remove_directives(self, s):
         lines = g.splitLines(s)
