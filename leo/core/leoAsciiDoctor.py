@@ -330,11 +330,20 @@ class AsciiDoctorCommands:
         return ''.join(result)
     #@+node:ekr.20191006155051.1: *3* adoc.commands
     def adoc_command(self, event=None, preview=False, verbose=True):
-        return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
+        global asciidoctor_exec, asciidoc3_exec
+        if asciidoctor_exec or asciidoc3_exec:
+            return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
+        name = 'adoc-with-preview' if preview else 'adoc'
+        g.es_print(f"{name} requires either asciidoctor or asciidoc3")
+        return []
         
     def pandoc_command(self, event=None, preview=False, verbose=True):
-        return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
-
+        global pandoc_exec
+        if pandoc_exec:
+            return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
+        name = 'pandoc-with-preview' if preview else 'pandoc'
+        g.es_print(f"{name} requires pandoc")
+        return []
     #@-others
 #@-others
 #@@language python
