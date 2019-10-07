@@ -161,6 +161,7 @@
 <v t="chris.20190620120545.1"><vh>Find Widget</vh></v>
 <v t="chris.20190620142003.1"><vh>Spell Widget</vh></v>
 <v t="chris.20190619152603.8"><vh>Tabs Widget</vh></v>
+<v t="chris.20191007122338.1"><vh>Render Widget</vh></v>
 <v t="chris.20190619152603.9"><vh>Menus</vh></v>
 <v t="chris.20190619152603.10"><vh>Plugins</vh></v>
 <v t="chris.20190619152603.11"><vh>Scroll bars</vh></v>
@@ -2503,6 +2504,7 @@ border-style: solid;
 </t>
 <t tx="chris.20190619152603.2">*
 {
+color: @dark-base0;
 background: @dark-base3;
 font: 12px @dark-base0 @font-family;
 }
@@ -2693,6 +2695,7 @@ font-style: normal; /* normal, italic,oblique */
 
 
 QWidget#qt_scrollarea_viewport {
+  color: @dark-base0;
   border: 0px;
   background-color: @dark-base5;
 }
@@ -2948,6 +2951,9 @@ border-radius: 5px;
 </t>
 <t tx="chris.20190621143531.1"></t>
 <t tx="chris.20190621143635.1"></t>
+<t tx="chris.20191007122338.1">QTextBrowser#body-text-renderer {
+color: @dark-base0;
+}</t>
 <t tx="ekr.20180312111155.1">A dark theme based on the Breeze Dark Theme for Leo with supporting material from Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy.
 
 
