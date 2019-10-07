@@ -205,7 +205,6 @@ class AsciiDoctorCommands:
         for p in roots:
             try:
                 i_path = self.ad_filename(p)
-                g.trace('i_path', i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
@@ -238,7 +237,11 @@ class AsciiDoctorCommands:
         For some reason asciidoctor doesn't handle the .adoc.html extention well.
         """
         if self.kind == 'adoc':
-            return os.path.join(os.path.dirname(i_path), '.html')
+            for i in range(3):
+                i_path, ext = os.path.splitext(i_path)
+                if not ext:
+                    break
+            return i_path + '.html'
         return i_path + '.html'
     #@+node:ekr.20191006155051.1: *3* adoc.commands
     def adoc_command(self, event=None, preview=False, verbose=True):
@@ -309,7 +312,8 @@ class AsciiDoctorCommands:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
-        self.output_file.write(g.ensureTrailingNewlines(p.b, 2))
+        s = self.remove_directives(p.b)
+        self.output_file.write(g.ensureTrailingNewlines(s, 2))
     #@+node:ekr.20190515070742.47: *4* adoc.write_headline
     def write_headline(self, p):
         """Generate an AsciiDoctor section"""
@@ -320,6 +324,18 @@ class AsciiDoctorCommands:
         if self.kind == 'pandoc':
             section = ' ' + section
         self.output_file.write('%s %s\n' % (section, p.h))
+    #@+node:ekr.20191007054942.1: *4* adoc.remove_directives
+    def remove_directives(self, s):
+        lines = g.splitLines(s)
+        result = []
+        for s in lines:
+            if s.startswith('@'):
+                i = g.skip_id(s, 1)
+                word = s[1: i]
+                if word in g.globalDirectiveList:
+                    continue
+            result.append(s)
+        return ''.join(result)
     #@-others
 #@-others
 #@@language python
