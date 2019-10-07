@@ -168,24 +168,7 @@ class AsciiDoctorCommands:
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515084219.1: *3* adoc.ad_filename
-    adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
-
-    def ad_filename(self, p):
-        """Return the filename of the @adoc or @pandoc node, or None."""
-        h = p.h.rstrip()
-        if self.kind == 'adoc':
-            m = self.adoc_pattern.match(h)
-            if m:
-                prefix = m.group(1)
-                return h[1+len(prefix):].strip()
-            return None
-        assert self.kind == 'pandoc', g.callers()
-        prefix = '@pandoc'
-        if g.match_word(h, 0, prefix):
-            return h[len(prefix):].strip()
-        return None
-    #@+node:ekr.20191006153233.1: *3* adoc.command_helper & helper
+    #@+node:ekr.20191006153233.1: *3* adoc.command_helper & helpers
     def command_helper(self, event, kind, preview, verbose):
 
         def predicate(p):
@@ -230,6 +213,23 @@ class AsciiDoctorCommands:
             n = len(i_paths)
             g.es_print(f"{kind}: wrote {n} file{g.plural(n)} in {(t2-t1):4.2f} sec.")
         return i_paths
+    #@+node:ekr.20190515084219.1: *4* adoc.ad_filename
+    adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
+
+    def ad_filename(self, p):
+        """Return the filename of the @adoc or @pandoc node, or None."""
+        h = p.h.rstrip()
+        if self.kind == 'adoc':
+            m = self.adoc_pattern.match(h)
+            if m:
+                prefix = m.group(1)
+                return h[1+len(prefix):].strip()
+            return None
+        assert self.kind == 'pandoc', g.callers()
+        prefix = '@pandoc'
+        if g.match_word(h, 0, prefix):
+            return h[len(prefix):].strip()
+        return None
     #@+node:ekr.20191007053522.1: *4* adoc.compute_opath
     def compute_opath(self, i_path):
         """
@@ -240,27 +240,19 @@ class AsciiDoctorCommands:
             if not ext:
                 break
         return i_path + '.html'
-    #@+node:ekr.20191006155051.1: *3* adoc.commands
-    def adoc_command(self, event=None, preview=False, verbose=True):
-        return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
-        
-    def pandoc_command(self, event=None, preview=False, verbose=True):
-        return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
-
-    #@+node:ekr.20191007043110.1: *3* adoc.run_asciidoctor
+    #@+node:ekr.20191007043110.1: *4* adoc.run_asciidoctor
     def run_asciidoctor(self, i_path, o_path):
         """
         Process the input file given by i_path with asciidoctor or asciidoc3.
         """
         global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
-        #
         # Call the external program to write the output file.
         prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
         command = f"{prog} {i_path} -o {o_path} -b html5"
             # The -e option deletes css.
         g.execute_shell_commands(command)
-    #@+node:ekr.20191007043043.1: *3* adoc.run_pandoc
+    #@+node:ekr.20191007043043.1: *4* adoc.run_pandoc
     def run_pandoc(self, i_path, o_path):
         """
          Process the input file given by i_path with pandoc.
@@ -333,6 +325,13 @@ class AsciiDoctorCommands:
                     continue
             result.append(s)
         return ''.join(result)
+    #@+node:ekr.20191006155051.1: *3* adoc.commands
+    def adoc_command(self, event=None, preview=False, verbose=True):
+        return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
+        
+    def pandoc_command(self, event=None, preview=False, verbose=True):
+        return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
+
     #@-others
 #@-others
 #@@language python
