@@ -7,6 +7,14 @@
 <find_panel_settings/>
 <vnodes>
 <v t="lkj.20190711235336.1"><vh>Readme</vh></v>
+<v t="maphew.20191007115950.1"><vh>draft</vh>
+<v t="maphew.20191007120048.1"><vh>@adoc desktop-integration.adoc</vh>
+<v t="maphew.20191007115940.1"><vh>Creating Windows file associations</vh>
+<v t="maphew.20191007120254.1"><vh>Desktop Integration</vh></v>
+<v t="maphew.20191007120341.1"><vh>Register Leo</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20070615131954"><vh>Startup</vh>
 <v t="ekr.20150302053516.3"><vh>@settings</vh>
 <v t="mhw.20181210131101.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
@@ -267,6 +275,42 @@ Todo: move desktop-links code into external files also (enables running from com
 </t>
 <t tx="maphew.20190712113401.1"></t>
 <t tx="maphew.20190712113412.1"></t>
+<t tx="maphew.20191007115940.1">*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+From *Settings* menu select **Open Desktop Integration**.
+The new Leo file that opens will add 2 buttons under the menu bar:
+
+*[Register-leo]* - Creates registry keys for Leo file type and .leo
+file association. Afterwards .leo files will show Leo icon and
+double-clicking them will open in Leo Editor.
+
+*[Unregister-leo]* - Removes the above.
+</t>
+<t tx="maphew.20191007115950.1"></t>
+<t tx="maphew.20191007120048.1"></t>
+<t tx="maphew.20191007120254.1">_Desktop integration buttons (under the menu bar)_
+
+## All Platforms - Linux, Mac, Windows ##
+
+[add-desktop-links] - Creates launch shortcuts in desktop and system menu
+
+[remove-desktop-links] - Removes the launch shortcuts
+
+
+## Windows ## 
+
+[Register-leo] - Creates registry keys for Leo file type and .leo file association. Afterwards .leo files will show Leo icon and double-clicking them will open in Leo Editor.
+
+[Unregister-leo] - Removes the above
+</t>
+<t tx="maphew.20191007120341.1">*[Register-leo]* - Creates registry keys for Leo file type and .leo
+file association. Afterwards .leo files will show Leo icon and
+double-clicking them will open in Leo Editor.
+
+*[Unregister-leo]* - Removes the above.
+</t>
 <t tx="mhw-debug-1081.20190216130451.1"># py2 shims
 from __future__ import unicode_literals
 from __future__ import print_function
