@@ -688,6 +688,7 @@ class LeoApp:
             "objectrexx"         : "-- /* */",
             "occam"              : "--",
             "omnimark"           : ";",
+            "pandoc"             : "<!-- -->", 
             "pascal"             : "// { }",
             "perl"               : "#",
             "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
