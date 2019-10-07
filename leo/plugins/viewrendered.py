@@ -979,23 +979,19 @@ if QtWidgets: # NOQA
         def update_asciidoc(self, s, keywords):
             '''Update asciidoc in the vr pane.'''
             global asciidoctor_exec, asciidoc3_exec
-            c, p, pc = self.c, self.c.p, self
-            force = keywords.get('force')
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p)
+            pc = self
             # Do this regardless of whether we show the widget or not.
             w = pc.ensure_text_widget()
             assert pc.w
             if s:
                 pc.show()
             if asciidoctor_exec or asciidoc3_exec:
-                if force or language == 'asciidoc':
-                    try:
-                        s2 = self.convert_to_asciidoctor(s)
-                        self.set_html(s2,w)
-                        return
-                    except Exception:
-                        g.es_exception()
+                try:
+                    s2 = self.convert_to_asciidoctor(s)
+                    self.set_html(s2,w)
+                    return
+                except Exception:
+                    g.es_exception()
             self.update_rst(s,keywords)
         #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
         def make_asciidoc_title(self, s):
