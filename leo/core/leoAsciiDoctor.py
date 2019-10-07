@@ -308,11 +308,12 @@ class AsciiDoctorCommands:
         """Generate an AsciiDoctor section"""
         if not p.h.strip():
             return
-        level = self.level_offset + p.level() - self.root_level
-        section = '=' * max(0, level)
+        level = max(0, self.level_offset + p.level() - self.root_level)
         if self.kind == 'pandoc':
-            section = ' ' + section
-        self.output_file.write('%s %s\n' % (section, p.h))
+            section = '#' * min(level, 6)
+        else:
+            section = '=' * level
+        self.output_file.write(f"{section} {p.h}")
     #@+node:ekr.20191007054942.1: *4* adoc.remove_directives
     def remove_directives(self, s):
         lines = g.splitLines(s)
