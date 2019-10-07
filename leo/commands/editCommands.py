@@ -198,6 +198,17 @@ def select_next_trace_statement(event=None):
     else:
         g.es_print('done')
     c.bodyWantsFocus()
+#@+node:ekr.20191007034723.1: ** @g.command('show-clones')
+@g.command('show-clones')
+def show_clones(event=None):
+    """Display links to all parent nodes of the node c.p."""
+    c = event.get('c')
+    if not c:
+        return
+    for clone in c.vnode2allPositions(c.p.v):
+        parent = clone.parent()
+        if parent:
+            g.es_clickable_link(c, clone, 1, f"{parent.h} -> {clone.h}\n")
 #@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):
