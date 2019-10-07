@@ -2328,6 +2328,7 @@
 <v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
 <v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
+<v t="ekr.20191007104843.1"><vh>Support for pandoc, including @language pandoc</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
 </v>
 <v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
@@ -2343,7 +2344,6 @@
 </v>
 </v>
 <v t="ekr.20191003061641.1"></v>
-<v t="ekr.20191004072604.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30433,6 +30433,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 - Pyzo in Leo: Pyzo can optionally run *within* Leo.
 - Added support for asciidoc and asciidoctor.
+- Added support for pandoc.
 - Added support for black.
 - The history_tracer plugin animates git commits.
 - Integration of Leo with VS code.
@@ -30859,16 +30860,6 @@ https://github.com/leo-editor/leo-editor/issues/1146
 <t tx="ekr.20191004072604.1">Issues related to asciidoc:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
 
-Leo now supports syntax coloring when @language asciidoc is in effect.
-
-Leo's new adoc command rocesses one or more @adoc trees, writing .adoc
-files. @button scripts can easily convert the .adoc files to .html files
-using asciidoctor or asciidoc3.
-   
-Like the rst3 command, the adoc command understands the structure of Leo
-outlines. That is, the adoc command will generate asciidoc markup for
-sections based on outline level.
-
 **Background**
 
 asciidoc3 is a python tool. asciidoctor is a ruby tool, claiming to be 100
@@ -30877,6 +30868,29 @@ times faster than asciidoc.
 The asciidoc markup language is virtually identical, regardless of the tool
 used. For full details, see the asciidoctor User manual:
 https://asciidoctor.org/docs/user-manual/
+
+Here are the recent improvements...
+
+**Live rendering of asciidoc and pandoc markup**
+
+The VR plugin recognizes @adoc node and @language md. The VR plugin renders only p.b.
+
+**Improved adoc command**
+
+Given an @adoc node of the form @adoc &lt;full path&gt;, this command does the following:
+
+1. Scan the @adoc tree, writing the result to adoc_test.adoc.
+
+The scan converts headlines to section markup. See help-for-command for adoc for more details.
+
+2. Calls asciidoctor or asciidoc3 to convert adoc_test to adoc.html.
+
+This command prefers asciidoctor to to asciidoc3 if both exist. 
+
+**New adoc-with-preview command**
+
+Runs the adoc command, then shows the resulting html in the default browser.
+
 </t>
 <t tx="ekr.20191004123555.1">``rst3``
     Converts @rst nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.
@@ -30884,6 +30898,25 @@ https://asciidoctor.org/docs/user-manual/
 ``adoc``
      Converts @adoc nodes to asciidoc text. This command automatically creates markeup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>
 <t tx="ekr.20191006113015.1">https://github.com/leo-editor/leo-editor/issues/1281</t>
+<t tx="ekr.20191007104843.1">**Background**
+
+pandoc is a tool for converting pandoc markup (a variant of markdown) to html, and many other formats.
+
+**Support for @language pandoc**
+
+leo/modes/pandoc.py is based on leo/modes/md.py.
+
+**Live rendering of pandoc markup**
+
+The VR plugin recognizes @pandoc nodes (see below) and @language pandoc.
+
+The VR plugin renders only p.b.
+
+**New pandoc and pandoc-with-preview commands**
+
+Much like the corresponding adoc commands, but uses pandoc markup, which is a variant of markdown.
+
+The pandoc tool must exist.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
