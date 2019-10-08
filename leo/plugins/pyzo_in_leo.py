@@ -29,8 +29,8 @@ init_warning_given = False
 def init(): # pyzo_in_leo.py
     '''Return True if this plugin can be loaded.'''
     global pyzo
-    
-    from distutils.spawn import find_executable
+
+    from shutil import which
     
     def oops(message):
         global init_warning_given
@@ -48,7 +48,7 @@ def init(): # pyzo_in_leo.py
         return oops('requires --global-docks')
     #
     # Fail if can't find pyzo.exe.
-    pyzo_exec = find_executable('pyzo')
+    pyzo_exec = which('pyzo')
     if not pyzo_exec:
         return oops('can not find pyzo.exe')
     # Add pyzo/source to sys.path

@@ -5,7 +5,7 @@
 """Supports AsciiDoctor by defining the adoc command."""
 #@+<< leoAsciiDoctor imports >>
 #@+node:ekr.20190515070742.3: ** << leoAsciiDoctor imports >>
-from distutils.spawn import find_executable
+from shutil import which
 import io
 StringIO = io.StringIO
 import os
@@ -14,9 +14,9 @@ import time
 import leo.core.leoGlobals as g
 
 #@-<< leoAsciiDoctor imports >>
-asciidoctor_exec = find_executable('asciidoctor')
-asciidoc3_exec = find_executable('asciidoc3')
-pandoc_exec = find_executable('pandoc')
+asciidoctor_exec = which('asciidoctor')
+asciidoc3_exec = which('asciidoc3')
+pandoc_exec = which('pandoc')
 #@+others
 #@+node:ekr.20191006153522.1: ** adoc & pandoc commands
 #@+node:ekr.20190515070742.22: *3* @cmd('adoc') & @cmd('adoc-with-preview')
