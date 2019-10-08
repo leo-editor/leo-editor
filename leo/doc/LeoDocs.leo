@@ -1179,6 +1179,9 @@
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
 <v t="ekr.20131008041326.16100"><vh>@rst html/leoandotherprograms.html</vh></v>
+<v t="mhw.20191008134016.1"><vh>Leo and Asiidoc</vh>
+<v t="mhw.20191008134029.1"><vh>rst html/leoandasciidoc.html</vh></v>
+</v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
 <v t="ekr.20170315072706.1"><vh>Leo vs org mode</vh></v>
@@ -2344,6 +2347,7 @@
 </v>
 </v>
 <v t="ekr.20191003061641.1"></v>
+<v t="mhw.20191008134016.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30951,6 +30955,29 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
+<t tx="mhw.20191008134016.1"></t>
+<t tx="mhw.20191008134029.1">_New with Leo 6.1_
+
+The Leo `@adoc` directive and the `adoc` command need either **Asciidoc3** or **Asciidoctor** tool installed and in PATH.Asciidoctor is probably the best of the two to use.
+
+**Linux:** use your system package manager or ruby `gem install asciidoctor`. More info at https://asciidoctor.org/#installation
+
+
+**Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely:
+
+~~~
+pip install asciidoc3
+   # stuff happens
+
+asciidoc3_postinstall
+   # more stuff happens
+
+#now asciidoc3 is ready and Leo can use it:
+asciidoc3 --help
+~~~
+
+If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
