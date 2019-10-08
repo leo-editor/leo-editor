@@ -8,17 +8,15 @@
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import locale
+import os
 import sys
 import threading
-#
-# Patch sys.path first.
-plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-sys.path.insert(0, plugins_dir)
-#
-# Start pyzo, de-fanged.
+
 # pylint: disable=import-error
-    # pylint doesn't know that we have just patched sys.path.
-import pyzo
+    # pylint doesn't know about the additions to sys.path.
+        
+# The pyzo global. Set by init()
+pyzo = None
 
 # The singleton PyzoController instance.
 pyzo_controller = None
@@ -30,6 +28,9 @@ init_warning_given = False
 
 def init(): # pyzo_in_leo.py
     '''Return True if this plugin can be loaded.'''
+    global pyzo
+    
+    from distutils.spawn import find_executable
     
     def oops(message):
         global init_warning_given
@@ -41,12 +42,26 @@ def init(): # pyzo_in_leo.py
         
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
-    # if not pyzo:
-        # return oops('requires pyzo')
     if not g.app.dock:
         return oops('is incompatible with --no-dock')
     if not g.app.use_global_docks:
         return oops('requires --global-docks')
+    #
+    # Fail if can't find pyzo.exe.
+    pyzo_exec = find_executable('pyzo')
+    if not pyzo_exec:
+        return oops('can not find pyzo.exe')
+    # Add pyzo/source to sys.path
+    pyzo_dir = os.path.dirname(pyzo_exec)
+    pyzo_source_dir = os.path.join(pyzo_dir, 'source')
+    if pyzo_source_dir not in sys.path:
+        sys.path.insert(0, pyzo_source_dir)
+    # Fail if still can't import pyzo.
+    try:
+        import pyzo as local_pyzo
+        pyzo = local_pyzo
+    except ImportError:
+        return oops(f"can not import pyzo from {pyzo_source_dir!r}")
     g.plugin_signon(__name__)
     #
     # This replaces MainWindow.closeEvent.
