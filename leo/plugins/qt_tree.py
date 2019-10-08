@@ -125,7 +125,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17868: *3* qtree.Debugging & tracing
     def error(self, s):
         if not g.app.unitTesting:
-            g.trace('LeoQtTree Error: %s' % (s), g.callers())
+            g.trace('LeoQtTree Error: ', s, g.callers())
 
     def traceItem(self, item):
         if item:
@@ -907,7 +907,7 @@ class LeoQtTree(leoFrame.LeoTree):
         item = self.getCurrentItem()
         p = self.item2position(item)
         if not p:
-            self.error('no p for item: %s' % item)
+            self.error(f"no p for item: {item}")
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
@@ -1081,7 +1081,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item):
-        return '%s at %s' % (repr(item), str(id(item)))
+        return f"{repr(item)} at {str(id(item))}"
 
     def item2position(self, item):
         itemHash = self.itemHash(item)
@@ -1398,7 +1398,7 @@ class LeoQtTree(leoFrame.LeoTree):
             e, wrapper = self.editLabelHelper(item, selectAll, selection)
         else:
             e, wrapper = None, None
-            self.error('no item for %s' % p)
+            self.error(f"no item for {p}")
         if e:
             self.sizeTreeEditor(c, e)
             # A nice hack: just set the focus request.

@@ -148,7 +148,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 # QLineEdit: ignore all key events except keyRelease events.
         if t == ev.KeyPress:
             return False # Never ignore KeyPress events.
-        ### This doesn't work. Two shortcut-override events are generated!
+        # This doesn't work. Two shortcut-override events are generated!
             # if t == ev.ShortcutOverride and event.text():
                 # return False # Don't ignore shortcut overrides with a real value.
         return True # Ignore everything else.
@@ -470,16 +470,19 @@ class LeoQtEventFilter(QtCore.QObject):
             if self.tag in exclude_names:
                 return
             if eventType == val:
-                tag = obj.objectName() if hasattr(obj, 'objectName') else 'id: %s, %s' % (
-                    id(obj), obj.__class__.__name__)
+                tag = (
+                    obj.objectName() if hasattr(obj, 'objectName')
+                    else f"id: {id(obj)}, {obj.__class__.__name__}"
+                )
                 if traceKey: g.trace(
-                    '%-25s %-25s in-state: %5r, obj: %s' % (
-                    kind, self.tag, c.k and c.k.inState(), tag))
+                    f"{kind:-25} {self.tag:-25} in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
                 return
         if eventType not in ignore:
-            tag = obj.objectName() if hasattr(obj, 'objectName') else 'id: %s, %s' % (
-                id(obj), obj.__class__.__name__)
-            g.trace('%-25s %-25s %s' % (eventType, self.tag, tag))
+            tag = (
+                obj.objectName() if hasattr(obj, 'objectName')
+                else f"id: {id(obj)}, {obj.__class__.__name__}"
+            )
+            g.trace(f"{eventType:-25} {self.tag:-25} {tag}")
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         """Show unexpected events in unusual widgets."""
@@ -569,19 +572,17 @@ class LeoQtEventFilter(QtCore.QObject):
         if w is None:
             if et not in none_ignore_d:
                 t = focus_d.get(et) or et
-                g.trace('None %s' % (t))
+                g.trace(f"None {t}")
         if isinstance(w, QtWidgets.QPushButton):
             return
         if isinstance(w, QtWidgets.QLineEdit):
             if et not in line_edit_ignore_d:
                 t = focus_d.get(et) or et
-                tag = w.objectName() if hasattr(w, 'objectName') else 'id: %s, %s' % (
-                    id(w), w.__class__.__name__)
+                tag = w.objectName() if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
                 g.trace('%20s %s' % (t, tag))
             return
         t = focus_d.get(et) or et
-        tag = w.objectName() if hasattr(w, 'objectName') else 'id: %s, %s' % (
-            id(w), w.__class__.__name__)
+        tag = w.objectName() if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
         g.trace('%20s %s' % (t, tag))
     #@-others
 #@-others

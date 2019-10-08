@@ -223,7 +223,7 @@ class LeoQtGui(leoGui.LeoGui):
             assert g.app.globalFindTabManager
             c.ftm = g.app.globalFindTabManager
             fn = c.shortFileName() or 'Untitled'
-            d.setWindowTitle('Find in %s' % fn)
+            d.setWindowTitle(f"Find in {fn}")
             c.frame.top.find_status_edit.setText('')
         c.inCommand = False
         if d.isVisible():
@@ -996,7 +996,7 @@ class LeoQtGui(leoGui.LeoGui):
             elif size.endswith('px'):
                 if size not in self.size_warnings:
                     self.size_warnings.append(size)
-                    g.es('px ignored in font setting: %s' % size)
+                    g.es(f"px ignored in font setting: {size}")
                 size = size[: -2].strip()
         try:
             size = int(size)
@@ -1031,11 +1031,11 @@ class LeoQtGui(leoGui.LeoGui):
     def getFullVersion(self, c=None):
         """Return the PyQt version (for signon)"""
         try:
-            qtLevel = 'version %s' % QtCore.QT_VERSION_STR
+            qtLevel = f"version {QtCore.QT_VERSION_STR}"
         except Exception:
             # g.es_exception()
             qtLevel = '<qtLevel>'
-        return 'PyQt %s' % (qtLevel)
+        return f"PyQt {qtLevel}"
     #@+node:ekr.20110605121601.18514: *3* qt_gui.Icons
     #@+node:ekr.20110605121601.18515: *4* qt_gui.attachLeoIcon
     def attachLeoIcon(self, window):
@@ -1236,7 +1236,7 @@ class LeoQtGui(leoGui.LeoGui):
                 define_g=define_g, define_name=define_name, silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
-                    g.es("removing", "'%s'" % (buttonText), "button at its request")
+                    g.es('removing', f"'{buttonText}'", 'button at its request')
                     b.pack_forget()
             # Do not assume the script will want to remain in this commander.
         #@-<< define the callbacks for b >>
@@ -1951,7 +1951,7 @@ class StyleSheetManager:
                 size = ''.join(i for i in val if i in '01234567890.')
                 units = ''.join(i for i in val if i not in '01234567890.')
                 size = max(1, int(size) + deltas[delta])
-                constants["@" + delta] = "%s%s" % (size, units)
+                constants['@' + delta] = f"{size}{units}"
         return constants, deltas
     #@+node:ekr.20180316093159.1: *5* ssm.do_pass
     def do_pass(self, constants, deltas, settingsDict, sheet, to_do):
@@ -1964,7 +1964,7 @@ class StyleSheetManager:
                 value = constants[const]
                 if const[1:] not in deltas and not self.css_warning_given:
                     self.css_warning_given = True
-                    g.es_print("'%s' from style-sheet comment definition, " % const)
+                    g.es_print(f"'{const}' from style-sheet comment definition, ")
                     g.es_print("please use regular @string / @color type @settings.")
             else:
                 key = g.app.config.canonicalizeSettingName(const[1:])
@@ -2094,7 +2094,7 @@ class StyleSheetManager:
         for path, pattern in table:
             for mo in pattern.finditer(sheet):
                 old = mo.group(0)
-                new = 'image: url(%s)' % path
+                new = f"image: url({path})"
                 sheet = sheet.replace(old, new)
         return sheet
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
@@ -2123,7 +2123,7 @@ class StyleSheetManager:
                 if g.os_path_exists(path):
                     if trace: g.trace('%35s ==> %s' % (url, path))
                     old = mo.group(0)
-                    new = 'url(%s)' % path
+                    new = f"url({path})"
                     replacements.append((old, new),)
                     break
             else:

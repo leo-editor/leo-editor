@@ -114,8 +114,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
-            height=50, # was 100: #1339.
-            name='body-%s' % (self.added_bodies),
+            height=50,
+            name=f"body-{self.added_bodies}",
         )
         self.leo_docks.append(dock)
         w = self.createBodyPane(parent=None)
@@ -307,7 +307,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         for make_dock, height, area, name, creator in table:
             w = creator(parent=None)
             if not make_dock:
-                setattr(self, '%s_dock' % (name), None)
+                setattr(self, f"{name}_dock", None)
                 continue
             dock = g.app.gui.create_dock_widget(
                 closeable=name != central_widget,
@@ -900,10 +900,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
             ('Hide', 'Hide', 4, 1),
         )
         for(ivar, label, row, col) in table:
-            name = 'spell_%s_button' % label
+            name = f"spell_{label}_button"
             button = self.createButton(spellFrame, name, label)
             grid.addWidget(button, row, col)
-            func = getattr(self, 'do_leo_spell_btn_%s' % ivar)
+            func = getattr(self, f"do_leo_spell_btn_{ivar}")
             button.clicked.connect(func)
             # This name is significant.
             setattr(self, 'leo_spell_btn_%s' % (ivar), button)
@@ -1014,7 +1014,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # The returned value is the namve of an ivar.
             kind = 'check_box_' if kind == 'box' else 'radio_button_'
             name = label.replace(' ', '_').replace('&', '').lower()
-            return '%s%s' % (kind, name)
+            return f"{kind}{name}"
         # Rows for check boxes, radio buttons & execution buttons...
 
         d = {
@@ -1075,7 +1075,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         for row2, col, func_name, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
-                label = '%s:  %s' % (cmd_name, k.prettyPrintKey(stroke))
+                label = f"{cmd_name}:  {k.prettyPrintKey(stroke)}"
             else:
                 label = cmd_name
             # #1342: Create a label, not a button.
@@ -1214,7 +1214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 ('changeAll', 'replace-all'),
             )
             for func_name, cmd_name in table:
-                ivar = '%s-%s' % (cmd_name, 'button')
+                ivar = f"{cmd_name}-{'button'}"
                 ivar = ivar.replace('-', '_')
                 w = getattr(ftm, ivar, None)
                 func = getattr(fc, func_name, None)
@@ -1754,7 +1754,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 widget.leo_label = widget.parent().leo_label
             else:
                 dw.packLabel(widget, n=1)
-        name = '%d' % self.totalNumberOfEditors
+        name = f"{self.totalNumberOfEditors}"
         f, wrapper = dw.addNewEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
@@ -1985,7 +1985,7 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             s = ''
         if hasattr(w, 'leo_chapter') and w.leo_chapter:
-            s = '%s: %s' % (w.leo_chapter, s)
+            s = f"{w.leo_chapter}: {s}"
         return s
     #@+node:ekr.20110605121601.18208: *5* LeoQtBody.createChapterIvar
     def createChapterIvar(self, w):
@@ -2206,10 +2206,10 @@ class LeoQtBody(leoFrame.LeoBody):
         n = max(1, self.numberOfEditors)
         assert isinstance(f, QtWidgets.QFrame), f
         layout = f.layout()
-        f.setObjectName('%s Frame' % name)
+        f.setObjectName(f"{name} Frame")
         # Create the text: to do: use stylesheet to set font, height.
         lab = QtWidgets.QLineEdit(f)
-        lab.setObjectName('%s Label' % name)
+        lab.setObjectName(f"{name} Label")
         lab.setText(name)
         # Pack the label and the widget.
         layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
@@ -2304,7 +2304,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.scrollWay = None
     #@+node:ekr.20110605121601.18249: *4* qtFrame.__repr__
     def __repr__(self):
-        return "<LeoQtFrame: %s>" % self.title
+        return f"<LeoQtFrame: {self.title}>"
     #@+node:ekr.20150509040227.1: *4* qtFrame.cmd (decorator)
     def cmd(name):
         """Command decorator for the LeoQtFrame class."""
@@ -2578,7 +2578,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def put_status_line(self, col, fcol, row, words):
             
             if 1:
-                fcol_part = '' if fcol is None else ' fcol: %d' % (fcol)
+                fcol_part = '' if fcol is None else f" fcol: {fcol}"
                 # For now, it seems to0 difficult to get alignment *exactly* right.
                 self.put1("line: %d col: %d %s words: %s" % (row, col, fcol_part, words))
             else:
@@ -2934,10 +2934,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Set the splitter sizes."""
         sizes = splitter.sizes()
         if len(sizes) != 2:
-            g.trace('%s widget(s) in %s' % (len(sizes), id(splitter)))
+            g.trace(f"{len(sizes)} widget(s) in {id(splitter)}")
             return
         if frac > 1 or frac < 0:
-            g.trace('split ratio [%s] out of range 0 <= frac <= 1' % frac)
+            g.trace(f"split ratio [{frac}] out of range 0 <= frac <= 1")
             return
         s1, s2 = sizes
         s = s1 + s2
@@ -3284,7 +3284,6 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self):
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget
-        ### g.trace('===== (LeoQtLog)', repr(c.shortFileName()))
         #
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
@@ -3451,7 +3450,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 # QUrl requires paths start with '/'
                 if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
                     url = url.replace('://', ':///', 1)
-            s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
+            s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
         w.insertHtml(s)
         w.moveCursor(QtGui.QTextCursor.End)
         sb.setSliderPosition(0) # Force the slider to the initial position.
@@ -3699,7 +3698,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
                 c.config.defaultMenuFontSize)
     #@+node:ekr.20120306130648.9848: *3* LeoQtMenu.__repr__
     def __repr__(self):
-        return '<LeoQtMenu: %s>' % self.leo_menu_label
+        return f"<LeoQtMenu: {self.leo_menu_label}>"
 
     __str__ = __repr__
     #@+node:ekr.20110605121601.18342: *3* LeoQtMenu.Tkinter menu bindings
@@ -3745,7 +3744,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         if accel:
-            label = '%s\t%s' % (label, accel)
+            label = f'{label}\t{accel}'
         action = menu.addAction(label)
         # 2012/01/20: Inject the command name into the action
         # so that it can be enabled/disabled dynamically.
@@ -3894,7 +3893,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if menu:
             self.activateAllParentMenus(menu)
         else:
-            g.trace('No such menu: %s' % (menuName))
+            g.trace(f"No such menu: {menuName}")
     #@+node:ekr.20120922041923.10607: *4* LeoQtMenu.activateAllParentMenus
     def activateAllParentMenus(self, menu):
         """menu is a QtMenuWrapper.  Activate it and all parent menus."""
@@ -3907,9 +3906,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
                 self.activateAllParentMenus(parent)
                 parent.setActiveAction(action)
             else:
-                g.trace('can not happen: no parent for %s' % (menu))
+                g.trace(f"can not happen: no parent for {menu}")
         else:
-            g.trace('can not happen: no action for %s' % (menu))
+            g.trace(f"can not happen: no action for {menu}")
     #@+node:ekr.20120922041923.10613: *3* LeoQtMenu.deactivateMenuBar
     # def deactivateMenuBar (self):
         # """Activate the menu with the given name"""
@@ -3971,7 +3970,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         fn = self.fileName()
         s = c.fileCommands.putLeoOutline()
-        md.setText('%s,%s' % (fn, s))
+        md.setText(f"{fn},{s}")
     #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev):
         """Handle a drop event in the QTreeWidget."""
@@ -4180,8 +4179,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = g.toUnicode(s)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        g.es_print('not found: %s' % (fn),
-            nodeLink=p.get_UNL(with_proto=True, with_count=True))
+        g.es_print(f"not found: {fn}", nodeLink=p.get_UNL(with_proto=True, with_count=True))
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper
     def doFileUrlHelper(self, fn, p, s):
@@ -4248,7 +4246,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         Make p an @auto node and create the tree using s, the file's contents.
         """
         c = self.c; at = c.atFileCommands
-        p.h = '@auto %s' % (fn)
+        p.h = f"@auto {fn}"
         at.readOneAtAutoNode(fn, p)
         # No error recovery should be needed here.
         p.clearDirty() # Don't automatically rewrite this node.
@@ -4258,7 +4256,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         # Use the full @edit logic, so dragging will be
         # exactly the same as reading.
         at.readOneAtEditNode(fn, p)
-        p.h = '@edit %s' % (fn)
+        p.h = f"@edit {fn}"
         p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18375: *9* LeoQTreeWidget.createAtFileTree
     def createAtFileTree(self, fn, p, s):
@@ -4266,7 +4264,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         s, the file's contents.
         """
         c = self.c; at = c.atFileCommands
-        p.h = '@file %s' % (fn)
+        p.h = f"@file {fn}"
         # Read the file into p.
         ok = at.read(root=p.copy(),
             importFileName=None,
@@ -4308,7 +4306,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if prefix and len(prefix) > 3: # Don't just strip off c:\.
             p.h = abs_fn[len(prefix):].strip()
         else:
-            p.h = '@url file://%s' % fn
+            p.h = f"@url file://{fn}"
     #@+node:ekr.20110605121601.18377: *9* LeoQTreeWidget.isAutoFile (LeoQTreeWidget)
     def isAutoFile(self, fn):
         """Return true if fn (a file name) can be parsed with an @auto parser."""
@@ -4669,7 +4667,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
         self.aboutToShow.connect(self.onAboutToShow)
 
     def __repr__(self):
-        return '<QtMenuWrapper %s>' % self.leo_menu_label
+        return f"<QtMenuWrapper {self.leo_menu_label}>"
     #@+node:ekr.20110605121601.18460: *3* onAboutToShow & helpers (QtMenuWrapper)
     def onAboutToShow(self, *args, **keys):
 
@@ -4711,11 +4709,11 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
                         accel = k.prettyPrintKey(bi.stroke)
                         result.append(accel)
                         # Break here if we want to show only one accerator.
-                action.setText('%s\t%s' % (s, ', '.join(result)))
+                action.setText(f"{s}\t{', '.join(result)}")
             else:
                 action.setText(s)
         else:
-            g.trace('can not happen: no action for %s' % (commandName))
+            g.trace(f"can not happen: no action for {commandName}")
     #@-others
 #@+node:ekr.20110605121601.18461: ** class QtSearchWidget
 class QtSearchWidget:
@@ -4790,8 +4788,10 @@ class TabbedFrameFactory:
             pass # Qt 4.4 does not support setTabsClosable
         window.currentChanged.connect(self.slotCurrentChanged)
         if 'size' in g.app.debug:
-            g.trace('minimized: %s, maximized: %s fullscreen: %s' % (
-                g.app.start_minimized, g.app.start_maximized, g.app.start_fullscreen))
+            g.trace(
+                f"minimized: {g.app.start_minimized}, "
+                f"maximized: {g.app.start_maximized}, "
+                f"fullscreen: {g.app.start_fullscreen}")
         #
         # #1189: We *can* (and should) minimize here, to eliminate flash.
         if g.app.use_global_docks:

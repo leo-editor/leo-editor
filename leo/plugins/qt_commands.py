@@ -125,10 +125,7 @@ def showColorWheel(self, event=None):
         g.es("No color selected")
     elif in_color_setting:
         udata = c.undoer.beforeChangeNodeContents(p)
-        p.h = '%s = %s' % (
-            p.h.split('=', 1)[0].strip(),
-            picker.selectedColor().name(),
-        )
+        p.h = f"{p.h.split('=', 1)[0].strip()} = {picker.selectedColor().name()}"
         c.undoer.afterChangeNodeContents(p, 'change-color', udata)
     else:
         text = picker.selectedColor().name()

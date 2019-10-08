@@ -312,7 +312,7 @@ class QLineEditWrapper(QTextMixin):
         self.baseClassName = 'QLineEditWrapper'
 
     def __repr__(self):
-        return '<QLineEditWrapper: widget: %s' % (self.widget)
+        return f"<QLineEditWrapper: widget: {self.widget}"
 
     __str__ = __repr__
     #@+node:ekr.20140901191541.18599: *3* qlew.check
@@ -622,12 +622,14 @@ if QtWidgets:
                 if x_offset == 0 and y_offset == 0:
                     if self.leo_geom_set:
                         if geom2.topLeft() != glob(w, r.topLeft()):
-                            g.trace('Error: geom.topLeft: %s, geom2.topLeft: %s' % (
-                                geom2.topLeft(), glob(w, r.topLeft())))
+                            g.trace(
+                                f"Error: geom.topLeft: {geom2.topLeft()}, "
+                                f"geom2.topLeft: {glob(w, r.topLeft())}")
                     else:
                         if glob(vp, geom2.topLeft()) != glob(w, r.topLeft()):
-                            g.trace('Error 2: geom.topLeft: %s, geom2.topLeft: %s' % (
-                                glob(vp, geom2.topLeft()), glob(w, r.topLeft())))
+                            g.trace(
+                                f"Error 2: geom.topLeft: {glob(vp, geom2.topLeft())}, "
+                                f"geom2.topLeft: {glob(w, r.topLeft())}")
                 self.setGeometry(geom2)
                 self.leo_geom_set = True
             #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
@@ -793,9 +795,9 @@ class NumberBar(QtWidgets.QFrame):
             g.trace('FAIL checkline', path, n)
             return
         if xdb.has_breakpoint(path, n):
-            xdb.qc.put('clear %s:%s' % (path, n))
+            xdb.qc.put(f"clear {path}:{n}")
         else:
-            xdb.qc.put('b %s:%s' % (path, n))
+            xdb.qc.put(f"b {path}:{n}")
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         """
@@ -1410,7 +1412,7 @@ class QTextEditWrapper(QTextMixin):
         op = d.get(kind)
         mode = tc.KeepAnchor if extend else tc.MoveAnchor
         if not op:
-            g.trace('can not happen: bad kind: %s' % kind)
+            g.trace(f"can not happen: bad kind: {kind}")
             return
         if kind in ('page-down', 'page-up'):
             self.pageUpDown(op, mode)
@@ -1611,7 +1613,7 @@ class QTextEditWrapper(QTextMixin):
             row, col = int(row), int(col)
             bl = doc.findBlockByNumber(row - 1)
             return bl.position() + col
-        g.trace('bad string index: %s' % index)
+        g.trace(f"bad string index: {index}")
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
