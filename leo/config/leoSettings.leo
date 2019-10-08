@@ -1351,11 +1351,14 @@
 <v t="ekr.20131213135427.21966"><vh>@item &amp;delete-node</vh></v>
 <v t="ekr.20131213135427.21968"><vh>@item &amp;insert-node</vh></v>
 <v t="ekr.20131213135427.21969"><vh>@item insert-child</vh></v>
-<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
+<v t="ekr.20191008030417.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21962"><vh>@item c&amp;ut-node</vh></v>
 <v t="ekr.20131213135427.21963"><vh>@item c&amp;opy-node</vh></v>
 <v t="ekr.20131213135427.21964"><vh>@item &amp;paste-node</vh></v>
 <v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
+<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22014"><vh>@item demote</vh></v>
+<v t="ekr.20131213135427.22013"><vh>@item promote</vh></v>
 <v t="ekr.20180405112755.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
 <v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
@@ -1433,9 +1436,6 @@
 <v t="ekr.20131213135427.22009"><vh>@item move-outline-left</vh></v>
 <v t="ekr.20131213135427.22010"><vh>@item move-outline-right</vh></v>
 <v t="ekr.20131213135427.22011"><vh>@item move-outline-up</vh></v>
-<v t="ekr.20131213135427.22012"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22013"><vh>@item &amp;promote</vh></v>
-<v t="ekr.20131213135427.22014"><vh>@item &amp;demote</vh></v>
 </v>
 <v t="ekr.20180403123734.1"><vh>@menu &amp;Sort Nodes</vh>
 <v t="ekr.20131213135427.21971"><vh>@item sort-childre&amp;n</vh></v>
@@ -6004,9 +6004,8 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22009">Move &amp;Left</t>
 <t tx="ekr.20131213135427.22010">Move &amp;Right</t>
 <t tx="ekr.20131213135427.22011">Move &amp;Up</t>
-<t tx="ekr.20131213135427.22012"></t>
-<t tx="ekr.20131213135427.22013"></t>
-<t tx="ekr.20131213135427.22014"></t>
+<t tx="ekr.20131213135427.22013">&amp;Promote Node</t>
+<t tx="ekr.20131213135427.22014">&amp;Demote node</t>
 <t tx="ekr.20131213135427.22015"></t>
 <t tx="ekr.20131213135427.22016"></t>
 <t tx="ekr.20131213135427.22017"></t>
@@ -11793,6 +11792,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
 <t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
 <t tx="ekr.20190926110217.1"></t>
+<t tx="ekr.20191008030417.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
