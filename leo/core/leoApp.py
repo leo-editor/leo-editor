@@ -1838,6 +1838,8 @@ class LoadManager:
             # "file already open, open again", this must be False for
             # a complete exit to be appropriate (finish_quit=True param for
             # closeLeoWindow())
+        self.theme_c = None
+            # #1374.
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
     def completeFileName(self, fileName):
