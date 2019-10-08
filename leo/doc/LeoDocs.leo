@@ -23760,7 +23760,7 @@ There are two kinds of markup: **section references** (&lt;&lt; this is my secti
     @others
     # That's all, folks
     @language python
-    @tabwidth
+    @tabwidth -4
     
 A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions and data.
 
