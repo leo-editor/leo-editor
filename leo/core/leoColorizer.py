@@ -1492,7 +1492,7 @@ class JEditColorizer(BaseJEditColorizer):
     url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
     url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
     kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-    url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+    url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
 
     def match_any_url(self, s, i):
         return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex)
@@ -2770,7 +2770,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         """Return the lexer for self.language."""
         if self.language == 'patch':
             self.language = 'diff'
-        key = '%s:%s' % (self.language, id(self))
+        key = f"{self.language}:{id(self)}"
         lexer = self.lexers_dict.get(key)
         if not lexer:
             lexer = self.get_lexer(self.language)

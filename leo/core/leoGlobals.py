@@ -7623,7 +7623,7 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
 unl_regex = re.compile(r'\bunl:.*$')
 
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
 def unquoteUrl(url):
     """Replace special characters (especially %20, by their equivalent)."""
