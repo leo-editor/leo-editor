@@ -984,7 +984,7 @@ class LeoApp:
         branch, junk_commit = g.gitInfo()
         author, commit, date = g.getGitVersion()
         # Compute g.app.signon.
-        signon = ['Leo %s' % leoVer]
+        signon = [f"Leo {leoVer}"]
         if branch:
             signon.append(f", {branch} branch")
         if commit:
@@ -993,8 +993,7 @@ class LeoApp:
             signon.append('\n' + date)
         app.signon = ''.join(signon)
         # Compute g.app.signon1.
-        app.signon1 = 'Python %s.%s.%s%s\n%s' % (
-            n1, n2, n3, guiVersion, sysVersion)
+        app.signon1 = f"Python {n1}.{n2}.{n3}{guiVersion}\n{sysVersion}"
 
     def printSignon(self, verbose=False):
         """Print a minimal sigon to the log."""
@@ -1003,7 +1002,7 @@ class LeoApp:
             return
         if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
             print('Note: sys.stdout.encoding is not UTF-8')
-            print('Encoding is: %r' % sys.stdout.encoding)
+            print(f"Encoding is: {sys.stdout.encoding!r}")
             print('See: https://stackoverflow.com/questions/14109024')
             print('')
         print(app.signon)
@@ -1054,7 +1053,6 @@ class LeoApp:
         app = self
         argName = app.guiArgName
         if g.in_bridge:
-            # print('createDefaultGui: g.in_bridge: %s' % g.in_bridge)
             return # The bridge will create the gui later.
         if app.gui:
             return # This method can be called twice if we had to get .leoID.txt.
@@ -1245,8 +1243,6 @@ class LeoApp:
     #@+node:ekr.20031218072017.1847: *4* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
-        # print("app.setLog: %s %s" % (log, g.callers()))
-        # print("app.setLog: %s" % log)
         if not self.logIsLocked:
             self.log = log
 
@@ -1264,7 +1260,6 @@ class LeoApp:
         """Write all waiting lines to the log."""
         #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-            # sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
         app = self
         if not c or not c.exists:
             return
@@ -1360,7 +1355,7 @@ class LeoApp:
     def destroyWindow(self, frame):
         """Destroy all ivars in a Leo frame."""
         if 'shutdown' in g.app.debug:
-            g.pr('destroyWindow:  %s' % frame.c.shortFileName())
+            g.pr(f"destroyWindow:  {frame.c.shortFileName()}")
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
@@ -1478,9 +1473,9 @@ class LeoApp:
         if fn in aList:
             aList.remove(fn)
             if trace:
-                g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
+                g.pr(f"forgetOpenFile: {g.shortFileName(fn)}")
             d[tag] = aList
-        # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+        # elif trace: g.pr(f"forgetOpenFile: did not remove: {fn}")
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
 
@@ -1798,9 +1793,9 @@ class LeoApp:
             # Save a default *global* state, for *all* outline files.
             ('windowState:', dw.saveState),
             # Save a per-file state.
-            ('windowState:%s' % (c.fileName()), dw.saveState),
+            (f"windowState:{c.fileName()}", dw.saveState),
             # Do not save/restore window geometry. That is done elsewhere.
-            # ('windowGeometry:%s' % (c.fileName()) , dw.saveGeometry),
+                # (f"windowGeometry:{c.fileName()}" , dw.saveGeometry),
         )
         for key, method in table:
             # This is pyzo code...

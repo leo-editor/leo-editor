@@ -46,7 +46,7 @@ def runUnitTests(c, g):
             c.debugCommands.runUnitTests()
             g.es('unit tests complete')
         else:
-            g.es('node not found:' % nodeName)
+            g.es('node not found:', nodeName)
     except Exception:
         g.es('unexpected exception')
         g.es_exception()
@@ -76,6 +76,6 @@ def scanOptions():
 #@@tabwidth -4
 #@@pagewidth 70
 if __name__ == '__main__':
-    print('leoBridgeTest.py: argv: %s' % repr(sys.argv))
+    print(f"leoBridgeTest.py: argv: {sys.argv!r}")
     main()
 #@-leo
