@@ -205,6 +205,7 @@ class AsciiDoctorCommands:
                 self.run_asciidoctor(i_path, o_path)
             else:
                 self.run_pandoc(i_path, o_path)
+            print(f"{kind}: wrote {o_path}")
         if preview:
             # open .html files in the default browser.
             g.execute_shell_commands(o_paths)
@@ -235,11 +236,14 @@ class AsciiDoctorCommands:
         """
         Neither asciidoctor nor pandoc handles extra extentions well.
         """
+        c = self.c
         for i in range(3):
             i_path, ext = os.path.splitext(i_path)
             if not ext:
                 break
-        return i_path + '.html'
+        # #1373.
+        base_dir = os.path.dirname(c.fileName())
+        return g.os_path_finalize_join(base_dir, i_path + '.html')
     #@+node:ekr.20191007043110.1: *4* adoc.run_asciidoctor
     def run_asciidoctor(self, i_path, o_path):
         """
