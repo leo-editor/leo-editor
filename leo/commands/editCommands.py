@@ -198,8 +198,24 @@ def select_next_trace_statement(event=None):
     else:
         g.es_print('done')
     c.bodyWantsFocus()
-#@+node:ekr.20191007034723.1: ** @g.command('show-clones')
-@g.command('show-clones')
+#@+node:ekr.20191010112910.1: ** @g.command('show-clone-ancestors')
+@g.command('show-clone-ancestors')
+def show_clone_ancestors(event=None):
+    """Display links to all ancestor nodes of the node c.p."""
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    g.es(f"Ancestors of '{p.h}':")
+    for clone in c.all_positions():
+        if clone.v == p.v:
+            unl = clone.get_UNL(with_file=False, with_index=False)
+            runl = " <- ".join(unl.split("-->")[::-1][1:])
+                # reverse and drop first
+            g.es("  ", newline = False)
+            g.es_clickable_link(c, clone, 1, runl + "\n")
+#@+node:ekr.20191007034723.1: ** @g.command('show-clone-parents')
+@g.command('show-clone-parents')
 def show_clones(event=None):
     """Display links to all parent nodes of the node c.p."""
     c = event.get('c')
