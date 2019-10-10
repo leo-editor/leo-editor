@@ -3819,7 +3819,7 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
     if c:
-        theDir = c.os_path_expandExpression(theDir)
+        theDir = c.expand_path_expression(theDir)
     dir1 = theDir = g.os_path_normpath(theDir)
     ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
     if ok:
