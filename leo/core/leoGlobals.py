@@ -3819,7 +3819,7 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
     if c:
-        theDir = c.os_path_expandExpression(theDir)
+        theDir = c.expand_path_expression(theDir)
     dir1 = theDir = g.os_path_normpath(theDir)
     ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
     if ok:
@@ -6941,12 +6941,13 @@ def os_path_expanduser(path):
         path = path.replace('\\','/')
     return result
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
-def os_path_finalize(path, **keys):
+def os_path_finalize(path):
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
+    path = os.path.expanduser(path) # #
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     if g.isWindows:
