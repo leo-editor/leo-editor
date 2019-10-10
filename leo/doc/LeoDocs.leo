@@ -557,11 +557,12 @@
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
+<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
 <v t="ekr.20170206073747.6"><vh>@rst-ignore-tree Installing Leo on Linux</vh>
 <v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
 </v>
-<v t="ekr.20170206073747.8"><vh>Installing from sources (Linux)</vh></v>
+<v t="ekr.20170206073747.8"><vh>@rst-ignore-tree Installing from sources (Linux)</vh></v>
 <v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
 </v>
 <v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
@@ -30981,6 +30982,43 @@ asciidoc3 --help
 ~~~
 
 If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
+</t>
+<t tx="mhw.20191010004650.1">Generic recipe for all platforms. Adjustment for local norms is expected. For example `7z` could be `unzip` or interactive extraction and `wget` could be a browser download. 
+
+Linux: it's generally advised to use pip ``--user`` flag instead of `sudo`.
+
+Assumes **Python 3.6+** is installed and in PATH.
+
+Installing from source code into a new environment must be done in discrete steps: **download**, **unpack archive**, and **install as editable** mode.
+
+Example::
+
+    wget https://github.com/leo-editor/leo-editor/archive/devel.zip
+    7z x devel.zip -o C:\apps
+    pip install --editable C:\apps\leo-editor-devel
+
+For easier upgrading substitute ``git clone`` for wget &amp; 7z steps::
+
+    git clone --single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
+    pip install --editable leo-editor
+    
+time passes, upgrade desired::
+
+    pushd c:\apps\leo-editor
+    git pull
+    pip uninstall leo
+    pip install --editable .
+
+`single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
+
+###
+Note
+###
+
+Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
+
+
+See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
