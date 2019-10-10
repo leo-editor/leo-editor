@@ -188,6 +188,7 @@ class AsciiDoctorCommands:
         for p in roots:
             try:
                 i_path = self.ad_filename(p)
+                i_path = g.os_path_finalize(i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
