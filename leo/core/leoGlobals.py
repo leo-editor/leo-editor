@@ -3818,7 +3818,8 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
     else:
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
-    if c: theDir = g.os_path_expandExpression(theDir, c=c)
+    if c:
+        theDir = c.os_path_expandExpression(theDir)
     dir1 = theDir = g.os_path_normpath(theDir)
     ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
     if ok:
@@ -6916,7 +6917,12 @@ def os_path_exists(path):
 deprecated_messages = []
 
 def os_path_expandExpression(s, **keys):
-    """Expand all {{anExpression}} in c's context."""
+    """
+    Expand all {{anExpression}} in c's context.
+    
+    Deprecated: use c.expand_path_expression(s) instead.
+    """
+    
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c', g.callers())
