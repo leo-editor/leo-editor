@@ -22490,13 +22490,17 @@ automatically, so this section is needed only if you are installing Leo
 from a .zip file or other sources.
 
 From *Settings* menu select **Open Desktop Integration**.
-The new Leo file that opens will add 2 buttons under the menu bar:
+The new Leo file that opens will add 4 buttons under the menu bar:
 
 *[Register-leo]* - Creates registry keys for Leo file type and .leo
 file association. Afterwards .leo files will show Leo icon and
 double-clicking them will open in Leo Editor.
 
 *[Unregister-leo]* - Removes the above.
+
+*[add-desktop-links]* - Creates launch shortcuts in desktop and system menu
+
+*[remove-desktop-links]* - Removes the launch shortcuts
 </t>
 <t tx="ekr.20170206073747.6">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
 .. _`install Leo from sources`: installing.html#installing-from-sources-linux
