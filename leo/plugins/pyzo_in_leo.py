@@ -103,10 +103,16 @@ def close_handler(): # pyzo_in_leo.py
     # Are we restaring?
     # restarting = time.time() - self._closeflag < 1.0
 
-    # EKR:change-no-confi
-    # Save settings
-        # pyzo.saveConfig()
-        # pyzo.command_history.save()
+    # EKR:change.
+    if 1: # Experimental.
+        # Save settings
+        def do_nothing(*args, **kwargs):
+            pass
+
+        pyzo.main.saveWindowState = do_nothing
+        pyzo.saveConfig()
+            # Looks like this causes a crash on the next reload.
+        pyzo.command_history.save()
 
     # Stop command server
     commandline.stop_our_server()
@@ -153,10 +159,63 @@ def close_handler(): # pyzo_in_leo.py
         # if sys.version_info >= (3,3,0): # and not restarting:
             # if hasattr(os, '_exit'):
                 # os._exit(0)
-#@+node:ekr.20190816193033.1: *3* patched: setShortcut
+#@+node:ekr.20191012094334.1: *3* patched: setShortcut
 def setShortcut(self, action): # pyzo_in_leo.py
     """A do-nothing, monkey-patched, version of KeyMapper.setShortcut."""
     pass
+#@+node:ekr.20191012093236.1: *3* patched: _get_interpreters_win
+def _get_interpreters_win():  # pyzo_in_leo.py
+    """
+    Monkey-patch pyzo/util/interpreters._get_interpreters_win.
+
+    This patched code fixes an apparent pyzo bug.
+    
+    Unlike shutil.which, this function returns all plausible python executables.
+
+    Copyright (C) 2013-2019 by Almar Klein.
+    """
+
+    import pyzo.util.interpreters as interps ### EKR
+    
+    found = []
+
+    # Query from registry
+    for v in interps.get_interpreters_in_reg(): ### EKR
+        found.append(v.installPath() )
+
+    # Check common locations
+    for rootname in ['C:/', '~/',
+                     'C:/program files/', 'C:/program files (x86)/', 'C:/ProgramData/',
+                     '~/appdata/local/programs/python/',
+                     '~/appdata/local/continuum/', '~/appdata/local/anaconda/',
+                     ]:
+        rootname = os.path.expanduser(rootname)
+        if not os.path.isdir(rootname):
+            continue
+        for dname in os.listdir(rootname):
+            if dname.lower().startswith(('python', 'pypy', 'miniconda', 'anaconda')):
+                found.append(os.path.join(rootname, dname))
+
+    # Normalize all paths, and remove trailing backslashes
+    
+    ### found = [os.path.normcase(os.path.abspath(v)).strip('\\') for v in found]
+    found = [
+        os.path.normcase(os.path.abspath(v)).strip('\\') for v in found
+            if v is not None ### EKR: Add guard.
+    ]
+
+    # Append "python.exe" and check if that file exists
+    found2 = []
+    for dname in found:
+        for fname in ('python.exe', 'pypy.exe'):
+            exename = os.path.join(dname, fname)
+            if os.path.isfile(exename):
+                found2.append(exename)
+                break
+
+    # Returnas set (remove duplicates)
+    g.trace(found2)
+    return set(found2)
 #@+node:ekr.20190930051034.1: ** class PyzoController
 class PyzoController:
     
@@ -480,6 +539,12 @@ class PyzoController:
 
         # Create shell stack
         # EKR:change. Use None, not self.
+        
+        # A hack: patch _get_interpreters_win
+        if 1:
+            import pyzo.util.interpreters as interps
+            interps._get_interpreters_win = _get_interpreters_win
+
         pyzo.shells = ShellStackWidget(None)
         dock.setWidget(pyzo.shells)
 
