@@ -319,6 +319,7 @@ class AsciiDoctorCommands:
         if self.kind == 'pandoc':
             section = '#' * min(level, 6)
         else:
+            # level 0 (a single #) should be done by hand.
             section = '=' * level
         self.output_file.write(f"{section} {p.h}\n\n")
     #@+node:ekr.20191007054942.1: *4* adoc.remove_directives
