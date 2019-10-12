@@ -6947,7 +6947,7 @@ def os_path_finalize(path):
     There is no corresponding os.path method
     """
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
-    path = os.path.expanduser(path) # #
+    path = os.path.expanduser(path) # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     if g.isWindows:
@@ -6956,10 +6956,21 @@ def os_path_finalize(path):
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join(*args, **keys):
-    """Do os.path.join(*args), then finalize the result."""
-    path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys))) 
-    if g.isWindows:
-        path = path.replace('\\','/')
+    """
+    Join and finalize.
+    
+    **keys may contain a 'c' kwarg, used by c.os_path_join.
+    """
+    # Old code
+        # path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys)))
+        # if g.isWindows:
+            # path = path.replace('\\','/')
+    #
+    # #1383: Call both wrappers, to ensure ~ is always expanded.
+    #        This is significant change, to undo previous mistakes.
+    #        Revs cbbf5e8b and 6e461196 in devel were the likely culprits.
+    path = g.os_path_join(*args, **keys) 
+    path = g.os_path_finalize(path)
     return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
@@ -6992,8 +7003,11 @@ def os_path_isfile(path):
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args, **keys):
     """
-    The same as os.path.join, but safe for unicode.
-    In addition, it supports the !! and . conventions.
+    Join paths, like os.path.join, with enhancements:
+    
+    A '!!' arg prepends g.app.loadDir to the list of paths.
+    A '.'  arg prepends c.openDirectory to the list of paths,
+           provided there is a 'c' kwarg.
     """
     c = keys.get('c')
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
