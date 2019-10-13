@@ -1152,12 +1152,11 @@ class LeoApp:
         for func in table:
             func(verbose)
             if self.leoID:
-                break
-        else:
-            if useDialog:
-                self.setIdFromDialog()
-                if self.leoID:
-                    self.setIDFile()
+                return self.leoID
+        if useDialog:
+            self.setIdFromDialog()
+            if self.leoID:
+                self.setIDFile()
         return self.leoID
     #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
     def setIDFromSys(self, verbose):
@@ -1207,22 +1206,24 @@ class LeoApp:
     #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self):
         """Get leoID from a dialog."""
-        # Don't put up a splash screen.
-        # It would obscure the coming dialog.
-        self.use_splash_screen = False
-        # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-        if self.gui is None:
-            # Create the Qt gui if it exists.
-            self.createDefaultGui(fileName='g.app.setLeoId', verbose=False)
-        if self.gui is None: # Neither gui could be created: this should never happen.
-            g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
-            leoid = input('LeoID: ')
-        else:
-            leoid = self.gui.runAskLeoIDDialog()
         #
-        # Bug fix: 2/6/05: put result in g.app.leoID.
+        # Don't put up a splash screen: it would obscure the coming dialog.
+        self.use_splash_screen = False
+        #
+        # Get an id for gnx's.  Plugins may set g.app.leoID.
+        # #1385: Use a TK dialog, regardless of gui.
+        while True:
+            dialog = g.EmergencyLeoIDDialog(
+                title='Set Leo ID',
+                message="Please enter LeoID, (your username, 'johndoe'...) at least three characters")
+            dialog.run()
+            val = dialog.val
+            if val and len(val) > 2:
+                break
+        #
+        # Put result in g.app.leoID.
         # Careful: periods in the id field of a gnx will corrupt the .leo file!
-        self.leoID = leoid.replace('.', '-')
+        self.leoID = val.replace('.', '-')
         g.blue('leoID=', repr(self.leoID), spaces=False)
     #@+node:ekr.20031218072017.1982: *5* app.setIDFile
     def setIDFile(self):

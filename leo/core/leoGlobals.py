@@ -508,6 +508,42 @@ class EmergencyDialog:
         self.top.grab_set() # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
+#@+node:ekr.20191013145307.1: *3* class g.EmergencyLeoIDDialog (EmergencyDialog)
+class EmergencyLeoIDDialog (EmergencyDialog):
+    """A class that creates an tkinter dialog to get the Leo ID."""
+    
+    # def __init__(self, title, message):
+    #    super().__init__(title, message)
+        
+    #@+others
+    #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
+    def onKey(self, event):
+        """Handle Key events in askOk dialogs."""
+        if event.char in '\n\r':
+            self.okButton()
+    #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
+    def createTopFrame(self):
+        """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+        import tkinter as Tk
+        self.root = Tk.Tk()
+        self.top = Tk.Toplevel(self.root)
+        self.top.title(self.title)
+        self.root.withdraw()
+        self.frame = Tk.Frame(self.top)
+        self.frame.pack(side="top", expand=1, fill="both")
+        label = Tk.Label(self.frame, text=self.message, bg='white')
+        label.pack(pady=10)
+        self.entry = Tk.Entry(self.frame)
+        self.entry.pack()
+        self.entry.focus_set()
+    #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
+    def okButton(self):
+        """Do default click action in ok button."""
+        self.val = self.entry.get()
+            # Return is not possible.
+        self.top.destroy()
+        self.top = None
+    #@-others
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
