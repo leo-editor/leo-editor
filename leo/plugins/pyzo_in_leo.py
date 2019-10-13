@@ -97,6 +97,14 @@ def close_handler(): # pyzo_in_leo.py
 
     print('\ng.app.pyzo_close_event\n')
     
+    if 1: # EKR: change
+    
+        def do_nothing(*args, **kwargs):
+            pass
+
+        # We must zero this out. pyzo.saveConfig calls this.
+        pyzo.main.saveWindowState = do_nothing
+    
     # EKR:change-new imports
     from pyzo.core import commandline
 
@@ -104,14 +112,9 @@ def close_handler(): # pyzo_in_leo.py
     # restarting = time.time() - self._closeflag < 1.0
 
     # EKR:change.
-    if 1: # Experimental.
+    if 1: # As in the original.
         # Save settings
-        def do_nothing(*args, **kwargs):
-            pass
-
-        pyzo.main.saveWindowState = do_nothing
         pyzo.saveConfig()
-            # Looks like this causes a crash on the next reload.
         pyzo.command_history.save()
 
     # Stop command server
@@ -136,12 +139,11 @@ def close_handler(): # pyzo_in_leo.py
     for shell in pyzo.shells:
         shell._context.close()
 
-    # EKR:change: This doesn't work.
-    # Close tools
-        # close_all_pyzo_tools()
-        # for toolname in pyzo.toolManager.getLoadedTools():
-            # tool = pyzo.toolManager.getTool(toolname)
-            # tool.close()
+    if 1: # As in original.
+        # Close tools
+        for toolname in pyzo.toolManager.getLoadedTools():
+            tool = pyzo.toolManager.getTool(toolname)
+            tool.close()
 
     # Stop all threads (this should really only be daemon threads)
         # import threading
@@ -214,7 +216,6 @@ def _get_interpreters_win():  # pyzo_in_leo.py
                 break
 
     # Returnas set (remove duplicates)
-    g.trace(found2)
     return set(found2)
 #@+node:ekr.20190930051034.1: ** class PyzoController
 class PyzoController:
