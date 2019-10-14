@@ -372,7 +372,7 @@ class LeoQtGui(leoGui.LeoGui):
         if val != d.Accepted:
             return None
         return d.dt.dateTime().toPyDateTime()
-    #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog
+    #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog (not used)
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
         if g.unitTesting: return None

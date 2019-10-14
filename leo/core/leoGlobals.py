@@ -508,12 +508,22 @@ class EmergencyDialog:
         self.top.grab_set() # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
-#@+node:ekr.20191013145307.1: *3* class g.EmergencyLeoIDDialog (EmergencyDialog)
-class EmergencyLeoIDDialog (EmergencyDialog):
+#@+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
+class TkIDDialog (EmergencyDialog):
     """A class that creates an tkinter dialog to get the Leo ID."""
     
-    # def __init__(self, title, message):
-    #    super().__init__(title, message)
+    message = (
+        "leoID.txt not found\n\n"
+        "Please enter an id that identifies you uniquely.\n"
+        "Your git/cvs/bzr login name is a good choice.\n\n"
+        "Leo uses this id to uniquely identify nodes.\n\n"
+        "Your id should contain only letters and numbers\n"
+        "and must be at least 3 characters in length.")
+
+    title = 'Enter Leo id'
+
+    def __init__(self):
+        super().__init__(self.title, self.message)
         
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey

@@ -1205,20 +1205,17 @@ class LeoApp:
             pass
     #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self):
-        """Get leoID from a dialog."""
+        """Get leoID from a Tk dialog."""
         #
         # Don't put up a splash screen: it would obscure the coming dialog.
         self.use_splash_screen = False
         #
-        # Get an id for gnx's.  Plugins may set g.app.leoID.
-        # #1385: Use a TK dialog, regardless of gui.
+        # Get the id, making sure it is at least three characters long.
         while True:
-            dialog = g.EmergencyLeoIDDialog(
-                title='Set Leo ID',
-                message="Please enter LeoID, (your username, 'johndoe'...) at least three characters")
+            dialog = g.TkIDDialog()
             dialog.run()
             val = dialog.val
-            if val and len(val) > 2:
+            if val and len(val.strip()) > 2:
                 break
         #
         # Put result in g.app.leoID.
