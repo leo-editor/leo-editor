@@ -814,6 +814,44 @@ class Commands:
     # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
+    #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
+    # from leo.core.leoNodes import Position
+
+    def all_positions_for_v(self, v, stack=None):
+        """
+        Generates all positions p in this outline where p.v is v.
+        
+        Should be called with stack=None.
+        
+        The generated positions are not necessarily in outline order.
+        
+        By Виталије Милошевић (Vitalije Milosevic).
+        """
+        c = self
+
+        if stack is None:
+            stack = []
+            
+        if not isinstance(v, leoNodes.VNode):
+            g.es_print(f"not a VNode: {v!r}")
+            return
+
+        def allinds(v, target_v):
+            for i, x in enumerate(v.children):
+                if x is target_v: yield i
+
+        def stack2pos(stack):
+            v, i = stack[-1]
+            return leoNodes.Position(v, i, stack[:-1])
+
+        for v2 in set(v.parents):
+            for i in allinds(v2, v):
+                stack.insert(0, (v, i))
+                if v2 is c.hiddenRootNode:
+                    yield stack2pos(stack)
+                else:
+                    yield from c.all_positions_for_v(v2, stack)
+                stack.pop(0)
     #@+node:ekr.20161120121226.1: *5* c.all_roots
     def all_roots(self, copy=True, predicate=None):
         """
@@ -839,6 +877,26 @@ class Commands:
             else:
                 p.moveToThreadNext()
 
+    #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
+    def all_unique_positions(self, copy=True):
+        """
+        A generator return all positions of the outline, in outline order.
+        Returns only the first position for each vnode.
+        """
+        c = self
+        p = c.rootPosition()
+        seen = set()
+        while p:
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+            else:
+                seen.add(p.v)
+                yield p.copy() if copy else p
+                p.moveToThreadNext()
+
+    # Compatibility with old code...
+    all_positions_with_unique_tnodes_iter = all_unique_positions
+    all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
     def all_unique_roots(self, copy=True, predicate=None):
         """
@@ -865,26 +923,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy=True):
-        """
-        A generator return all positions of the outline, in outline order.
-        Returns only the first position for each vnode.
-        """
-        c = self
-        p = c.rootPosition()
-        seen = set()
-        while p:
-            if p.v in seen:
-                p.moveToNodeAfterTree()
-            else:
-                seen.add(p.v)
-                yield p.copy() if copy else p
-                p.moveToThreadNext()
-
-    # Compatibility with old code...
-    all_positions_with_unique_tnodes_iter = all_unique_positions
-    all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
     def safe_all_positions(self, copy=True):
         """
