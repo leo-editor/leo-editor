@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20190515070742.1: * @file leoAsciiDoctor.py
+#@+node:ekr.20190515070742.1: * @file leoMarkup.py
 #@@first
-"""Supports AsciiDoctor by defining the adoc command."""
-#@+<< leoAsciiDoctor imports >>
-#@+node:ekr.20190515070742.3: ** << leoAsciiDoctor imports >>
+"""Supports @adoc, @pandoc and @sphinx nodes and related commands."""
+#@+<< leoMarkup imports >>
+#@+node:ekr.20190515070742.3: ** << leoMarkup imports >>
 from shutil import which
 import io
 StringIO = io.StringIO
@@ -13,10 +13,11 @@ import re
 import time
 import leo.core.leoGlobals as g
 
-#@-<< leoAsciiDoctor imports >>
+#@-<< leoMarkup imports >>
 asciidoctor_exec = which('asciidoctor')
 asciidoc3_exec = which('asciidoc3')
 pandoc_exec = which('pandoc')
+sphinx_build = which('sphinx-build')
 #@+others
 #@+node:ekr.20191006153522.1: ** adoc & pandoc commands
 #@+node:ekr.20190515070742.22: *3* @cmd('adoc') & @cmd('adoc-with-preview')
@@ -157,8 +158,8 @@ def pandoc_with_preview_command(event=None, verbose=True):
     if not c:
         return None
     return c.asciiDoctorCommands.pandoc_command(event, preview=True, verbose=verbose)
-#@+node:ekr.20191006154236.1: ** class AsciiDoctorCommands
-class AsciiDoctorCommands:
+#@+node:ekr.20191006154236.1: ** class MarkupCommands
+class MarkupCommands:
     """A class to write AsiiDoctor or docutils markup in Leo outlines."""
     
     def __init__(self, c):
