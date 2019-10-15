@@ -2539,8 +2539,6 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 <t tx="matt.20190205105334.1">language: python
 python:
   - "3.6"
-cache:
-    - pip
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
@@ -2573,8 +2571,6 @@ deploy:
 <t tx="mhw.20190718140259.1">language: python
 python:
   - "3.6"
-cache:
-    - pip
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500

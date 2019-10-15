@@ -120,7 +120,7 @@ user_requires = [
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes','black', # coding syntax standards
     'setupext-janitor >= 1.1', # extend `setup.py clean` #1055,#1255
-    'pyshortcuts', # desktop integration (#1243)
+    'pyshortcuts > 1.7', # desktop integration (#1243)
     'sphinx', # rST plugin
     'future', # python 2/3 compatibility layer, same with 'six'
     'six',

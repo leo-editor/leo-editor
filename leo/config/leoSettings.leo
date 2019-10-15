@@ -11829,7 +11829,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
-<t tx="lkj.20190714020301.1"></t>
+<t tx="lkj.20190714020301.1">Open desktop-integration</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.

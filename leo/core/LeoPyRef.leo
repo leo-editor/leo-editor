@@ -101,7 +101,7 @@
 <v t="ekr.20150605175037.1"><vh>@file leoCheck.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
-<v t="ekr.20031218072017.2810" descendentVnodeUnknownAttributes="7d7100580c000000302e312e31312e322e352e3771017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20180212072657.2"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
@@ -764,8 +764,10 @@ def pre_init_mode(c):
     e.createDefiningWordRules()
 </t>
 <t tx="ekr.20150326145530.10">def createKeywords(self):
-    '''Create the mode keyword table and
-    entries in the rulesDict for the forth_keyword_rule'''
+    """
+    Create the mode keyword table and
+    entries in the rulesDict for the forth_keyword_rule.
+    """
     # global forth_main_keywords_dict
     # global forth_keyword_rule
     table = (
@@ -789,7 +791,7 @@ def pre_init_mode(c):
             self.extendRulesDict(ch=z[0], func=func)
 </t>
 <t tx="ekr.20150326145530.11">def createStringRule(self, d, pair):
-    '''Create an entry in d for a string keyword.'''
+    """Create an entry in d for a string keyword."""
     aList = pair.split(' ')
     if len(aList) != 2:
         g.trace('can not happen: expecting pair of forth strings:', pair)
@@ -972,7 +974,7 @@ rulesDictDict = {
 importDict = {}
 </t>
 <t tx="ekr.20150326145530.4">class extendForth:
-    '''A helper class to extend the mode tables from @data forth-x settings.'''
+    """A helper class to extend the mode tables from @data forth-x settings."""
     @others
 </t>
 <t tx="ekr.20150326145530.5">def __init__(self):
@@ -1022,7 +1024,7 @@ importDict = {}
 
 </t>
 <t tx="ekr.20150326145530.6">def init(self):
-    '''Set our ivars from settings.'''
+    """Set our ivars from settings."""
     c = self.c
     assert(c)
     table = (
@@ -1057,9 +1059,9 @@ importDict = {}
         self.splitList(ivar, setting)
 </t>
 <t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
-    '''Process lines containing pairs of entries
+    """Process lines containing pairs of entries
     in a list whose *name* is ivar.
-    Put the results in ivars whose names are ivar1 and ivar2.'''
+    Put the results in ivars whose names are ivar1 and ivar2."""
     result1 = []; result2 = []
     aList = getattr(self, ivar)
     # Look for pairs.  Comments have already been removed.
@@ -2055,9 +2057,17 @@ efc.GitDiffController(c).diff_two_branches(
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
-<t tx="ekr.20181009072707.1">@first # -*- coding: utf-8 -*-
-&lt;&lt; imports &gt;&gt;
-&lt;&lt; compute path &gt;&gt;
+<t tx="ekr.20181009072707.1"># -*- coding: utf-8 -*-
+import leo.core.leoBridge as leoBridge
+import os
+import sys
+# import pdb ; pdb.set_trace()
+import unittest
+
+load_dir = os.path.abspath(os.path.dirname(__file__))
+test_dir = os.path.join(load_dir, 'leo', 'test')
+path = os.path.join(test_dir, 'unitTest.leo')
+assert os.path.exists(path), repr(path)
 controller = leoBridge.controller(gui='nullGui',
     loadPlugins=False, readSettings=True,
     silent=False, verbose=False)
@@ -2068,7 +2078,45 @@ try:
     root = g.findTopLevelNode(c, 'Active Unit Tests', exact=True)
     assert root, 'Not found: Active Unit Tests'
     c.selectPosition(root)
-    &lt;&lt; run tests &gt;&gt;
+    tm = c.testManager
+    g.unitTesting = g.app.unitTesting = True
+    suite = unittest.makeSuite(unittest.TestCase)
+    aList = tm.findAllUnitTestNodes(all=False, marked=False)
+    setup_script = None
+    found = False
+    for p in aList:
+        if tm.isTestSetupNode(p):
+            setup_script = p.b
+            test = None
+        elif tm.isTestNode(p):
+            test = tm.makeTestCase(p, setup_script)
+        elif tm.isSuiteNode(p):
+            test = tm.makeTestSuite(p, setup_script)
+        elif tm.isTestClassNode(p):
+            test = tm.makeTestClass(p)
+        else:
+            test = None
+        if test:
+            suite.addTest(test)
+            found = True
+    if not found:
+        print('No unit tests')
+        sys.exit(1)
+    runner = unittest.TextTestRunner(
+        failfast=True, verbosity=1)
+    try:
+        result = runner.run(suite)
+        if result.errors or result.failures:
+            print('errors: %s, failures: %s' % (
+                len(result.errors), len(result.failures)))
+            sys.exit(1)
+        else:
+            print('Travis unit tests all passed.')
+            sys.exit(0)
+    except Exception:
+        print('Unexpected exception')
+        g.es_exception()
+        sys.exit(1)
 except Exception as e:
     print('Unexpected exception 2', e)
     sys.exit(1)

@@ -63,7 +63,8 @@ def get_my_path():
 # define script names and paths
 scripts_path = os.path.realpath(os.path.join(leo.__path__[0], "scripts/win"))
 elevate = os.path.join(scripts_path, "elevate.py")
-this_script = get_my_path()
+#this_script = get_my_path()  # #1376, works for python and ctrl-b but not --script=xx
+this_script = os.path.join(scripts_path, "register-leo.leox")
 
 import ctypes, sys
 
