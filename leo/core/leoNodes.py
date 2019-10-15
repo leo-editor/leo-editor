@@ -1763,18 +1763,27 @@ class Position:
         return False
     #@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
-        """Rewritten in Leo 6.1"""
+        """
+        Rewritten by Виталије Милошевић (Vitalije Milosevic).
+        """
         p = self
         c = p.v.context
-        # g.trace(g.callers(1))
-        # g.printObj([id(z) for z in c.all_positions_for_v(p.v)])
-        dirtyVnodeList = []
-        for p2 in c.all_positions_for_v(p.v):
-            for parent in p2.self_and_parents():
-                if parent.isAnyAtFileNode() and not parent.v.isDirty():
-                    dirtyVnodeList.append(parent.v)
-                    parent.v.setDirty()
+
+        def v_and_parents(v):
+            if v != c.hiddenRootNode:
+                yield v
+            for v2 in v.parents:
+                yield from v_and_parents(v2)
+                
+        dirtyVnodeList = list(set(
+            [v for v in v_and_parents(p.v)
+                if v.isAnyAtFileNode() and not v.isDirty()]
+        ))
+        for v in dirtyVnodeList:
+            v.setDirty()
+        # if not g.unitTesting and dirtyVnodeList: g.printObj(dirtyVnodeList)
         return dirtyVnodeList
+      
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self): # setDescendentsDirty=True
         """
