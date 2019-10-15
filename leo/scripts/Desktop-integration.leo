@@ -362,7 +362,6 @@ from winreg import *
 <t tx="mhw-debug-1081.20190227224730.1">def get_leo_libpath():
     """Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)"""
     import leo
-
     return leo.__path__[0]
 </t>
 <t tx="mhw-debug-1081.20190310203401.1">Scripts only of interest when on Microsoft Windows platform.
@@ -377,7 +376,6 @@ from winreg import *
         @jose-crespo-barrios, https://stackoverflow.com/a/44592299/14420
     """
     import inspect
-
     filename = inspect.getframeinfo(inspect.currentframe()).filename
     return filename
 </t>
