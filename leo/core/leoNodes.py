@@ -313,6 +313,7 @@ class Position:
 
     def sort_key(self, p):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
+
     # This has makes positions hashable, at long long last.
 
     #def __hash__(self):
@@ -1766,21 +1767,14 @@ class Position:
         return False
     #@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self, setDescendentsDirty=False):
-
+        """Rewritten in Leo 6.1"""
         p = self
+        c = p.v.context
         dirtyVnodeList = []
-        # Calculate all nodes that are joined to p or parents of such nodes.
-        nodes = p.findAllPotentiallyDirtyNodes()
-        if setDescendentsDirty:
-            # **Important**: only mark _direct_ descendents of nodes.
-            # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-            for p2 in p.subtree():
-                # Only @thin nodes need to be marked.
-                if p2.v not in nodes and p2.isAnyAtFileNode():
-                        # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
-                    nodes.append(p2.v)
-        dirtyVnodeList = [v for v in nodes
-            if not v.isDirty() and v.isAnyAtFileNode()]
+        for p2 in c.all_positions_for_v(p.v):
+            for parent in p2.self_and_parents():
+                if parent.isAnyAtFileNode() and not parent.v.isDirty():
+                    dirtyVnodeList.append(parent.v)
         for v in dirtyVnodeList:
             v.setDirty()
         return dirtyVnodeList
@@ -1792,7 +1786,7 @@ class Position:
         **Warning**: p.setDirty() is *expensive* because it calls
         p.setAllAncestorAtFileNodesDirty().
 
-        Usually, code *should* this setter, despite its cost, because it
+        Usually, code *should* use this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
         """

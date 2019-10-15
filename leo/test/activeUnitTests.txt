@@ -6066,7 +6066,7 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 #@+node:sps.20100531034136.20111: *5* @path again
 #@+node:sps.20100531034136.20112: *6* @path again
 #@+node:sps.20100531034136.20113: *7* xyz
-#@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
+#@+node:ekr.20040802065214: *4* @@test c.setHeadString marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.h
 
