@@ -105,7 +105,7 @@ def openCheatSheet(self, event=None, redraw=True):
 def openDesktopIntegration(self, event=None):
     """Open Desktop-integration.leo."""
     c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'Desktop-integration.leo')
+    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'desktop-integration.leo')
     # only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
