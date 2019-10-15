@@ -1753,10 +1753,6 @@ class Position:
         """(p) Set p.v dirty."""
         p = self
         p.v.clearDirty()
-    #@+node:ekr.20040318125934: *5* p.findAllPotentiallyDirtyNodes
-    def findAllPotentiallyDirtyNodes(self):
-        p = self
-        return p.v.findAllPotentiallyDirtyNodes()
     #@+node:ekr.20040702104823: *5* p.inAtIgnoreRange
     def inAtIgnoreRange(self):
         """Returns True if position p or one of p's parents is an @ignore node."""
@@ -2246,26 +2242,6 @@ class VNode:
         """Clear the vnode dirty bit."""
         v = self
         v.statusBits &= ~v.dirtyBit
-    #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
-    def findAllPotentiallyDirtyNodes(self):
-
-        v = self; c = v.context
-        # Set the starting nodes.
-        nodes = []
-        newNodes = [v]
-        # Add nodes until no more are added.
-        while newNodes:
-            addedNodes = []
-            nodes.extend(newNodes)
-            for v in newNodes:
-                for v2 in v.parents:
-                    if v2 not in nodes and v2 not in addedNodes:
-                        addedNodes.append(v2)
-            newNodes = addedNodes[:]
-        # Remove the hidden VNode.
-        if c.hiddenRootNode in nodes:
-            nodes.remove(c.hiddenRootNode)
-        return nodes
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self):
         """Set the vnode dirty bit."""
