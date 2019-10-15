@@ -1781,7 +1781,6 @@ class Position:
         ))
         for v in dirtyVnodeList:
             v.setDirty()
-        # if not g.unitTesting and dirtyVnodeList: g.printObj(dirtyVnodeList)
         return dirtyVnodeList
       
     #@+node:ekr.20040303163330: *5* p.setDirty
