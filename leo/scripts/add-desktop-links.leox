@@ -21,6 +21,8 @@ g.es_print(f"\n----- Running add-desktop-links -----")
 leocmd = shutil.which("leo")
 if platform.system() == "Windows":
     leocmd = shutil.which("leo-messages")
+if not leocmd:
+    g.es_print("*** Error leocmd not defined")
 
 scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
