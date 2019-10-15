@@ -313,10 +313,16 @@ class Position:
 
     def sort_key(self, p):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
-    # This has makes positions hashable, at long long last.
+        
+    # Positions should *not* be hashable.
+    #
+    # From https://docs.python.org/3/reference/datamodel.html#object.__hash__
+    # 
+    # If a class defines mutable objects and implements an __eq__() method, it
+    # should not implement __hash__(), since the implementation of hashable
+    # collections requires that a key’s hash value is immutable (if the object’s
+    # hash value changes, it will be in the wrong hash bucket).
 
-    #def __hash__(self):
-    #    return sum([z[1] for z in self.stack])
     __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
