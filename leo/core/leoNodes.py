@@ -1772,8 +1772,8 @@ class Position:
         def v_and_parents(v):
             if v != c.hiddenRootNode:
                 yield v
-            for v2 in v.parents:
-                yield from v_and_parents(v2)
+            for parent_v in v.parents:
+                yield from v_and_parents(parent_v)
                 
         dirtyVnodeList = list(set(
             [v for v in v_and_parents(p.v)
