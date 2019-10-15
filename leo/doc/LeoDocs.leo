@@ -30516,7 +30516,14 @@ https://github.com/leo-editor/leo-editor/issues/1323
 https://github.com/leo-editor/leo-editor/issues/1350
 
 #1364: Use """ for all docstrings
-https://github.com/leo-editor/leo-editor/issues/1364</t>
+https://github.com/leo-editor/leo-editor/issues/1364
+
+#1394: External file not always saved
+https://github.com/leo-editor/leo-editor/issues/1394
+- p.setDirty() is now much faster than before.
+- Added c.all_positions_for_v generator.
+
+</t>
 <t tx="ekr.20191003052014.1">#0490: scroll wheel problems
 https://github.com/leo-editor/leo-editor/issues/490
 
