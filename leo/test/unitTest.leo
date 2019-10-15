@@ -251,9 +251,6 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20040802065214"><vh>@@test c.setHeadString marks descendent @thin nodes dirty</vh>
-<v t="ekr.20040802065214.1"><vh>bogus</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -276,27 +273,6 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
-</t>
-<t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.h
-
-try:
-    child = p.firstChild()
-    child.initHeadString("@thin bogus")
-    assert child.h == "@thin bogus", "setting headline failed"
-    child.clearDirty()
-    assert not child.isDirty(), "clearing dirty failed"
-    c.setHeadString(p,"changed")
-    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-finally:
-    try:
-        c.setHeadString(p,h)
-        c.setHeadString(child,"bogus")
-        p.clearDirty()
-        child.clearDirty()
-    finally: pass
-</t>
-<t tx="ekr.20040802065214.1">test
 </t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>

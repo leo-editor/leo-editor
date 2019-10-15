@@ -1770,13 +1770,14 @@ class Position:
         """Rewritten in Leo 6.1"""
         p = self
         c = p.v.context
+        # g.trace(g.callers(1))
+        # g.printObj([id(z) for z in c.all_positions_for_v(p.v)])
         dirtyVnodeList = []
         for p2 in c.all_positions_for_v(p.v):
             for parent in p2.self_and_parents():
                 if parent.isAnyAtFileNode() and not parent.v.isDirty():
                     dirtyVnodeList.append(parent.v)
-        for v in dirtyVnodeList:
-            v.setDirty()
+                    parent.v.setDirty()
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self, setDescendentsDirty=True):
