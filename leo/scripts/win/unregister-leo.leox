@@ -56,6 +56,7 @@ def get_my_path():
         @jose-crespo-barrios, https://stackoverflow.com/a/44592299/14420
     """
     import inspect
+
     filename = inspect.getframeinfo(inspect.currentframe()).filename
     return filename
 #@-others
