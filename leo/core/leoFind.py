@@ -539,8 +539,9 @@ class LeoFind:
         # Bugs #947, #880 and #722:
         # Set ancestor @<file> nodes by brute force.
         for p in c.all_positions():
-            if (p.anyAtFileNodeName() and not p.v.isDirty() and
-                any([p2.v.isDirty() for p2 in p.subtree()])
+            if (
+                p.anyAtFileNodeName() and not p.v.isDirty()
+                and any([p2.v.isDirty() for p2 in p.subtree()])
             ):
                 p.v.setDirty()
         c.redraw()

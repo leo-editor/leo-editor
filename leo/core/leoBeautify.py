@@ -34,7 +34,7 @@ except Exception:
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
-#@+node:ekr.20150528131012.3: *3* beautify-c
+#@+node:ekr.20150528131012.3: *3* beautify-c (changed)
 @g.command('beautify-c')
 @g.command('pretty-print-c')
 def beautifyCCode(event):
@@ -56,8 +56,10 @@ def beautifyCCode(event):
             if p.b != s:
                 # g.es('changed: %s' % (p.h))
                 p.b = s
-                p.v.setDirty()
-                dirtyVnodeList.append(p.v)
+                dirtyVnodeList2 = p.setDirty() # Was p.v.setDirty.
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                ### p.v.setDirty()
+                ### dirtyVnodeList.append(p.v)
                 u.afterChangeNodeContents(p, undoType, bunch)
                 changed = True
     if changed:
@@ -102,33 +104,15 @@ def beautifyPythonTree(event):
         return
     t1 = time.process_time()
     pp = PythonTokenBeautifier(c)
-    ### prev_changed = 0
     pp.errors = 0
     changed = errors = total = 0
     for p in p0.self_and_subtree():
         if g.scanForAtLanguage(c, p) == "python":
-            ### Huh?
-            # if p.isAnyAtFileNode():
-                # # Report changed nodes in previous @<file> node.
-                # if pp.n_changed_nodes != prev_changed and not is_auto:
-                    # if not g.unitTesting:
-                        # n = pp.n_changed_nodes - prev_changed
-                        # g.es_print('beautified %s node%s' % (n, g.plural(n)))
-                # prev_changed = pp.n_changed_nodes
-                # if not is_auto:
-                    # g.es_print(p.h)
             total += 1
             if pp.prettyPrintNode(p):
                 changed += 1
             errors += pp.errors
             pp.errors = 0
-    ### Huh?
-        # Report any nodes in the last @<file> tree.
-        # if not g.unitTesting:
-            # if pp.n_changed_nodes != prev_changed and not is_auto:
-                # n = pp.n_changed_nodes - prev_changed
-                # g.es_print('beautified %s node%s' % (
-                    # n, g.plural(n)))
     pp.end_undo()
     if g.unitTesting:
         return
@@ -417,7 +401,7 @@ class BlackCommand:
             c.setChanged(True)
         if self.changed or self.errors:
             c.redraw()
-    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper
+    #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper (changed)
     def blacken_node_helper(self, p, check_flag, diff_flag):
         """
         blacken p.b, incrementing counts and stripping unnecessary blank lines.
@@ -485,7 +469,7 @@ class BlackCommand:
         p.v.contentModified()
         c.undoer.setUndoTypingParams(p, 'blacken-node', oldText=body, newText=result)
         if not p.v.isDirty():
-            p.v.setDirty()
+            p.setDirty() # Was p.v.setDirty.
         return True
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
@@ -1571,9 +1555,9 @@ class PythonTokenBeautifier:
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
             return
-        ### To do...
-        ### Scan back, looking for the first line with all balanced delims.
-        ### Do nothing if it is this line.
+        # To do...
+        #   Scan back, looking for the first line with all balanced delims.
+        #   Do nothing if it is this line.
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):

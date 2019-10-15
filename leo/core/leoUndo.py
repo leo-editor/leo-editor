@@ -418,7 +418,7 @@ class Undoer:
         ivars = ('kind', 'undoType')
         for ivar in ivars:
             g.pr(ivar, getattr(self, ivar))
-    #@+node:ekr.20050410095424: *4* u.updateMarks
+    #@+node:ekr.20050410095424: *4* u.updateMarks (changed)
     def updateMarks(self, oldOrNew):
         """Update dirty and marked bits."""
         u = self; c = u.c
@@ -427,13 +427,12 @@ class Undoer:
             return
         isOld = oldOrNew == 'old'
         marked = u.oldMarked if isOld else u.newMarked
-        if marked: c.setMarked(u.p)
-        else: c.clearMarked(u.p)
-        # Bug fix: Leo 4.4.6: Undo/redo always set changed/dirty bits
-        # because the file may have been saved.
+        if marked:
+            c.setMarked(u.p)
+        else:
+            c.clearMarked(u.p)
+        # Undo/redo always set changed/dirty bits because the file may have been saved.
         u.p.setDirty() # setDescendentsDirty=False
-        u.p.setAllAncestorAtFileNodesDirty()
-            # setDescendentsDirty=False # Bug fix: Leo 4.4.6
         u.c.setChanged(True)
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...

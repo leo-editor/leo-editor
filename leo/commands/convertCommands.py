@@ -28,7 +28,7 @@ class To_Python:
         self.p = self.c.p.copy()
         aList = g.get_directives_dict_list(self.p)
         self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-    #@+node:ekr.20150514063305.126: *3* To_Python.go
+    #@+node:ekr.20150514063305.126: *3* To_Python.go (changed)
     def go(self):
         import time
         t1 = time.time()
@@ -54,8 +54,10 @@ class To_Python:
                 s = ''.join(aList)
                 if s != p.b:
                     p.b = s
-                    p.v.setDirty()
-                    dirtyVnodeList.append(p.v)
+                    dirtyVnodeList2 = p.setDirty() # Was p.v.setDirty.
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+                    ### p.v.setDirty()
+                    ### dirtyVnodeList.append(p.v)
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.

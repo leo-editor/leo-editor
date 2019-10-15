@@ -4069,7 +4069,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.afterInsertNode(pasted, undoType, undoData)
         c.redraw(pasted)
         c.recolor()
-    #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
+    #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop (changed)
     def intraFileDrop(self, fn, p1, p2):
         """Move p1 after (or as the first child of) p2."""
         as_child = self.was_alt_drag
@@ -4081,10 +4081,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             # parent = p2
 
             def move(p1, p2):
-                if cloneDrag: p1 = p1.clone()
+                if cloneDrag:
+                    p1 = p1.clone()
                 p1.moveToNthChildOf(p2, 0)
                 p1.setDirty()
-                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
 
         else:
@@ -4092,10 +4092,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             # parent = p2.parent()
 
             def move(p1, p2):
-                if cloneDrag: p1 = p1.clone()
+                if cloneDrag:
+                    p1 = p1.clone()
                 p1.moveAfter(p2)
                 p1.setDirty()
-                p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
 
         ok = (
@@ -4121,7 +4121,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 c.redraw(p1)
             else:
                 c.redraw(p2)
-
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
         """Parse md.text() into (fn,s)"""

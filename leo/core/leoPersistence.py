@@ -54,24 +54,25 @@ class PersistenceDataController:
         """Remove all @data nodes that do not correspond to an existing foreign file."""
         c = self.c
         at_persistence = self.has_at_persistence_node()
-        if at_persistence:
-            foreign_list = [
-                p.h.strip() for p in c.all_unique_positions()
-                    if self.is_foreign_file(p)]
-            delete_list = []
-            tag = '@data:'
-            for child in at_persistence.children():
-                if child.h.startswith(tag):
-                    name = child.h[len(tag):].strip()
-                    if name not in foreign_list:
-                        delete_list.append(child.copy())
-            if delete_list:
-                at_persistence.setDirty()
-                c.setChanged(True)
-                for p in delete_list:
-                    g.es_print('deleting:', p.h)
-                c.deletePositionsInList(delete_list)
-                c.redraw()
+        if not at_persistence:
+            return
+        foreign_list = [
+            p.h.strip() for p in c.all_unique_positions()
+                if self.is_foreign_file(p)]
+        delete_list = []
+        tag = '@data:'
+        for child in at_persistence.children():
+            if child.h.startswith(tag):
+                name = child.h[len(tag):].strip()
+                if name not in foreign_list:
+                    delete_list.append(child.copy())
+        if delete_list:
+            at_persistence.setDirty()
+            c.setChanged(True)
+            for p in delete_list:
+                g.es_print('deleting:', p.h)
+            c.deletePositionsInList(delete_list)
+            c.redraw()
     #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file & helpers
     def update_before_write_foreign_file(self, root):
         """

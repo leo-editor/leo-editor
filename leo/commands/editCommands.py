@@ -1300,7 +1300,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.delete(ins - 1)
                 ins = ins - 1
                 w.setSelectionRange(ins, ins, insert=ins)
-    #@+node:ekr.20150514063305.255: *4* ec.cleanAllLines
+    #@+node:ekr.20150514063305.255: *4* ec.cleanAllLines (changed)
     @cmd('clean-all-lines')
     def cleanAllLines(self, event):
         """Clean all lines in the selected tree."""
@@ -1323,7 +1323,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 print(p.h)
                 bunch = u.beforeChangeNodeContents(p)
                 p.b = s2
-                p.v.setDirty()
+                p.setDirty() # Was p.v.setDirty.
                 n += 1
                 u.afterChangeNodeContents(p, tag, bunch)
         u.afterChangeGroup(c.p, tag)
@@ -3583,7 +3583,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     swapCharacters = transposeCharacters
     #@+node:ekr.20150514063305.348: *3* ec: uA's
-    #@+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas
+    #@+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas (changed)
     @cmd('clear-node-uas')
     def clearNodeUas(self, event=None):
         """Clear the uA's in the selected VNode."""
@@ -3592,7 +3592,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if p and p.v.u:
             p.v.u = {}
             # #1276.
-            p.v.setDirty()
+            p.setDirty() # was p.v.setDirty.
             c.setChanged()
             c.redraw()
             
@@ -3605,7 +3605,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for p in self.c.all_unique_positions():
             if p.v.u:
                 p.v.u = {}
-                p.v.setDirty()
+                p.setDirty() # was p.v.setDirty.
                 changed = True
         if changed:
             c.setChanged()

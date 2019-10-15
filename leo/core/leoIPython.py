@@ -122,7 +122,7 @@ class InternalIPKernel:
         
         Called from qt_gui.runWithIpythonKernel.
         """
-        trace = True ### 'ipython' in g.app.debug
+        trace = True # 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()

@@ -1739,7 +1739,6 @@ class Position:
     def setHeadString(self, s):
         p = self
         p.v.initHeadString(s)
-        # Note: p.setDirty is expensive.
         p.setDirty()
     #@+node:ekr.20040312015908: *4* p.Visited bits
     #@+node:ekr.20040306220634.17: *5* p.clearVisitedInTree
@@ -1785,8 +1784,8 @@ class Position:
             [v for v in v_and_parents(p.v)
                 if v.isAnyAtFileNode() and not v.isDirty()]
         ))
-        if 'dirty' in g.app.debug:
-            g.trace(p.h)
+        if 'dirty' in g.app.debug and dirtyVnodeList:
+            g.trace(p.h, g.callers())
             g.printObj(dirtyVnodeList)
         for v in dirtyVnodeList:
             v.setDirty()
@@ -1804,6 +1803,7 @@ class Position:
         if not p.v.isDirty():
             p.v.setDirty()
             dirtyVnodeList.append(p.v)
+        #
         # Important: this must be called even if p.v is already dirty.
         # Typing can change the @ignore state!
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty

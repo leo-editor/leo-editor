@@ -1053,14 +1053,6 @@ class ActiveSettingsOutline:
         # Unify all settings.
         self.create_unified_settings(kind, root, settings_root)
         self.clean(root)
-        ###
-            # # Create separate outlines for active & inactive settings.
-            # active_root = root.insertAsLastChild()
-            # active_root.h = 'active settings'
-            # self.create_active_settings(c, kind, active_root, settings_root)
-            # inactive_root = root.insertAsLastChild()
-            # inactive_root.h = 'inactive settings'
-            # self.create_inactive_settings(c, kind, inactive_root, settings_root)
     #@+node:ekr.20190905091614.9: *3* aso.create_unified_settings
     def create_unified_settings(self, kind, root, settings_root):
         """Create the active settings tree under root."""
