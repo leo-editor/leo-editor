@@ -324,7 +324,7 @@ class Position:
     # hash value changes, it will be in the wrong hash bucket).
 
     __hash__ = None
-    
+
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().
@@ -1785,6 +1785,9 @@ class Position:
             [v for v in v_and_parents(p.v)
                 if v.isAnyAtFileNode() and not v.isDirty()]
         ))
+        if 'dirty' in g.app.debug:
+            g.trace(p.h)
+            g.printObj(dirtyVnodeList)
         for v in dirtyVnodeList:
             v.setDirty()
         return dirtyVnodeList
@@ -1794,12 +1797,7 @@ class Position:
         """
         Mark a node and all ancestor @file nodes dirty.
 
-        **Warning**: p.setDirty() is *expensive* because it calls
-        p.setAllAncestorAtFileNodesDirty().
-
-        Usually, code *should* use this setter, despite its cost, because it
-        update's Leo's outline pane properly. Calling c.redraw() is *not*
-        enough.
+        p.setDirty() is no longer expensive.
         """
         p = self
         dirtyVnodeList = []
