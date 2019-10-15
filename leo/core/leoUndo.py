@@ -431,8 +431,9 @@ class Undoer:
         else: c.clearMarked(u.p)
         # Bug fix: Leo 4.4.6: Undo/redo always set changed/dirty bits
         # because the file may have been saved.
-        u.p.setDirty(setDescendentsDirty=False)
-        u.p.setAllAncestorAtFileNodesDirty(setDescendentsDirty=False) # Bug fix: Leo 4.4.6
+        u.p.setDirty() # setDescendentsDirty=False
+        u.p.setAllAncestorAtFileNodesDirty()
+            # setDescendentsDirty=False # Bug fix: Leo 4.4.6
         u.c.setChanged(True)
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...

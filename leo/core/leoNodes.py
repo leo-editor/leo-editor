@@ -1766,7 +1766,7 @@ class Position:
                 return True
         return False
     #@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self, setDescendentsDirty=False):
+    def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
         """Rewritten in Leo 6.1"""
         p = self
         c = p.v.context
@@ -1780,7 +1780,7 @@ class Position:
                     parent.v.setDirty()
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
-    def setDirty(self, setDescendentsDirty=True):
+    def setDirty(self): # setDescendentsDirty=True
         """
         Mark a node and all ancestor @file nodes dirty.
 
@@ -1797,7 +1797,7 @@ class Position:
             dirtyVnodeList.append(p.v)
         # Important: this must be called even if p.v is already dirty.
         # Typing can change the @ignore state!
-        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty
         dirtyVnodeList.extend(dirtyVnodeList2)
         return dirtyVnodeList
     #@+node:ekr.20160225153333.1: *3* p.Predicates
@@ -2265,21 +2265,6 @@ class VNode:
         if c.hiddenRootNode in nodes:
             nodes.remove(c.hiddenRootNode)
         return nodes
-    #@+node:ekr.20090830051712.6157: *5* v.setAllAncestorAtFileNodesDirty
-    # Unlike p.setAllAncestorAtFileNodesDirty,
-    # there is no setDescendentsDirty arg.
-
-    def setAllAncestorAtFileNodesDirty(self):
-
-        v = self
-        dirtyVnodeList = []
-        # Calculate all nodes that are joined to p or parents of such nodes.
-        nodes = v.findAllPotentiallyDirtyNodes()
-        dirtyVnodeList = [v for v in nodes
-            if not v.isDirty() and v.isAnyAtFileNode()]
-        for v in dirtyVnodeList:
-            v.setDirty() # Do not call p.setDirty here!
-        return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self):
         """Set the vnode dirty bit."""

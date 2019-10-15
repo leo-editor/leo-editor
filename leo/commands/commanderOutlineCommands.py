@@ -120,10 +120,8 @@ def pasteOutlineRetainingClones(self,
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
     # Set dirty bits for ancestors of *all* pasted nodes.
-    # Note: the setDescendentsDirty flag does not do what we want.
     for p in pasted.self_and_subtree():
-        p.setAllAncestorAtFileNodesDirty(
-            setDescendentsDirty=False)
+        p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty=False
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
@@ -894,7 +892,7 @@ def insertHeadlineHelper(c,
     else:
         p = current.insertAfter()
     g.doHook('create-node', c=c, p=p)
-    p.setDirty(setDescendentsDirty=False)
+    p.setDirty() # setDescendentsDirty=False
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
@@ -916,7 +914,7 @@ def insertHeadlineBefore(self, event=None):
     undoData = u.beforeInsertNode(current)
     p = current.insertBefore()
     g.doHook('create-node', c=c, p=p)
-    p.setDirty(setDescendentsDirty=False)
+    p.setDirty() # setDescendentsDirty=False
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
