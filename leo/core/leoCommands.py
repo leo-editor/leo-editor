@@ -834,13 +834,16 @@ class Commands:
             
         if not isinstance(v, leoNodes.VNode):
             g.es_print(f"not a VNode: {v!r}")
-            return
+            return # Stop the generator.
 
         def allinds(v, target_v):
+            """Yield all indices i such that v.children[i] == target_v."""
             for i, x in enumerate(v.children):
-                if x is target_v: yield i
+                if x is target_v:
+                    yield i
 
         def stack2pos(stack):
+            """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
 

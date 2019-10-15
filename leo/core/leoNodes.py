@@ -1791,7 +1791,8 @@ class Position:
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
         """
-        p = self; dirtyVnodeList = []
+        p = self
+        dirtyVnodeList = []
         if not p.v.isDirty():
             p.v.setDirty()
             dirtyVnodeList.append(p.v)
