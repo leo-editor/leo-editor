@@ -267,6 +267,7 @@ python_main_keywords_dict = {
     "return": "keyword1",
     "reversed": "keyword2",
     "round": "keyword2",
+    "set": "keyword2",
     "setattr": "keyword2",
     "slice": "keyword2",
     "sorted": "keyword2",
