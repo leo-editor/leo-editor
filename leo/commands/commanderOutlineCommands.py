@@ -1185,7 +1185,7 @@ def unmarkAll(self, event=None):
     u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
-#@+node:ekr.20031218072017.1767: *3* c_oc.demote
+#@+node:ekr.20031218072017.1767: *3* c_oc.demote (changed)
 @g.commander_command('demote')
 def demote(self, event=None):
     """Make all following siblings children of the selected node."""
@@ -1217,6 +1217,10 @@ def demote(self, event=None):
     p.expand()
     # Even if p is an @ignore node there is no need to mark the demoted children dirty.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### Experimental
+    # Make p dirty only if moving it affects an ancestor @<file> node.
+    if dirtyVnodeList:
+        p.v.setDirty()
     c.setChanged(True)
     u.afterDemote(p, followingSibs, dirtyVnodeList)
     c.redraw(p)
@@ -1269,8 +1273,11 @@ def moveOutlineDown(self, event=None):
     #@-<< Move p down & set moved if successful >>
     if moved:
         if 1: ### Experimental.
-            dirtyVnodeList2 = p.setDirty()
+            # Make p dirty only if moving it affects an ancestor @<file> node.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
             dirtyVnodeList.extend(dirtyVnodeList2)
+            if dirtyVnodeList2:
+                p.v.setDirty()
         else: # old code
             if inAtIgnoreRange and not p.inAtIgnoreRange():
                 # The moved nodes have just become newly unignored.
@@ -1302,8 +1309,11 @@ def moveOutlineLeft(self, event=None):
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     p.moveAfter(parent)
     if 1: ### Experimental.
-        dirtyVnodeList2 = p.setDirty()
+        # Make p dirty only if moving it affects an ancestor @<file> node.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
         dirtyVnodeList.extend(dirtyVnodeList2)
+        if dirtyVnodeList2:
+            p.v.setDirty()
     else: # old code
         if inAtIgnoreRange and not p.inAtIgnoreRange():
             # The moved nodes have just become newly unignored.
@@ -1338,7 +1348,10 @@ def moveOutlineRight(self, event=None):
     c.endEditing()
     undoData = u.beforeMoveNode(p)
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    dirtyVnodeList = p.setDirty()
+    # Make p dirty only if moving it affects an ancestor @<file> node.
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    if dirtyVnodeList:
+        p.v.setDirty()
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
     # Moving an outline right can never bring it outside the range of @ignore.
@@ -1400,8 +1413,11 @@ def moveOutlineUp(self, event=None):
     #@-<< Move p up >>
     if moved:
         if 1: ### Experimental.
-            dirtyVnodeList2 = p.setDirty()
+            # Make p dirty only if moving it affects an ancestor @<file> node.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
             dirtyVnodeList.extend(dirtyVnodeList2)
+            if dirtyVnodeList2:
+                p.v.setDirty()
         else: # old code
             if inAtIgnoreRange and not p.inAtIgnoreRange():
                 # The moved nodes have just become newly unignored.
@@ -1429,8 +1445,11 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     c.setChanged(True)
     if undoFlag:
         if 1: ### Experimental.
-            dirtyVnodeList = p.setDirty()
-        else: # old code
+            # Make p dirty only if moving it affects an ancestor @<file> node.
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            if dirtyVnodeList:
+                p.v.setDirty()
+        else: ### Old code
             if not inAtIgnoreRange and isAtIgnoreNode:
                 # The promoted nodes have just become newly unignored.
                 dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
