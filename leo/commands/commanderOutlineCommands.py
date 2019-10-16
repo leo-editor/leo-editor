@@ -1271,8 +1271,8 @@ def moveOutlineDown(self, event=None):
     #@-<< Move p down & set moved if successful >>
     if moved:
         if 1: # #1392.
-            if not dirtyVnodeList:
-                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
             if dirtyVnodeList:
                 p.v.setDirty()
         else: # old code
@@ -1306,8 +1306,8 @@ def moveOutlineLeft(self, event=None):
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     p.moveAfter(parent)
     if 1: # #1392.
-        if not dirtyVnodeList:
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
         if dirtyVnodeList:
             p.v.setDirty()
     else: # old code
@@ -1347,8 +1347,8 @@ def moveOutlineRight(self, event=None):
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
     # #1392.
-    if not dirtyVnodeList:
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+    dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
     if dirtyVnodeList:
         p.v.setDirty()
     c.setChanged(True)
@@ -1406,8 +1406,8 @@ def moveOutlineUp(self, event=None):
     #@-<< Move p up >>
     if moved:
         if 1: # #1392.
-            if not dirtyVnodeList:
-                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
             if dirtyVnodeList:
                 p.v.setDirty()
         else: # old code
