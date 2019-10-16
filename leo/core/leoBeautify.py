@@ -357,11 +357,11 @@ class BlackCommand:
         c = self.c
         if not black or not root:
             return
-        t1 = time.clock()
+        t1 = time.process_time()
         self.changed, self.errors, self.total = 0, 0, 0
         self.undo_type = 'blacken-node'
         self.blacken_node_helper(root, check_flag, diff_flag)
-        t2 = time.clock()
+        t2 = time.process_time()
         if not g.unitTesting:
             print(
                 f'{root.h}: scanned {self.total} node{g.plural(self.total)}, '
@@ -377,7 +377,7 @@ class BlackCommand:
         c = self.c
         if not black or not root:
             return
-        t1 = time.clock()
+        t1 = time.process_time()
         self.changed, self.errors, self.total = 0, 0, 0
         undo_type = 'blacken-tree'
         bunch = c.undoer.beforeChangeTree(root)
@@ -389,7 +389,7 @@ class BlackCommand:
         if changed:
             c.setChanged(True)
             c.undoer.afterChangeTree(root, undo_type, bunch)
-        t2 = time.clock()
+        t2 = time.process_time()
         if not g.unitTesting:
             print(
                 f'{root.h}: scanned {self.total} node{g.plural(self.total)}, '
