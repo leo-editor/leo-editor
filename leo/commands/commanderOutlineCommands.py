@@ -1215,10 +1215,8 @@ def demote(self, event=None):
         child.parents.remove(parent_v)
         child.parents.append(p.v)
     p.expand()
-    # Even if p is an @ignore node there is no need to mark the demoted children dirty.
+    # #1392.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    ### Experimental
-    # Make p dirty only if moving it affects an ancestor @<file> node.
     if dirtyVnodeList:
         p.v.setDirty()
     c.setChanged(True)
@@ -1272,11 +1270,10 @@ def moveOutlineDown(self, event=None):
         parent.contract()
     #@-<< Move p down & set moved if successful >>
     if moved:
-        if 1: ### Experimental.
-            # Make p dirty only if moving it affects an ancestor @<file> node.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
-            if dirtyVnodeList2:
+        if 1: # #1392.
+            if not dirtyVnodeList:
+                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            if dirtyVnodeList:
                 p.v.setDirty()
         else: # old code
             if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -1308,11 +1305,10 @@ def moveOutlineLeft(self, event=None):
     undoData = u.beforeMoveNode(p)
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     p.moveAfter(parent)
-    if 1: ### Experimental.
-        # Make p dirty only if moving it affects an ancestor @<file> node.
-        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-        dirtyVnodeList.extend(dirtyVnodeList2)
-        if dirtyVnodeList2:
+    if 1: # #1392.
+        if not dirtyVnodeList:
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        if dirtyVnodeList:
             p.v.setDirty()
     else: # old code
         if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -1347,17 +1343,14 @@ def moveOutlineRight(self, event=None):
         return
     c.endEditing()
     undoData = u.beforeMoveNode(p)
-    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    # Make p dirty only if moving it affects an ancestor @<file> node.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    if dirtyVnodeList:
-        p.v.setDirty()
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
-    # Moving an outline right can never bring it outside the range of @ignore.
-    ### dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-    dirtyVnodeList2 = p.setDirty()
-    dirtyVnodeList.extend(dirtyVnodeList2)
+    # #1392.
+    if not dirtyVnodeList:
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    if dirtyVnodeList:
+        p.v.setDirty()
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
     c.redraw(p)
@@ -1412,11 +1405,10 @@ def moveOutlineUp(self, event=None):
         parent.contract()
     #@-<< Move p up >>
     if moved:
-        if 1: ### Experimental.
-            # Make p dirty only if moving it affects an ancestor @<file> node.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
-            if dirtyVnodeList2:
+        if 1: # #1392.
+            if not dirtyVnodeList:
+                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            if dirtyVnodeList:
                 p.v.setDirty()
         else: # old code
             if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -1445,10 +1437,8 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     c.setChanged(True)
     if undoFlag:
         if 1: ### Experimental.
-            # Make p dirty only if moving it affects an ancestor @<file> node.
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            if dirtyVnodeList:
-                p.v.setDirty()
+            # Do *not* set any dirty bits here!
         else: ### Old code
             if not inAtIgnoreRange and isAtIgnoreNode:
                 # The promoted nodes have just become newly unignored.
@@ -1456,6 +1446,11 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
             else: # No need to mark descendents dirty.
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         u.afterPromote(p, children, dirtyVnodeList)
+    else:
+        # #1392.
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        if dirtyVnodeList:
+            p.v.setDirty()
     if redrawFlag:
         c.redraw(p)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
