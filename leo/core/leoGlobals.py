@@ -524,6 +524,7 @@ class TkIDDialog (EmergencyDialog):
 
     def __init__(self):
         super().__init__(self.title, self.message)
+        self.val = ''
         
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey

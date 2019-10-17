@@ -1158,7 +1158,26 @@ class LeoApp:
             if self.leoID:
                 self.setIDFile()
         return self.leoID
-    #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
+    #@+node:ekr.20191017061451.1: *5* app.cleanLeoID (new)
+    def cleanLeoID(self, id_, tag):
+        """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
+        old_id = id_ if isinstance(id_, str) else repr(id_)
+        try:
+            id_ = id_.replace('.', '').replace(',','').replace('"','').replace("'", '')
+            # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
+            id_ = ''.join(id_.split())
+        except Exception:
+            g.es_exception()
+            id_ = ''
+        if len(id_) < 3:
+            g.EmergencyDialog(
+                title = f"Invalid Leo ID: {tag}",
+                message = (
+                    f"Invalid Leo ID: {old_id!r}\n\n"
+                    "Your id should contain only letters and numbers\n"
+                    "and must be at least 3 characters in length."))
+        return id_
+    #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys (changed)
     def setIDFromSys(self, verbose):
         """
         Attempt to set g.app.leoID from sys.leoID.
@@ -1168,10 +1187,13 @@ class LeoApp:
         id_ = getattr(sys, "leoID", None)
         if id_:
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
-            self.leoID = id_.replace('.', '-')
-            if verbose:
-                g.red("leoID=", self.leoID, spaces=False)
-    #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
+            id_ = self.cleanLeoID(id_, 'sys.leoID')
+                # cleanLeoID raises a warning dialog.
+            if len(id_) > 2:
+                self.leoID = id_
+                if verbose:
+                    g.red("leoID=", self.leoID, spaces=False)
+    #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile (changed)
     def setIDFromFile(self, verbose):
         """Attempt to set g.app.leoID from leoID.txt."""
         tag = ".leoID.txt"
@@ -1184,14 +1206,18 @@ class LeoApp:
                     s = f.readline().strip()
                 if not s:
                     continue
-                # Careful: periods in gnx will corrupt the .leo file!
-                self.leoID = s.replace('.', '-')
+                # #1404: Ensure valid ID.
+                id_ = self.cleanLeoID(s, tag)
+                    # cleanLeoID raises a warning dialog.
+                if len(id_) > 2:
+                    self.leoID = id_
+                    return
             except IOError:
                 pass
             except Exception:
                 g.error('unexpected exception in app.setLeoID')
                 g.es_exception()
-    #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv
+    #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv (changed)
     def setIDFromEnv(self, verbose):
         """Set leoID from environment vars."""
         try:
@@ -1200,10 +1226,13 @@ class LeoApp:
                 if verbose:
                     g.blue("setting leoID from os.getenv('USER'):", repr(id_))
                 # Careful: periods in the gnx would corrupt the .leo file!
-                self.leoID = id_.replace('.', '-')
+                id_ = self.cleanLeoID(id_, "os.getenv('USER')")
+                    # cleanLeoID raises a warning dialog.
+                if len(id_) > 2:
+                    self.leoID = id_
         except Exception:
             pass
-    #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
+    #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog (changed)
     def setIdFromDialog(self):
         """Get leoID from a Tk dialog."""
         #
@@ -1214,13 +1243,13 @@ class LeoApp:
         while True:
             dialog = g.TkIDDialog()
             dialog.run()
-            val = dialog.val
-            if val and len(val.strip()) > 2:
+            # #1404: Make sure the id will not corrupt the .leo file.
+            id_ = self.cleanLeoID(dialog.val, "")
+            if id_ and len(id_) > 2:
                 break
         #
         # Put result in g.app.leoID.
-        # Careful: periods in the id field of a gnx will corrupt the .leo file!
-        self.leoID = val.replace('.', '-')
+        self.leoID = id_
         g.blue('leoID=', repr(self.leoID), spaces=False)
     #@+node:ekr.20031218072017.1982: *5* app.setIDFile
     def setIDFile(self):
