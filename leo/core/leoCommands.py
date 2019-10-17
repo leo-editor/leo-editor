@@ -313,7 +313,6 @@ class Commands:
         import leo.core.leoUndo as leoUndo
         import leo.core.leoVim as leoVim
         # Define the subcommanders.
-        self.asciiDoctorCommands    = leoMarkup.MarkupCommands(c)
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
         self.shadowController       = leoShadow.ShadowController(c)
@@ -321,6 +320,7 @@ class Commands:
         self.findCommands           = leoFind.LeoFind(c)
         self.atFileCommands         = leoAtFile.AtFile(c)
         self.importCommands         = leoImport.LeoImportCommands(c)
+        self.markupCommands         = leoMarkup.MarkupCommands(c)
         self.persistenceController  = leoPersistence.PersistenceDataController(c)
         self.printingController     = leoPrinting.PrintingController(c)
         self.rstCommands            = leoRst.RstCommands(c)
