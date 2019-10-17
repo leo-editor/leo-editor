@@ -222,7 +222,7 @@ class MarkupCommands:
     def command_helper(self, event, kind, preview, verbose):
 
         def predicate(p):
-            return self.ad_filename(p)
+            return self.filename(p)
 
         # Find all roots.
         t1 = time.time()
@@ -237,7 +237,7 @@ class MarkupCommands:
         i_paths = []
         for p in roots:
             try:
-                i_path = self.ad_filename(p)
+                i_path = self.filename(p)
                 i_path = g.os_path_finalize(i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
@@ -268,24 +268,29 @@ class MarkupCommands:
         t2 = time.time()
         if verbose:
             n = len(i_paths)
-            g.es_print(f"{kind}: wrote {n} file{g.plural(n)} in {(t2-t1):4.2f} sec.")
+            g.es_print(
+                f"{kind}: wrote {n} file{g.plural(n)} "
+                f"in {(t2-t1):4.2f} sec.")
         return i_paths
-    #@+node:ekr.20190515084219.1: *4* markup.ad_filename
+    #@+node:ekr.20190515084219.1: *4* markup.filename
     adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
 
-    def ad_filename(self, p):
-        """Return the filename of the @adoc or @pandoc node, or None."""
+    def filename(self, p):
+        """Return the filename of the @adoc, @pandoc or @sphinx node, or None."""
+        kind = self.kind
         h = p.h.rstrip()
-        if self.kind == 'adoc':
+        if kind == 'adoc':
             m = self.adoc_pattern.match(h)
             if m:
                 prefix = m.group(1)
                 return h[1+len(prefix):].strip()
             return None
-        assert self.kind == 'pandoc', g.callers()
-        prefix = '@pandoc'
-        if g.match_word(h, 0, prefix):
-            return h[len(prefix):].strip()
+        if kind in ('pandoc', 'sphinx'):
+            prefix = f"@{kind}"
+            if g.match_word(h, 0, prefix):
+                return h[len(prefix):].strip()
+            return None
+        g.trace('BAD KIND', kind)
         return None
     #@+node:ekr.20191007053522.1: *4* markup.compute_opath
     def compute_opath(self, i_path):
@@ -328,13 +333,20 @@ class MarkupCommands:
         """
          Process the input file given by i_path with sphinx.
         """
-        global pandoc_build
-        assert pandoc_build, g.callers()
+        global sphinx_build
+        assert sphinx_build, g.callers()
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         source_dir = os.path.dirname(i_path)
         output_dir = os.path.dirname(o_path)
-        command = f"sphinx-build {source_dir} {output_dir} {i_path}"
+        if 1:
+            # Can't do cd from execute_shell_commands.
+            g.trace(repr(source_dir))
+            os.chdir(source_dir)
+            # Use conf file.
+            command = 'make html'
+        else:
+            command = f"sphinx-build {source_dir} {output_dir} {i_path}"
         g.execute_shell_commands(command)
     #@+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root):
@@ -421,7 +433,7 @@ class MarkupCommands:
 
     def sphinx_command(self, event=None, preview=False, verbose=True):
         global sphinx_build
-        if pandoc_build:
+        if sphinx_build:
             return self.command_helper(event, kind='sphinx', preview=preview, verbose=verbose)
         name = 'sphinx-with-preview' if preview else 'sphinx'
         g.es_print(f"{name} requires sphinx")
