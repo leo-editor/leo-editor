@@ -2579,29 +2579,43 @@ class LoadManager:
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
-        c = c1 = None
+        c = c1 = fn = None
         if lm.files:
-            for n, fn in enumerate(lm.files):
-                lm.more_cmdline_files = n < len(lm.files) - 1
-                c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                    # Returns None if the file is open in another instance of Leo.
-                if c and not c1: c1 = c
+            try: # #1403.
+                for n, fn in enumerate(lm.files):
+                    lm.more_cmdline_files = n < len(lm.files) - 1
+                    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                        # Returns None if the file is open in another instance of Leo.
+            except Exception:
+                g.es_print(f"Unexpected exception reading {fn!r}")
+                g.es_exception()
+                c = None
+            if c and not c1:
+                c1 = c
         g.app.loaded_session = not lm.files
             # Load (and save later) a session only no files were given on the command line.
         if g.app.sessionManager and g.app.loaded_session:
-            aList = g.app.sessionManager.load_snapshot()
-            if aList:
-                g.app.sessionManager.load_session(c1, aList)
-                # tag:#659.
-                if g.app.windowList:
-                    c = c1 = g.app.windowList[0].c
-                else:
-                    c = c1 = None
+            try: # #1403.
+                aList = g.app.sessionManager.load_snapshot()
+                if aList:
+                    g.app.sessionManager.load_session(c1, aList)
+                    # tag:#659.
+                    if g.app.windowList:
+                        c = c1 = g.app.windowList[0].c
+                    else:
+                        c = c1 = None
+            except Exception:
+                g.es_print('unexpected exception loading session')
+                g.es_exception()
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
-            c1 = lm.openEmptyWorkBook()
-                # Calls LM.loadLocalFile.
+            try: # #1403.
+                c1 = lm.openEmptyWorkBook()
+                    # Calls LM.loadLocalFile.
+            except Exception:
+                g.es_print('unexpected reading empty workbook')
+                g.es_exception()
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
