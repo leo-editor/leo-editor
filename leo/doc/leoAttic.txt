@@ -3860,66 +3860,11 @@ def createFrame(self, leoFrame):
 def deleteFrame(self, wdg):
     # Do not delete.  Called from destroySelf.
     pass
-#@+node:ekr.20190822141147.1: ** Not used: qt_gui.make_all_global_docks
-def make_all_global_docks(self):
-    """Make four global docks for testing."""
-    Qt = QtCore.Qt
-    bottom_area, top_area = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
-    lt_area, rt_area = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
-    table = (
-        ("Test1", lt_area, "blue"),
-        ("Test2", rt_area, "yellow"),
-        ("Test3", top_area, "green"),
-        ("Test4", bottom_area, "pink"),
-    )
-    for name, area, color in table:
-        dock = self.create_dock_widget(
-            closeable=True, moveable=True, height=100, name=name)
-        dock.setStyleSheet(f"background: {color};")
-        w = QtWidgets.QFrame()
-        dock.setWidget(w)
-        self.main_window.addDockWidget(area, dock)
-#@+node:ekr.20031218072017.2418: ** g.initScriptFind (no longer used)
-def initScriptFind(c,
-    findHeadline,
-    changeHeadline=None,
-    firstNode=None,
-    script_search=True,
-    script_change=True,
-):
-    # pylint: disable=import-self
-    import leo.core.leoGlobals as g
-    # Find the scripts.
-    p = c.p
-    tm = c.testManager
-    find_p = tm.findNodeInTree(p, findHeadline)
-    if find_p:
-        find_text = find_p.b
-    else:
-        g.error("no Find script node")
-        return
-    if changeHeadline:
-        change_p = tm.findNodeInTree(p, changeHeadline)
-    else:
-        change_p = None
-    if change_p:
-        change_text = change_p.b
-    else:
-        change_text = ""
-    # g.pr(find_p,change_p)
-    # Initialize the find panel.
-    c.script_search_flag = script_search
-    c.script_change_flag = script_change and change_text
-    if script_search:
-        c.find_text = find_text.strip() + "\n"
-    else:
-        c.find_text = find_text
-    if script_change:
-        c.change_text = change_text.strip() + "\n"
-    else:
-        c.change_text = change_text
-    c.frame.findPanel.init(c)
-    c.showFindPanel()
+#@+node:ekr.20190923093951.1: ** leo_excepthook
+def leo_excepthook(type, value, tb):
+    # Note: Leo will still exit!
+    g.trace(f"Uncaught Python exception: {value}\n")
+    g.es_exception()
 #@-all
 #@@nosearch
 #@-leo
