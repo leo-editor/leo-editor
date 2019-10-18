@@ -407,10 +407,12 @@ False: (Good for files like unitTest.leo)
   Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
 """
 import os
+import sys
 import shutil
 import platform
 import leo.core.leoGlobals as g
 from pyshortcuts import make_shortcut
+from os.path import splitext
 
 debug = False
 iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
@@ -421,7 +423,10 @@ leocmd = shutil.which("leo")
 if platform.system() == "Windows":
     leocmd = shutil.which("leo-messages")
 if not leocmd:
-    g.es_print("*** Error leocmd not defined")
+    raise ValueError("leocmd not defined")
+
+# cosmetic: ensure extension is lower case for nicer reporting
+leocmd = splitext(leocmd)[0] + splitext(leocmd)[1].lower()
 
 scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
@@ -442,19 +447,26 @@ So this won't delete links created from a different Leo directory or source code
 checkout (unless they have same filename).
 """
 import os
+import sys
 import shutil
 import platform
 import leo.core.leoGlobals as g
 from pyshortcuts import make_shortcut
+from os.path import splitext
 
 debug = False
 iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
 
-g.es_print(f"\n----- Running add-desktop-links -----")
+g.es_print(f"\n----- Running remove-desktop-links -----")
 
 leocmd = shutil.which("leo")
 if platform.system() == "Windows":
     leocmd = shutil.which("leo-messages")
+if not leocmd:
+    raise ValueError("leocmd not defined")
+
+# cosmetic: ensure extension is lower case for nicer reporting
+leocmd = splitext(leocmd)[0] + splitext(leocmd)[1].lower()
 
 scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
 
