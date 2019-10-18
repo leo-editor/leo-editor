@@ -238,6 +238,8 @@ class MarkupCommands:
         for p in roots:
             try:
                 i_path = self.filename(p)
+                # #1398.
+                i_path = c.expand_path_expression(i_path)
                 i_path = g.os_path_finalize(i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
