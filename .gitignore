@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 profile.txt
 __pycache__/
+.mypy_cache/
 .cache/
 *.py[cod]
 *.history
