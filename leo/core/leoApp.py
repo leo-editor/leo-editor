@@ -2129,32 +2129,20 @@ class LoadManager:
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
         """
-        Return the name of the workbook.
+        Return full path to the workbook.
         
-        Return None *only* if:
-        1. The workbook does not exist.
-        2. We are unit testing or in batch mode.
+        Return None if testing, or in batch mode, or if the containing
+        directory does not exist.
         """
         # lm = self
-        fn = g.app.config.getString(setting='default_leo_file')
-            # The default is ~/.leo/workbook.leo
-        if not fn:
-            fn = g.os_path_finalize('~/.leo/workbook.leo')
-        fn = g.os_path_finalize(fn)
-        if not fn:
-            return None
-        if g.os_path_exists(fn):
-            return fn
+        # Never create a workbook during unit tests or in batch mode.
         if g.unitTesting or g.app.batchMode:
-            # 2017/02/18: unit tests must not create a workbook.
-            # Neither should batch mode operation.
             return None
-        if g.os_path_isabs(fn):
-            # Create the file.
-            g.error('Using default leo file name:\n%s' % (fn))
-            return fn
-        # It's too risky to open a default file if it is relative.
-        return None
+        fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
+        fn = g.os_path_finalize(fn)
+        directory = g.os_path_finalize(os.path.dirname(fn))
+        # #1415.
+        return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self, verbose):
         """Report directories."""
@@ -2614,7 +2602,7 @@ class LoadManager:
                 c1 = lm.openEmptyWorkBook()
                     # Calls LM.loadLocalFile.
             except Exception:
-                g.es_print('unexpected reading empty workbook')
+                g.es_print('unexpected exception reading empty workbook')
                 g.es_exception()
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
@@ -2660,6 +2648,8 @@ class LoadManager:
         lm = self
         # Create an empty frame.
         fn = lm.computeWorkbookFileName()
+        if not fn:
+            return None # #1415
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         if not c:
             return None # #1201: AttributeError below.
