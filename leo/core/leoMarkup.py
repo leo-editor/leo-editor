@@ -216,6 +216,14 @@ class MarkupCommands:
         self.kind = None # 'adoc' or 'pandoc'
         self.level_offset = 0
         self.root_level = 0
+        self.reload_settings()
+        
+    def reload_settings(self):
+        c = self.c
+        getBool, getString = c.config.getBool, c.config.getString
+        self.sphinx_default_command = getString('sphinx-default-command')
+        self.sphinx_make_build_dir = getBool('sphinx-make-build_directory', default=False)
+        self.sphinx_make_conf = getBool('sphinx-make-conf.py', default=False)
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
