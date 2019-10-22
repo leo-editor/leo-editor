@@ -158,7 +158,7 @@ def promoteBodies(event):
     for child in p.subtree():
         h = child.h.strip()
         if child.b:
-            body = '\n'.join(['  %s' % (z) for z in g.splitLines(child.b)])
+            body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
             s = '- %s\n%s' % (h,body)
         else:
             s = '- %s' % h

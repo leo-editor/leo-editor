@@ -253,7 +253,7 @@ class AstFormatter:
     def do_Module(self, node):
         assert 'body' in node._fields
         result = ''.join([self.visit(z) for z in node.body])
-        return result # 'module:\n%s' % (result)
+        return result
     #@+node:ekr.20141012064706.18409: *4* f.Lambda
     def do_Lambda(self, node):
         return self.indent('lambda %s: %s' % (
@@ -614,7 +614,7 @@ class AstFormatter:
         if args:
             return self.indent('exec %s in %s\n' % (
                 body, ','.join(args)))
-        return self.indent('exec %s\n' % (body))
+        return self.indent('exec {body}\n')
     #@+node:ekr.20141012064706.18451: *4* f.For & AsnchFor (Python 3)
     def do_For(self, node, async_flag=False):
         result = []

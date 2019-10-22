@@ -3189,6 +3189,7 @@ def compute_directives_re():
     """
     global globalDirectiveList
     # EKR: 2016/03/30: Use a pattern that guarantees word matches.
+    # Clearer w/o f-strings.
     aList = [r'\b%s\b' % (z) for z in globalDirectiveList
                 if z != 'others']
     return "^@(%s)" % "|".join(aList)
@@ -5099,7 +5100,7 @@ class GitIssueController:
             html_url = d.get('html_url') or self.base_url
             p = root.insertAsNthChild(0)
             p.h = f"#{n}: {title}"
-            p.b = '%s\n\n' % (html_url)
+            p.b = f"{html_url}\n\n"
             p.b += d.get('body').strip()
         link = r.headers.get('Link')
         done = not link or link.find('rel="next"') == -1

@@ -2155,7 +2155,7 @@ class LoadManager:
                 ("home", g.app.homeDir),
             ):
                 # g.blue calls g.es_print, and that's annoying.
-                g.es("%s dir:" % (kind), theDir, color='blue')
+                g.es(f"{kind} dir:", theDir, color='blue')
         else:
             aList = (
                 'homeDir', 'homeLeoDir',
@@ -2395,7 +2395,7 @@ class LoadManager:
             return None # Fix #843.
         if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
-            s = 'reading settings in %s' % (fn)
+            s = f"reading settings in {fn}"
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
@@ -2894,7 +2894,7 @@ class LoadManager:
             return fn
         if g.os_path_isabs(fn):
             # Create the file.
-            g.error('Using default leo file name:\n%s' % (fn))
+            g.error(f"Using default leo file name:\n{fn}")
             return fn
         # It's too risky to open a default file if it is relative.
         return None

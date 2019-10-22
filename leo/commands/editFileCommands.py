@@ -210,8 +210,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094317.19: *4* efc.dumpCompareNodes
     def dumpCompareNodes(self, fileName1, fileName2, inserted, deleted, changed):
         for d, kind in (
-            (inserted, 'inserted (only in %s)' % (fileName1)),
-            (deleted, 'deleted  (only in %s)' % (fileName2)),
+            (inserted, f"inserted (only in {fileName1})"),
+            (deleted, f"deleted  (only in {fileName2})"),
             (changed, 'changed'),
         ):
             g.pr('\n', kind)
@@ -581,6 +581,7 @@ class GitDiffController:
         n1, n2 = 1, 0
         while n1 <= 5:
             ok = self.diff_revs(
+                # Clearer w/o f-strings.
                 rev1 = 'HEAD@{%s}' % (n1),
                 rev2 = 'HEAD@{%s}' % (n2))
             if ok: return

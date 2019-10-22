@@ -2641,10 +2641,10 @@ class Commands:
         if c.import_error_nodes:
             files = '\n'.join(sorted(set(c.import_error_nodes)))
             if use_dialogs:
-                g.app.gui.runAskOkDialog(c,
-                    title='Import errors',
-                    message='The following were not imported properly. '
-                    '@ignore was inserted:\n%s' % (files))
+                message=(
+                    'The following were not imported properly. '
+                    f"Inserted @ignore in...\n{files}")
+                g.app.gui.runAskOkDialog(c, message=message, title='Import errors')
             else:
                 g.es('import errors...', color='red')
                 g.es('\n'.join(sorted(files)), color='blue')
@@ -2652,11 +2652,12 @@ class Commands:
             files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
             kind = 'read' if kind.startswith('read') else 'written'
             if use_dialogs:
-                message = 'The following were not %s because they contain @ignore:\n%s' % (kind, files)
+                message = (
+                    f"The following were not {kind} "
+                    f"because they contain @ignore:\n{files}")
                 g.app.gui.runAskOkDialog(c,
                     message=message,
-                    title='Not %s' % kind.capitalize(),
-                )
+                    title=f"Not {kind.capitalize()}")
             else:
                 g.es(f"not {kind} (@ignore)...", color='red')
                 g.es(files, color='blue')

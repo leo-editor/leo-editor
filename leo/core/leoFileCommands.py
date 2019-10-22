@@ -624,10 +624,10 @@ class FileCommands:
             child.setHeadString(h)
             if b1 == b2:
                 lines = [
-                    'Headline changed...'
-                    '%s gnx: %s root: %r' % (tag, gnx, root_v and root.v),
-                    'old headline: %s' % (h1),
-                    'new headline: %s' % (h2),
+                    'Headline changed...',
+                    f"{tag} gnx: {gnx} root: {(root_v and root.v)!r}",
+                    f"old headline: {h1}",
+                    f"new headline: {h2}",
                 ]
                 child.setBodyString('\n'.join(lines))
             else:

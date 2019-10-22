@@ -207,7 +207,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
     def makeFilter(self, filetypes):
         """Return the Qt-style dialog filter from filetypes list."""
-        filters = ['%s (%s)' % (z) for z in filetypes]
+        filters = [f"{z} ({z}s)" for z in filetypes]
         return ';;'.join(filters)
     #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helpers
     def openFindDialog(self, c):
@@ -1882,7 +1882,7 @@ class StyleSheetManager:
                 else:
                     sheet = '\n'.join(sheet)
             if sheet and sheet.strip():
-                line0 = '\n/* ===== From %s ===== */\n\n' % (name)
+                line0 = f"\n/* ===== From {name} ===== */\n\n"
                 sheet = line0 + sheet
                 sheets.append(sheet)
         if sheets:

@@ -29,6 +29,7 @@ class PrintingController:
         """Return the Qt stylesheet to be used for printing."""
         family, size = self.font_family, self.font_size
         table = (
+            # Clearer w/o f-strings.
             'h1 {font-family: %s}' % (family),
             'pre {font-family: %s; font-size: %spx}' % (family, size),
         )

@@ -365,7 +365,7 @@ class LeoPluginsController:
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
         if moduleName:
-            s = 'handlers for %s...\n' % (moduleName)
+            s = 'handlers for {moduleName}...\n'
         else:
             s = 'all plugin handlers...\n'
         g.es(s + '\n', tabName=tabName)
@@ -396,7 +396,7 @@ class LeoPluginsController:
         data.append('enabled plugins...\n')
         for z in sorted(self.loadedModules):
             data.append(z)
-        lines = ['%s\n' % (s) for s in data]
+        lines = [f"{z}\n" for z in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6027: *4* plugins.printPluginsInfo
     def printPluginsInfo(self, c):

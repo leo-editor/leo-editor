@@ -316,7 +316,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 name=name)
             dock.setWidget(w)
             # Remember the dock.
-            setattr(self, '%s_dock' % (name), dock)
+            setattr(self, f"{name}_dock", dock)
             if name == central_widget:
                 self.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
@@ -906,7 +906,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             func = getattr(self, f"do_leo_spell_btn_{ivar}")
             button.clicked.connect(func)
             # This name is significant.
-            setattr(self, 'leo_spell_btn_%s' % (ivar), button)
+            setattr(self, f"leo_spell_btn_{ivar}", button)
         self.leo_spell_btn_Hide.setCheckable(False)
         spacerItem = QtWidgets.QSpacerItem(20, 40,
             QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -4380,7 +4380,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p2 = p.insertAsNthChild(0)
         else:
             p2 = p.insertAfter()
-        # p2.h,p2.b = '@url %s' % (s),''
         p2.h = '@url'
         p2.b = s
         p2.clearDirty() # Don't automatically rewrite this node.

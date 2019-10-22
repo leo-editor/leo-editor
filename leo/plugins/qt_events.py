@@ -177,6 +177,7 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = self.doAltTweaks(actual_ch, keynum, mods, toString)
         #
         # Use *ch* in the binding.
+        # Clearer w/o f-strings.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         #
         # Return the tweaked *actual* char.

@@ -854,7 +854,7 @@ class Context:
             # The error indicates that scope resolution will give the wrong result.
             # e = cx.st.d.get(name)
             # if e:
-                # self.u.error('name \'%s\' used prior to global declaration' % (name))
+                # self.u.error(f"name {name!r} used prior to global declaration")
                 # # Add the name to the global_names set in *this* context.
                 # # cx.global_names.add(name)
             # # Regardless of error, bind the name in *this* context,

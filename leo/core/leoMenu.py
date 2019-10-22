@@ -92,7 +92,7 @@ class LeoMenu:
         }
 
         for i in range(1,9):
-            d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
+            d [f"expand-to-level-{i}"] = lambda: c.p.hasChildren()
 
         if 0: # Initial testing.
             commandKeys = list(c.commandsDict.keys())

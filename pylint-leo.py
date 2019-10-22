@@ -63,10 +63,10 @@ def run(fn, verbose):
         if os.path.exists(rc_fn):
             break
     else:
-        print('pylint-leo.py: %s not found in leo/test or ~/.leo.' % (rc_fn))
+        print(f"pylint-leo.py: {rc_fn!r} not found in leo/test or ~/.leo")
         return
     if not os.path.exists(fn):
-        print('pylint-leo.py: file not found: %s' % (fn))
+        print(f"pylint-leo.py: file not found: {fn}")
         return
     if verbose:
         path = g.os_path_dirname(fn)

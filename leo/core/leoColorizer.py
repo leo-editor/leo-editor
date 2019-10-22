@@ -1722,7 +1722,7 @@ class JEditColorizer(BaseJEditColorizer):
             re_obj = re.compile(pattern, flags)
         except Exception:
             # Do not call g.es here!
-            g.trace('Invalid regular expression: %s' % (pattern))
+            g.trace(f"Invalid regular expression: {pattern}")
             return 0
         # Match succeeds or fails more quickly than search.
         self.match_obj = mo = re_obj.match(s, i) # re_obj.search(s,i)
