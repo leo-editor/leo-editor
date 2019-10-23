@@ -220,10 +220,11 @@ class MarkupCommands:
         
     def reload_settings(self):
         c = self.c
-        getBool, getString = c.config.getBool, c.config.getString
+        getString = c.config.getString
+        self.sphinx_command_dir = getString('sphinx-command-directory')
         self.sphinx_default_command = getString('sphinx-default-command')
-        self.sphinx_make_build_dir = getBool('sphinx-make-build_directory', default=False)
-        self.sphinx_make_conf = getBool('sphinx-make-conf.py', default=False)
+        self.sphinx_input_dir = getString('sphinx-input-directory')
+        self.sphinx_output_dir = getString('sphinx-output-directory')
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
@@ -255,7 +256,7 @@ class MarkupCommands:
             except IOError:
                 g.es_print(f"Can not open {i_path!r}")
             except Exception:
-                g.es_print('Unexpected exception')
+                g.es_print(f"Unexpected exception opening {i_path!r}")
                 g.es_exception()
         # Convert each file to html.
         o_paths = []
@@ -343,20 +344,40 @@ class MarkupCommands:
         """
          Process the input file given by i_path with sphinx.
         """
-        global sphinx_build
-        assert sphinx_build, g.callers()
+        trace = True
+        # cd to the command directory, or i_path's directory.
+        command_dir = g.os_path_finalize(
+            self.sphinx_command_dir or os.path.dirname(i_path))
+        if os.path.exists(command_dir):
+            if trace: g.trace(f"\nos.chdir: {command_dir!r}")
+            os.chdir(command_dir)
+        else:
+            g.error(f"command directory not found: {command_dir!r}")
+            return
+        #
+        # If a default command exists, just call it.
+        # The user is responsible for making everything work.
+        if self.sphinx_default_command:
+            if trace: g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
+            g.execute_shell_commands(self.sphinx_default_command)
+            return
+        # Compute the input directory.
+        input_dir = g.os_path_finalize(
+            self.sphinx_input_dir or os.path.dirname(i_path))
+        if not os.path.exists(input_dir):
+            g.error(f"input directory not found: {input_dir!r}")
+            return
+        # Compute the output directory.
+        output_dir = g.os_path_finalize(
+            self.sphinx_output_dir or os.path.dirname(o_path))
+        if not os.path.exists(output_dir):
+            g.error(f"output directory not found: {output_dir!r}")
+            return
+        #
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
-        source_dir = os.path.dirname(i_path)
-        output_dir = os.path.dirname(o_path)
-        if 1:
-            # Can't do cd from execute_shell_commands.
-            g.trace(repr(source_dir))
-            os.chdir(source_dir)
-            # Use conf file.
-            command = 'make html'
-        else:
-            command = f"sphinx-build {source_dir} {output_dir} {i_path}"
+        command = f"sphinx-build {input_dir} {output_dir} {i_path}"
+        if trace: g.trace(f"\ncommand: {command!r}\n")
         g.execute_shell_commands(command)
     #@+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root):
