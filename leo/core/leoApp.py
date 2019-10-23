@@ -2593,43 +2593,36 @@ class LoadManager:
                     else:
                         c = c1 = None
             except Exception:
-                g.es_print('unexpected exception loading session')
+                g.es_print('Can not load session')
                 g.es_exception()
         # Enable redraws.
         g.app.disable_redraw = False
-        if not c1: ### or not g.app.windowList:
+        if not c1:
             try: # #1403.
                 c1 = lm.openEmptyWorkBook()
                     # Calls LM.loadLocalFile.
             except Exception:
-                g.es_print('unexpected exception reading empty workbook')
+                g.es_print('Can not create empty workbook')
                 g.es_exception()
         c = c1
         if not c:
-            return False # Force an immediate exit.
+            # Leo is out of options: Force an immediate exit.
+            return False
         # #199.
         g.app.runAlreadyOpenDialog(c1)
-        # Put the focus in the first-opened file.
-        fileName = lm.files[0] if lm.files else None
-        ### c = c1
+        #
+        # Final inits...
         # For qt gui, select the first-loaded tab.
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
                 factory.setTabForCommander(c)
-        ###
-            # if not c:
-                # return False # Force an immediate exit.
-        # Final inits...
         g.app.logInited = True
         g.app.initComplete = True
-        if c:
-            c.setLog()
-            c.redraw()
-        p = c.p if c else None
-        g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c:
-            c.initialFocusHelper()
+        c.setLog()
+        c.redraw()
+        g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
+        c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
