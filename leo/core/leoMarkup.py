@@ -272,10 +272,14 @@ class MarkupCommands:
             else:
                 g.trace('BAD KIND')
                 return None
-            print(f"{kind}: wrote {o_path}")
+            if kind != 'sphinx':
+                print(f"{kind}: wrote {o_path}")
         if preview:
-            # open .html files in the default browser.
-            g.execute_shell_commands(o_paths)
+            if kind == 'sphinx':
+                g.es_print('preview not available for sphinx')
+            else:
+                # open .html files in the default browser.
+                g.execute_shell_commands(o_paths)
         t2 = time.time()
         if verbose:
             n = len(i_paths)
@@ -341,9 +345,7 @@ class MarkupCommands:
         g.execute_shell_commands(command)
     #@+node:ekr.20191017165427.1: *4* markup.run_sphinx
     def run_sphinx(self, i_path, o_path):
-        """
-         Process the input file given by i_path with sphinx.
-        """
+        """Process i_path and o_path with sphinx."""
         trace = True
         # cd to the command directory, or i_path's directory.
         command_dir = g.os_path_finalize(
@@ -427,11 +429,23 @@ class MarkupCommands:
         if not p.h.strip():
             return
         level = max(0, self.level_offset + p.level() - self.root_level)
+        if self.kind == 'sphinx':
+            # For now, assume rST markup!
+            # Hard coded characters. Never use '#' underlining.
+            chars = '''=+*^~"'`-:><_'''
+            if len(chars) > level:
+                ch = chars[level]
+                line = ch * len(p.h)
+                self.output_file.write(f"{p.h}\n{line}\n\n")
+            return
         if self.kind == 'pandoc':
             section = '#' * min(level, 6)
-        else:
+        elif self.kind == 'adoc':
             # level 0 (a single #) should be done by hand.
             section = '=' * level
+        else:
+            g.es_print(f"bad kind: {self.kind!r}")
+            return
         self.output_file.write(f"{section} {p.h}\n\n")
     #@+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s):
