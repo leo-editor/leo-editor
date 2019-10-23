@@ -533,7 +533,7 @@
 <v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
 <v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
 </v>
-<v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
+<v t="ekr.20110611092035.16488"><vh>Bracket matching settings</vh>
 <v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
 <v t="ekr.20060804095015"><vh>@string open-flash-brackets = ([{</vh></v>
 </v>
@@ -542,15 +542,15 @@
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
-<v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
+<v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
+<v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
-<v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
+<v t="ekr.20160127043440.1"><vh>make-stub-files settings</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
 <v t="ekr.20160318061607.3"><vh>@bool stub-trace-matches = False</vh></v>
 <v t="ekr.20160318061607.4"><vh>@bool stub-trace-patterns = False</vh></v>
@@ -569,7 +569,7 @@
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 command</vh>
+<v t="ekr.20071213060239"><vh>rst3 command settings</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3-http-server-support = False</vh></v>
@@ -610,7 +610,13 @@
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16477"><vh>Undo</vh>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = </vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
+</v>
+<v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
@@ -11790,6 +11796,11 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
+<t tx="ekr.20191023140453.1"></t>
+<t tx="ekr.20191023140453.2"></t>
+<t tx="ekr.20191023140453.3"></t>
+<t tx="ekr.20191023140453.4"></t>
+<t tx="ekr.20191023140453.5"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
