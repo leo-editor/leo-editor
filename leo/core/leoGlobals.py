@@ -4506,7 +4506,7 @@ def skip_parens(s, i):
     If no matching is found i is set to len(s).
     """
     level = 0; n = len(s)
-    assert(g.match(s, i, '('))
+    assert g.match(s, i, '('), repr(s[i])
     while i < n:
         c = s[i]
         if c == '(':
