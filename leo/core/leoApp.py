@@ -2597,25 +2597,29 @@ class LoadManager:
                 g.es_exception()
         # Enable redraws.
         g.app.disable_redraw = False
-        if not c1 or not g.app.windowList:
+        if not c1: ### or not g.app.windowList:
             try: # #1403.
                 c1 = lm.openEmptyWorkBook()
                     # Calls LM.loadLocalFile.
             except Exception:
                 g.es_print('unexpected exception reading empty workbook')
                 g.es_exception()
+        c = c1
+        if not c:
+            return False # Force an immediate exit.
         # #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
-        c = c1
+        ### c = c1
         # For qt gui, select the first-loaded tab.
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
                 factory.setTabForCommander(c)
-        if not c:
-            return False # Force an immediate exit.
+        ###
+            # if not c:
+                # return False # Force an immediate exit.
         # Final inits...
         g.app.logInited = True
         g.app.initComplete = True
