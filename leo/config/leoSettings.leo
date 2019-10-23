@@ -611,7 +611,7 @@
 </v>
 </v>
 <v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
-<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = </vh></v>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
 <v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
 <v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
 <v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
@@ -11797,10 +11797,20 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
 <t tx="ekr.20191023140453.1"></t>
-<t tx="ekr.20191023140453.2"></t>
-<t tx="ekr.20191023140453.3"></t>
-<t tx="ekr.20191023140453.4"></t>
-<t tx="ekr.20191023140453.5"></t>
+<t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
+
+Otherwise, the sphinx command will cd to the directory containing the input file.</t>
+<t tx="ekr.20191023140453.3">If given, *only* this command will be executed after the cd command.</t>
+<t tx="ekr.20191023140453.4">Used only if the default command is *not* given.
+
+The input_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
+<t tx="ekr.20191023140453.5">Used only if the default command is *not* given.
+
+The output_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
