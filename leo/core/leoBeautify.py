@@ -2031,54 +2031,28 @@ class FstringifyTokens (PythonTokenBeautifier):
     def fstringify_file(self):
         """Find the nearest @<file> node and convert % to fstrings within it."""
         trace = True and not g.unitTesting
+        c = self.c
         filename = self.find_root()
         # Open the file, 
         with open(filename, 'r') as f:
             contents1 = f.read()
         if trace: g.printObj(contents1, tag='CONTENTS')
-        # Create ast1 (for checking) and tokens1.
+        # Generate tokens.
         comment_string, contents2 = self.sanitizer.comment_leo_lines(p=None, s0=contents1)
-        ast1 =  self.parse_file(contents2, filename)
-        if not ast1:
-            return
         tokens = self.tokenize_file(contents2, filename)
-        # Handle all tokens, creating the code list.
-        result = self.scan_all_tokens(tokens)
-        # Check the result.
-        if not self.show_result(ast1, contents1, comment_string, filename, result):
-            return
+        # Handle all tokens, creating the raw result.
+        raw_result = self.scan_all_tokens(tokens)
+        # Undo the munging of the sources.
+        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        # Trace the results.
+        if trace:
+            g.trace(f"\ncontents match: {contents1 == result}\n")
+            g.printObj(raw_result, tag='RAW RESULT')
+            g.printObj(result, tag='RESULT')
         # Write the file, if changed.
         if 0: ### Later.
             with open(filename, 'w') as f:
                 f.write(result)
-    #@+node:ekr.20191024072738.1: *4* fstring.show_result
-    def show_result(self, ast1, contents1, comment_string, filename, result):
-        """Check the result against ast1 and contents1."""
-        c = self.c
-        trace = True and not g.unitTesting
-        # Undo the munging of the sources.
-        if trace: g.printObj(result, tag='RESULT 1')
-        result2 = self.sanitizer.uncomment_leo_lines(comment_string, c.p, result)
-        if trace: g.printObj(result2, tag='RESULT 2')
-        #
-        # Parse and tokenize the result.
-        ast2 = self.parse_file(result2, filename)
-        ### tokens2 = self.tokenize_file(result2, filename)
-        # Check the ast's.  This is likely not going to be useful.
-        if trace: g.trace('contents match:', contents1 == result2)
-        try:
-            self.compare_two_asts(ast1, ast2)
-            return True
-        except AstNotEqual:
-            g.warning(
-                f"not changed: {filename}\n"
-                f"The fstringify command did not preserve meaning!")
-            return False
-        except Exception:
-            g.error('Unexpected exception in stringify_file')
-            g.es_exception()
-            return False
-        
     #@+node:ekr.20191024044526.1: *4* fstring.find_root
     def find_root(self):
         """
@@ -2101,29 +2075,6 @@ class FstringifyTokens (PythonTokenBeautifier):
             return filename
         g.es_print(f"file not found: {filename}")
         return None
-    #@+node:ekr.20191024073323.1: *4* fstring.parse_file (may not be useful!)
-    def parse_file(self, contents, filename):
-        """
-        Return the ast from the contents of the given file.
-        """
-        t1 = time.process_time()
-        try:
-            s1 = g.toEncodedString(contents)
-            ast_node = ast.parse(s1, filename=filename, mode='exec')
-        except IndentationError:
-            g.warning(f"IndentationError in {filename}")
-            return None
-        except SyntaxError:
-            g.warning(f"SyntaxError in {filename}")
-            return None
-        except Exception:
-            g.warning(f"Unexpected exception in {filename}")
-            g.es_exception()
-            return None
-        # Update stats.
-        t2 = time.process_time()
-        self.parse_time += t2 - t1
-        return ast_node
     #@+node:ekr.20191024072508.1: *4* fstring.scan_all_tokens
     def scan_all_tokens(self, tokens):
         """
