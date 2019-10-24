@@ -2005,7 +2005,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         ### Temp.
         self.tokens.pop(0)
         self.op('%')
-        aList = self.scan_string(string_val)
+        aList = self.scan_format_string(string_val)
         for i, format_s in enumerate(aList):
             g.trace(i, repr(format_s))
         # i, kind = 0, self.kind
@@ -2015,14 +2015,12 @@ class FstringifyTokens (PythonTokenBeautifier):
             # i += 1
         ### To do.
         ### self.add_token('string', string_val)
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_string
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_fornat_string
     format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfgnoxrsX]?)')
 
-    def scan_string(self, s):
-        """Scan string s, returning a list of format speciers."""
-        result = []
-        for m in re.finditer(self.format_pat, s):
-            result.append(m.group(1))
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list of format speciers."""
+        result = [m.group(1) for m in re.finditer(self.format_pat, s)]
         g.trace(result)
         return result
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
