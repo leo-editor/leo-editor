@@ -1990,8 +1990,6 @@ class FstringifyTokens (PythonTokenBeautifier):
     
     # def __init__(self, c):
         # super().__init__(c)
-        # # self.last_p = None
-        # # self.token_index = 0
 
     #@+others
     #@+node:ekr.20191024071243.1: *3* fstring.do_token
@@ -2029,161 +2027,139 @@ class FstringifyTokens (PythonTokenBeautifier):
             self.last_line_number = srow
         func = getattr(self, f"do_{self.kind}", self.oops)
         func()
-    #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file
+    #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
         """Find the nearest @<file> node and convert % to fstrings within it."""
         trace = True and not g.unitTesting
-        c = self.c
-        p = self.find_root()
-        if not p:
-            g.es_print(f"not in any @<file> tree: {c.p.h}")
-            return
-        filename = g.os_path_finalize(p.anyAtFileNodeName())
-        if not os.path.exists(filename):
-            g.es_print(f"file not found: {filename}")
-            return
-        #
-        # Open the file, creating ast1 (for checking) and tokens1.
+        filename = self.find_root()
+        # Open the file, 
         with open(filename, 'r') as f:
             contents1 = f.read()
-        if trace: g.printObj(contents1, tag='CONTENTS 1')
+        if trace: g.printObj(contents1, tag='CONTENTS')
+        # Create ast1 (for checking) and tokens1.
         comment_string, contents2 = self.sanitizer.comment_leo_lines(p=None, s0=contents1)
-        ast1, tokens1 = self.tokenize_file(contents2, filename)
+        ast1 =  self.parse_file(contents2, filename)
         if not ast1:
             return
-        #
-        # Handle all tokens.
-        self.init_scan(tokens1)
-        self.file_start()
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        self.file_end()
-        g.printObj(self.code_list, tag='CODE LIST')
-        contents3 = ''.join([z.to_string() for z in self.code_list])
-        #
+        tokens = self.tokenize_file(contents2, filename)
+        # Handle all tokens, creating the code list.
+        result = self.scan_all_tokens(tokens)
         # Check the result.
-        if trace: g.printObj(contents3, tag='CONTENTS 3')
-        contents4 = self.sanitizer.uncomment_leo_lines(comment_string, p, contents3)
-        if trace: g.printObj(contents4, tag='CONTENTS 4')
-        ast2, tokens2 = self.tokenize_file(contents4, filename)
-        if trace: g.trace('contents match:', contents1 == contents4)
+        if not self.show_result(ast1, contents1, comment_string, filename, result):
+            return
+        # Write the file, if changed.
+        if 0: ### Later.
+            with open(filename, 'w') as f:
+                f.write(result)
+    #@+node:ekr.20191024072738.1: *4* fstring.show_result
+    def show_result(self, ast1, contents1, comment_string, filename, result):
+        """Check the result against ast1 and contents1."""
+        c = self.c
+        trace = True and not g.unitTesting
+        # Undo the munging of the sources.
+        if trace: g.printObj(result, tag='RESULT 1')
+        result2 = self.sanitizer.uncomment_leo_lines(comment_string, c.p, result)
+        if trace: g.printObj(result2, tag='RESULT 2')
+        #
+        # Parse and tokenize the result.
+        ast2 = self.parse_file(result2, filename)
+        ### tokens2 = self.tokenize_file(result2, filename)
+        # Check the ast's.  This is likely not going to be useful.
+        if trace: g.trace('contents match:', contents1 == result2)
         try:
             self.compare_two_asts(ast1, ast2)
+            return True
         except AstNotEqual:
             g.warning(
                 f"not changed: {filename}\n"
                 f"The fstringify command did not preserve meaning!")
-            return
-        #
-        # Write the file, if changed.
-        if 0: ### Later.
-            with open(filename, 'w') as f:
-                f.write(contents4)
-    #@+node:ekr.20191024044526.1: *3* fstring.find_root
+            return False
+        except Exception:
+            g.error('Unexpected exception in stringify_file')
+            g.es_exception()
+            return False
+        
+    #@+node:ekr.20191024044526.1: *4* fstring.find_root
     def find_root(self):
         """
-        Return the nearest ancestor @<file> node.
+        Return the nearest ancestor @<file> node, or None.
+        Issue error messages if necessary.
         """
-        p = self.c.p
+        c, p = self.c, self.c.p
 
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
         for p in p.self_and_parents():
             if predicate(p):
-                return p
+                break
+        else:
+            g.es_print(f"not in any @<file> tree: {c.p.h}")
+            return None
+        filename = g.os_path_finalize(p.anyAtFileNodeName())
+        if os.path.exists(filename):
+            return filename
+        g.es_print(f"file not found: {filename}")
         return None
-    #@+node:ekr.20191024071045.1: *3* fstring.init_scan
-    def init_scan(self, tokens):
-        
-        self.errors = 0
-        self.code_list = []
-        self.state_stack = []
-        self.last_line_number = 0
-        self.tokens = tokens 
-    #@+node:ekr.20191024071928.1: *3* fstring.oops
-    def oops(self):
-        g.trace('unknown kind', self.kind)
-    #@+node:ekr.20191024050218.1: *3* fstring.tokenize_file
-    def tokenize_file(self, contents, filename):
+    #@+node:ekr.20191024073323.1: *4* fstring.parse_file (may not be useful!)
+    def parse_file(self, contents, filename):
         """
-        Return (ast_node, tokens) from the contents of the given file.
+        Return the ast from the contents of the given file.
         """
-        fail = None, []
-        p = self.c.p
-        if not p.b.strip():
-            return fail
         t1 = time.process_time()
-        # Parse into ast_node. This is for error checking.
         try:
             s1 = g.toEncodedString(contents)
             ast_node = ast.parse(s1, filename=filename, mode='exec')
         except IndentationError:
             g.warning(f"IndentationError in {filename}")
-            return fail
+            return None
         except SyntaxError:
             g.warning(f"SyntaxError in {filename}")
-            return fail
+            return None
         except Exception:
             g.warning(f"Unexpected exception in {filename}")
             g.es_exception()
-            return fail
+            return None
+        # Update stats.
         t2 = time.process_time()
+        self.parse_time += t2 - t1
+        return ast_node
+    #@+node:ekr.20191024072508.1: *4* fstring.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Scan all tokens in self.tokens, returning the resulting string.
+        This organization allows for lookahead.
+        """
+        # Init ivars.
+        self.code_list = []
+        self.errors = 0
+        self.last_line_number = 0
+        self.state_stack = []
+        self.tokens = tokens 
+        # Generate tokens.
+        self.file_start()
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        self.file_end()
+        # Return string result.
+        return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20191024050218.1: *4* fstring.tokenize_file
+    def tokenize_file(self, contents, filename):
+        """
+        Return (ast_node, tokens) from the contents of the given file.
+        """
+        t1 = time.process_time()
         # Generate the tokens.
         readlines = g.ReadLinesClass(contents).next
         tokens = list(tokenize.generate_tokens(readlines))
-        t3 = time.process_time()
         # Update stats.
-        self.parse_time += t2 - t1
-        self.tokenize_time += t3 - t2
-        return ast_node, tokens
-    #@+node:ekr.20191024040707.1: *3* fstring.scan_all_tokens (not used)
-    def scan_all_tokens(self, tokens):
-        """Scan all tokens, producing the string result."""
-
-        def oops():
-            g.trace('unknown kind:', self.kind)
-
-        self.errors = 0
-        self.code_list = []
-        self.state_stack = []
-        last_line_number = 0
-        self.file_start() ### 
-        for token5tuple in tokens:
-            t1, t2, t3, t4, t5 = token5tuple
-            srow, scol = t3
-            self.kind = token_module.tok_name[t1].lower()
-            self.val = g.toUnicode(t2)
-            self.raw_val = g.toUnicode(t5)
-            if srow != last_line_number:
-                # Handle a previous backslash.
-                if self.backslash_seen:
-                    ### self.backslash()
-                    self.add_token('backslash', '\\')
-                    self.add_token('line-end', '\n')
-                    ### self.line_indent()
-                    self.backslash_seen = False
-                # Start a new row.
-                raw_val = self.raw_val.rstrip()
-                self.backslash_seen = raw_val.endswith('\\')
-                ###
-                    # if (
-                        # self.curly_brackets_level > 0
-                        # or self.paren_level > 0
-                        # or self.square_brackets_level > 0
-                    # ):
-                        # s = self.raw_val.rstrip()
-                        # n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                        # # This n will be one-too-many if formatting has
-                        # # changed: foo (
-                        # # to:      foo(
-                        # self.line_indent(ws=' '*n)
-                            # # Do not set self.lws here!
-                last_line_number = srow
-            func = getattr(self, 'do_'+self.kind, oops)
-            func()
-        self.file_end()
+        t2 = time.process_time()
+        self.tokenize_time += t2 - t1
+        return tokens
+    #@+node:ekr.20191024071928.1: *3* fstring.oops
+    def oops(self):
+        g.trace('unknown kind', self.kind)
     #@+node:ekr.20191024051733.1: *3* fstring.Input token Handlers
     #@+node:ekr.20191024051733.2: *4* fstring.do_comment (changed: clears backslash_seen)
     def do_comment(self):
