@@ -2046,7 +2046,8 @@ class FstringifyTokens (PythonTokenBeautifier):
         result = self.scan_all_tokens(tokens)
         # Trace the results.
         if trace:
-            g.trace(f"\ncontents match: {contents == result}\n")
+            g.trace(f"\ncontents match: {contents.rstrip() == result.rstrip()}\n")
+            g.printObj(self.code_list, tag='CODE LIST')
             g.printObj(result, tag='RESULT')
         # Write the file, if changed.
         if 0: ### Later.
@@ -2127,6 +2128,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Trace the results.
         if trace:
             g.trace(f"\ncontents match: {contents1 == result}\n")
+            g.printObj(self.code_list, tag='CODE LIST')
             g.printObj(raw_result, tag='RAW RESULT')
             g.printObj(result, tag='RESULT')
         # Write the file, if changed.
