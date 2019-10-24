@@ -2071,12 +2071,6 @@ class FstringifyTokens (PythonTokenBeautifier):
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
                 value_list = []
-            # elif (kind in ('name', 'number', 'op')):
-                # value_list.append(val)
-            elif kind == 'string':
-                ### Doesn't work.  We need something better.
-                ### val = ast.literal_eval(val)
-                value_list.append(val)
             else:
                 value_list.append(val)
         # Finish ???
@@ -2110,8 +2104,6 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
-        ### Experimental
-        self.val = ast.literal_eval(self.val)
         if self.val.find('\\\n'):
             self.backslash_seen = False
         #
