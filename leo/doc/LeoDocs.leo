@@ -1181,7 +1181,7 @@
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
 <v t="ekr.20131008041326.16100"><vh>@rst html/leoandotherprograms.html</vh></v>
 <v t="mhw.20191008134016.1"><vh>Leo and Asiidoc</vh>
-<v t="mhw.20191008134029.1"><vh>rst html/leoandasciidoc.html</vh></v>
+<v t="mhw.20191008134029.1"><vh>@rst html/leoandasciidoc.html</vh></v>
 </v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
@@ -2349,6 +2349,7 @@
 </v>
 <v t="ekr.20191003061641.1"></v>
 <v t="mhw.20191008134016.1"></v>
+<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19719,6 +19720,9 @@ Batch searches:
     Prints all matches in the log pane.
 ``replace-all``
     Changes all occurrences of the 'find' text with the 'change' text.
+    When using the minibuffer to specify search and replace patterns,
+    first enter then search pattern,
+    then type ``Tab`` and enter the replacement pattern.
     
 Searches creating clones:
 
