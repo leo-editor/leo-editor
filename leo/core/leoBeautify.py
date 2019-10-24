@@ -1994,23 +1994,25 @@ class FstringifyTokens (PythonTokenBeautifier):
         g.trace('unknown kind', self.kind)
 
     #@+others
-    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring
+    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring (to do)
     def convert_fstring(self):
         g.trace('=====', self.val)
+        # Remember the val: self.val may change
+        val = self.val
         ### To do.
-        self.add_token('string', self.val)
+        self.add_token('string', val)
         self.blank()
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
         if self.val.find('\\\n'):
             self.backslash_seen = False
-        if self.val.lower().startswith (('f', 'r'),):
-            # Don't change.
-            self.add_token('string', self.val)
-            self.blank()
-        elif '%' not in self.val:
-            # No change possible.
+        if (
+            self.val.lower().startswith (('f', 'r'),) # Already an f or r string.
+            or '%' not in self.val # No change possible.
+            or not self.tokens # No following tokens.
+        ):
+            # Just put the string.
             self.add_token('string', self.val)
             self.blank()
         else:
