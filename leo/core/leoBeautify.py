@@ -1997,19 +1997,26 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+others
     #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
     def convert_fstring(self):
-        g.trace('=====', self.val)
-        old_val = self.val
-        aList = self.scan_string(old_val)
-        g.trace(aList)
-        i, kind = 0, self.kind
-        while kind and i < 10:
-            kind, val = self.look_ahead(i)
-            g.trace(kind, repr(val))
-            i += 1
+        string_val = self.val
+        g.trace('=====', string_val)
+        assert self.look_ahead(0) == ('op', '%')
+        ### self.do_op()
+        self.add_token('string', string_val) ### Temp.
+        ### Temp.
+        self.tokens.pop(0)
+        self.op('%')
+        aList = self.scan_string(string_val)
+        for i, format_s in enumerate(aList):
+            g.trace(i, repr(format_s))
+        # i, kind = 0, self.kind
+        # while kind and i < 10:
+            # kind, val = self.look_ahead(i)
+            # g.trace(kind, repr(val))
+            # i += 1
         ### To do.
-        self.add_token('string', old_val)
+        ### self.add_token('string', string_val)
     #@+node:ekr.20191024110603.1: *4* fstring.scan_string
-    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfgnoxsX]?)')
+    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfgnoxrsX]?)')
 
     def scan_string(self, s):
         """Scan string s, returning a list of format speciers."""
@@ -2052,6 +2059,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         There is no need to sanitize code when converting an external file.
         """
         trace = True and not g.unitTesting
+        verbose = False
         filename = self.find_root()
         # Open the file, 
         with open(filename, 'r') as f:
@@ -2063,8 +2071,9 @@ class FstringifyTokens (PythonTokenBeautifier):
         result = self.scan_all_tokens(tokens)
         # Trace the results.
         changed = contents.rstrip() != result.rstrip()
-        if trace:
+        if trace and verbose:
             g.printObj(self.code_list, tag='CODE LIST')
+        if trace:
             g.printObj(result, tag='RESULT')
             g.trace('\nCHANGED!' if changed else '\nno change')
                 # Useful only during early testing.
