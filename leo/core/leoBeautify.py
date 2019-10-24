@@ -1989,8 +1989,38 @@ class FstringifyTokens (PythonTokenBeautifier):
     
     # def __init__(self, c):
         # super().__init__(c)
+        
+    def oops(self):
+        g.trace('unknown kind', self.kind)
 
     #@+others
+    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring
+    def convert_fstring(self):
+        g.trace('=====', self.val)
+        ### To do.
+        self.add_token('string', self.val)
+        self.blank()
+    #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
+    def do_string(self):
+        """Handle a 'string' token."""
+        if self.val.find('\\\n'):
+            self.backslash_seen = False
+        if self.val.lower().startswith (('f', 'r'),):
+            # Don't change.
+            self.add_token('string', self.val)
+            self.blank()
+        elif '%' not in self.val:
+            # No change possible.
+            self.add_token('string', self.val)
+            self.blank()
+        else:
+            self.convert_fstring()
+        ### Legacy:
+            # self.add_token('string', self.val)
+            # if self.val.find('\\\n'):
+                # self.backslash_seen = False
+                # # This *does* retain the string's spelling.
+            # self.blank()
     #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
         """
@@ -2128,17 +2158,6 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Write the file, if changed.
         if 0: ### Later.
             p.b = result
-    #@+node:ekr.20191024071928.1: *3* fstring.oops
-    def oops(self):
-        g.trace('unknown kind', self.kind)
-    #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
-    def do_string(self):
-        """Handle a 'string' token."""
-        self.add_token('string', self.val)
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
-            # This *does* retain the string's spelling.
-        self.blank()
     #@-others
 #@-others
 if __name__ == "__main__":
