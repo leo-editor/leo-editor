@@ -2020,7 +2020,12 @@ class FstringifyTokens (PythonTokenBeautifier):
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
-            result.append(f"{{{value}:{spec}}}")
+            if spec.endswith('s'):
+                spec = spec[:-1]
+            if spec:
+                result.append(f"{{{value}:{spec}}}")
+            else:
+                result.append(f"{{{value}}}")
             i = end
         if i < len(string_val):
             result.append(string_val[i:])
