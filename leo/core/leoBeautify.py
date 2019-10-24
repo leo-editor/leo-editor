@@ -1997,32 +1997,94 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+others
     #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
     def convert_fstring(self):
+        """
+        Scan a string, converting it to an f-string.
+        The 'string' token has already be consumed.
+        """
         string_val = self.val
         g.trace('=====', string_val)
+        specs = self.scan_format_string(string_val)
+        values, tokens = self.scan_for_values()
+        if len(specs) != len(values):
+            g.trace('MISMATCH')
+            self.add_token('string', string_val)
+            self.blank()
+            return
+        # Consume the tokens
+        for token in tokens:
+            self.tokens.pop(0)
+        # Substitute the values.
+        i, result = 0, []
+        for spec_i, m in enumerate(specs):
+            ### g.trace(i, repr(m))
+            value = values[spec_i]
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                result.append(string_val[i:start])
+            result.append(f"{{{value}:{spec}}}")
+            i = end
+        if i < len(string_val):
+            result.append(string_val[i:])
+        self.add_token('string', ''.join(result))
+        self.blank()
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
+    def scan_for_values(self):
+        """
+        Return a list of possibly parenthesized values for the format string.
+        
+        This method never actually consumes tokens.
+        """
+        # Skip the '%'
         assert self.look_ahead(0) == ('op', '%')
-        ### self.do_op()
-        self.add_token('string', string_val) ### Temp.
-        ### Temp.
-        self.tokens.pop(0)
-        self.op('%')
-        aList = self.scan_format_string(string_val)
-        for i, format_s in enumerate(aList):
-            g.trace(i, repr(format_s))
-        # i, kind = 0, self.kind
-        # while kind and i < 10:
-            # kind, val = self.look_ahead(i)
-            # g.trace(kind, repr(val))
-            # i += 1
-        ### To do.
-        ### self.add_token('string', string_val)
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_fornat_string
-    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfgnoxrsX]?)')
+        tokens = [self.tokens[0]]
+        token_i = 1
+        #
+        # TEMP: Find all tokens up to the first ')'
+        results, value_list = [], []
+        while token_i < len(self.tokens):
+            kind, val = self.look_ahead(token_i)
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)
+            if (kind, val) == ('op', ')'):
+                results.append(''.join(value_list))
+                value_list = []
+                break
+            if (kind, val) == ('op', ','):
+                results.append(''.join(value_list))
+                value_list = []
+            if (kind in ('string', 'name', 'number')):
+                value_list.append(val)
+        # Finish ???
+        ### results.append(''.join([z.to_string() for z in value_list]))
+        g.printObj(results, tag='VALUES')
+        # g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
+        return results, tokens
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
     def scan_format_string(self, s):
-        """Scan the format string s, returning a list of format speciers."""
-        result = [m.group(1) for m in re.finditer(self.format_pat, s)]
-        g.trace(result)
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
         return result
+     
+    ###   
+        # import string
+        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
+            # tuples (literal_text, field_name, format_spec, conversion).
+            # This is used by vformat() to break the string into either literal text, or replacement fields.
+            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
+            # If there is no literal text (which can happen if two replacement fields occur consecutively),
+            # then literal_text will be a zero-length string.
+            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
@@ -2073,8 +2135,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             g.printObj(self.code_list, tag='CODE LIST')
         if trace:
             g.printObj(result, tag='RESULT')
-            g.trace('\nCHANGED!' if changed else '\nno change')
-                # Useful only during early testing.
+            # g.trace('\nCHANGED!' if changed else '\nno change')
         if not changed:
             return 
         # Write the file.
@@ -2200,6 +2261,13 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Write the file, if changed.
         if 0: ### Later.
             p.b = result
+    #@+node:ekr.20191024135748.1: *3* ftsring.token_description
+    def token_description(self, token):
+        """Return the token's kind & value"""
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return f"{kind:15}{val}"
     #@-others
 #@-others
 if __name__ == "__main__":
