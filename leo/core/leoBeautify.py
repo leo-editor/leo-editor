@@ -1997,11 +1997,13 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring (to do)
     def convert_fstring(self):
         g.trace('=====', self.val)
-        # Remember the val: self.val may change
-        val = self.val
+        i, kind = 0, self.kind
+        while kind and i < 10:
+            kind, val = self.look_ahead(i)
+            g.trace(kind, repr(val))
+            i += 1
         ### To do.
-        self.add_token('string', val)
-        self.blank()
+        self.add_token('string', self.val)
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
@@ -2100,6 +2102,18 @@ class FstringifyTokens (PythonTokenBeautifier):
             return filename
         g.es_print(f"file not found: {filename}")
         return None
+    #@+node:ekr.20191024104043.1: *4* fstring.look_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return kind, val
     #@+node:ekr.20191024072508.1: *4* fstring.scan_all_tokens
     def scan_all_tokens(self, tokens):
         """
