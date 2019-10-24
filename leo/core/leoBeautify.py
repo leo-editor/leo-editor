@@ -2014,7 +2014,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
-        i, result = 0, []
+        i, result = 0, ['f"']
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
@@ -2029,6 +2029,8 @@ class FstringifyTokens (PythonTokenBeautifier):
             i = end
         if i < len(string_val):
             result.append(string_val[i:])
+        result.append('"')
+            # Not quite right.
         self.add_token('string', ''.join(result))
         self.blank()
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
@@ -2042,7 +2044,11 @@ class FstringifyTokens (PythonTokenBeautifier):
         assert self.look_ahead(0) == ('op', '%')
         tokens = [self.tokens[0]]
         token_i = 1
-        eat_paren = self.look_ahead(1) == ('op', '(')
+        include_paren = self.look_ahead(1) == ('op', '(')
+        if include_paren:
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)   
         #
         # TEMP: Find all tokens up to the first ')'
         results, value_list = [], []
@@ -2054,18 +2060,23 @@ class FstringifyTokens (PythonTokenBeautifier):
             if (kind, val) == ('op', ')'):
                 results.append(''.join(value_list))
                 value_list = []
-                if not eat_paren:
+                if not include_paren:
                     tokens = tokens[:-1]
                 break
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
                 value_list = []
-            if (kind in ('string', 'name', 'number')):
+            # elif (kind in ('name', 'number', 'op')):
+                # value_list.append(val)
+            elif kind == 'string':
+                g.trace('VAL', type(val), val)
+                value_list.append(val)
+            else:
                 value_list.append(val)
         # Finish ???
         ### results.append(''.join([z.to_string() for z in value_list]))
         # g.printObj(results, tag='VALUES')
-        # g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
+        g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
         return results, tokens
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
