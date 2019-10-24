@@ -2029,25 +2029,24 @@ class FstringifyTokens (PythonTokenBeautifier):
         func()
     #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
-        """Find the nearest @<file> node and convert % to fstrings within it."""
+        """
+        Find the nearest @<file> node and convert % to fstrings within it.
+        
+        There is no need to sanitize code when converting an external file.
+        """
         trace = True and not g.unitTesting
-        c = self.c
         filename = self.find_root()
         # Open the file, 
         with open(filename, 'r') as f:
-            contents1 = f.read()
-        if trace: g.printObj(contents1, tag='CONTENTS')
+            contents = f.read()
+        if trace: g.printObj(contents, tag='CONTENTS')
         # Generate tokens.
-        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=None, s0=contents1)
-        tokens = self.tokenize_file(contents2, filename)
+        tokens = self.tokenize_file(contents, filename)
         # Handle all tokens, creating the raw result.
-        raw_result = self.scan_all_tokens(tokens)
-        # Undo the munging of the sources.
-        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        result = self.scan_all_tokens(tokens)
         # Trace the results.
         if trace:
-            g.trace(f"\ncontents match: {contents1 == result}\n")
-            g.printObj(raw_result, tag='RAW RESULT')
+            g.trace(f"\ncontents match: {contents == result}\n")
             g.printObj(result, tag='RESULT')
         # Write the file, if changed.
         if 0: ### Later.
@@ -2108,6 +2107,31 @@ class FstringifyTokens (PythonTokenBeautifier):
         t2 = time.process_time()
         self.tokenize_time += t2 - t1
         return tokens
+    #@+node:ekr.20191024081033.1: *3* fstring.fstringify_node (KEEP)
+    def fstringify_node(self, p):
+        """fstringify node p."""
+        trace = True and not g.unitTesting
+        c = self.c
+        contents1 = p.b
+        if not contents1.strip():
+            return
+        if trace: g.printObj(contents1, tag='CONTENTS')
+        # Unlike with external files, we must sanitize the text!
+        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
+        # Generate tokens.
+        tokens = self.tokenize_file(contents2, p.h)
+        # Handle all tokens, creating the raw result.
+        raw_result = self.scan_all_tokens(tokens)
+        # Undo the munging of the sources.
+        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        # Trace the results.
+        if trace:
+            g.trace(f"\ncontents match: {contents1 == result}\n")
+            g.printObj(raw_result, tag='RAW RESULT')
+            g.printObj(result, tag='RESULT')
+        # Write the file, if changed.
+        if 0: ### Later.
+            p.b = result
     #@+node:ekr.20191024071928.1: *3* fstring.oops
     def oops(self):
         g.trace('unknown kind', self.kind)
