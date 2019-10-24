@@ -2002,7 +2002,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         The 'string' token has already be consumed.
         """
         string_val = self.val
-        g.trace('=====', string_val)
+        # g.trace('=====', string_val)
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -2010,13 +2010,12 @@ class FstringifyTokens (PythonTokenBeautifier):
             self.add_token('string', string_val)
             self.blank()
             return
-        # Consume the tokens
+        # Actually consume the scanned tokens.
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
         i, result = 0, []
         for spec_i, m in enumerate(specs):
-            ### g.trace(i, repr(m))
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
@@ -2038,6 +2037,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         assert self.look_ahead(0) == ('op', '%')
         tokens = [self.tokens[0]]
         token_i = 1
+        eat_paren = self.look_ahead(1) == ('op', '(')
         #
         # TEMP: Find all tokens up to the first ')'
         results, value_list = [], []
@@ -2049,6 +2049,8 @@ class FstringifyTokens (PythonTokenBeautifier):
             if (kind, val) == ('op', ')'):
                 results.append(''.join(value_list))
                 value_list = []
+                if not eat_paren:
+                    tokens = tokens[:-1]
                 break
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
@@ -2057,7 +2059,7 @@ class FstringifyTokens (PythonTokenBeautifier):
                 value_list.append(val)
         # Finish ???
         ### results.append(''.join([z.to_string() for z in value_list]))
-        g.printObj(results, tag='VALUES')
+        # g.printObj(results, tag='VALUES')
         # g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
         return results, tokens
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
