@@ -2020,18 +2020,23 @@ class FstringifyTokens (PythonTokenBeautifier):
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
-            if spec.endswith('s'):
+            if False: # spec.endswith('s'):
                 spec = spec[:-1]
+            # print('VALUE', value, 'SPEC', spec)
+            result.append('{')
+            result.append(value)
             if spec:
-                result.append(f"{{{value}:{spec}}}")
-            else:
-                result.append(f"{{{value}}}")
+                result.append(':')
+                result.append(spec)
+            result.append('}')
             i = end
         if i < len(string_val):
             result.append(string_val[i:])
         result.append('"')
-            # Not quite right.
+        # g.printObj(result, tag='RESULT')
+        print('convert_fstring', ''.join(result)) # Correct!
         self.add_token('string', ''.join(result))
+            # ''.join([str(z) for z in result]))
         self.blank()
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
@@ -2069,14 +2074,13 @@ class FstringifyTokens (PythonTokenBeautifier):
             # elif (kind in ('name', 'number', 'op')):
                 # value_list.append(val)
             elif kind == 'string':
-                g.trace('VAL', type(val), val)
+                ### Doesn't work.  We need something better.
+                ### val = ast.literal_eval(val)
                 value_list.append(val)
             else:
                 value_list.append(val)
         # Finish ???
-        ### results.append(''.join([z.to_string() for z in value_list]))
-        # g.printObj(results, tag='VALUES')
-        g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
+        # g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
         return results, tokens
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
@@ -2087,7 +2091,7 @@ class FstringifyTokens (PythonTokenBeautifier):
     # precision   ::=  integer
     # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
 
-    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
     def scan_format_string(self, s):
         """Scan the format string s, returning a list match objects."""
@@ -2106,6 +2110,8 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
+        ### Experimental
+        self.val = ast.literal_eval(self.val)
         if self.val.find('\\\n'):
             self.backslash_seen = False
         #
@@ -2142,7 +2148,10 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Open the file, 
         with open(filename, 'r') as f:
             contents = f.read()
-        if trace: g.printObj(contents, tag='CONTENTS')
+        if trace:
+            g.trace('Contents...\n')
+            print(contents)
+            ### g.printObj(contents, tag='CONTENTS')
         # Generate tokens.
         tokens = self.tokenize_file(contents, filename)
         # Handle all tokens, creating the raw result.
@@ -2152,8 +2161,9 @@ class FstringifyTokens (PythonTokenBeautifier):
         if trace and verbose:
             g.printObj(self.code_list, tag='CODE LIST')
         if trace:
-            g.printObj(result, tag='RESULT')
-            # g.trace('\nCHANGED!' if changed else '\nno change')
+            # Do not use g.printObj here!
+            g.trace('\nResult...\n')
+            print(result)
         if not changed:
             return 
         # Write the file.
@@ -2285,7 +2295,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         t1, t2, t3, t4, t5 = token
         kind = token_module.tok_name[t1].lower()
         val = g.toUnicode(t2)
-        return f"{kind:15}{val}"
+        return f"{kind:>15} {val}"
     #@-others
 #@-others
 if __name__ == "__main__":
