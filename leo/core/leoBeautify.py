@@ -20,6 +20,7 @@ except ImportError:
 import ast
 import optparse
 import os
+import re
 import sys
 import time
 import token as token_module
@@ -1994,31 +1995,49 @@ class FstringifyTokens (PythonTokenBeautifier):
         g.trace('unknown kind', self.kind)
 
     #@+others
-    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring (to do)
+    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
     def convert_fstring(self):
         g.trace('=====', self.val)
+        old_val = self.val
+        aList = self.scan_string(old_val)
+        g.trace(aList)
         i, kind = 0, self.kind
         while kind and i < 10:
             kind, val = self.look_ahead(i)
             g.trace(kind, repr(val))
             i += 1
         ### To do.
-        self.add_token('string', self.val)
+        self.add_token('string', old_val)
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_string
+    format_pat = re.compile(r'%(([0-9]*(\.)?[0.9]*)*[bcdeEfgnoxsX]?)')
+
+    def scan_string(self, s):
+        """Scan string s, returning a list of format speciers."""
+        result = []
+        for m in re.finditer(self.format_pat, s):
+            result.append(m.group(1))
+        g.trace(result)
+        return result
     #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
         if self.val.find('\\\n'):
             self.backslash_seen = False
-        if (
-            self.val.lower().startswith (('f', 'r'),) # Already an f or r string.
-            or '%' not in self.val # No change possible.
-            or not self.tokens # No following tokens.
+        #
+        # Call convert_fstring only if a conversion is actually possible.
+        if self.tokens:
+            next_kind, next_val = self.look_ahead(0)
+        else:
+            next_kind, next_val = None, None
+        if (not self.val.lower().startswith (('f', 'r'),) # Not an f or r string.
+            and  '%' in self.val
+            and (next_kind, next_val) == ('op', '%')
         ):
+            self.convert_fstring()
+        else:
             # Just put the string.
             self.add_token('string', self.val)
             self.blank()
-        else:
-            self.convert_fstring()
         ### Legacy:
             # self.add_token('string', self.val)
             # if self.val.find('\\\n'):
