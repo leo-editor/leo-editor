@@ -798,8 +798,8 @@ class PythonTokenBeautifier:
             # The list of output tokens
         self.orange = False
             # Split or join lines only if orange is True.
-        self.raw_val = None
-            # Raw value for strings, comments.
+        self.raw_line = None
+            # The entire line, used for strings, comments.
         self.s = None
             # The string containing the line.
         self.val = None
@@ -1094,20 +1094,19 @@ class PythonTokenBeautifier:
             srow, scol = t3
             self.kind = token_module.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
-            self.raw_val = g.toUnicode(t5)
+            self.raw_line = g.toUnicode(t5).rstrip()
             if srow != last_line_number:
                 # Handle a previous backslash.
                 if self.backslash_seen:
                     self.backslash()
                 # Start a new row.
-                raw_val = self.raw_val.rstrip()
-                self.backslash_seen = raw_val.endswith('\\')
+                self.backslash_seen = self.raw_line.endswith('\\')
                 if (
                     self.curly_brackets_level > 0
                     or self.paren_level > 0
                     or self.square_brackets_level > 0
                 ):
-                    s = self.raw_val.rstrip()
+                    s = self.raw_line
                     n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
                     # This n will be one-too-many if formatting has
                     # changed: foo (
@@ -1124,14 +1123,14 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
         """Handle a comment token."""
-        raw_val = self.raw_val.rstrip()
+        raw_line = self.raw_line
         val = self.val.rstrip()
-        entire_line = raw_val.lstrip().startswith('#')
+        entire_line = raw_line.lstrip().startswith('#')
         self.backslash_seen = False
             # Putting the comment will put the backslash.
         if entire_line:
             self.clean('line-indent')
-            self.add_token('comment', raw_val)
+            self.add_token('comment', raw_line)
         else:
             self.blank_before_end_line_comment()
             self.add_token('comment', val)
@@ -1992,41 +1991,6 @@ class FstringifyTokens (PythonTokenBeautifier):
         # super().__init__(c)
 
     #@+others
-    #@+node:ekr.20191024071243.1: *3* fstring.do_token
-    def do_token(self, token):
-        """Handle one token."""
-        t1, t2, t3, t4, t5 = token
-        srow, scol = t3
-        self.kind = token_module.tok_name[t1].lower()
-        self.val = g.toUnicode(t2)
-        self.raw_val = g.toUnicode(t5)
-        if srow != self.last_line_number:
-            # Handle a previous backslash.
-            if self.backslash_seen:
-                ### self.backslash()
-                self.add_token('backslash', '\\')
-                self.add_token('line-end', '\n')
-                ### self.line_indent()
-                self.backslash_seen = False
-            # Start a new row.
-            raw_val = self.raw_val.rstrip()
-            self.backslash_seen = raw_val.endswith('\\')
-            ###
-                # if (
-                    # self.curly_brackets_level > 0
-                    # or self.paren_level > 0
-                    # or self.square_brackets_level > 0
-                # ):
-                    # s = self.raw_val.rstrip()
-                    # n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                    # # This n will be one-too-many if formatting has
-                    # # changed: foo (
-                    # # to:      foo(
-                    # self.line_indent(ws=' '*n)
-                        # # Do not set self.lws here!
-            self.last_line_number = srow
-        func = getattr(self, f"do_{self.kind}", self.oops)
-        func()
     #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
         """
@@ -2047,7 +2011,8 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Trace the results.
         changed = contents.rstrip() != result.rstrip()
         if trace:
-            g.trace(f"\ncontents changed: {changed}\n")
+            if changed: g.trace('\ncontents CHANGED\n')
+                # Useful only during early testing.
             g.printObj(self.code_list, tag='CODE LIST')
             g.printObj(result, tag='RESULT')
         if not changed:
@@ -2056,6 +2021,32 @@ class FstringifyTokens (PythonTokenBeautifier):
         if 0: ### Later.
             with open(filename, 'w') as f:
                 f.write(result)
+    #@+node:ekr.20191024071243.1: *4* fstring.do_token
+    def do_token(self, token):
+        """
+        Handle one token. Token handlers may call this method to do look-ahead processing.
+        """
+        t1, t2, t3, t4, t5 = token
+        srow, scol = t3
+        self.kind = token_module.tok_name[t1].lower()
+        self.val = g.toUnicode(t2)
+        self.raw_line = g.toUnicode(t5).rstrip()
+        if srow != self.last_line_number:
+            # Handle a previous backslash.
+            if self.backslash_seen:
+                ### self.backslash()
+                self.add_token('backslash', '\\')
+                self.add_token('line-end', '\n')
+                ### self.line_indent()
+                self.backslash_seen = False
+            # Start a new row.
+            self.backslash_seen = self.raw_line.endswith('\\')
+            self.last_line_number = srow
+        # We need the full token logic to handle inter-token blanks.
+        func_name = f"do_{self.kind}"
+        # g.trace(f"{self.kind:10} {self.val!r:20} {self.raw_line!r}")
+        func = getattr(self, func_name, self.oops)
+        func()
     #@+node:ekr.20191024044526.1: *4* fstring.find_root
     def find_root(self):
         """
@@ -2082,7 +2073,8 @@ class FstringifyTokens (PythonTokenBeautifier):
     def scan_all_tokens(self, tokens):
         """
         Scan all tokens in self.tokens, returning the resulting string.
-        This organization allows for lookahead.
+        
+        The self.tokens ivar allows for lookahead in the token handlers.
         """
         # Init ivars.
         self.code_list = []
@@ -2144,20 +2136,7 @@ class FstringifyTokens (PythonTokenBeautifier):
     #@+node:ekr.20191024051733.2: *4* fstring.do_comment (changed: clears backslash_seen)
     def do_comment(self):
         """Handle a comment token."""
-        raw_val = self.raw_val.rstrip() ### Proper???
-        self.add_token('comment', raw_val)
-        ### Beautifier.
-            # raw_val = self.raw_val.rstrip()
-            # val = self.val.rstrip()
-            # entire_line = raw_val.lstrip().startswith('#')
-            # self.backslash_seen = False
-                # # Putting the comment will put the backslash.
-            # if entire_line:
-                # self.clean('line-indent')
-                # self.add_token('comment', raw_val)
-            # else:
-                # self.blank_before_end_line_comment()
-                # self.add_token('comment', val)
+        self.add_token('comment', self.val)
     #@+node:ekr.20191024051733.3: *4* fstring.do_endmarker
     def do_endmarker(self):
         """Handle an endmarker token."""
