@@ -2045,11 +2045,14 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Handle all tokens, creating the raw result.
         result = self.scan_all_tokens(tokens)
         # Trace the results.
+        changed = contents.rstrip() != result.rstrip()
         if trace:
-            g.trace(f"\ncontents match: {contents.rstrip() == result.rstrip()}\n")
+            g.trace(f"\ncontents changed: {changed}\n")
             g.printObj(self.code_list, tag='CODE LIST')
             g.printObj(result, tag='RESULT')
-        # Write the file, if changed.
+        if not changed:
+            return 
+        # Write the file.
         if 0: ### Later.
             with open(filename, 'w') as f:
                 f.write(result)
