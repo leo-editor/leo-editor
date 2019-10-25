@@ -1362,6 +1362,7 @@ class PythonTokenBeautifier:
             self.clean('blank')
             prev = self.code_list[-1]
             if prev.value == '[':
+                g.trace('===== colon after [')
                 # Never put a blank after "[:"
                 self.add_token('op', val)
                 ### self.blank()
@@ -1624,8 +1625,11 @@ class PythonTokenBeautifier:
             prev.kind == 'op' and prev.value == ':'
         ):
             # Remove a blank token preceding the arg-end or ')' token.
+            self.clean('blank')
             prev = self.code_list.pop()
             self.clean('blank')
+            prev2 = self.code_list[-1]
+            g.trace('===== colon before paren', s, prev, prev2)
             self.code_list.append(prev)
         else:
             self.clean('blank')
@@ -1674,6 +1678,12 @@ class PythonTokenBeautifier:
     def unary_op(self, s):
         """Add an operator request to the code list."""
         assert s and isinstance(s, str), repr(s)
+        if 1:  ### New
+            self.clean('blank')
+            prev = self.code_list[-1]
+            if prev.kind == 'lt':
+                self.add_token('unary-op', s)
+                return
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20150531051827.1: *4* ptb.star_op (no change)
@@ -2252,7 +2262,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         if i < len(string_val):
             result.append(string_val[i:])
         if len(result) > 2:
-            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
+            result = result[0 : 2] + self.munge_string(string_val, result[2 :-1]) + result[-1:]
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
