@@ -2077,7 +2077,7 @@ class FstringifyTokens(PythonTokenBeautifier):
                 self.add_token('line-end', '\n')
                 ### self.line_indent()
                 self.backslash_seen = False
-            # Start a new row. 
+            # Start a new row.
             self.backslash_seen = self.raw_line.endswith('\\')
             # Yes, we need this logic, even in fstringify.
             if (
