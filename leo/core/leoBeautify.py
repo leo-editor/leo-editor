@@ -2002,11 +2002,11 @@ class FstringifyTokens (PythonTokenBeautifier):
         The 'string' token has already be consumed.
         """
         string_val = self.val
-        # g.trace('=====', string_val)
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
-            g.trace('MISMATCH')
+            g.trace('\nMISMATCH\n')
+            
             self.add_token('string', string_val)
             self.blank()
             return
@@ -2020,9 +2020,8 @@ class FstringifyTokens (PythonTokenBeautifier):
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
-            if False: # spec.endswith('s'):
+            if spec.endswith('s'):
                 spec = spec[:-1]
-            # print('VALUE', value, 'SPEC', spec)
             result.append('{')
             result.append(value)
             if spec:
@@ -2033,12 +2032,11 @@ class FstringifyTokens (PythonTokenBeautifier):
         if i < len(string_val):
             result.append(string_val[i:])
         result.append('"')
-        # g.printObj(result, tag='RESULT')
-        print('convert_fstring', ''.join(result)) # Correct!
+        # print('convert_fstring', ''.join(result)) # Don't use g.printObj!
         self.add_token('string', ''.join(result))
             # ''.join([str(z) for z in result]))
         self.blank()
-    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values & helper
     def scan_for_values(self):
         """
         Return a list of possibly parenthesized values for the format string.
@@ -2071,11 +2069,51 @@ class FstringifyTokens (PythonTokenBeautifier):
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
                 value_list = []
+            elif kind == 'op' and val in '([{':
+                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+                value_list.extend(values_list2)
+                tokens.extend(self.tokens[token_i:token_i2])
+                token_i = token_i2
             else:
                 value_list.append(val)
-        # Finish ???
-        # g.printObj([self.token_description(z) for z in tokens], tag='TOKENS')
         return results, tokens
+    #@+node:ekr.20191025022207.1: *5* fstring.scan_to_matching
+    def scan_to_matching(self, token_i, val):
+        """
+        self.tokens[token_i] represents an open (, [ or {.
+        
+        Return (values_list, token_i) of all tokens to the matching closing delim.
+        """
+        values_list = []
+        kind0, val0 = self.look_ahead(token_i)
+        assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
+        levels = [0, 0, 0]
+        level_index = '([{'.index(val)
+        levels [level_index] += 1
+        target = ')]}'[level_index]
+        g.trace(token_i, val, target, levels)
+        # Move past the opening delim.
+        values_list.append(val0)
+        token_i += 1
+        while token_i < len(self.tokens):
+            progress = token_i
+            kind, val = self.look_ahead(token_i)
+            token_i += 1
+            if kind == 'op' and val in ')]}':
+                values_list.append(val)
+                level_index = ')]}'.index(val)
+                levels [level_index] -= 1
+                if levels == [0, 0, 0]:
+                    return values_list, token_i
+            elif kind == 'op' and val in '([{':
+                # Recurse.
+                values_list2, token_i = self.scan_to_matching(token_i-1, val)
+                values_list.extend(values_list2)
+            else:
+                values_list.append(val)
+            assert token_i > progress, (kind, val)
+        g.trace('\nFAIL', token_i, ''.join(values_list))
+        return [], token_i
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
