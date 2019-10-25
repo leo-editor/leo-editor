@@ -3372,8 +3372,8 @@ ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
 ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
 ham[: upper]
 #@+node:ekr.20190914122359.1: *6* expected
-ham[1 : 9], ham[1 : 9 : 3], ham[: 9 : 3], ham[1 :: 3], ham[1 : 9 :]
-ham[lower : upper], ham[lower : upper :], ham[lower :: step]
+ham[1 : 9], ham[1 : 9 : 3], ham[:9 : 3], ham[1 :: 3], ham[1 : 9:]
+ham[lower : upper], ham[lower : upper:], ham[lower :: step]
 ham[: upper]
 #@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
 #@+node:ekr.20190914115300.1: *6* test

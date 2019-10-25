@@ -1617,13 +1617,13 @@ class PythonTokenBeautifier:
             self.square_brackets_level -= 1
         else:
             self.curly_brackets_level -= 1
-        self.clean('blank')  ### New.
-        # prev = self.code_list[-1]
-        # if (prev.kind == 'arg-end' or (prev.kind, prev.value) == ('op', ':')):
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind == 'arg-end' or (prev.kind, prev.value) == ('op', ':'):
             # # Remove a blank token preceding the arg-end or ')' token.
-            # g.trace('===== colon before paren', s, prev, prev2)
-        # else:
-            # self.clean('blank')
+            prev = self.code_list.pop()
+            self.clean('blank')
+            self.code_list.append(prev)
         self.add_token('rt', s)
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self, s):
