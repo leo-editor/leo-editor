@@ -2020,6 +2020,10 @@ class FstringifyTokens (PythonTokenBeautifier):
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
+            if spec.startswith('+'):
+                spec = spec[1:]
+            elif spec.startswith('-'):
+                spec = '>' + spec[1:]
             if spec.endswith('s'):
                 spec = spec[:-1]
             if spec.endswith('r'):
