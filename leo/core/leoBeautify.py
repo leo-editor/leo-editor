@@ -2197,6 +2197,8 @@ class FstringifyTokens (PythonTokenBeautifier):
         trace = True and not g.unitTesting
         verbose = False
         filename = self.find_root()
+        if not filename:
+            return
         # Open the file, 
         with open(filename, 'r') as f:
             contents = f.read()
@@ -2261,7 +2263,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             g.es_print(f"not in any @<file> tree: {c.p.h}")
             return None
         filename = g.os_path_finalize(p.anyAtFileNodeName())
-        basedir = g.os_path_finalize(os.path.basename(c.fileName()))
+        basedir = g.os_path_finalize(os.path.dirname(c.fileName()))
         path = g.os_path_finalize_join(basedir, filename)
         if os.path.exists(path):
             return path
