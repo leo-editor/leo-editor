@@ -2003,6 +2003,45 @@ class FstringifyTokens (PythonTokenBeautifier):
         g.trace('unknown kind', self.kind)
 
     #@+others
+    #@+node:ekr.20191025080131.1: *3* fstring: overrides
+    #@+node:ekr.20191024052024.6: *4* fstring.blank_lines
+    def blank_lines(self, n):
+        """
+        Add a request for n blank lines to the code list.
+        Multiple blank-lines request yield at least the maximum of all requests.
+        """
+        # fstringify-file makes minimal adjustments to existing lines.
+        self.clean_blank_lines()
+        self.add_token('blank-lines', 1)
+        self.line_indent()
+        
+        ### Legacy
+            # self.clean_blank_lines()
+            # kind = self.code_list[-1].kind
+            # if kind == 'file-start':
+                # self.add_token('blank-lines', n)
+                # return
+            # for i in range(0, n+1):
+                # self.add_token('line-end', '\n')
+            # # Retain the token (intention) for debugging.
+            # self.add_token('blank-lines', n)
+            # self.line_indent()
+    #@+node:ekr.20191024051733.11: *4* fstring.do_string (sets backslash_seen)
+    def do_string(self):
+        """Handle a 'string' token."""
+        if self.val.find('\\\n'):
+            self.backslash_seen = False
+        # See whether a conversion is possible.
+        if (
+            not self.val.lower().startswith (('f', 'r')) 
+            and  '%' in self.val and self.look_ahead(0) == ('op', '%')
+        ):
+            # Not an f or r string, and a conversion is possible.
+            self.convert_fstring()
+        else:
+            # Just put the string.
+            self.add_token('string', self.val)
+        self.blank()
     #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
     def convert_fstring(self):
         """
@@ -2171,22 +2210,6 @@ class FstringifyTokens (PythonTokenBeautifier):
             # If there is no literal text (which can happen if two replacement fields occur consecutively),
             # then literal_text will be a zero-length string.
             # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
-    #@+node:ekr.20191024051733.11: *3* fstring.do_string (sets backslash_seen)
-    def do_string(self):
-        """Handle a 'string' token."""
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
-        # See whether a conversion is possible.
-        if (
-            not self.val.lower().startswith (('f', 'r')) 
-            and  '%' in self.val and self.look_ahead(0) == ('op', '%')
-        ):
-            # Not an f or r string, and a conversion is possible.
-            self.convert_fstring()
-        else:
-            # Just put the string.
-            self.add_token('string', self.val)
-        self.blank()
     #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
         """
