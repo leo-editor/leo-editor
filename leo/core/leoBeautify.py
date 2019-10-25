@@ -2261,9 +2261,11 @@ class FstringifyTokens (PythonTokenBeautifier):
             g.es_print(f"not in any @<file> tree: {c.p.h}")
             return None
         filename = g.os_path_finalize(p.anyAtFileNodeName())
-        if os.path.exists(filename):
-            return filename
-        g.es_print(f"file not found: {filename}")
+        basedir = g.os_path_finalize(os.path.basename(filename))
+        path = g.os_path_finalize_join(basedir, filename)
+        if os.path.exists(path):
+            return path
+        g.es_print(f"file not found: {filename} in {basedir}")
         return None
     #@+node:ekr.20191024072508.1: *4* fstring.scan_all_tokens
     def scan_all_tokens(self, tokens):
