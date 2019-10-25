@@ -55,7 +55,7 @@ def profile_leo():
     # On Windows, name must be a plain string.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
         # This is a binary file.
-    print('profiling binary stats to %s' % name)
+    print(f'profiling binary stats to {name}')
     profile.run('import leo ; leo.run()', name)
     p = pstats.Stats(name)
     p.strip_dirs()
