@@ -2142,7 +2142,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         t2 = time.process_time()
         self.tokenize_time += t2 - t1
         return tokens
-    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node (TEST)
+    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
     def fstringify_node(self, p):
         """
         fstringify node p.  Return True if the node has been changed.
@@ -2176,7 +2176,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         if trace:
             g.trace('Changed!' if changed else 'No change:', p.h)
         return changed
-    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree (TEST)
+    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree
     def fstringify_tree(self, p):
         """fstringify node p."""
         c = self.c
@@ -2199,8 +2199,6 @@ class FstringifyTokens(PythonTokenBeautifier):
             # f"{errors} error{g.plural(errors)} "
             f"in {t2-t1:4.2f} sec."
         )
-
-            
     #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
     def convert_fstring(self):
         """
