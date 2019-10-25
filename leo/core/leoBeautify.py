@@ -1361,7 +1361,11 @@ class PythonTokenBeautifier:
             # but not between commas, and not next to [.
             self.clean('blank')
             prev = self.code_list[-1]
-            if prev.value in '[:':
+            if prev.value == '[':
+                # Never put a blank after "[:"
+                self.add_token('op', val)
+                ### self.blank()
+            elif prev.value == ':':
                 self.add_token('op', val)
                 self.blank()
             else:
