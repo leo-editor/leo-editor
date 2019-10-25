@@ -2193,7 +2193,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         with open(filename, 'r') as f:
             contents = f.read()
         if trace:
-            g.trace(f"Contents...\n\n{contents}") # Don't use g.printObj!
+            g.trace(f"Contents...\n\n{contents}")
         # Generate tokens.
         tokens = self.tokenize_file(contents, filename)
         # Handle all tokens, creating the raw result.
@@ -2201,13 +2201,13 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Trace the results.
         changed = contents.rstrip() != result.rstrip()
         if trace and verbose:
-            g.printObj(self.code_list, tag='CODE LIST')
+            g.printObj(f"Code List...\n\n{self.code_list}")
         if trace:
-            g.trace(f"Result...\n\n{result}") # Don't use g.printObj!
+            g.trace(f"Result...\n\n{result}")
         if not changed:
             return 
         # Write the file.
-        if 0: ### Later.
+        if 0:
             with open(filename, 'w') as f:
                 f.write(result)
     #@+node:ekr.20191024071243.1: *4* fstring.do_token
