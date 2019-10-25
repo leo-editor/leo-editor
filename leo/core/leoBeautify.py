@@ -2148,6 +2148,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         fstringify node p.  Return True if the node has been changed.
         """
         trace = True and not g.unitTesting
+        verbose = False
         c = self.c
         if should_kill_beautify(p):
             return
@@ -2164,9 +2165,10 @@ class FstringifyTokens(PythonTokenBeautifier):
         # Undo the munging of the sources.
         result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
         # Trace the results.
-        if trace:
-            g.trace(f"code list...\n\n{self.code_list}\n")
+        if trace and verbose:
+            g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
             g.trace(f"raw result...\n\n{raw_result}\n")
+        if trace:
             g.trace(f"result...\n\n{result}\n")
         changed = contents.rstrip() == result.rstrip()
         if changed:
@@ -2177,7 +2179,7 @@ class FstringifyTokens(PythonTokenBeautifier):
     def fstringify_tree(self, p):
         """fstringify node p."""
         c = self.c
-        if should_kill_beautify(p): ###
+        if should_kill_beautify(p):
             return
         t1 = time.process_time()
         changed = total = 0
