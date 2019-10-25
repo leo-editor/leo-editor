@@ -750,7 +750,7 @@ class CPrettyPrinter:
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
     """A token-based Python beautifier."""
-    
+
     def oops(self):
         g.trace('unknown kind', self.kind)
 
@@ -1615,8 +1615,11 @@ class PythonTokenBeautifier:
         else:
             self.curly_brackets_level -= 1
         prev = self.code_list[-1]
-        if prev.kind == 'arg-end':
-            # Remove a blank token preceding the arg-end token.
+        if (
+            prev.kind == 'arg-end' or
+            prev.kind == 'op' and prev.value == ':'
+        ):
+            # Remove a blank token preceding the arg-end or ')' token.
             prev = self.code_list.pop()
             self.clean('blank')
             self.code_list.append(prev)
