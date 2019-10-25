@@ -2025,13 +2025,6 @@ class FstringifyTokens(PythonTokenBeautifier):
         if self.val.find('\\\n'):
             self.backslash_seen = False
         self.blank()
-
-    ### Base class code:
-        # self.add_token('string', self.val)
-        # if self.val.find('\\\n'):
-            # self.backslash_seen = False
-            # # This *does* retain the string's spelling.
-        # self.blank()
     #@+node:ekr.20191025084714.1: *3* fstring: entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file & helpers
     def fstringify_file(self):
@@ -2166,7 +2159,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         fstringify node p.  Return True if the node has been changed.
         """
         trace = True and not g.unitTesting
-        verbose = True
+        verbose = False
         c = self.c
         if should_kill_beautify(p):
             return
