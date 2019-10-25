@@ -2164,17 +2164,16 @@ class FstringifyTokens(PythonTokenBeautifier):
         raw_result = self.scan_all_tokens(tokens)
         # Undo the munging of the sources.
         result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        changed = contents.rstrip() == result.rstrip()
+        if changed:
+            p.b = result
         # Trace the results.
         if trace and verbose:
             g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
             g.trace(f"raw result...\n\n{raw_result}\n")
-        if trace:
-            g.trace(f"result...\n\n{result}\n")
-        changed = contents.rstrip() == result.rstrip()
-        if changed:
-            p.b = result
+        if trace and changed:
+            g.trace(f"Changed! result...\n\n{result}\n")
         return changed
-        
     #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree (TEST)
     def fstringify_tree(self, p):
         """fstringify node p."""
