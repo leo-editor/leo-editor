@@ -2012,8 +2012,6 @@ class FstringifyTokens(PythonTokenBeautifier):
     #@+node:ekr.20191024051733.11: *4* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
         # See whether a conversion is possible.
         if (
             not self.val.lower().startswith(('f', 'r'))
@@ -2024,7 +2022,16 @@ class FstringifyTokens(PythonTokenBeautifier):
         else:
             # Just put the string.
             self.add_token('string', self.val)
+        if self.val.find('\\\n'):
+            self.backslash_seen = False
         self.blank()
+
+    ### Base class code:
+        # self.add_token('string', self.val)
+        # if self.val.find('\\\n'):
+            # self.backslash_seen = False
+            # # This *does* retain the string's spelling.
+        # self.blank()
     #@+node:ekr.20191025084714.1: *3* fstring: entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file & helpers
     def fstringify_file(self):
@@ -2077,11 +2084,22 @@ class FstringifyTokens(PythonTokenBeautifier):
                 self.add_token('line-end', '\n')
                 ### self.line_indent()
                 self.backslash_seen = False
-            # Start a new row.
+            # Start a new row. 
             self.backslash_seen = self.raw_line.endswith('\\')
+            # Yes, we need this logic, even in fstringify.
+            if (
+                self.curly_brackets_level > 0
+                or self.paren_level > 0
+                or self.square_brackets_level > 0
+            ):
+                s = self.raw_line
+                n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
+                # This n will be one-too-many if formatting has
+                # changed: foo (
+                # to:      foo(
+                self.line_indent(ws=' '*n)
+                    # Do not set self.lws here!
             self.last_line_number = srow
-        # Warning: We need the full token logic to handle inter-token blanks.
-        # g.trace(f"{self.kind:10} {self.val!r:20} {self.raw_line!r}")
         func = getattr(self, f"do_{self.kind}", self.oops)
         func()
     #@+node:ekr.20191024044526.1: *5* fstring.find_root
@@ -2148,7 +2166,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         fstringify node p.  Return True if the node has been changed.
         """
         trace = True and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c
         if should_kill_beautify(p):
             return
