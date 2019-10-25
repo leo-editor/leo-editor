@@ -478,7 +478,7 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16 :].rstrip()+'\n')
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -689,7 +689,7 @@ class CPrettyPrinter:
                 self.result.pop()
                 s = s.replace('\t', ' '*w)
                 if s.startswith('\n'):
-                    s2 = s[1 :]
+                    s2 = s[1:]
                     self.result.append('\n'+s2[:-w])
                 else:
                     self.result.append(s[:-w])
@@ -1362,7 +1362,6 @@ class PythonTokenBeautifier:
             self.clean('blank')
             prev = self.code_list[-1]
             if prev.value == '[':
-                g.trace('===== colon after [')
                 # Never put a blank after "[:"
                 self.add_token('op', val)
             elif prev.value == ':':
@@ -1439,9 +1438,9 @@ class PythonTokenBeautifier:
         prefix = self.find_line_prefix(line_tokens)
         #
         # Calculate the tail before cleaning the prefix.
-        tail = line_tokens[len(prefix) :]
+        tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
-            prefix = prefix[1 :]
+            prefix = prefix[1:]
         # g.printObj(prefix, tag='PREFIX')
         # g.printObj(tail, tag='TAIL')
         #
@@ -1512,7 +1511,7 @@ class PythonTokenBeautifier:
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i :])
+                    self.code_list.extend(tail[i:])
                     return
                 lws = lws[:-4]
                 self.code_list.append(t)
@@ -1542,7 +1541,7 @@ class PythonTokenBeautifier:
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                for t in token_list[i + 1 :]:
+                for t in token_list[i + 1:]:
                     if t.kind == 'blank' or self.is_any_lt(t):
                     # if t.kind in ('lt', 'blank'):
                         result.append(t)
@@ -1618,20 +1617,13 @@ class PythonTokenBeautifier:
             self.square_brackets_level -= 1
         else:
             self.curly_brackets_level -= 1
-        prev = self.code_list[-1]
-        if (
-            prev.kind == 'arg-end' or
-            prev.kind == 'op' and prev.value == ':'
-        ):
-            # Remove a blank token preceding the arg-end or ')' token.
-            self.clean('blank')
-            prev = self.code_list.pop()
-            self.clean('blank')
-            prev2 = self.code_list[-1]
-            g.trace('===== colon before paren', s, prev, prev2)
-            self.code_list.append(prev)
-        else:
-            self.clean('blank')
+        self.clean('blank')  ### New.
+        # prev = self.code_list[-1]
+        # if (prev.kind == 'arg-end' or (prev.kind, prev.value) == ('op', ':')):
+            # # Remove a blank token preceding the arg-end or ')' token.
+            # g.trace('===== colon before paren', s, prev, prev2)
+        # else:
+            # self.clean('blank')
         self.add_token('rt', s)
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self, s):
@@ -2263,9 +2255,9 @@ class FstringifyTokens(PythonTokenBeautifier):
             i = end
         # Finish.
         if i < len(string_val):
-            result.append(string_val[i :])
+            result.append(string_val[i:])
         if len(result) > 2:
-            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1 :]
+            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
@@ -2274,9 +2266,9 @@ class FstringifyTokens(PythonTokenBeautifier):
         """
         tail = None
         if spec.startswith('+'):
-            spec = spec[1 :]
+            spec = spec[1:]
         elif spec.startswith('-'):
-            spec = '>' + spec[1 :]
+            spec = '>' + spec[1:]
         if spec.endswith('s'):
             spec = spec[:-1]
         if spec.endswith('r'):
