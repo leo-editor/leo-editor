@@ -478,7 +478,7 @@ class BlackCommand:
                 return False
         if diff_flag:
             print('=====', p.h)
-            print(black.diff(body, result, "old", "new")[16 :].rstrip()+'\n')
+            print(black.diff(body, result, "old", "new")[16:].rstrip()+'\n')
             return False
         # Update p.b and set undo params.
         self.changed += 1
@@ -689,10 +689,10 @@ class CPrettyPrinter:
                 self.result.pop()
                 s = s.replace('\t', ' '*w)
                 if s.startswith('\n'):
-                    s2 = s[1 :]
-                    self.result.append('\n'+s2[: -w])
+                    s2 = s[1:]
+                    self.result.append('\n'+s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -1435,14 +1435,14 @@ class PythonTokenBeautifier:
         prefix = self.find_line_prefix(line_tokens)
         #
         # Calculate the tail before cleaning the prefix.
-        tail = line_tokens[len(prefix) :]
+        tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
-            prefix = prefix[1 :]
+            prefix = prefix[1:]
         # g.printObj(prefix, tag='PREFIX')
         # g.printObj(tail, tag='TAIL')
         #
         # Cut back the token list
-        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
+        self.code_list = self.code_list[:len(self.code_list) - len(line_tokens) - 1]
             # -1 for the trailing line-end.
         # g.printObj(self.code_list, tag='CUT CODE LIST')
         #
@@ -1508,9 +1508,9 @@ class PythonTokenBeautifier:
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
                     self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i :])
+                    self.code_list.extend(tail[i:])
                     return
-                lws = lws[: -4]
+                lws = lws[:-4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1523,7 +1523,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
         line = []
-        for t in reversed(self.code_list[: -1]):
+        for t in reversed(self.code_list[:-1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -1538,7 +1538,7 @@ class PythonTokenBeautifier:
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                for t in token_list[i + 1 :]:
+                for t in token_list[i + 1:]:
                     if t.kind == 'blank' or self.is_any_lt(t):
                     # if t.kind in ('lt', 'blank'):
                         result.append(t)
@@ -2246,9 +2246,9 @@ class FstringifyTokens(PythonTokenBeautifier):
             i = end
         # Finish.
         if i < len(string_val):
-            result.append(string_val[i :])
+            result.append(string_val[i:])
         if len(result) > 2:
-            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1 :]
+            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
@@ -2257,13 +2257,13 @@ class FstringifyTokens(PythonTokenBeautifier):
         """
         tail = None
         if spec.startswith('+'):
-            spec = spec[1 :]
+            spec = spec[1:]
         elif spec.startswith('-'):
-            spec = '>' + spec[1 :]
+            spec = '>' + spec[1:]
         if spec.endswith('s'):
-            spec = spec[: -1]
+            spec = spec[:-1]
         if spec.endswith('r'):
-            spec = spec[: -1]
+            spec = spec[:-1]
             tail = 'r'
         return spec, tail
     #@+node:ekr.20191025034715.1: *4* fstring.munge_string
@@ -2304,7 +2304,7 @@ class FstringifyTokens(PythonTokenBeautifier):
                 results.append(''.join(value_list))
                 value_list = []
                 if not include_paren:
-                    tokens = tokens[: -1]
+                    tokens = tokens[:-1]
                 break
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
