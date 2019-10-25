@@ -2261,7 +2261,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             g.es_print(f"not in any @<file> tree: {c.p.h}")
             return None
         filename = g.os_path_finalize(p.anyAtFileNodeName())
-        basedir = g.os_path_finalize(os.path.basename(filename))
+        basedir = g.os_path_finalize(os.path.basename(c.fileName()))
         path = g.os_path_finalize_join(basedir, filename)
         if os.path.exists(path):
             return path
