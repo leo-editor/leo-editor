@@ -2164,7 +2164,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         raw_result = self.scan_all_tokens(tokens)
         # Undo the munging of the sources.
         result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
-        changed = contents.rstrip() == result.rstrip()
+        changed = contents.rstrip() != result.rstrip()
         if changed:
             p.b = result
         # Trace the results.
