@@ -1669,16 +1669,15 @@ class PythonTokenBeautifier:
     def unary_op(self, s):
         """Add an operator request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        if 1:  ### New
-            self.clean('blank')
-            prev = self.code_list[-1]
-            prev2 = self.code_list[-2]
-            if prev.kind == 'lt':
-                self.add_token('unary-op', s)
-                return
-            if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
-                self.add_token('unary-op', s)
-                return
+        self.clean('blank')
+        prev = self.code_list[-1]
+        prev2 = self.code_list[-2]
+        if prev.kind == 'lt':
+            self.add_token('unary-op', s)
+            return
+        if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
+            self.add_token('unary-op', s)
+            return
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20150531051827.1: *4* ptb.star_op (no change)
