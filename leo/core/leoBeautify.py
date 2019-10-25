@@ -2155,7 +2155,6 @@ class FstringifyTokens(PythonTokenBeautifier):
         contents = p.b
         if not contents.strip():
             return False
-        if trace: g.trace(f"contents...\n\n{contents}\n")
         # Unlike with external files, we must sanitize the text!
         comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
         # Generate tokens.
@@ -2167,12 +2166,15 @@ class FstringifyTokens(PythonTokenBeautifier):
         changed = contents.rstrip() != result.rstrip()
         if changed:
             p.b = result
+            p.setDirty()
         # Trace the results.
-        if trace and verbose:
+        if trace and changed and verbose:
+            g.trace(f"Contents...\n\n{contents}\n")
             g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
             g.trace(f"raw result...\n\n{raw_result}\n")
-        if trace and changed:
-            g.trace(f"Changed! result...\n\n{result}\n")
+            g.trace(f"Result...\n\n{result}\n")
+        if trace:
+            g.trace('Changed!' if changed else 'No change:', p.h)
         return changed
     #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree (TEST)
     def fstringify_tree(self, p):
