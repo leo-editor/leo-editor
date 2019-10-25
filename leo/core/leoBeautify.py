@@ -214,7 +214,7 @@ def fstringity_node(event):
         return
     FstringifyTokens(c).fstringify_node(c.p)
 #@+node:ekr.20191025084237.1: *4* fstringify-tree
-@g.command('fstringigy-tree')
+@g.command('fstringify-tree')
 def fstringify_tree(event):
     """
     fstringify all nodes of the selected tree,
