@@ -2006,7 +2006,6 @@ class FstringifyTokens (PythonTokenBeautifier):
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
             g.trace('\nMISMATCH\n')
-            
             self.add_token('string', string_val)
             self.blank()
             return
@@ -2014,28 +2013,45 @@ class FstringifyTokens (PythonTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
-        i, result = 0, ['f"']
+        i, result = 0, ['f']
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
+            ### rflag = False
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
             if spec.endswith('s'):
                 spec = spec[:-1]
+            if spec.endswith('r'):
+                spec = spec[:-1]
+                ### rflag = True
             result.append('{')
             result.append(value)
             if spec:
                 result.append(':')
                 result.append(spec)
+            ### Not ready yet.
+            # if rflag:
+                # result.append('!r')
             result.append('}')
             i = end
+        # Finish.
         if i < len(string_val):
             result.append(string_val[i:])
-        result.append('"')
-        # print('convert_fstring', ''.join(result)) # Don't use g.printObj!
+        if len(result) > 2:
+            result = result[0:2] + self.munge_string(string_val, result[2:-1]) + result[-1:]
         self.add_token('string', ''.join(result))
-            # ''.join([str(z) for z in result]))
         self.blank()
+    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    def munge_string(self, string_val, aList):
+        """
+        Escape all strings as necessary to make a valid result.
+        """
+        if not string_val:
+            return aList
+        delim = string_val[0]
+        delim2 = '"' if delim == "'" else '"'
+        return [z.replace(delim, delim2) for z in aList]
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values & helper
     def scan_for_values(self):
         """
