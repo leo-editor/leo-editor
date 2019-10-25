@@ -207,6 +207,14 @@ def blacken_tree(event):
         BlackCommand(c).blacken_tree(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
+#@+node:ekr.20191025072511.1: *3* fstringify-file
+@g.command('fstringify-file')
+def fstringify_file(event):
+    """fstringify the nearest @<file> node."""
+    c = event.get('c')
+    if not c:
+        return
+    FstringifyTokens(c).fstringify_file()
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
@@ -2207,7 +2215,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         if not changed:
             return 
         # Write the file.
-        if 0:
+        if 1:
             with open(filename, 'w') as f:
                 f.write(result)
     #@+node:ekr.20191024071243.1: *4* fstring.do_token
