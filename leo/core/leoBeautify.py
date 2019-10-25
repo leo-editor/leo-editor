@@ -690,9 +690,9 @@ class CPrettyPrinter:
                 s = s.replace('\t', ' '*w)
                 if s.startswith('\n'):
                     s2 = s[1 :]
-                    self.result.append('\n'+s2[: -w])
+                    self.result.append('\n'+s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -1514,7 +1514,7 @@ class PythonTokenBeautifier:
                     self.add_token('line-indent', self.lws)
                     self.code_list.extend(tail[i :])
                     return
-                lws = lws[: -4]
+                lws = lws[:-4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -1527,7 +1527,7 @@ class PythonTokenBeautifier:
     def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
         line = []
-        for t in reversed(self.code_list[: -1]):
+        for t in reversed(self.code_list[:-1]):
             if t.kind == 'line-end':
                 break
             line.append(t)
@@ -2278,9 +2278,9 @@ class FstringifyTokens(PythonTokenBeautifier):
         elif spec.startswith('-'):
             spec = '>' + spec[1 :]
         if spec.endswith('s'):
-            spec = spec[: -1]
+            spec = spec[:-1]
         if spec.endswith('r'):
-            spec = spec[: -1]
+            spec = spec[:-1]
             tail = 'r'
         return spec, tail
     #@+node:ekr.20191025034715.1: *4* fstring.munge_string
@@ -2321,7 +2321,7 @@ class FstringifyTokens(PythonTokenBeautifier):
                 results.append(''.join(value_list))
                 value_list = []
                 if not include_paren:
-                    tokens = tokens[: -1]
+                    tokens = tokens[:-1]
                 break
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
