@@ -2013,6 +2013,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         # fstringify-file makes minimal adjustments to existing lines.
         self.clean_blank_lines()
         self.add_token('blank-lines', 1)
+        self.add_token('line-end', '\n')
         self.line_indent()
         
         ### Legacy
