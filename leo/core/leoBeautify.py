@@ -750,10 +750,11 @@ class CPrettyPrinter:
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
     """A token-based Python beautifier."""
+    
+    undo_type = "Pretty Print"
 
     def oops(self):
         g.trace('unknown kind', self.kind)
-
 
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
@@ -1734,9 +1735,9 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
     #@+node:ekr.20150528171420.1: *4* ptb.replace_body
     def replace_body(self, p, s):
-        """Replace the body with the pretty version."""
+        """Undoably replace the body."""
         c, u = self.c, self.c.undoer
-        undoType = 'Pretty Print'
+        undoType = self.undo_type
         if p.b == s:
             return
         self.n_changed_nodes += 1
@@ -2012,6 +2013,8 @@ class SyntaxSanitizer:
 #@+node:ekr.20191024035716.1: ** class TokenFstringify (PythonTokenBeautifier)
 class FstringifyTokens(PythonTokenBeautifier):
     """A token-based tool that converts % to f-strings."""
+    
+    undo_type = "Fstringify"
 
     # def __init__(self, c):
         # super().__init__(c)
