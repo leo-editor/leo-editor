@@ -2090,8 +2090,6 @@ class FstringifyTokens (PythonTokenBeautifier):
         levels = [0, 0, 0]
         level_index = '([{'.index(val)
         levels [level_index] += 1
-        target = ')]}'[level_index]
-        g.trace(token_i, val, target, levels)
         # Move past the opening delim.
         values_list.append(val0)
         token_i += 1
@@ -2112,7 +2110,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             else:
                 values_list.append(val)
             assert token_i > progress, (kind, val)
-        g.trace('\nFAIL', token_i, ''.join(values_list))
+        g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
