@@ -750,6 +750,10 @@ class CPrettyPrinter:
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
     """A token-based Python beautifier."""
+    
+    def oops(self):
+        g.trace('unknown kind', self.kind)
+
 
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
@@ -1099,9 +1103,6 @@ class PythonTokenBeautifier:
         Called by prettPrintNode & test_beautifier.
         """
 
-        def oops():
-            g.trace('unknown kind', self.kind)
-
         self.errors = 0
         self.code_list = []
         self.state_stack = []
@@ -1132,7 +1133,7 @@ class PythonTokenBeautifier:
                     self.line_indent(ws=' '*n)
                         # Do not set self.lws here!
                 last_line_number = srow
-            func = getattr(self, 'do_'+self.kind, oops)
+            func = getattr(self, 'do_'+self.kind, self.oops)
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
@@ -2004,9 +2005,6 @@ class FstringifyTokens(PythonTokenBeautifier):
     # def __init__(self, c):
         # super().__init__(c)
 
-    def oops(self):
-        g.trace('unknown kind', self.kind)
-
     #@+others
     #@+node:ekr.20191025080131.1: *3* fstring: overrides
     #@+node:ekr.20191024051733.11: *4* fstring.do_string (sets backslash_seen)
@@ -2072,10 +2070,8 @@ class FstringifyTokens(PythonTokenBeautifier):
         if srow != self.last_line_number:
             # Handle a previous backslash.
             if self.backslash_seen:
-                ### self.backslash()
                 self.add_token('backslash', '\\')
                 self.add_token('line-end', '\n')
-                ### self.line_indent()
                 self.backslash_seen = False
             # Start a new row.
             self.backslash_seen = self.raw_line.endswith('\\')
@@ -2162,7 +2158,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         verbose = False
         c = self.c
         if should_kill_beautify(p):
-            return
+            return False
         contents = p.b
         if not contents.strip():
             return False
