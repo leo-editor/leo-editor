@@ -2149,6 +2149,8 @@ class FstringifyTokens(PythonTokenBeautifier):
         """
         trace = True and not g.unitTesting
         c = self.c
+        if should_kill_beautify(p):
+            return
         contents = p.b
         if not contents.strip():
             return False
