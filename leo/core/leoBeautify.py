@@ -2016,27 +2016,18 @@ class FstringifyTokens (PythonTokenBeautifier):
         i, result = 0, ['f']
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
-            ### rflag = False
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i:start])
-            if spec.startswith('+'):
-                spec = spec[1:]
-            elif spec.startswith('-'):
-                spec = '>' + spec[1:]
-            if spec.endswith('s'):
-                spec = spec[:-1]
-            if spec.endswith('r'):
-                spec = spec[:-1]
-                ### rflag = True
+            spec, tail = self.munge_spec(spec)
             result.append('{')
             result.append(value)
             if spec:
                 result.append(':')
                 result.append(spec)
-            ### Not ready yet.
-            # if rflag:
-                # result.append('!r')
+            if tail:
+                result.append('!')
+                result.append(tail)
             result.append('}')
             i = end
         # Finish.
@@ -2045,7 +2036,22 @@ class FstringifyTokens (PythonTokenBeautifier):
         if len(result) > 2:
             result = result[0:2] + self.munge_string(string_val, result[2:-1]) + result[-1:]
         self.add_token('string', ''.join(result))
-        self.blank()
+    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (spec, tail)
+        """
+        tail = None
+        if spec.startswith('+'):
+            spec = spec[1:]
+        elif spec.startswith('-'):
+            spec = '>' + spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            spec = spec[:-1]
+            tail = 'r'
+        return spec, tail
     #@+node:ekr.20191025034715.1: *4* fstring.munge_string
     def munge_string(self, string_val, aList):
         """
@@ -2162,27 +2168,17 @@ class FstringifyTokens (PythonTokenBeautifier):
         """Handle a 'string' token."""
         if self.val.find('\\\n'):
             self.backslash_seen = False
-        #
-        # Call convert_fstring only if a conversion is actually possible.
-        if self.tokens:
-            next_kind, next_val = self.look_ahead(0)
-        else:
-            next_kind, next_val = None, None
-        if (not self.val.lower().startswith (('f', 'r'),) # Not an f or r string.
-            and  '%' in self.val
-            and (next_kind, next_val) == ('op', '%')
+        # See whether a conversion is possible.
+        if (
+            not self.val.lower().startswith (('f', 'r')) 
+            and  '%' in self.val and self.look_ahead(0) == ('op', '%')
         ):
+            # Not an f or r string, and a conversion is possible.
             self.convert_fstring()
         else:
             # Just put the string.
             self.add_token('string', self.val)
-            self.blank()
-        ### Legacy:
-            # self.add_token('string', self.val)
-            # if self.val.find('\\\n'):
-                # self.backslash_seen = False
-                # # This *does* retain the string's spelling.
-            # self.blank()
+        self.blank()
     #@+node:ekr.20191024044254.1: *3* fstring.fstringify_file & helpers
     def fstringify_file(self):
         """
@@ -2197,9 +2193,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         with open(filename, 'r') as f:
             contents = f.read()
         if trace:
-            g.trace('Contents...\n')
-            print(contents)
-            ### g.printObj(contents, tag='CONTENTS')
+            g.trace(f"Contents...\n\n{contents}") # Don't use g.printObj!
         # Generate tokens.
         tokens = self.tokenize_file(contents, filename)
         # Handle all tokens, creating the raw result.
@@ -2209,9 +2203,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         if trace and verbose:
             g.printObj(self.code_list, tag='CODE LIST')
         if trace:
-            # Do not use g.printObj here!
-            g.trace('\nResult...\n')
-            print(result)
+            g.trace(f"Result...\n\n{result}") # Don't use g.printObj!
         if not changed:
             return 
         # Write the file.
@@ -2265,18 +2257,6 @@ class FstringifyTokens (PythonTokenBeautifier):
             return filename
         g.es_print(f"file not found: {filename}")
         return None
-    #@+node:ekr.20191024104043.1: *4* fstring.look_ahead
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return kind, val
     #@+node:ekr.20191024072508.1: *4* fstring.scan_all_tokens
     def scan_all_tokens(self, tokens):
         """
@@ -2337,9 +2317,21 @@ class FstringifyTokens (PythonTokenBeautifier):
         # Write the file, if changed.
         if 0: ### Later.
             p.b = result
+    #@+node:ekr.20191024104043.1: *3* fstring.look_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return kind, val
     #@+node:ekr.20191024135748.1: *3* ftsring.token_description
     def token_description(self, token):
-        """Return the token's kind & value"""
+        """Return a summary of token's kind & value"""
         t1, t2, t3, t4, t5 = token
         kind = token_module.tok_name[t1].lower()
         val = g.toUnicode(t2)
