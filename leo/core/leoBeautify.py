@@ -11,7 +11,6 @@ except ImportError:
     import leoGlobals as g
 
     # Create a dummy decorator.
-
     def command(func):
         return func
 
@@ -57,7 +56,7 @@ def beautifyCCode(event):
             if p.b != s:
                 # g.es('changed: %s' % (p.h))
                 p.b = s
-                dirtyVnodeList2 = p.setDirty() # Was p.v.setDirty.
+                dirtyVnodeList2 = p.setDirty()  # Was p.v.setDirty.
                 dirtyVnodeList.extend(dirtyVnodeList2)
                 ### p.v.setDirty()
                 ### dirtyVnodeList.append(p.v)
@@ -124,19 +123,6 @@ def beautifyPythonTree(event):
         f"{errors} error{g.plural(errors)} "
         f"in {t2-t1:4.2f} sec."
     )
-
-
-                # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
-
-        # if is_auto:
-            # if pp.n_changed_nodes > 0:
-                # g.es_print('auto-beautified %s node%s in\n%s' % (
-                    # pp.n_changed_nodes,
-                    # g.plural(pp.n_changed_nodes),
-                    # p0.h))
-        # else:
-            # g.es_print('beautified total %s node%s in %4.2f sec.' % (
-                # pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20190830043650.1: *3* blacken-check-tree
 @g.command('blkc')
 @g.command('blacken-check-tree')
@@ -225,7 +211,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time()-t1))
+    print(f'beautified {len(files)} files in {time.time()-t1:4.2f} sec.')
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     """Beautify the file with the given path."""
@@ -478,7 +464,7 @@ class BlackCommand:
         p.v.contentModified()
         c.undoer.setUndoTypingParams(p, 'blacken-node', oldText=body, newText=result)
         if not p.v.isDirty():
-            p.setDirty() # Was p.v.setDirty.
+            p.setDirty()  # Was p.v.setDirty.
         return True
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
@@ -522,13 +508,11 @@ class CPrettyPrinter:
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p
-
         def oops(message, i, j):
             # This can be called from c-to-python, in which case warnings should be suppressed.
             if giveWarnings:
                 g.error('** changed ', p.h)
-                g.es_print('%s after\n%s' % (message, repr(''.join(s[i : j]))))
-
+                g.es_print(f'{message} after\n{repr("".join(s[i:j]))}')
         i, n, result = 0, len(s), []
         while i < n:
             token = s[i]
@@ -640,7 +624,7 @@ class CPrettyPrinter:
             self.parens -= 1
         elif s.startswith('\n'):
             if self.parens <= 0:
-                s = '\n%s' % (' ' * self.brackets * self.tab_width)
+                s = f'\n{" "*self.brackets*self.tab_width}'
             else:
                 pass  # Use the existing indentation.
         elif s.isspace():
@@ -886,7 +870,7 @@ class PythonTokenBeautifier:
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's 
+    #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's
     #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts
     def compare_two_asts(self, node1, node2):
         """
@@ -1089,10 +1073,8 @@ class PythonTokenBeautifier:
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
         """
-
         def oops():
             g.trace('unknown kind', self.kind)
-
         self.errors = 0
         self.code_list = []
         self.state_stack = []
@@ -1648,16 +1630,11 @@ class PythonTokenBeautifier:
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
         elif prev.kind == 'word' and prev.value in (
-            'elif',
-            'else',
-            'if',
-            'return',
-            'while',
+            'elif', 'else', 'if', 'return', 'while',
         ):
             self.unary_op(s)
         else:
             self.op(s)
-
     def unary_op(self, s):
         """Add an operator request to the code list."""
         assert s and isinstance(s, str), repr(s)
@@ -1868,7 +1845,7 @@ class SyntaxSanitizer:
                 result.append(comment+s)
                 # Generate a properly-indented pass line.
                 j2 = g.skip_ws(s, 0)
-                result.append('%spass\n' % (' '*j2))
+                result.append(f'{" "*j2}pass\n')
             elif s_lstrip.startswith('@'):
                 # Comment out all other Leonine constructs.
                 if self.starts_doc_part(s):
@@ -1892,7 +1869,7 @@ class SyntaxSanitizer:
                             # Remember the original @others line.
                             result.append(comment+s)
                             # Generate a properly-indented pass line.
-                            result.append('%spass\n' % (' '* (j-1)))
+                            result.append(f'{" "*(j-1)}pass\n')
                         else:
                             # Comment only Leo directives, not decorators.
                             result.append(comment+s if word in d else s)
@@ -1993,12 +1970,12 @@ class SyntaxSanitizer:
         return i
     #@-others
 #@+node:ekr.20191024035716.1: ** class TokenFstringify (PythonTokenBeautifier)
-class FstringifyTokens (PythonTokenBeautifier):
+class FstringifyTokens(PythonTokenBeautifier):
     """A token-based tool that converts % to f-strings."""
-    
+
     # def __init__(self, c):
         # super().__init__(c)
-        
+
     def oops(self):
         g.trace('unknown kind', self.kind)
 
@@ -2012,10 +1989,10 @@ class FstringifyTokens (PythonTokenBeautifier):
         """
         # fstringify-file makes minimal adjustments to existing lines.
         self.clean_blank_lines()
-        self.add_token('blank-lines', 1)
         self.add_token('line-end', '\n')
+        self.add_token('blank-lines', 1)
         self.line_indent()
-        
+
         ### Legacy
             # self.clean_blank_lines()
             # kind = self.code_list[-1].kind
@@ -2034,8 +2011,8 @@ class FstringifyTokens (PythonTokenBeautifier):
             self.backslash_seen = False
         # See whether a conversion is possible.
         if (
-            not self.val.lower().startswith (('f', 'r')) 
-            and  '%' in self.val and self.look_ahead(0) == ('op', '%')
+            not self.val.lower().startswith(('f', 'r'))
+            and '%' in self.val and self.look_ahead(0) == ('op', '%')
         ):
             # Not an f or r string, and a conversion is possible.
             self.convert_fstring()
@@ -2066,7 +2043,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
-                result.append(string_val[i:start])
+                result.append(string_val[i : start])
             spec, tail = self.munge_spec(spec)
             result.append('{')
             result.append(value)
@@ -2080,9 +2057,9 @@ class FstringifyTokens (PythonTokenBeautifier):
             i = end
         # Finish.
         if i < len(string_val):
-            result.append(string_val[i:])
+            result.append(string_val[i :])
         if len(result) > 2:
-            result = result[0:2] + self.munge_string(string_val, result[2:-1]) + result[-1:]
+            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1 :]
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
@@ -2125,7 +2102,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         if include_paren:
             token = self.tokens[token_i]
             token_i += 1
-            tokens.append(token)   
+            tokens.append(token)
         #
         # TEMP: Find all tokens up to the first ')'
         results, value_list = [], []
@@ -2138,7 +2115,7 @@ class FstringifyTokens (PythonTokenBeautifier):
                 results.append(''.join(value_list))
                 value_list = []
                 if not include_paren:
-                    tokens = tokens[:-1]
+                    tokens = tokens[: -1]
                 break
             if (kind, val) == ('op', ','):
                 results.append(''.join(value_list))
@@ -2163,7 +2140,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
         levels = [0, 0, 0]
         level_index = '([{'.index(val)
-        levels [level_index] += 1
+        levels[level_index] += 1
         # Move past the opening delim.
         values_list.append(val0)
         token_i += 1
@@ -2174,7 +2151,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             if kind == 'op' and val in ')]}':
                 values_list.append(val)
                 level_index = ')]}'.index(val)
-                levels [level_index] -= 1
+                levels[level_index] -= 1
                 if levels == [0, 0, 0]:
                     return values_list, token_i
             elif kind == 'op' and val in '([{':
@@ -2201,8 +2178,8 @@ class FstringifyTokens (PythonTokenBeautifier):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-     
-    ###   
+
+    ###
         # import string
         # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
             # tuples (literal_text, field_name, format_spec, conversion).
@@ -2223,7 +2200,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         filename = self.find_root()
         if not filename:
             return
-        # Open the file, 
+        # Open the file.
         with open(filename, 'r') as f:
             contents = f.read()
         if trace:
@@ -2239,7 +2216,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         if trace:
             g.trace(f"Result...\n\n{result}")
         if not changed:
-            return 
+            return
         # Write the file.
         if 1:
             with open(filename, 'w') as f:
@@ -2276,7 +2253,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         Issue error messages if necessary.
         """
         c, p = self.c, self.c.p
-
+        
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
@@ -2305,7 +2282,7 @@ class FstringifyTokens (PythonTokenBeautifier):
         self.errors = 0
         self.last_line_number = 0
         self.state_stack = []
-        self.tokens = tokens 
+        self.tokens = tokens
         # Generate tokens.
         self.file_start()
         while self.tokens:
@@ -2351,7 +2328,7 @@ class FstringifyTokens (PythonTokenBeautifier):
             g.printObj(raw_result, tag='RAW RESULT')
             g.printObj(result, tag='RESULT')
         # Write the file, if changed.
-        if 0: ### Later.
+        if 0:  ### Later.
             p.b = result
     #@+node:ekr.20191024104043.1: *3* fstring.look_ahead
     def look_ahead(self, n):
@@ -2378,4 +2355,6 @@ if __name__ == "__main__":
     main()
 #@@language python
 #@@tabwidth -4
+#@@last
 #@-leo
+
