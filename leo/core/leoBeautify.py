@@ -1988,22 +1988,22 @@ class FstringifyTokens(PythonTokenBeautifier):
         Multiple blank-lines request yield at least the maximum of all requests.
         """
         # fstringify-file makes minimal adjustments to existing lines.
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('blank-lines', 1)
-        self.line_indent()
-
-        ### Legacy
-            # self.clean_blank_lines()
-            # kind = self.code_list[-1].kind
-            # if kind == 'file-start':
-                # self.add_token('blank-lines', n)
-                # return
-            # for i in range(0, n+1):
-                # self.add_token('line-end', '\n')
-            # # Retain the token (intention) for debugging.
-            # self.add_token('blank-lines', n)
-            # self.line_indent()
+        if 0:
+            self.clean_blank_lines()
+            self.add_token('line-end', '\n')
+            self.add_token('blank-lines', 1)
+            self.line_indent()
+        else:
+            self.clean_blank_lines()
+            kind = self.code_list[-1].kind
+            if kind == 'file-start':
+                self.add_token('blank-lines', n)
+                return
+            for i in range(0, n+1):
+                self.add_token('line-end', '\n')
+            # Retain the token (intention) for debugging.
+            self.add_token('blank-lines', n)
+            self.line_indent()
     #@+node:ekr.20191024051733.11: *4* fstring.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
