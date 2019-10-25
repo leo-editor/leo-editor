@@ -11,6 +11,7 @@ except ImportError:
     import leoGlobals as g
 
     # Create a dummy decorator.
+
     def command(func):
         return func
 
@@ -508,11 +509,13 @@ class CPrettyPrinter:
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p
+
         def oops(message, i, j):
             # This can be called from c-to-python, in which case warnings should be suppressed.
             if giveWarnings:
                 g.error('** changed ', p.h)
                 g.es_print(f'{message} after\n{repr("".join(s[i:j]))}')
+
         i, n, result = 0, len(s), []
         while i < n:
             token = s[i]
@@ -1073,8 +1076,10 @@ class PythonTokenBeautifier:
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
         """
+
         def oops():
             g.trace('unknown kind', self.kind)
+
         self.errors = 0
         self.code_list = []
         self.state_stack = []
@@ -1635,6 +1640,7 @@ class PythonTokenBeautifier:
             self.unary_op(s)
         else:
             self.op(s)
+
     def unary_op(self, s):
         """Add an operator request to the code list."""
         assert s and isinstance(s, str), repr(s)
@@ -2068,13 +2074,13 @@ class FstringifyTokens(PythonTokenBeautifier):
         """
         tail = None
         if spec.startswith('+'):
-            spec = spec[1:]
+            spec = spec[1 :]
         elif spec.startswith('-'):
-            spec = '>' + spec[1:]
+            spec = '>' + spec[1 :]
         if spec.endswith('s'):
-            spec = spec[:-1]
+            spec = spec[: -1]
         if spec.endswith('r'):
-            spec = spec[:-1]
+            spec = spec[: -1]
             tail = 'r'
         return spec, tail
     #@+node:ekr.20191025034715.1: *4* fstring.munge_string
@@ -2123,7 +2129,7 @@ class FstringifyTokens(PythonTokenBeautifier):
             elif kind == 'op' and val in '([{':
                 values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
                 value_list.extend(values_list2)
-                tokens.extend(self.tokens[token_i:token_i2])
+                tokens.extend(self.tokens[token_i : token_i2])
                 token_i = token_i2
             else:
                 value_list.append(val)
@@ -2253,7 +2259,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         Issue error messages if necessary.
         """
         c, p = self.c, self.c.p
-        
+
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
