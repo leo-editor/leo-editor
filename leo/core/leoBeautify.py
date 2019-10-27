@@ -346,8 +346,106 @@ class BaseTokenHandler:
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
     """
+    
+    def oops(self):
+        g.trace('unknown kind', self.kind) 
 
     #@+others
+    #@+node:ekr.20191027162345.1: *3* token_h.birth
+    def __init__(self, c):
+        self.c = c
+        self.backslash_seen = False
+            # True if a backslash-newline appears at the end of a *string*.
+        self.kind = None
+        self.tab_width = None
+        self.tokens = []
+        # Statistics...
+        self.errors = 0
+        self.n_changed_nodes = 0
+        self.n_input_tokens = 0
+        self.n_output_tokens = 0
+        self.n_strings = 0
+        self.parse_time = 0.0
+        self.tokenize_time = 0.0
+        self.beautify_time = 0.0
+        self.check_time = 0.0
+        self.total_time = 0.0
+        self.reload_settings()
+        
+    def reload_settings(self):
+        c = self.c
+        self.tab_width = abs(c.tab_width) if c else 4
+    #@+node:ekr.20191024044526.1: *3* token_h.find_root
+    def find_root(self):
+        """
+        Return the nearest ancestor @<file> node, or None.
+        Issue error messages if necessary.
+        """
+        c, p = self.c, self.c.p
+
+        def predicate(p):
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+
+        for p in p.self_and_parents():
+            if predicate(p):
+                break
+        else:
+            g.es_print(f"not in any @<file> tree: {c.p.h}")
+            return None
+        filename = p.anyAtFileNodeName()
+        basedir = g.os_path_finalize(os.path.dirname(c.fileName()))
+        path = g.os_path_finalize_join(basedir, filename)
+        if os.path.exists(path):
+            return path
+        g.es_print(f"file not found: {filename} in {basedir}")
+        return None
+    #@+node:ekr.20191024104043.1: *3* token_h.look_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return kind, val
+    #@+node:ekr.20191024135748.1: *3* token_h.token_description
+    def token_description(self, token):
+        """Return a summary of token's kind & value"""
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return f"{kind:>15} {val}"
+    #@+node:ekr.20191024050218.1: *3* token_h.tokenize_string
+    def tokenize_string(self, contents, filename):
+        """
+        Return (ast_node, tokens) from the contents of the given file.
+        """
+        t1 = time.process_time()
+        # Generate the tokens.
+        readlines = g.ReadLinesClass(contents).next
+        tokens = list(tokenize.generate_tokens(readlines))
+        # Update stats.
+        t2 = time.process_time()
+        self.tokenize_time += t2 - t1
+        return tokens
+    #@+node:ekr.20150528172940.1: *3* token_h.print_stats
+    def print_stats(self):
+        print(
+            f"{'='*10} stats\n\n"
+            f"changed nodes  {self.n_changed_nodes:4}\n"
+            f"tokens         {self.n_input_tokens:4}\n"
+            f"len(code_list) {self.n_output_tokens:4}\n"
+            f"len(s)         {self.n_strings:4}\n"
+            f"\ntimes (seconds)...\n"
+            f"parse          {self.parse_time:4.2f}\n"
+            f"tokenize       {self.tokenize_time:4.2f}\n"
+            f"format         {self.beautify_time:4.2f}\n"
+            f"check          {self.check_time:4.2f}\n"
+            f"total          {self.total_time:4.2f}"
+        )
     #@-others
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
@@ -759,9 +857,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
 
     undo_type = "Pretty Print"
 
-    def oops(self):
-        g.trace('unknown kind', self.kind)
-
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
     class OutputToken:
@@ -820,7 +915,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
 
     def __init__(self, c):
         """Ctor for PythonPrettyPrinter class."""
-        self.c = c
+        super().__init__(c)
         #
         # Globals...
         self.code_list = []
@@ -835,10 +930,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
             # The string containing the input token's value.
         #
         # State vars...
-        self.backslash_seen = False
-            # True if a backslash-newline appears at the end of a *string*
-            # Comments retain proper spelling, so they never set this flag.
-            # Note: run() calls self.backslash() when srow != last_line_number.
         self.decorator_seen = False
             # Set by do_name as a flag to do_op.
         self.in_arg_list = 0
@@ -861,18 +952,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
             # Number of unmatched '[' tokens.
         self.curly_brackets_level = 0
             # Number of unmatched '{' tokens.
-        #
-        # Statistics...
-        self.errors = 0
-        self.n_changed_nodes = 0
-        self.n_input_tokens = 0
-        self.n_output_tokens = 0
-        self.n_strings = 0
-        self.parse_time = 0.0
-        self.tokenize_time = 0.0
-        self.beautify_time = 0.0
-        self.check_time = 0.0
-        self.total_time = 0.0
         #
         # Undo vars...
         self.changed = False
@@ -907,6 +986,40 @@ class PythonTokenBeautifier(BaseTokenHandler):
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
+    #@+node:ekr.20191024071243.1: *4* ptb.do_token
+    def do_token(self, token):
+        """
+        Handle one token. Token handlers may call this method to do look-ahead processing.
+        """
+        t1, t2, t3, t4, t5 = token
+        srow, scol = t3
+        self.kind = token_module.tok_name[t1].lower()
+        self.val = g.toUnicode(t2)
+        self.raw_line = g.toUnicode(t5).rstrip()
+        if srow != self.last_line_number:
+            # Handle a previous backslash.
+            if self.backslash_seen:
+                self.add_token('backslash', '\\')
+                self.add_token('line-end', '\n')
+                self.backslash_seen = False
+            # Start a new row.
+            self.backslash_seen = self.raw_line.endswith('\\')
+            # Yes, we need this logic, even in fstringify.
+            if (
+                self.curly_brackets_level > 0
+                or self.paren_level > 0
+                or self.square_brackets_level > 0
+            ):
+                s = self.raw_line
+                n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
+                # This n will be one-too-many if formatting has
+                # changed: foo (
+                # to:      foo(
+                self.line_indent(ws=' '*n)
+                    # Do not set self.lws here!
+            self.last_line_number = srow
+        func = getattr(self, f"do_{self.kind}", self.oops)
+        func()
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
     def prettyPrintNode(self, p):
         """
@@ -1027,6 +1140,27 @@ class PythonTokenBeautifier(BaseTokenHandler):
             func()
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
+        return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20191024072508.1: *4* ptb.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Scan all tokens in self.tokens, returning the resulting string.
+        
+        The self.tokens ivar allows for lookahead in the token handlers.
+        """
+        # Init ivars.
+        self.code_list = []
+        self.errors = 0
+        self.last_line_number = 0
+        self.state_stack = []
+        self.tokens = tokens
+        # Generate tokens.
+        self.file_start()
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        self.file_end()
+        # Return string result.
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
@@ -1677,21 +1811,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
                 elif value == '}':
                     curlies += 1
         return curlies, parens, squares
-    #@+node:ekr.20150528172940.1: *4* ptb.print_stats
-    def print_stats(self):
-        print(
-            f"{'='*10} stats\n\n"
-            f"changed nodes  {self.n_changed_nodes:4}\n"
-            f"tokens         {self.n_input_tokens:4}\n"
-            f"len(code_list) {self.n_output_tokens:4}\n"
-            f"len(s)         {self.n_strings:4}\n"
-            f"\ntimes (seconds)...\n"
-            f"parse          {self.parse_time:4.2f}\n"
-            f"tokenize       {self.tokenize_time:4.2f}\n"
-            f"format         {self.beautify_time:4.2f}\n"
-            f"check          {self.check_time:4.2f}\n"
-            f"total          {self.total_time:4.2f}"
-        )
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
         """Append a state to the state stack."""
@@ -1927,7 +2046,7 @@ class FstringifyTokens(PythonTokenBeautifier):
             self.backslash_seen = False
         self.blank()
     #@+node:ekr.20191025084714.1: *3* fstring: entries
-    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file & helpers
+    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
     def fstringify_file(self):
         """
         Find the nearest @<file> node and convert % to fstrings within it.
@@ -1945,7 +2064,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         if trace:
             g.trace(f"Contents...\n\n{contents}")
         # Generate tokens.
-        tokens = self.tokenize_file(contents, filename)
+        tokens = self.tokenize_string(contents, filename)
         # Handle all tokens, creating the raw result.
         result = self.scan_all_tokens(tokens)
         # Trace the results.
@@ -1960,98 +2079,6 @@ class FstringifyTokens(PythonTokenBeautifier):
         if 1:
             with open(filename, 'w') as f:
                 f.write(result)
-    #@+node:ekr.20191024071243.1: *5* fstring.do_token
-    def do_token(self, token):
-        """
-        Handle one token. Token handlers may call this method to do look-ahead processing.
-        """
-        t1, t2, t3, t4, t5 = token
-        srow, scol = t3
-        self.kind = token_module.tok_name[t1].lower()
-        self.val = g.toUnicode(t2)
-        self.raw_line = g.toUnicode(t5).rstrip()
-        if srow != self.last_line_number:
-            # Handle a previous backslash.
-            if self.backslash_seen:
-                self.add_token('backslash', '\\')
-                self.add_token('line-end', '\n')
-                self.backslash_seen = False
-            # Start a new row.
-            self.backslash_seen = self.raw_line.endswith('\\')
-            # Yes, we need this logic, even in fstringify.
-            if (
-                self.curly_brackets_level > 0
-                or self.paren_level > 0
-                or self.square_brackets_level > 0
-            ):
-                s = self.raw_line
-                n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                # This n will be one-too-many if formatting has
-                # changed: foo (
-                # to:      foo(
-                self.line_indent(ws=' '*n)
-                    # Do not set self.lws here!
-            self.last_line_number = srow
-        func = getattr(self, f"do_{self.kind}", self.oops)
-        func()
-    #@+node:ekr.20191024044526.1: *5* fstring.find_root
-    def find_root(self):
-        """
-        Return the nearest ancestor @<file> node, or None.
-        Issue error messages if necessary.
-        """
-        c, p = self.c, self.c.p
-
-        def predicate(p):
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-
-        for p in p.self_and_parents():
-            if predicate(p):
-                break
-        else:
-            g.es_print(f"not in any @<file> tree: {c.p.h}")
-            return None
-        filename = p.anyAtFileNodeName()
-        basedir = g.os_path_finalize(os.path.dirname(c.fileName()))
-        path = g.os_path_finalize_join(basedir, filename)
-        if os.path.exists(path):
-            return path
-        g.es_print(f"file not found: {filename} in {basedir}")
-        return None
-    #@+node:ekr.20191024072508.1: *5* fstring.scan_all_tokens
-    def scan_all_tokens(self, tokens):
-        """
-        Scan all tokens in self.tokens, returning the resulting string.
-        
-        The self.tokens ivar allows for lookahead in the token handlers.
-        """
-        # Init ivars.
-        self.code_list = []
-        self.errors = 0
-        self.last_line_number = 0
-        self.state_stack = []
-        self.tokens = tokens
-        # Generate tokens.
-        self.file_start()
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        self.file_end()
-        # Return string result.
-        return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191024050218.1: *5* fstring.tokenize_file
-    def tokenize_file(self, contents, filename):
-        """
-        Return (ast_node, tokens) from the contents of the given file.
-        """
-        t1 = time.process_time()
-        # Generate the tokens.
-        readlines = g.ReadLinesClass(contents).next
-        tokens = list(tokenize.generate_tokens(readlines))
-        # Update stats.
-        t2 = time.process_time()
-        self.tokenize_time += t2 - t1
-        return tokens
     #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
     def fstringify_node(self, p):
         """
@@ -2068,7 +2095,7 @@ class FstringifyTokens(PythonTokenBeautifier):
         # Unlike with external files, we must sanitize the text!
         comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
         # Generate tokens.
-        tokens = self.tokenize_file(contents2, p.h)
+        tokens = self.tokenize_string(contents2, p.h)
         # Handle all tokens, creating the raw result.
         raw_result = self.scan_all_tokens(tokens)
         # Undo the munging of the sources.
@@ -2277,25 +2304,6 @@ class FstringifyTokens(PythonTokenBeautifier):
             # If there is no literal text (which can happen if two replacement fields occur consecutively),
             # then literal_text will be a zero-length string.
             # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
-    #@+node:ekr.20191024104043.1: *3* fstring.look_ahead
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return kind, val
-    #@+node:ekr.20191024135748.1: *3* ftsring.token_description
-    def token_description(self, token):
-        """Return a summary of token's kind & value"""
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return f"{kind:>15} {val}"
     #@-others
 #@-others
 if __name__ == "__main__":
