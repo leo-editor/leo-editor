@@ -12,7 +12,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20191027072910.1: *3* class AstNotEqual (Exception)
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
-#@+node:ekr.20160521104555.1: *3* function: leoAst._op_names
+#@+node:ekr.20160521104555.1: *3* function: _op_names
 #@@nobeautify
 
 # Python 2: https://docs.python.org/2/library/ast.html
@@ -60,46 +60,7 @@ _op_names = {
     'UAdd':     '+',
     'USub':     '-',
 }
-#@+node:ekr.20160521103254.1: *3* function: leoAst.unit_test
-def unit_test(raise_on_fail=True):
-    """Run basic unit tests for this file."""
-    import _ast
-    # import leo.core.leoAst as leoAst
-    # Compute all fields to test.
-    aList = sorted(dir(_ast))
-    remove = [
-        'Interactive', 'Suite', # Not necessary.
-        'PyCF_ONLY_AST', # A constant,
-        'AST', # The base class,
-    ]
-    aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
-    aList = [z for z in aList if not z.startswith('_') and not z in remove]
-    # Now test them.
-    table = (
-        AstFullTraverser,
-        AstFormatter,
-        AstPatternFormatter,
-        HTMLReportTraverser,
-    )
-    for class_ in table:
-        traverser = class_()
-        errors, nodes, ops = 0,0,0
-        for z in aList:
-            if hasattr(traverser, 'do_' + z):
-                nodes += 1
-            elif _op_names.get(z):
-                ops += 1
-            else:
-                errors += 1
-                print('Missing %s visitor for: %s' % (
-                    traverser.__class__.__name__,z))
-    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
-    if raise_on_fail:
-        assert not errors, s
-    else:
-        print(s)
-#@+node:ekr.20191027072126.1: *3* function: leoAst.compare_asts & helpers
+#@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
 
@@ -169,10 +130,70 @@ def _compare_nodes(node1, node2):
                     f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
                 )
             _compare_asts(item1, item2)
-#@+node:ekr.20191027074436.1: *3* function: leoAst.dump_ast
+#@+node:ekr.20191027074436.1: *3* function: dump_ast
 def dump_ast(ast, tag=None):
     """Utility to dump an ast tree."""
     g.printObj(AstDumper().dump(ast), tag=tag)
+#@+node:ekr.20191027075648.1: *3* function: parse_ast
+def parse_ast(s, headline=None):
+    """
+    Parse string s, catching & reporting all exceptions.
+    Return the ast node, or None.
+    """
+    
+    def oops(message):
+        g.warning(f"{message} in: {headline}" if headline else message)
+
+    try:
+        s1 = g.toEncodedString(s)
+        return ast.parse(s1, filename='before', mode='exec')
+    except IndentationError:
+        oops('Indentation Error')
+    except SyntaxError:
+        oops('Syntax Error')
+    except Exception:
+        oops('Unexpected Exception')
+        g.es_exception()
+    return None
+#@+node:ekr.20160521103254.1: *3* function: unit_test
+def unit_test(raise_on_fail=True):
+    """Run basic unit tests for this file."""
+    import _ast
+    # import leo.core.leoAst as leoAst
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite', # Not necessary.
+        'PyCF_ONLY_AST', # A constant,
+        'AST', # The base class,
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classe
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    table = (
+        AstFullTraverser,
+        AstFormatter,
+        AstPatternFormatter,
+        HTMLReportTraverser,
+    )
+    for class_ in table:
+        traverser = class_()
+        errors, nodes, ops = 0,0,0
+        for z in aList:
+            if hasattr(traverser, 'do_' + z):
+                nodes += 1
+            elif _op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print('Missing %s visitor for: %s' % (
+                    traverser.__class__.__name__,z))
+    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     """

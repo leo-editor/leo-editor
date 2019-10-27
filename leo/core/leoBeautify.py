@@ -927,32 +927,39 @@ class PythonTokenBeautifier (BaseTokenHandler):
         # Replace Leonine syntax with special comments.
         comment_string, s0 = self.sanitizer.comment_leo_lines(p=p)
         check_result = True
-        try:
-            s1 = g.toEncodedString(s0)
-            node1 = ast.parse(s1, filename='before', mode='exec')
-        except IndentationError:
-            g.warning(f"IndentationError: can't check {p.h}")
+        node1 = leoAst.parse_ast(s0, headline=p.h)
+        if not node1:
             self.errors += 1
             if g.unitTesting:
-                raise
+                raise AssertionError('pretty-print-node failed')
             p.v.setMarked()
             return False
-        except SyntaxError:
-            g.warning(f"SyntaxError: can't check {p.h}")
-            self.errors += 1
-            if g.unitTesting:
-                g.printObj(s1, tag='SANITIZED STRING')
-                raise
-            p.v.setMarked()
-            return False
-        except Exception:
-            g.warning(f"Unexpected exception: {p.h}")
-            g.es_exception()
-            self.errors += 1
-            if g.unitTesting:
-                raise
-            p.v.setMarked()
-            return False
+            # try:
+                # s1 = g.toEncodedString(s0)
+                # node1 = ast.parse(s1, filename='before', mode='exec')
+            # except IndentationError:
+                # g.warning(f"IndentationError: can't check {p.h}")
+                # self.errors += 1
+                # if g.unitTesting:
+                    # raise
+                # p.v.setMarked()
+                # return False
+            # except SyntaxError:
+                # g.warning(f"SyntaxError: can't check {p.h}")
+                # self.errors += 1
+                # if g.unitTesting:
+                    # g.printObj(s1, tag='SANITIZED STRING')
+                    # raise
+                # p.v.setMarked()
+                # return False
+            # except Exception:
+                # g.warning(f"Unexpected exception: {p.h}")
+                # g.es_exception()
+                # self.errors += 1
+                # if g.unitTesting:
+                    # raise
+                # p.v.setMarked()
+                # return False
         t2 = time.process_time()
         #
         # Generate the tokens.
