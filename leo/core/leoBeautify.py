@@ -1007,31 +1007,6 @@ class PythonTokenBeautifier (BaseTokenHandler):
                 self.errors += 1
                 p.v.setMarked()
                 return False
-            
-                # try:
-                    # self.compare_two_asts(node1, node2)
-                # except AstNotEqual:
-                    # g.warning(f"{p.h}: The beautify command did not preserve meaning!")
-                    # g.printObj(s2, tag='RESULT')
-                    # # g.printObj(self.code_list, 'CODE LIST')
-                    # # self.dump_ast(node1, tag='AST BEFORE')
-                    # # self.dump_ast(node2, tag='AST AFTER')
-                    # if g.unitTesting:
-                        # raise
-                    # self.errors += 1
-                    # p.v.setMarked()
-                    # return False
-                # except Exception:
-                    # g.warning(f"{p.h}: Unexpected exception")
-                    # g.es_exception()
-                    # g.printObj(s2, tag='RESULT')
-                    # # self.dump_ast(node1, tag='AST BEFORE')
-                    # # self.dump_ast(node2, tag='AST AFTER')
-                    # self.errors += 1
-                    # if g.unitTesting:
-                        # raise
-                    # p.v.setMarked()
-                    # return False
         if 'beauty' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")

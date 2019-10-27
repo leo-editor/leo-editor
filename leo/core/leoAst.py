@@ -9,7 +9,7 @@ import token as token_module
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
-#@+node:ekr.20191027072910.1: *3* class AstNotEqual
+#@+node:ekr.20191027072910.1: *3* class AstNotEqual (Exception)
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
 #@+node:ekr.20160521104555.1: *3* function: leoAst._op_names
@@ -107,6 +107,8 @@ def compare_asts(ast1, ast2):
     try:
         _compare_asts(ast1, ast2)
     except AstNotEqual:
+        dump_ast(ast1, tag='AST BEFORE')
+        dump_ast(ast2, tag='AST AFTER')
         if g.unitTesting:
             raise
         return False
@@ -167,6 +169,10 @@ def _compare_nodes(node1, node2):
                     f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
                 )
             _compare_asts(item1, item2)
+#@+node:ekr.20191027074436.1: *3* function: leoAst.dump_ast
+def dump_ast(ast, tag=None):
+    """Utility to dump an ast tree."""
+    g.printObj(AstDumper().dump(ast), tag=tag)
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     """
