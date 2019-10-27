@@ -140,7 +140,7 @@ def parse_ast(s, headline=None):
     Parse string s, catching & reporting all exceptions.
     Return the ast node, or None.
     """
-    
+
     def oops(message):
         g.warning(f"{message} in: {headline}" if headline else message)
 
@@ -163,9 +163,9 @@ def unit_test(raise_on_fail=True):
     # Compute all fields to test.
     aList = sorted(dir(_ast))
     remove = [
-        'Interactive', 'Suite', # Not necessary.
-        'PyCF_ONLY_AST', # A constant,
-        'AST', # The base class,
+        'Interactive', 'Suite',  # Not necessary.
+        'PyCF_ONLY_AST',  # A constant,
+        'AST',  # The base class,
     ]
     aList = [z for z in aList if not z[0].islower()]
         # Remove base classe
@@ -179,16 +179,16 @@ def unit_test(raise_on_fail=True):
     )
     for class_ in table:
         traverser = class_()
-        errors, nodes, ops = 0,0,0
+        errors, nodes, ops = 0, 0, 0
         for z in aList:
-            if hasattr(traverser, 'do_' + z):
+            if hasattr(traverser, 'do_'+z):
                 nodes += 1
             elif _op_names.get(z):
                 ops += 1
             else:
                 errors += 1
                 print('Missing %s visitor for: %s' % (
-                    traverser.__class__.__name__,z))
+                    traverser.__class__.__name__, z))
     s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
     if raise_on_fail:
         assert not errors, s
@@ -201,11 +201,12 @@ class AstDumper:
 
     Adapted from Python's ast.dump.
     """
+
     def __init__(self,
-        annotate_fields=False, # True: show names of fields.
-        disabled_fields=None, # List of names of fields not to show.
-        include_attributes=False, # True: show line numbers and column offsets.
-        indent_ws='  ', # Number of spaces for each indent.
+        annotate_fields=False,  # True: show names of fields.
+        disabled_fields=None,  # List of names of fields not to show.
+        include_attributes=False,  # True: show line numbers and column offsets.
+        indent_ws='  ',  # Number of spaces for each indent.
     ):
         self.annotate_fields = annotate_fields
         self.disabled_fields = disabled_fields or ['ctx',]
@@ -217,9 +218,9 @@ class AstDumper:
     def dump(self, node, level=0):
         sep1 = '\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
-            fields = [(a, self.dump(b, level + 1)) for a, b in self.get_fields(node)]
+            fields = [(a, self.dump(b, level+1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
-                fields.extend([(a, self.dump(getattr(node, a), level + 1))
+                fields.extend([(a, self.dump(getattr(node, a), level+1))
                     for a in node._attributes])
             if self.annotate_fields:
                 aList = ['%s=%s' % (a, b) for a, b in fields]
@@ -235,7 +236,7 @@ class AstDumper:
             compressed = not any([isinstance(z, list) and len(z) > 1 for z in node])
             sep = '' if compressed and len(node) <= 1 else sep1
             return '[%s]' % ''.join(
-                ['%s%s' % (sep, self.dump(z, level + 1)) for z in node])
+                ['%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
@@ -255,7 +256,7 @@ class AstFormatter:
     """
     # No ctor.
     # pylint: disable=consider-using-enumerate
-    
+
     in_expr = False
     level = 0
 
@@ -294,14 +295,14 @@ class AstFormatter:
     def do_ClassDef(self, node, print_body=True):
 
         result = []
-        name = node.name # Only a plain string is valid.
+        name = node.name  # Only a plain string is valid.
         bases = [self.visit(z) for z in node.bases] if node.bases else []
-        if getattr(node, 'keywords', None): # Python 3
+        if getattr(node, 'keywords', None):  # Python 3
             for keyword in node.keywords:
                 bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
-        if getattr(node, 'starargs', None): # Python 3
+        if getattr(node, 'starargs', None):  # Python 3
             bases.append('*%s' % self.visit(node.starargs))
-        if getattr(node, 'kwargs', None): # Python 3
+        if getattr(node, 'kwargs', None):  # Python 3
             bases.append('*%s' % self.visit(node.kwargs))
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
@@ -324,10 +325,10 @@ class AstFormatter:
         if node.decorator_list:
             for z in node.decorator_list:
                 result.append('@%s\n' % self.visit(z))
-        name = node.name # Only a plain string is valid.
+        name = node.name  # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
         asynch_prefix = 'asynch ' if async_flag else ''
-        if getattr(node, 'returns', None): # Python 3.
+        if getattr(node, 'returns', None):  # Python 3.
             returns = self.visit(node.returns)
             result.append(self.indent('%sdef %s(%s): -> %s\n' % (
                 asynch_prefix, name, args, returns)))
@@ -374,7 +375,7 @@ class AstFormatter:
     def do_GeneratorExp(self, node):
         elt = self.visit(node.elt) or ''
         gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
         return '<gen %s for %s>' % (elt, ','.join(gens))
     #@+node:ekr.20141012064706.18414: *4* f.ctx nodes
     def do_AugLoad(self, node):
@@ -411,12 +412,12 @@ class AstFormatter:
             if i < n_plain:
                 args2.append(args[i])
             else:
-                args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+                args2.append('%s=%s' % (args[i], defaults[i-n_plain]))
         # Add the vararg and kwarg expressions.
         vararg = getattr(node, 'vararg', None)
-        if vararg: args2.append('*' + self.visit(vararg))
+        if vararg: args2.append('*'+self.visit(vararg))
         kwarg = getattr(node, 'kwarg', None)
-        if kwarg: args2.append('**' + self.visit(kwarg))
+        if kwarg: args2.append('**'+self.visit(kwarg))
         return ','.join(args2)
     #@+node:ekr.20141012064706.18417: *4* f.arg (Python3 only)
     # 3: arg = (identifier arg, expr? annotation)
@@ -431,9 +432,9 @@ class AstFormatter:
     def do_Attribute(self, node):
         return '%s.%s' % (
             self.visit(node.value),
-            node.attr) # Don't visit node.attr: it is always a string.
+            node.attr)  # Don't visit node.attr: it is always a string.
     #@+node:ekr.20141012064706.18419: *4* f.Bytes
-    def do_Bytes(self, node): # Python 3.x only.
+    def do_Bytes(self, node):  # Python 3.x only.
         return str(node.s)
     #@+node:ekr.20141012064706.18420: *4* f.Call & f.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -449,7 +450,7 @@ class AstFormatter:
             args.append('*%s' % (self.visit(node.starargs)))
         if getattr(node, 'kwargs', None):
             args.append('**%s' % (self.visit(node.kwargs)))
-        args = [z for z in args if z] # Kludge: Defensive coding.
+        args = [z for z in args if z]  # Kludge: Defensive coding.
         s = '%s(%s)' % (func, ','.join(args))
         return s if self.in_expr else self.indent(s+'\n')
             # 2017/12/15.
@@ -464,16 +465,16 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18422: *4* f.comprehension
     def do_comprehension(self, node):
         result = []
-        name = self.visit(node.target) # A name.
-        it = self.visit(node.iter) # An attribute.
+        name = self.visit(node.target)  # A name.
+        it = self.visit(node.iter)  # An attribute.
         result.append('%s in %s' % (name, it))
         ifs = [self.visit(z) for z in node.ifs]
         if ifs:
             result.append(' if %s' % (''.join(ifs)))
         return ''.join(result)
     #@+node:ekr.20170721073056.1: *4* f.Constant (Python 3.6+)
-    def do_Constant(self, node): # Python 3.6+ only.
-        return str(node.s) # A guess.
+    def do_Constant(self, node):  # Python 3.6+ only.
+        return str(node.s)  # A guess.
     #@+node:ekr.20141012064706.18423: *4* f.Dict
     def do_Dict(self, node):
         result = []
@@ -497,7 +498,7 @@ class AstFormatter:
         key = self.visit(node.key)
         value = self.visit(node.value)
         gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
         return '%s:%s for %s' % (key, value, ''.join(gens))
     #@+node:ekr.20141012064706.18424: *4* f.Ellipsis
     def do_Ellipsis(self, node):
@@ -508,7 +509,7 @@ class AstFormatter:
     #@+node:ekr.20170721075130.1: *4* f.FormattedValue (Python 3.6+)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node): # Python 3.6+ only.
+    def do_FormattedValue(self, node):  # Python 3.6+ only.
         return '%s%s%s' % (
             self.visit(node.value),
             self.visit(node.conversion) if node.conversion else '',
@@ -520,29 +521,28 @@ class AstFormatter:
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
-        
+
         if node.values:
             for value in node.values:
                 self.visit(value)
-                
     #@+node:ekr.20141012064706.18427: *4* f.List
     def do_List(self, node):
         # Not used: list context.
         # self.visit(node.ctx)
         elts = [self.visit(z) for z in node.elts]
-        elts = [z for z in elts if z] # Defensive.
+        elts = [z for z in elts if z]  # Defensive.
         return '[%s]' % ','.join(elts)
     #@+node:ekr.20141012064706.18428: *4* f.ListComp
     def do_ListComp(self, node):
         elt = self.visit(node.elt)
         gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
         return '%s for %s' % (elt, ''.join(gens))
     #@+node:ekr.20141012064706.18429: *4* f.Name & NameConstant
     def do_Name(self, node):
         return node.id
 
-    def do_NameConstant(self, node): # Python 3 only.
+    def do_NameConstant(self, node):  # Python 3 only.
         s = repr(node.value)
         return s
     #@+node:ekr.20141012064706.18430: *4* f.Num
@@ -596,9 +596,9 @@ class AstFormatter:
         return '(%s)' % ','.join(elts)
     #@+node:ekr.20141012064706.18436: *3* f.Operators
     #@+node:ekr.20160521104724.1: *4* f.op_name
-    def op_name (self,node,strict=True):
+    def op_name(self, node, strict=True):
         """Return the print name of an operator node."""
-        name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        name = _op_names.get(self.kind(node), '<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
     #@+node:ekr.20141012064706.18437: *4* f.BinOp
@@ -663,7 +663,7 @@ class AstFormatter:
     def do_AugAssign(self, node):
         return self.indent('%s%s=%s\n' % (
             self.visit(node.target),
-            self.op_name(node.op), # Bug fix: 2013/03/08.
+            self.op_name(node.op),  # Bug fix: 2013/03/08.
             self.visit(node.value)))
     #@+node:ekr.20160523100504.1: *4* f.Await (Python 3)
     # Await(expr value)
@@ -692,7 +692,7 @@ class AstFormatter:
             if isinstance(node.name, ast.AST):
                 result.append(' as %s' % self.visit(node.name))
             else:
-                result.append(' as %s' % node.name) # Python 3.x.
+                result.append(' as %s' % node.name)  # Python 3.x.
         result.append(':\n')
         for z in node.body:
             self.level += 1
@@ -704,7 +704,7 @@ class AstFormatter:
 
     def do_Exec(self, node):
         body = self.visit(node.body)
-        args = [] # Globals before locals.
+        args = []  # Globals before locals.
         if getattr(node, 'globals', None):
             args.append(self.visit(node.globals))
         if getattr(node, 'locals', None):
@@ -841,7 +841,7 @@ class AstFormatter:
     #@+node:ekr.20160317050557.4: *4* f.Try (Python 3)
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
-    def do_Try(self, node): # Python 3
+    def do_Try(self, node):  # Python 3
 
         result = []
         result.append(self.indent('try:\n'))
@@ -930,16 +930,16 @@ class AstFormatter:
             try:
                 for z in node.optional_vars:
                     vars_list.append(self.visit(z))
-            except TypeError: # Not iterable.
+            except TypeError:  # Not iterable.
                 vars_list.append(self.visit(node.optional_vars))
-        if getattr(node, 'items', None): # Python 3.
+        if getattr(node, 'items', None):  # Python 3.
             for item in node.items:
                 result.append(self.visit(item.context_expr))
                 if getattr(item, 'optional_vars', None):
                     try:
                         for z in item.optional_vars:
                             vars_list.append(self.visit(z))
-                    except TypeError: # Not iterable.
+                    except TypeError:  # Not iterable.
                         vars_list.append(self.visit(item.optional_vars))
         result.append(','.join(vars_list))
         result.append(':\n')
@@ -985,7 +985,7 @@ class AstFullTraverser:
     def __init__(self):
         """Ctor for AstFullTraverser class."""
         self.context = None
-        self.level = 0 # The context level only.
+        self.level = 0  # The context level only.
         self.parent = None
 
     #@+others
@@ -1007,12 +1007,12 @@ class AstFullTraverser:
             self.visit(z)
         for z in node.bases:
             self.visit(z)
-        if getattr(node, 'keywords', None): # Python 3
+        if getattr(node, 'keywords', None):  # Python 3
             for keyword in node.keywords:
                 self.visit(keyword.value)
-        if getattr(node, 'starargs', None): # Python 3
+        if getattr(node, 'starargs', None):  # Python 3
             self.visit(node.starargs)
-        if getattr(node, 'kwargs', None): # Python 3
+        if getattr(node, 'kwargs', None):  # Python 3
             self.visit(node.kwargs)
         if visit_body:
             for z in node.body:
@@ -1034,7 +1034,7 @@ class AstFullTraverser:
             self.visit(z)
         assert isinstance(node.name, str)
         self.visit(node.args)
-        if getattr(node, 'returns', None): # Python 3.
+        if getattr(node, 'returns', None):  # Python 3.
             self.visit(node.returns)
         if visit_body:
             for z in node.body:
@@ -1088,9 +1088,9 @@ class AstFullTraverser:
         return s.rstrip()
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20160521102250.1: *4* ft.op_name
-    def op_name (self,node,strict=True):
+    def op_name(self, node, strict=True):
         """Return the print name of an operator node."""
-        name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        name = _op_names.get(self.kind(node), '<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
@@ -1117,9 +1117,9 @@ class AstFullTraverser:
         if getattr(node, 'kwarg', None):
             # An identifier in Python 2.
             self.visit_list(node.kwarg)
-        if getattr(node, 'kwonlyargs', None): # Python 3.
+        if getattr(node, 'kwonlyargs', None):  # Python 3.
             self.visit_list(node.kwonlyargs)
-        if getattr(node, 'kw_defaults', None): # Python 3.
+        if getattr(node, 'kw_defaults', None):  # Python 3.
             self.visit_list(node.kw_defaults)
         for z in node.defaults:
             self.visit(z)
@@ -1150,7 +1150,7 @@ class AstFullTraverser:
             self.visit(z)
     #@+node:ekr.20141012064706.18481: *4* ft.Bytes
     def do_Bytes(self, node):
-        pass # Python 3.x only.
+        pass  # Python 3.x only.
     #@+node:ekr.20141012064706.18486: *4* ft.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -1204,12 +1204,12 @@ class AstFullTraverser:
     # comprehension (expr target, expr iter, expr* ifs)
 
     def do_comprehension(self, node):
-        self.visit(node.target) # A name.
-        self.visit(node.iter) # An attribute.
+        self.visit(node.target)  # A name.
+        self.visit(node.iter)  # An attribute.
         for z in node.ifs:
             self.visit(z)
     #@+node:ekr.20170721073315.1: *4* ft.Constant (Python 3.6+)
-    def do_Constant(self, node): # Python 3.6+ only.
+    def do_Constant(self, node):  # Python 3.6+ only.
         pass
     #@+node:ekr.20141012064706.18489: *4* ft.Dict
     # Dict(expr* keys, expr* values)
@@ -1248,7 +1248,7 @@ class AstFullTraverser:
     #@+node:ekr.20170721075714.1: *4* ft.FormattedValue (Python 3.6+)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node): # Python 3.6+ only.
+    def do_FormattedValue(self, node):  # Python 3.6+ only.
         self.visit(node.value)
         if node.conversion:
             self.visit(node.conversion)
@@ -1303,14 +1303,13 @@ class AstFullTraverser:
         # self.visit(node.ctx)
         pass
 
-    def do_NameConstant(self, node): # Python 3 only.
+    def do_NameConstant(self, node):  # Python 3 only.
         pass
         # s = repr(node.value)
         # return 'bool' if s in ('True', 'False') else s
-
     #@+node:ekr.20150522081736.1: *4* ft.Num
     def do_Num(self, node):
-        pass # Num(object n) # a number as a PyObject.
+        pass  # Num(object n) # a number as a PyObject.
     #@+node:ekr.20141012064706.18499: *4* ft.Repr
     # Python 2.x only
     # Repr(expr value)
@@ -1342,7 +1341,7 @@ class AstFullTraverser:
             self.visit(node.step)
     #@+node:ekr.20150522081748.1: *4* ft.Str
     def do_Str(self, node):
-        pass # represents a string constant.
+        pass  # represents a string constant.
     #@+node:ekr.20141012064706.18501: *4* ft.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -1543,7 +1542,7 @@ class AstFullTraverser:
     # While(expr test, stmt* body, stmt* orelse)
 
     def do_While(self, node):
-        self.visit(node.test) # Bug fix: 2013/03/23.
+        self.visit(node.test)  # Bug fix: 2013/03/23.
         for z in node.body:
             self.visit(z)
         for z in node.orelse:
@@ -1560,14 +1559,14 @@ class AstFullTraverser:
             self.visit(node.context_expr)
         if getattr(node, 'optional_vars', None):
             self.visit(node.optional_vars)
-        if getattr(node, 'items', None): # Python 3.
+        if getattr(node, 'items', None):  # Python 3.
             for item in node.items:
                 self.visit(item.context_expr)
                 if getattr(item, 'optional_vars', None):
                     try:
                         for z in item.optional_vars:
                             self.visit(z)
-                    except TypeError: # Not iterable.
+                    except TypeError:  # Not iterable.
                         self.visit(item.optional_vars)
         for z in node.body:
             self.visit(z)
@@ -1628,28 +1627,28 @@ class AstPatternFormatter(AstFormatter):
     #@+node:ekr.20141012064706.18531: *3* Constants & Name
     # Return generic markers allow better pattern matches.
 
-    def do_BoolOp(self, node): # Python 2.x only.
+    def do_BoolOp(self, node):  # Python 2.x only.
         return 'Bool'
 
-    def do_Bytes(self, node): # Python 3.x only.
-        return 'Bytes' # return str(node.s)
-        
-    def do_Constant(self, node): # Python 3.6+ only.
+    def do_Bytes(self, node):  # Python 3.x only.
+        return 'Bytes'  # return str(node.s)
+
+    def do_Constant(self, node):  # Python 3.6+ only.
         return 'Constant'
 
     def do_Name(self, node):
         return 'Bool' if node.id in ('True', 'False') else node.id
 
-    def do_NameConstant(self, node): # Python 3 only.
+    def do_NameConstant(self, node):  # Python 3 only.
         s = repr(node.value)
         return 'Bool' if s in ('True', 'False') else s
 
     def do_Num(self, node):
-        return 'Num' # return repr(node.n)
+        return 'Num'  # return repr(node.n)
 
     def do_Str(self, node):
         """This represents a string constant."""
-        return 'Str' # return repr(node.s)
+        return 'Str'  # return repr(node.s)
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
 class HTMLReportTraverser:
@@ -1733,7 +1732,7 @@ class HTMLReportTraverser:
         doc = ast.get_docstring(node)
         if doc:
             self.docstring(doc)
-            self.last_doc = doc # Attempt to suppress duplicate.
+            self.last_doc = doc  # Attempt to suppress duplicate.
     #@+node:ekr.20150722204300.22: *4* rt.docstring
     def docstring(self, s):
         self.gen("<pre class='doc'>")
@@ -1858,7 +1857,7 @@ class HTMLReportTraverser:
     def comment(self, comment):
 
         self.span('comment')
-        self.gen('# ' + comment)
+        self.gen('# '+comment)
         self.end_span('comment')
         self.newline()
     #@+node:ekr.20150722204300.20: *4* rt.div
@@ -1916,7 +1915,7 @@ class HTMLReportTraverser:
         # self.keyword(keyword)
         # self.colon()
     #@+node:ekr.20150722204300.5: *4* rt.link
-    def link(self, class_name, href, a_text):\
+    def link(self, class_name, href, a_text): \
 
         return "<a class='%s' href='%s'>%s</a>" % (
             class_name, href, a_text)
@@ -2093,7 +2092,7 @@ class HTMLReportTraverser:
 
         self.simple_statement('break')
     #@+node:ekr.20160523103529.1: *4* rt.Bytes (Python 3)
-    def do_Bytes(self, node): # Python 3.x only.
+    def do_Bytes(self, node):  # Python 3.x only.
         return str(node.s)
     #@+node:ekr.20150722204300.56: *4* rt.Call & do_keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -2148,16 +2147,16 @@ class HTMLReportTraverser:
             hasattr(node, 'starargs') or hasattr(node, 'kwargs'))
         self.div('class')
         self.keyword("class")
-        self.gen(node.name) # Always a string.
+        self.gen(node.name)  # Always a string.
         if has_bases:
             self.gen('(')
             self.visit_list(node.bases, sep=', ')
-            if getattr(node, 'keywords', None): # Python 3
+            if getattr(node, 'keywords', None):  # Python 3
                 for keyword in node.keywords:
                     self.gen('%s=%s' % (keyword.arg, self.visit(keyword.value)))
-            if getattr(node, 'starargs', None): # Python 3
+            if getattr(node, 'starargs', None):  # Python 3
                 self.gen('*%s' % self.visit(node.starargs))
-            if getattr(node, 'kwargs', None): # Python 3
+            if getattr(node, 'kwargs', None):  # Python 3
                 self.gen('*%s' % self.visit(node.kwargs))
             self.gen(')')
         self.colon()
@@ -2195,8 +2194,8 @@ class HTMLReportTraverser:
             self.clean(' ')
         # self.end_span('collection')
     #@+node:ekr.20170721073431.1: *4* rt.Constant (Python 3.6+)
-    def do_Constant(self, node): # Python 3.6+ only.
-        return str(node.s) # A guess.
+    def do_Constant(self, node):  # Python 3.6+ only.
+        return str(node.s)  # A guess.
     #@+node:ekr.20150722204300.61: *4* rt.Continue
     def do_Continue(self, node):
 
@@ -2229,7 +2228,7 @@ class HTMLReportTraverser:
     def do_DictComp(self, node):
         elt = self.visit(node.elt)
         gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
         return '%s for %s' % (elt, ''.join(gens))
     #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helpers
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
@@ -2239,7 +2238,7 @@ class HTMLReportTraverser:
         assert isinstance(node, ast.arguments), node
         first_default = len(node.args) - len(node.defaults)
         for n, arg in enumerate(node.args):
-            if isinstance(arg, (list,tuple)):
+            if isinstance(arg, (list, tuple)):
                 self.tuple_parameter(arg)
             else:
                 self.visit(arg)
@@ -2347,7 +2346,7 @@ class HTMLReportTraverser:
     #@+node:ekr.20170721075845.1: *4* rf.FormattedValue (Python 3.6+: unfinished)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node): # Python 3.6+ only.
+    def do_FormattedValue(self, node):  # Python 3.6+ only.
         self.div('statement')
         self.visit(node.value)
         if node.conversion:
@@ -2456,7 +2455,7 @@ class HTMLReportTraverser:
         self.div('statement')
         self.keyword("import")
         for name, alias in self.get_import_names(node):
-            self.name(name) # self.gen(self.module_link(name))
+            self.name(name)  # self.gen(self.module_link(name))
             if alias:
                 self.keyword("as")
                 self.name(alias)
@@ -2534,7 +2533,7 @@ class HTMLReportTraverser:
 
         self.name(node.id)
     #@+node:ekr.20160315165109.1: *4* rt.NameConstant
-    def do_NameConstant(self, node): # Python 3 only.
+    def do_NameConstant(self, node):  # Python 3 only.
 
         self.name(repr(node.value))
     #@+node:ekr.20160317051849.2: *4* rt.Nonlocal (Python 3)
@@ -2640,7 +2639,7 @@ class HTMLReportTraverser:
         """This represents a string constant."""
 
         def clean(s):
-            return s.replace(' ','').replace('\n','').replace('"','').replace("'",'')
+            return s.replace(' ', '').replace('\n', '').replace('"', '').replace("'", '')
 
         assert isinstance(node.s, str)
         if self.last_doc and clean(self.last_doc) == clean(node.s):
@@ -2793,7 +2792,7 @@ class TokenSync:
     #@+node:ekr.20160225102931.2: *3*  ts.ctor & helpers
     def __init__(self, s, tokens):
         """Ctor for TokenSync class."""
-        assert isinstance(tokens, list) # Not a generator.
+        assert isinstance(tokens, list)  # Not a generator.
         self.s = s
         self.first_leading_line = None
         self.lines = [z.rstrip() for z in g.splitLines(s)]
@@ -2845,7 +2844,7 @@ class TokenSync:
         The strings in self.lines may end in a backslash, so care is needed.
         """
         n, result = len(self.lines), []
-        for i in range(0, n + 1):
+        for i in range(0, n+1):
             result.append([])
         for token in tokens:
             t1, t2, t3, t4, t5 = token
@@ -2861,8 +2860,8 @@ class TokenSync:
         """Return a newline token with '\n' as both val and raw_val."""
         t1 = token_module.NEWLINE
         t2 = '\n'
-        t3 = (0, 0) # Not used.
-        t4 = (0, 0) # Not used.
+        t3 = (0, 0)  # Not used.
+        t4 = (0, 0)  # Not used.
         t5 = '\n'
         return t1, t2, t3, t4, t5
     #@+node:ekr.20160225102931.7: *4* ts.make_string_tokens
@@ -2963,7 +2962,7 @@ class TokenSync:
             while n < len(self.lines):
                 s = self.lines[n]
                 if s.endswith('\\'):
-                    aList.append(s[: -1])
+                    aList.append(s[:-1])
                     n += 1
                 else:
                     aList.append(s)
