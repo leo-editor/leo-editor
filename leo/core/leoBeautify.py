@@ -346,7 +346,7 @@ class BaseTokenHandler:
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
     """
-    
+
     #@+others
     #@-others
 #@+node:ekr.20190725154916.1: ** class BlackCommand
@@ -754,9 +754,9 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-class PythonTokenBeautifier (BaseTokenHandler):
+class PythonTokenBeautifier(BaseTokenHandler):
     """A token-based Python beautifier."""
-    
+
     undo_type = "Pretty Print"
 
     def oops(self):
@@ -969,13 +969,12 @@ class PythonTokenBeautifier (BaseTokenHandler):
         changed = p.b.strip() != s3.strip()
             # Important: ignore leading/trailing whitespace.
         if changed:
-            g.trace('*** changed', p.h)
-            import difflib, pprint
-            g.trace(
-                difflib.ndiff(
-                    pprint.pformat(p.b).splitlines(),
-                    pprint.pformat(s3).splitlines()))
+            if 0:
+                g.trace('*** changed', p.h)
+                import difflib  #, pprint
+                g.printObj(list(difflib.ndiff(g.splitLines(p.b), g.splitLines(s3))))
             self.replace_body(p, s3)
+            p.setDirty()  ###
         # Update the stats
         self.n_input_tokens += len(tokens)
         self.n_output_tokens += len(self.code_list)
@@ -1903,7 +1902,7 @@ class SyntaxSanitizer:
 #@+node:ekr.20191024035716.1: ** class TokenFstringify (PythonTokenBeautifier)
 class FstringifyTokens(PythonTokenBeautifier):
     """A token-based tool that converts % to f-strings."""
-    
+
     undo_type = "Fstringify"
 
     # def __init__(self, c):
