@@ -258,7 +258,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 - Pyzo in Leo: Pyzo can optionally run *within* Leo.
 - Added support for asciidoc and asciidoctor.
-- Added support for pandoc.
+- Added support for pandoc and sphinx.
 - Added support for black.
 - The history_tracer plugin animates git commits.
 - Integration of Leo with VS code.

@@ -11526,7 +11526,7 @@ Selecting these menu items will bring up a short **About Plugin** dialog with th
 
 If a file exists in the plugins directory with the same file name as the plugin but with a .ini extension instead of .py, then a **Properties** item will be created in a submenu. Selecting this item will pop up a Properties Dialog which will allow the contents of this file to be edited.
 
-The .ini file should be formated for use by the python ConfigParser class.
+The .ini file should be formatted for use by the python ConfigParser class.
 
 **Special Methods**
 
@@ -18291,7 +18291,7 @@ should return a list of the widgets of your class in the layout, but only if the
 
 Detail: the above is just using Qt's QObject.findChildren(), the nested_splitter find_child() and (not yet written) find_children() versions search the extra windows as well.
 
-Here I have created a self.mat in your MatplotPaneProvider class to make the windget accessible but it doesn't feel like the correct way to do this.
+Here I have created a self.mat in your MatplotPaneProvider class to make the widget accessible but it doesn't feel like the correct way to do this.
 
 @language python
 
@@ -25554,7 +25554,7 @@ And this this defines the top-level part of a script::
 
 @language python
 
-    @langauge python
+    @language python
     '''My script'''
     &lt;&lt; imports &gt;&gt;
     class Controller:
@@ -30503,7 +30503,13 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+
 
 Added support for black: https://pypi.org/project/black/.
 
+Added support for asciidoc, asciidoctor, pandoc and sphinx.
+
+Added support for @language pandoc.
+
 Added @nopyflakes directive.
+
+The history_tracer plugin animates git commits.
 
 New command-line arguments::
 
@@ -30958,7 +30964,7 @@ Runs the adoc command, then shows the resulting html in the default browser.
     Converts @rst nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.
     
 ``adoc``
-     Converts @adoc nodes to asciidoc text. This command automatically creates markeup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>
+     Converts @adoc nodes to asciidoc text. This command automatically creates markup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>
 <t tx="ekr.20191006113015.1">https://github.com/leo-editor/leo-editor/issues/1281</t>
 <t tx="ekr.20191007104843.1">**Background**
 
