@@ -346,8 +346,8 @@ class BaseTokenHandler:
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
     """
-    
-    undo_type = "Base Undo Type" # Should be overridden.
+
+    undo_type = "Base Undo Type"  # Should be overridden.
 
     def oops(self):
         g.trace('unknown kind', self.kind)
@@ -944,15 +944,15 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20191027164507.1: ** class NullTokenHandler (BaseTokenHandler)
-class DoNothingTokenizer (BaseTokenHandler):
+class DoNothingTokenizer(BaseTokenHandler):
     """
     A token-based beautifier that should leave source code unchanged.
     
     This is the base class for the TokenFstringify class.
     """
-    
-    undo_type = "Null Undo Type" # Should be overridden.
-        
+
+    undo_type = "Null Undo Type"  # Should be overridden.
+
     #@+others
     #@+node:ekr.20191027172805.1: *3* null_tok_h.scan_all_tokens
     def scan_all_tokens(self, tokens):
