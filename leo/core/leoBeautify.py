@@ -346,9 +346,9 @@ class BaseTokenHandler:
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
     """
-    
+
     def oops(self):
-        g.trace('unknown kind', self.kind) 
+        g.trace('unknown kind', self.kind)
 
     #@+others
     #@+node:ekr.20191027162345.1: *3* token_h.birth
@@ -371,7 +371,7 @@ class BaseTokenHandler:
         self.check_time = 0.0
         self.total_time = 0.0
         self.reload_settings()
-        
+
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
