@@ -15458,6 +15458,7 @@ Leo and Other Programs
 .. toctree::
    :maxdepth: 2
 
+   leoandasciidoc
    emacs
    vimBindings
    leoBridge
@@ -31022,25 +31023,29 @@ dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
 <t tx="mhw.20191008134016.1"></t>
-<t tx="mhw.20191008134029.1">_New with Leo 6.1_
+<t tx="mhw.20191008134029.1">##########################
+Leo and Asciidoctor
+##########################
+
+**New with Leo 6.1**
 
 The Leo `@adoc` directive and the `adoc` command need either **Asciidoc3** or **Asciidoctor** tool installed and in PATH.Asciidoctor is probably the best of the two to use.
 
 **Linux:** use your system package manager or ruby `gem install asciidoctor`. More info at https://asciidoctor.org/#installation
 
 
-**Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely:
+**Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely::
 
-~~~
-pip install asciidoc3
-   # stuff happens
 
-asciidoc3_postinstall
-   # more stuff happens
-
-#now asciidoc3 is ready and Leo can use it:
-asciidoc3 --help
-~~~
+    pip install asciidoc3
+       # stuff happens
+    
+    asciidoc3_postinstall
+       # more stuff happens
+    
+    #now asciidoc3 is ready and Leo can use it:
+    asciidoc3 --help
+    
 
 If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
 </t>
