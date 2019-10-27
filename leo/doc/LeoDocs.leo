@@ -11813,7 +11813,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.0-b1
+| latest_release_version = 6.1-b1
 | latest_release_date = {{Start date and age|2019|06|18}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
@@ -15458,6 +15458,7 @@ Leo and Other Programs
 .. toctree::
    :maxdepth: 2
 
+   leoandasciidoc
    emacs
    vimBindings
    leoBridge
@@ -20922,11 +20923,11 @@ wget --no-check-certificate https://bitbucket.org/pypa/setuptools/raw/bootstrap/
 
 py3-pyqt5/bin/python ez_setup.py --insecure
 
-wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.0.8.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
+wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.1.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
 
-tar xzvf pip-6.0.8.tar.gz
+tar xzvf pip-6.1.tar.gz
 
-cd pip-6.0.8
+cd pip-6.1
 
 ../py3-pyqt5/bin/python setup.py install
 
@@ -22526,7 +22527,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-6.0.
+~/leo-6.1.
 
 You now have several choices.
 
@@ -22534,7 +22535,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-6.0
+    cd ~/leo-6.1
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -26814,7 +26815,7 @@ At all times, anyone can pull stable code from master.
 
 Only the maintainer (EKR) is supposed to work on release or master, so nobody needs to hold back or knows what is going on in them. At all times everyone can happily hack on devel,  or better, their personal feature branches.
 
-To prepare a new release,  the maintainer branches devel to a new branch, say 6.0.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
+To prepare a new release,  the maintainer branches devel to a new branch, say 6.x.y.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
 
 This visualization made it all clear to me:
 https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png</t>
@@ -31022,25 +31023,29 @@ dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
 <t tx="mhw.20191008134016.1"></t>
-<t tx="mhw.20191008134029.1">_New with Leo 6.1_
+<t tx="mhw.20191008134029.1">##########################
+Leo and Asciidoctor
+##########################
+
+**New with Leo 6.1**
 
 The Leo `@adoc` directive and the `adoc` command need either **Asciidoc3** or **Asciidoctor** tool installed and in PATH.Asciidoctor is probably the best of the two to use.
 
 **Linux:** use your system package manager or ruby `gem install asciidoctor`. More info at https://asciidoctor.org/#installation
 
 
-**Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely:
+**Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely::
 
-~~~
-pip install asciidoc3
-   # stuff happens
 
-asciidoc3_postinstall
-   # more stuff happens
-
-#now asciidoc3 is ready and Leo can use it:
-asciidoc3 --help
-~~~
+    pip install asciidoc3
+       # stuff happens
+    
+    asciidoc3_postinstall
+       # more stuff happens
+    
+    #now asciidoc3 is ready and Leo can use it:
+    asciidoc3 --help
+    
 
 If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
 </t>

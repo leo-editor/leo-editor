@@ -1821,11 +1821,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
-<t tx="ekr.20180405171433.7">Merge the -rel branch into master.
-- Run all unit tests.
-- Run pylint on all files.
-
-Create a git tag **last**
+<t tx="ekr.20180405171433.7">Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
@@ -2326,6 +2322,8 @@ There is a "Draft New Release" button at the top-right of the page.
 </t>
 <t tx="ekr.20190618104704.1">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
+   
+- Announce to leo-editor.
 
 - Announce to Python-announce-list using email:
    python-announce-list@python.org
@@ -2333,10 +2331,12 @@ There is a "Draft New Release" button at the top-right of the page.
 
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
+  
+- Send email to Matt.
 
-- (Email sent) [Matt] Register Leo at https://pypi.python.org/pypi/leo
+- [Matt] Register Leo at https://pypi.python.org/pypi/leo
 
-- (Done) My blog: http://edreamleo.blogspot.com/
+- My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
 <t tx="ekr.20190802115604.1">- Run all unit tests.
