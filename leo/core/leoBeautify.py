@@ -966,9 +966,15 @@ class PythonTokenBeautifier (BaseTokenHandler):
         t5 = time.process_time()
         # Restore the tags after the compare
         s3 = self.sanitizer.uncomment_leo_lines(comment_string, p, s2)
-        changed = p.b.rstrip() != s3.rstrip()
-            # Important: ignore trailing whitespace.
+        changed = p.b.strip() != s3.strip()
+            # Important: ignore leading/trailing whitespace.
         if changed:
+            g.trace('*** changed', p.h)
+            import difflib, pprint
+            g.trace(
+                difflib.ndiff(
+                    pprint.pformat(p.b).splitlines(),
+                    pprint.pformat(s3).splitlines()))
             self.replace_body(p, s3)
         # Update the stats
         self.n_input_tokens += len(tokens)
