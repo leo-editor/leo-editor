@@ -166,9 +166,9 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
+<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
-<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
@@ -230,7 +230,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.0
+Version: 6.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -249,20 +249,24 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.0 final, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.1 b1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.0**
+**The highlights of Leo 6.1**
 
-- Leo now requires python 3.6 or above.
-  This greatly simplifies Leo's code.
-- Leo's default gui uses Qt Docks.
-  Use --no-dock to use Leo's legacy gui.
-- Several commands now generate clickable links in the Log pane.
-  This greatly speeds navigation.
-- The usual assortment of bug fixes and minor improvements.
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
+- Added support for pandoc and sphinx.
+- Added support for black.
+- The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
+
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
 
 **Links**
 

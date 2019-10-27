@@ -220,10 +220,11 @@ class MarkupCommands:
         
     def reload_settings(self):
         c = self.c
-        getBool, getString = c.config.getBool, c.config.getString
+        getString = c.config.getString
+        self.sphinx_command_dir = getString('sphinx-command-directory')
         self.sphinx_default_command = getString('sphinx-default-command')
-        self.sphinx_make_build_dir = getBool('sphinx-make-build_directory', default=False)
-        self.sphinx_make_conf = getBool('sphinx-make-conf.py', default=False)
+        self.sphinx_input_dir = getString('sphinx-input-directory')
+        self.sphinx_output_dir = getString('sphinx-output-directory')
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
@@ -255,7 +256,7 @@ class MarkupCommands:
             except IOError:
                 g.es_print(f"Can not open {i_path!r}")
             except Exception:
-                g.es_print('Unexpected exception')
+                g.es_print(f"Unexpected exception opening {i_path!r}")
                 g.es_exception()
         # Convert each file to html.
         o_paths = []
@@ -271,10 +272,14 @@ class MarkupCommands:
             else:
                 g.trace('BAD KIND')
                 return None
-            print(f"{kind}: wrote {o_path}")
+            if kind != 'sphinx':
+                print(f"{kind}: wrote {o_path}")
         if preview:
-            # open .html files in the default browser.
-            g.execute_shell_commands(o_paths)
+            if kind == 'sphinx':
+                g.es_print('preview not available for sphinx')
+            else:
+                # open .html files in the default browser.
+                g.execute_shell_commands(o_paths)
         t2 = time.time()
         if verbose:
             n = len(i_paths)
@@ -340,23 +345,41 @@ class MarkupCommands:
         g.execute_shell_commands(command)
     #@+node:ekr.20191017165427.1: *4* markup.run_sphinx
     def run_sphinx(self, i_path, o_path):
-        """
-         Process the input file given by i_path with sphinx.
-        """
-        global sphinx_build
-        assert sphinx_build, g.callers()
+        """Process i_path and o_path with sphinx."""
+        trace = True
+        # cd to the command directory, or i_path's directory.
+        command_dir = g.os_path_finalize(
+            self.sphinx_command_dir or os.path.dirname(i_path))
+        if os.path.exists(command_dir):
+            if trace: g.trace(f"\nos.chdir: {command_dir!r}")
+            os.chdir(command_dir)
+        else:
+            g.error(f"command directory not found: {command_dir!r}")
+            return
+        #
+        # If a default command exists, just call it.
+        # The user is responsible for making everything work.
+        if self.sphinx_default_command:
+            if trace: g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
+            g.execute_shell_commands(self.sphinx_default_command)
+            return
+        # Compute the input directory.
+        input_dir = g.os_path_finalize(
+            self.sphinx_input_dir or os.path.dirname(i_path))
+        if not os.path.exists(input_dir):
+            g.error(f"input directory not found: {input_dir!r}")
+            return
+        # Compute the output directory.
+        output_dir = g.os_path_finalize(
+            self.sphinx_output_dir or os.path.dirname(o_path))
+        if not os.path.exists(output_dir):
+            g.error(f"output directory not found: {output_dir!r}")
+            return
+        #
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
-        source_dir = os.path.dirname(i_path)
-        output_dir = os.path.dirname(o_path)
-        if 1:
-            # Can't do cd from execute_shell_commands.
-            g.trace(repr(source_dir))
-            os.chdir(source_dir)
-            # Use conf file.
-            command = 'make html'
-        else:
-            command = f"sphinx-build {source_dir} {output_dir} {i_path}"
+        command = f"sphinx-build {input_dir} {output_dir} {i_path}"
+        if trace: g.trace(f"\ncommand: {command!r}\n")
         g.execute_shell_commands(command)
     #@+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root):
@@ -406,11 +429,23 @@ class MarkupCommands:
         if not p.h.strip():
             return
         level = max(0, self.level_offset + p.level() - self.root_level)
+        if self.kind == 'sphinx':
+            # For now, assume rST markup!
+            # Hard coded characters. Never use '#' underlining.
+            chars = '''=+*^~"'`-:><_'''
+            if len(chars) > level:
+                ch = chars[level]
+                line = ch * len(p.h)
+                self.output_file.write(f"{p.h}\n{line}\n\n")
+            return
         if self.kind == 'pandoc':
             section = '#' * min(level, 6)
-        else:
+        elif self.kind == 'adoc':
             # level 0 (a single #) should be done by hand.
             section = '=' * level
+        else:
+            g.es_print(f"bad kind: {self.kind!r}")
+            return
         self.output_file.write(f"{section} {p.h}\n\n")
     #@+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s):
