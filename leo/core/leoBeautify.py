@@ -346,17 +346,46 @@ class BaseTokenHandler:
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
     """
+    
+    undo_type = "Base Undo Type" # Should be overridden.
 
     def oops(self):
         g.trace('unknown kind', self.kind)
 
     #@+others
+    #@+node:ekr.20150523132558.1: *3* class OutputToken
+    class OutputToken:
+        """A class representing output tokens"""
+
+        def __init__(self, kind, value):
+            self.kind = kind
+            self.value = value
+
+        def __repr__(self):
+            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+            return f"{self.kind:15} {val}"
+
+        def __str__(self):
+            # More compact
+            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+            return f"{self.kind} {val}"
+
+        def to_string(self):
+            """
+            Convert an output token to a string.
+            Note: repr shows the length of line-indent string.
+            """
+            return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20191027162345.1: *3* token_h.birth
     def __init__(self, c):
         self.c = c
         self.backslash_seen = False
             # True if a backslash-newline appears at the end of a *string*.
+        self.changed = None
+        self.code_list = []
         self.kind = None
+        self.raw_line = None
+            # The entire line, used for strings, comments.
         self.tab_width = None
         self.tokens = []
         # Statistics...
@@ -375,7 +404,52 @@ class BaseTokenHandler:
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
-    #@+node:ekr.20191024044526.1: *3* token_h.find_root
+    #@+node:ekr.20191027171520.1: *3* token_h: Must be overridden
+    def do_token(self, token):
+        """
+        Handle one token. Token handlers may call this method to do look-ahead processing.
+        """
+        raise NotImplementedError
+
+    def scan_all_tokens(self, tokens):
+        """
+        Scan all tokens in self.tokens, returning the resulting string.
+        
+        The self.tokens ivar allows for lookahead in the token handlers.
+        """
+        raise NotImplementedError
+    #@+node:ekr.20191027170529.1: *3* token_h: Tokens...
+    #@+node:ekr.20191027170619.1: *4* token_h.add_token
+    def add_token(self, kind, value=''):
+        """
+        Add a token to the code list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        OutputToken.to_string() ignores such tokens.
+        """
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
+        tok = self.OutputToken(kind, value)
+        self.code_list.append(tok)
+    #@+node:ekr.20150526201701.8: *4* token_h.file_end (may be overridden)
+    def file_end(self):
+        """
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        """
+        ### self.clean_blank_lines()
+        ### self.add_token('line-end', '\n')
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+    #@+node:ekr.20191027165035.1: *3* token_h: Utils...
+    #@+node:ekr.20150528180738.1: *4* token_h.end_undo
+    def end_undo(self):
+        """Complete undo processing."""
+        c, u = self.c, self.c.undoer
+        if self.changed:
+            # Tag the end of the command.
+            u.afterChangeGroup(c.p, self.undo_type, dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20191024044526.1: *4* token_h.find_root
     def find_root(self):
         """
         Return the nearest ancestor @<file> node, or None.
@@ -399,7 +473,7 @@ class BaseTokenHandler:
             return path
         g.es_print(f"file not found: {filename} in {basedir}")
         return None
-    #@+node:ekr.20191024104043.1: *3* token_h.look_ahead
+    #@+node:ekr.20191024104043.1: *4* token_h.look_ahead
     def look_ahead(self, n):
         """
         Look ahead n tokens.  n >= 0
@@ -411,27 +485,7 @@ class BaseTokenHandler:
         kind = token_module.tok_name[t1].lower()
         val = g.toUnicode(t2)
         return kind, val
-    #@+node:ekr.20191024135748.1: *3* token_h.token_description
-    def token_description(self, token):
-        """Return a summary of token's kind & value"""
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return f"{kind:>15} {val}"
-    #@+node:ekr.20191024050218.1: *3* token_h.tokenize_string
-    def tokenize_string(self, contents, filename):
-        """
-        Return (ast_node, tokens) from the contents of the given file.
-        """
-        t1 = time.process_time()
-        # Generate the tokens.
-        readlines = g.ReadLinesClass(contents).next
-        tokens = list(tokenize.generate_tokens(readlines))
-        # Update stats.
-        t2 = time.process_time()
-        self.tokenize_time += t2 - t1
-        return tokens
-    #@+node:ekr.20150528172940.1: *3* token_h.print_stats
+    #@+node:ekr.20150528172940.1: *4* token_h.print_stats
     def print_stats(self):
         print(
             f"{'='*10} stats\n\n"
@@ -446,6 +500,44 @@ class BaseTokenHandler:
             f"check          {self.check_time:4.2f}\n"
             f"total          {self.total_time:4.2f}"
         )
+    #@+node:ekr.20150528171420.1: *4* token_h.replace_body
+    def replace_body(self, p, s):
+        """Undoably replace the body."""
+        c, u = self.c, self.c.undoer
+        undoType = self.undo_type
+        if p.b == s:
+            return
+        self.n_changed_nodes += 1
+        if not self.changed:
+            # Start the group.
+            u.beforeChangeGroup(p, undoType)
+            self.changed = True
+            self.dirtyVnodeList = []
+        undoData = u.beforeChangeNodeContents(p)
+        c.setBodyString(p, s)
+        dirtyVnodeList2 = p.setDirty()
+        self.dirtyVnodeList.extend(dirtyVnodeList2)
+        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20191024135748.1: *4* token_h.token_description
+    def token_description(self, token):
+        """Return a summary of token's kind & value"""
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return f"{kind:>15} {val}"
+    #@+node:ekr.20191024050218.1: *4* token_h.tokenize_string
+    def tokenize_string(self, contents, filename):
+        """
+        Return (ast_node, tokens) from the contents of the given file.
+        """
+        t1 = time.process_time()
+        # Generate the tokens.
+        readlines = g.ReadLinesClass(contents).next
+        tokens = list(tokenize.generate_tokens(readlines))
+        # Update stats.
+        t2 = time.process_time()
+        self.tokenize_time += t2 - t1
+        return tokens
     #@-others
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
@@ -851,6 +943,57 @@ class CPrettyPrinter:
             return len(s)
         return j + 2
     #@-others
+#@+node:ekr.20191027164507.1: ** class NullTokenHandler (BaseTokenHandler)
+class DoNothingTokenizer (BaseTokenHandler):
+    """
+    A token-based beautifier that should leave source code unchanged.
+    
+    This is the base class for the TokenFstringify class.
+    """
+    
+    undo_type = "Null Undo Type" # Should be overridden.
+        
+    #@+others
+    #@+node:ekr.20191027172805.1: *3* null_tok_h.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Scan all tokens in self.tokens, returning the resulting string.
+        """
+        # Init ivars.
+        self.code_list = []
+        self.last_line_number = 0
+        self.tokens = tokens
+        # Init tokens.
+        self.add_token('file-start')
+        # Handle all tokens.
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+        # Return string result.
+        return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20191027172852.1: *3* null_tok_h.do_token (REVISE)
+    def do_token(self, token):
+        """Handle one token so that the output is unchanged."""
+        t1, t2, t3, t4, t5 = token
+        srow, scol = t3
+        self.kind = token_module.tok_name[t1].lower()
+        self.val = g.toUnicode(t2)
+        self.raw_line = g.toUnicode(t5).rstrip()
+        if srow != self.last_line_number:
+            # Handle a previous backslash.
+            if self.backslash_seen:
+                self.add_token('backslash', '\\')
+                self.add_token('line-end', '\n')
+                self.backslash_seen = False
+            # Start a new row.
+            self.backslash_seen = self.raw_line.endswith('\\')
+            self.last_line_number = srow
+        ### To do.
+            # func = getattr(self, f"do_{self.kind}", self.oops)
+            # func()
+    #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier(BaseTokenHandler):
     """A token-based Python beautifier."""
@@ -858,29 +1001,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
     undo_type = "Pretty Print"
 
     #@+others
-    #@+node:ekr.20150523132558.1: *3* class OutputToken
-    class OutputToken:
-        """A class representing Output Tokens"""
-
-        def __init__(self, kind, value):
-            self.kind = kind
-            self.value = value
-
-        def __repr__(self):
-            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-            return f"{self.kind:15} {val}"
-
-        def __str__(self):
-            # More compact
-            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-            return f"{self.kind} {val}"
-
-        def to_string(self):
-            """
-            Convert an output token to a string.
-            Note: repr shows the length of line-indent string.
-            """
-            return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
     class ParseState:
         """
@@ -918,14 +1038,8 @@ class PythonTokenBeautifier(BaseTokenHandler):
         super().__init__(c)
         #
         # Globals...
-        self.code_list = []
-            # The list of output tokens
         self.orange = False
             # Split or join lines only if orange is True.
-        self.raw_line = None
-            # The entire line, used for strings, comments.
-        self.s = None
-            # The string containing the line.
         self.val = None
             # The string containing the input token's value.
         #
@@ -985,6 +1099,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
+    #@+node:ekr.20191027165605.1: *3* ptb: Overrides
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20191024071243.1: *4* ptb.do_token
     def do_token(self, token):
@@ -1110,7 +1225,8 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.code_list = []
         self.state_stack = []
         last_line_number = 0
-        self.file_start()
+        self.add_token('file-start')
+        self.push_state('file-start')
         for token5tuple in tokens:
             t1, t2, t3, t4, t5 = token5tuple
             srow, scol = t3
@@ -1141,7 +1257,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191024072508.1: *4* ptb.scan_all_tokens
+    #@+node:ekr.20191027164959.1: *4* ptb.scan_all_tokens
     def scan_all_tokens(self, tokens):
         """
         Scan all tokens in self.tokens, returning the resulting string.
@@ -1154,8 +1270,10 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.last_line_number = 0
         self.state_stack = []
         self.tokens = tokens
+        # Init tokens and state.
+        self.add_token('file-start')
+        self.push_state('file-start')
         # Generate tokens.
-        self.file_start()
         while self.tokens:
             token = self.tokens.pop(0)
             self.do_token(token)
@@ -1395,7 +1513,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
                 self.op(val)
         else:
             self.op_blank(val)
-    #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
+    #@+node:ekr.20191027172407.1: *4* ptb.file_end
     def file_end(self):
         """
         Add a file-end token to the code list.
@@ -1405,18 +1523,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.add_token('line-end', '\n')
         self.add_token('line-end', '\n')
         self.add_token('file-end')
-
-    def file_start(self):
-        """Add a file-start token to the code list and the state stack."""
-        self.add_token('file-start')
-        self.push_state('file-start')
-    #@+node:ekr.20150530190758.1: *4* ptb.line_indent
-    def line_indent(self, ws=None):
-        """Add a line-indent token if indentation is non-empty."""
-        self.clean('line-indent')
-        ws = ws or self.lws
-        if ws:
-            self.add_token('line-indent', ws)
     #@+node:ekr.20150526201701.9: *4* ptb.line_end & split/join helpers
     def line_end(self):
         """Add a line-end request to the code list."""
@@ -1603,6 +1709,13 @@ class PythonTokenBeautifier(BaseTokenHandler):
         # To do...
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
+    #@+node:ekr.20150530190758.1: *4* ptb.line_indent
+    def line_indent(self, ws=None):
+        """Add a line-indent token if indentation is non-empty."""
+        self.clean('line-indent')
+        ws = ws or self.lws
+        if ws:
+            self.add_token('line-indent', ws)
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):
@@ -1756,34 +1869,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20150530064617.1: *3* ptb.Utils
-    #@+node:ekr.20150528171420.1: *4* ptb.replace_body
-    def replace_body(self, p, s):
-        """Undoably replace the body."""
-        c, u = self.c, self.c.undoer
-        undoType = self.undo_type
-        if p.b == s:
-            return
-        self.n_changed_nodes += 1
-        if not self.changed:
-            # Start the group.
-            u.beforeChangeGroup(p, undoType)
-            self.changed = True
-            self.dirtyVnodeList = []
-        undoData = u.beforeChangeNodeContents(p)
-        c.setBodyString(p, s)
-        dirtyVnodeList2 = p.setDirty()
-        self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20150528180738.1: *4* ptb.end_undo
-    def end_undo(self):
-        """Complete undo processing."""
-        c = self.c
-        u = c.undoer
-        undoType = 'Pretty Print'
-        current = c.p
-        if self.changed:
-            # Tag the end of the command.
-            u.afterChangeGroup(current, undoType, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20190909072007.1: *4* ptb.find_delims (new)
     def find_delims(self, tokens):
         """
@@ -2024,12 +2109,8 @@ class FstringifyTokens(PythonTokenBeautifier):
 
     undo_type = "Fstringify"
 
-    # def __init__(self, c):
-        # super().__init__(c)
-
     #@+others
-    #@+node:ekr.20191025080131.1: *3* fstring: overrides
-    #@+node:ekr.20191024051733.11: *4* fstring.do_string (sets backslash_seen)
+    #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
@@ -2045,7 +2126,175 @@ class FstringifyTokens(PythonTokenBeautifier):
         if self.val.find('\\\n'):
             self.backslash_seen = False
         self.blank()
-    #@+node:ekr.20191025084714.1: *3* fstring: entries
+    #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
+    def convert_fstring(self):
+        """
+        Scan a string, converting it to an f-string.
+        The 'string' token has already be consumed.
+        """
+        string_val = self.val
+        specs = self.scan_format_string(string_val)
+        values, tokens = self.scan_for_values()
+        if len(specs) != len(values):
+            g.trace('\nMISMATCH\n')
+            self.add_token('string', string_val)
+            self.blank()
+            return
+        # Actually consume the scanned tokens.
+        for token in tokens:
+            self.tokens.pop(0)
+        # Substitute the values.
+        i, result = 0, ['f']
+        for spec_i, m in enumerate(specs):
+            value = values[spec_i]
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                result.append(string_val[i : start])
+            spec, tail = self.munge_spec(spec)
+            result.append('{')
+            result.append(value)
+            if spec:
+                result.append(':')
+                result.append(spec)
+            if tail:
+                result.append('!')
+                result.append(tail)
+            result.append('}')
+            i = end
+        # Finish.
+        if i < len(string_val):
+            result.append(string_val[i:])
+        if len(result) > 2:
+            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
+        self.add_token('string', ''.join(result))
+    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (spec, tail)
+        """
+        tail = None
+        if spec.startswith('+'):
+            spec = spec[1:]
+        elif spec.startswith('-'):
+            spec = '>' + spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            spec = spec[:-1]
+            tail = 'r'
+        return spec, tail
+    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    def munge_string(self, string_val, aList):
+        """
+        Escape all strings as necessary to make a valid result.
+        """
+        if not string_val:
+            return aList
+        delim = string_val[0]
+        delim2 = '"' if delim == "'" else '"'
+        return [z.replace(delim, delim2) for z in aList]
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
+    def scan_for_values(self):
+        """
+        Return a list of possibly parenthesized values for the format string.
+        
+        This method never actually consumes tokens.
+        """
+        # Skip the '%'
+        assert self.look_ahead(0) == ('op', '%')
+        tokens = [self.tokens[0]]
+        token_i = 1
+        include_paren = self.look_ahead(1) == ('op', '(')
+        if include_paren:
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)
+        #
+        # TEMP: Find all tokens up to the first ')'
+        results, value_list = [], []
+        while token_i < len(self.tokens):
+            kind, val = self.look_ahead(token_i)
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)
+            if (kind, val) == ('op', ')'):
+                results.append(''.join(value_list))
+                value_list = []
+                if not include_paren:
+                    tokens = tokens[:-1]
+                break
+            if (kind, val) == ('op', ','):
+                results.append(''.join(value_list))
+                value_list = []
+            elif kind == 'op' and val in '([{':
+                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+                value_list.extend(values_list2)
+                tokens.extend(self.tokens[token_i : token_i2])
+                token_i = token_i2
+            else:
+                value_list.append(val)
+        return results, tokens
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+
+    ###
+        # import string
+        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
+            # tuples (literal_text, field_name, format_spec, conversion).
+            # This is used by vformat() to break the string into either literal text, or replacement fields.
+            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
+            # If there is no literal text (which can happen if two replacement fields occur consecutively),
+            # then literal_text will be a zero-length string.
+            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
+    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
+    def scan_to_matching(self, token_i, val):
+        """
+        self.tokens[token_i] represents an open (, [ or {.
+        
+        Return (values_list, token_i) of all tokens to the matching closing delim.
+        """
+        values_list = []
+        kind0, val0 = self.look_ahead(token_i)
+        assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
+        levels = [0, 0, 0]
+        level_index = '([{'.index(val)
+        levels[level_index] += 1
+        # Move past the opening delim.
+        values_list.append(val0)
+        token_i += 1
+        while token_i < len(self.tokens):
+            progress = token_i
+            kind, val = self.look_ahead(token_i)
+            token_i += 1
+            if kind == 'op' and val in ')]}':
+                values_list.append(val)
+                level_index = ')]}'.index(val)
+                levels[level_index] -= 1
+                if levels == [0, 0, 0]:
+                    return values_list, token_i
+            elif kind == 'op' and val in '([{':
+                # Recurse.
+                values_list2, token_i = self.scan_to_matching(token_i-1, val)
+                values_list.extend(values_list2)
+            else:
+                values_list.append(val)
+            assert token_i > progress, (kind, val)
+        g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
+        return [], token_i
+    #@+node:ekr.20191025084714.1: *3* fstring: Entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
     def fstringify_file(self):
         """
@@ -2136,174 +2385,6 @@ class FstringifyTokens(PythonTokenBeautifier):
             # f"{errors} error{g.plural(errors)} "
             f"in {t2-t1:4.2f} sec."
         )
-    #@+node:ekr.20191024102832.1: *3* fstring.convert_fstring & helpers
-    def convert_fstring(self):
-        """
-        Scan a string, converting it to an f-string.
-        The 'string' token has already be consumed.
-        """
-        string_val = self.val
-        specs = self.scan_format_string(string_val)
-        values, tokens = self.scan_for_values()
-        if len(specs) != len(values):
-            g.trace('\nMISMATCH\n')
-            self.add_token('string', string_val)
-            self.blank()
-            return
-        # Actually consume the scanned tokens.
-        for token in tokens:
-            self.tokens.pop(0)
-        # Substitute the values.
-        i, result = 0, ['f']
-        for spec_i, m in enumerate(specs):
-            value = values[spec_i]
-            start, end, spec = m.start(0), m.end(0), m.group(1)
-            if start > i:
-                result.append(string_val[i : start])
-            spec, tail = self.munge_spec(spec)
-            result.append('{')
-            result.append(value)
-            if spec:
-                result.append(':')
-                result.append(spec)
-            if tail:
-                result.append('!')
-                result.append(tail)
-            result.append('}')
-            i = end
-        # Finish.
-        if i < len(string_val):
-            result.append(string_val[i:])
-        if len(result) > 2:
-            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
-        self.add_token('string', ''.join(result))
-    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
-    def munge_spec(self, spec):
-        """
-        Return (spec, tail)
-        """
-        tail = None
-        if spec.startswith('+'):
-            spec = spec[1:]
-        elif spec.startswith('-'):
-            spec = '>' + spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            spec = spec[:-1]
-            tail = 'r'
-        return spec, tail
-    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
-    def munge_string(self, string_val, aList):
-        """
-        Escape all strings as necessary to make a valid result.
-        """
-        if not string_val:
-            return aList
-        delim = string_val[0]
-        delim2 = '"' if delim == "'" else '"'
-        return [z.replace(delim, delim2) for z in aList]
-    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values & helper
-    def scan_for_values(self):
-        """
-        Return a list of possibly parenthesized values for the format string.
-        
-        This method never actually consumes tokens.
-        """
-        # Skip the '%'
-        assert self.look_ahead(0) == ('op', '%')
-        tokens = [self.tokens[0]]
-        token_i = 1
-        include_paren = self.look_ahead(1) == ('op', '(')
-        if include_paren:
-            token = self.tokens[token_i]
-            token_i += 1
-            tokens.append(token)
-        #
-        # TEMP: Find all tokens up to the first ')'
-        results, value_list = [], []
-        while token_i < len(self.tokens):
-            kind, val = self.look_ahead(token_i)
-            token = self.tokens[token_i]
-            token_i += 1
-            tokens.append(token)
-            if (kind, val) == ('op', ')'):
-                results.append(''.join(value_list))
-                value_list = []
-                if not include_paren:
-                    tokens = tokens[:-1]
-                break
-            if (kind, val) == ('op', ','):
-                results.append(''.join(value_list))
-                value_list = []
-            elif kind == 'op' and val in '([{':
-                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
-                value_list.extend(values_list2)
-                tokens.extend(self.tokens[token_i : token_i2])
-                token_i = token_i2
-            else:
-                value_list.append(val)
-        return results, tokens
-    #@+node:ekr.20191025022207.1: *5* fstring.scan_to_matching
-    def scan_to_matching(self, token_i, val):
-        """
-        self.tokens[token_i] represents an open (, [ or {.
-        
-        Return (values_list, token_i) of all tokens to the matching closing delim.
-        """
-        values_list = []
-        kind0, val0 = self.look_ahead(token_i)
-        assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
-        levels = [0, 0, 0]
-        level_index = '([{'.index(val)
-        levels[level_index] += 1
-        # Move past the opening delim.
-        values_list.append(val0)
-        token_i += 1
-        while token_i < len(self.tokens):
-            progress = token_i
-            kind, val = self.look_ahead(token_i)
-            token_i += 1
-            if kind == 'op' and val in ')]}':
-                values_list.append(val)
-                level_index = ')]}'.index(val)
-                levels[level_index] -= 1
-                if levels == [0, 0, 0]:
-                    return values_list, token_i
-            elif kind == 'op' and val in '([{':
-                # Recurse.
-                values_list2, token_i = self.scan_to_matching(token_i-1, val)
-                values_list.extend(values_list2)
-            else:
-                values_list.append(val)
-            assert token_i > progress, (kind, val)
-        g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
-        return [], token_i
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
-
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
-
-    def scan_format_string(self, s):
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-
-    ###
-        # import string
-        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
-            # tuples (literal_text, field_name, format_spec, conversion).
-            # This is used by vformat() to break the string into either literal text, or replacement fields.
-            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
-            # If there is no literal text (which can happen if two replacement fields occur consecutively),
-            # then literal_text will be a zero-length string.
-            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@-others
 #@-others
 if __name__ == "__main__":
