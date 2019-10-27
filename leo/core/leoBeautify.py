@@ -5,6 +5,7 @@
 #@+node:ekr.20150530081336.1: ** << imports >>
 try:
     import leo.core.leoGlobals as g
+    import leo.core.leoAst as leoAst
 except ImportError:
     # Allow main() to run in any folder containing leoGlobals.py
     # pylint: disable=relative-import
@@ -275,9 +276,8 @@ def beautify(options, path):
         g.es_exception()
         g.printObj(s2, tag='RESULT')
         return
-    try:
-        beautifier.compare_two_asts(node1, node2)
-    except Exception:
+    ok = leoAst.compare_asts(node1, node2)
+    if not ok:
         print(f"failed to beautify {fn}")
         return
     with open(path, 'wb') as f:
@@ -340,9 +340,15 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20190908033048.1: ** class AstNotEqual (Exception)
-class AstNotEqual(Exception):
-    """The two given AST's are not equivalent."""
+#@+node:ekr.20191027071100.1: ** class BaseTokenHandler
+class BaseTokenHandler:
+    """
+    Common methods for token-based code, including Leo's beautify and
+    fstringify commands.
+    """
+    
+    #@+others
+    #@-others
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
     """A class to run black on all Python @<file> nodes in c.p's tree."""
@@ -748,7 +754,7 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-class PythonTokenBeautifier:
+class PythonTokenBeautifier (BaseTokenHandler):
     """A token-based Python beautifier."""
     
     undo_type = "Pretty Print"
@@ -900,65 +906,6 @@ class PythonTokenBeautifier:
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20190908154125.1: *3* ptb.Compare & dump AST's
-    #@+node:ekr.20190908032911.1: *4* ptb.compare_two_asts
-    def compare_two_asts(self, node1, node2):
-        """
-        Compare both nodes, and recursively compare their children.
-        
-        See also: http://stackoverflow.com/questions/3312989/
-        """
-        # Compare the nodes themselves.
-        self.compare_two_nodes(node1, node2)
-        # Get the list of fields.
-        fields1 = getattr(node1, "_fields", [])
-        fields2 = getattr(node2, "_fields", [])
-        if fields1 != fields2:
-            raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
-        # Recursively compare each field.
-        for field in fields1:
-            if field not in ('lineno', 'col_offset', 'ctx'):
-                attr1 = getattr(node1, field, None)
-                attr2 = getattr(node2, field, None)
-                if attr1.__class__.__name__ != attr2.__class__.__name__:
-                    raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
-                self.compare_two_asts(attr1, attr2)
-    #@+node:ekr.20190908034557.1: *4* ptb.compare_two_nodes
-    def compare_two_nodes(self, node1, node2):
-        """
-        Compare node1 and node2.
-        For lists and tuples, compare elements recursively.
-        Raise AstNotEqual if not equal.
-        """
-        # Class names must always match.
-        if node1.__class__.__name__ != node2.__class__.__name__:
-            raise AstNotEqual(
-                f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-                f"node2.__class__.__name__: {node2.__class__.__name_}"
-            )
-        # Special cases for strings and None
-        if node1 is None:
-            return
-        if isinstance(node1, str):
-            if node1 != node2:
-                raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
-        # Special cases for lists and tuples:
-        if isinstance(node1, (tuple, list)):
-            if len(node1) != len(node2):
-                raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
-            for i, item1 in enumerate(node1):
-                item2 = node2[i]
-                if item1.__class__.__name__ != item2.__class__.__name__:
-                    raise AstNotEqual(
-                        f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
-                    )
-                self.compare_two_asts(item1, item2)
-    #@+node:ekr.20190908163223.1: *4* ptb.dump_ast
-    def dump_ast(self, node, tag=None):
-        """Dump the tree"""
-        from leo.core.leoAst import AstDumper
-
-        g.printObj(AstDumper().dump(node), tag=tag)
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
     def prettyPrintNode(self, p):
@@ -1053,30 +1000,38 @@ class PythonTokenBeautifier:
                 return False
             #
             # Compare the two parse trees.
-            try:
-                self.compare_two_asts(node1, node2)
-            except AstNotEqual:
+            ok = leoAst.compare_asts(node1, node2)
+            if not ok:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
                 g.printObj(s2, tag='RESULT')
-                # g.printObj(self.code_list, 'CODE LIST')
-                # self.dump_ast(node1, tag='AST BEFORE')
-                # self.dump_ast(node2, tag='AST AFTER')
-                if g.unitTesting:
-                    raise
                 self.errors += 1
                 p.v.setMarked()
                 return False
-            except Exception:
-                g.warning(f"{p.h}: Unexpected exception")
-                g.es_exception()
-                g.printObj(s2, tag='RESULT')
-                # self.dump_ast(node1, tag='AST BEFORE')
-                # self.dump_ast(node2, tag='AST AFTER')
-                self.errors += 1
-                if g.unitTesting:
-                    raise
-                p.v.setMarked()
-                return False
+            
+                # try:
+                    # self.compare_two_asts(node1, node2)
+                # except AstNotEqual:
+                    # g.warning(f"{p.h}: The beautify command did not preserve meaning!")
+                    # g.printObj(s2, tag='RESULT')
+                    # # g.printObj(self.code_list, 'CODE LIST')
+                    # # self.dump_ast(node1, tag='AST BEFORE')
+                    # # self.dump_ast(node2, tag='AST AFTER')
+                    # if g.unitTesting:
+                        # raise
+                    # self.errors += 1
+                    # p.v.setMarked()
+                    # return False
+                # except Exception:
+                    # g.warning(f"{p.h}: Unexpected exception")
+                    # g.es_exception()
+                    # g.printObj(s2, tag='RESULT')
+                    # # self.dump_ast(node1, tag='AST BEFORE')
+                    # # self.dump_ast(node2, tag='AST AFTER')
+                    # self.errors += 1
+                    # if g.unitTesting:
+                        # raise
+                    # p.v.setMarked()
+                    # return False
         if 'beauty' in g.app.debug:
             # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")
