@@ -2326,7 +2326,6 @@
 </v>
 <v t="ekr.20191003051240.1"></v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
-<v t="ekr.20191003061641.1"><vh>Acknowledgements (to do)</vh></v>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
 <v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
 <v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
@@ -2334,6 +2333,7 @@
 <v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
 <v t="ekr.20191007104843.1"><vh>Support for pandoc, including @language pandoc</vh></v>
 <v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
+<v t="ekr.20191026191805.1"><vh>Support for sphinx</vh></v>
 </v>
 <v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
 <v t="ekr.20191003052014.1"><vh>Minor bugs</vh></v>
@@ -2347,9 +2347,6 @@
 <v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
-<v t="ekr.20191003061641.1"></v>
-<v t="mhw.20191008134016.1"></v>
-<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30446,12 +30443,15 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 - Pyzo in Leo: Pyzo can optionally run *within* Leo.
 - Added support for asciidoc and asciidoctor.
-- Added support for pandoc.
+- Added support for pandoc and sphinx.
 - Added support for black.
 - The history_tracer plugin animates git commits.
 - Integration of Leo with VS code.
 - New command-line arguments: --global-docks and --window-spot.
 - New cursor-movement commands.
+
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
 
 **Links**
 
@@ -30470,6 +30470,9 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 <t tx="ekr.20191003050703.11">This page shows all enhancements related to Leo 6.1:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aenhancement
 
+#1253: Support @language asciidoc
+https://github.com/leo-editor/leo-editor/issues/1253
+
 #1297: warnings about @first &amp; @last
 https://github.com/leo-editor/leo-editor/issues/1297
 
@@ -30481,7 +30484,17 @@ https://github.com/leo-editor/leo-editor/issues/1351
 
 #1353: new cursor commands
 https://github.com/leo-editor/leo-editor/issues/1353
-</t>
+
+#1371: support pandoc and @language pandoc
+https://github.com/leo-editor/leo-editor/issues/1371
+
+#1383: Expand ~ in all paths
+https://github.com/leo-editor/leo-editor/issues/1383
+
+#1398: Support path expressions in @rst, @adoc, @pandoc and @sphinx nodes
+https://github.com/leo-editor/leo-editor/issues/1398
+
+New show-clone-ancestors and show-clone-parents commands</t>
 <t tx="ekr.20191003050703.15"></t>
 <t tx="ekr.20191003050703.3"></t>
 <t tx="ekr.20191003050703.6">This page shows all bugs related to Leo 6.1:
@@ -30580,7 +30593,38 @@ https://github.com/leo-editor/leo-editor/issues/1349
 https://github.com/leo-editor/leo-editor/issues/1361
 
 #1362: crash when reloading
-https://github.com/leo-editor/leo-editor/issues/1362</t>
+https://github.com/leo-editor/leo-editor/issues/1362
+
+#1373: Adoc writes to Scripts folder instead of .leo folder when no @path given
+https://github.com/leo-editor/leo-editor/issues/1373
+
+#1379: Crash on saving workbook while simulating a new user's experience
+https://github.com/leo-editor/leo-editor/issues/1378
+
+#1380: Opening workbook for new user selects top-level nodes repeatedly
+https://github.com/leo-editor/leo-editor/issues/1380
+
+#1381: Crash on reloading workbook while simulating newbie experience
+https://github.com/leo-editor/leo-editor/issues/1381
+
+#1385: Console gui doesn't ask to create leoid
+https://github.com/leo-editor/leo-editor/issues/1385
+
+#1392: external file not always saved
+https://github.com/leo-editor/leo-editor/issues/1392
+
+#1403: Catch exceptions during startup
+https://github.com/leo-editor/leo-editor/issues/1403
+
+#1404: ensure well-formed gnx's
+https://github.com/leo-editor/leo-editor/issues/1404
+
+#1415: crash when .leo doesn't exist
+https://github.com/leo-editor/leo-editor/issues/1415
+
+#1416: select first .leo file on the command line
+https://github.com/leo-editor/leo-editor/issues/1416
+</t>
 <t tx="ekr.20191003055249.1">#1266: orange (beautify &amp; blacken)
 https://github.com/leo-editor/leo-editor/issues/1266
 
@@ -30593,8 +30637,6 @@ https://github.com/leo-editor/leo-editor/issues/1325
 <t tx="ekr.20191003060551.1">https://github.com/leo-editor/leo-editor/issues/1093
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 </t>
-<t tx="ekr.20191003061641.1">Brian Theado.
-Vitalije </t>
 <t tx="ekr.20191003061844.1">https://github.com/leo-editor/leo-editor/issues/1315</t>
 <t tx="ekr.20191003062919.1">Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
@@ -30937,6 +30979,8 @@ The VR plugin renders only p.b.
 Much like the corresponding adoc commands, but uses pandoc markup, which is a variant of markdown.
 
 The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
+<t tx="ekr.20191026191805.1">https://github.com/leo-editor/leo-editor/issues/1388
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
