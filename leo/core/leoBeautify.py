@@ -933,33 +933,8 @@ class PythonTokenBeautifier (BaseTokenHandler):
             if g.unitTesting:
                 raise AssertionError('pretty-print-node failed')
             p.v.setMarked()
+            g.es_print(f"{p.h} will not be changed")
             return False
-            # try:
-                # s1 = g.toEncodedString(s0)
-                # node1 = ast.parse(s1, filename='before', mode='exec')
-            # except IndentationError:
-                # g.warning(f"IndentationError: can't check {p.h}")
-                # self.errors += 1
-                # if g.unitTesting:
-                    # raise
-                # p.v.setMarked()
-                # return False
-            # except SyntaxError:
-                # g.warning(f"SyntaxError: can't check {p.h}")
-                # self.errors += 1
-                # if g.unitTesting:
-                    # g.printObj(s1, tag='SANITIZED STRING')
-                    # raise
-                # p.v.setMarked()
-                # return False
-            # except Exception:
-                # g.warning(f"Unexpected exception: {p.h}")
-                # g.es_exception()
-                # self.errors += 1
-                # if g.unitTesting:
-                    # raise
-                # p.v.setMarked()
-                # return False
         t2 = time.process_time()
         #
         # Generate the tokens.
@@ -972,39 +947,48 @@ class PythonTokenBeautifier (BaseTokenHandler):
         assert isinstance(s2, str), s2.__class__.__name__
         t4 = time.process_time()
         if check_result:
-            #
-            # Create the "after" parse tree.
-            try:
-                s2_e = g.toEncodedString(s2)
-                node2 = ast.parse(s2_e, filename='after', mode='exec')
-            except IndentationError:
-                g.warning(f"{p.h}: Indentation error in the result")
-                g.es_print(f"{p.h} will not be changed")
-                g.printObj(s2, tag='RESULT')
-                if g.unitTesting:
-                    raise
+            node2 = leoAst.parse_ast(s2, headline='result')
+            if not node2:
                 self.errors += 1
-                p.v.setMarked()
-                return False
-            except SyntaxError:
-                g.warning(f"{p.h}: Syntax error in the result")
-                g.es_print(f"{p.h} will not be changed")
-                g.printObj(s2, tag='RESULT')
                 if g.unitTesting:
-                    raise
-                self.errors += 1
+                    raise AssertionError('pretty-print-node failed')
                 p.v.setMarked()
-                return False
-            except Exception:
-                g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
                 g.es_print(f"{p.h} will not be changed")
-                g.es_exception()
-                g.printObj(s2, tag='RESULT')
-                if g.unitTesting:
-                    raise
-                self.errors += 1
-                p.v.setMarked()
                 return False
+            ###
+                # #
+                # # Create the "after" parse tree.
+                # try:
+                    # s2_e = g.toEncodedString(s2)
+                    # node2 = ast.parse(s2_e, filename='after', mode='exec')
+                # except IndentationError:
+                    # g.warning(f"{p.h}: Indentation error in the result")
+                    # g.es_print(f"{p.h} will not be changed")
+                    # g.printObj(s2, tag='RESULT')
+                    # if g.unitTesting:
+                        # raise
+                    # self.errors += 1
+                    # p.v.setMarked()
+                    # return False
+                # except SyntaxError:
+                    # g.warning(f"{p.h}: Syntax error in the result")
+                    # g.es_print(f"{p.h} will not be changed")
+                    # g.printObj(s2, tag='RESULT')
+                    # if g.unitTesting:
+                        # raise
+                    # self.errors += 1
+                    # p.v.setMarked()
+                    # return False
+                # except Exception:
+                    # g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
+                    # g.es_print(f"{p.h} will not be changed")
+                    # g.es_exception()
+                    # g.printObj(s2, tag='RESULT')
+                    # if g.unitTesting:
+                        # raise
+                    # self.errors += 1
+                    # p.v.setMarked()
+                    # return False
             #
             # Compare the two parse trees.
             ok = leoAst.compare_asts(node1, node2)
