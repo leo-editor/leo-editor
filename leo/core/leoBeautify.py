@@ -366,7 +366,7 @@ class BaseTokenHandler:
             return f"{self.kind:15} {val}"
 
         def __str__(self):
-            # More compact
+            """A more compact version of __repr__"""
             val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
             return f"{self.kind} {val}"
 
@@ -943,7 +943,7 @@ class CPrettyPrinter:
             return len(s)
         return j + 2
     #@-others
-#@+node:ekr.20191027164507.1: ** class NullTokenHandler (BaseTokenHandler)
+#@+node:ekr.20191027164507.1: ** class NullTokenHandler(BaseTokenHandler)
 class DoNothingTokenizer(BaseTokenHandler):
     """
     A token-based beautifier that should leave source code unchanged.
@@ -994,7 +994,7 @@ class DoNothingTokenizer(BaseTokenHandler):
             # func = getattr(self, f"do_{self.kind}", self.oops)
             # func()
     #@-others
-#@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
+#@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
 class PythonTokenBeautifier(BaseTokenHandler):
     """A token-based Python beautifier."""
 
@@ -2103,7 +2103,7 @@ class SyntaxSanitizer:
             result.append(s)
         return i
     #@-others
-#@+node:ekr.20191024035716.1: ** class TokenFstringify (PythonTokenBeautifier)
+#@+node:ekr.20191024035716.1: ** class TokenFstringify(PythonTokenBeautifier)
 class FstringifyTokens(PythonTokenBeautifier):
     """A token-based tool that converts % to f-strings."""
 
