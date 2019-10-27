@@ -936,11 +936,9 @@ class PythonTokenBeautifier (BaseTokenHandler):
             g.es_print(f"{p.h} will not be changed")
             return False
         t2 = time.process_time()
-        #
         # Generate the tokens.
         readlines = g.ReadLinesClass(s0).next
         tokens = list(tokenize.generate_tokens(readlines))
-        #
         # Beautify into s2.
         t3 = time.process_time()
         s2 = self.run(tokens)
@@ -955,41 +953,6 @@ class PythonTokenBeautifier (BaseTokenHandler):
                 p.v.setMarked()
                 g.es_print(f"{p.h} will not be changed")
                 return False
-            ###
-                # #
-                # # Create the "after" parse tree.
-                # try:
-                    # s2_e = g.toEncodedString(s2)
-                    # node2 = ast.parse(s2_e, filename='after', mode='exec')
-                # except IndentationError:
-                    # g.warning(f"{p.h}: Indentation error in the result")
-                    # g.es_print(f"{p.h} will not be changed")
-                    # g.printObj(s2, tag='RESULT')
-                    # if g.unitTesting:
-                        # raise
-                    # self.errors += 1
-                    # p.v.setMarked()
-                    # return False
-                # except SyntaxError:
-                    # g.warning(f"{p.h}: Syntax error in the result")
-                    # g.es_print(f"{p.h} will not be changed")
-                    # g.printObj(s2, tag='RESULT')
-                    # if g.unitTesting:
-                        # raise
-                    # self.errors += 1
-                    # p.v.setMarked()
-                    # return False
-                # except Exception:
-                    # g.warning(f"{p.h}: Unexpected exception creating the \"after\" parse tree")
-                    # g.es_print(f"{p.h} will not be changed")
-                    # g.es_exception()
-                    # g.printObj(s2, tag='RESULT')
-                    # if g.unitTesting:
-                        # raise
-                    # self.errors += 1
-                    # p.v.setMarked()
-                    # return False
-            #
             # Compare the two parse trees.
             ok = leoAst.compare_asts(node1, node2)
             if not ok:
@@ -999,12 +962,12 @@ class PythonTokenBeautifier (BaseTokenHandler):
                 p.v.setMarked()
                 return False
         if 'beauty' in g.app.debug:
-            # g.printObj(g.toUnicode(s2_e), tag='RESULT')
             g.printObj(self.code_list, tag="Code List")
         t5 = time.process_time()
         # Restore the tags after the compare
         s3 = self.sanitizer.uncomment_leo_lines(comment_string, p, s2)
-        changed = p.b != s3
+        changed = p.b.rstrip() != s3.rstrip()
+            # Important: ignore trailing whitespace.
         if changed:
             self.replace_body(p, s3)
         # Update the stats
