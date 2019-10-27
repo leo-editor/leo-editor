@@ -1821,11 +1821,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
-<t tx="ekr.20180405171433.7">Merge the -rel branch into master.
-- Run all unit tests.
-- Run pylint on all files.
-
-Create a git tag **last**
+<t tx="ekr.20180405171433.7">Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
