@@ -411,7 +411,6 @@ class BaseTokenHandler:
         Handle one token. Token handlers may call this method to do look-ahead processing.
         """
         raise NotImplementedError
-        
 
     def scan_all_tokens(self, tokens):
         """
@@ -424,17 +423,11 @@ class BaseTokenHandler:
     #@+node:ekr.20191027170529.1: *3* token_h: Tokens...
     #@+node:ekr.20191028102101.1: *4* token_h.look_ahead
     def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0
-        """
+        """Look ahead n tokens.  n >= 0."""
         if len(self.tokens) <= n:
             return None, None
         token = self.tokens[n]
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        ###
-            # t1, t2, t3, t4, t5 = token
-            # kind = token_module.tok_name[t1].lower()
-            # val = g.toUnicode(t2)
         return token.kind, token.value
     #@+node:ekr.20191027170619.1: *4* token_h.add_token
     def add_token(self, kind, value=''):
@@ -976,6 +969,7 @@ class NullTokenBeautifier(BaseTokenHandler):
         
         May be overridden in subclasses.
         """
+        # Subclasses may ensure that the file ends with a newline.
         # self.add_token('line-end', '\n')
         self.add_token('file-end')
     #@+node:ekr.20191028075123.1: *4* null_tok_h.file_start
@@ -992,15 +986,17 @@ class NullTokenBeautifier(BaseTokenHandler):
     #@+node:ekr.20191028070535.1: *3* null_tok_h.scan_all_tokens & helpers
     def scan_all_tokens(self, tokens):
         """
-        Handle a list(iterable) of tokenizer tokens (5-tuples), in two *distinct* passes:
+        Use two *distinct* passes to convert tokens (an iterable of 5-tuples) to a result.
             
-        Pass 1: Create input_list, a *list* (not generator) of InputTokens.
-                Clients must be able to look ahead in this list.
+        Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
+                The look_ahead method look aheads in this list.
                 
         Pass 2: Call self.do_token(token) for each token in input_list.
-                Clients must be able to delete tokens from input_list.
+                Subclasses may delete tokens from input_list.
                 
         Returns the string resulting from the output list.
+        
+        Sub-classes should not need to override this method.
         """
         # Init state. (was in ctor).
         self.prev_row = 1
@@ -1010,6 +1006,7 @@ class NullTokenBeautifier(BaseTokenHandler):
         self.make_tokens(tokens)
         self.add_token('file-start')
         # Generate output tokens.
+        # Note: the self.tokens list may *mutate* within the following loop.
         self.code_list = []
         while self.tokens:
             token = self.tokens.pop(0)
@@ -1018,7 +1015,6 @@ class NullTokenBeautifier(BaseTokenHandler):
         # g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
-        
     #@+node:ekr.20191028072257.1: *4* null_tok_h.add_input_token
     def add_input_token(self, kind, value=''):
         """
@@ -2225,6 +2221,7 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
+        g.trace('VAL', repr(self.val), 'NEXT', self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val and self.look_ahead(0) == ('op', '%')
@@ -2280,32 +2277,6 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
         self.add_token('string', ''.join(result))
-    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
-    def munge_spec(self, spec):
-        """
-        Return (spec, tail)
-        """
-        tail = None
-        if spec.startswith('+'):
-            spec = spec[1:]
-        elif spec.startswith('-'):
-            spec = '>' + spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            spec = spec[:-1]
-            tail = 'r'
-        return spec, tail
-    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
-    def munge_string(self, string_val, aList):
-        """
-        Escape all strings as necessary to make a valid result.
-        """
-        if not string_val:
-            return aList
-        delim = string_val[0]
-        delim2 = '"' if delim == "'" else '"'
-        return [z.replace(delim, delim2) for z in aList]
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
         """
@@ -2347,31 +2318,6 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
             else:
                 value_list.append(val)
         return results, tokens
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
-
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
-
-    def scan_format_string(self, s):
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-
-    ###
-        # import string
-        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
-            # tuples (literal_text, field_name, format_spec, conversion).
-            # This is used by vformat() to break the string into either literal text, or replacement fields.
-            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
-            # If there is no literal text (which can happen if two replacement fields occur consecutively),
-            # then literal_text will be a zero-length string.
-            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
         """
@@ -2407,20 +2353,18 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191028100923.1: *3* fstring.look_ahead
+    #@+node:ekr.20191028100923.1: *3* fstring.look_ahead (override)
     def look_ahead(self, n):
         """
-        Look ahead n tokens.  n >= 0
+        Look ahead n tokens, skipping ws tokens.  n >= 0
         """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        ###
-            # t1, t2, t3, t4, t5 = token
-            # kind = token_module.tok_name[t1].lower()
-            # val = g.toUnicode(t2)
-        return token.kind, token.value
+        while n < len(self.tokens):
+            token = self.tokens[n]
+            assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+            if token.kind != 'ws':
+                return token.kind, token.value
+            n += 1
+        return None, None
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
         """Add a blank request on the code list."""
@@ -2528,6 +2472,58 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
             # f"{errors} error{g.plural(errors)} "
             f"in {t2-t1:4.2f} sec."
         )
+    #@+node:ekr.20191028104010.1: *3* fstring: Utils
+    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (spec, tail)
+        """
+        tail = None
+        if spec.startswith('+'):
+            spec = spec[1:]
+        elif spec.startswith('-'):
+            spec = '>' + spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            spec = spec[:-1]
+            tail = 'r'
+        return spec, tail
+    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    def munge_string(self, string_val, aList):
+        """
+        Escape all strings as necessary to make a valid result.
+        """
+        if not string_val:
+            return aList
+        delim = string_val[0]
+        delim2 = '"' if delim == "'" else '"'
+        return [z.replace(delim, delim2) for z in aList]
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+
+    ###
+        # import string
+        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
+            # tuples (literal_text, field_name, format_spec, conversion).
+            # This is used by vformat() to break the string into either literal text, or replacement fields.
+            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
+            # If there is no literal text (which can happen if two replacement fields occur consecutively),
+            # then literal_text will be a zero-length string.
+            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@-others
 #@-others
 if __name__ == "__main__":
