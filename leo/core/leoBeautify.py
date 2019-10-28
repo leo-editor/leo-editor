@@ -1092,7 +1092,7 @@ class NullTokenHandler(BaseTokenHandler):
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        g.printObj(self.input_tokens, tag='INPUT TOKENS')
+        # g.printObj(self.input_tokens, tag='INPUT TOKENS')
         # Changed: no need to return a string.
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
