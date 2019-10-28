@@ -340,6 +340,54 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
+#@+node:ekr.20191028140926.1: **  test scripts
+#@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
+def test_NullTokenBeautifier(c, contents, dump=True):
+
+    import tokenize
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+    print("Test of NullTokenBeautifier...\n")
+    # Tokenize.
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    # Untokenize.
+    x = leoBeautify.NullTokenBeautifier(c)
+    results = x.scan_all_tokens(tokens)
+    # Compare.
+    print('Contents...')
+    g.printObj(contents) 
+    if contents != results:
+        print('')
+        print('Changed...')
+        g.printObj(results)
+    else:
+        print('Unchanged')
+#@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
+def test_FstringifyTokens(c, contents):
+
+    import tokenize
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+   
+    def show(obj, tag, dump=True):
+        print(f"{tag}...")
+        if dump:
+            g.printObj(obj)
+        else:
+            print(obj)
+
+    # Tokenize.
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    # Untokenize.
+    x = leoBeautify.FstringifyTokens(c)
+    x.use_ws_tokens = False
+    results = x.scan_all_tokens(tokens)
+    # Show results.
+    print("\nTest of FstringifyTokens...\n")
+    show(contents, 'Contents')
+    show(results, 'Results')
 #@+node:ekr.20150523132558.1: **  class BeautifierToken
 class BeautifierToken:
     """A class representing both input and output tokens"""
