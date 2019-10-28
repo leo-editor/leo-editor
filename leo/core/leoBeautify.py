@@ -2314,8 +2314,8 @@ class FstringifyTokens(NullTokenBeautifier):
         Scan a string, converting it to an f-string.
         The 'string' token has already been consumed.
         """
-        g.trace(self.val)
         string_val = self.val
+        sidecar_ws = self.ws
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -2350,6 +2350,8 @@ class FstringifyTokens(NullTokenBeautifier):
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
         self.add_token('string', ''.join(result))
+        prev_tok = self.code_list[-1]
+        prev_tok.ws = sidecar_ws
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
         """
