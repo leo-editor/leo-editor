@@ -340,6 +340,29 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
+#@+node:ekr.20150523132558.1: **  class BeautifierToken
+class BeautifierToken:
+    """A class representing both input and output tokens"""
+
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self):
+        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        return f"{self.kind:15} {val}"
+
+    def __str__(self):
+        """A more compact version of __repr__"""
+        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        return f"{self.kind} {val}"
+
+    def to_string(self):
+        """
+        Convert an output token to a string.
+        Note: repr shows the length of line-indent string.
+        """
+        return self.value if isinstance(self.value, str) else ''
 #@+node:ekr.20191027071100.1: ** class BaseTokenHandler
 class BaseTokenHandler:
     """
@@ -353,29 +376,6 @@ class BaseTokenHandler:
         g.trace('unknown kind', self.kind)
 
     #@+others
-    #@+node:ekr.20150523132558.1: *3* class BeautifierToken
-    class BeautifierToken:
-        """A class representing both input and output tokens"""
-
-        def __init__(self, kind, value):
-            self.kind = kind
-            self.value = value
-
-        def __repr__(self):
-            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-            return f"{self.kind:15} {val}"
-
-        def __str__(self):
-            """A more compact version of __repr__"""
-            val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-            return f"{self.kind} {val}"
-
-        def to_string(self):
-            """
-            Convert an output token to a string.
-            Note: repr shows the length of line-indent string.
-            """
-            return self.value if isinstance(self.value, str) else ''
     #@+node:ekr.20191027162345.1: *3* token_h.ctor
     def __init__(self, c):
         self.c = c
@@ -411,6 +411,7 @@ class BaseTokenHandler:
         Handle one token. Token handlers may call this method to do look-ahead processing.
         """
         raise NotImplementedError
+        
 
     def scan_all_tokens(self, tokens):
         """
@@ -419,7 +420,22 @@ class BaseTokenHandler:
         The self.tokens ivar allows for lookahead in the token handlers.
         """
         raise NotImplementedError
+
     #@+node:ekr.20191027170529.1: *3* token_h: Tokens...
+    #@+node:ekr.20191028102101.1: *4* token_h.look_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        ###
+            # t1, t2, t3, t4, t5 = token
+            # kind = token_module.tok_name[t1].lower()
+            # val = g.toUnicode(t2)
+        return token.kind, token.value
     #@+node:ekr.20191027170619.1: *4* token_h.add_token
     def add_token(self, kind, value=''):
         """
@@ -430,7 +446,7 @@ class BaseTokenHandler:
         """
         if kind != 'blank-lines':
             assert isinstance(value, str), g.callers()
-        tok = self.BeautifierToken(kind, value)
+        tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150526201701.8: *4* token_h.file_end (may be overridden)
     def file_end(self):
@@ -474,18 +490,6 @@ class BaseTokenHandler:
             return path
         g.es_print(f"file not found: {filename} in {basedir}")
         return None
-    #@+node:ekr.20191024104043.1: *4* token_h.look_ahead
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return kind, val
     #@+node:ekr.20150528172940.1: *4* token_h.print_stats
     def print_stats(self):
         print(
@@ -1003,12 +1007,12 @@ class NullTokenBeautifier(BaseTokenHandler):
         self.prev_col = 0
         self.encoding = None # Not used!
         # Make the input_list, a list of InputTokens.
-        self.make_input_tokens(tokens)
+        self.make_tokens(tokens)
         self.add_token('file-start')
         # Generate output tokens.
         self.code_list = []
-        while self.input_tokens:
-            token = self.input_tokens.pop(0)
+        while self.tokens:
+            token = self.tokens.pop(0)
             self.do_token(token)
         self.file_end()
         # g.printObj(self.code_list, tag='OUTPUT TOKENS')
@@ -1025,8 +1029,8 @@ class NullTokenBeautifier(BaseTokenHandler):
         """
         if kind != 'blank-lines':
             assert isinstance(value, str), g.callers()
-        tok = self.BeautifierToken(kind, value)
-        self.input_tokens.append(tok)
+        tok = BeautifierToken(kind, value)
+        self.tokens.append(tok)
     #@+node:ekr.20191028014602.2: *4* null_tok_h.add_whitespace
     def add_whitespace(self, start):
         """
@@ -1048,9 +1052,9 @@ class NullTokenBeautifier(BaseTokenHandler):
         if col_offset:
             self.add_input_token('ws', " " * col_offset)
     #@+node:ekr.20191028021428.1: *4* null_tok_h.make_input_tokens
-    def make_input_tokens(self, tokens):
+    def make_tokens(self, tokens):
         """
-        Scan all tokenizer tokens, returning a *list* of input tokens.
+        Scan all tokenizer tokens, returning self.tokens, a *list* of input tokens.
         
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
@@ -1061,7 +1065,7 @@ class NullTokenBeautifier(BaseTokenHandler):
         tm = token_module
         indents = []
         startline = False
-        self.input_tokens= []
+        self.tokens= []
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
@@ -1094,7 +1098,7 @@ class NullTokenBeautifier(BaseTokenHandler):
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        # g.printObj(self.input_tokens, tag='INPUT TOKENS')
+        # g.printObj(self.tokens, tag='INPUT TOKENS')
         # Changed: no need to return a string.
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
@@ -1521,18 +1525,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
             # This *does* retain the string's spelling.
         self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
-    #@+node:ekr.20150526195542.1: *4* ptb.add_token
-    def add_token(self, kind, value=''):
-        """
-        Add a token to the code list.
-        
-        The blank-lines token is the only token whose value isn't a string.
-        BeautifierToken.to_string() ignores such tokens.
-        """
-        if kind != 'blank-lines':
-            assert isinstance(value, str), g.callers()
-        tok = self.BeautifierToken(kind, value)
-        self.code_list.append(tok)
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
         """
@@ -1706,8 +1698,8 @@ class PythonTokenBeautifier(BaseTokenHandler):
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
         self.add_token('line-indent', self.lws+' '*4)
-        open_delim = self.BeautifierToken(kind='lt', value=prefix[-1].value)
-        close_delim = self.BeautifierToken(
+        open_delim = BeautifierToken(kind='lt', value=prefix[-1].value)
+        close_delim = BeautifierToken(
             kind='rt',
             value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
         )
@@ -2252,6 +2244,7 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
         Scan a string, converting it to an f-string.
         The 'string' token has already be consumed.
         """
+        g.trace(self.val)
         string_val = self.val
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
@@ -2414,6 +2407,20 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
+    #@+node:ekr.20191028100923.1: *3* fstring.look_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        ###
+            # t1, t2, t3, t4, t5 = token
+            # kind = token_module.tok_name[t1].lower()
+            # val = g.toUnicode(t2)
+        return token.kind, token.value
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
         """Add a blank request on the code list."""
