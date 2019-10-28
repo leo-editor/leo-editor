@@ -958,10 +958,10 @@ class NullTokenHandler(BaseTokenHandler):
     #@+node:ekr.20191028014602.2: *3* null_tok_h.add_whitespace
     def add_whitespace(self, start):
         """
-        Based on Untokenizer.add_whitespace
+        Revised Untokenizer.add_whitespace.
         
-        Append whitespace to self.code_list (not self.tokens)
-
+        Original: append whitespace to self.tokens.
+        Revised:  use add_token.
         """
         row, col = start
         if row < self.prev_row or row == self.prev_row and col < self.prev_col:
@@ -970,13 +970,11 @@ class NullTokenHandler(BaseTokenHandler):
                 f"{self.prev_row}, {self.prev_col}")
         row_offset = row - self.prev_row
         if row_offset:
-            ### self.tokens.append("\\\n" * row_offset)
-            self.code_list.append("\\\n" * row_offset)
+            self.add_token('ws', "\\\n" * row_offset)
             self.prev_col = 0
         col_offset = col - self.prev_col
         if col_offset:
-            ### self.tokens.append(" " * col_offset)
-            self.code_list.append(" " * col_offset)
+            self.add_token('ws', " " * col_offset)
     #@+node:ekr.20191028020116.1: *3* null_tok_h.do_token
     def do_token(self, token):
         """
@@ -987,7 +985,6 @@ class NullTokenHandler(BaseTokenHandler):
         # self.add_whitespace(start)
         # self.tokens.append(val)
     #@+node:ekr.20191028021428.1: *3* null_tok_h.scan_all_tokens
-    # import token as tm
     def scan_all_tokens(self, tokens):
         """
         Scan all tokens, and return the result as a string.
@@ -1001,21 +998,21 @@ class NullTokenHandler(BaseTokenHandler):
         To do: call self.do_token somehow.
         """
         tm = token_module
-        # Init state. (was in ctor)
+        # Init state. (was in ctor).
         self.prev_row = 1
         self.prev_col = 0
-        self.encoding = None # Not used by add_whitespace.
-        # it = iter(iterable)
+        self.encoding = None # Not used!
         indents = []
         startline = False
         # Init ivars that may be used by subclasses.
         self.tokens = tokens
+            # A true list, so subclasses can change it.
         self.code_list = []
+            # A list of OutputTokens.
         while self.tokens:
             t = self.tokens.pop(0)
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
-            assert kind
             # g.trace(f"{kind:>10} {val!r}")
             if tok_type == tm.ENCODING:
                 self.encoding = val
@@ -1035,16 +1032,17 @@ class NullTokenHandler(BaseTokenHandler):
             elif startline and indents:
                 indent = indents[-1]
                 if start[1] >= len(indent):
-                    self.code_list.append(indent)
+                    self.add_token('indent', indent) # changed.
                     self.prev_col = len(indent)
                 startline = False
             self.add_whitespace(start)
-            self.code_list.append(val)
+            self.add_token(kind, val) # Changed.
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        return ''.join(self.code_list)
+        # g.printObj(self.code_list, tag='CODE LIST')
+        return ''.join([z.to_string() for z in self.code_list])
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
 class PythonTokenBeautifier(BaseTokenHandler):
@@ -1151,7 +1149,30 @@ class PythonTokenBeautifier(BaseTokenHandler):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20150530072449.1: *3* ptb.Entries
+    #@+node:ekr.20191027164959.1: *3* ptb.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Scan all tokens in self.tokens, returning the resulting string.
+        
+        The self.tokens ivar allows for lookahead in the token handlers.
+        """
+        # Init ivars.
+        self.code_list = []
+        self.errors = 0
+        self.last_line_number = 0
+        self.state_stack = []
+        self.tokens = tokens
+        # Init tokens and state.
+        self.add_token('file-start')
+        self.push_state('file-start')
+        # Generate tokens.
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        self.file_end()
+        # Return string result.
+        return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20150530072449.1: *3* ptb: Entries
     #@+node:ekr.20191024071243.1: *4* ptb.do_token
     def do_token(self, token):
         """
@@ -1308,30 +1329,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.file_end()
         # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191027164959.1: *4* ptb.scan_all_tokens
-    def scan_all_tokens(self, tokens):
-        """
-        Scan all tokens in self.tokens, returning the resulting string.
-        
-        The self.tokens ivar allows for lookahead in the token handlers.
-        """
-        # Init ivars.
-        self.code_list = []
-        self.errors = 0
-        self.last_line_number = 0
-        self.state_stack = []
-        self.tokens = tokens
-        # Init tokens and state.
-        self.add_token('file-start')
-        self.push_state('file-start')
-        # Generate tokens.
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        self.file_end()
-        # Return string result.
-        return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
+    #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
         """Handle a comment token."""
@@ -1468,7 +1466,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
             self.backslash_seen = False
             # This *does* retain the string's spelling.
         self.blank()
-    #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
+    #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
         """
@@ -1919,7 +1917,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.blank()
         self.add_token('word-op', s)
         self.blank()
-    #@+node:ekr.20150530064617.1: *3* ptb.Utils
+    #@+node:ekr.20150530064617.1: *3* ptb: Utils
     #@+node:ekr.20190909072007.1: *4* ptb.find_delims (new)
     def find_delims(self, tokens):
         """
