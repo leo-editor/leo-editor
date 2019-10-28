@@ -353,9 +353,9 @@ class BaseTokenHandler:
         g.trace('unknown kind', self.kind)
 
     #@+others
-    #@+node:ekr.20150523132558.1: *3* class OutputToken
-    class OutputToken:
-        """A class representing output tokens"""
+    #@+node:ekr.20150523132558.1: *3* class BeautifierToken
+    class BeautifierToken:
+        """A class representing both input and output tokens"""
 
         def __init__(self, kind, value):
             self.kind = kind
@@ -425,11 +425,11 @@ class BaseTokenHandler:
         Add a token to the code list.
         
         The blank-lines token is the only token whose value isn't a string.
-        OutputToken.to_string() ignores such tokens.
+        BeautifierToken.to_string() ignores such tokens.
         """
         if kind != 'blank-lines':
             assert isinstance(value, str), g.callers()
-        tok = self.OutputToken(kind, value)
+        tok = self.BeautifierToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150526201701.8: *4* token_h.file_end (may be overridden)
     def file_end(self):
@@ -955,13 +955,83 @@ class NullTokenHandler(BaseTokenHandler):
     undo_type = "Null Undo Type"  # Should be overridden.
 
     #@+others
-    #@+node:ekr.20191028014602.2: *3* null_tok_h.add_whitespace
+    #@+node:ekr.20191028074723.1: *3* May be overridden in subclasses
+    #@+node:ekr.20191028020116.1: *4* null_tok_h.do_token
+    def do_token(self, token):
+        """
+        Handle one input token. Should be overridden in subclasses.
+        
+        This NullTokenHandler method just copies the token to the output list.
+        """
+        self.code_list.append(token)
+    #@+node:ekr.20191028072954.1: *4* null_tok_h.end_file
+    def end_file(self):
+        """
+        Do any end-of file processing.
+        
+        May be overridden in subclasses.
+        """
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+    #@+node:ekr.20191028075123.1: *4* null_tok_h.start_file
+    def start_file(self):
+        """
+        Do any start-of-file processing.
+        
+        May be overridden in subclasses.
+        
+        At minimum, this method should add one output token to the code list,
+        so that self.code_list[-1] won't crash.
+        """
+        self.add_token('file-start')
+    #@+node:ekr.20191028070535.1: *3* null_tok_h.scan_all_tokens & helpers
+    def scan_all_tokens(self, tokens):
+        """
+        Handle a list(iterable) of tokenizer tokens (5-tuples), in two *distinct* passes:
+            
+        Pass 1: Create input_list, a *list* (not generator) of InputTokens.
+                Clients must be able to look ahead in this list.
+                
+        Pass 2: Call self.do_token(token) for each token in input_list.
+                Clients must be able to delete tokens from input_list.
+                
+        Returns the string resulting from the output list.
+        """
+        # Init state. (was in ctor).
+        self.prev_row = 1
+        self.prev_col = 0
+        self.encoding = None # Not used!
+        # Make the input_list, a list of InputTokens.
+        g.trace(len(tokens))
+        self.make_input_tokens(tokens)
+        self.add_token('file-start')
+        # Generate output tokens.
+        while self.input_tokens:
+            token = self.input_tokens.pop(0)
+            self.do_token(token)
+        self.file_end()
+        # Return the string result.
+        return ''.join([z.to_string() for z in self.code_list])
+        
+    #@+node:ekr.20191028072257.1: *4* null_tok_h.add_input_token
+    def add_input_token(self, kind, value=''):
+        """
+        Add a token to the input list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        BeautifierToken.to_string() ignores such tokens.
+        """
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
+        tok = self.BeautifierToken(kind, value)
+        self.input_tokens.append(tok)
+    #@+node:ekr.20191028014602.2: *4* null_tok_h.add_whitespace
     def add_whitespace(self, start):
         """
-        Revised Untokenizer.add_whitespace.
+        A *lightly* modified version of Untokenizer.add_whitespace.
         
         Original: append whitespace to self.tokens.
-        Revised:  use add_token.
+        Revised:  call add_input_token.
         """
         row, col = start
         if row < self.prev_row or row == self.prev_row and col < self.prev_col:
@@ -970,47 +1040,27 @@ class NullTokenHandler(BaseTokenHandler):
                 f"{self.prev_row}, {self.prev_col}")
         row_offset = row - self.prev_row
         if row_offset:
-            self.add_token('ws', "\\\n" * row_offset)
+            self.add_input_token('ws', "\\\n" * row_offset)
             self.prev_col = 0
         col_offset = col - self.prev_col
         if col_offset:
-            self.add_token('ws', " " * col_offset)
-    #@+node:ekr.20191028020116.1: *3* null_tok_h.do_token
-    def do_token(self, token):
+            self.add_input_token('ws', " " * col_offset)
+    #@+node:ekr.20191028021428.1: *4* null_tok_h.make_input_tokens
+    def make_input_tokens(self, tokens):
         """
-        Handle one token.
-        """
-        ### To do: what to do about this?
-        pass
-        # self.add_whitespace(start)
-        # self.tokens.append(val)
-    #@+node:ekr.20191028021428.1: *3* null_tok_h.scan_all_tokens
-    def scan_all_tokens(self, tokens):
-        """
-        Scan all tokens, and return the result as a string.
+        Scan all tokenizer tokens, returning a *list* of input tokens.
         
-        Based Untokenizer.untokenize.  Differences:
-            
-        1. Tokens should be an actual list. This allows for lookahead.
+        The Lexical Analysis section or the Python reference documents
+        tokenizer tokens:
+        https://docs.python.org/3/reference/lexical_analysis.html
         
-        2. Append to self.code_list, not self.tokens.
-        
-        To do: call self.do_token somehow.
+        This is a *lightly* modified version of Untokenizer.untokenize.
         """
         tm = token_module
-        # Init state. (was in ctor).
-        self.prev_row = 1
-        self.prev_col = 0
-        self.encoding = None # Not used!
         indents = []
         startline = False
-        # Init ivars that may be used by subclasses.
-        self.tokens = tokens
-            # A true list, so subclasses can change it.
-        self.code_list = []
-            # A list of OutputTokens.
-        while self.tokens:
-            t = self.tokens.pop(0)
+        self.input_tokens= []
+        for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
             # g.trace(f"{kind:>10} {val!r}")
@@ -1032,17 +1082,17 @@ class NullTokenHandler(BaseTokenHandler):
             elif startline and indents:
                 indent = indents[-1]
                 if start[1] >= len(indent):
-                    self.add_token('indent', indent) # changed.
+                    self.add_input_token('indent', indent) # changed.
                     self.prev_col = len(indent)
                 startline = False
+            # Common code
             self.add_whitespace(start)
-            self.add_token(kind, val) # Changed.
+            self.add_input_token(kind, val) # Changed.
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        # g.printObj(self.code_list, tag='CODE LIST')
-        return ''.join([z.to_string() for z in self.code_list])
+        g.printObj(self.input_tokens, tag='INPUT TOKENS')
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
 class PythonTokenBeautifier(BaseTokenHandler):
@@ -1473,11 +1523,11 @@ class PythonTokenBeautifier(BaseTokenHandler):
         Add a token to the code list.
         
         The blank-lines token is the only token whose value isn't a string.
-        OutputToken.to_string() ignores such tokens.
+        BeautifierToken.to_string() ignores such tokens.
         """
         if kind != 'blank-lines':
             assert isinstance(value, str), g.callers()
-        tok = self.OutputToken(kind, value)
+        tok = self.BeautifierToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
@@ -1652,8 +1702,8 @@ class PythonTokenBeautifier(BaseTokenHandler):
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
         self.add_token('line-indent', self.lws+' '*4)
-        open_delim = self.OutputToken(kind='lt', value=prefix[-1].value)
-        close_delim = self.OutputToken(
+        open_delim = self.BeautifierToken(kind='lt', value=prefix[-1].value)
+        close_delim = self.BeautifierToken(
             kind='rt',
             value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
         )
