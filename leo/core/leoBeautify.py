@@ -964,17 +964,17 @@ class NullTokenHandler(BaseTokenHandler):
         This NullTokenHandler method just copies the token to the output list.
         """
         self.code_list.append(token)
-    #@+node:ekr.20191028072954.1: *4* null_tok_h.end_file
-    def end_file(self):
+    #@+node:ekr.20191028072954.1: *4* null_tok_h.file_end
+    def file_end(self):
         """
         Do any end-of file processing.
         
         May be overridden in subclasses.
         """
-        self.add_token('line-end', '\n')
+        # self.add_token('line-end', '\n')
         self.add_token('file-end')
-    #@+node:ekr.20191028075123.1: *4* null_tok_h.start_file
-    def start_file(self):
+    #@+node:ekr.20191028075123.1: *4* null_tok_h.file_start
+    def file_start(self):
         """
         Do any start-of-file processing.
         
@@ -1010,6 +1010,7 @@ class NullTokenHandler(BaseTokenHandler):
             token = self.input_tokens.pop(0)
             self.do_token(token)
         self.file_end()
+        # g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
         
@@ -2210,6 +2211,18 @@ class FstringifyTokens(PythonTokenBeautifier):
     undo_type = "Fstringify"
 
     #@+others
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token (NEW)
+    def do_token(self, token):
+        """
+        Handle one input token, a BeautifierToken.
+        """
+        # Only the string handler is overridden.
+        if token.kind == 'string':
+            self.kind = token.kind
+            self.val = token.value
+            self.do_string()
+        else:
+            super().do_token(token)
     #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
