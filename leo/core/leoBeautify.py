@@ -2304,7 +2304,7 @@ class FstringifyTokens(NullTokenBeautifier):
             # Not an f or r string, and a conversion is possible.
             self.convert_fstring()
         else:
-            # Just put the string.
+            # Just put the string, retaining sidecar ws.
             self.add_token('string', self.val)
             prev_tok = self.code_list[-1]
             prev_tok.ws = self.ws
