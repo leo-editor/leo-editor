@@ -951,6 +951,9 @@ class NullTokenBeautifier(BaseTokenBeautifier):
     """
 
     undo_type = "Null Undo Type"  # Should be overridden in subclasses.
+    
+    use_ws_tokens = True
+        # True: add_whitespace() creates 'ws' tokens.
 
     #@+others
     #@+node:ekr.20191028074723.1: *3* May be overridden in subclasses
@@ -1042,11 +1045,13 @@ class NullTokenBeautifier(BaseTokenBeautifier):
                 f"{self.prev_row}, {self.prev_col}")
         row_offset = row - self.prev_row
         if row_offset:
-            self.add_input_token('ws', "\\\n" * row_offset)
+            if self.use_ws_tokens:
+                self.add_input_token('ws', "\\\n" * row_offset)
             self.prev_col = 0
         col_offset = col - self.prev_col
         if col_offset:
-            self.add_input_token('ws', " " * col_offset)
+            if self.use_ws_tokens:
+                self.add_input_token('ws', " " * col_offset)
     #@+node:ekr.20191028021428.1: *4* null_tok_h.make_input_tokens
     def make_tokens(self, tokens):
         """
@@ -2221,7 +2226,7 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
-        g.trace('VAL', repr(self.val), 'NEXT', self.look_ahead(0))
+        ### g.trace('VAL', repr(self.val), 'NEXT', self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val and self.look_ahead(0) == ('op', '%')
@@ -2234,7 +2239,7 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
         ### Should no longer be needed.
             # if self.val.find('\\\n'):
                 # self.backslash_seen = False
-        self.blank()
+        ### self.blank()
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
