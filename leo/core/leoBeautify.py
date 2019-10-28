@@ -412,7 +412,7 @@ class BeautifierToken:
         Convert an output token to a string.
         Note: repr shows the length of line-indent string.
         """
-        # New support "sidecar" ws.
+        # New: support "sidecar" ws.
         return self.ws + (self.value if isinstance(self.value, str) else '')
 #@+node:ekr.20191027071100.1: ** class BaseTokenBeautifier
 class BaseTokenBeautifier:
@@ -1096,7 +1096,7 @@ class NullTokenBeautifier(BaseTokenBeautifier):
         A *lightly* modified version of Untokenizer.add_whitespace.
         
         Original: Append whitespace to self.tokens.
-        Revised:  Return "sidecar" whitespace for the next token.
+        Revised:  Return "sidecar" whitespace to be added to the *next* token.
         """
         row, col = start
         if row < self.prev_row or row == self.prev_row and col < self.prev_col:
@@ -1154,10 +1154,10 @@ class NullTokenBeautifier(BaseTokenBeautifier):
                     self.add_input_token('indent', indent) # changed.
                     self.prev_col = len(indent)
                 startline = False
-            # Common code
-            ws = self.add_whitespace(start) # Changed.
-            self.add_input_token(kind, val) # Changed.
-            self.prev_token.ws = ws # Changed: Add sidecare whitespace.
+            # Changed: support sidecar whitesapce.
+            ws = self.add_whitespace(start) # compute sidecare whitespace.
+            self.add_input_token(kind, val) # Add the new token.
+            self.prev_token.ws = ws # Add sidecare whitespace.
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
