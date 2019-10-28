@@ -2275,18 +2275,22 @@ class FstringifyTokens(NullTokenBeautifier):
         self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
-    #@+node:ekr.20191028085402.1: *3* fstring.do_token
-    def do_token(self, token):
-        """
-        Handle one input token, a BeautifierToken.
-        """
-        # Only the string handler is overridden.
-        if token.kind == 'string':
-            self.kind = token.kind
-            self.val = token.value
-            self.do_string()
-        else:
-            super().do_token(token)
+    #@+node:ekr.20191028091917.1: *3* fstring.blank
+    def blank(self):
+        """Add a blank request to the code list."""
+        # Same as ptb.blank, but there is no common base class.
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
     #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
@@ -2419,22 +2423,19 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191028091917.1: *3* fstring.blank
-    def blank(self):
-        """Add a blank request to the code list."""
-        # Same as ptb.blank, but there is no common base class.
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            'blank-lines',
-            'file-start',
-            'line-end',
-            'line-indent',
-            'lt',
-            'op-no-blanks',
-            'unary-op',
-        ):
-            self.add_token('blank', ' ')
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token
+    def do_token(self, token):
+        """
+        Handle one input token, a BeautifierToken.
+        """
+        # Only the string handler is overridden.
+        if token.kind == 'string':
+            self.kind = token.kind
+            self.val = token.value
+            self.do_string()
+        else:
+            # super().do_token(token)
+            self.code_list.append(token)
     #@+node:ekr.20191025084714.1: *3* fstring: Entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
     def fstringify_file(self):
