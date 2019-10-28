@@ -1050,11 +1050,11 @@ class NullTokenHandler(BaseTokenHandler):
         """
         Scan all tokenizer tokens, returning a *list* of input tokens.
         
-        The Lexical Analysis section or the Python reference documents
-        tokenizer tokens:
+        This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
         
-        This is a *lightly* modified version of Untokenizer.untokenize.
+        Happily, there is no need to understand the complexities here beacause
+        this is a *lightly* modified version of Untokenizer.untokenize.
         """
         tm = token_module
         indents = []
