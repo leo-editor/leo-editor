@@ -396,7 +396,9 @@ class BeautifierToken:
     def __init__(self, kind, value):
         self.kind = kind
         self.value = value
-        self.ws = '' # "sidecar" whitespace.
+        # "sidecar" whitespace replaces separate 'ws' tokens.
+        # This greatly simplifies lookahead scans.
+        self.ws = '' 
 
     def __repr__(self):
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
@@ -412,7 +414,7 @@ class BeautifierToken:
         Convert an output token to a string.
         Note: repr shows the length of line-indent string.
         """
-        # New: support "sidecar" ws.
+        # "sidecar" ws precedes each token.
         return self.ws + (self.value if isinstance(self.value, str) else '')
 #@+node:ekr.20191027071100.1: ** class BaseTokenBeautifier
 class BaseTokenBeautifier:
@@ -2417,18 +2419,6 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191028100923.1: *3* fstring.look_ahead (override)
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens, skipping ws tokens.  n >= 0
-        """
-        while n < len(self.tokens):
-            token = self.tokens[n]
-            assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-            if token.kind != 'ws':
-                return token.kind, token.value
-            n += 1
-        return None, None
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
         """Add a blank request to the code list."""
