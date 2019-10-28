@@ -944,55 +944,107 @@ class CPrettyPrinter:
         return j + 2
     #@-others
 #@+node:ekr.20191027164507.1: ** class NullTokenHandler(BaseTokenHandler)
-class DoNothingTokenizer(BaseTokenHandler):
+class NullTokenHandler(BaseTokenHandler):
     """
     A token-based beautifier that should leave source code unchanged.
     
-    This is the base class for the TokenFstringify class.
+    This class is based on the Untokenizer class in python's tokenize
+    module.
     """
 
     undo_type = "Null Undo Type"  # Should be overridden.
 
     #@+others
-    #@+node:ekr.20191027172805.1: *3* null_tok_h.scan_all_tokens
+    #@+node:ekr.20191028014602.2: *3* null_tok_h.add_whitespace
+    def add_whitespace(self, start):
+        """
+        Based on Untokenizer.add_whitespace
+        
+        Append whitespace to self.code_list (not self.tokens)
+
+        """
+        row, col = start
+        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
+            raise ValueError(
+                f"start ({row},{col}) precedes previous end "
+                f"{self.prev_row}, {self.prev_col}")
+        row_offset = row - self.prev_row
+        if row_offset:
+            ### self.tokens.append("\\\n" * row_offset)
+            self.code_list.append("\\\n" * row_offset)
+            self.prev_col = 0
+        col_offset = col - self.prev_col
+        if col_offset:
+            ### self.tokens.append(" " * col_offset)
+            self.code_list.append(" " * col_offset)
+    #@+node:ekr.20191028020116.1: *3* null_tok_h.do_token
+    def do_token(self, token):
+        """
+        Handle one token.
+        """
+        ### To do: what to do about this?
+        pass
+        # self.add_whitespace(start)
+        # self.tokens.append(val)
+    #@+node:ekr.20191028021428.1: *3* null_tok_h.scan_all_tokens
+    # import token as tm
     def scan_all_tokens(self, tokens):
         """
-        Scan all tokens in self.tokens, returning the resulting string.
+        Scan all tokens, and return the result as a string.
+        
+        Based Untokenizer.untokenize.  Differences:
+            
+        1. Tokens should be an actual list. This allows for lookahead.
+        
+        2. Append to self.code_list, not self.tokens.
+        
+        To do: call self.do_token somehow.
         """
-        # Init ivars.
-        self.code_list = []
-        self.last_line_number = 0
+        tm = token_module
+        # Init state. (was in ctor)
+        self.prev_row = 1
+        self.prev_col = 0
+        self.encoding = None # Not used by add_whitespace.
+        # it = iter(iterable)
+        indents = []
+        startline = False
+        # Init ivars that may be used by subclasses.
         self.tokens = tokens
-        # Init tokens.
-        self.add_token('file-start')
-        # Handle all tokens.
+        self.code_list = []
         while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
-        # Return string result.
-        return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191027172852.1: *3* null_tok_h.do_token (REVISE)
-    def do_token(self, token):
-        """Handle one token so that the output is unchanged."""
-        t1, t2, t3, t4, t5 = token
-        srow, scol = t3
-        self.kind = token_module.tok_name[t1].lower()
-        self.val = g.toUnicode(t2)
-        self.raw_line = g.toUnicode(t5).rstrip()
-        if srow != self.last_line_number:
-            # Handle a previous backslash.
-            if self.backslash_seen:
-                self.add_token('backslash', '\\')
-                self.add_token('line-end', '\n')
-                self.backslash_seen = False
-            # Start a new row.
-            self.backslash_seen = self.raw_line.endswith('\\')
-            self.last_line_number = srow
-        ### To do.
-            # func = getattr(self, f"do_{self.kind}", self.oops)
-            # func()
+            t = self.tokens.pop(0)
+            tok_type, val, start, end, line = t
+            kind = tm.tok_name[t.type].lower()
+            assert kind
+            # g.trace(f"{kind:>10} {val!r}")
+            if tok_type == tm.ENCODING:
+                self.encoding = val
+                continue
+            if tok_type == tm.ENDMARKER:
+                break
+            if tok_type == tm.INDENT:
+                indents.append(val)
+                continue
+            elif tok_type == tm.DEDENT:
+                indents.pop()
+                self.prev_row, self.prev_col = end
+                    # The row, col of *this* token.
+                continue
+            elif tok_type in (tm.NEWLINE, tm.NL):
+                startline = True
+            elif startline and indents:
+                indent = indents[-1]
+                if start[1] >= len(indent):
+                    self.code_list.append(indent)
+                    self.prev_col = len(indent)
+                startline = False
+            self.add_whitespace(start)
+            self.code_list.append(val)
+            self.prev_row, self.prev_col = end
+            if tok_type in (tm.NEWLINE, tm.NL):
+                self.prev_row += 1
+                self.prev_col = 0
+        return ''.join(self.code_list)
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
 class PythonTokenBeautifier(BaseTokenHandler):
@@ -1099,7 +1151,6 @@ class PythonTokenBeautifier(BaseTokenHandler):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20191027165605.1: *3* ptb: Overrides
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20191024071243.1: *4* ptb.do_token
     def do_token(self, token):
