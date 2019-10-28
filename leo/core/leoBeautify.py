@@ -1002,10 +1002,10 @@ class NullTokenHandler(BaseTokenHandler):
         self.prev_col = 0
         self.encoding = None # Not used!
         # Make the input_list, a list of InputTokens.
-        g.trace(len(tokens))
         self.make_input_tokens(tokens)
         self.add_token('file-start')
         # Generate output tokens.
+        self.code_list = []
         while self.input_tokens:
             token = self.input_tokens.pop(0)
             self.do_token(token)
