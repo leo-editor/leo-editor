@@ -952,7 +952,7 @@ class NullTokenHandler(BaseTokenHandler):
     module.
     """
 
-    undo_type = "Null Undo Type"  # Should be overridden.
+    undo_type = "Null Undo Type"  # Should be overridden in subclasses.
 
     #@+others
     #@+node:ekr.20191028074723.1: *3* May be overridden in subclasses
@@ -1093,6 +1093,7 @@ class NullTokenHandler(BaseTokenHandler):
                 self.prev_row += 1
                 self.prev_col = 0
         g.printObj(self.input_tokens, tag='INPUT TOKENS')
+        # Changed: no need to return a string.
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
 class PythonTokenBeautifier(BaseTokenHandler):
@@ -2202,9 +2203,9 @@ class SyntaxSanitizer:
             result.append(s)
         return i
     #@-others
-#@+node:ekr.20191024035716.1: ** class TokenFstringify(PythonTokenBeautifier)
+#@+node:ekr.20191024035716.1: ** class FStringifyTokens(PythonTokenBeautifier)
 class FstringifyTokens(PythonTokenBeautifier):
-    """A token-based tool that converts % to f-strings."""
+    """A token-based tool that converts strings containing % to f-strings."""
 
     undo_type = "Fstringify"
 
