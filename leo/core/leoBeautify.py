@@ -376,7 +376,7 @@ class BaseTokenHandler:
             Note: repr shows the length of line-indent string.
             """
             return self.value if isinstance(self.value, str) else ''
-    #@+node:ekr.20191027162345.1: *3* token_h.birth
+    #@+node:ekr.20191027162345.1: *3* token_h.ctor
     def __init__(self, c):
         self.c = c
         self.backslash_seen = False
@@ -401,6 +401,7 @@ class BaseTokenHandler:
         self.total_time = 0.0
         self.reload_settings()
 
+    #@+node:ekr.20191028092052.1: *3* token_h.reload_settings
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
@@ -943,8 +944,8 @@ class CPrettyPrinter:
             return len(s)
         return j + 2
     #@-others
-#@+node:ekr.20191027164507.1: ** class NullTokenHandler(BaseTokenHandler)
-class NullTokenHandler(BaseTokenHandler):
+#@+node:ekr.20191027164507.1: ** class NullTokenBeautifier(BaseTokenHandler)
+class NullTokenBeautifier(BaseTokenHandler):
     """
     A token-based beautifier that should leave source code unchanged.
     
@@ -961,7 +962,7 @@ class NullTokenHandler(BaseTokenHandler):
         """
         Handle one input token. Should be overridden in subclasses.
         
-        This NullTokenHandler method just copies the token to the output list.
+        This NullTokenBeautifier method just copies the token to the output list.
         """
         self.code_list.append(token)
     #@+node:ekr.20191028072954.1: *4* null_tok_h.file_end
@@ -1177,6 +1178,7 @@ class PythonTokenBeautifier(BaseTokenHandler):
         self.sanitizer = None  # For pylint.
         self.reloadSettings()
 
+    #@+node:ekr.20191028091748.1: *3* ptb.reload_settings
     def reloadSettings(self):
         c = self.c
         if c:
@@ -2204,11 +2206,15 @@ class SyntaxSanitizer:
             result.append(s)
         return i
     #@-others
-#@+node:ekr.20191024035716.1: ** class FStringifyTokens(PythonTokenBeautifier)
-class FstringifyTokens(PythonTokenBeautifier):
+#@+node:ekr.20191024035716.1: ** class FStringifyTokens(NullTokenBeautifier)
+class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
     """A token-based tool that converts strings containing % to f-strings."""
 
     undo_type = "Fstringify"
+    
+    def __init__(self, c):
+        super().__init__(c)
+        self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
     #@+node:ekr.20191028085402.1: *3* fstring.do_token (NEW)
@@ -2236,8 +2242,9 @@ class FstringifyTokens(PythonTokenBeautifier):
         else:
             # Just put the string.
             self.add_token('string', self.val)
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
+        ### Should no longer be needed.
+            # if self.val.find('\\\n'):
+                # self.backslash_seen = False
         self.blank()
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
@@ -2407,6 +2414,22 @@ class FstringifyTokens(PythonTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
+    #@+node:ekr.20191028091917.1: *3* fstring.blank
+    def blank(self):
+        """Add a blank request on the code list."""
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+            'ws', ### new.
+        ):
+            self.add_token('blank', ' ')
     #@+node:ekr.20191025084714.1: *3* fstring: Entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
     def fstringify_file(self):
