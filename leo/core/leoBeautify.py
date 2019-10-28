@@ -2312,7 +2312,7 @@ class FstringifyTokens(NullTokenBeautifier):
     def convert_fstring(self):
         """
         Scan a string, converting it to an f-string.
-        The 'string' token has already be consumed.
+        The 'string' token has already been consumed.
         """
         g.trace(self.val)
         string_val = self.val
