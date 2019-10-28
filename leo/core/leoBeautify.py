@@ -492,14 +492,15 @@ class BaseTokenBeautifier:
             assert isinstance(value, str), g.callers()
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
-    #@+node:ekr.20150526201701.8: *4* token_h.file_end (may be overridden)
+    #@+node:ekr.20150526201701.8: *4* token_h.file_end
     def file_end(self):
         """
         Add a file-end token to the code list.
-        Retain exactly one line-end token.
+        
+        Subclasses may override to regularize trailing whitespace.
+        
         """
-        ### self.clean_blank_lines()
-        ### self.add_token('line-end', '\n')
+        # self.clean_blank_lines()
         self.add_token('line-end', '\n')
         self.add_token('file-end')
     #@+node:ekr.20191027165035.1: *3* token_h: Utils...
@@ -1395,7 +1396,7 @@ class PythonTokenBeautifier(BaseTokenBeautifier):
                 import difflib  #, pprint
                 g.printObj(list(difflib.ndiff(g.splitLines(p.b), g.splitLines(s3))))
             self.replace_body(p, s3)
-            p.setDirty()  ###
+            p.setDirty()
         # Update the stats
         self.n_input_tokens += len(tokens)
         self.n_output_tokens += len(self.code_list)
@@ -1604,7 +1605,7 @@ class PythonTokenBeautifier(BaseTokenBeautifier):
         self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
-        """Add a blank request on the code list."""
+        """Add a blank request to the code list."""
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
@@ -2262,7 +2263,7 @@ class SyntaxSanitizer:
         return i
     #@-others
 #@+node:ekr.20191024035716.1: ** class FStringifyTokens(NullTokenBeautifier)
-class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
+class FstringifyTokens(NullTokenBeautifier):
     """A token-based tool that converts strings containing % to f-strings."""
 
     undo_type = "Fstringify"
@@ -2288,20 +2289,16 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
-        ### g.trace('VAL', repr(self.val), 'NEXT', self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
-            and '%' in self.val and self.look_ahead(0) == ('op', '%')
+            and '%' in self.val
+            and self.look_ahead(0) == ('op', '%')
         ):
             # Not an f or r string, and a conversion is possible.
             self.convert_fstring()
         else:
             # Just put the string.
             self.add_token('string', self.val)
-        ### Should no longer be needed.
-            # if self.val.find('\\\n'):
-                # self.backslash_seen = False
-        ### self.blank()
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -2434,7 +2431,8 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
         return None, None
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
-        """Add a blank request on the code list."""
+        """Add a blank request to the code list."""
+        # Same as ptb.blank, but there is no common base class.
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
@@ -2445,7 +2443,6 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
             'lt',
             'op-no-blanks',
             'unary-op',
-            'ws', ### new.
         ):
             self.add_token('blank', ' ')
     #@+node:ekr.20191025084714.1: *3* fstring: Entries
