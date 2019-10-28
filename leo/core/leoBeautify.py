@@ -363,8 +363,8 @@ class BeautifierToken:
         Note: repr shows the length of line-indent string.
         """
         return self.value if isinstance(self.value, str) else ''
-#@+node:ekr.20191027071100.1: ** class BaseTokenHandler
-class BaseTokenHandler:
+#@+node:ekr.20191027071100.1: ** class BaseTokenBeautifier
+class BaseTokenBeautifier:
     """
     Common methods for token-based code, including Leo's beautify and
     fstringify commands.
@@ -941,8 +941,8 @@ class CPrettyPrinter:
             return len(s)
         return j + 2
     #@-others
-#@+node:ekr.20191027164507.1: ** class NullTokenBeautifier(BaseTokenHandler)
-class NullTokenBeautifier(BaseTokenHandler):
+#@+node:ekr.20191027164507.1: ** class NullTokenBeautifier(BaseTokenBeautifier)
+class NullTokenBeautifier(BaseTokenBeautifier):
     """
     A token-based beautifier that should leave source code unchanged.
     
@@ -1097,8 +1097,8 @@ class NullTokenBeautifier(BaseTokenHandler):
         # g.printObj(self.tokens, tag='INPUT TOKENS')
         # Changed: no need to return a string.
     #@-others
-#@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenHandler)
-class PythonTokenBeautifier(BaseTokenHandler):
+#@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(BaseTokenBeautifier)
+class PythonTokenBeautifier(BaseTokenBeautifier):
     """A token-based Python beautifier."""
 
     undo_type = "Pretty Print"
