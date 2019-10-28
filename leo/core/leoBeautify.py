@@ -342,7 +342,7 @@ def should_kill_beautify(p):
     return 'killbeautify' in g.get_directives_dict(p)
 #@+node:ekr.20191028140926.1: **  test scripts
 #@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
-def test_NullTokenBeautifier(c, contents, dump=True):
+def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
 
     import tokenize
     # pylint: disable=import-self
@@ -353,6 +353,7 @@ def test_NullTokenBeautifier(c, contents, dump=True):
     tokens = list(tokenize.generate_tokens(readlines))
     # Untokenize.
     x = leoBeautify.NullTokenBeautifier(c)
+    x.dump_tokens = dump_tokens
     results = x.scan_all_tokens(tokens)
     # Compare.
     print('Contents...')
@@ -364,7 +365,7 @@ def test_NullTokenBeautifier(c, contents, dump=True):
     else:
         print('Unchanged')
 #@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
-def test_FstringifyTokens(c, contents):
+def test_FstringifyTokens(c, contents, dump=True, dump_tokens=False):
 
     import tokenize
     # pylint: disable=import-self
@@ -382,7 +383,7 @@ def test_FstringifyTokens(c, contents):
     tokens = list(tokenize.generate_tokens(readlines))
     # Untokenize.
     x = leoBeautify.FstringifyTokens(c)
-    x.use_ws_tokens = False
+    x.dump_tokens = dump_tokens
     results = x.scan_all_tokens(tokens)
     # Show results.
     print("\nTest of FstringifyTokens...\n")
@@ -395,22 +396,24 @@ class BeautifierToken:
     def __init__(self, kind, value):
         self.kind = kind
         self.value = value
+        self.ws = '' # "sidecar" whitespace.
 
     def __repr__(self):
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind:15} {val}"
+        return f"{self.kind:15} ws: {repr(self.ws):8} {val}"
 
     def __str__(self):
         """A more compact version of __repr__"""
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind} {val}"
+        return f"{self.kind} ws: {repr(self.ws):8} {val}"
 
     def to_string(self):
         """
         Convert an output token to a string.
         Note: repr shows the length of line-indent string.
         """
-        return self.value if isinstance(self.value, str) else ''
+        # New support "sidecar" ws.
+        return self.ws + (self.value if isinstance(self.value, str) else '')
 #@+node:ekr.20191027071100.1: ** class BaseTokenBeautifier
 class BaseTokenBeautifier:
     """
@@ -1000,8 +1003,7 @@ class NullTokenBeautifier(BaseTokenBeautifier):
 
     undo_type = "Null Undo Type"  # Should be overridden in subclasses.
     
-    use_ws_tokens = True
-        # True: add_whitespace() creates 'ws' tokens.
+    dump_tokens = False # True: scan_all_tokens dumps tokens.
 
     #@+others
     #@+node:ekr.20191028074723.1: *3* May be overridden in subclasses
@@ -1058,7 +1060,10 @@ class NullTokenBeautifier(BaseTokenBeautifier):
         self.add_token('file-start')
         # Generate output tokens.
         # Note: the self.tokens list may *mutate* within the following loop.
+        if self.dump_tokens:
+            g.printObj(self.tokens, tag='TOKENS')
         self.code_list = []
+        self.prev_token = None
         while self.tokens:
             token = self.tokens.pop(0)
             self.do_token(token)
@@ -1066,6 +1071,11 @@ class NullTokenBeautifier(BaseTokenBeautifier):
         # g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20191028153125.1: *4* null_tok_h.add_token
+    def add_token(self, kind, value=''):
+        """Add a token to self.code_list, and remember it."""
+        super().add_token(kind, value)
+        self.prev_token = self.code_list[-1]
     #@+node:ekr.20191028072257.1: *4* null_tok_h.add_input_token
     def add_input_token(self, kind, value=''):
         """
@@ -1078,13 +1088,14 @@ class NullTokenBeautifier(BaseTokenBeautifier):
             assert isinstance(value, str), g.callers()
         tok = BeautifierToken(kind, value)
         self.tokens.append(tok)
+        self.prev_token = self.tokens[-1]
     #@+node:ekr.20191028014602.2: *4* null_tok_h.add_whitespace
     def add_whitespace(self, start):
         """
         A *lightly* modified version of Untokenizer.add_whitespace.
         
-        Original: append whitespace to self.tokens.
-        Revised:  call add_input_token.
+        Original: Append whitespace to self.tokens.
+        Revised:  Return "sidecar" whitespace for the next token.
         """
         row, col = start
         if row < self.prev_row or row == self.prev_row and col < self.prev_col:
@@ -1092,15 +1103,15 @@ class NullTokenBeautifier(BaseTokenBeautifier):
                 f"start ({row},{col}) precedes previous end "
                 f"{self.prev_row}, {self.prev_col}")
         row_offset = row - self.prev_row
+        ws = ''
         if row_offset:
-            if self.use_ws_tokens:
-                self.add_input_token('ws', "\\\n" * row_offset)
+            ws = "\\\n" * row_offset
             self.prev_col = 0
         col_offset = col - self.prev_col
         if col_offset:
-            if self.use_ws_tokens:
-                self.add_input_token('ws', " " * col_offset)
-    #@+node:ekr.20191028021428.1: *4* null_tok_h.make_input_tokens
+            ws = ws + " " * col_offset
+        return ws
+    #@+node:ekr.20191028021428.1: *4* null_tok_h.make_tokens
     def make_tokens(self, tokens):
         """
         Scan all tokenizer tokens, returning self.tokens, a *list* of input tokens.
@@ -1115,6 +1126,8 @@ class NullTokenBeautifier(BaseTokenBeautifier):
         indents = []
         startline = False
         self.tokens= []
+        # Create a target for sidecar ws.
+        self.add_input_token('file-start', '')
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
@@ -1141,8 +1154,9 @@ class NullTokenBeautifier(BaseTokenBeautifier):
                     self.prev_col = len(indent)
                 startline = False
             # Common code
-            self.add_whitespace(start)
+            ws = self.add_whitespace(start) # Changed.
             self.add_input_token(kind, val) # Changed.
+            self.prev_token.ws = ws # Changed: Add sidecare whitespace.
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
@@ -2258,7 +2272,7 @@ class FstringifyTokens(NullTokenBeautifier):  ### (PythonTokenBeautifier):
         self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
-    #@+node:ekr.20191028085402.1: *3* fstring.do_token (NEW)
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token
     def do_token(self, token):
         """
         Handle one input token, a BeautifierToken.
