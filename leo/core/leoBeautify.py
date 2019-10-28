@@ -2272,6 +2272,7 @@ class FstringifyTokens(NullTokenBeautifier):
     
     def __init__(self, c):
         super().__init__(c)
+        self.ws = ''
         self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
@@ -2305,6 +2306,8 @@ class FstringifyTokens(NullTokenBeautifier):
         else:
             # Just put the string.
             self.add_token('string', self.val)
+            prev_tok = self.code_list[-1]
+            prev_tok.ws = self.ws
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -2432,6 +2435,7 @@ class FstringifyTokens(NullTokenBeautifier):
         if token.kind == 'string':
             self.kind = token.kind
             self.val = token.value
+            self.ws = token.ws
             self.do_string()
         else:
             # super().do_token(token)
