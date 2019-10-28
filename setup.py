@@ -115,7 +115,7 @@ user_requires = [
     'PyQt5 >= 5.12, < 5.13; python_version >= "3.6"', # v5.12+ to close #1217
     'PyQtWebEngine', # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'docutils', # used by Sphinx, rST plugin
-    'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
+    'flexx', # for LeoWapp browser gui
     'meta', # for livecode.py plugin, which is enabled by default
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes','black', # coding syntax standards
