@@ -2296,6 +2296,7 @@ class FstringifyTokens(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
+        sidecar_ws = self.ws
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val
@@ -2304,10 +2305,11 @@ class FstringifyTokens(NullTokenBeautifier):
             # Not an f or r string, and a conversion is possible.
             self.convert_fstring()
         else:
-            # Just put the string, retaining sidecar ws.
+            # Just put the string
             self.add_token('string', self.val)
-            prev_tok = self.code_list[-1]
-            prev_tok.ws = self.ws
+        # Always retain sidecar ws.
+        prev_tok = self.code_list[-1]
+        prev_tok.ws = sidecar_ws
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -2315,7 +2317,6 @@ class FstringifyTokens(NullTokenBeautifier):
         The 'string' token has already been consumed.
         """
         string_val = self.val
-        sidecar_ws = self.ws
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -2350,8 +2351,6 @@ class FstringifyTokens(NullTokenBeautifier):
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
         self.add_token('string', ''.join(result))
-        prev_tok = self.code_list[-1]
-        prev_tok.ws = sidecar_ws
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
         """
