@@ -906,14 +906,28 @@ class NullTokenBeautifier:
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
         self.prev_token = self.code_list[-1]
-    #@+node:ekr.20191029014023.6: *4* null_tok_b.look_ahead
+    #@+node:ekr.20191029014023.6: *4* null_tok_b.look_ahead & look_ahead_ws
     def look_ahead(self, n):
-        """Look ahead n tokens.  n >= 0."""
+        """
+        Look ahead n tokens.  n >= 0.
+        Return (token.kind, token.value)
+        """
         if len(self.tokens) <= n:
             return None, None
         token = self.tokens[n]
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         return token.kind, token.value
+
+    def look_ahead_ws(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return token.ws
+        """
+        if len(self.tokens) <= n:
+            return ''
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token.ws
     #@+node:ekr.20191028070535.1: *4* null_tok_b.scan_all_tokens & helpers
     def scan_all_tokens(self, tokens):
         """
@@ -2284,6 +2298,7 @@ class FstringifyTokens(NullTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
+        g.printObj(values, tag='VALUES')
         i, result = 0, ['f']
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
@@ -2328,6 +2343,7 @@ class FstringifyTokens(NullTokenBeautifier):
         results, value_list = [], []
         while token_i < len(self.tokens):
             kind, val = self.look_ahead(token_i)
+            g.trace(kind, repr(val))
             token = self.tokens[token_i]
             token_i += 1
             tokens.append(token)
@@ -2346,6 +2362,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.extend(self.tokens[token_i : token_i2])
                 token_i = token_i2
             else:
+                ### value_list.append(val)
                 value_list.append(val)
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
@@ -2355,6 +2372,11 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Return (values_list, token_i) of all tokens to the matching closing delim.
         """
+        trace = True and not g.unitTesting
+        if trace:
+            g.printObj(
+                [z.value for z in self.tokens[token_i:]],
+                tag=f"scan_to_matching {self.tokens[token_i:]}")
         values_list = []
         kind0, val0 = self.look_ahead(token_i)
         assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
@@ -2373,6 +2395,8 @@ class FstringifyTokens(NullTokenBeautifier):
                 level_index = ')]}'.index(val)
                 levels[level_index] -= 1
                 if levels == [0, 0, 0]:
+                    if trace:
+                        g.printObj(values_list, tag=f"scan_to_matching {val!r}")
                     return values_list, token_i
             elif kind == 'op' and val in '([{':
                 # Recurse.
