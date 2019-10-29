@@ -918,16 +918,16 @@ class NullTokenBeautifier:
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         return token.kind, token.value
 
-    def look_ahead_ws(self, n):
+    def look_ahead_token(self, n):
         """
         Look ahead n tokens.  n >= 0.
-        Return token.ws
+        Return the token itself.
         """
         if len(self.tokens) <= n:
             return ''
         token = self.tokens[n]
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.ws
+        return token
     #@+node:ekr.20191028070535.1: *4* null_tok_b.scan_all_tokens & helpers
     def scan_all_tokens(self, tokens):
         """
@@ -2342,7 +2342,9 @@ class FstringifyTokens(NullTokenBeautifier):
         # TEMP: Find all tokens up to the first ')'
         results, value_list = [], []
         while token_i < len(self.tokens):
-            kind, val = self.look_ahead(token_i)
+            # kind, val = self.look_ahead(token_i)
+            t = self.look_ahead_token(token_i)
+            kind, val, ws = t.kind, t.value, t.ws
             g.trace(kind, repr(val))
             token = self.tokens[token_i]
             token_i += 1
@@ -2363,7 +2365,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             else:
                 ### value_list.append(val)
-                value_list.append(val)
+                value_list.append(ws + val)
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
