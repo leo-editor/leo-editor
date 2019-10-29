@@ -835,7 +835,7 @@ class NullTokenBeautifier:
     module.
     """
 
-    undo_type = "Null Undo Type"  # Should be overridden in subclasses of undoable.
+    undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
     dump_tokens = False # True: scan_all_tokens dumps tokens.
     
@@ -843,7 +843,7 @@ class NullTokenBeautifier:
         g.trace('unknown kind', self.kind)
 
     #@+others
-    #@+node:ekr.20191029014023.2: *3* null_tok_h.ctor
+    #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
     def __init__(self, c):
         self.c = c
         self.changed = None
@@ -865,12 +865,12 @@ class NullTokenBeautifier:
         self.check_time = 0.0
         self.total_time = 0.0
         self.reload_settings()
-    #@+node:ekr.20191029014023.3: *3* null_tok_h.reload_settings
+    #@+node:ekr.20191029014023.3: *3* null_tok_b.reload_settings
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
-    #@+node:ekr.20191028074723.1: *3* null_tok_h: May be overridden in subclasses
-    #@+node:ekr.20191028020116.1: *4* null_tok_h.do_token
+    #@+node:ekr.20191028074723.1: *3* null_tok_b: May be overridden in subclasses
+    #@+node:ekr.20191028020116.1: *4* null_tok_b.do_token
     def do_token(self, token):
         """
         Handle one input token. Should be overridden in subclasses.
@@ -878,7 +878,7 @@ class NullTokenBeautifier:
         This NullTokenBeautifier method just copies the token to the output list.
         """
         self.code_list.append(token)
-    #@+node:ekr.20191028072954.1: *4* null_tok_h.file_end
+    #@+node:ekr.20191028072954.1: *4* null_tok_b.file_end
     def file_end(self):
         """
         Do any end-of file processing.
@@ -888,7 +888,7 @@ class NullTokenBeautifier:
         # Subclasses may ensure that the file ends with a newline.
         # self.add_token('line-end', '\n')
         self.add_token('file-end')
-    #@+node:ekr.20191028075123.1: *4* null_tok_h.file_start
+    #@+node:ekr.20191028075123.1: *4* null_tok_b.file_start
     def file_start(self):
         """
         Do any start-of-file processing.
@@ -899,14 +899,14 @@ class NullTokenBeautifier:
         so that self.code_list[-1] won't crash.
         """
         self.add_token('file-start')
-    #@+node:ekr.20191029015043.1: *3* null_tok_h: Tokens...
-    #@+node:ekr.20191029014023.7: *4* null_tok_h.add_token
+    #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
+    #@+node:ekr.20191029014023.7: *4* null_tok_b.add_token
     def add_token(self, kind, value=''):
         """Add a token to the code list."""
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
         self.prev_token = self.code_list[-1]
-    #@+node:ekr.20191029014023.6: *4* null_tok_h.look_ahead
+    #@+node:ekr.20191029014023.6: *4* null_tok_b.look_ahead
     def look_ahead(self, n):
         """Look ahead n tokens.  n >= 0."""
         if len(self.tokens) <= n:
@@ -914,7 +914,7 @@ class NullTokenBeautifier:
         token = self.tokens[n]
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         return token.kind, token.value
-    #@+node:ekr.20191028070535.1: *4* null_tok_h.scan_all_tokens & helpers
+    #@+node:ekr.20191028070535.1: *4* null_tok_b.scan_all_tokens & helpers
     def scan_all_tokens(self, tokens):
         """
         Use two *distinct* passes to convert tokens (an iterable of 5-tuples) to a result.
@@ -949,7 +949,7 @@ class NullTokenBeautifier:
         # g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191028072257.1: *5* null_tok_h.add_input_token
+    #@+node:ekr.20191028072257.1: *5* null_tok_b.add_input_token
     def add_input_token(self, kind, value=''):
         """
         Add a token to the input list.
@@ -962,7 +962,7 @@ class NullTokenBeautifier:
         tok = BeautifierToken(kind, value)
         self.tokens.append(tok)
         self.prev_token = self.tokens[-1]
-    #@+node:ekr.20191028014602.2: *5* null_tok_h.add_whitespace
+    #@+node:ekr.20191028014602.2: *5* null_tok_b.add_whitespace
     def add_whitespace(self, start):
         """
         A *lightly* modified version of Untokenizer.add_whitespace.
@@ -984,7 +984,7 @@ class NullTokenBeautifier:
         if col_offset:
             ws = ws + " " * col_offset
         return ws
-    #@+node:ekr.20191028021428.1: *5* null_tok_h.make_tokens
+    #@+node:ekr.20191028021428.1: *5* null_tok_b.make_tokens
     def make_tokens(self, tokens):
         """
         Scan all tokenizer tokens, returning self.tokens, a *list* of input tokens.
@@ -1036,15 +1036,15 @@ class NullTokenBeautifier:
                 self.prev_col = 0
         # g.printObj(self.tokens, tag='INPUT TOKENS')
         # Changed: no need to return a string.
-    #@+node:ekr.20191029014023.9: *3* null_tok_h: Utils...
-    #@+node:ekr.20191029014023.10: *4* null_tok_h.end_undo
+    #@+node:ekr.20191029014023.9: *3* null_tok_b: Utils...
+    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
         """Complete undo processing."""
         c, u = self.c, self.c.undoer
         if self.changed:
             # Tag the end of the command.
             u.afterChangeGroup(c.p, self.undo_type, dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20191029014023.11: *4* null_tok_h.find_root
+    #@+node:ekr.20191029014023.11: *4* null_tok_b.find_root
     def find_root(self):
         """
         Return the nearest ancestor @<file> node, or None.
@@ -1068,7 +1068,7 @@ class NullTokenBeautifier:
             return path
         g.es_print(f"file not found: {filename} in {basedir}")
         return None
-    #@+node:ekr.20191029014023.12: *4* null_tok_h.print_stats
+    #@+node:ekr.20191029014023.12: *4* null_tok_b.print_stats
     def print_stats(self):
         print(
             f"{'='*10} stats\n\n"
@@ -1083,7 +1083,7 @@ class NullTokenBeautifier:
             f"check          {self.check_time:4.2f}\n"
             f"total          {self.total_time:4.2f}"
         )
-    #@+node:ekr.20191029014023.13: *4* null_tok_h.replace_body
+    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body
     def replace_body(self, p, s):
         """Undoably replace the body."""
         c, u = self.c, self.c.undoer
@@ -1101,14 +1101,14 @@ class NullTokenBeautifier:
         dirtyVnodeList2 = p.setDirty()
         self.dirtyVnodeList.extend(dirtyVnodeList2)
         u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20191029014023.14: *4* null_tok_h.token_description
+    #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
     def token_description(self, token):
         """Return a summary of token's kind & value"""
         t1, t2, t3, t4, t5 = token
         kind = token_module.tok_name[t1].lower()
         val = g.toUnicode(t2)
         return f"{kind:>15} {val}"
-    #@+node:ekr.20191029014023.15: *4* null_tok_h.tokenize_string
+    #@+node:ekr.20191029014023.15: *4* null_tok_b.tokenize_string
     def tokenize_string(self, contents, filename):
         """
         Return (ast_node, tokens) from the contents of the given file.
