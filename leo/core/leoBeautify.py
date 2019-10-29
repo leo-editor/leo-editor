@@ -1229,7 +1229,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20191027164959.1: *3* ptb.scan_all_tokens
+    #@+node:ekr.20191027164959.1: *3* ptb.scan_all_tokens (override)
     def scan_all_tokens(self, tokens):
         """
         Scan all tokens in self.tokens, returning the resulting string.

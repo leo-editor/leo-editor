@@ -348,7 +348,7 @@ class BindingInfo:
     __str__ = __repr__
 
     def dump(self):
-        result = ['BindingInfo %17s' % (self.kind)]
+        result = [f'BindingInfo {self.kind:17}']
         # Print all existing ivars.
         table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
         for ivar in table:
@@ -358,9 +358,9 @@ class BindingInfo:
                     if ivar == 'func':
                         # pylint: disable=no-member
                         val = val.__name__
-                    s = '%s: %r' % (ivar, val)
+                    s = f'{ivar}: {val!r}'
                     result.append(s)
-        return '[%s]' % ' '.join(result).strip()
+        return'[%s]'   % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
@@ -405,6 +405,7 @@ class Bunch:
             f"{key}: {str(self.__dict__.get(key)) or repr(self.__dict__.get(key))}"
                 for key in self.ivars() if key != 'tag'
         ]
+        ### Fail.
         result = ['g.Bunch(%s)' % (tag or '')]
         result.extend(entries)
         return '\n    '.join(result) + '\n'
@@ -504,6 +505,8 @@ class EmergencyDialog:
     def run(self):
         """Run the modal emergency dialog."""
         self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+        ### FAIL: WRONG: regex eats '+'.
+        ### self.top.geometry(f"{300:d}x{200:d}{50:d}{50:d}")
         self.top.lift()
         self.top.grab_set() # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
@@ -691,7 +694,7 @@ class KeyStroke:
         return self.s.__hash__() if self.s else 0
     #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
     def __str__(self):
-        return '<KeyStroke: %s>' % (repr(self.s))
+        return f'<KeyStroke: {repr(self.s)}>'
 
     __repr__ = __str__
     #@+node:ekr.20180417160703.1: *4* ks.dump
@@ -701,9 +704,11 @@ class KeyStroke:
             s = chr(i)
             stroke = g.KeyStroke(s)
             if stroke.s != s:
+                ### Fail: x:10!r is a bad format specifier.
                 print('%2s %10r %r' % (i, s, stroke.s))
         for ch in ('backspace', 'linefeed', 'return', 'tab'):
             stroke = g.KeyStroke(ch)
+            ### Fail: x:10!r is a bad format specifier.
             print('%2s %10r %r' % ('', ch, stroke.s))
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding):
@@ -714,9 +719,9 @@ class KeyStroke:
         s = self.strip_mods(binding)
         s = self.finalize_char(s)
             # May change self.mods.
-        mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+        mods = ''.join([f'{z.capitalize()}+' for z in self.mods])
         if trace and 'meta' in self.mods:
-            g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
+            g.trace(f'{binding:20}:{self.mods:>20} ==> {mods+s}')
         return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
     def finalize_char(self, s):
@@ -1147,8 +1152,9 @@ class MatchBrackets:
         expanded = False
         orig_left = left
         orig_right = right
-        while (s[left] not in self.brackets or expand and not expanded) and \
-              (s[right] not in self.brackets or expand and not expanded) and \
+        ### Remove back-slashes.
+        while (s[left] not in self.brackets or expand and not expanded) and\
+              (s[right] not in self.brackets or expand and not expanded) and\
               (left > 0 or right < max_right):
             expanded = False
             if left > 0:
@@ -1688,7 +1694,7 @@ class SherlockTracer:
         """Report a bad Sherlock pattern."""
         if pattern not in self.bad_patterns:
             self.bad_patterns.append(pattern)
-            print('\nignoring bad pattern: %s\n' % pattern)
+            print(f'\nignoring bad pattern: {pattern}\n')
     #@+node:ekr.20140326100337.16847: *4* check_pattern
     def check_pattern(self, pattern):
         """Give an error and return False for an invalid pattern."""
@@ -1730,9 +1736,10 @@ class SherlockTracer:
                 n += 1
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
             dots = '.' * max(0, n - self.n) if self.dots else ''
-            path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
+            path = f'{os.path.basename(fn):>20}' if self.verbose else ''
             leadin = '+' if self.show_return else ''
-            args = '(%s)' % self.get_args(frame1) if self.show_args else ''
+            ### Fail: extra whitespace before %
+            args ='(%s)'   % self.get_args(frame1) if self.show_args else ''
             print(f"{path}{dots}{leadin}{full_name}{args}")
         # Always update stats.
         d = self.stats.get(fn, {})
@@ -1755,7 +1762,8 @@ class SherlockTracer:
                 arg = locals_.get(name, '*undefined*')
                 if arg:
                     if isinstance(arg, (list, tuple)):
-                        val = '[%s]' % ','.join([self.show(z) for z in arg if self.show(z)])
+                        ### Fail: extra ws before %
+                        val ='[%s]'   % ','.join([self.show(z) for z in arg if self.show(z)])
                     else:
                         val = self.show(arg)
                     if val:
@@ -1782,7 +1790,7 @@ class SherlockTracer:
             if 1:
                 # i = full_name.find('::')
                 # name = full_name if i == -1 else full_name[i+2:]
-                print('%3s %s' % (name, line))
+                print(f'{name:3} {line}')
             else:
                 print(f"{g.shortFileName(fn)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
@@ -1800,7 +1808,7 @@ class SherlockTracer:
                 frame = frame.f_back
                 n += 1
             dots = '.' * max(0, n - self.n) if self.dots else ''
-            path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
+            path = f'{os.path.basename(fn):>20}' if self.verbose else ''
             if name and name == '__init__':
                 try:
                     ret1 = locals_ and locals_.get('self', None)
@@ -1817,6 +1825,7 @@ class SherlockTracer:
             if isinstance(arg, types.GeneratorType):
                 ret = '<generator>'
             elif isinstance(arg, (tuple, list)):
+                ### Fail.
                 ret = '[%s]' % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
                     ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
@@ -1904,13 +1913,14 @@ class SherlockTracer:
                 parts = fn.split('/')
                 print('/'.join(parts[-2:]))
                 for key in result:
-                    print('%4s %s' % (d.get(key), key))
+                    print(f'{d.get(key):4} {key}')
     #@+node:ekr.20121128031949.12614: *4* run
     # Modified from pdb.Pdb.set_trace.
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
         import sys
+        ### Fail
         print('SherlockTracer.run:patterns:\n%s' % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
@@ -2012,11 +2022,11 @@ class Tracer:
         g.pr('\ncallDict...')
         for key in sorted(self.callDict):
             # Print the calling function.
-            g.pr('%d' % (self.calledDict.get(key, 0)), key)
+            g.pr(f'{self.calledDict.get(key,0):d}', key)
             # Print the called functions.
             d = self.callDict.get(key)
             for key2 in sorted(d):
-                g.pr('%8d' % (d.get(key2)), key2)
+                g.pr(f'{d.get(key2):8d}', key2)
     #@+node:ekr.20080531075119.5: *4* stop
     def stop(self):
         sys.settrace(None)
@@ -2133,12 +2143,12 @@ class TracingNullObject:
             suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
             for z in suppress:
                 if z not in repr(args):
-                    print('%30s' % 'NullObject.__call__:', args, kwargs)
+                    print('%30s'  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return'TracingNullObject: %s'   % tracing_tags.get(id(self), "<NO TAG>")
     def __str__(self):
-        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return'TracingNullObject: %s'   % tracing_tags.get(id(self), "<NO TAG>")
     #
     # Attribute access...
     def __delattr__(self, attr):
@@ -2228,13 +2238,13 @@ def null_object_print_attr(id_, attr):
     if suppress:
         # Filter traces.
         if not in_callers and s not in suppress_attrs:
-            g.pr('%40s %s' % (s, callers))
+            g.pr(f'{s:40} {callers}')
     else:
         # Print each signature once.  No need to filter!
-        signature = '%s.%s:%s' % (tag, attr, callers)
+        signature = f'{tag}.{attr}:{callers}'
         if signature not in tracing_signatures:
             tracing_signatures [signature] = True
-            g.pr('%40s %s' % (s, callers))
+            g.pr(f'{s:40} {callers}')
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
 def null_object_print(id_, kind, *args):
     tag = tracing_tags.get(id_, "<NO TAG>")
@@ -2246,13 +2256,14 @@ def null_object_print(id_, kind, *args):
         # Always print:
         if args:
             args = ', '.join([repr(z) for z in args])
-            g.pr('%40s %s\n\t\t\targs: %s' % (s, callers, args))
+            ### FAIL: \t\t should be replaced by blanks.
+            g.pr(f'{s:40} {callers}\n\t\t\targs: {args}')
         else:
-            g.pr('%40s %s' % (s, callers))
+            g.pr(f'{s:40} {callers}')
     elif signature not in tracing_signatures:
         # Print each signature once.
         tracing_signatures [signature] = True
-        g.pr('%40s %s' % (s, callers))
+        g.pr(f'{s:40} {callers}')
 #@+node:ekr.20120129181245.10220: *3* class g.TypedDict
 class TypedDict:
     """
@@ -2411,6 +2422,7 @@ def assert_is(obj, list_or_class, warn=True):
     if warn:
         ok = isinstance(obj, list_or_class)
         if not ok:
+            ### Fail.
             g.es_print('can not happen. %r: expected %s, got: %s' % (
                 obj, list_or_class, obj.__class__.__name__))
             g.es_print(g.callers())
@@ -2458,6 +2470,7 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
     if count > 0:
         result = result[:count]
     if verbose:
+        ### Fail.
         return ''.join(['\n  %s' % z for z in result])
     return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
@@ -2473,7 +2486,7 @@ def _callerName(n, verbose=False):
         if verbose:
             obj = locals_.get('self')
             full_name = f"{obj.__class__.__name__}.{name}" if obj else name
-            return 'line %4s %-30s %s' % (line, sfn, full_name)
+            return f'line {line:4} {sfn:>30} {full_name}'
         return name
     except ValueError:
         return ''
@@ -2508,15 +2521,15 @@ def oldDump(s):
 def dump_encoded_string(encoding, s):
     """Dump s, assumed to be an encoded string."""
     # Can't use g.trace here: it calls this function!
-    print('dump_encoded_string: %s' % g.callers())
-    print('dump_encoded_string: encoding %s\n' % encoding)
+    print(f'dump_encoded_string: {g.callers()}')
+    print(f'dump_encoded_string: encoding {encoding}\n')
     print(s)
     in_comment = False
     for ch in s:
         if ch == '#':
             in_comment = True
         elif not in_comment:
-            print('%02x %s' % (ord(ch), repr(ch)))
+            print(f'{ord(ch):02x} {repr(ch)}')
         elif ch == '\n':
             in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
@@ -2627,7 +2640,7 @@ def dictToString(d, indent='', tag=None):
         result.append('\n')
     result.append(indent+'}')
     s = ''.join(result)
-    return '%s...\n%s\n' % (tag, s) if tag else s
+    return f'{tag}...\n{s}\n' if tag else s
 #@+node:ekr.20041126060136: *4* g.listToString
 def listToString(obj, indent='', tag=None):
     """Pretty print a Python list to a string."""
@@ -2645,7 +2658,7 @@ def listToString(obj, indent='', tag=None):
             result.append('\n'+indent)
     result.append(']')
     s = ''.join(result)
-    return '%s...\n%s\n' % (tag, s) if tag else s
+    return f'{tag}...\n{s}\n' if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
 def objToString(obj, indent='', printCaller=False, tag=None):
     """Pretty print any Python object to a string."""
@@ -2764,7 +2777,7 @@ def tupleToString(obj, indent='', tag=None):
             result.append('\n'+indent)
     result.append(')')
     s = ''.join(result)
-    return '%s...\n%s\n' % (tag, s) if tag else s
+    return f'{tag}...\n{s}\n' if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 lastObjectCount = 0
 lastObjectsDict = {}
@@ -2826,7 +2839,7 @@ def printGcRefs(tag=''):
         for ref in refs:
             g.pr(type(ref))
     else:
-        g.pr("%d referers" % len(refs))
+        g.pr(f"{len(refs):d} referers")
 #@+node:ekr.20060202161935: *4* g.printGcAll
 def printGcAll(full=False, sort_by_n=True):
     """Print a summary of all presently live objects."""
@@ -2845,12 +2858,14 @@ def printGcAll(full=False, sort_by_n=True):
             items = list(d.items())
             items.sort(key=lambda x: x[1])
             for z in reversed(items):
-                print('%8s %s' % (z[1], z[0]))
+                print(f'{z[1]:8} {z[0]}')
         else: # Sort by type
             g.printObj(d)
     #
     # Summarize
-    print('\nprintGcAll: %d objects in %5.2f sec. ' % (len(objects), t2-t1))
+    print(
+        f'\nprintGcAll: {len(objects):d} objects '
+        f'in {t2-t1:5.2f} sec. ')
 #@+node:ekr.20060127164729.1: *4* g.printGcObjects
 def printGcObjects(tag=''):
     """Print newly allocated objects."""
@@ -2898,7 +2913,7 @@ def printGcObjects(tag=''):
                     n2 = typesDict.get(key, 0)
                     delta2 = n2 - n1
                     if delta2 != 0:
-                        g.pr("%+6d =%7d %s" % (delta2, n2, key))
+                        g.pr(f"{delta2:6d} ={n2:7d} {key}")
         lastTypesDict = typesDict
         typesDict = {}
         #@-<< print number of each type of object >>
@@ -2979,7 +2994,7 @@ def printTimes(times):
     for n, junk in enumerate(times[:-1]):
         t = times[n+1]-times[n]
         if t > 0.1:
-            g.trace('*** %s %5.4f sec.' % (n, t))
+            g.trace(f'*** {n} {t:5.4f} sec.')
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clearStats
 def clearStats():
@@ -3012,7 +3027,7 @@ def printStats(event=None, name=None):
     d = g.app.statsDict
     d2 = {val: key for key, val in d.iteritems()}
     for key in reversed(sorted(d2.keys())):
-        print('%7s %s' % (key, d2.get(key)))
+        print(f'{key:7} {d2.get(key)}')
 #@+node:ekr.20031218072017.3136: *4* g.stat
 def stat(name=None):
     """Increments the statistic for name in g.app.statsDict
@@ -3031,16 +3046,16 @@ def getTime():
 
 def esDiffTime(message, start):
     delta = time.time() - start
-    g.es('', "%s %5.2f sec." % (message, delta))
+    g.es('', f"{message} {delta:5.2f} sec.")
     return time.time()
 
 def printDiffTime(message, start):
     delta = time.time() - start
-    g.pr("%s %5.2f sec." % (message, delta))
+    g.pr(f"{message} {delta:5.2f} sec.")
     return time.time()
 
 def timeSince(start):
-    return "%5.2f sec." % (time.time() - start)
+    return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
@@ -3177,6 +3192,7 @@ def get_directives_dict(p, root=None):
             if root_node:
                 d["root"] = 0 # value not immportant
             else:
+                ### Fail
                 g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
                     g.angleBrackets('*')))
             break
@@ -3192,7 +3208,7 @@ def compute_directives_re():
     # Clearer w/o f-strings.
     aList = [r'\b%s\b' % (z) for z in globalDirectiveList
                 if z != 'others']
-    return "^@(%s)" % "|".join(aList)
+    return"^@(%s)"   % "|".join(aList)
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.
@@ -3506,7 +3522,7 @@ def set_delims_from_string(s):
                 # to avoid problems with duplicate delimiters on the @comment line.
                 # If used, whole delimiter must be encoded.
                 if len(delims[i]) == 3:
-                    g.warning("'%s' delimiter is invalid" % delims[i])
+                    g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
                     delims[i] = binascii.unhexlify(delims[i][3:])
@@ -3577,10 +3593,11 @@ def setDefaultDirectory(c, p, importing=False):
 #@+node:ekr.20101022124309.6132: *4* g.checkOpenDirectory
 def checkOpenDirectory(c):
     if c.openDirectory != c.frame.openDirectory:
+        ### Fail (partial)
         g.error(
             'Error: c.openDirectory != c.frame.openDirectory\n'
             'c.openDirectory: %s\n'
-            'c.frame.openDirectory: %s' % (
+        'c.frame.openDirectory: %s'      % (
                 c.openDirectory, c.frame.openDirectory))
     if not g.os_path_isabs(c.openDirectory):
         g.error(f"Error: relative c.openDirectory: {c.openDirectory}")
@@ -3851,7 +3868,7 @@ def is_sentinel(line, delims):
         i = line.find(delim2 + '@')
         j = line.find(delim3)
         return 0 == i < j
-    g.error("is_sentinel: can not happen. delims: %s" % repr(delims))
+    g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
     return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
@@ -4096,7 +4113,7 @@ def update_file_if_changed(c, file_name, temp_name):
         if ok:
             ok = g.utils_rename(c, temp_name, file_name)
     if ok:
-        g.es('', '%12s: %s' % (kind, file_name))
+        g.es('', f'{kind:12}: {file_name}')
     else:
         g.error("rename failed: no file created!")
         g.es('', file_name, " may be read-only or in use")
@@ -4940,14 +4957,13 @@ def backupGitIssues(c, base_url=None):
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
     
     root = c.lastTopLevel().insertAfter()
-    root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
+    root.h ='Backup of issues: %s'   % time.strftime("%Y/%m/%d")
     label_list = []
     GitIssueController().backup_issues(base_url, c, label_list, root)
     root.expand()
     c.selectPosition(root)
     c.redraw()
     g.trace('done')
-   
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command, directory=None):
     """Execute the given git command in the given directory."""
@@ -5114,7 +5130,7 @@ class GitIssueController:
             print('Link', r.headers.get('Link'))
         else:
             for key in r.headers:
-                print('%35s: %s' % (key, r.headers.get(key)))
+                print(f'{key:35}: {r.headers.get(key)}')
     #@-others
 #@+node:ekr.20190428173354.1: *3* g.getGitVersion
 def getGitVersion(directory=None):
@@ -5282,7 +5298,7 @@ def doHook(tag, *args, **keywords):
         return None
     if args:
         # A minor error in Leo's core.
-        g.pr("***ignoring args param.  tag = %s" % tag)
+        g.pr(f"***ignoring args param.  tag = {tag}")
     if not g.app.config.use_plugins:
         if tag in ('open0', 'start1'):
             g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
@@ -5409,7 +5425,8 @@ def idleTimeHookHandler(timer):
 def cantImport(moduleName, pluginName=None, verbose=True):
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
-    if pluginName: s = s + " from %s" % pluginName
+    ### Fail: extra ws
+    if pluginName: s = s +" from %s"   % pluginName
     if not g.app or not g.app.gui:
         print(s)
     elif g.unitTesting:
@@ -5454,7 +5471,7 @@ def importModule(moduleName, pluginName=None, verbose=False):
                     module = imp.load_module(moduleName, theFile, pathname, description)
                     if module:
                         # This trace is usually annoying.
-                        if trace and verbose: g.es("%s loaded" % moduleName)
+                        if trace and verbose: g.es(f"{moduleName} loaded")
                         break
                 except Exception:
                     t, v, tb = sys.exc_info()
@@ -5779,14 +5796,14 @@ def checkUnicode(s, encoding=None):
         return s
     tag = 'g.checkUnicode'
     if not isinstance(s, bytes):
-        g.error('%s: unexpected argument: %r' % (tag, s))
+        g.error(f'{tag}: unexpected argument: {s!r}')
         return ''
     #
     # Report the unexpected conversion.
     callers = g.callers(1)
     if callers not in checkUnicode_dict:
         g.trace(g.callers())
-        g.error('\n%s: expected unicode. got: %r\n' % (tag, s))
+        g.error(f'\n{tag}: expected unicode. got: {s!r}\n')
         checkUnicode_dict [callers] = True
     #
     # Convert to unicode, reporting all errors.
@@ -5798,11 +5815,11 @@ def checkUnicode(s, encoding=None):
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         g.trace(g.callers())
-        g.error('%s: unicode error. encoding: %r, s:\n%r' % (tag, encoding, s))
+        g.error(f'{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}')
     except Exception:
         g.trace(g.callers())
         g.es_excption()
-        g.error('%s: unexpected error! encoding: %r, s:\n%r' % (tag, encoding, s))
+        g.error(f'{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}')
     return s
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):
@@ -6371,7 +6388,7 @@ def es_dump(s, n=30, title=None):
         g.es_print('', title)
     i = 0
     while i < len(s):
-        aList = ''.join(['%2x ' % (ord(ch)) for ch in s[i: i + n]])
+        aList = ''.join([f'{ord(ch):2x} ' for ch in s[i: i + n]])
         g.es_print('', aList)
         i += n
 #@+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
@@ -6910,7 +6927,8 @@ def truncate(s, n):
     """Return s truncated to n characters."""
     if len(s) <= n:
         return s
-    s2 = s[:n-3] + '...(%s)' % len(s)
+    # Fail: weird ws.
+    s2 = s[:n-3] +'...(%s)'   % len(s)
     if s.endswith('\n'):
         return s2 + '\n'
     return s2
@@ -7206,13 +7224,13 @@ def os_startfile(fname):
             wre = tempfile.NamedTemporaryFile()
             ree = io.open(wre.name, 'rb', buffering=0)
         except IOError:
-            g.trace('error opening temp file for %r' % fname)
+            g.trace(f'error opening temp file for {fname!r}')
             if ree: ree.close()
             return
         try:
             subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)
         except Exception:
-            g.es_print('error opening %r' % fname)
+            g.es_print(f'error opening {fname!r}')
             g.es_exception()
         try:
             itoPoll = g.IdleTime((lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
@@ -7220,7 +7238,7 @@ def os_startfile(fname):
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
         except Exception:
-            g.es_exception('exception executing g.startfile for %r' % fname)
+            g.es_exception(f'exception executing g.startfile for {fname!r}')
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
     # Fix bug 735938: file association crash
@@ -7392,13 +7410,13 @@ def computeBaseDir(c, base_dir, path_setting, trace=False):
             base_dir2 = base_dir2.replace('\\','/')
             if g.os_path_exists(base_dir2):
                 return base_dir2
-            return g.es_print('@string %s not found: %r' % (path_setting, base_dir2))
+            return g.es_print(f'@string {path_setting} not found: {base_dir2!r}')
     # Fall back to given base_dir.
     if base_dir:
         base_dir = base_dir.replace('\\','/')
         if g.os_path_exists(base_dir):
             return base_dir
-        return g.es_print('base_dir not found: %r' % base_dir)
+        return g.es_print(f'base_dir not found: {base_dir!r}')
     return g.es_print(f"Please use @string {path_setting}")
 #@+node:ekr.20180217153459.1: *4* g.computeCommands
 def computeCommands(c, commands, command_setting, trace=False):
@@ -7614,7 +7632,7 @@ def handleScriptException(c, p, script, script1):
             j = min(n + 2, len(lines))
             while i < j:
                 ch = '*' if i == n - 1 else ' '
-                s = "%s line %d: %s" % (ch, i + 1, lines[i])
+                s = f"{ch} line {i+1:d}: {lines[i]}"
                 g.es('', s, newline=False)
                 i += 1
             #@-<< dump the lines near the error >>
@@ -7635,7 +7653,7 @@ def insertCodingLine(encoding, script):
             if s.startswith(tag):
                 break
         else:
-            lines.insert(0, '%s %s -*-\n' % (tag, encoding))
+            lines.insert(0, f'{tag} {encoding} -*-\n')
             script = ''.join(lines)
     return script
 #@+node:ekr.20070524083513: ** g.Unit Tests
