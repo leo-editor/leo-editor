@@ -340,14 +340,21 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20191028140926.1: **  test scripts
+#@+node:ekr.20191028140926.1: **  test functions: (leoBeautifier.py)
 #@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
 def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
 
     import tokenize
     # pylint: disable=import-self
     import leo.core.leoBeautify as leoBeautify
-    print("Test of NullTokenBeautifier...\n")
+    
+    def show(obj, tag, dump=dump):
+        print(f"{tag}...\n")
+        if dump:
+            g.printObj(obj)
+        else:
+            print(obj)
+
     # Tokenize.
     readlines = g.ReadLinesClass(contents).next
     tokens = list(tokenize.generate_tokens(readlines))
@@ -356,12 +363,11 @@ def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
     x.dump_tokens = dump_tokens
     results = x.scan_all_tokens(tokens)
     # Compare.
-    print('Contents...')
-    g.printObj(contents) 
+    show(contents, 'Contents')
     if contents != results:
         print('')
         print('Changed...')
-        g.printObj(results)
+        show(results, 'Results')
     else:
         print('Unchanged')
 #@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
@@ -371,8 +377,8 @@ def test_FstringifyTokens(c, contents, dump=True, dump_tokens=False):
     # pylint: disable=import-self
     import leo.core.leoBeautify as leoBeautify
    
-    def show(obj, tag, dump=True):
-        print(f"{tag}...")
+    def show(obj, tag, dump=dump):
+        print(f"{tag}...\n")
         if dump:
             g.printObj(obj)
         else:
