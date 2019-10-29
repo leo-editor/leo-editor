@@ -341,20 +341,19 @@ def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
 #@+node:ekr.20191028140926.1: **  test functions: (leoBeautifier.py)
+#@+node:ekr.20191029184103.1: *3* function: show
+def show(obj, tag, dump):
+    print(f"{tag}...\n")
+    if dump:
+        g.printObj(obj)
+    else:
+        print(obj)
 #@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
 def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
 
-    import tokenize
     # pylint: disable=import-self
+    import tokenize
     import leo.core.leoBeautify as leoBeautify
-    
-    def show(obj, tag, dump=dump):
-        print(f"{tag}...\n")
-        if dump:
-            g.printObj(obj)
-        else:
-            print(obj)
-
     # Tokenize.
     readlines = g.ReadLinesClass(contents).next
     tokens = list(tokenize.generate_tokens(readlines))
@@ -363,27 +362,19 @@ def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
     x.dump_tokens = dump_tokens
     results = x.scan_all_tokens(tokens)
     # Compare.
-    show(contents, 'Contents')
+    show(contents, 'Contents', dump)
     if contents != results:
         print('')
         print('Changed...')
-        show(results, 'Results')
+        show(results, 'Results', dump)
     else:
         print('Unchanged')
 #@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
 def test_FstringifyTokens(c, contents, dump=True, dump_tokens=False):
 
-    import tokenize
     # pylint: disable=import-self
+    import tokenize
     import leo.core.leoBeautify as leoBeautify
-   
-    def show(obj, tag, dump=dump):
-        print(f"{tag}...\n")
-        if dump:
-            g.printObj(obj)
-        else:
-            print(obj)
-
     # Tokenize.
     readlines = g.ReadLinesClass(contents).next
     tokens = list(tokenize.generate_tokens(readlines))
@@ -392,9 +383,26 @@ def test_FstringifyTokens(c, contents, dump=True, dump_tokens=False):
     x.dump_tokens = dump_tokens
     results = x.scan_all_tokens(tokens)
     # Show results.
-    show(contents, 'Contents')
+    show(contents, 'Contents', dump)
     print('')
-    show(results, 'Results')
+    show(results, 'Results', dump)
+#@+node:ekr.20191029184028.1: *3* test_PythonTokenBeautifier
+def test_PythonTokenBeautifier(c, contents, dump=True, dump_tokens=False):
+
+    # pylint: disable=import-self
+    import tokenize
+    import leo.core.leoBeautify as leoBeautify
+    # Tokenize.
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    # Untokenize.
+    x = leoBeautify.PythonTokenBeautifier(c)
+    x.dump_tokens = dump_tokens
+    results = x.scan_all_tokens(tokens)
+    # Show results.
+    show(contents, 'Contents', dump)
+    print('')
+    show(results, 'Results', dump)
 #@+node:ekr.20150523132558.1: **  class BeautifierToken
 class BeautifierToken:
     """A class representing both input and output tokens"""
@@ -854,6 +862,7 @@ class NullTokenBeautifier:
         self.tab_width = None
         self.tokens = []
         # Statistics...
+        # Only ptb.prettyPrintNode updates the stats.
         self.errors = 0
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -864,6 +873,7 @@ class NullTokenBeautifier:
         self.beautify_time = 0.0
         self.check_time = 0.0
         self.total_time = 0.0
+        # Update per-commander settings.
         self.reload_settings()
     #@+node:ekr.20191029014023.3: *3* null_tok_b.reload_settings
     def reload_settings(self):
@@ -1243,65 +1253,29 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20191027164959.1: *3* ptb.scan_all_tokens (override)
+    #@+node:ekr.20191029131929.1: *3* ptb.scan_all_tokens (NEW)
     def scan_all_tokens(self, tokens):
         """
-        Scan all tokens in self.tokens, returning the resulting string.
+        Scan all tokens, returning the resulting string.
         
         The self.tokens ivar allows for lookahead in the token handlers.
         """
-        # Init ivars.
-        self.code_list = []
-        self.errors = 0
-        self.last_line_number = 0
-        self.state_stack = []
         self.tokens = tokens
-        # Init tokens and state.
-        self.add_token('file-start')
+        self.state_stack = []
         self.push_state('file-start')
-        # Generate tokens.
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        self.file_end()
-        # Return string result.
-        return ''.join([z.to_string() for z in self.code_list])
+        return super().scan_all_tokens(tokens)
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
-    #@+node:ekr.20191024071243.1: *4* ptb.do_token (override)
+    #@+node:ekr.20191024071243.1: *4* ptb.do_token (NEW: Rewrite)
     def do_token(self, token):
         """
         Handle one token. Token handlers may call this method to do look-ahead processing.
         """
-        t1, t2, t3, t4, t5 = token
-        srow, scol = t3
-        self.kind = token_module.tok_name[t1].lower()
-        self.val = g.toUnicode(t2)
-        self.raw_line = g.toUnicode(t5).rstrip()
-        if srow != self.last_line_number:
-            # Handle a previous backslash.
-            if self.backslash_seen:
-                self.add_token('backslash', '\\')
-                self.add_token('line-end', '\n')
-                self.backslash_seen = False
-            # Start a new row.
-            self.backslash_seen = self.raw_line.endswith('\\')
-            # Yes, we need this logic, even in fstringify.
-            if (
-                self.curly_brackets_level > 0
-                or self.paren_level > 0
-                or self.square_brackets_level > 0
-            ):
-                s = self.raw_line
-                n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                # This n will be one-too-many if formatting has
-                # changed: foo (
-                # to:      foo(
-                self.line_indent(ws=' '*n)
-                    # Do not set self.lws here!
-            self.last_line_number = srow
-        func = getattr(self, f"do_{self.kind}", self.oops)
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        # The old code sets self.line_indent
+        self.kind, self.val, self.ws = token.kind, token.value, token.ws
+        func = getattr(self, f"do_{token.kind}", self.oops)
         func()
-    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
+    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (sets stats)
     def prettyPrintNode(self, p):
         """
         The driver for beautification: beautify a single node.
@@ -1380,64 +1354,32 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.total_time += t5 - t1
         # self.print_stats()
         return changed
-    #@+node:ekr.20150526194715.1: *4* ptb.run
+    #@+node:ekr.20150526194715.1: *4* ptb.run (NEW: test)
     def run(self, tokens):
         """
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
         """
-
-        self.errors = 0
-        self.code_list = []
-        self.state_stack = []
-        last_line_number = 0
-        self.add_token('file-start')
-        self.push_state('file-start')
-        for token5tuple in tokens:
-            t1, t2, t3, t4, t5 = token5tuple
-            srow, scol = t3
-            self.kind = token_module.tok_name[t1].lower()
-            self.val = g.toUnicode(t2)
-            self.raw_line = g.toUnicode(t5).rstrip()
-            if srow != last_line_number:
-                # Handle a previous backslash.
-                if self.backslash_seen:
-                    self.backslash()
-                # Start a new row.
-                self.backslash_seen = self.raw_line.endswith('\\')
-                if (
-                    self.curly_brackets_level > 0
-                    or self.paren_level > 0
-                    or self.square_brackets_level > 0
-                ):
-                    s = self.raw_line
-                    n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                    # This n will be one-too-many if formatting has
-                    # changed: foo (
-                    # to:      foo(
-                    self.line_indent(ws=' '*n)
-                        # Do not set self.lws here!
-                last_line_number = srow
-            func = getattr(self, 'do_'+self.kind, self.oops)
-            func()
-        self.file_end()
+        self.scan_all_tokens(tokens)
         # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
     def do_comment(self):
         """Handle a comment token."""
-        raw_line = self.raw_line
-        val = self.val.rstrip()
-        entire_line = raw_line.lstrip().startswith('#')
-        self.backslash_seen = False
-            # Putting the comment will put the backslash.
-        if entire_line:
-            self.clean('line-indent')
-            self.add_token('comment', raw_line)
-        else:
-            self.blank_before_end_line_comment()
-            self.add_token('comment', val)
+        self.add_token(self.val)
+        ###
+            # raw_line = self.raw_line
+            # val = self.val.rstrip()
+            # entire_line = raw_line.lstrip().startswith('#')
+            # self.backslash_seen = False
+                # # Putting the comment will put the backslash.
+            # if entire_line:
+                # self.clean('line-indent')
+                # self.add_token('comment', raw_line)
+            # else:
+                # self.blank_before_end_line_comment()
+                # self.add_token('comment', val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
         """Handle an endmarker token."""
@@ -1448,6 +1390,9 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # This code is executed for versions of Python earlier than 2.4
         if self.val == '@':
             self.op(self.val)
+    #@+node:ekr.20191029132730.1: *4* ptb.do_file_start (NEW: do-nothing)
+    def do_file_start(self):
+        g.trace('(ptb)')
     #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
     def do_dedent(self):
         """Handle dedent token."""

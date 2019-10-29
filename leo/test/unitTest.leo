@@ -251,6 +251,86 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
+<v t="ekr.20150521123343.1"><vh>leoBeautify</vh>
+<v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
+<v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
+<v t="ekr.20190912105517.1"><vh>basic test</vh></v>
+<v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
+<v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20190912071608.2"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.3"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.4"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.5"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.6"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.7"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.8"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.9"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.10"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.11"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.12"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.13"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.14"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.15"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.16"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.17"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.18"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20150610064911.1"><vh>OLD @test beautifier (small) </vh>
+<v t="ekr.20150610064930.1"><vh>before</vh></v>
+<v t="ekr.20150610065241.1"><vh>after</vh></v>
+</v>
+<v t="ekr.20190914104955.1"><vh>@test black</vh>
+<v t="ekr.20190914104955.2"><vh>basic test</vh></v>
+<v t="ekr.20190914104955.3"><vh>@others &amp; sections references</vh></v>
+<v t="ekr.20190914104955.4"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20190914104955.5"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.6"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.7"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.8"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.9"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.10"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.11"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.12"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.13"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.14"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.15"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.16"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.17"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.18"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.19"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.20"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.21"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20190914104955.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20190914105123.1"><vh>@test beautifier (large)</vh>
+<v t="ekr.20190914105123.2"><vh>basic test</vh></v>
+<v t="ekr.20190914105123.3"><vh>@others &amp; sections references</vh></v>
+<v t="ekr.20190914105123.4"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20190914105123.5"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.6"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.7"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.8"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.9"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.10"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.11"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.12"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.13"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.14"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.15"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.16"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.17"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.18"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.19"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.20"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.21"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20190914105123.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
+</v>
+</v>
 <v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
 <v t="ekr.20190915083933.1"><vh>peeve: two spaces before a trailing comment</vh>
 <v t="ekr.20190915083945.1"><vh>test</vh></v>
@@ -297,6 +377,34 @@
 <v t="ekr.20190914115304.1"><vh>expected</vh></v>
 </v>
 </v>
+<v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
+<v t="ekr.20190914132845.2"><vh>peeve: ws in slices</vh>
+<v t="ekr.20190914132845.3"><vh>test</vh></v>
+<v t="ekr.20190914132845.4"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.5"><vh>peeve: ws after unary minus</vh>
+<v t="ekr.20190914132845.6"><vh>test</vh></v>
+<v t="ekr.20190914132845.7"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.8"><vh>peeve: ws between trailing comma &amp; close paren</vh>
+<v t="ekr.20190914132845.9"><vh>test</vh></v>
+<v t="ekr.20190914132845.10"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.11"><vh>peeve: ws inside parentheses, brackets or braces.</vh>
+<v t="ekr.20190914132845.12"><vh>test</vh></v>
+<v t="ekr.20190914132845.13"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.14"><vh>peeve: ws before comma, semicolon, colon</vh>
+<v t="ekr.20190914132845.15"><vh>test</vh></v>
+<v t="ekr.20190914132845.16"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.17"><vh>peeve:  ws before parens</vh>
+<v t="ekr.20190914132845.18"><vh>test</vh></v>
+<v t="ekr.20190914132845.19"><vh>expected</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20190914105123.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1179,6 +1287,271 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111104171708.3843">import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+
+if 1: # test of indent.
+    # import os ; os.system('cls')
+    cpp.indent(p2)
+if 0: # test of tokenize.
+    aList = cpp.tokenize(p2.b)
+    assert(p2.b == ''.join(aList))
+</t>
+<t tx="ekr.20111104171708.3844">@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos-&gt;can_break;
+        }
+
+        parser_state_tos-&gt;last_saw_nl = false;
+        parser_state_tos-&gt;can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp;
+            (buf_break != NULL) &amp;&amp;
+            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                (type_code != newline) &amp;&amp;
+                (type_code != form_feed) &amp;&amp;
+                (type_code != rparen) &amp;&amp;
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != rparen) ) ) &amp;&amp;
+            (output_line_length () &gt; settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp &gt; 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
+                  parser_state_tos-&gt;in_parameter_declaration) ||
+                 (parser_state_tos-&gt;classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &amp;paren_target);
+            }
+
+            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            if (force_nl &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
+                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos-&gt;last_token == rbrace)))
+            {
+                if (settings.verbose &amp;&amp; !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &amp;paren_target);
+                parser_state_tos-&gt;want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos-&gt;want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &amp;&amp;
+                 (type_code != cplus_comment) &amp;&amp;
+                 !(settings.break_function_decl_args &amp;&amp;
+                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
+                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
+                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
+                         can_break, &amp;last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            parser_state_tos-&gt;last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &amp;&amp;
+                 (output_line_length () &gt; settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+</t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
 # These are now EKR's preferred settings everywhere:
@@ -1573,9 +1946,32 @@ finally:
 
     &lt;|code|&gt;
 </t>
+<t tx="ekr.20150521123343.1"></t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150610064911.1"># This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b, (
+        f"{g.objToString(p1.b, tag='BEFORE')}\n"
+        f"{g.objToString(p2.b, tag='AFTER')}")
+finally:
+    p1.b = s
+    c.setChanged(False)
+</t>
+<t tx="ekr.20150610064930.1">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20150610065241.1">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -1851,6 +2247,1469 @@ unl: spam
 gnx: ekr.20190113124246.31
 unl: eggs
 </t>
+<t tx="ekr.20190912065312.1">from leo.core.leoBeautify import  SyntaxSanitizer
+for child in p.subtree():
+    child_s = child.b
+    for keep in (True, False):
+        # Setup.
+        sanitizer = SyntaxSanitizer(c, keep)
+        comment, result1 = sanitizer.comment_leo_lines(child)
+        # Test basic round-tripping.
+        result2 = sanitizer.uncomment_leo_lines(comment, child, s0=result1)
+        assert child_s.rstrip() == result2.rstrip(), (
+            f"Round-trip FAIL: keep: {keep}, {child.h}\n"
+            f"{g.objToString(child_s, tag='child_s')}\n"
+            f"{g.objToString(result1, tag='result1')}\n"
+            f"{g.objToString(result2, tag='result2')}")
+</t>
+<t tx="ekr.20190912071608.1">@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    &lt;&lt; init scan_lines &gt;&gt;
+    &lt;&lt; define dump_v &gt;&gt;
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        &lt;&lt; 1. common code for all lines &gt;&gt;
+        &lt;&lt; 2. short-circuit later tests &gt;&gt;
+        &lt;&lt; 3. handle @others &gt;&gt; # clears in_doc
+        &lt;&lt; 4. handle section refs &gt;&gt; # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        &lt;&lt; handle node_start &gt;&gt;
+        &lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;
+        &lt;&lt; handle @all &gt;&gt;
+        &lt;&lt; handle afterref &gt;&gt;
+        &lt;&lt; handle @first and @last &gt;&gt;
+        &lt;&lt; handle @comment &gt;&gt;
+        &lt;&lt; handle @delims &gt;&gt;
+        &lt;&lt; handle @raw &gt;&gt;
+        &lt;&lt; handle @-leo &gt;&gt;
+        # These must be last, in this order.
+        &lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;
+        &lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;
+        &lt;&lt; Last 3. handle remaining @ lines &gt;&gt;
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+</t>
+<t tx="ekr.20190912071608.10">m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+</t>
+<t tx="ekr.20190912071608.11">m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190912071608.12">m = first_pat.match(line)
+if m:
+    if 0 &lt;= first_i &lt; len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @&lt;file&gt; nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+</t>
+<t tx="ekr.20190912071608.13"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # &lt;1, 2 or 3 comment delims&gt;
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190912071608.14">m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190912071608.15"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190912071608.16">if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+</t>
+<t tx="ekr.20190912071608.17"># @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+</t>
+<t tx="ekr.20190912071608.18">if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+</t>
+<t tx="ekr.20190912071608.19"># Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+</t>
+<t tx="ekr.20190912071608.2">#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+&lt;section&gt;, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '&lt;hidden top vnode&gt;'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+</t>
+<t tx="ekr.20190912071608.3">def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+</t>
+<t tx="ekr.20190912071608.4">if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # &lt;delim&gt;@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) &gt; indent:
+    line = line[indent:]
+</t>
+<t tx="ekr.20190912071608.5"># This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+</t>
+<t tx="ekr.20190912071608.6">m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
+<t tx="ekr.20190912071608.7">m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
+<t tx="ekr.20190912071608.8">m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+</t>
+<t tx="ekr.20190912071608.9">if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+</t>
+<t tx="ekr.20190912105517.1">@language python
+@
+This is a doc part.
+@c
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+</t>
+<t tx="ekr.20190912160752.1">a = 1
+&lt;&lt; section ref &gt;&gt;
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # &lt;section ref&gt;
+    # ):
+        # pass
+</t>
+<t tx="ekr.20190914104955.1">from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
+
+for child in p.subtree():
+    child_s = child.b
+    try:
+        # Blacken all nodes.
+        assert should_beautify(child), repr(child.h)
+        c.selectPosition(child)
+        BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+        # Check only those nodes that should not have been changed.
+        if child.h in ('basic test', 'sections references'):
+            assert child_s.rstrip() == child.b.rstrip(), (
+                f"FAIL: blacken-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
+    finally:
+        child.b = child_s
+        c.selectPosition(p)
+</t>
+<t tx="ekr.20190914104955.10">m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
+<t tx="ekr.20190914104955.11">m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+</t>
+<t tx="ekr.20190914104955.12">if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+</t>
+<t tx="ekr.20190914104955.13">m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+</t>
+<t tx="ekr.20190914104955.14">m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190914104955.15">m = first_pat.match(line)
+if m:
+    if 0 &lt;= first_i &lt; len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @&lt;file&gt; nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+</t>
+<t tx="ekr.20190914104955.16"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # &lt;1, 2 or 3 comment delims&gt;
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190914104955.17">m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190914104955.18"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190914104955.19">if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+</t>
+<t tx="ekr.20190914104955.2">@language python
+@
+This is a doc part.
+@c
+
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+</t>
+<t tx="ekr.20190914104955.20"># @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+</t>
+<t tx="ekr.20190914104955.21">if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+</t>
+<t tx="ekr.20190914104955.22"># Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+</t>
+<t tx="ekr.20190914104955.3">a = 1
+&lt;&lt; section ref &gt;&gt;
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # &lt;section ref&gt;
+    # ):
+        # pass
+</t>
+<t tx="ekr.20190914104955.4">@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    &lt;&lt; init scan_lines &gt;&gt;
+    &lt;&lt; define dump_v &gt;&gt;
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        &lt;&lt; 1. common code for all lines &gt;&gt;
+        &lt;&lt; 2. short-circuit later tests &gt;&gt;
+        &lt;&lt; 3. handle @others &gt;&gt; # clears in_doc
+        &lt;&lt; 4. handle section refs &gt;&gt; # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        &lt;&lt; handle node_start &gt;&gt;
+        &lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;
+        &lt;&lt; handle @all &gt;&gt;
+        &lt;&lt; handle afterref &gt;&gt;
+        &lt;&lt; handle @first and @last &gt;&gt;
+        &lt;&lt; handle @comment &gt;&gt;
+        &lt;&lt; handle @delims &gt;&gt;
+        &lt;&lt; handle @raw &gt;&gt;
+        &lt;&lt; handle @-leo &gt;&gt;
+        # These must be last, in this order.
+        &lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;
+        &lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;
+        &lt;&lt; Last 3. handle remaining @ lines &gt;&gt;
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+</t>
+<t tx="ekr.20190914104955.5">#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+&lt;section&gt;, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '&lt;hidden top vnode&gt;'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+</t>
+<t tx="ekr.20190914104955.6">def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+</t>
+<t tx="ekr.20190914104955.7">if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # &lt;delim&gt;@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) &gt; indent:
+    line = line[indent:]
+</t>
+<t tx="ekr.20190914104955.8"># This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+</t>
+<t tx="ekr.20190914104955.9">m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
+<t tx="ekr.20190914105123.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+
+for child in p.subtree():
+    child_s = child.b
+    try:
+        # Beautify all nodes.
+        assert should_beautify(child), repr(child.h)
+        c.selectPosition(child)
+        PythonTokenBeautifier(c).prettyPrintNode(child)
+        # Check only those nodes that should not have been changed.
+        if child.h in ('basic test', 'sections references'):
+            assert child_s.rstrip() == child.b.rstrip(), (
+                f"FAIL: beautify-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
+    finally:
+        child.b = child_s
+        c.selectPosition(p)
+</t>
+<t tx="ekr.20190914105123.10">m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
+<t tx="ekr.20190914105123.11">m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+</t>
+<t tx="ekr.20190914105123.12">if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+</t>
+<t tx="ekr.20190914105123.13">m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+</t>
+<t tx="ekr.20190914105123.14">m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190914105123.15">m = first_pat.match(line)
+if m:
+    if 0 &lt;= first_i &lt; len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @&lt;file&gt; nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+</t>
+<t tx="ekr.20190914105123.16"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # &lt;1, 2 or 3 comment delims&gt;
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190914105123.17">m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+</t>
+<t tx="ekr.20190914105123.18"># http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+</t>
+<t tx="ekr.20190914105123.19">if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+</t>
+<t tx="ekr.20190914105123.2">@language python
+@
+This is a doc part.
+@c
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+</t>
+<t tx="ekr.20190914105123.20"># @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+</t>
+<t tx="ekr.20190914105123.21">if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+</t>
+<t tx="ekr.20190914105123.22"># Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+</t>
+<t tx="ekr.20190914105123.3">a = 1
+&lt;&lt; section ref &gt;&gt;
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # &lt;section ref&gt;
+    # ):
+        # pass
+</t>
+<t tx="ekr.20190914105123.4">@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    &lt;&lt; init scan_lines &gt;&gt;
+    &lt;&lt; define dump_v &gt;&gt;
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        &lt;&lt; 1. common code for all lines &gt;&gt;
+        &lt;&lt; 2. short-circuit later tests &gt;&gt;
+        &lt;&lt; 3. handle @others &gt;&gt; # clears in_doc
+        &lt;&lt; 4. handle section refs &gt;&gt; # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        &lt;&lt; handle node_start &gt;&gt;
+        &lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;
+        &lt;&lt; handle @all &gt;&gt;
+        &lt;&lt; handle afterref &gt;&gt;
+        &lt;&lt; handle @first and @last &gt;&gt;
+        &lt;&lt; handle @comment &gt;&gt;
+        &lt;&lt; handle @delims &gt;&gt;
+        &lt;&lt; handle @raw &gt;&gt;
+        &lt;&lt; handle @-leo &gt;&gt;
+        # These must be last, in this order.
+        &lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;
+        &lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;
+        &lt;&lt; Last 3. handle remaining @ lines &gt;&gt;
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+</t>
+<t tx="ekr.20190914105123.5">#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+&lt;section&gt;, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '&lt;hidden top vnode&gt;'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+</t>
+<t tx="ekr.20190914105123.6">def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+</t>
+<t tx="ekr.20190914105123.7">if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # &lt;delim&gt;@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) &gt; indent:
+    line = line[indent:]
+</t>
+<t tx="ekr.20190914105123.8"># This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+</t>
+<t tx="ekr.20190914105123.9">m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+</t>
 <t tx="ekr.20190914111357.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
 errors, fails, tests = [], [], []
 try:
@@ -1950,6 +3809,190 @@ dct['key'] = lst[index]
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.1">from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
+fails = []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            c.selectPosition(test)
+            BlackCommand(c).blacken_node(test, diff_flag=False, check_flag=False)
+            if test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"blacken-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    c.selectPosition(p)
+    c.setChanged(False)
+assert not fails, g.objToString(fails, tag='FAILED tests')
+</t>
+<t tx="ekr.20190914132845.10">foo = (0,)
+bar = (0,)
+</t>
+<t tx="ekr.20190914132845.11"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914132845.12">spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914132845.13">spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914132845.14"># Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+</t>
+<t tx="ekr.20190914132845.15">if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+</t>
+<t tx="ekr.20190914132845.16">if x == 4:
+    pass
+if x == 4:
+    pass
+print(x, y)
+x, y = y, x
+print(x, y)
+x, y = y, x
+x, y = y, x
+x, y = y, x
+</t>
+<t tx="ekr.20190914132845.17"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately before the open parenthesis that starts the argument list of a function call:
+
+# Yes: spam(1)
+spam(1)
+
+# Immediately before the open parenthesis that starts an indexing or slicing:
+
+# Yes: dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.18">spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.19">spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.2"># Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+</t>
+<t tx="ekr.20190914132845.3"># FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914132845.4"># FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset : upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper]
+ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset : upper + offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914132845.5"># Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914132845.6">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914132845.7">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914132845.8"># Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)
+</t>
+<t tx="ekr.20190914132845.9">foo = (0,)
+bar = (0, )
 </t>
 <t tx="ekr.20190914181159.1"></t>
 <t tx="ekr.20190914181159.2">ham[lower + offset: upper + offset]
