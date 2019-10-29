@@ -835,7 +835,7 @@ class NullTokenBeautifier:
     module.
     """
 
-    undo_type = "Null Undo Type"  # Should be overridden in subclasses.
+    undo_type = "Null Undo Type"  # Should be overridden in subclasses of undoable.
     
     dump_tokens = False # True: scan_all_tokens dumps tokens.
     
