@@ -869,7 +869,7 @@ class NullTokenBeautifier:
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
-    #@+node:ekr.20191028074723.1: *3* null_tok_b: May be overridden in subclasses
+    #@+node:ekr.20191028074723.1: *3* null_tok_b: May be overridden in subclasses...
     #@+node:ekr.20191028020116.1: *4* null_tok_b.do_token
     def do_token(self, token):
         """
@@ -1253,7 +1253,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # Return string result.
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
-    #@+node:ekr.20191024071243.1: *4* ptb.do_token
+    #@+node:ekr.20191024071243.1: *4* ptb.do_token (override)
     def do_token(self, token):
         """
         Handle one token. Token handlers may call this method to do look-ahead processing.
@@ -2383,9 +2383,11 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191028085402.1: *3* fstring.do_token
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token (override)
     def do_token(self, token):
         """
+        Override NullTokenBeautifier.do_token.
+
         Handle one input token, a BeautifierToken.
         """
         # Only the string handler is overridden.
@@ -2395,7 +2397,7 @@ class FstringifyTokens(NullTokenBeautifier):
             self.ws = token.ws
             self.do_string()
         else:
-            # super().do_token(token)
+            # Same as super().do_token(token)
             self.code_list.append(token)
     #@+node:ekr.20191025084714.1: *3* fstring: Entries
     #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
