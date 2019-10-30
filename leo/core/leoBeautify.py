@@ -846,9 +846,6 @@ class NullTokenBeautifier:
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
     dump_tokens = False # True: scan_all_tokens dumps tokens.
-    
-    def oops(self):
-        g.trace('unknown kind', self.kind)
 
     #@+others
     #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
@@ -905,17 +902,16 @@ class NullTokenBeautifier:
         
         May be overridden in subclasses.
         
-        At minimum, this method should add one output token to the code list,
-        so that self.code_list[-1] won't crash.
+        The file-start token has already been added to self.code_list.
         """
-        self.add_token('file-start')
+        pass
     #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
     #@+node:ekr.20191029014023.7: *4* null_tok_b.add_token
     def add_token(self, kind, value=''):
         """Add a token to the code list."""
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
-        self.prev_token = self.code_list[-1]
+        self.prev_output_token = self.code_list[-1]
     #@+node:ekr.20191029014023.6: *4* null_tok_b.look_ahead & look_ahead_ws
     def look_ahead(self, n):
         """
@@ -941,7 +937,8 @@ class NullTokenBeautifier:
     #@+node:ekr.20191028070535.1: *4* null_tok_b.scan_all_tokens & helpers
     def scan_all_tokens(self, tokens):
         """
-        Use two *distinct* passes to convert tokens (an iterable of 5-tuples) to a result.
+        Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
+        to a result.
             
         Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
                 The look_ahead method look aheads in this list.
@@ -949,26 +946,32 @@ class NullTokenBeautifier:
         Pass 2: Call self.do_token(token) for each token in input_list.
                 Subclasses may delete tokens from input_list.
                 
-        Returns the string resulting from the output list.
+        Returns the string created from the output list.
         
-        Sub-classes should not need to override this method.
+        Sub-classes should *not* need to override this method.
         """
         # Init state. (was in ctor).
         self.prev_row = 1
         self.prev_col = 0
         self.encoding = None # Not used!
-        # Make the input_list, a list of InputTokens.
-        self.make_tokens(tokens)
-        self.add_token('file-start')
-        # Generate output tokens.
-        # Note: the self.tokens list may *mutate* within the following loop.
+        # Init the input_list,
+        self.tokens= []
+        self.prev_input_token = None
+        self.make_input_tokens(tokens)
         if self.dump_tokens:
-            g.printObj(self.tokens, tag='TOKENS')
+            g.printObj(self.tokens, tag='INPUT TOKENS')
+        # Init the output list.
         self.code_list = []
-        self.prev_token = None
+        self.prev_output_token = None
+        self.add_token('file-start')
+        # Allow subclasses to init state.
+        self.file_start()
+        # Generate output tokens.
+        # Important: self.tokens may *mutate* in this loop.
         while self.tokens:
             token = self.tokens.pop(0)
             self.do_token(token)
+        # Allow last-minute adjustments.
         self.file_end()
         # g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
@@ -985,7 +988,7 @@ class NullTokenBeautifier:
             assert isinstance(value, str), g.callers()
         tok = BeautifierToken(kind, value)
         self.tokens.append(tok)
-        self.prev_token = self.tokens[-1]
+        self.prev_input_token = self.tokens[-1]
     #@+node:ekr.20191028014602.2: *5* null_tok_b.add_whitespace
     def add_whitespace(self, start):
         """
@@ -1008,11 +1011,13 @@ class NullTokenBeautifier:
         if col_offset:
             ws = ws + " " * col_offset
         return ws
-    #@+node:ekr.20191028021428.1: *5* null_tok_b.make_tokens
-    def make_tokens(self, tokens):
+    #@+node:ekr.20191028021428.1: *5* null_tok_b.make_input_tokens
+    def make_input_tokens(self, tokens):
         """
-        Scan all tokenizer tokens, returning self.tokens, a *list* of input tokens.
+        Scan all tokenizer tokens (an iterable of 5-tuples).
         
+        Create self.tokens, a *list* (not an iterable) of BeautifierTokens.
+
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
         
@@ -1022,9 +1027,6 @@ class NullTokenBeautifier:
         tm = token_module
         indents = []
         startline = False
-        self.tokens= []
-        # Create a target for sidecar ws.
-        self.add_input_token('file-start', '')
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
@@ -1053,13 +1055,12 @@ class NullTokenBeautifier:
             # Changed: support sidecar whitesapce.
             ws = self.add_whitespace(start) # compute sidecare whitespace.
             self.add_input_token(kind, val) # Add the new token.
-            self.prev_token.ws = ws # Add sidecare whitespace.
+            self.prev_input_token.ws = ws # Add sidecare whitespace.
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        # g.printObj(self.tokens, tag='INPUT TOKENS')
-        # Changed: no need to return a string.
+        # Changed: does not return a string.
     #@+node:ekr.20191029014023.9: *3* null_tok_b: Utils...
     #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
@@ -1253,28 +1254,44 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.max_split_line_length = 88
             self.tab_width = 4
         self.sanitizer = SyntaxSanitizer(c, keep_comments)
-    #@+node:ekr.20191029131929.1: *3* ptb.scan_all_tokens (NEW)
-    def scan_all_tokens(self, tokens):
-        """
-        Scan all tokens, returning the resulting string.
-        
-        The self.tokens ivar allows for lookahead in the token handlers.
-        """
-        self.tokens = tokens
-        self.state_stack = []
-        self.push_state('file-start')
-        return super().scan_all_tokens(tokens)
-    #@+node:ekr.20150530072449.1: *3* ptb: Entries
-    #@+node:ekr.20191024071243.1: *4* ptb.do_token (NEW: Rewrite)
+    #@+node:ekr.20191030035440.1: *3* ptb: Overrides
+    # These override methods of the NullTokenBeautifier class.
+    #@+node:ekr.20191024071243.1: *4* ptb.do_token (override)
+    def oops(self):
+        g.trace('unknown kind', self.kind)
+
     def do_token(self, token):
         """
-        Handle one token. Token handlers may call this method to do look-ahead processing.
+        Handle one token.
+        
+        Token handlers may call this method to do look-ahead processing.
         """
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        # The old code sets self.line_indent
+        ### The old code sets self.line_indent
         self.kind, self.val, self.ws = token.kind, token.value, token.ws
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
+    #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
+    def file_end(self):
+        """
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        """
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+    #@+node:ekr.20191030035233.1: *4* ptb.file_start (override)
+    def file_start(self):
+        """
+        Do any start-of-file processing.
+        
+        May be overridden in subclasses.
+        
+        The file-start token has already been added to self.code_list.
+        """
+        self.push_state('file-start')
+    #@+node:ekr.20150530072449.1: *3* ptb: Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (sets stats)
     def prettyPrintNode(self, p):
         """
@@ -1364,7 +1381,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # g.printObj(self.code_list, tag='FINAL')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
-    #@+node:ekr.20150526203605.1: *4* ptb.do_comment (clears backslash_seen)
+    #@+node:ekr.20150526203605.1: *4* ptb.do_comment (Rewritten)
     def do_comment(self):
         """Handle a comment token."""
         self.add_token(self.val)
@@ -1390,9 +1407,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # This code is executed for versions of Python earlier than 2.4
         if self.val == '@':
             self.op(self.val)
-    #@+node:ekr.20191029132730.1: *4* ptb.do_file_start (NEW: do-nothing)
-    def do_file_start(self):
-        g.trace('(ptb)')
     #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
     def do_dedent(self):
         """Handle dedent token."""
@@ -1589,16 +1603,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                 self.op(val)
         else:
             self.op_blank(val)
-    #@+node:ekr.20191027172407.1: *4* ptb.file_end
-    def file_end(self):
-        """
-        Add a file-end token to the code list.
-        Retain exactly one line-end token.
-        """
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
     #@+node:ekr.20150526201701.9: *4* ptb.line_end & split/join helpers
     def line_end(self):
         """Add a line-end request to the code list."""
