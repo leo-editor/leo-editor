@@ -411,8 +411,12 @@ class BeautifierToken:
         self.kind = kind
         self.value = value
         # "sidecar" whitespace replaces separate 'ws' tokens.
-        # This greatly simplifies lookahead scans.
-        self.ws = '' 
+        # This greatly simplifies lookahead scanning/parsing..
+        self.ws = ''
+        # The entire line containing the token. Same as token.line.
+        # Not used by NullTokenBeautifier.
+        # Used by PythonTokenBeautifier class to handle comment tokens.
+        self.line = ''
 
     def __repr__(self):
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
@@ -973,7 +977,8 @@ class NullTokenBeautifier:
             self.do_token(token)
         # Allow last-minute adjustments.
         self.file_end()
-        # g.printObj(self.code_list, tag='OUTPUT TOKENS')
+        if self.dump_tokens:
+            g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20191028072257.1: *5* null_tok_b.add_input_token
@@ -1014,15 +1019,14 @@ class NullTokenBeautifier:
     #@+node:ekr.20191028021428.1: *5* null_tok_b.make_input_tokens
     def make_input_tokens(self, tokens):
         """
+        A *lightly* modified version of Untokenizer.untokenize.
+        
         Scan all tokenizer tokens (an iterable of 5-tuples).
         
         Create self.tokens, a *list* (not an iterable) of BeautifierTokens.
 
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
-        
-        Happily, there is no need to understand the complexities here beacause
-        this is a *lightly* modified version of Untokenizer.untokenize.
         """
         tm = token_module
         indents = []
@@ -1037,25 +1041,30 @@ class NullTokenBeautifier:
             if tok_type == tm.ENDMARKER:
                 break
             if tok_type == tm.INDENT:
+                self.add_input_token('indent', val) # Added.
                 indents.append(val)
                 continue
             elif tok_type == tm.DEDENT:
                 indents.pop()
                 self.prev_row, self.prev_col = end
                     # The row, col of *this* token.
+                self.add_input_token('dedent') # Added.
                 continue
             elif tok_type in (tm.NEWLINE, tm.NL):
                 startline = True
             elif startline and indents:
                 indent = indents[-1]
                 if start[1] >= len(indent):
-                    self.add_input_token('indent', indent) # changed.
                     self.prev_col = len(indent)
                 startline = False
-            # Changed: support sidecar whitesapce.
+            # Changed: support sidecar whitespace.
             ws = self.add_whitespace(start) # compute sidecare whitespace.
             self.add_input_token(kind, val) # Add the new token.
             self.prev_input_token.ws = ws # Add sidecare whitespace.
+            # Changed: inject token.line
+            # Required to handle single-line tokens.
+            self.prev_input_token.line = line
+                
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
@@ -1267,8 +1276,10 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         Token handlers may call this method to do look-ahead processing.
         """
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        ### The old code sets self.line_indent
-        self.kind, self.val, self.ws = token.kind, token.value, token.ws
+        ### g.trace(token)
+        # Remembering token.line is necessary, because dedent tokens
+        # can happen *after* comment lines that should be dedented!
+        self.kind, self.val, self.ws, self.line = token.kind, token.value, token.ws, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
@@ -1316,7 +1327,12 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         if not node1:
             self.errors += 1
             if g.unitTesting:
-                raise AssertionError('pretty-print-node failed')
+                tag = f"parse_ast FAIL 1: {repr(p and p.h)}"
+                if self.dump_tokens:
+                    g.printObj(s0, tag=tag)
+                else:
+                    print(s0)
+                raise AssertionError(tag)
             p.v.setMarked()
             g.es_print(f"{p.h} will not be changed")
             return False
@@ -1334,7 +1350,12 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             if not node2:
                 self.errors += 1
                 if g.unitTesting:
-                    raise AssertionError('pretty-print-node failed')
+                    tag = f"parse_ast FAIL 2: {repr(p and p.h)}"
+                    if self.dump_tokens:
+                        g.printObj(s2, tag=tag)
+                    else:
+                        print(s2)
+                    raise AssertionError(tag)
                 p.v.setMarked()
                 g.es_print(f"{p.h} will not be changed")
                 return False
@@ -1342,7 +1363,10 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             ok = leoAst.compare_asts(node1, node2)
             if not ok:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
-                g.printObj(s2, tag='RESULT')
+                if self.dump_tokens:
+                    g.printObj(s2, tag='RESULT')
+                else:
+                    print(s2)
                 self.errors += 1
                 p.v.setMarked()
                 return False
@@ -1384,7 +1408,15 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (Rewritten)
     def do_comment(self):
         """Handle a comment token."""
-        self.add_token(self.val)
+        self.clean('blank')
+        entire_line = self.line.lstrip().startswith('#')
+        # g.trace(entire_line, repr(self.line), repr(self.val))
+        if entire_line:
+            self.clean('line-indent')
+            val = self.line.rstrip()
+        else:
+            val = '  ' + self.val.rstrip()
+        self.add_token('comment', val)
         ###
             # raw_line = self.raw_line
             # val = self.val.rstrip()
@@ -1411,6 +1443,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_dedent(self):
         """Handle dedent token."""
         self.level -= 1
+        ### g.trace('level', self.level)
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
             # was self.line_start()
@@ -1427,6 +1460,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_indent(self):
         """Handle indent token."""
         self.level += 1
+        ### g.trace('level', self.level)
         self.lws = self.val
         self.line_indent()
             # Was self.line_start()
@@ -1668,6 +1702,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@+node:ekr.20190908065154.1: *6* ptb.append_tail
     def append_tail(self, prefix, tail):
         """Append the tail tokens, splitting the line further as necessary."""
+        g.trace('=' * 20)
         tail_s = ''.join([z.to_string() for z in tail])
         if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
@@ -1790,12 +1825,11 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
     #@+node:ekr.20150530190758.1: *4* ptb.line_indent
-    def line_indent(self, ws=None):
-        """Add a line-indent token if indentation is non-empty."""
+    def line_indent(self):
+        """Add a line-indent token."""
         self.clean('line-indent')
-        ws = ws or self.lws
-        if ws:
-            self.add_token('line-indent', ws)
+            # Defensive. Should never happen.
+        self.add_token('line-indent', self.lws)
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     #@+node:ekr.20190915070456.1: *5* ptb.lt
     def lt(self, s):
@@ -2028,7 +2062,7 @@ class SyntaxSanitizer:
         """
         Replace lines containing Leonine syntax with **special comment lines** of the form:
             
-            {lws}#{marker}{line}
+            {lws}#{lws}{marker}{line}
             
         where: 
         - lws is the leading whitespace of the original line
@@ -2091,7 +2125,9 @@ class SyntaxSanitizer:
                         result.append(s)
             elif s_lstrip.startswith('#') and self.keep_comments:
                 # A leading comment.
-                result.append(comment+s)
+                # Bug fix: Preserve lws in comments, too.
+                j2 = g.skip_ws(s, 0)
+                result.append(" "*j2 + comment + s)
             else:
                 # A plain line.
                 result.append(s)

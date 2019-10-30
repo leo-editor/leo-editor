@@ -142,7 +142,9 @@ def parse_ast(s, headline=None):
     """
 
     def oops(message):
+        print('')
         g.warning(f"{message} in: {headline}" if headline else message)
+        print('')
 
     try:
         s1 = g.toEncodedString(s)

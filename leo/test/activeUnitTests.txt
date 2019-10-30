@@ -3288,10 +3288,12 @@ if fails or errors:
 a = b # comment
 c = d# comment
 e - f   # comment
+# Single-line comment.
 #@+node:ekr.20190915084039.1: *6* expected
 a = b  # comment
 c = d  # comment
 e - f  # comment
+# Single-line comment.
 #@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
 #@+node:ekr.20190914111357.2: *6* test
 def spam():

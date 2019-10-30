@@ -404,7 +404,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190914105123.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4030,10 +4029,12 @@ ham[:: step_fn(x)]
 <t tx="ekr.20190915083945.1">a = b # comment
 c = d# comment
 e - f   # comment
+# Single-line comment.
 </t>
 <t tx="ekr.20190915084039.1">a = b  # comment
 c = d  # comment
 e - f  # comment
+# Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
 </tnodes>
