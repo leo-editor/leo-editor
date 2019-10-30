@@ -911,6 +911,30 @@ class NullTokenBeautifier:
         The file-start token has already been added to self.code_list.
         """
         pass
+    #@+node:ekr.20191030160237.1: *4* null_tok_b.hooks
+    # NullTokenBeautifier.make_input_tokens calls these hooks so that
+    # subclasses can customize how they create input tokens.
+
+    def dedent_hook(self):
+        """Handle the tokenizer's dedent token."""
+        pass
+
+    def indent_hook(self, ws):
+        """Handle the tokenizer's indent token."""
+        pass
+        
+    def indent_changed_hook(self, ws):
+        """A hook called when indentation changes."""
+        self.add_input_token('indent', ws)
+        
+    def token_hook(self, kind, val, ws):
+        """Create a token, preceded by ws added by add_whitespace"""
+        # Create a pseudo ws token.
+        if ws:
+            self.add_input_token('ws', ws)
+        # Add the actual token.
+        self.add_input_token(kind, val)
+
     #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
     #@+node:ekr.20191029014023.7: *4* null_tok_b.add_token
     def add_token(self, kind, value=''):
@@ -1030,7 +1054,6 @@ class NullTokenBeautifier:
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
         """
-        self.indent = '' ### Experimental hack.
         tm = token_module
         indents = []
         startline = False
@@ -1044,27 +1067,38 @@ class NullTokenBeautifier:
             if tok_type == tm.ENDMARKER:
                 break
             if tok_type == tm.INDENT:
-                self.add_input_token('indent', val) # Added.
-                self.indent = val
+                ### self.add_input_token('indent', val) # Added.
+                self.indent_hook(val)
+                    # Round trip: do nothing.
+                    # Used by subclasses.
                 indents.append(val)
                 continue
             elif tok_type == tm.DEDENT:
                 indents.pop()
                 self.prev_row, self.prev_col = end
                     # The row, col of *this* token.
-                self.add_input_token('dedent') # Added.
+                self.dedent_hook()
+                    # Round trip: do nothing.
+                    # Used by subclasses.
                 continue
             elif tok_type in (tm.NEWLINE, tm.NL):
                 startline = True
             elif startline and indents:
                 indent = indents[-1]
                 if start[1] >= len(indent):
+                    # Original: self.tokens.append(indent)
+                    self.indent_changed_hook(indent)
+                        # Round trip: add indent.
+                        # Subclasses may use indent/dedent hooks instead.
                     self.prev_col = len(indent)
                 startline = False
             # Changed: support sidecar whitespace.
-            ws = self.add_whitespace(start) # compute sidecare whitespace.
-            self.add_input_token(kind, val) # Add the new token.
-            self.prev_input_token.ws = ws # Add sidecare whitespace.
+            ws = self.add_whitespace(start)
+                # Round trip: add whitespace.
+                # Subclasses: create sidecar whitespace.
+            self.token_hook(kind, val, ws)
+                ### self.add_input_token(kind, val) # Add the new token.
+                ### self.prev_input_token.ws = ws # Add sidecare whitespace.
             # Changed: inject token.line
             # Required to handle single-line tokens.
             self.prev_input_token.line = line
@@ -1307,6 +1341,29 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         The file-start token has already been added to self.code_list.
         """
         self.push_state('file-start')
+    #@+node:ekr.20191030161757.1: *4* ptb.hooks (override)
+    # NullTokenBeautifier.make_input_tokens calls these hooks so that
+    # subclasses can customize how they create input tokens.
+
+    # Overrides of default hooks.
+    def dedent_hook(self):
+        """Handle the tokenizer's dedent token."""
+        self.add_input_token('dedent')
+
+    def indent_hook(self, ws):
+        """Handle the tokenizer's indent token."""
+        self.add_input_token('indent')
+        
+    def indent_changed_hook(self, ws):
+        """A hook called when indentation changes."""
+        ### self.add_input_token('indent', ws)
+        
+    def token_hook(self, kind, val, ws):
+        """Create a token, including ws added by add_whitespace"""
+        # Add the new token.
+        self.add_input_token(kind, val)
+        # Add sidecare whitespace.
+        self.prev_input_token.ws = ws
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (sets stats)
     def prettyPrintNode(self, p):
