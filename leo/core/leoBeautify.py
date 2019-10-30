@@ -2282,7 +2282,7 @@ class FstringifyTokens(NullTokenBeautifier):
             'unary-op',
         ):
             self.add_token('blank', ' ')
-    #@+node:ekr.20191030174233.1: *3* fstring.hooks
+    #@+node:ekr.20191030174233.1: *3* fstring.hooks (override)
     # Overrides of default hooks.
 
     # Use NullTokenBeautifier hooks, but create sidecare ws.
