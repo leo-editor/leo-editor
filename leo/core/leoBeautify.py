@@ -1523,7 +1523,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         """Handle indent token."""
         self.level += 1
         ### g.trace('level', self.level)
-        self.lws = self.val
+        self.lws = self.level * self.tab_width * ' '
         self.line_indent()
             # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
