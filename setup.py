@@ -102,7 +102,7 @@ classifiers = [
     'Operating System :: MacOS',
     'Operating System :: Microsoft :: Windows',
     'Operating System :: POSIX :: Linux',
-    'Programming Language :: Python',
+    'Programming Language :: Python :: 3 :: Only',
     'Topic :: Software Development',
     'Topic :: Text Editors',
     'Topic :: Text Processing',
@@ -112,8 +112,8 @@ setup_requires = []
     # setup_requires no longer needed with PEP-518 and pip >v10
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'PyQt5 >= 5.12, < 5.13; python_version >= "3.6"', # v5.12+ to close #1217
-    'PyQtWebEngine', # #1202 QtWebKit needs to be installed separately starting Qt 5.6
+    'PyQt5 >= 5.12, < 5.13', # v5.12+ to close #1217
+    'PyQtWebEngine < 5.13', # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'docutils', # used by Sphinx, rST plugin
     'flexx', # for LeoWapp browser gui
     'meta', # for livecode.py plugin, which is enabled by default
@@ -172,7 +172,8 @@ setup(
     setup_requires=setup_requires,
     install_requires=user_requires,
     entry_points=define_entry_points(),
-    cmdclass={'clean': janitor.CleanCommand} # clean more than setuptools, #1055
+    cmdclass={'clean': janitor.CleanCommand}, # clean more than setuptools, #1055
+    python_requires = '>=3.6',
 )
 
 #@@language python
