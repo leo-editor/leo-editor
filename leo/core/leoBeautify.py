@@ -365,7 +365,7 @@ def test_NullTokenBeautifier(c, contents, dump=True, dump_tokens=False):
     show(contents, 'Contents', dump)
     if contents != results:
         print('')
-        print('Changed...')
+        print('ERROR...\n')
         show(results, 'Results', dump)
     else:
         print('Unchanged')
@@ -850,6 +850,8 @@ class NullTokenBeautifier:
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
     dump_tokens = False # True: scan_all_tokens dumps tokens.
+    
+    ### use_sidecare_ws = False
 
     #@+others
     #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
@@ -1028,6 +1030,7 @@ class NullTokenBeautifier:
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
         """
+        self.indent = '' ### Experimental hack.
         tm = token_module
         indents = []
         startline = False
@@ -1042,6 +1045,7 @@ class NullTokenBeautifier:
                 break
             if tok_type == tm.INDENT:
                 self.add_input_token('indent', val) # Added.
+                self.indent = val
                 indents.append(val)
                 continue
             elif tok_type == tm.DEDENT:
@@ -1064,7 +1068,6 @@ class NullTokenBeautifier:
             # Changed: inject token.line
             # Required to handle single-line tokens.
             self.prev_input_token.line = line
-                
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
@@ -1161,6 +1164,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     """A token-based Python beautifier."""
 
     undo_type = "Pretty Print"
+    
+    ### use_sidecare_ws = True
 
     #@+others
     #@+node:ekr.20150527113020.1: *3* class ParseState
@@ -2224,6 +2229,8 @@ class FstringifyTokens(NullTokenBeautifier):
     """A token-based tool that converts strings containing % to f-strings."""
 
     undo_type = "Fstringify"
+    
+    ### use_sidecare_ws = True
     
     def __init__(self, c):
         super().__init__(c)
