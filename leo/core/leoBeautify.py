@@ -850,8 +850,6 @@ class NullTokenBeautifier:
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
     dump_tokens = False # True: scan_all_tokens dumps tokens.
-    
-    ### use_sidecare_ws = False
 
     #@+others
     #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
@@ -1067,19 +1065,14 @@ class NullTokenBeautifier:
             if tok_type == tm.ENDMARKER:
                 break
             if tok_type == tm.INDENT:
-                ### self.add_input_token('indent', val) # Added.
-                self.indent_hook(val)
-                    # Round trip: do nothing.
-                    # Used by subclasses.
+                self.indent_hook(val) # Added hook for flexibility.
                 indents.append(val)
                 continue
             elif tok_type == tm.DEDENT:
                 indents.pop()
                 self.prev_row, self.prev_col = end
                     # The row, col of *this* token.
-                self.dedent_hook()
-                    # Round trip: do nothing.
-                    # Used by subclasses.
+                self.dedent_hook() # Added hook for flexibility.
                 continue
             elif tok_type in (tm.NEWLINE, tm.NL):
                 startline = True
@@ -1092,15 +1085,14 @@ class NullTokenBeautifier:
                         # Subclasses may use indent/dedent hooks instead.
                     self.prev_col = len(indent)
                 startline = False
-            # Changed: support sidecar whitespace.
+            # Added hook for flexibility.
+            # Original code:
+                # self.add_whitespace(start)
+                # self.tokens.append(token)
             ws = self.add_whitespace(start)
-                # Round trip: add whitespace.
-                # Subclasses: create sidecar whitespace.
             self.token_hook(kind, val, ws)
-                ### self.add_input_token(kind, val) # Add the new token.
-                ### self.prev_input_token.ws = ws # Add sidecare whitespace.
             # Changed: inject token.line
-            # Required to handle single-line tokens.
+            # Required to handle single-line comments properly.
             self.prev_input_token.line = line
             self.prev_row, self.prev_col = end
             if tok_type in (tm.NEWLINE, tm.NL):
@@ -1198,8 +1190,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     """A token-based Python beautifier."""
 
     undo_type = "Pretty Print"
-    
-    ### use_sidecare_ws = True
 
     #@+others
     #@+node:ekr.20150527113020.1: *3* class ParseState
@@ -1315,7 +1305,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         Token handlers may call this method to do look-ahead processing.
         """
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        ### g.trace(token)
         # Remembering token.line is necessary, because dedent tokens
         # can happen *after* comment lines that should be dedented!
         self.kind, self.val, self.ws, self.line = token.kind, token.value, token.ws, token.line
@@ -1356,7 +1345,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         
     def indent_changed_hook(self, ws):
         """A hook called when indentation changes."""
-        ### self.add_input_token('indent', ws)
+        pass
         
     def token_hook(self, kind, val, ws):
         """Create a token, including ws added by add_whitespace"""
@@ -1479,18 +1468,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         else:
             val = '  ' + self.val.rstrip()
         self.add_token('comment', val)
-        ###
-            # raw_line = self.raw_line
-            # val = self.val.rstrip()
-            # entire_line = raw_line.lstrip().startswith('#')
-            # self.backslash_seen = False
-                # # Putting the comment will put the backslash.
-            # if entire_line:
-                # self.clean('line-indent')
-                # self.add_token('comment', raw_line)
-            # else:
-                # self.blank_before_end_line_comment()
-                # self.add_token('comment', val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
         """Handle an endmarker token."""
@@ -1505,10 +1482,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_dedent(self):
         """Handle dedent token."""
         self.level -= 1
-        ### g.trace('level', self.level)
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
-            # was self.line_start()
         state = self.state_stack[-1]
         if state.kind == 'indent' and state.value == self.level:
             self.state_stack.pop()
@@ -1522,10 +1497,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_indent(self):
         """Handle indent token."""
         self.level += 1
-        ### g.trace('level', self.level)
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
-            # Was self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         """Handle a name token."""
@@ -2287,8 +2260,6 @@ class FstringifyTokens(NullTokenBeautifier):
 
     undo_type = "Fstringify"
     
-    ### use_sidecare_ws = True
-    
     def __init__(self, c):
         super().__init__(c)
         self.ws = ''
@@ -2311,11 +2282,24 @@ class FstringifyTokens(NullTokenBeautifier):
             'unary-op',
         ):
             self.add_token('blank', ' ')
+    #@+node:ekr.20191030174233.1: *3* fstring.hooks
+    # Overrides of default hooks.
+
+    # Use NullTokenBeautifier hooks, but create sidecare ws.
+        
+    def token_hook(self, kind, val, ws):
+        """Create a token, including ws added by add_whitespace"""
+        # Add the new token.
+        self.add_input_token(kind, val)
+        # Add sidecare whitespace.
+        self.prev_input_token.ws = ws
     #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
         sidecar_ws = self.ws
+        g.trace(repr(self.ws))
+        g.trace(self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val
