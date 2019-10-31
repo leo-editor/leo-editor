@@ -1154,9 +1154,9 @@ class MatchBrackets:
         orig_left = left
         orig_right = right
         ### Remove back-slashes.
-        while(s[left] not in self.brackets or expand and not expanded) and \
-        (s[right] not in self.brackets or expand and not expanded) and \
-        (left > 0 or right < max_right):
+        while(s[left] not in self.brackets or expand and not expanded) and\
+            (s[right] not in self.brackets or expand and not expanded) and\
+            (left > 0 or right < max_right):
             expanded = False
             if left > 0:
                 left -= 1
@@ -3789,7 +3789,7 @@ def guessExternalEditor(c=None):
         return 'gedit'
     g.es('''No editor set.
 Please set LEO_EDITOR or EDITOR environment variable,
-or do g.app.db['LEO_EDITOR'] = "gvim"'''     )
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
     return None
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
 def init_dialog_folder(c, p, use_at_path=True):
@@ -3990,7 +3990,7 @@ def readFileIntoString(fileName,
     except IOError:
         # Translate 'can not open' and kind, but not fileName.
         if verbose:
-           g.error('can not open', '', (kind or ''), fileName)
+            g.error('can not open', '', (kind or ''), fileName)
     except Exception:
         g.error(f"readFileIntoString: unexpected exception reading {fileName}")
         g.es_exception()
