@@ -410,30 +410,24 @@ class BeautifierToken:
     def __init__(self, kind, value):
         self.kind = kind
         self.value = value
-        # "sidecar" whitespace replaces separate 'ws' tokens.
-        # This greatly simplifies lookahead scanning/parsing..
-        self.ws = ''
-        # The entire line containing the token. Same as token.line.
-        # Not used by NullTokenBeautifier.
-        # Used by PythonTokenBeautifier class to handle comment tokens.
         self.line = ''
+            # The entire line containing the token. Same as token.line.
 
     def __repr__(self):
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind:15} ws: {repr(self.ws):8} {val}"
+        return f"{self.kind:15} {val}"
 
     def __str__(self):
         """A more compact version of __repr__"""
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind} ws: {repr(self.ws):8} {val}"
+        return f"{self.kind} {val}"
 
     def to_string(self):
         """
         Convert an output token to a string.
         Note: repr shows the length of line-indent string.
         """
-        # "sidecar" ws precedes each token.
-        return self.ws + (self.value if isinstance(self.value, str) else '')
+        return self.value if isinstance(self.value, str) else ''
 #@+node:ekr.20190725154916.1: ** class BlackCommand
 class BlackCommand:
     """A class to run black on all Python @<file> nodes in c.p's tree."""
@@ -858,8 +852,8 @@ class NullTokenBeautifier:
         self.changed = None
         self.code_list = []
         self.kind = None
-        self.raw_line = None
-            # The entire line, used for strings, comments.
+        self.prev_input_token = None
+        self.prev_output_token = None
         self.tab_width = None
         self.tokens = []
         # Statistics...
@@ -934,6 +928,19 @@ class NullTokenBeautifier:
         self.add_input_token(kind, val)
 
     #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
+    #@+node:ekr.20191028072257.1: *4* null_tok_b.add_input_token
+    def add_input_token(self, kind, value=''):
+        """
+        Add a token to the input list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        BeautifierToken.to_string() ignores such tokens.
+        """
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
+        tok = BeautifierToken(kind, value)
+        self.tokens.append(tok)
+        self.prev_input_token = self.tokens[-1]
     #@+node:ekr.20191029014023.7: *4* null_tok_b.add_token
     def add_token(self, kind, value=''):
         """Add a token to the code list."""
@@ -1005,19 +1012,6 @@ class NullTokenBeautifier:
             g.printObj(self.code_list, tag='OUTPUT TOKENS')
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191028072257.1: *5* null_tok_b.add_input_token
-    def add_input_token(self, kind, value=''):
-        """
-        Add a token to the input list.
-        
-        The blank-lines token is the only token whose value isn't a string.
-        BeautifierToken.to_string() ignores such tokens.
-        """
-        if kind != 'blank-lines':
-            assert isinstance(value, str), g.callers()
-        tok = BeautifierToken(kind, value)
-        self.tokens.append(tok)
-        self.prev_input_token = self.tokens[-1]
     #@+node:ekr.20191028014602.2: *5* null_tok_b.add_whitespace
     def add_whitespace(self, start):
         """
@@ -1235,7 +1229,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # The string containing the input token's value.
         #
         # State vars...
-        self.backslash_seen = False
+        ### self.backslash_seen = False
             # True if a backslash-newline appears at the end of a *string*.
         self.decorator_seen = False
             # Set by do_name as a flag to do_op.
@@ -1307,7 +1301,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         # Remembering token.line is necessary, because dedent tokens
         # can happen *after* comment lines that should be dedented!
-        self.kind, self.val, self.ws, self.line = token.kind, token.value, token.ws, token.line
+        ### self.kind, self.val, self.ws, self.line = token.kind, token.value, token.ws, token.line
+        self.kind, self.val, self.line = token.kind, token.value, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
@@ -1346,13 +1341,15 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def indent_changed_hook(self, ws):
         """A hook called when indentation changes."""
         pass
-        
+       
     def token_hook(self, kind, val, ws):
         """Create a token, including ws added by add_whitespace"""
-        # Add the new token.
+        # Add sidecar whitespace only to a previous nl token.
+        prev = self.prev_input_token
+        if ws and prev.kind == 'nl':
+            prev.value = prev.value + ws
+        # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
-        # Add sidecare whitespace.
-        self.prev_input_token.ws = ws
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (sets stats)
     def prettyPrintNode(self, p):
@@ -1521,14 +1518,16 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.word_op(name)
         else:
             self.word(name)
-    #@+node:ekr.20041021101911.3: *4* ptb.do_newline
+    #@+node:ekr.20041021101911.3: *4* ptb.do_newline & do_nl
     def do_newline(self):
         """Handle a regular newline."""
-        self.line_end()
-    #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
+        # Retain any sidecar ws in the newline.
+        self.line_end(self.val)
+
     def do_nl(self):
         """Handle a continuation line."""
-        self.line_end()
+        # Retain any sidecar ws in the newline.
+        self.line_end(self.val)
     #@+node:ekr.20041021101911.6: *4* ptb.do_number
     def do_number(self):
         """Handle a number token."""
@@ -1584,25 +1583,11 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         self.add_token('string', self.val)
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
+        ### if self.val.find('\\\n'):
+            ### self.backslash_seen = False
             # This *does* retain the string's spelling.
         self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
-    #@+node:ekr.20150601095528.1: *4* ptb.backslash
-    def backslash(self):
-        """
-        Add a backslash token and clear .backslash_seen.
-        
-        Called in two places:
-            
-        - run()         if srow != last_line_number.
-        - line_end()    if backslash_seen.
-        """
-        self.add_token('backslash', '\\')
-        self.add_token('line-end', '\n')
-        self.line_indent()
-        self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -1673,7 +1658,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         else:
             self.op_blank(val)
     #@+node:ekr.20150526201701.9: *4* ptb.line_end & split/join helpers
-    def line_end(self):
+    def line_end(self, ws=''):
         """Add a line-end request to the code list."""
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
@@ -1682,9 +1667,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
-        if self.backslash_seen:
-            self.backslash()
-        self.add_token('line-end', '\n')
+        # Retain any sidecar ws.
+        self.add_token('line-end', ws or '\n')
         if self.orange:
             allow_join = True
             if self.max_split_line_length > 0:
@@ -2285,21 +2269,27 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191030174233.1: *3* fstring.hooks (override)
     # Overrides of default hooks.
 
-    # Use NullTokenBeautifier hooks, but create sidecare ws.
-        
     def token_hook(self, kind, val, ws):
-        """Create a token, including ws added by add_whitespace"""
-        # Add the new token.
+        """
+        Create a token, including ws added by add_whitespace.
+        
+        This is the same as PythonTokenBeautifier.token_hook.
+        """
+        # Add sidecar whitespace only to a previous nl token.
+        prev = self.prev_input_token
+        if ws and prev.kind == 'nl':
+            prev.value = prev.value + ws
+        # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
-        # Add sidecare whitespace.
-        self.prev_input_token.ws = ws
     #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
-        sidecar_ws = self.ws
-        g.trace(repr(self.ws))
-        g.trace(self.look_ahead(0))
+        
+        ###sidecar_ws = self.ws
+        
+        ### g.trace(repr(self.ws))
+        ### g.trace(self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val
@@ -2309,10 +2299,11 @@ class FstringifyTokens(NullTokenBeautifier):
             self.convert_fstring()
         else:
             # Just put the string
-            self.add_token('string', self.val)
-        # Always retain sidecar ws.
-        prev_tok = self.code_list[-1]
-        prev_tok.ws = sidecar_ws
+            self.add_token('string', self.val) 
+        ###
+            # Always retain sidecar ws.
+            # prev_tok = self.code_list[-1]
+            # prev_tok.ws = sidecar_ws
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -2376,7 +2367,8 @@ class FstringifyTokens(NullTokenBeautifier):
         results, value_list = [], []
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
-            kind, val, ws = token.kind, token.value, token.ws
+            ### kind, val, ws = token.kind, token.value, token.ws
+            kind, val = token.kind, token.value
             # g.trace(kind, repr(val), repr(ws))
             token_i += 1
             tokens.append(token)
@@ -2398,7 +2390,9 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.extend(self.tokens[token_i : token_i2])
                 token_i = token_i2
             else:
-                value_list.append(ws + val)
+                ### value_list.append(ws + val)
+                value_list.append(val)
+                
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
@@ -2410,7 +2404,8 @@ class FstringifyTokens(NullTokenBeautifier):
         trace = False and not g.unitTesting
         if trace:
             g.trace('=====', token_i, repr(val))
-            g.trace(''.join([z.ws + z.value for z in self.tokens[token_i:]]))
+            ### g.trace(''.join([z.ws + z.value for z in self.tokens[token_i:]]))
+            g.trace(''.join([z.value for z in self.tokens[token_i:]]))
         values_list = []
         kind0, val0 = self.look_ahead(token_i)
         assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
@@ -2452,7 +2447,7 @@ class FstringifyTokens(NullTokenBeautifier):
         if token.kind == 'string':
             self.kind = token.kind
             self.val = token.value
-            self.ws = token.ws
+            ### self.ws = token.ws
             self.do_string()
         else:
             # Same as super().do_token(token)
