@@ -1046,8 +1046,9 @@ class NullTokenBeautifier:
         """
         A *lightly* modified version of Untokenizer.add_whitespace.
         
-        Original: Append whitespace to self.tokens.
-        Revised:  Return **inter-token** whitespace.
+        It computes **between-token** whitespace.
+        
+        Note: this method never includes bs-nl continuations for strings.
         """
         row, col = start
         if row < self.prev_row or row == self.prev_row and col < self.prev_col:
@@ -1378,11 +1379,11 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         pass
        
     def token_hook(self, kind, val, ws):
-        """Create a token, including ws added by add_whitespace"""
+        """Create a token, including **between-token** ws."""
         # Add sidecar whitespace only to a previous nl token.
         prev = self.prev_input_token
-        ### if ws: g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
         if ws:
+            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
@@ -2312,14 +2313,14 @@ class FstringifyTokens(NullTokenBeautifier):
 
     def token_hook(self, kind, val, ws):
         """
-        Create a token, including ws added by add_whitespace.
+        Create a token, including **between-token** ws.
         
         This is the same as PythonTokenBeautifier.token_hook.
         """
         # Add sidecar whitespace only to a previous nl token.
         prev = self.prev_input_token
-        ### if ws: g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
         if ws:
+            # if g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
