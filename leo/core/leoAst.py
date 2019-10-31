@@ -1917,7 +1917,7 @@ class HTMLReportTraverser:
         # self.keyword(keyword)
         # self.colon()
     #@+node:ekr.20150722204300.5: *4* rt.link
-    def link(self, class_name, href, a_text): \
+    def link(self, class_name, href, a_text):
 
         return "<a class='%s' href='%s'>%s</a>" % (
             class_name, href, a_text)
