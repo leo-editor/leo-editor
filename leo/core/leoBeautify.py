@@ -364,7 +364,7 @@ def test_NullTokenBeautifier(c, contents,
     # Untokenize.
     x = leoBeautify.NullTokenBeautifier(c)
     x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens =  dump_output_tokens
+    x.dump_output_tokens = dump_output_tokens
     results = x.scan_all_tokens(tokens)
     # Compare.
     show(contents, 'Contents', dump)
@@ -390,7 +390,7 @@ def test_FstringifyTokens(c, contents,
     # Untokenize.
     x = leoBeautify.FstringifyTokens(c)
     x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens =  dump_output_tokens
+    x.dump_output_tokens = dump_output_tokens
     results = x.scan_all_tokens(tokens)
     # Show results.
     show(contents, 'Contents', dump)
@@ -401,7 +401,6 @@ def test_FstringifyTokens(c, contents,
     # if dump_output_tokens:
         # print('')
         # show(results, 'Results', dump)
-    
 #@+node:ekr.20191029184028.1: *3* test_PythonTokenBeautifier
 def test_PythonTokenBeautifier(c, contents,
     dump=True,
@@ -864,8 +863,8 @@ class NullTokenBeautifier:
 
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
-    dump_input_tokens = False # True: scan_all_tokens dumps input tokens.
-    dump_output_tokens = False # True: scan_all_tokens dumps output tokens.
+    dump_input_tokens = False  # True: scan_all_tokens dumps input tokens.
+    dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
 
     #@+others
     #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
@@ -943,11 +942,11 @@ class NullTokenBeautifier:
     def indent_hook(self, ws):
         """Handle the tokenizer's indent token."""
         pass
-        
+
     def indent_changed_hook(self, ws):
         """A hook called when indentation changes."""
         self.add_input_token('indent', ws)
-        
+
     def token_hook(self, kind, val, ws):
         """Create a token, preceded by ws added by add_whitespace"""
         # Create a pseudo ws token.
@@ -955,7 +954,6 @@ class NullTokenBeautifier:
             self.add_input_token('ws', ws)
         # Add the actual token.
         self.add_input_token(kind, val)
-
     #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
     #@+node:ekr.20191028072257.1: *4* null_tok_b.add_input_token
     def add_input_token(self, kind, value=''):
@@ -1017,9 +1015,9 @@ class NullTokenBeautifier:
         # Init state. (was in ctor).
         self.prev_row = 1
         self.prev_col = 0
-        self.encoding = None # Not used!
+        self.encoding = None  # Not used!
         # Init the input_list,
-        self.tokens= []
+        self.tokens = []
         self.prev_input_token = None
         self.make_input_tokens(tokens)
         if self.dump_input_tokens:
@@ -1359,6 +1357,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     # subclasses can customize how they create input tokens.
 
     # Overrides of default hooks.
+
     def bs_nl_hook(self, bs_nl):
         """
         Create backslash-newline, including preceding whitespace.
@@ -1373,11 +1372,11 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def indent_hook(self, ws):
         """Handle the tokenizer's indent token."""
         self.add_input_token('indent')
-        
+
     def indent_changed_hook(self, ws):
         """A hook called when indentation changes."""
         pass
-       
+
     def token_hook(self, kind, val, ws):
         """
         Create a token given by (kind, val).
@@ -1769,7 +1768,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@+node:ekr.20190908065154.1: *6* ptb.append_tail
     def append_tail(self, prefix, tail):
         """Append the tail tokens, splitting the line further as necessary."""
-        g.trace('=' * 20)
+        g.trace('='*20)
         tail_s = ''.join([z.to_string() for z in tail])
         if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
@@ -2194,7 +2193,7 @@ class SyntaxSanitizer:
                 # A leading comment.
                 # Bug fix: Preserve lws in comments, too.
                 j2 = g.skip_ws(s, 0)
-                result.append(" "*j2 + comment + s)
+                result.append(" "*j2+comment+s)
             else:
                 # A plain line.
                 result.append(s)
@@ -2291,7 +2290,7 @@ class FstringifyTokens(NullTokenBeautifier):
     """A token-based tool that converts strings containing % to f-strings."""
 
     undo_type = "Fstringify"
-    
+
     def __init__(self, c):
         super().__init__(c)
         self.ws = ''
@@ -2419,10 +2418,10 @@ class FstringifyTokens(NullTokenBeautifier):
             if (kind, val) == ('op', ')'):
                 results.append(''.join(value_list))
                 if not include_paren:
-                    tokens.pop() # Rescan the ')'
+                    tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('name', 'for'):
-                tokens.pop() # Rescan the 'for'
+                tokens.pop()  # Rescan the 'for'
                 results.append(''.join(value_list))
                 break
             if (kind, val) == ('op', ','):
