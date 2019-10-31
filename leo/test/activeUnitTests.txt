@@ -3568,6 +3568,72 @@ spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
+#@+node:ekr.20191031110731.1: *4* @test tokenizer
+g.cls()
+import tokenize
+import leo.core.leoBeautify as leoBeautify
+
+def dump_string(i, s):
+    verbose = True
+    if verbose:
+        val = repr(s)
+    elif not s.strip():
+        val = repr(s)
+    elif s.endswith('\n'):
+        val = s[:-1]
+    else:
+        val = s + '<NO NL>'
+    print(f"{i:2}: {val}")
+    
+
+table = (
+r'''
+a = "b\
+c\
+d"
+''',
+r'''
+print\
+    (\
+    a,\
+    b\
+)
+''',
+# Note: Null beautifier will delete space before bs-nl.
+r'''
+# Single-line comment 2.
+print('hi')
+print(
+    'thing 1',
+    'thing 2',
+)
+print(
+    'thing 3\
+    thing4'
+)
+print\
+    ('done')
+'''
+)
+beautifiers = (
+    ('null',    leoBeautify.NullTokenBeautifier(c)),
+    ('ptb',     leoBeautify.PythonTokenBeautifier(c)),
+    ('fstring', leoBeautify.FstringifyTokens(c)),
+)
+for i, contents in enumerate(table):
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    for name, b in beautifiers:
+        results = b.scan_all_tokens(tokens)
+        if results.strip() != contents.strip():
+            print(f"\nFAIL test {i} for {name} beautifier")
+            for j, s in enumerate(g.splitLines(contents)):
+                dump_string(j, s)
+            print('\nResults...')
+            for j, s in enumerate(g.splitLines(results)):
+                dump_string(j, s)
+            assert False
+print('done')
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge

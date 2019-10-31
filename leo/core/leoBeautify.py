@@ -863,9 +863,10 @@ class NullTokenBeautifier:
 
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
+    dump_on_error = False # True dump tokens on any ast errors.
     dump_input_tokens = False  # True: scan_all_tokens dumps input tokens.
     dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
-
+    
     #@+others
     #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
     def __init__(self, c):
@@ -1040,7 +1041,7 @@ class NullTokenBeautifier:
         # Return the string result.
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20191028014602.2: *5* null_tok_b.add_whitespace
-    def add_whitespace(self, start):
+    def add_whitespace(self, start, t):
         """
         A *lightly* modified version of Untokenizer.add_whitespace.
         
@@ -1053,14 +1054,15 @@ class NullTokenBeautifier:
             raise ValueError(
                 f"start ({row},{col}) precedes previous end "
                 f"{self.prev_row}, {self.prev_col}")
-        row_offset = row - self.prev_row
         ws = ''
+        row_offset = row - self.prev_row
         if row_offset:
             ws = "\\\n" * row_offset
             self.prev_col = 0
         col_offset = col - self.prev_col
         if col_offset:
             ws = ws + " " * col_offset
+        # if ws: g.trace(f"{ws!r}")
         return ws
     #@+node:ekr.20191028021428.1: *5* null_tok_b.make_input_tokens
     def make_input_tokens(self, tokens):
@@ -1080,7 +1082,7 @@ class NullTokenBeautifier:
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
-            if trace: g.trace(f"{kind:>10} {repr(val):20}")
+            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
             if tok_type == tm.ENCODING:
                 self.encoding = val
                 continue
@@ -1108,12 +1110,14 @@ class NullTokenBeautifier:
                         # Added hook for flexibility.
                     self.prev_col = len(indent)
                 startline = False
-            # Original code:
-                # self.add_whitespace(start)
-                # self.tokens.append(token)
-            ws = self.add_whitespace(start)
-            self.token_hook(kind, val, ws)
-                # Added hook for flexibility.
+            if 0: # Original code
+                self.add_whitespace(start)
+                self.tokens.append(val) # Was token
+            else:
+                ws = self.add_whitespace(start, t)
+                    # Add t for traces
+                self.token_hook(kind, val, ws)
+                    # Added hook for flexibility.
             #
             # Changed: inject token.line
             # Subclasses need this to handle single-line comments properly.
@@ -1122,7 +1126,7 @@ class NullTokenBeautifier:
             if tok_type in (tm.NEWLINE, tm.NL):
                 self.prev_row += 1
                 self.prev_col = 0
-        # Changed: does not return a string.
+        # Return value not used.  Only self.tokens.
     #@+node:ekr.20191029014023.9: *3* null_tok_b: Utils...
     #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
@@ -1426,7 +1430,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.errors += 1
             if g.unitTesting:
                 tag = f"parse_ast FAIL 1: {repr(p and p.h)}"
-                if self.dump_tokens:
+                if self.dump_on_error:
                     g.printObj(s0, tag=tag)
                 else:
                     print(s0)
@@ -1449,7 +1453,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                 self.errors += 1
                 if g.unitTesting:
                     tag = f"parse_ast FAIL 2: {repr(p and p.h)}"
-                    if self.dump_tokens:
+                    if self.dump_on_error:
                         g.printObj(s2, tag=tag)
                     else:
                         print(s2)
@@ -1461,7 +1465,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             ok = leoAst.compare_asts(node1, node2)
             if not ok:
                 g.warning(f"{p.h}: The beautify command did not preserve meaning!")
-                if self.dump_tokens:
+                if self.dump_on_error:
                     g.printObj(s2, tag='RESULT')
                 else:
                     print(s2)

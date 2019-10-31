@@ -403,7 +403,9 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
+<v t="ekr.20191031110731.1"><vh>@test tokenizer</vh></v>
 </v>
+<v t="ekr.20191031110731.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4037,5 +4039,71 @@ e - f  # comment
 # Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
+<t tx="ekr.20191031110731.1">g.cls()
+import tokenize
+import leo.core.leoBeautify as leoBeautify
+
+def dump_string(i, s):
+    verbose = True
+    if verbose:
+        val = repr(s)
+    elif not s.strip():
+        val = repr(s)
+    elif s.endswith('\n'):
+        val = s[:-1]
+    else:
+        val = s + '&lt;NO NL&gt;'
+    print(f"{i:2}: {val}")
+    
+
+table = (
+r'''
+a = "b\
+c\
+d"
+''',
+r'''
+print\
+    (\
+    a,\
+    b\
+)
+''',
+# Note: Null beautifier will delete space before bs-nl.
+r'''
+# Single-line comment 2.
+print('hi')
+print(
+    'thing 1',
+    'thing 2',
+)
+print(
+    'thing 3\
+    thing4'
+)
+print\
+    ('done')
+'''
+)
+beautifiers = (
+    ('null',    leoBeautify.NullTokenBeautifier(c)),
+    ('ptb',     leoBeautify.PythonTokenBeautifier(c)),
+    ('fstring', leoBeautify.FstringifyTokens(c)),
+)
+for i, contents in enumerate(table):
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    for name, b in beautifiers:
+        results = b.scan_all_tokens(tokens)
+        if results.strip() != contents.strip():
+            print(f"\nFAIL test {i} for {name} beautifier")
+            for j, s in enumerate(g.splitLines(contents)):
+                dump_string(j, s)
+            print('\nResults...')
+            for j, s in enumerate(g.splitLines(results)):
+                dump_string(j, s)
+            assert False
+print('done')
+</t>
 </tnodes>
 </leo_file>
