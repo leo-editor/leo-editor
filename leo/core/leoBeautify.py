@@ -1379,19 +1379,25 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         pass
        
     def token_hook(self, kind, val, ws):
-        """Create a token, including **between-token** ws."""
-        # Add sidecar whitespace only to a previous nl token.
+        """
+        Create a token given by (kind, val).
+        
+        ws is between-token ws. Ignore it unless it follows a newline.
+        """
         prev = self.prev_input_token
         if ws:
             # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
-                # Debatable, but makes unit tests pass at present.
-                pass
-                # This would require changes to the beautifier code.
-                # prev.value = prev.value + ws
+                if prev.kind in ('nl', 'newline'):
+                    # Indentation must not be ignored.
+                    prev.value = prev.value + ws
+                else:
+                    # It can be safely ignore..
+                    pass
             else:
+                # Something is wrong.
                 g.trace('IGNORE', repr(ws))
         # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
@@ -2313,22 +2319,21 @@ class FstringifyTokens(NullTokenBeautifier):
 
     def token_hook(self, kind, val, ws):
         """
-        Create a token, including **between-token** ws.
+        Create a token given by (kind, val).
         
-        This is the same as PythonTokenBeautifier.token_hook.
+        ws is between-token ws.
+        
+        Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
         """
-        # Add sidecar whitespace only to a previous nl token.
         prev = self.prev_input_token
         if ws:
-            # if g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
+            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
-                # Debatable, but makes unit tests pass at present.
-                pass
-                # This would require changes to the beautifier code.
-                # prev.value = prev.value + ws
+                prev.value = prev.value + ws
             else:
+                # Something is wrong.
                 g.trace('IGNORE', repr(ws))
         # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
