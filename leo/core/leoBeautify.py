@@ -1229,8 +1229,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # The string containing the input token's value.
         #
         # State vars...
-        ### self.backslash_seen = False
-            # True if a backslash-newline appears at the end of a *string*.
         self.decorator_seen = False
             # Set by do_name as a flag to do_op.
         self.in_arg_list = 0
@@ -1301,7 +1299,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         # Remembering token.line is necessary, because dedent tokens
         # can happen *after* comment lines that should be dedented!
-        ### self.kind, self.val, self.ws, self.line = token.kind, token.value, token.ws, token.line
         self.kind, self.val, self.line = token.kind, token.value, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
@@ -1583,9 +1580,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         self.add_token('string', self.val)
-        ### if self.val.find('\\\n'):
-            ### self.backslash_seen = False
-            # This *does* retain the string's spelling.
         self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
@@ -2285,11 +2279,6 @@ class FstringifyTokens(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
-        
-        ###sidecar_ws = self.ws
-        
-        ### g.trace(repr(self.ws))
-        ### g.trace(self.look_ahead(0))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val
@@ -2300,10 +2289,6 @@ class FstringifyTokens(NullTokenBeautifier):
         else:
             # Just put the string
             self.add_token('string', self.val) 
-        ###
-            # Always retain sidecar ws.
-            # prev_tok = self.code_list[-1]
-            # prev_tok.ws = sidecar_ws
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -2362,14 +2347,11 @@ class FstringifyTokens(NullTokenBeautifier):
             token = self.tokens[token_i]
             token_i += 1
             tokens.append(token)
-        #
         # Find all tokens up to the first ')' or 'for'
         results, value_list = [], []
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
-            ### kind, val, ws = token.kind, token.value, token.ws
             kind, val = token.kind, token.value
-            # g.trace(kind, repr(val), repr(ws))
             token_i += 1
             tokens.append(token)
             if (kind, val) == ('op', ')'):
@@ -2390,9 +2372,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.extend(self.tokens[token_i : token_i2])
                 token_i = token_i2
             else:
-                ### value_list.append(ws + val)
                 value_list.append(val)
-                
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
@@ -2404,7 +2384,6 @@ class FstringifyTokens(NullTokenBeautifier):
         trace = False and not g.unitTesting
         if trace:
             g.trace('=====', token_i, repr(val))
-            ### g.trace(''.join([z.ws + z.value for z in self.tokens[token_i:]]))
             g.trace(''.join([z.value for z in self.tokens[token_i:]]))
         values_list = []
         kind0, val0 = self.look_ahead(token_i)
@@ -2447,7 +2426,6 @@ class FstringifyTokens(NullTokenBeautifier):
         if token.kind == 'string':
             self.kind = token.kind
             self.val = token.value
-            ### self.ws = token.ws
             self.do_string()
         else:
             # Same as super().do_token(token)
