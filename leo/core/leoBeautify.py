@@ -907,6 +907,13 @@ class NullTokenBeautifier:
     # NullTokenBeautifier.make_input_tokens calls these hooks so that
     # subclasses can customize how they create input tokens.
 
+    def bs_nl_hook(self, bs_nl):
+        """
+        Create an optional token for a backslash-newline, including preceding
+        whitespace.
+        """
+        pass
+
     def dedent_hook(self):
         """Handle the tokenizer's dedent token."""
         pass
@@ -1046,13 +1053,28 @@ class NullTokenBeautifier:
         This page of the Python reference documents tokens.
         https://docs.python.org/3/reference/lexical_analysis.html
         """
+        trace = False and not g.unitTesting
         tm = token_module
         indents = []
         startline = False
+        bs_nl = False # Added.
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = tm.tok_name[t.type].lower()
-            # g.trace(f"{kind:>10} {val!r}")
+            ### The base class does not need this! The ws token handles everything.
+            if 0: # Added: Make bs-nl explicit.
+                row, col = end
+                if row != self.prev_row:
+                    if trace: g.trace(f"ROW: {line!r}")
+                    if bs_nl:
+                        ws = self.add_whitespace(start)
+                        self.bs_nl_hook(bs_nl + ws)
+                        ### self.add_input_token('newline', bs_nl + ws)
+                    bs_nl = line.endswith('\\\n')
+                    if bs_nl:
+                        head = line[:-2].rstrip()
+                        bs_nl = line[len(head):-2]
+            if trace: g.trace(f"{kind:>10} {repr(val):20}")
             if tok_type == tm.ENCODING:
                 self.encoding = val
                 continue
@@ -1327,6 +1349,13 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     # subclasses can customize how they create input tokens.
 
     # Overrides of default hooks.
+    def bs_nl_hook(self, bs_nl):
+        """
+        Create backslash-newline, including preceding whitespace.
+        """
+        g.trace(repr(bs_nl))
+        self.add_input_token('newline', bs_nl)
+
     def dedent_hook(self):
         """Handle the tokenizer's dedent token."""
         self.add_input_token('dedent')
