@@ -19,9 +19,6 @@ import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
 #@+node:mhw-nc.20190126224021.1: ** setup janitor
 try:
-   #from leo.extensions.setupext_janitor import janitor
-   #   https://github.com/leo-editor/leo-editor/issues/1255
-   #   remove these comments after Aug-2019 if no issues
    from setupext_janitor import janitor
    CleanCommand = janitor.CleanCommand
 except ImportError:
