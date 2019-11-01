@@ -868,7 +868,8 @@ class NullTokenBeautifier:
     dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
     
     #@+others
-    #@+node:ekr.20191029014023.2: *3* null_tok_b.ctor
+    #@+node:ekr.20191101044034.1: *3*  null_tok_b: Birth
+    #@+node:ekr.20191029014023.2: *4* null_tok_b.ctor
     def __init__(self, c):
         self.c = c
         self.changed = None
@@ -892,11 +893,11 @@ class NullTokenBeautifier:
         self.total_time = 0.0
         # Update per-commander settings.
         self.reload_settings()
-    #@+node:ekr.20191029014023.3: *3* null_tok_b.reload_settings
+    #@+node:ekr.20191029014023.3: *4* null_tok_b.reload_settings
     def reload_settings(self):
         c = self.c
         self.tab_width = abs(c.tab_width) if c else 4
-    #@+node:ekr.20191028074723.1: *3* null_tok_b: May be overridden in subclasses...
+    #@+node:ekr.20191028074723.1: *3*  null_tok_b: May be overridden in subclasses...
     #@+node:ekr.20191028020116.1: *4* null_tok_b.do_token
     def do_token(self, token):
         """
@@ -955,179 +956,7 @@ class NullTokenBeautifier:
             self.add_input_token('ws', ws)
         # Add the actual token.
         self.add_input_token(kind, val)
-    #@+node:ekr.20191029015043.1: *3* null_tok_b: Tokens...
-    #@+node:ekr.20191028072257.1: *4* null_tok_b.add_input_token
-    def add_input_token(self, kind, value=''):
-        """
-        Add a token to the input list.
-        
-        The blank-lines token is the only token whose value isn't a string.
-        BeautifierToken.to_string() ignores such tokens.
-        """
-        if kind != 'blank-lines':
-            assert isinstance(value, str), g.callers()
-        tok = BeautifierToken(kind, value)
-        self.tokens.append(tok)
-        self.prev_input_token = self.tokens[-1]
-    #@+node:ekr.20191029014023.7: *4* null_tok_b.add_token
-    def add_token(self, kind, value=''):
-        """Add a token to the code list."""
-        tok = BeautifierToken(kind, value)
-        self.code_list.append(tok)
-        self.prev_output_token = self.code_list[-1]
-    #@+node:ekr.20191029014023.6: *4* null_tok_b.look_ahead & look_ahead_ws
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return (token.kind, token.value)
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.kind, token.value
-
-    def look_ahead_token(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return the token itself.
-        """
-        if len(self.tokens) <= n:
-            return ''
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token
-    #@+node:ekr.20191028070535.1: *4* null_tok_b.scan_all_tokens & helpers
-    def scan_all_tokens(self, tokens):
-        """
-        Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
-        to a result.
-            
-        Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
-                The look_ahead method look aheads in this list.
-                
-        Pass 2: Call self.do_token(token) for each token in input_list.
-                Subclasses may delete tokens from input_list.
-                
-        Returns the string created from the output list.
-        
-        Sub-classes should *not* need to override this method.
-        """
-        # Init state. (was in ctor).
-        self.prev_row = 1
-        self.prev_col = 0
-        self.encoding = None  # Not used!
-        # Init the input_list,
-        self.tokens = []
-        self.prev_input_token = None
-        self.make_input_tokens(tokens)
-        if self.dump_input_tokens:
-            g.printObj(self.tokens, tag='INPUT TOKENS')
-        # Init the output list.
-        self.code_list = []
-        self.prev_output_token = None
-        self.add_token('file-start')
-        # Allow subclasses to init state.
-        self.file_start()
-        # Generate output tokens.
-        # Important: self.tokens may *mutate* in this loop.
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        # Allow last-minute adjustments.
-        self.file_end()
-        if self.dump_output_tokens:
-            g.printObj(self.code_list, tag='OUTPUT TOKENS')
-        # Return the string result.
-        return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20191028014602.2: *5* null_tok_b.add_whitespace
-    def add_whitespace(self, start, t):
-        """
-        A *lightly* modified version of Untokenizer.add_whitespace.
-        
-        It computes **between-token** whitespace.
-        
-        Note: this method never includes bs-nl continuations for strings.
-        """
-        row, col = start
-        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
-            raise ValueError(
-                f"start ({row},{col}) precedes previous end "
-                f"{self.prev_row}, {self.prev_col}")
-        ws = ''
-        row_offset = row - self.prev_row
-        if row_offset:
-            ws = "\\\n" * row_offset
-            self.prev_col = 0
-        col_offset = col - self.prev_col
-        if col_offset:
-            ws = ws + " " * col_offset
-        # if ws: g.trace(f"{ws!r}")
-        return ws
-    #@+node:ekr.20191028021428.1: *5* null_tok_b.make_input_tokens
-    def make_input_tokens(self, tokens):
-        """
-        A *lightly* modified version of Untokenizer.untokenize.
-        
-        Scan all tokenizer tokens (an iterable of 5-tuples).
-        
-        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
-
-        See also: https://docs.python.org/3/reference/lexical_analysis.html
-        """
-        trace = False and not g.unitTesting
-        tm = token_module
-        indents = []
-        startline = False
-        for t in tokens:
-            tok_type, val, start, end, line = t
-            kind = tm.tok_name[t.type].lower()
-            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
-            if tok_type == tm.ENCODING:
-                self.encoding = val
-                continue
-            if tok_type == tm.ENDMARKER:
-                break
-            if tok_type == tm.INDENT:
-                self.indent_hook(val)
-                    # Added hook for flexibility.
-                indents.append(val)
-                continue
-            elif tok_type == tm.DEDENT:
-                indents.pop()
-                self.prev_row, self.prev_col = end
-                    # The row, col of *this* token.
-                self.dedent_hook()
-                    # Added hook for flexibility.
-                continue
-            elif tok_type in (tm.NEWLINE, tm.NL):
-                startline = True
-            elif startline and indents:
-                indent = indents[-1]
-                if start[1] >= len(indent):
-                    # Original: self.tokens.append(indent)
-                    self.indent_changed_hook(indent)
-                        # Added hook for flexibility.
-                    self.prev_col = len(indent)
-                startline = False
-            if 0: # Original code
-                self.add_whitespace(start)
-                self.tokens.append(val) # Was token
-            else:
-                ws = self.add_whitespace(start, t)
-                    # Add t for traces
-                self.token_hook(kind, val, ws)
-                    # Added hook for flexibility.
-            #
-            # Changed: inject token.line
-            # Subclasses need this to handle single-line comments properly.
-            self.prev_input_token.line = line
-            self.prev_row, self.prev_col = end
-            if tok_type in (tm.NEWLINE, tm.NL):
-                self.prev_row += 1
-                self.prev_col = 0
-        # Return value not used.  Only self.tokens.
-    #@+node:ekr.20191029014023.9: *3* null_tok_b: Utils...
+    #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
     #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
         """Complete undo processing."""
@@ -1212,6 +1041,177 @@ class NullTokenBeautifier:
         t2 = time.process_time()
         self.tokenize_time += t2 - t1
         return tokens
+    #@+node:ekr.20191028072257.1: *3* null_tok_b.add_input_token
+    def add_input_token(self, kind, value=''):
+        """
+        Add a token to the input list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        BeautifierToken.to_string() ignores such tokens.
+        """
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
+        tok = BeautifierToken(kind, value)
+        self.tokens.append(tok)
+        self.prev_input_token = self.tokens[-1]
+    #@+node:ekr.20191029014023.7: *3* null_tok_b.add_token
+    def add_token(self, kind, value=''):
+        """Add a token to the code list."""
+        tok = BeautifierToken(kind, value)
+        self.code_list.append(tok)
+        self.prev_output_token = self.code_list[-1]
+    #@+node:ekr.20191028014602.2: *3* null_tok_b.add_whitespace
+    def add_whitespace(self, start, t):
+        """
+        A *lightly* modified version of Untokenizer.add_whitespace.
+        
+        It computes **between-token** whitespace.
+        
+        Note: this method never includes bs-nl continuations for strings.
+        """
+        row, col = start
+        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
+            raise ValueError(
+                f"start ({row},{col}) precedes previous end "
+                f"{self.prev_row}, {self.prev_col}")
+        ws = ''
+        row_offset = row - self.prev_row
+        if row_offset:
+            ws = "\\\n" * row_offset
+            self.prev_col = 0
+        col_offset = col - self.prev_col
+        if col_offset:
+            ws = ws + " " * col_offset
+        # if ws: g.trace(f"{ws!r}")
+        return ws
+    #@+node:ekr.20191029014023.6: *3* null_tok_b.look_ahead & look_ahead_ws
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return (token.kind, token.value)
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token.kind, token.value
+
+    def look_ahead_token(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return the token itself.
+        """
+        if len(self.tokens) <= n:
+            return ''
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token
+    #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
+    def make_input_tokens(self, tokens):
+        """
+        A *lightly* modified version of Untokenizer.untokenize.
+        
+        Scan all tokenizer tokens (an iterable of 5-tuples).
+        
+        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
+
+        See also: https://docs.python.org/3/reference/lexical_analysis.html
+        """
+        trace = False and not g.unitTesting
+        tm = token_module
+        indents = []
+        startline = False
+        for t in tokens:
+            tok_type, val, start, end, line = t
+            kind = tm.tok_name[t.type].lower()
+            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
+            if tok_type == tm.ENCODING:
+                self.encoding = val
+                continue
+            if tok_type == tm.ENDMARKER:
+                break
+            if tok_type == tm.INDENT:
+                self.indent_hook(val)
+                    # Added hook for flexibility.
+                indents.append(val)
+                continue
+            elif tok_type == tm.DEDENT:
+                indents.pop()
+                self.prev_row, self.prev_col = end
+                    # The row, col of *this* token.
+                self.dedent_hook()
+                    # Added hook for flexibility.
+                continue
+            elif tok_type in (tm.NEWLINE, tm.NL):
+                startline = True
+            elif startline and indents:
+                indent = indents[-1]
+                if start[1] >= len(indent):
+                    # Original: self.tokens.append(indent)
+                    self.indent_changed_hook(indent)
+                        # Added hook for flexibility.
+                    self.prev_col = len(indent)
+                startline = False
+            if 0: # Original code
+                self.add_whitespace(start)
+                self.tokens.append(val) # Was token
+            else:
+                ws = self.add_whitespace(start, t)
+                    # Add t for traces
+                self.token_hook(kind, val, ws)
+                    # Added hook for flexibility.
+            #
+            # Changed: inject token.line
+            # Subclasses need this to handle single-line comments properly.
+            self.prev_input_token.line = line
+            self.prev_row, self.prev_col = end
+            if tok_type in (tm.NEWLINE, tm.NL):
+                self.prev_row += 1
+                self.prev_col = 0
+        # Return value not used.  Only self.tokens.
+    #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
+        to a result.
+            
+        Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
+                The look_ahead method look aheads in this list.
+                
+        Pass 2: Call self.do_token(token) for each token in input_list.
+                Subclasses may delete tokens from input_list.
+                
+        Returns the string created from the output list.
+        
+        Sub-classes should *not* need to override this method.
+        """
+        # Init state. (was in ctor).
+        self.prev_row = 1
+        self.prev_col = 0
+        self.encoding = None  # Not used!
+        # Init the input_list,
+        self.tokens = []
+        self.prev_input_token = None
+        self.make_input_tokens(tokens)
+        if self.dump_input_tokens:
+            g.printObj(self.tokens, tag='INPUT TOKENS')
+        # Init the output list.
+        self.code_list = []
+        self.prev_output_token = None
+        self.add_token('file-start')
+        # Allow subclasses to init state.
+        self.file_start()
+        # Generate output tokens.
+        # Important: self.tokens may *mutate* in this loop.
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        # Allow last-minute adjustments.
+        self.file_end()
+        if self.dump_output_tokens:
+            g.printObj(self.code_list, tag='OUTPUT TOKENS')
+        # Return the string result.
+        return ''.join([z.to_string() for z in self.code_list])
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(NullTokenBeautifier)
 class PythonTokenBeautifier(NullTokenBeautifier):
