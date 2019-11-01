@@ -146,12 +146,10 @@
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh></v>
 <v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
-<v t="ekr.20151227063335.1"><vh>@clean ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
@@ -159,7 +157,6 @@
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
-<v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
@@ -178,6 +175,11 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
+</v>
+<v t="mhw.20191101123146.1"><vh>To Delete</vh>
+<v t="ekr.20151227063335.1"><vh>@@clean ../../About leo.exe.TXT</vh></v>
+<v t="maphew.20190208142757.1"><vh>@@clean ../../optional-tools.txt</vh></v>
+<v t="ekr.20130809141000.1990"><vh>@@clean ../../INSTALL.TXT</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2601,6 +2603,15 @@ deploy:
     on:
       tags: true
       branch: master
+</t>
+<t tx="mhw.20191101123146.1">Refresh / audit MANIFEST.in excludes and includes
+https://github.com/leo-editor/leo-editor/issues/1077
+
+Files in this tree are or will be deleted from the Leo's root directory. They're
+kept here for easy restoration or migration to another place if it's decided
+they should be kept.
+
+-matt (@maphew)
 </t>
 </tnodes>
 </leo_file>
