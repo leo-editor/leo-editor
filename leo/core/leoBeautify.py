@@ -19,6 +19,7 @@ except ImportError:
     g.command = command
 
 import ast
+import io
 import optparse
 import os
 import re
@@ -378,8 +379,7 @@ def test_FstringifyTokens(c, contents,
     import tokenize
     import leo.core.leoBeautify as leoBeautify
     # Tokenize.
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     # Untokenize.
     x = leoBeautify.FstringifyTokens(c)
     x.dump_input_tokens = dump_input_tokens
@@ -405,8 +405,7 @@ def test_NullTokenBeautifier(c, contents,
     import tokenize
     import leo.core.leoBeautify as leoBeautify
     # Tokenize.
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     # Untokenize.
     x = leoBeautify.NullTokenBeautifier(c)
     x.dump_input_tokens = dump_input_tokens
@@ -431,8 +430,7 @@ def test_PythonTokenBeautifier(c, contents,
     import tokenize
     import leo.core.leoBeautify as leoBeautify
     # Create 5-tuples.
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     # Beautify.
     x = leoBeautify.PythonTokenBeautifier(c)
     x.dump_input_tokens = dump_input_tokens
@@ -1171,14 +1169,13 @@ class NullTokenBeautifier:
                         # Added hook for flexibility.
                     self.prev_col = len(indent)
                 startline = False
-            if 0: # Original code
-                self.add_whitespace(start)
-                self.tokens.append(val) # Was token
-            else:
-                ws = self.add_whitespace(start, t)
-                    # Add t for traces
-                self.token_hook(kind, val, ws)
-                    # Added hook for flexibility.
+            # Original code
+                # self.add_whitespace(start)
+                # self.tokens.append(val) # Was token
+            ws = self.add_whitespace(start, t)
+                # Add t for traces
+            self.token_hook(kind, val, ws)
+                # Added hook for flexibility.
             #
             # Changed: inject token.line
             # Subclasses need this to handle single-line comments properly.
