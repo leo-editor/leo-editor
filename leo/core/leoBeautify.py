@@ -2667,12 +2667,11 @@ class Untokenize:
 
         # Create the physical lines.
         self.lines = self.contents.splitlines(True)
-        # Create the offsets of the start of each physical line.
-        last_offset, offsets = 0, [0]
-        for i, line in enumerate(self.lines):
-            offsets.append(last_offset + len(line))
+        # Create the list of character offsets of the start of each physical line.
+        last_offset, self.offsets = 0, [0]
+        for line in self.lines:
             last_offset += len(line)
-        self.offsets = offsets
+            self.offsets.append(last_offset)
         # Trace lines & offsets.
         self.show_header()
         # Handle each token, appending leading whitespace and token values to results.
@@ -2691,7 +2690,7 @@ class Untokenize:
             s = f"{aTuple[0]}..{aTuple[1]}"
             return f"{s:8}"
             
-        # Unpack data.
+        # Unpack..
         tok_type, val, start, end, line = token
         s_row, s_col = start
         e_row, e_col = end
