@@ -341,6 +341,25 @@ def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
 #@+node:ekr.20191028140926.1: **  test functions: (leoBeautifier.py)
+#@+node:ekr.20191101150059.1: *3* function: check_roundtrip 
+import unittest
+# from tokenize import tokenize, untokenize
+
+def check_roundtrip(f):
+    """
+    This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
+    """
+    if isinstance(f, str):
+        code = f.encode('utf-8')
+    else:
+        code = f.read()
+        f.close()
+    readline = iter(code.splitlines(keepends=True)).__next__
+    tokens = list(tokenize.tokenize(readline))
+    bytes = tokenize.untokenize(tokens)
+    readline5 = iter(bytes.splitlines(keepends=True)).__next__
+    result_tokens = list(tokenize.tokenize(readline5))
+    unittest.TestCase().assertEqual(result_tokens, tokens)
 #@+node:ekr.20191029184103.1: *3* function: show
 def show(obj, tag, dump):
     print(f"{tag}...\n")
@@ -348,32 +367,6 @@ def show(obj, tag, dump):
         g.printObj(obj)
     else:
         print(obj)
-#@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
-def test_NullTokenBeautifier(c, contents,
-    dump=True,
-    dump_input_tokens=False,
-    dump_output_tokens=False,
-):
-
-    # pylint: disable=import-self
-    import tokenize
-    import leo.core.leoBeautify as leoBeautify
-    # Tokenize.
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    # Untokenize.
-    x = leoBeautify.NullTokenBeautifier(c)
-    x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
-    # Compare.
-    show(contents, 'Contents', dump)
-    if contents != results:
-        print('')
-        print('ERROR...\n')
-        show(results, 'Results', dump)
-    else:
-        print('Unchanged')
 #@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
 def test_FstringifyTokens(c, contents,
     dump=True,
@@ -401,6 +394,32 @@ def test_FstringifyTokens(c, contents,
     # if dump_output_tokens:
         # print('')
         # show(results, 'Results', dump)
+#@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
+def test_NullTokenBeautifier(c, contents,
+    dump=True,
+    dump_input_tokens=False,
+    dump_output_tokens=False,
+):
+
+    # pylint: disable=import-self
+    import tokenize
+    import leo.core.leoBeautify as leoBeautify
+    # Tokenize.
+    readlines = g.ReadLinesClass(contents).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    # Untokenize.
+    x = leoBeautify.NullTokenBeautifier(c)
+    x.dump_input_tokens = dump_input_tokens
+    x.dump_output_tokens = dump_output_tokens
+    results = x.scan_all_tokens(tokens)
+    # Compare.
+    show(contents, 'Contents', dump)
+    if contents != results:
+        print('')
+        print('ERROR...\n')
+        show(results, 'Results', dump)
+    else:
+        print('Unchanged')
 #@+node:ekr.20191029184028.1: *3* test_PythonTokenBeautifier
 def test_PythonTokenBeautifier(c, contents,
     dump=True,

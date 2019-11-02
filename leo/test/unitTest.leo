@@ -403,9 +403,19 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20191031110731.1"><vh>@test tokenizer</vh></v>
+<v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
 </v>
-<v t="ekr.20191031110731.1"></v>
+<v t="ekr.20191101152519.1"><vh>unit tests for python's tokenize.module</vh>
+<v t="ekr.20191101152519.3"><vh>@test bad input order </vh></v>
+<v t="ekr.20191101152519.4"><vh>@test backslash continuation</vh></v>
+<v t="ekr.20191101152519.5"><vh>@test iter compat</vh></v>
+<v t="ekr.20191101152519.6"><vh>@test EKR bug</vh></v>
+<v t="ekr.20191101152519.7"><vh>@test TestRoundTrip.test_roundtrip</vh></v>
+<v t="ekr.20191101152519.8"><vh>@test TestRoutnTrip.test_continuation</vh></v>
+<v t="ekr.20191101152519.9"><vh>@test TestRoutnTrip.test_backslash_continuation</vh></v>
+<v t="ekr.20191101152519.10"><vh>@test TestRoutnTrip.test_string_concatenation</vh></v>
+<v t="ekr.20191101152519.11"><vh>@test TestRoutnTrip.test_indentation_semantics_retained</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4039,8 +4049,7 @@ e - f  # comment
 # Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
-<t tx="ekr.20191031110731.1">g.cls()
-import tokenize
+<t tx="ekr.20191031110731.1">import tokenize
 import leo.core.leoBeautify as leoBeautify
 
 def dump_string(i, s):
@@ -4104,6 +4113,168 @@ for i, contents in enumerate(table):
                 dump_string(j, s)
             assert False
 print('done')
+</t>
+<t tx="ekr.20191101152519.1"></t>
+<t tx="ekr.20191101152519.10">import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+
+# Two string literals on the same line
+check_roundtrip("'' ''")
+
+</t>
+<t tx="ekr.20191101152519.11">"""
+Ensure that although whitespace might be mutated in a roundtrip,
+the semantic meaning of the indentation remains consistent.
+"""
+
+import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+from tokenize import tokenize, untokenize
+from io import BytesIO
+
+def roundtrip(code):
+    if isinstance(code, str):
+        code = code.encode('utf-8')
+    return untokenize(tokenize(BytesIO(code).readline)).decode('utf-8')
+
+code = "if False:\n\tx=3\n\tx=3\n"
+### codelines = self.roundtrip(code).split('\n')
+codelines = roundtrip(code).split('\n')
+self.assertEqual(codelines[1], codelines[2])
+check_roundtrip(code)
+</t>
+<t tx="ekr.20191101152519.3">from tokenize import Untokenizer
+u = Untokenizer()
+u.prev_row = 2
+u.prev_col = 2
+with self.assertRaises(ValueError) as cm:
+    u.add_whitespace((1,3))
+self.assertEqual(cm.exception.args[0],
+    'start (1,3) precedes previous end (2,2)')
+# raise if previous column in row
+self.assertRaises(ValueError, u.add_whitespace, (2,1))
+</t>
+<t tx="ekr.20191101152519.4">from tokenize import Untokenizer
+import test.test_tokenize as tt
+u = Untokenizer()
+u.prev_row = 1
+u.prev_col =  1
+u.tokens = []
+u.add_whitespace((2, 0))
+self.assertEqual(u.tokens, ['\\\n'])
+u.prev_row = 2
+u.add_whitespace((4, 4))
+self.assertEqual(u.tokens, ['\\\n', '\\\n\\\n', '    '])
+tt.TestRoundtrip.check_roundtrip(self, 'a\n  b\n    c\n  \\\n  c\n')</t>
+<t tx="ekr.20191101152519.5">from tokenize import untokenize, Untokenizer, NAME, ENCODING
+
+u = Untokenizer()
+token = (NAME, 'Hello')
+tokens = [(ENCODING, 'utf-8'), token]
+u.compat(token, iter([]))
+self.assertEqual(u.tokens, ["Hello "])
+u = Untokenizer()
+self.assertEqual(u.untokenize(iter([token])), 'Hello ')
+u = Untokenizer()
+self.assertEqual(u.untokenize(iter(tokens)), 'Hello ')
+self.assertEqual(u.encoding, 'utf-8')
+self.assertEqual(untokenize(iter(tokens)), b'Hello ')
+    # *not* u.untokenize.
+</t>
+<t tx="ekr.20191101152519.6">import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+
+# EKR: the blank before the backslash-newline is not handled properly.
+with self.assertRaises(AssertionError) as cm:
+    check_roundtrip(
+        "print \\\n"
+        "    ('abc')\n")
+</t>
+<t tx="ekr.20191101152519.7">from tokenize import tokenize, untokenize
+from test import support
+import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+
+# There are some standard formatting practices that are easy to get right.
+
+check_roundtrip(
+    "if x == 1:\n"
+    "    print(x)\n")
+
+check_roundtrip(
+    "# This is a comment\n"
+    "# This also\n")
+
+# Some people use different formatting conventions, which makes
+# untokenize a little trickier. Note that this test involves trailing
+# whitespace after the colon. Note that we use hex escapes to make the
+# two trailing blanks apparent in the expected output.
+
+check_roundtrip(
+    "if x == 1 : \n"
+    "  print(x)\n")
+
+if 0: # Fails.
+    fn = support.findfile("tokenize_tests.txt")
+    with open(fn, 'rb') as f:
+        check_roundtrip(f)
+
+check_roundtrip(
+    "if x == 1:\n"
+    "    # A comment by itself.\n"
+    "    print(x) # Comment here, too.\n"
+    "    # Another comment.\n"
+    "after_if = True\n")
+
+check_roundtrip(
+    "if (x # The comments need to go in the right place\n"
+    "    == 1):\n"
+    "    print('x==1')\n")
+
+check_roundtrip(
+    "class Test: # A comment here\n"
+    "  # A comment with weird indent\n"
+    "  after_com = 5\n"
+    "  def x(m): return m*5 # a one liner\n"
+    "  def y(m): # A whitespace after the colon\n"
+    "     return y*4 # 3-space indent\n")
+
+# Some error-handling code
+check_roundtrip(
+    "try: import somemodule\n"
+    "except ImportError: # comment\n"
+    "    print('Can not import' # comment2\n)"
+    "else:   print('Loaded')\n")</t>
+<t tx="ekr.20191101152519.8">import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+
+check_roundtrip(
+    "a = (3,4, \n"
+    "5,6)\n"
+    "y = [3, 4,\n"
+    "5]\n"
+    "z = {'a': 5,\n"
+    "'b':15, 'c':True}\n"
+    "x = len(y) + 5 - a[\n"
+    "3] - a[2]\n"
+    "+ len(z) - z[\n"
+    "'b']\n")
+    
+</t>
+<t tx="ekr.20191101152519.9">import leo.core.leoBeautify as leoBeautify
+check_roundtrip = leoBeautify.check_roundtrip
+
+# Backslash means line continuation, except for comments
+check_roundtrip(
+    "x=1+\\\n"
+    "1\n"
+    "# This is a comment\\\n"
+    "# This also\n")
+    
+check_roundtrip(
+    "# Comment \\\n"
+    "x = 0")
+
 </t>
 </tnodes>
 </leo_file>
