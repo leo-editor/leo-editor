@@ -2659,7 +2659,7 @@ class FstringifyTokens(NullTokenBeautifier):
 class Untokenize:
     
     def __init__(self, contents):
-        self.contents = contents
+        self.contents = contents # A unicode string.
     
     #@+others
     #@+node:ekr.20191102155252.2: *3* u.untokenize
@@ -2674,7 +2674,7 @@ class Untokenize:
             self.offsets.append(last_offset)
         # Trace lines & offsets.
         self.show_header()
-        # Handle each token, appending leading whitespace and token values to results.
+        # Handle each token, appending tokens and between-token whitespace to results.
         self.prev_offset, self.results = -1, []
         for token in tokens:
             self.do_token(token)
@@ -2684,7 +2684,7 @@ class Untokenize:
         return ''.join(self.results)
     #@+node:ekr.20191102155252.3: *3* u.do_token
     def do_token(self, token):
-        """Handle the given token, including preceding whitespace"""
+        """Handle the given token, including between-token whitespace"""
         
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
@@ -2695,18 +2695,15 @@ class Untokenize:
         s_row, s_col = start
         e_row, e_col = end
         kind = token_module.tok_name[tok_type].lower()
-        # Calculate token's start/end offsets: character offsets into contents.
-        if self.prev_offset == -1:
-            s_offset, e_offset = 0, 0
-        else:
-            s_offset = self.offsets[s_row-1] + s_col
-            e_offset = self.offsets[e_row-1] + e_col
+        # Calculate the token's start/end offsets: character offsets into contents.
+        s_offset = self.offsets[max(0, s_row-1)] + s_col
+        e_offset = self.offsets[max(0, e_row-1)] + e_col
         # Add any preceding ws.
         ws = self.contents[self.prev_offset:s_offset]
         if ws:
             self.results.append(ws)
             print(f"{'ws':>10} {ws!r:20} {show_tuple((self.prev_offset, s_offset)):>26} {ws!r}")
-        # Show the token.
+        # Add the token.
         tok_s = self.contents[s_offset:e_offset]
         if tok_s:
             self.results.append(tok_s)
