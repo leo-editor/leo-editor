@@ -2698,12 +2698,12 @@ class Untokenize:
         # Calculate the token's start/end offsets: character offsets into contents.
         s_offset = self.offsets[max(0, s_row-1)] + s_col
         e_offset = self.offsets[max(0, e_row-1)] + e_col
-        # Add any preceding ws.
+        # Add any preceding between-token whitespace.
         ws = self.contents[self.prev_offset:s_offset]
         if ws:
             self.results.append(ws)
             print(f"{'ws':>10} {ws!r:20} {show_tuple((self.prev_offset, s_offset)):>26} {ws!r}")
-        # Add the token.
+        # Add the token, if it contributes any real text.
         tok_s = self.contents[s_offset:e_offset]
         if tok_s:
             self.results.append(tok_s)
