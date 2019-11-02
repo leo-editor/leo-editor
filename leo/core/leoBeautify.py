@@ -2655,6 +2655,88 @@ class FstringifyTokens(NullTokenBeautifier):
             # then literal_text will be a zero-length string.
             # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@-others
+#@+node:ekr.20191102155252.1: ** class Untokenize
+class Untokenize:
+    
+    #@+others
+    #@+node:ekr.20191102155252.2: *3* u.untokenize
+    def untokenize(self, contents, tokens):
+
+        # Create lines and corresponding offsets array.
+        self.contents = contents
+        self.lines = self.contents.splitlines(True)
+        last_offset, offsets = 0, [0]
+        for i, line in enumerate(self.lines):
+            offsets.append(last_offset + len(line))
+            last_offset += len(line)
+        self.offsets = offsets
+        # Trace lines & offsets.
+        self.show_header()
+        # Handle each token, appending leading whitespace and token values to results.
+        self.prev_offset, self.results = -1, []
+        for token in tokens:
+            self.do_token(token)
+        # Print results.
+        self.show_results()
+        # Return the concatentated results.
+        return ''.join(self.results)
+    #@+node:ekr.20191102155252.3: *3* u.do_token
+    def do_token(self, token):
+        """Handle the given token, including preceding whitespace"""
+        
+        def show_tuple(aTuple):
+            s = f"{aTuple[0]}..{aTuple[1]}"
+            return f"{s:8}"
+            
+        # Unpack data.
+        tok_type, val, start, end, line = token
+        s_row, s_col = start
+        e_row, e_col = end
+        kind = token_module.tok_name[tok_type].lower()
+        # Calculate token's start/end offsets into contents.
+        if self.prev_offset == -1:
+            s_offset, e_offset = 0, 0
+        else:
+            s_offset = self.offsets[s_row-1] + s_col
+            e_offset = self.offsets[e_row-1] + e_col
+        # Show any preceding ws.
+        ws = self.contents[self.prev_offset:s_offset]
+        if ws:
+            self.results.append(ws)
+            print(f"{'ws':>10} {ws!r:20} {show_tuple((self.prev_offset, s_offset)):>26} {ws!r}")
+        # Show the token.
+        tok_s = self.contents[s_offset:e_offset]
+        if tok_s:
+            self.results.append(tok_s)
+        print(
+            f"{kind:>10} {val!r:20} "
+            f"{show_tuple(start)} {show_tuple(end)} {show_tuple((s_offset, e_offset))} "
+            f"{tok_s!r:15} {line!r}")
+        # Update the ending offset.
+        self.prev_offset = e_offset
+    #@+node:ekr.20191102155252.4: *3* u.show_header
+    def show_header(self):
+        # Dump the lines.
+        print('Physical lines: (row, offset, line)\n')
+        for i, z in enumerate(self.lines):
+            print(f"{i:3}: {self.offsets[i]:3}: {z!r}")
+        # Print the header for the list of tokens.
+        print('\nTokens:')
+        print(f"{'kind':>10} {'val'} {'start':>22} {'end':>6} {'offsets':>12} {'output':>7} {'line':>13}")
+    #@+node:ekr.20191102155252.5: *3* u.show_results
+    def show_results(self):
+
+        # Split the results into lines.
+        result = ''.join(self.results)
+        result_lines = result.splitlines(True)
+        if result == self.contents and result_lines == self.lines:
+            print('\nRound trip passes')
+            return
+        print('Results:')
+        for i, z in enumerate(result_lines):
+            print(f"{i:3}: {z!r}")
+        print('FAIL')
+    #@-others
 #@-others
 if __name__ == "__main__":
     main()
