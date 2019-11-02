@@ -3548,8 +3548,9 @@ Scripts in the scriptFile may execute any of Leo's commands except the Edit Body
 
 These are the sources for Leo's users guide.
 
-They contain sphinx markup. See::
+They contain restructured text markup for the sphinx tool. See::
 
+    http://docutils.sourceforge.net/rst.html
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
