@@ -2658,13 +2658,16 @@ class FstringifyTokens(NullTokenBeautifier):
 #@+node:ekr.20191102155252.1: ** class Untokenize
 class Untokenize:
     
+    def __init__(self, contents):
+        self.contents = contents
+    
     #@+others
     #@+node:ekr.20191102155252.2: *3* u.untokenize
-    def untokenize(self, contents, tokens):
+    def untokenize(self, tokens):
 
-        # Create lines and corresponding offsets array.
-        self.contents = contents
+        # Create the physical lines.
         self.lines = self.contents.splitlines(True)
+        # Create the offsets of the start of each physical line.
         last_offset, offsets = 0, [0]
         for i, line in enumerate(self.lines):
             offsets.append(last_offset + len(line))
@@ -2693,13 +2696,13 @@ class Untokenize:
         s_row, s_col = start
         e_row, e_col = end
         kind = token_module.tok_name[tok_type].lower()
-        # Calculate token's start/end offsets into contents.
+        # Calculate token's start/end offsets: character offsets into contents.
         if self.prev_offset == -1:
             s_offset, e_offset = 0, 0
         else:
             s_offset = self.offsets[s_row-1] + s_col
             e_offset = self.offsets[e_row-1] + e_col
-        # Show any preceding ws.
+        # Add any preceding ws.
         ws = self.contents[self.prev_offset:s_offset]
         if ws:
             self.results.append(ws)
