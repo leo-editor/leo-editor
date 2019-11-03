@@ -4185,7 +4185,8 @@ self.assertEqual(u.encoding, 'utf-8')
 self.assertEqual(untokenize(iter(tokens)), b'Hello ')
     # *not* u.untokenize.
 </t>
-<t tx="ekr.20191101152519.6">import leo.core.leoBeautify as leoBeautify
+<t tx="ekr.20191101152519.6"># Test https://bugs.python.org/issue38663.
+import leo.core.leoBeautify as leoBeautify
 check_roundtrip = leoBeautify.check_roundtrip
 
 check_roundtrip(

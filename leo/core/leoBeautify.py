@@ -341,7 +341,7 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20191028140926.1: **  test functions: (leoBeautifier.py)
+#@+node:ekr.20191028140926.1: **  test functions: (leoBeautify.py)
 #@+node:ekr.20191101150059.1: *3* function: check_roundtrip 
 import unittest
 # from tokenize import tokenize, untokenize
@@ -2701,7 +2701,7 @@ class Untokenize:
         self.prev_offset, self.results = -1, []
         for token in tokens:
             self.do_token(token)
-        # Print results.
+        # Print results when tracing.
         self.show_results()
         # Return the concatentated results.
         return ''.join(self.results)
