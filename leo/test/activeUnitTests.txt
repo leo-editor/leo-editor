@@ -3632,7 +3632,7 @@ for i, contents in enumerate(table):
             for j, s in enumerate(g.splitLines(results)):
                 dump_string(j, s)
             assert False
-print('done')
+# print('done')
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge

@@ -355,14 +355,13 @@ def check_roundtrip(f, expect_failure=False):
     check_python_roundtrip(f, expect_failure)
     check_leo_roundtrip(f)
     
-def check_leo_roundtrip(code):
+def check_leo_roundtrip(code, trace=False):
     """Check Leo's Untokenize class"""
     # pylint: disable=import-self
     import leo.core.leoBeautify as leoBeautify
     assert isinstance(code, str), repr(code)
     tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
-    u = leoBeautify.Untokenize(code)
-    # u.trace = True
+    u = leoBeautify.Untokenize(code, trace=trace)
     results = u.untokenize(tokens)
     unittest.TestCase().assertEqual(code, results)
     
@@ -2681,9 +2680,9 @@ class FstringifyTokens(NullTokenBeautifier):
 #@+node:ekr.20191102155252.1: ** class Untokenize
 class Untokenize:
     
-    def __init__(self, contents):
+    def __init__(self, contents, trace=False):
         self.contents = contents # A unicode string.
-        self.trace = not g.unitTesting
+        self.trace = trace
     
     #@+others
     #@+node:ekr.20191102155252.2: *3* u.untokenize

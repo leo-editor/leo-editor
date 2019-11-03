@@ -4114,7 +4114,7 @@ for i, contents in enumerate(table):
             for j, s in enumerate(g.splitLines(results)):
                 dump_string(j, s)
             assert False
-print('done')
+# print('done')
 </t>
 <t tx="ekr.20191101152519.1"># 
 </t>
