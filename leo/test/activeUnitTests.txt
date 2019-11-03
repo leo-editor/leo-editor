@@ -28768,7 +28768,9 @@ with open(name,'w',encoding='utf-8') as f:
     f.write(s)
 assert g.os_path_exists(name)
 #@+node:ekr.20191101152519.1: ** unit tests for python's tokenize.module
-#@+node:ekr.20191101152519.3: *3* @test bad input order 
+# 
+#@+node:ekr.20191103013911.1: *3* These tests use only python's tokenize module
+#@+node:ekr.20191101152519.3: *4* @test bad input order 
 from tokenize import Untokenizer
 u = Untokenizer()
 u.prev_row = 2
@@ -28779,7 +28781,7 @@ self.assertEqual(cm.exception.args[0],
     'start (1,3) precedes previous end (2,2)')
 # raise if previous column in row
 self.assertRaises(ValueError, u.add_whitespace, (2,1))
-#@+node:ekr.20191101152519.4: *3* @test backslash continuation
+#@+node:ekr.20191101152519.4: *4* @test backslash continuation
 from tokenize import Untokenizer
 import test.test_tokenize as tt
 u = Untokenizer()
@@ -28792,7 +28794,7 @@ u.prev_row = 2
 u.add_whitespace((4, 4))
 self.assertEqual(u.tokens, ['\\\n', '\\\n\\\n', '    '])
 tt.TestRoundtrip.check_roundtrip(self, 'a\n  b\n    c\n  \\\n  c\n')
-#@+node:ekr.20191101152519.5: *3* @test iter compat
+#@+node:ekr.20191101152519.5: *4* @test iter compat
 from tokenize import untokenize, Untokenizer, NAME, ENCODING
 
 u = Untokenizer()
@@ -28811,11 +28813,11 @@ self.assertEqual(untokenize(iter(tokens)), b'Hello ')
 import leo.core.leoBeautify as leoBeautify
 check_roundtrip = leoBeautify.check_roundtrip
 
-# EKR: the blank before the backslash-newline is not handled properly.
-with self.assertRaises(AssertionError) as cm:
-    check_roundtrip(
-        "print \\\n"
-        "    ('abc')\n")
+check_roundtrip(
+    "print \\\n"
+    "    ('abc')\n",
+    expect_failure = True
+)
 #@+node:ekr.20191101152519.7: *3* @test TestRoundTrip.test_roundtrip
 from tokenize import tokenize, untokenize
 from test import support

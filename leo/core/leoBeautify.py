@@ -346,7 +346,27 @@ def should_kill_beautify(p):
 import unittest
 # from tokenize import tokenize, untokenize
 
-def check_roundtrip(f):
+def check_roundtrip(f, expect_failure=False):
+    """
+    Called from unit tests in unitTest.leo.
+    
+    Test python's token.untokenize method and Leo's Untokenize class.
+    """
+    check_python_roundtrip(f, expect_failure)
+    check_leo_roundtrip(f)
+    
+def check_leo_roundtrip(code):
+    """Check Leo's Untokenize class"""
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+    assert isinstance(code, str), repr(code)
+    tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
+    u = leoBeautify.Untokenize(code)
+    # u.trace = True
+    results = u.untokenize(tokens)
+    unittest.TestCase().assertEqual(code, results)
+    
+def check_python_roundtrip(f, expect_failure):
     """
     This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
     """
@@ -360,7 +380,10 @@ def check_roundtrip(f):
     bytes = tokenize.untokenize(tokens)
     readline5 = iter(bytes.splitlines(keepends=True)).__next__
     result_tokens = list(tokenize.tokenize(readline5))
-    unittest.TestCase().assertEqual(result_tokens, tokens)
+    if expect_failure:
+        unittest.TestCase().assertNotEqual(result_tokens, tokens)
+    else:
+        unittest.TestCase().assertEqual(result_tokens, tokens)
 #@+node:ekr.20191029184103.1: *3* function: show
 def show(obj, tag, dump):
     print(f"{tag}...\n")
@@ -2660,6 +2683,7 @@ class Untokenize:
     
     def __init__(self, contents):
         self.contents = contents # A unicode string.
+        self.trace = not g.unitTesting
     
     #@+others
     #@+node:ekr.20191102155252.2: *3* u.untokenize
@@ -2702,19 +2726,27 @@ class Untokenize:
         ws = self.contents[self.prev_offset:s_offset]
         if ws:
             self.results.append(ws)
-            print(f"{'ws':>10} {ws!r:20} {show_tuple((self.prev_offset, s_offset)):>26} {ws!r}")
+            if self.trace:
+                print(
+                    f"{'ws':>10} {ws!r:20} "
+                    f"{show_tuple((self.prev_offset, s_offset)):>26} "
+                    f"{ws!r}")
         # Add the token, if it contributes any real text.
         tok_s = self.contents[s_offset:e_offset]
         if tok_s:
             self.results.append(tok_s)
-        print(
-            f"{kind:>10} {val!r:20} "
-            f"{show_tuple(start)} {show_tuple(end)} {show_tuple((s_offset, e_offset))} "
-            f"{tok_s!r:15} {line!r}")
+        if self.trace:
+            print(
+                f"{kind:>10} {val!r:20} "
+                f"{show_tuple(start)} {show_tuple(end)} {show_tuple((s_offset, e_offset))} "
+                f"{tok_s!r:15} {line!r}")
         # Update the ending offset.
         self.prev_offset = e_offset
     #@+node:ekr.20191102155252.4: *3* u.show_header
     def show_header(self):
+        
+        if not self.trace:
+            return
         # Dump the lines.
         print('Physical lines: (row, offset, line)\n')
         for i, z in enumerate(self.lines):
@@ -2725,6 +2757,8 @@ class Untokenize:
     #@+node:ekr.20191102155252.5: *3* u.show_results
     def show_results(self):
 
+        if not self.trace:
+            return
         # Split the results into lines.
         result = ''.join(self.results)
         result_lines = result.splitlines(True)

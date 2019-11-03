@@ -406,9 +406,11 @@
 <v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
 </v>
 <v t="ekr.20191101152519.1"><vh>unit tests for python's tokenize.module</vh>
+<v t="ekr.20191103013911.1"><vh>These tests use only python's tokenize module</vh>
 <v t="ekr.20191101152519.3"><vh>@test bad input order </vh></v>
 <v t="ekr.20191101152519.4"><vh>@test backslash continuation</vh></v>
 <v t="ekr.20191101152519.5"><vh>@test iter compat</vh></v>
+</v>
 <v t="ekr.20191101152519.6"><vh>@test EKR bug</vh></v>
 <v t="ekr.20191101152519.7"><vh>@test TestRoundTrip.test_roundtrip</vh></v>
 <v t="ekr.20191101152519.8"><vh>@test TestRoutnTrip.test_continuation</vh></v>
@@ -4114,7 +4116,8 @@ for i, contents in enumerate(table):
             assert False
 print('done')
 </t>
-<t tx="ekr.20191101152519.1"></t>
+<t tx="ekr.20191101152519.1"># 
+</t>
 <t tx="ekr.20191101152519.10">import leo.core.leoBeautify as leoBeautify
 check_roundtrip = leoBeautify.check_roundtrip
 
@@ -4165,7 +4168,8 @@ self.assertEqual(u.tokens, ['\\\n'])
 u.prev_row = 2
 u.add_whitespace((4, 4))
 self.assertEqual(u.tokens, ['\\\n', '\\\n\\\n', '    '])
-tt.TestRoundtrip.check_roundtrip(self, 'a\n  b\n    c\n  \\\n  c\n')</t>
+tt.TestRoundtrip.check_roundtrip(self, 'a\n  b\n    c\n  \\\n  c\n')
+</t>
 <t tx="ekr.20191101152519.5">from tokenize import untokenize, Untokenizer, NAME, ENCODING
 
 u = Untokenizer()
@@ -4184,11 +4188,11 @@ self.assertEqual(untokenize(iter(tokens)), b'Hello ')
 <t tx="ekr.20191101152519.6">import leo.core.leoBeautify as leoBeautify
 check_roundtrip = leoBeautify.check_roundtrip
 
-# EKR: the blank before the backslash-newline is not handled properly.
-with self.assertRaises(AssertionError) as cm:
-    check_roundtrip(
-        "print \\\n"
-        "    ('abc')\n")
+check_roundtrip(
+    "print \\\n"
+    "    ('abc')\n",
+    expect_failure = True
+)
 </t>
 <t tx="ekr.20191101152519.7">from tokenize import tokenize, untokenize
 from test import support
@@ -4244,7 +4248,8 @@ check_roundtrip(
     "try: import somemodule\n"
     "except ImportError: # comment\n"
     "    print('Can not import' # comment2\n)"
-    "else:   print('Loaded')\n")</t>
+    "else:   print('Loaded')\n")
+</t>
 <t tx="ekr.20191101152519.8">import leo.core.leoBeautify as leoBeautify
 check_roundtrip = leoBeautify.check_roundtrip
 
@@ -4276,5 +4281,6 @@ check_roundtrip(
     "x = 0")
 
 </t>
+<t tx="ekr.20191103013911.1"></t>
 </tnodes>
 </leo_file>
