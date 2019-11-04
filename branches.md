@@ -26,6 +26,8 @@ Devs may create a branch at any time.  The most important branches:
 
 Devs, please add your descriptions here.
 
+- **clean-up-root**: Refresh/audit root folder contents; MANIFEST.in excludes/includes #1077
+
 ## master
 
 - A permanent, stable branch, suitable for pulling by the most timid users.
