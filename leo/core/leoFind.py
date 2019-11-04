@@ -1439,8 +1439,15 @@ class LeoFind:
                 return
         if not self.search_headline and not self.search_body:
             return
+        # #1428: Honor limiters in replace-all.
+        if self.node_only:
+            positions = [c.p]
+        elif self.suboutline_only:
+            positions = c.p.self_and_subtree()
+        else:
+            positions = c.all_unique_positions()
         count = 0
-        for p in c.all_unique_positions():
+        for p in positions:
             count_h, count_b = 0, 0
             undoData = u.beforeChangeNodeContents(p)
             if self.search_headline:
