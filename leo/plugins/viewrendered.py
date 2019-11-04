@@ -1391,7 +1391,7 @@ if QtWidgets: # NOQA
                     'numpy': np, 'np': np,
                     'pyplot': plt, 'plt': plt,
                 }
-            except ImportError:
+            except Exception:
                 g.es_print('matplotlib imports failed')
                 namespace = {}
             # Embedding already works without this!
