@@ -1447,7 +1447,7 @@ class FstringifyTokens(NullTokenBeautifier):
             result[-1] = result[-1].rstrip()
         ### g.trace('result 2', result)
         self.add_token('string', ''.join(result))
-    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values ***
     def scan_for_values(self):
         """
         Return a list of possibly parenthesized values for the format string.
@@ -1468,9 +1468,14 @@ class FstringifyTokens(NullTokenBeautifier):
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
             kind, val = token.kind, token.value.rstrip()
-            ### g.trace(kind, repr(val))
+            # g.trace(kind, repr(val))
             token_i += 1
             tokens.append(token)
+            if kind in ('newline', 'nl') and not val.endswith('\\\n'):
+                results.append(''.join(value_list))
+                if not include_paren:
+                    tokens.pop()  # Rescan the ')'
+                break
             if (kind, val) == ('op', ')'):
                 results.append(''.join(value_list))
                 if not include_paren:
@@ -1490,7 +1495,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             else:
                 value_list.append(val)
-        ### g.trace(results, tokens)
+        # g.trace(results, tokens)
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
