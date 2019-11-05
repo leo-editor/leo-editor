@@ -1153,10 +1153,11 @@ class MatchBrackets:
         expanded = False
         orig_left = left
         orig_right = right
-        ### Remove back-slashes.
-        while(s[left] not in self.brackets or expand and not expanded) and\
-                (s[right] not in self.brackets or expand and not expanded) and\
-                (left > 0 or right < max_right):
+        while (
+            (s[left] not in self.brackets or expand and not expanded)
+            and (s[right] not in self.brackets or expand and not expanded)
+            and (left > 0 or right < max_right)
+        ):
             expanded = False
             if left > 0:
                 left -= 1
