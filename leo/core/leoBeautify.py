@@ -2753,7 +2753,9 @@ class Untokenize:
             print(f"{i:3}: {self.offsets[i]:3}: {z!r}")
         # Print the header for the list of tokens.
         print('\nTokens:')
-        print(f"{'kind':>10} {'val'} {'start':>22} {'end':>6} {'offsets':>12} {'output':>7} {'line':>13}")
+        print(
+            f"{'kind':>10} {'val'} {'start':>22} {'end':>6} "
+            f"{'offsets':>12} {'output':>7} {'line':>13}")
     #@+node:ekr.20191102155252.5: *3* u.show_results
     def show_results(self):
 
