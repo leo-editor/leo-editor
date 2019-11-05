@@ -1420,7 +1420,7 @@ class FstringifyTokens(NullTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
-        # g.printObj(values, tag='VALUES')
+        ### g.printObj(values, tag='VALUES')
         i, result = 0, ['f']
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
@@ -1439,13 +1439,13 @@ class FstringifyTokens(NullTokenBeautifier):
             result.append('}')
             i = end
         # Finish.
-        # g.trace('result 1', result)
+        ### g.trace('result 1', result)
         if i < len(string_val):
             result.append(string_val[i:])
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
             result[-1] = result[-1].rstrip()
-        # g.trace('result 2', result)
+        ### g.trace('result 2', result)
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
@@ -1542,8 +1542,8 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Example specs: s2, r3
         """
+        ### To do: handle more specs.
         head, tail = [], []
-        # Strip 
         if spec.startswith('+'):
             spec = spec[1:]
         elif spec.startswith('-'):
