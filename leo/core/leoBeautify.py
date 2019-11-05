@@ -1153,31 +1153,24 @@ class NullTokenBeautifier:
         Scan all tokenizer tokens (an iterable of 5-tuples).
         
         Create self.tokens, a *list* (not a generator) of BeautifierTokens.
-
-        See also: https://docs.python.org/3/reference/lexical_analysis.html
         """
         trace = False and not g.unitTesting
-        ### tm = token_module
         indents = []
         startline = False
         for t in tokens:
             tok_type, val, start, end, line = t
             kind = token_module.tok_name[t.type].lower()
             if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
-            ### if tok_type == tm.ENCODING:
             if kind == 'encoding':
                 self.encoding = val
                 continue
-            ### if tok_type == tm.ENDMARKER:
             if kind == 'endmarker':
                 break
-            #if tok_type == tm.INDENT:
             if kind == 'indent':
                 self.indent_hook(val)
                     # Added hook for flexibility.
                 indents.append(val)
                 continue
-            # elif tok_type == tm.DEDENT:
             if kind == 'dedent':
                 indents.pop()
                 self.prev_row, self.prev_col = end
@@ -1185,7 +1178,6 @@ class NullTokenBeautifier:
                 self.dedent_hook()
                     # Added hook for flexibility.
                 continue
-            # elif tok_type in (tm.NEWLINE, tm.NL):
             elif kind in ('newline', 'nl'):
                 startline = True
             elif startline and indents:

@@ -405,7 +405,6 @@
 </v>
 <v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
 </v>
-<v t="ekr.20190914105123.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
