@@ -404,6 +404,7 @@
 </v>
 </v>
 <v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
+<v t="ekr.20191104220451.1"><vh>@test fstringify</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4103,5 +4104,6 @@ for i, contents in enumerate(table):
             assert False
 # print('done')
 </t>
+<t tx="ekr.20191104220451.1"></t>
 </tnodes>
 </leo_file>

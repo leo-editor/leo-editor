@@ -628,28 +628,29 @@ class NullTokenBeautifier:
             ws = ws + " " * col_offset
         # if ws: g.trace(f"{ws!r}")
         return ws
-    #@+node:ekr.20191029014023.6: *3* null_tok_b.look_ahead & look_ahead_ws
+    #@+node:ekr.20191029014023.6: *3* fstring.look_ahead & look_ahead_ws
     def look_ahead(self, n):
         """
         Look ahead n tokens.  n >= 0.
-        Return (token.kind, token.value)
+        Return (token.kind, token.value.rstrip())
         """
         if len(self.tokens) <= n:
             return None, None
         token = self.tokens[n]
         assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.kind, token.value
+        return token.kind, token.value.rstrip()
+            # Strip trailing whitespace from the token value.
 
-    def look_ahead_token(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return the token itself.
-        """
-        if len(self.tokens) <= n:
-            return ''
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token
+    # def look_ahead_token(self, n):
+        # """
+        # Look ahead n tokens.  n >= 0.
+        # Return the token itself.
+        # """
+        # if len(self.tokens) <= n:
+            # return ''
+        # token = self.tokens[n]
+        # assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        # return token
     #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
     def make_input_tokens(self, tokens):
         """
@@ -1336,9 +1337,10 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
         """
+        trace = True and not g.unitTesting
         prev = self.prev_input_token
         if ws:
-            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
+            if trace: g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
@@ -1348,6 +1350,29 @@ class FstringifyTokens(NullTokenBeautifier):
                 g.trace('IGNORE', repr(ws))
         # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
+    #@+node:ekr.20191029014023.6: *4* fstring.look_ahead & look_ahead_ws
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return (token.kind, token.value.rstrip())
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token.kind, token.value.rstrip()
+            # Strip trailing whitespace from the token value.
+
+    # def look_ahead_token(self, n):
+        # """
+        # Look ahead n tokens.  n >= 0.
+        # Return the token itself.
+        # """
+        # if len(self.tokens) <= n:
+            # return ''
+        # token = self.tokens[n]
+        # assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        # return token
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -1403,14 +1428,14 @@ class FstringifyTokens(NullTokenBeautifier):
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 result.append(string_val[i : start])
-            spec, tail = self.munge_spec(spec)
+            head, tail = self.munge_spec(spec)
             result.append('{')
             result.append(value)
-            if spec:
-                result.append(':')
-                result.append(spec)
-            if tail:
+            if head:
                 result.append('!')
+                result.append(head)
+            if tail:
+                result.append(':')
                 result.append(tail)
             result.append('}')
             i = end
@@ -1440,7 +1465,8 @@ class FstringifyTokens(NullTokenBeautifier):
         results, value_list = [], []
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
-            kind, val = token.kind, token.value
+            kind, val = token.kind, token.value.rstrip() ###
+            g.trace(kind, repr(val))
             token_i += 1
             tokens.append(token)
             if (kind, val) == ('op', ')'):
@@ -1462,6 +1488,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             else:
                 value_list.append(val)
+        g.trace(results, tokens)
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
@@ -1507,19 +1534,27 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191025043607.1: *3* fstring.munge_spec
     def munge_spec(self, spec):
         """
-        Return (spec, tail)
+        Return (head, tail).
+        
+        The format is spec !head:tail or :tail
+        
+        Example specs: s2, r3
         """
-        tail = None
+        head, tail = [], []
+        # Strip 
         if spec.startswith('+'):
             spec = spec[1:]
         elif spec.startswith('-'):
-            spec = '>' + spec[1:]
+            tail.append('>')
+            spec = spec[1:]
         if spec.endswith('s'):
             spec = spec[:-1]
         if spec.endswith('r'):
+            head.append('r')
             spec = spec[:-1]
-            tail = 'r'
-        return spec, tail
+        tail = ''.join(tail) + spec
+        head = ''.join(head)
+        return head, tail
     #@+node:ekr.20191025034715.1: *3* fstring.munge_string
     def munge_string(self, string_val, aList):
         """
@@ -1544,6 +1579,7 @@ class FstringifyTokens(NullTokenBeautifier):
     def scan_format_string(self, s):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
+        g.trace(s, result)
         return result
 
     ###
