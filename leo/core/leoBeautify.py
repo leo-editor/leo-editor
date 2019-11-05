@@ -1218,23 +1218,114 @@ class FstringifyTokens(NullTokenBeautifier):
         self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
-    #@+node:ekr.20191028091917.1: *3* fstring.blank
-    def blank(self):
-        """Add a blank request to the code list."""
-        # Same as ptb.blank, but there is no common base class.
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            'blank-lines',
-            'file-start',
-            'line-end',
-            'line-indent',
-            'lt',
-            'op-no-blanks',
-            'unary-op',
-        ):
-            self.add_token('blank', ' ')
-    #@+node:ekr.20191030174233.1: *3* fstring.hooks (override)
+    #@+node:ekr.20191025084714.1: *3*  fstring:Entries
+    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
+    def fstringify_file(self):
+        """
+        Find the nearest @<file> node and convert % to fstrings within it.
+        
+        There is no need to sanitize code when converting an external file.
+        """
+        trace = True and not g.unitTesting
+        verbose = False
+        filename = self.find_root()
+        if not filename:
+            return
+        # Open the file.
+        with open(filename, 'r') as f:
+            contents = f.read()
+        if trace:
+            g.trace(f"Contents...\n\n{contents}")
+        # Generate tokens.
+        tokens = self.tokenize_string(contents, filename)
+        # Handle all tokens, creating the raw result.
+        result = self.scan_all_tokens(tokens)
+        # Trace the results.
+        changed = contents.rstrip() != result.rstrip()
+        if trace and verbose:
+            g.printObj(f"Code List...\n\n{self.code_list}")
+        if trace:
+            g.trace(f"Result...\n\n{result}")
+        if not changed:
+            return
+        # Write the file.
+        if 1:
+            with open(filename, 'w') as f:
+                f.write(result)
+    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
+    def fstringify_node(self, p):
+        """
+        fstringify node p.  Return True if the node has been changed.
+        """
+        trace = True and not g.unitTesting
+        verbose = False
+        c = self.c
+        if should_kill_beautify(p):
+            return False
+        contents = p.b
+        if not contents.strip():
+            return False
+        # Unlike with external files, we must sanitize the text!
+        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
+        # Generate tokens.
+        tokens = self.tokenize_string(contents2, p.h)
+        # Handle all tokens, creating the raw result.
+        raw_result = self.scan_all_tokens(tokens)
+        # Undo the munging of the sources.
+        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        changed = contents.rstrip() != result.rstrip()
+        if changed:
+            p.b = result
+            p.setDirty()
+        # Trace the results.
+        if trace and changed and verbose:
+            g.trace(f"Contents...\n\n{contents}\n")
+            g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
+            g.trace(f"raw result...\n\n{raw_result}\n")
+            g.trace(f"Result...\n\n{result}\n")
+        if trace:
+            g.trace('Changed!' if changed else 'No change:', p.h)
+        return changed
+    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree
+    def fstringify_tree(self, p):
+        """fstringify node p."""
+        c = self.c
+        if should_kill_beautify(p):
+            return
+        t1 = time.process_time()
+        changed = total = 0
+        for p in p.self_and_subtree():
+            if g.scanForAtLanguage(c, p) == "python":
+                total += 1
+                if self.fstringify_node(p):
+                    changed += 1
+        self.end_undo()
+        if g.unitTesting:
+            return
+        t2 = time.process_time()
+        g.es_print(
+            f"scanned {total} node{g.plural(total)}, "
+            f"changed {changed} node{g.plural(changed)}, "
+            # f"{errors} error{g.plural(errors)} "
+            f"in {t2-t1:4.2f} sec."
+        )
+    #@+node:ekr.20191104202706.1: *3*  fstring:Overrides
+    #@+node:ekr.20191028085402.1: *4* fstring.do_token (override)
+    def do_token(self, token):
+        """
+        Override NullTokenBeautifier.do_token.
+
+        Handle one input token, a BeautifierToken.
+        """
+        # Only the string handler is overridden.
+        if token.kind == 'string':
+            self.kind = token.kind
+            self.val = token.value
+            self.do_string()
+        else:
+            # Same as super().do_token(token)
+            self.code_list.append(token)
+    #@+node:ekr.20191030174233.1: *4* fstring.hooks (override)
     # Overrides of default hooks.
 
     def token_hook(self, kind, val, ws):
@@ -1257,6 +1348,22 @@ class FstringifyTokens(NullTokenBeautifier):
                 g.trace('IGNORE', repr(ws))
         # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
+    #@+node:ekr.20191028091917.1: *3* fstring.blank
+    def blank(self):
+        """Add a blank request to the code list."""
+        # Same as ptb.blank, but there is no common base class.
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
     #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
     def do_string(self):
         """Handle a 'string' token."""
@@ -1397,114 +1504,7 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191028085402.1: *3* fstring.do_token (override)
-    def do_token(self, token):
-        """
-        Override NullTokenBeautifier.do_token.
-
-        Handle one input token, a BeautifierToken.
-        """
-        # Only the string handler is overridden.
-        if token.kind == 'string':
-            self.kind = token.kind
-            self.val = token.value
-            self.do_string()
-        else:
-            # Same as super().do_token(token)
-            self.code_list.append(token)
-    #@+node:ekr.20191025084714.1: *3* fstring: Entries
-    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
-    def fstringify_file(self):
-        """
-        Find the nearest @<file> node and convert % to fstrings within it.
-        
-        There is no need to sanitize code when converting an external file.
-        """
-        trace = True and not g.unitTesting
-        verbose = False
-        filename = self.find_root()
-        if not filename:
-            return
-        # Open the file.
-        with open(filename, 'r') as f:
-            contents = f.read()
-        if trace:
-            g.trace(f"Contents...\n\n{contents}")
-        # Generate tokens.
-        tokens = self.tokenize_string(contents, filename)
-        # Handle all tokens, creating the raw result.
-        result = self.scan_all_tokens(tokens)
-        # Trace the results.
-        changed = contents.rstrip() != result.rstrip()
-        if trace and verbose:
-            g.printObj(f"Code List...\n\n{self.code_list}")
-        if trace:
-            g.trace(f"Result...\n\n{result}")
-        if not changed:
-            return
-        # Write the file.
-        if 1:
-            with open(filename, 'w') as f:
-                f.write(result)
-    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
-    def fstringify_node(self, p):
-        """
-        fstringify node p.  Return True if the node has been changed.
-        """
-        trace = True and not g.unitTesting
-        verbose = False
-        c = self.c
-        if should_kill_beautify(p):
-            return False
-        contents = p.b
-        if not contents.strip():
-            return False
-        # Unlike with external files, we must sanitize the text!
-        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
-        # Generate tokens.
-        tokens = self.tokenize_string(contents2, p.h)
-        # Handle all tokens, creating the raw result.
-        raw_result = self.scan_all_tokens(tokens)
-        # Undo the munging of the sources.
-        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
-        changed = contents.rstrip() != result.rstrip()
-        if changed:
-            p.b = result
-            p.setDirty()
-        # Trace the results.
-        if trace and changed and verbose:
-            g.trace(f"Contents...\n\n{contents}\n")
-            g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
-            g.trace(f"raw result...\n\n{raw_result}\n")
-            g.trace(f"Result...\n\n{result}\n")
-        if trace:
-            g.trace('Changed!' if changed else 'No change:', p.h)
-        return changed
-    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree
-    def fstringify_tree(self, p):
-        """fstringify node p."""
-        c = self.c
-        if should_kill_beautify(p):
-            return
-        t1 = time.process_time()
-        changed = total = 0
-        for p in p.self_and_subtree():
-            if g.scanForAtLanguage(c, p) == "python":
-                total += 1
-                if self.fstringify_node(p):
-                    changed += 1
-        self.end_undo()
-        if g.unitTesting:
-            return
-        t2 = time.process_time()
-        g.es_print(
-            f"scanned {total} node{g.plural(total)}, "
-            f"changed {changed} node{g.plural(changed)}, "
-            # f"{errors} error{g.plural(errors)} "
-            f"in {t2-t1:4.2f} sec."
-        )
-    #@+node:ekr.20191028104010.1: *3* fstring: Utils
-    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    #@+node:ekr.20191025043607.1: *3* fstring.munge_spec
     def munge_spec(self, spec):
         """
         Return (spec, tail)
@@ -1520,7 +1520,7 @@ class FstringifyTokens(NullTokenBeautifier):
             spec = spec[:-1]
             tail = 'r'
         return spec, tail
-    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    #@+node:ekr.20191025034715.1: *3* fstring.munge_string
     def munge_string(self, string_val, aList):
         """
         Escape all strings as necessary to make a valid result.
@@ -1530,7 +1530,7 @@ class FstringifyTokens(NullTokenBeautifier):
         delim = string_val[0]
         delim2 = '"' if delim == "'" else '"'
         return [z.replace(delim, delim2) for z in aList]
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    #@+node:ekr.20191024110603.1: *3* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
     # align       ::=  "<" | ">" | "=" | "^"
