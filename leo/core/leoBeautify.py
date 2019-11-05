@@ -35,6 +35,7 @@ try:
 except Exception:
     black = None
 #@-<< leoBeautify imports >>
+new = False
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions
 #@+node:ekr.20150528131012.1: *3* Beautify:commands
@@ -181,9 +182,12 @@ def check_leo_roundtrip(code, trace=False):
     import leo.core.leoBeautify as leoBeautify
     assert isinstance(code, str), repr(code)
     tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
-    u = leoBeautify.Untokenize(code, trace=trace)
-    results = u.untokenize(tokens)
-    unittest.TestCase().assertEqual(code, results)
+    u = leoBeautify.InputTokenizer(generate_ws_tokens=True)
+    u.trace=True
+    u.generate_tokens = True
+    result_tokens = u.create_input_tokens(code, tokens)
+    result = ''.join([z.to_string() for z in result_tokens])
+    unittest.TestCase().assertEqual(code, result)
 
 def check_python_roundtrip(f, expect_failure):
     """
@@ -226,7 +230,7 @@ def test_FstringifyTokens(c, contents,
     x = leoBeautify.FstringifyTokens(c)
     x.dump_input_tokens = dump_input_tokens
     x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
+    results = x.scan_all_tokens(contents, tokens)
     # Show results.
     show(contents, 'Contents', dump)
     print('')
@@ -252,7 +256,7 @@ def test_NullTokenBeautifier(c, contents,
     x = leoBeautify.NullTokenBeautifier(c)
     x.dump_input_tokens = dump_input_tokens
     x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
+    results = x.scan_all_tokens(contents, tokens)
     # Compare.
     show(contents, 'Contents', dump)
     if contents != results:
@@ -277,7 +281,7 @@ def test_PythonTokenBeautifier(c, contents,
     x = leoBeautify.PythonTokenBeautifier(c)
     x.dump_input_tokens = dump_input_tokens
     x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
+    results = x.scan_all_tokens(contents, tokens)
     # Show results.
     show(contents, 'Contents', dump)
     print('')
@@ -311,8 +315,10 @@ def beautify(options, path):
         return
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
-    beautifier = PythonTokenBeautifier(c=None)
-    s2 = beautifier.run(tokens)
+    x = PythonTokenBeautifier(c=None)
+    # Compute the tokens.
+    ### s2 = beautifier.run(tokens)
+    s2 = x.scan_all_tokens(s, tokens)
     try:
         s2_e = g.toEncodedString(s2)
         node2 = ast.parse(s2_e, filename='before', mode='exec')
@@ -652,7 +658,16 @@ class NullTokenBeautifier:
         # assert isinstance(token, BeautifierToken), (repr(token), g.callers())
         # return token
     #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
-    def make_input_tokens(self, tokens):
+    def make_input_tokens(self, contents, tokens):
+        """
+        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
+        """
+        if new:
+            InputTokenizer(generate_ws_tokens=True).create_input_tokens(contents, tokens)
+        else:
+            self.OLD_make_input_tokens(tokens)
+    #@+node:ekr.20191105052917.1: *4* OLD_make_input_tokens
+    def OLD_make_input_tokens(self, tokens):
         """
         A *lightly* modified version of Untokenizer.untokenize.
         
@@ -712,7 +727,7 @@ class NullTokenBeautifier:
                 self.prev_col = 0
         # Return value not used.  Only self.tokens.
     #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
-    def scan_all_tokens(self, tokens):
+    def scan_all_tokens(self, contents, tokens):
         """
         Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
         to a result.
@@ -734,7 +749,7 @@ class NullTokenBeautifier:
         # Init the input_list,
         self.tokens = []
         self.prev_input_token = None
-        self.make_input_tokens(tokens)
+        self.make_input_tokens(contents, tokens)
         if self.dump_input_tokens:
             g.printObj(self.tokens, tag='INPUT TOKENS')
         # Init the output list.
@@ -1240,7 +1255,7 @@ class FstringifyTokens(NullTokenBeautifier):
         # Generate tokens.
         tokens = self.tokenize_string(contents, filename)
         # Handle all tokens, creating the raw result.
-        result = self.scan_all_tokens(tokens)
+        result = self.scan_all_tokens(contents, tokens)
         # Trace the results.
         changed = contents.rstrip() != result.rstrip()
         if trace and verbose:
@@ -1271,7 +1286,7 @@ class FstringifyTokens(NullTokenBeautifier):
         # Generate tokens.
         tokens = self.tokenize_string(contents2, p.h)
         # Handle all tokens, creating the raw result.
-        raw_result = self.scan_all_tokens(tokens)
+        raw_result = self.scan_all_tokens(contents2, tokens)
         # Undo the munging of the sources.
         result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
         changed = contents.rstrip() != result.rstrip()
@@ -1905,7 +1920,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         tokens = list(tokenize.generate_tokens(readlines))
         # Beautify into s2.
         t3 = time.process_time()
-        s2 = self.run(tokens)
+        ### s2 = self.run(tokens)
+        s2 = self.scan_all_tokens(s0, tokens)
         assert isinstance(s2, str), s2.__class__.__name__
         t4 = time.process_time()
         if check_result:
@@ -1958,15 +1974,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.total_time += t5 - t1
         # self.print_stats()
         return changed
-    #@+node:ekr.20150526194715.1: *4* ptb.run (NEW: test)
-    def run(self, tokens):
-        """
-        The main line of PythonTokenBeautifier class.
-        Called by prettPrintNode & test_beautifier.
-        """
-        self.scan_all_tokens(tokens)
-        # g.printObj(self.code_list, tag='FINAL')
-        return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment (Rewritten)
     def do_comment(self):
@@ -2750,19 +2757,32 @@ class SyntaxSanitizer:
             result.append(s)
         return i
     #@-others
-#@+node:ekr.20191102155252.1: ** class Untokenize
-class Untokenize:
+#@+node:ekr.20191102155252.1: ** class InputTokenizer
+class InputTokenizer:
+    
+    """Create a list of BeautifierTokens from contents."""
+    
+    def __init__(self, generate_ws_tokens, trace=False):
 
-    def __init__(self, contents, trace=False):
-        self.contents = contents  # A unicode string.
+        self.generate_ws_tokens = generate_ws_tokens
         self.trace = trace
     
     #@+others
-    #@+node:ekr.20191102155252.2: *3* u.untokenize
-    def untokenize(self, tokens):
-
+    #@+node:ekr.20191105064919.1: *3* tok.add_token
+    def add_token(self, kind, value=''):
+        """Add a token to the results list."""
+        tok = BeautifierToken(kind, value)
+        self.results.append(tok)
+        ### self.prev_output_token = self.results[-1]
+    #@+node:ekr.20191102155252.2: *3* tok.create_input_tokens
+    def create_input_tokens(self, contents, tokens):
+        """
+        Generate a list of BeautifierToken's from tokens, a list of 5-tuples.
+        
+        This is part of the "gem".
+        """
         # Create the physical lines.
-        self.lines = self.contents.splitlines(True)
+        self.lines = contents.splitlines(True)
         # Create the list of character offsets of the start of each physical line.
         last_offset, self.offsets = 0, [0]
         for line in self.lines:
@@ -2773,21 +2793,27 @@ class Untokenize:
         # Handle each token, appending tokens and between-token whitespace to results.
         self.prev_offset, self.results = -1, []
         for token in tokens:
-            self.do_token(token)
+            self.do_token(contents, token)
         # Print results when tracing.
-        self.show_results()
+        self.check_results(contents)
+        if self.trace:
+            self.show_results(contents)
         # Return the concatentated results.
-        return ''.join(self.results)
-    #@+node:ekr.20191102155252.3: *3* u.do_token
-    def do_token(self, token):
-        """Handle the given token, including between-token whitespace"""
+        return self.results
+        ### return ''.join(self.results)
+    #@+node:ekr.20191102155252.3: *3* tok.do_token
+    def do_token(self, contents, token):
+        """
+        Handle the given token, optionally including between-token whitespace.
+        
+        This is part of the "gem".
+        """
 
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
             return f"{s:8}"
             
         # Unpack..
-
         tok_type, val, start, end, line = token
         s_row, s_col = start
         e_row, e_col = end
@@ -2796,18 +2822,22 @@ class Untokenize:
         s_offset = self.offsets[max(0, s_row-1)] + s_col
         e_offset = self.offsets[max(0, e_row-1)] + e_col
         # Add any preceding between-token whitespace.
-        ws = self.contents[self.prev_offset : s_offset]
+        ws = contents[self.prev_offset : s_offset]
         if ws:
-            self.results.append(ws)
+            # This test eliminates the need for a hook.
+            if self.generate_ws_tokens:
+                ### self.results.append(ws)
+                self.add_token('ws', ws)
             if self.trace:
                 print(
                     f"{'ws':>10} {ws!r:20} "
                     f"{show_tuple((self.prev_offset, s_offset)):>26} "
                     f"{ws!r}")
         # Add the token, if it contributes any real text.
-        tok_s = self.contents[s_offset : e_offset]
+        tok_s = contents[s_offset : e_offset]
         if tok_s:
-            self.results.append(tok_s)
+            ### self.results.append(tok_s)
+            self.add_token(kind, tok_s)
         if self.trace:
             print(
                 f"{kind:>10} {val!r:20} "
@@ -2815,7 +2845,7 @@ class Untokenize:
                 f"{tok_s!r:15} {line!r}")
         # Update the ending offset.
         self.prev_offset = e_offset
-    #@+node:ekr.20191102155252.4: *3* u.show_header
+    #@+node:ekr.20191102155252.4: *3* tok.show_header
     def show_header(self):
         
         if not self.trace:
@@ -2829,21 +2859,34 @@ class Untokenize:
         print(
             f"{'kind':>10} {'val'} {'start':>22} {'end':>6} "
             f"{'offsets':>12} {'output':>7} {'line':>13}")
-    #@+node:ekr.20191102155252.5: *3* u.show_results
-    def show_results(self):
+    #@+node:ekr.20191102155252.5: *3* tok.show_results
+    def show_results(self, contents):
 
-        if not self.trace:
-            return
         # Split the results into lines.
-        result = ''.join(self.results)
+        ### result = ''.join(self.results)
+        result = ''.join([z.to_string() for z in self.results])
         result_lines = result.splitlines(True)
-        if result == self.contents and result_lines == self.lines:
-            print('\nRound trip passes')
+        if result == contents and result_lines == self.lines:
+            # print('\nRound trip passes')
             return
         print('Results:')
         for i, z in enumerate(result_lines):
             print(f"{i:3}: {z!r}")
         print('FAIL')
+    #@+node:ekr.20191105072003.1: *3* tok.check_results
+    def check_results(self, contents):
+
+        # Split the results into lines.
+        result = ''.join([z.to_string() for z in self.results])
+        result_lines = result.splitlines(True)
+        # Check.
+        ok = result == contents and result_lines == self.lines
+        assert ok, (
+            f"result:   {result!r}\n"
+            f"contents: {contents!r}\n"
+            f"result_lines: {result_lines}\n"
+            f"lines:        {self.lines}"
+        )
     #@-others
 #@-others
 if __name__ == "__main__":
