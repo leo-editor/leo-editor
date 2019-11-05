@@ -182,9 +182,8 @@ def check_leo_roundtrip(code, trace=False):
     import leo.core.leoBeautify as leoBeautify
     assert isinstance(code, str), repr(code)
     tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
-    u = leoBeautify.InputTokenizer(generate_ws_tokens=True)
+    u = leoBeautify.InputTokenizer()
     u.trace=True
-    u.generate_tokens = True
     result_tokens = u.create_input_tokens(code, tokens)
     result = ''.join([z.to_string() for z in result_tokens])
     unittest.TestCase().assertEqual(code, result)
@@ -655,7 +654,7 @@ class NullTokenBeautifier:
         Create self.tokens, a *list* (not a generator) of BeautifierTokens.
         """
         if new:
-            x = InputTokenizer(generate_ws_tokens=True)
+            x = InputTokenizer()
             self.tokens = x.create_input_tokens(contents, tokens)
         else:
             self.OLD_make_input_tokens(tokens)
@@ -774,14 +773,13 @@ class BeautifierToken:
             # The entire line containing the token. Same as token.line.
 
     def __repr__(self):
-        # val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        # return f"{self.kind:12} {val}"
-        return f"{self.kind:12} {self.value!r}"
+        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        return f"{self.kind:12} {val}"
 
     def __str__(self):
         """A more compact version of __repr__"""
-        # val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind} {self.value!r}"
+        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        return f"{self.kind} {val}"
 
     def to_string(self):
         """
@@ -1642,35 +1640,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     undo_type = "Pretty Print"
 
     #@+others
-    #@+node:ekr.20150527113020.1: *3* class ParseState
-    class ParseState:
-        """
-        A class representing items in the parse state stack.
-        
-        The present states:
-            
-        'file-start': Ensures the stack stack is never empty.
-            
-        'decorator': The last '@' was a decorator.
-            
-            do_op():    push_state('decorator')
-            do_name():  pops the stack if state.kind == 'decorator'.
-                        
-        'indent': The indentation level for 'class' and 'def' names.
-        
-            do_name():      push_state('indent', self.level)
-            do_dendent():   pops the stack once or twice if state.value == self.level.
-
-        """
-
-        def __init__(self, kind, value):
-            self.kind = kind
-            self.value = value
-
-        def __repr__(self):
-            return f"State: {self.kind} {self.value!r}"
-
-        __str__ = __repr__
     #@+node:ekr.20150519111713.1: *3* ptb.ctor
     #@@nobeautify
 
@@ -1969,17 +1938,18 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # self.print_stats()
         return changed
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
-    #@+node:ekr.20150526203605.1: *4* ptb.do_comment (Rewritten)
+    #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
         """Handle a comment token."""
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
-        # g.trace(entire_line, repr(self.line), repr(self.val))
+        ### g.trace(entire_line, repr(self.line), repr(self.val))
         if entire_line:
             self.clean('line-indent')
             val = self.line.rstrip()
         else:
             val = '  ' + self.val.rstrip()
+            # Add two spaces.
         self.add_token('comment', val)
     #@+node:ekr.20191105094430.1: *4* pdb.do_encoding (new)
     def do_encoding(self):
@@ -2782,20 +2752,18 @@ class InputTokenizer:
     
     """Create a list of BeautifierTokens from contents."""
     
-    def __init__(self, generate_ws_tokens, trace=False):
-
-        self.generate_ws_tokens = generate_ws_tokens
-        self.trace = trace
+    trace = False
     
     #@+others
     #@+node:ekr.20191105064919.1: *3* tok.add_token
-    def add_token(self, kind, value=''):
+    def add_token(self, kind, line, value):
         """
         Add a token to the results list.
         
         Subclasses could override this method to filter out specific tokens.
         """
         tok = BeautifierToken(kind, value)
+        tok.line = line
         self.results.append(tok)
     #@+node:ekr.20191102155252.2: *3* tok.create_input_tokens
     def create_input_tokens(self, contents, tokens):
@@ -2848,8 +2816,7 @@ class InputTokenizer:
         ws = contents[self.prev_offset : s_offset]
         if ws:
             # No need for a hook.
-            if self.generate_ws_tokens:
-                self.add_token('ws', ws)
+            self.add_token('ws', line, ws)
             if self.trace:
                 print(
                     f"{'ws':>10} {ws!r:20} "
@@ -2858,7 +2825,7 @@ class InputTokenizer:
         # Add the token, if it contributes any real text.
         tok_s = contents[s_offset : e_offset]
         # Bug fix 2019/11/05: always add token, even it contributes text!
-        self.add_token(kind, tok_s)
+        self.add_token(kind, line, tok_s)
         if self.trace:
             print(
                 f"{kind:>10} {val!r:20} "
