@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 """Leo's beautification classes."""
-#@+<< imports >>
-#@+node:ekr.20150530081336.1: ** << imports >>
+#@+<< leoBeautify imports >>
+#@+node:ekr.20150530081336.1: **   << leoBeautify imports >>
 try:
     import leo.core.leoGlobals as g
     import leo.core.leoAst as leoAst
@@ -34,11 +34,12 @@ try:
     import black
 except Exception:
     black = None
-#@-<< imports >>
+#@-<< leoBeautify imports >>
 #@+others
-#@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
-#@+node:ekr.20191025084338.1: *3* beautify commands
-#@+node:ekr.20150528131012.3: *4* beautify-c
+#@+node:ekr.20191104201534.1: **   Top-level functions
+#@+node:ekr.20150528131012.1: *3* Beautify:commands
+#@+node:ekr.20191025084338.1: *4* beautify commands
+#@+node:ekr.20150528131012.3: *5* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
 def beautifyCCode(event):
@@ -46,7 +47,7 @@ def beautifyCCode(event):
     c = event.get('c')
     if c:
         CPrettyPrinter(c).pretty_print_tree(c.p)
-#@+node:ekr.20150528131012.4: *4* beautify-node
+#@+node:ekr.20150528131012.4: *5* beautify-node
 @g.command('beautify-node')
 @g.command('pretty-print-node')
 def prettyPrintPythonNode(event):
@@ -56,7 +57,7 @@ def prettyPrintPythonNode(event):
         PythonTokenBeautifier(c).beautify_node(c.p)
     
     
-#@+node:ekr.20150528131012.5: *4* beautify-tree
+#@+node:ekr.20150528131012.5: *5* beautify-tree
 @g.command('beautify-tree')
 @g.command('pretty-print-tree')
 def beautifyPythonTree(event):
@@ -64,8 +65,8 @@ def beautifyPythonTree(event):
     c = event.get('c')
     if c:
         PythonTokenBeautifier(c).beautify_tree(c.p)
-#@+node:ekr.20191025084349.1: *3* blacken commands
-#@+node:ekr.20190830043650.1: *4* blacken-check-tree
+#@+node:ekr.20191025084349.1: *4* blacken commands
+#@+node:ekr.20190830043650.1: *5* blacken-check-tree
 @g.command('blkc')
 @g.command('blacken-check-tree')
 def blacken_check_tree(event):
@@ -79,7 +80,7 @@ def blacken_check_tree(event):
         BlackCommand(c).blacken_tree(c.p, diff_flag=False, check_flag=True)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20190829163640.1: *4* blacken-diff-node
+#@+node:ekr.20190829163640.1: *5* blacken-diff-node
 @g.command('blacken-diff-node')
 def blacken_diff_node(event):
     """
@@ -92,7 +93,7 @@ def blacken_diff_node(event):
         BlackCommand(c).blacken_node(c.p, diff_flag=True)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20190829163652.1: *4* blacken-diff-tree
+#@+node:ekr.20190829163652.1: *5* blacken-diff-tree
 @g.command('blkd')
 @g.command('blacken-diff-tree')
 def blacken_diff_tree(event):
@@ -107,7 +108,7 @@ def blacken_diff_tree(event):
         BlackCommand(c).blacken_tree(c.p, diff_flag=True)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20190725155006.1: *4* blacken-node
+#@+node:ekr.20190725155006.1: *5* blacken-node
 @g.command('blacken-node')
 def blacken_node(event):
     """
@@ -120,7 +121,7 @@ def blacken_node(event):
         BlackCommand(c).blacken_node(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20190729105252.1: *4* blacken-tree
+#@+node:ekr.20190729105252.1: *5* blacken-tree
 @g.command('blk')
 @g.command('blacken-tree')
 def blacken_tree(event):
@@ -135,22 +136,22 @@ def blacken_tree(event):
         BlackCommand(c).blacken_tree(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20191025084403.1: *3* fstringify commands
-#@+node:ekr.20191025072511.1: *4* fstringify-file
+#@+node:ekr.20191025084403.1: *4* fstringify commands
+#@+node:ekr.20191025072511.1: *5* fstringify-file
 @g.command('fstringify-file')
 def fstringify_file(event):
     """fstringify the nearest @<file> node."""
     c = event.get('c')
     if c:
         FstringifyTokens(c).fstringify_file()
-#@+node:ekr.20191025084230.1: *4* fstringify-node
+#@+node:ekr.20191025084230.1: *5* fstringify-node
 @g.command('fstringify-node')
 def fstringity_node(event):
     """fstringity the selected node."""
     c = event.get('c')
     if c:
         FstringifyTokens(c).fstringify_node(c.p)
-#@+node:ekr.20191025084237.1: *4* fstringify-tree
+#@+node:ekr.20191025084237.1: *5* fstringify-tree
 @g.command('fstringify-tree')
 def fstringify_tree(event):
     """
@@ -160,8 +161,128 @@ def fstringify_tree(event):
     c = event.get('c')
     if c:
         FstringifyTokens(c).fstringify_tree(c.p)
-#@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
-#@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
+#@+node:ekr.20191028140926.1: *3* Beautify:test functions
+#@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
+import unittest
+# from tokenize import tokenize, untokenize
+
+def check_roundtrip(f, expect_failure=False):
+    """
+    Called from unit tests in unitTest.leo.
+    
+    Test python's token.untokenize method and Leo's Untokenize class.
+    """
+    check_python_roundtrip(f, expect_failure)
+    check_leo_roundtrip(f)
+
+def check_leo_roundtrip(code, trace=False):
+    """Check Leo's Untokenize class"""
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+    assert isinstance(code, str), repr(code)
+    tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
+    u = leoBeautify.Untokenize(code, trace=trace)
+    results = u.untokenize(tokens)
+    unittest.TestCase().assertEqual(code, results)
+
+def check_python_roundtrip(f, expect_failure):
+    """
+    This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
+    """
+    if isinstance(f, str):
+        code = f.encode('utf-8')
+    else:
+        code = f.read()
+        f.close()
+    readline = iter(code.splitlines(keepends=True)).__next__
+    tokens = list(tokenize.tokenize(readline))
+    bytes = tokenize.untokenize(tokens)
+    readline5 = iter(bytes.splitlines(keepends=True)).__next__
+    result_tokens = list(tokenize.tokenize(readline5))
+    if expect_failure:
+        unittest.TestCase().assertNotEqual(result_tokens, tokens)
+    else:
+        unittest.TestCase().assertEqual(result_tokens, tokens)
+#@+node:ekr.20191029184103.1: *4* function: show
+def show(obj, tag, dump):
+    print(f"{tag}...\n")
+    if dump:
+        g.printObj(obj)
+    else:
+        print(obj)
+#@+node:ekr.20191028141311.1: *4* test_FstringifyTokens
+def test_FstringifyTokens(c, contents,
+    dump=True,
+    dump_input_tokens=False,
+    dump_output_tokens=False,
+):
+
+    # pylint: disable=import-self
+    import tokenize
+    import leo.core.leoBeautify as leoBeautify
+    # Tokenize.
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    # Untokenize.
+    x = leoBeautify.FstringifyTokens(c)
+    x.dump_input_tokens = dump_input_tokens
+    x.dump_output_tokens = dump_output_tokens
+    results = x.scan_all_tokens(tokens)
+    # Show results.
+    show(contents, 'Contents', dump)
+    print('')
+    show(results, 'Results', dump)
+    # if dump_input_tokens:
+        # show(contents, 'Contents', dump)
+    # if dump_output_tokens:
+        # print('')
+        # show(results, 'Results', dump)
+#@+node:ekr.20191028140946.1: *4* test_NullTokenBeautifier
+def test_NullTokenBeautifier(c, contents,
+    dump=True,
+    dump_input_tokens=False,
+    dump_output_tokens=False,
+):
+
+    # pylint: disable=import-self
+    import tokenize
+    import leo.core.leoBeautify as leoBeautify
+    # Tokenize.
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    # Untokenize.
+    x = leoBeautify.NullTokenBeautifier(c)
+    x.dump_input_tokens = dump_input_tokens
+    x.dump_output_tokens = dump_output_tokens
+    results = x.scan_all_tokens(tokens)
+    # Compare.
+    show(contents, 'Contents', dump)
+    if contents != results:
+        print('')
+        print('ERROR...\n')
+        show(results, 'Results', dump)
+    else:
+        print('Unchanged')
+#@+node:ekr.20191029184028.1: *4* test_PythonTokenBeautifier
+def test_PythonTokenBeautifier(c, contents,
+    dump=True,
+    dump_input_tokens=False,
+    dump_output_tokens=False,
+):
+
+    # pylint: disable=import-self
+    import tokenize
+    import leo.core.leoBeautify as leoBeautify
+    # Create 5-tuples.
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    # Beautify.
+    x = leoBeautify.PythonTokenBeautifier(c)
+    x.dump_input_tokens = dump_input_tokens
+    x.dump_output_tokens = dump_output_tokens
+    results = x.scan_all_tokens(tokens)
+    # Show results.
+    show(contents, 'Contents', dump)
+    print('')
+    show(results, 'Results', dump)
+#@+node:ekr.20150530061745.1: *3* function: main & helpers
 def main():
     """External entry point for Leo's beautifier."""
     t1 = time.process_time()
@@ -240,7 +361,7 @@ def scan_options():
         g.trace('files...', files)
         sys.exit(0)
     return files, options
-#@+node:ekr.20150602154951.1: *3* should_beautify
+#@+node:ekr.20150602154951.1: *3* function: should_beautify
 def should_beautify(p):
     """
     Return True if @beautify is in effect for node p.
@@ -271,132 +392,369 @@ def should_beautify(p):
             return False
     # The default is to beautify.
     return True
-#@+node:ekr.20150602204440.1: *3* should_kill_beautify
+#@+node:ekr.20150602204440.1: *3* function: should_kill_beautify
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20191028140926.1: **  test functions: (leoBeautify.py)
-#@+node:ekr.20191101150059.1: *3* function: check_roundtrip 
-import unittest
-# from tokenize import tokenize, untokenize
-
-def check_roundtrip(f, expect_failure=False):
+#@+node:ekr.20191027164507.1: **  class NullTokenBeautifier
+class NullTokenBeautifier:
     """
-    Called from unit tests in unitTest.leo.
+    A token-based beautifier that should leave source code unchanged.
     
-    Test python's token.untokenize method and Leo's Untokenize class.
+    This class is based on the Untokenizer class in python's tokenize
+    module.
     """
-    check_python_roundtrip(f, expect_failure)
-    check_leo_roundtrip(f)
 
-def check_leo_roundtrip(code, trace=False):
-    """Check Leo's Untokenize class"""
-    # pylint: disable=import-self
-    import leo.core.leoBeautify as leoBeautify
-    assert isinstance(code, str), repr(code)
-    tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
-    u = leoBeautify.Untokenize(code, trace=trace)
-    results = u.untokenize(tokens)
-    unittest.TestCase().assertEqual(code, results)
+    undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
+    
+    dump_on_error = False  # True dump tokens on any ast errors.
+    dump_input_tokens = False  # True: scan_all_tokens dumps input tokens.
+    dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
+    
+    #@+others
+    #@+node:ekr.20191101044034.1: *3*  null_tok_b: Birth
+    #@+node:ekr.20191029014023.2: *4* null_tok_b.ctor
+    def __init__(self, c):
+        self.c = c
+        self.changed = None
+        self.code_list = []
+        self.kind = None
+        self.prev_input_token = None
+        self.prev_output_token = None
+        self.tab_width = None
+        self.tokens = []
+        # Statistics...
+        # Only ptb.prettyPrintNode updates the stats.
+        self.errors = 0
+        self.n_changed_nodes = 0
+        self.n_input_tokens = 0
+        self.n_output_tokens = 0
+        self.n_strings = 0
+        self.parse_time = 0.0
+        self.tokenize_time = 0.0
+        self.beautify_time = 0.0
+        self.check_time = 0.0
+        self.total_time = 0.0
+        # Update per-commander settings.
+        self.reload_settings()
+    #@+node:ekr.20191029014023.3: *4* null_tok_b.reload_settings
+    def reload_settings(self):
+        c = self.c
+        self.tab_width = abs(c.tab_width) if c else 4
+    #@+node:ekr.20191028074723.1: *3*  null_tok_b: May be overridden in subclasses...
+    #@+node:ekr.20191028020116.1: *4* null_tok_b.do_token
+    def do_token(self, token):
+        """
+        Handle one input token. Should be overridden in subclasses.
+        
+        This NullTokenBeautifier method just copies the token to the output list.
+        """
+        self.code_list.append(token)
+    #@+node:ekr.20191028072954.1: *4* null_tok_b.file_end
+    def file_end(self):
+        """
+        Do any end-of file processing.
+        
+        May be overridden in subclasses.
+        """
+        # Subclasses may ensure that the file ends with a newline.
+        # self.add_token('line-end', '\n')
+        self.add_token('file-end')
+    #@+node:ekr.20191028075123.1: *4* null_tok_b.file_start
+    def file_start(self):
+        """
+        Do any start-of-file processing.
+        
+        May be overridden in subclasses.
+        
+        The file-start token has already been added to self.code_list.
+        """
+        pass
+    #@+node:ekr.20191030160237.1: *4* null_tok_b.hooks
+    # NullTokenBeautifier.make_input_tokens calls these hooks so that
+    # subclasses can customize how they create input tokens.
 
-def check_python_roundtrip(f, expect_failure):
-    """
-    This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
-    """
-    if isinstance(f, str):
-        code = f.encode('utf-8')
-    else:
-        code = f.read()
-        f.close()
-    readline = iter(code.splitlines(keepends=True)).__next__
-    tokens = list(tokenize.tokenize(readline))
-    bytes = tokenize.untokenize(tokens)
-    readline5 = iter(bytes.splitlines(keepends=True)).__next__
-    result_tokens = list(tokenize.tokenize(readline5))
-    if expect_failure:
-        unittest.TestCase().assertNotEqual(result_tokens, tokens)
-    else:
-        unittest.TestCase().assertEqual(result_tokens, tokens)
-#@+node:ekr.20191029184103.1: *3* function: show
-def show(obj, tag, dump):
-    print(f"{tag}...\n")
-    if dump:
-        g.printObj(obj)
-    else:
-        print(obj)
-#@+node:ekr.20191028141311.1: *3* test_FstringifyTokens
-def test_FstringifyTokens(c, contents,
-    dump=True,
-    dump_input_tokens=False,
-    dump_output_tokens=False,
-):
+    def bs_nl_hook(self, bs_nl):
+        """
+        Create an optional token for a backslash-newline, including preceding
+        whitespace.
+        """
+        pass
 
-    # pylint: disable=import-self
-    import tokenize
-    import leo.core.leoBeautify as leoBeautify
-    # Tokenize.
-    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-    # Untokenize.
-    x = leoBeautify.FstringifyTokens(c)
-    x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
-    # Show results.
-    show(contents, 'Contents', dump)
-    print('')
-    show(results, 'Results', dump)
-    # if dump_input_tokens:
-        # show(contents, 'Contents', dump)
-    # if dump_output_tokens:
-        # print('')
-        # show(results, 'Results', dump)
-#@+node:ekr.20191028140946.1: *3* test_NullTokenBeautifier
-def test_NullTokenBeautifier(c, contents,
-    dump=True,
-    dump_input_tokens=False,
-    dump_output_tokens=False,
-):
+    def dedent_hook(self):
+        """Handle the tokenizer's dedent token."""
+        pass
 
-    # pylint: disable=import-self
-    import tokenize
-    import leo.core.leoBeautify as leoBeautify
-    # Tokenize.
-    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-    # Untokenize.
-    x = leoBeautify.NullTokenBeautifier(c)
-    x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
-    # Compare.
-    show(contents, 'Contents', dump)
-    if contents != results:
-        print('')
-        print('ERROR...\n')
-        show(results, 'Results', dump)
-    else:
-        print('Unchanged')
-#@+node:ekr.20191029184028.1: *3* test_PythonTokenBeautifier
-def test_PythonTokenBeautifier(c, contents,
-    dump=True,
-    dump_input_tokens=False,
-    dump_output_tokens=False,
-):
+    def indent_hook(self, ws):
+        """Handle the tokenizer's indent token."""
+        pass
 
-    # pylint: disable=import-self
-    import tokenize
-    import leo.core.leoBeautify as leoBeautify
-    # Create 5-tuples.
-    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-    # Beautify.
-    x = leoBeautify.PythonTokenBeautifier(c)
-    x.dump_input_tokens = dump_input_tokens
-    x.dump_output_tokens = dump_output_tokens
-    results = x.scan_all_tokens(tokens)
-    # Show results.
-    show(contents, 'Contents', dump)
-    print('')
-    show(results, 'Results', dump)
-#@+node:ekr.20150523132558.1: **  class BeautifierToken
+    def indent_changed_hook(self, ws):
+        """A hook called when indentation changes."""
+        self.add_input_token('indent', ws)
+
+    def token_hook(self, kind, val, ws):
+        """Create a token, preceded by ws added by add_whitespace"""
+        # Create a pseudo ws token.
+        if ws:
+            self.add_input_token('ws', ws)
+        # Add the actual token.
+        self.add_input_token(kind, val)
+    #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
+    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
+    def end_undo(self):
+        """Complete undo processing."""
+        c, u = self.c, self.c.undoer
+        if self.changed:
+            # Tag the end of the command.
+            u.afterChangeGroup(c.p, self.undo_type, dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20191029014023.11: *4* null_tok_b.find_root
+    def find_root(self):
+        """
+        Return the nearest ancestor @<file> node, or None.
+        Issue error messages if necessary.
+        """
+        c, p = self.c, self.c.p
+
+        def predicate(p):
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+
+        for p in p.self_and_parents():
+            if predicate(p):
+                break
+        else:
+            g.es_print(f"not in any @<file> tree: {c.p.h}")
+            return None
+        filename = p.anyAtFileNodeName()
+        basedir = g.os_path_finalize(os.path.dirname(c.fileName()))
+        path = g.os_path_finalize_join(basedir, filename)
+        if os.path.exists(path):
+            return path
+        g.es_print(f"file not found: {filename} in {basedir}")
+        return None
+    #@+node:ekr.20191029014023.12: *4* null_tok_b.print_stats
+    def print_stats(self):
+        print(
+            f"{'='*10} stats\n\n"
+            f"changed nodes  {self.n_changed_nodes:4}\n"
+            f"tokens         {self.n_input_tokens:4}\n"
+            f"len(code_list) {self.n_output_tokens:4}\n"
+            f"len(s)         {self.n_strings:4}\n"
+            f"\ntimes (seconds)...\n"
+            f"parse          {self.parse_time:4.2f}\n"
+            f"tokenize       {self.tokenize_time:4.2f}\n"
+            f"format         {self.beautify_time:4.2f}\n"
+            f"check          {self.check_time:4.2f}\n"
+            f"total          {self.total_time:4.2f}"
+        )
+    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body
+    def replace_body(self, p, s):
+        """Undoably replace the body."""
+        c, u = self.c, self.c.undoer
+        undoType = self.undo_type
+        if p.b == s:
+            return
+        self.n_changed_nodes += 1
+        if not self.changed:
+            # Start the group.
+            u.beforeChangeGroup(p, undoType)
+            self.changed = True
+            self.dirtyVnodeList = []
+        undoData = u.beforeChangeNodeContents(p)
+        c.setBodyString(p, s)
+        dirtyVnodeList2 = p.setDirty()
+        self.dirtyVnodeList.extend(dirtyVnodeList2)
+        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
+    def token_description(self, token):
+        """Return a summary of token's kind & value"""
+        t1, t2, t3, t4, t5 = token
+        kind = token_module.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        return f"{kind:>15} {val}"
+    #@+node:ekr.20191029014023.15: *4* null_tok_b.tokenize_string
+    def tokenize_string(self, contents, filename):
+        """
+        Return (ast_node, tokens) from the contents of the given file.
+        """
+        t1 = time.process_time()
+        # Generate the tokens.
+        readlines = g.ReadLinesClass(contents).next
+        tokens = list(tokenize.generate_tokens(readlines))
+        # Update stats.
+        t2 = time.process_time()
+        self.tokenize_time += t2 - t1
+        return tokens
+    #@+node:ekr.20191028072257.1: *3* null_tok_b.add_input_token
+    def add_input_token(self, kind, value=''):
+        """
+        Add a token to the input list.
+        
+        The blank-lines token is the only token whose value isn't a string.
+        BeautifierToken.to_string() ignores such tokens.
+        """
+        if kind != 'blank-lines':
+            assert isinstance(value, str), g.callers()
+        tok = BeautifierToken(kind, value)
+        self.tokens.append(tok)
+        self.prev_input_token = self.tokens[-1]
+    #@+node:ekr.20191029014023.7: *3* null_tok_b.add_token
+    def add_token(self, kind, value=''):
+        """Add a token to the code list."""
+        tok = BeautifierToken(kind, value)
+        self.code_list.append(tok)
+        self.prev_output_token = self.code_list[-1]
+    #@+node:ekr.20191028014602.2: *3* null_tok_b.add_whitespace
+    def add_whitespace(self, start, t):
+        """
+        A *lightly* modified version of Untokenizer.add_whitespace.
+        
+        It computes **between-token** whitespace.
+        
+        Note: this method never includes bs-nl continuations for strings.
+        """
+        row, col = start
+        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
+            raise ValueError(
+                f"start ({row},{col}) precedes previous end "
+                f"{self.prev_row}, {self.prev_col}")
+        ws = ''
+        row_offset = row - self.prev_row
+        if row_offset:
+            ws = "\\\n" * row_offset
+            self.prev_col = 0
+        col_offset = col - self.prev_col
+        if col_offset:
+            ws = ws + " " * col_offset
+        # if ws: g.trace(f"{ws!r}")
+        return ws
+    #@+node:ekr.20191029014023.6: *3* null_tok_b.look_ahead & look_ahead_ws
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return (token.kind, token.value)
+        """
+        if len(self.tokens) <= n:
+            return None, None
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token.kind, token.value
+
+    def look_ahead_token(self, n):
+        """
+        Look ahead n tokens.  n >= 0.
+        Return the token itself.
+        """
+        if len(self.tokens) <= n:
+            return ''
+        token = self.tokens[n]
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        return token
+    #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
+    def make_input_tokens(self, tokens):
+        """
+        A *lightly* modified version of Untokenizer.untokenize.
+        
+        Scan all tokenizer tokens (an iterable of 5-tuples).
+        
+        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
+        """
+        trace = False and not g.unitTesting
+        indents = []
+        startline = False
+        for t in tokens:
+            tok_type, val, start, end, line = t
+            kind = token_module.tok_name[t.type].lower()
+            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
+            if kind == 'encoding':
+                self.encoding = val
+                continue
+            if kind == 'endmarker':
+                break
+            if kind == 'indent':
+                self.indent_hook(val)
+                    # Added hook for flexibility.
+                indents.append(val)
+                continue
+            if kind == 'dedent':
+                indents.pop()
+                self.prev_row, self.prev_col = end
+                    # The row, col of *this* token.
+                self.dedent_hook()
+                    # Added hook for flexibility.
+                continue
+            elif kind in ('newline', 'nl'):
+                startline = True
+            elif startline and indents:
+                indent = indents[-1]
+                if start[1] >= len(indent):
+                    # Original: self.tokens.append(indent)
+                    self.indent_changed_hook(indent)
+                        # Added hook for flexibility.
+                    self.prev_col = len(indent)
+                startline = False
+            # Original code
+                # self.add_whitespace(start)
+                # self.tokens.append(val) # Was token
+            ws = self.add_whitespace(start, t)
+                # Add t for traces
+            self.token_hook(kind, val, ws)
+                # Added hook for flexibility.
+            #
+            # Changed: inject token.line
+            # Subclasses need this to handle single-line comments properly.
+            self.prev_input_token.line = line
+            self.prev_row, self.prev_col = end
+            # if tok_type in (tm.NEWLINE, tm.NL):
+            if kind in ('newline', 'nl'):
+                self.prev_row += 1
+                self.prev_col = 0
+        # Return value not used.  Only self.tokens.
+    #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
+    def scan_all_tokens(self, tokens):
+        """
+        Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
+        to a result.
+            
+        Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
+                The look_ahead method look aheads in this list.
+                
+        Pass 2: Call self.do_token(token) for each token in input_list.
+                Subclasses may delete tokens from input_list.
+                
+        Returns the string created from the output list.
+        
+        Sub-classes should *not* need to override this method.
+        """
+        # Init state. (was in ctor).
+        self.prev_row = 1
+        self.prev_col = 0
+        self.encoding = None  # Not used!
+        # Init the input_list,
+        self.tokens = []
+        self.prev_input_token = None
+        self.make_input_tokens(tokens)
+        if self.dump_input_tokens:
+            g.printObj(self.tokens, tag='INPUT TOKENS')
+        # Init the output list.
+        self.code_list = []
+        self.prev_output_token = None
+        self.add_token('file-start')
+        # Allow subclasses to init state.
+        self.file_start()
+        # Generate output tokens.
+        # Important: self.tokens may *mutate* in this loop.
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        # Allow last-minute adjustments.
+        self.file_end()
+        if self.dump_output_tokens:
+            g.printObj(self.code_list, tag='OUTPUT TOKENS')
+        # Return the string result.
+        return ''.join([z.to_string() for z in self.code_list])
+    #@-others
+#@+node:ekr.20150523132558.1: ** class BeautifierToken
 class BeautifierToken:
     """A class representing both input and output tokens"""
 
@@ -848,364 +1206,385 @@ class CPrettyPrinter:
             return len(s)
         return j + 2
     #@-others
-#@+node:ekr.20191027164507.1: ** class NullTokenBeautifier
-class NullTokenBeautifier:
-    """
-    A token-based beautifier that should leave source code unchanged.
-    
-    This class is based on the Untokenizer class in python's tokenize
-    module.
-    """
+#@+node:ekr.20191024035716.1: ** class FStringifyTokens(NullTokenBeautifier)
+class FstringifyTokens(NullTokenBeautifier):
+    """A token-based tool that converts strings containing % to f-strings."""
 
-    undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
-    
-    dump_on_error = False  # True dump tokens on any ast errors.
-    dump_input_tokens = False  # True: scan_all_tokens dumps input tokens.
-    dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
-    
-    #@+others
-    #@+node:ekr.20191101044034.1: *3*  null_tok_b: Birth
-    #@+node:ekr.20191029014023.2: *4* null_tok_b.ctor
+    undo_type = "Fstringify"
+
     def __init__(self, c):
-        self.c = c
-        self.changed = None
-        self.code_list = []
-        self.kind = None
-        self.prev_input_token = None
-        self.prev_output_token = None
-        self.tab_width = None
-        self.tokens = []
-        # Statistics...
-        # Only ptb.prettyPrintNode updates the stats.
-        self.errors = 0
-        self.n_changed_nodes = 0
-        self.n_input_tokens = 0
-        self.n_output_tokens = 0
-        self.n_strings = 0
-        self.parse_time = 0.0
-        self.tokenize_time = 0.0
-        self.beautify_time = 0.0
-        self.check_time = 0.0
-        self.total_time = 0.0
-        # Update per-commander settings.
-        self.reload_settings()
-    #@+node:ekr.20191029014023.3: *4* null_tok_b.reload_settings
-    def reload_settings(self):
-        c = self.c
-        self.tab_width = abs(c.tab_width) if c else 4
-    #@+node:ekr.20191028074723.1: *3*  null_tok_b: May be overridden in subclasses...
-    #@+node:ekr.20191028020116.1: *4* null_tok_b.do_token
-    def do_token(self, token):
-        """
-        Handle one input token. Should be overridden in subclasses.
-        
-        This NullTokenBeautifier method just copies the token to the output list.
-        """
-        self.code_list.append(token)
-    #@+node:ekr.20191028072954.1: *4* null_tok_b.file_end
-    def file_end(self):
-        """
-        Do any end-of file processing.
-        
-        May be overridden in subclasses.
-        """
-        # Subclasses may ensure that the file ends with a newline.
-        # self.add_token('line-end', '\n')
-        self.add_token('file-end')
-    #@+node:ekr.20191028075123.1: *4* null_tok_b.file_start
-    def file_start(self):
-        """
-        Do any start-of-file processing.
-        
-        May be overridden in subclasses.
-        
-        The file-start token has already been added to self.code_list.
-        """
-        pass
-    #@+node:ekr.20191030160237.1: *4* null_tok_b.hooks
-    # NullTokenBeautifier.make_input_tokens calls these hooks so that
-    # subclasses can customize how they create input tokens.
+        super().__init__(c)
+        self.ws = ''
+        self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
-    def bs_nl_hook(self, bs_nl):
-        """
-        Create an optional token for a backslash-newline, including preceding
-        whitespace.
-        """
-        pass
-
-    def dedent_hook(self):
-        """Handle the tokenizer's dedent token."""
-        pass
-
-    def indent_hook(self, ws):
-        """Handle the tokenizer's indent token."""
-        pass
-
-    def indent_changed_hook(self, ws):
-        """A hook called when indentation changes."""
-        self.add_input_token('indent', ws)
+    #@+others
+    #@+node:ekr.20191028091917.1: *3* fstring.blank
+    def blank(self):
+        """Add a blank request to the code list."""
+        # Same as ptb.blank, but there is no common base class.
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
+    #@+node:ekr.20191030174233.1: *3* fstring.hooks (override)
+    # Overrides of default hooks.
 
     def token_hook(self, kind, val, ws):
-        """Create a token, preceded by ws added by add_whitespace"""
-        # Create a pseudo ws token.
+        """
+        Create a token given by (kind, val).
+        
+        ws is between-token ws.
+        
+        Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
+        """
+        prev = self.prev_input_token
         if ws:
-            self.add_input_token('ws', ws)
-        # Add the actual token.
+            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
+            if '\\\n' in ws:
+                self.add_input_token('newline', ws)
+            elif isinstance(prev.value, str):
+                prev.value = prev.value + ws
+            else:
+                # Something is wrong.
+                g.trace('IGNORE', repr(ws))
+        # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
-    #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
-    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
-    def end_undo(self):
-        """Complete undo processing."""
-        c, u = self.c, self.c.undoer
-        if self.changed:
-            # Tag the end of the command.
-            u.afterChangeGroup(c.p, self.undo_type, dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20191029014023.11: *4* null_tok_b.find_root
-    def find_root(self):
-        """
-        Return the nearest ancestor @<file> node, or None.
-        Issue error messages if necessary.
-        """
-        c, p = self.c, self.c.p
-
-        def predicate(p):
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-
-        for p in p.self_and_parents():
-            if predicate(p):
-                break
+    #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
+    def do_string(self):
+        """Handle a 'string' token."""
+        # See whether a conversion is possible.
+        if (
+            not self.val.lower().startswith(('f', 'r'))
+            and '%' in self.val
+            and self.look_ahead(0) == ('op', '%')
+        ):
+            # Not an f or r string, and a conversion is possible.
+            self.convert_fstring()
         else:
-            g.es_print(f"not in any @<file> tree: {c.p.h}")
-            return None
-        filename = p.anyAtFileNodeName()
-        basedir = g.os_path_finalize(os.path.dirname(c.fileName()))
-        path = g.os_path_finalize_join(basedir, filename)
-        if os.path.exists(path):
-            return path
-        g.es_print(f"file not found: {filename} in {basedir}")
-        return None
-    #@+node:ekr.20191029014023.12: *4* null_tok_b.print_stats
-    def print_stats(self):
-        print(
-            f"{'='*10} stats\n\n"
-            f"changed nodes  {self.n_changed_nodes:4}\n"
-            f"tokens         {self.n_input_tokens:4}\n"
-            f"len(code_list) {self.n_output_tokens:4}\n"
-            f"len(s)         {self.n_strings:4}\n"
-            f"\ntimes (seconds)...\n"
-            f"parse          {self.parse_time:4.2f}\n"
-            f"tokenize       {self.tokenize_time:4.2f}\n"
-            f"format         {self.beautify_time:4.2f}\n"
-            f"check          {self.check_time:4.2f}\n"
-            f"total          {self.total_time:4.2f}"
-        )
-    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body
-    def replace_body(self, p, s):
-        """Undoably replace the body."""
-        c, u = self.c, self.c.undoer
-        undoType = self.undo_type
-        if p.b == s:
+            # Just put the string
+            self.add_token('string', self.val) 
+    #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
+    def convert_fstring(self):
+        """
+        Scan a string, converting it to an f-string.
+        The 'string' token has already been consumed.
+        """
+        string_val = self.val
+        specs = self.scan_format_string(string_val)
+        values, tokens = self.scan_for_values()
+        if len(specs) != len(values):
+            g.trace('\nMISMATCH\n')
+            self.add_token('string', string_val)
+            self.blank()
             return
-        self.n_changed_nodes += 1
-        if not self.changed:
-            # Start the group.
-            u.beforeChangeGroup(p, undoType)
-            self.changed = True
-            self.dirtyVnodeList = []
-        undoData = u.beforeChangeNodeContents(p)
-        c.setBodyString(p, s)
-        dirtyVnodeList2 = p.setDirty()
-        self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
-    def token_description(self, token):
-        """Return a summary of token's kind & value"""
-        t1, t2, t3, t4, t5 = token
-        kind = token_module.tok_name[t1].lower()
-        val = g.toUnicode(t2)
-        return f"{kind:>15} {val}"
-    #@+node:ekr.20191029014023.15: *4* null_tok_b.tokenize_string
-    def tokenize_string(self, contents, filename):
+        # Actually consume the scanned tokens.
+        for token in tokens:
+            self.tokens.pop(0)
+        # Substitute the values.
+        # g.printObj(values, tag='VALUES')
+        i, result = 0, ['f']
+        for spec_i, m in enumerate(specs):
+            value = values[spec_i]
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                result.append(string_val[i : start])
+            spec, tail = self.munge_spec(spec)
+            result.append('{')
+            result.append(value)
+            if spec:
+                result.append(':')
+                result.append(spec)
+            if tail:
+                result.append('!')
+                result.append(tail)
+            result.append('}')
+            i = end
+        # Finish.
+        if i < len(string_val):
+            result.append(string_val[i:])
+        if len(result) > 2:
+            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
+        self.add_token('string', ''.join(result))
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
+    def scan_for_values(self):
         """
-        Return (ast_node, tokens) from the contents of the given file.
-        """
-        t1 = time.process_time()
-        # Generate the tokens.
-        readlines = g.ReadLinesClass(contents).next
-        tokens = list(tokenize.generate_tokens(readlines))
-        # Update stats.
-        t2 = time.process_time()
-        self.tokenize_time += t2 - t1
-        return tokens
-    #@+node:ekr.20191028072257.1: *3* null_tok_b.add_input_token
-    def add_input_token(self, kind, value=''):
-        """
-        Add a token to the input list.
+        Return a list of possibly parenthesized values for the format string.
         
-        The blank-lines token is the only token whose value isn't a string.
-        BeautifierToken.to_string() ignores such tokens.
+        This method never actually consumes tokens.
         """
-        if kind != 'blank-lines':
-            assert isinstance(value, str), g.callers()
-        tok = BeautifierToken(kind, value)
-        self.tokens.append(tok)
-        self.prev_input_token = self.tokens[-1]
-    #@+node:ekr.20191029014023.7: *3* null_tok_b.add_token
-    def add_token(self, kind, value=''):
-        """Add a token to the code list."""
-        tok = BeautifierToken(kind, value)
-        self.code_list.append(tok)
-        self.prev_output_token = self.code_list[-1]
-    #@+node:ekr.20191028014602.2: *3* null_tok_b.add_whitespace
-    def add_whitespace(self, start, t):
+        # Skip the '%'
+        assert self.look_ahead(0) == ('op', '%')
+        tokens = [self.tokens[0]]
+        token_i = 1
+        include_paren = self.look_ahead(1) == ('op', '(')
+        if include_paren:
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)
+        # Find all tokens up to the first ')' or 'for'
+        results, value_list = [], []
+        while token_i < len(self.tokens):
+            token = self.tokens[token_i]
+            kind, val = token.kind, token.value
+            token_i += 1
+            tokens.append(token)
+            if (kind, val) == ('op', ')'):
+                results.append(''.join(value_list))
+                if not include_paren:
+                    tokens.pop()  # Rescan the ')'
+                break
+            if (kind, val) == ('name', 'for'):
+                tokens.pop()  # Rescan the 'for'
+                results.append(''.join(value_list))
+                break
+            if (kind, val) == ('op', ','):
+                results.append(''.join(value_list))
+                value_list = []
+            elif kind == 'op' and val in '([{':
+                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+                value_list.extend(values_list2)
+                tokens.extend(self.tokens[token_i : token_i2])
+                token_i = token_i2
+            else:
+                value_list.append(val)
+        return results, tokens
+    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
+    def scan_to_matching(self, token_i, val):
         """
-        A *lightly* modified version of Untokenizer.add_whitespace.
+        self.tokens[token_i] represents an open (, [ or {.
         
-        It computes **between-token** whitespace.
-        
-        Note: this method never includes bs-nl continuations for strings.
-        """
-        row, col = start
-        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
-            raise ValueError(
-                f"start ({row},{col}) precedes previous end "
-                f"{self.prev_row}, {self.prev_col}")
-        ws = ''
-        row_offset = row - self.prev_row
-        if row_offset:
-            ws = "\\\n" * row_offset
-            self.prev_col = 0
-        col_offset = col - self.prev_col
-        if col_offset:
-            ws = ws + " " * col_offset
-        # if ws: g.trace(f"{ws!r}")
-        return ws
-    #@+node:ekr.20191029014023.6: *3* null_tok_b.look_ahead & look_ahead_ws
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return (token.kind, token.value)
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.kind, token.value
-
-    def look_ahead_token(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return the token itself.
-        """
-        if len(self.tokens) <= n:
-            return ''
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token
-    #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
-    def make_input_tokens(self, tokens):
-        """
-        A *lightly* modified version of Untokenizer.untokenize.
-        
-        Scan all tokenizer tokens (an iterable of 5-tuples).
-        
-        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
+        Return (values_list, token_i) of all tokens to the matching closing delim.
         """
         trace = False and not g.unitTesting
-        indents = []
-        startline = False
-        for t in tokens:
-            tok_type, val, start, end, line = t
-            kind = token_module.tok_name[t.type].lower()
-            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
-            if kind == 'encoding':
-                self.encoding = val
-                continue
-            if kind == 'endmarker':
-                break
-            if kind == 'indent':
-                self.indent_hook(val)
-                    # Added hook for flexibility.
-                indents.append(val)
-                continue
-            if kind == 'dedent':
-                indents.pop()
-                self.prev_row, self.prev_col = end
-                    # The row, col of *this* token.
-                self.dedent_hook()
-                    # Added hook for flexibility.
-                continue
-            elif kind in ('newline', 'nl'):
-                startline = True
-            elif startline and indents:
-                indent = indents[-1]
-                if start[1] >= len(indent):
-                    # Original: self.tokens.append(indent)
-                    self.indent_changed_hook(indent)
-                        # Added hook for flexibility.
-                    self.prev_col = len(indent)
-                startline = False
-            # Original code
-                # self.add_whitespace(start)
-                # self.tokens.append(val) # Was token
-            ws = self.add_whitespace(start, t)
-                # Add t for traces
-            self.token_hook(kind, val, ws)
-                # Added hook for flexibility.
-            #
-            # Changed: inject token.line
-            # Subclasses need this to handle single-line comments properly.
-            self.prev_input_token.line = line
-            self.prev_row, self.prev_col = end
-            # if tok_type in (tm.NEWLINE, tm.NL):
-            if kind in ('newline', 'nl'):
-                self.prev_row += 1
-                self.prev_col = 0
-        # Return value not used.  Only self.tokens.
-    #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
-    def scan_all_tokens(self, tokens):
+        if trace:
+            g.trace('=====', token_i, repr(val))
+            g.trace(''.join([z.value for z in self.tokens[token_i:]]))
+        values_list = []
+        kind0, val0 = self.look_ahead(token_i)
+        assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
+        levels = [0, 0, 0]
+        level_index = '([{'.index(val)
+        levels[level_index] += 1
+        # Move past the opening delim.
+        values_list.append(val0)
+        token_i += 1
+        while token_i < len(self.tokens):
+            progress = token_i
+            kind, val = self.look_ahead(token_i)
+            token_i += 1
+            if kind == 'op' and val in ')]}':
+                values_list.append(val)
+                level_index = ')]}'.index(val)
+                levels[level_index] -= 1
+                if levels == [0, 0, 0]:
+                    if trace:
+                        g.printObj(values_list, tag=f"scan_to_matching {val!r}")
+                    return values_list, token_i
+            elif kind == 'op' and val in '([{':
+                # Recurse.
+                values_list2, token_i = self.scan_to_matching(token_i-1, val)
+                values_list.extend(values_list2)
+            else:
+                values_list.append(val)
+            assert token_i > progress, (kind, val)
+        g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
+        return [], token_i
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token (override)
+    def do_token(self, token):
         """
-        Use two *distinct* passes to convert tokens (an iterable of 5-tuples)
-        to a result.
-            
-        Pass 1: Create self.tokens, a *list* (not generator) of InputTokens.
-                The look_ahead method look aheads in this list.
-                
-        Pass 2: Call self.do_token(token) for each token in input_list.
-                Subclasses may delete tokens from input_list.
-                
-        Returns the string created from the output list.
+        Override NullTokenBeautifier.do_token.
+
+        Handle one input token, a BeautifierToken.
+        """
+        # Only the string handler is overridden.
+        if token.kind == 'string':
+            self.kind = token.kind
+            self.val = token.value
+            self.do_string()
+        else:
+            # Same as super().do_token(token)
+            self.code_list.append(token)
+    #@+node:ekr.20191025084714.1: *3* fstring: Entries
+    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
+    def fstringify_file(self):
+        """
+        Find the nearest @<file> node and convert % to fstrings within it.
         
-        Sub-classes should *not* need to override this method.
+        There is no need to sanitize code when converting an external file.
         """
-        # Init state. (was in ctor).
-        self.prev_row = 1
-        self.prev_col = 0
-        self.encoding = None  # Not used!
-        # Init the input_list,
-        self.tokens = []
-        self.prev_input_token = None
-        self.make_input_tokens(tokens)
-        if self.dump_input_tokens:
-            g.printObj(self.tokens, tag='INPUT TOKENS')
-        # Init the output list.
-        self.code_list = []
-        self.prev_output_token = None
-        self.add_token('file-start')
-        # Allow subclasses to init state.
-        self.file_start()
-        # Generate output tokens.
-        # Important: self.tokens may *mutate* in this loop.
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        # Allow last-minute adjustments.
-        self.file_end()
-        if self.dump_output_tokens:
-            g.printObj(self.code_list, tag='OUTPUT TOKENS')
-        # Return the string result.
-        return ''.join([z.to_string() for z in self.code_list])
+        trace = True and not g.unitTesting
+        verbose = False
+        filename = self.find_root()
+        if not filename:
+            return
+        # Open the file.
+        with open(filename, 'r') as f:
+            contents = f.read()
+        if trace:
+            g.trace(f"Contents...\n\n{contents}")
+        # Generate tokens.
+        tokens = self.tokenize_string(contents, filename)
+        # Handle all tokens, creating the raw result.
+        result = self.scan_all_tokens(tokens)
+        # Trace the results.
+        changed = contents.rstrip() != result.rstrip()
+        if trace and verbose:
+            g.printObj(f"Code List...\n\n{self.code_list}")
+        if trace:
+            g.trace(f"Result...\n\n{result}")
+        if not changed:
+            return
+        # Write the file.
+        if 1:
+            with open(filename, 'w') as f:
+                f.write(result)
+    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
+    def fstringify_node(self, p):
+        """
+        fstringify node p.  Return True if the node has been changed.
+        """
+        trace = True and not g.unitTesting
+        verbose = False
+        c = self.c
+        if should_kill_beautify(p):
+            return False
+        contents = p.b
+        if not contents.strip():
+            return False
+        # Unlike with external files, we must sanitize the text!
+        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
+        # Generate tokens.
+        tokens = self.tokenize_string(contents2, p.h)
+        # Handle all tokens, creating the raw result.
+        raw_result = self.scan_all_tokens(tokens)
+        # Undo the munging of the sources.
+        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+        changed = contents.rstrip() != result.rstrip()
+        if changed:
+            p.b = result
+            p.setDirty()
+        # Trace the results.
+        if trace and changed and verbose:
+            g.trace(f"Contents...\n\n{contents}\n")
+            g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
+            g.trace(f"raw result...\n\n{raw_result}\n")
+            g.trace(f"Result...\n\n{result}\n")
+        if trace:
+            g.trace('Changed!' if changed else 'No change:', p.h)
+        return changed
+    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree
+    def fstringify_tree(self, p):
+        """fstringify node p."""
+        c = self.c
+        if should_kill_beautify(p):
+            return
+        t1 = time.process_time()
+        changed = total = 0
+        for p in p.self_and_subtree():
+            if g.scanForAtLanguage(c, p) == "python":
+                total += 1
+                if self.fstringify_node(p):
+                    changed += 1
+        self.end_undo()
+        if g.unitTesting:
+            return
+        t2 = time.process_time()
+        g.es_print(
+            f"scanned {total} node{g.plural(total)}, "
+            f"changed {changed} node{g.plural(changed)}, "
+            # f"{errors} error{g.plural(errors)} "
+            f"in {t2-t1:4.2f} sec."
+        )
+    #@+node:ekr.20191028104010.1: *3* fstring: Utils
+    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (spec, tail)
+        """
+        tail = None
+        if spec.startswith('+'):
+            spec = spec[1:]
+        elif spec.startswith('-'):
+            spec = '>' + spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            spec = spec[:-1]
+            tail = 'r'
+        return spec, tail
+    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    def munge_string(self, string_val, aList):
+        """
+        Escape all strings as necessary to make a valid result.
+        """
+        if not string_val:
+            return aList
+        delim = string_val[0]
+        delim2 = '"' if delim == "'" else '"'
+        return [z.replace(delim, delim2) for z in aList]
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+
+    ###
+        # import string
+        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
+            # tuples (literal_text, field_name, format_spec, conversion).
+            # This is used by vformat() to break the string into either literal text, or replacement fields.
+            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
+            # If there is no literal text (which can happen if two replacement fields occur consecutively),
+            # then literal_text will be a zero-length string.
+            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@-others
+#@+node:ekr.20150527113020.1: ** class ParseState
+class ParseState:
+    """
+    A class representing items in the parse state stack.
+    
+    The present states:
+        
+    'file-start': Ensures the stack stack is never empty.
+        
+    'decorator': The last '@' was a decorator.
+        
+        do_op():    push_state('decorator')
+        do_name():  pops the stack if state.kind == 'decorator'.
+                    
+    'indent': The indentation level for 'class' and 'def' names.
+    
+        do_name():      push_state('indent', self.level)
+        do_dendent():   pops the stack once or twice if state.value == self.level.
+
+    """
+
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self):
+        return f"State: {self.kind} {self.value!r}"
+
+    __str__ = __repr__
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier(NullTokenBeautifier)
 class PythonTokenBeautifier(NullTokenBeautifier):
     """A token-based Python beautifier."""
@@ -1269,7 +1648,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # but may be changed for continued lines.
         self.state_stack = []
             # Stack of ParseState objects.
-            # See the ParseState class for more details.
         #
         # Counts of unmatched brackets and parentheses.
         self.paren_level = 0
@@ -2124,7 +2502,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self, kind, value=None):
         """Append a state to the state stack."""
-        state = self.ParseState(kind, value)
+        state = ParseState(kind, value)
         self.state_stack.append(state)
     #@-others
 #@+node:ekr.20190910081550.1: ** class SyntaxSanitizer
@@ -2329,356 +2707,6 @@ class SyntaxSanitizer:
             # A directive line or a comment line.
             result.append(s)
         return i
-    #@-others
-#@+node:ekr.20191024035716.1: ** class FStringifyTokens(NullTokenBeautifier)
-class FstringifyTokens(NullTokenBeautifier):
-    """A token-based tool that converts strings containing % to f-strings."""
-
-    undo_type = "Fstringify"
-
-    def __init__(self, c):
-        super().__init__(c)
-        self.ws = ''
-        self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
-
-    #@+others
-    #@+node:ekr.20191028091917.1: *3* fstring.blank
-    def blank(self):
-        """Add a blank request to the code list."""
-        # Same as ptb.blank, but there is no common base class.
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            'blank-lines',
-            'file-start',
-            'line-end',
-            'line-indent',
-            'lt',
-            'op-no-blanks',
-            'unary-op',
-        ):
-            self.add_token('blank', ' ')
-    #@+node:ekr.20191030174233.1: *3* fstring.hooks (override)
-    # Overrides of default hooks.
-
-    def token_hook(self, kind, val, ws):
-        """
-        Create a token given by (kind, val).
-        
-        ws is between-token ws.
-        
-        Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
-        """
-        prev = self.prev_input_token
-        if ws:
-            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
-            if '\\\n' in ws:
-                self.add_input_token('newline', ws)
-            elif isinstance(prev.value, str):
-                prev.value = prev.value + ws
-            else:
-                # Something is wrong.
-                g.trace('IGNORE', repr(ws))
-        # Add the new token, updating self.prev_input_token.
-        self.add_input_token(kind, val)
-    #@+node:ekr.20191024051733.11: *3* fstring.do_string & helpers
-    def do_string(self):
-        """Handle a 'string' token."""
-        # See whether a conversion is possible.
-        if (
-            not self.val.lower().startswith(('f', 'r'))
-            and '%' in self.val
-            and self.look_ahead(0) == ('op', '%')
-        ):
-            # Not an f or r string, and a conversion is possible.
-            self.convert_fstring()
-        else:
-            # Just put the string
-            self.add_token('string', self.val) 
-    #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
-    def convert_fstring(self):
-        """
-        Scan a string, converting it to an f-string.
-        The 'string' token has already been consumed.
-        """
-        string_val = self.val
-        specs = self.scan_format_string(string_val)
-        values, tokens = self.scan_for_values()
-        if len(specs) != len(values):
-            g.trace('\nMISMATCH\n')
-            self.add_token('string', string_val)
-            self.blank()
-            return
-        # Actually consume the scanned tokens.
-        for token in tokens:
-            self.tokens.pop(0)
-        # Substitute the values.
-        # g.printObj(values, tag='VALUES')
-        i, result = 0, ['f']
-        for spec_i, m in enumerate(specs):
-            value = values[spec_i]
-            start, end, spec = m.start(0), m.end(0), m.group(1)
-            if start > i:
-                result.append(string_val[i : start])
-            spec, tail = self.munge_spec(spec)
-            result.append('{')
-            result.append(value)
-            if spec:
-                result.append(':')
-                result.append(spec)
-            if tail:
-                result.append('!')
-                result.append(tail)
-            result.append('}')
-            i = end
-        # Finish.
-        if i < len(string_val):
-            result.append(string_val[i:])
-        if len(result) > 2:
-            result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
-        self.add_token('string', ''.join(result))
-    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
-    def scan_for_values(self):
-        """
-        Return a list of possibly parenthesized values for the format string.
-        
-        This method never actually consumes tokens.
-        """
-        # Skip the '%'
-        assert self.look_ahead(0) == ('op', '%')
-        tokens = [self.tokens[0]]
-        token_i = 1
-        include_paren = self.look_ahead(1) == ('op', '(')
-        if include_paren:
-            token = self.tokens[token_i]
-            token_i += 1
-            tokens.append(token)
-        # Find all tokens up to the first ')' or 'for'
-        results, value_list = [], []
-        while token_i < len(self.tokens):
-            token = self.tokens[token_i]
-            kind, val = token.kind, token.value
-            token_i += 1
-            tokens.append(token)
-            if (kind, val) == ('op', ')'):
-                results.append(''.join(value_list))
-                if not include_paren:
-                    tokens.pop()  # Rescan the ')'
-                break
-            if (kind, val) == ('name', 'for'):
-                tokens.pop()  # Rescan the 'for'
-                results.append(''.join(value_list))
-                break
-            if (kind, val) == ('op', ','):
-                results.append(''.join(value_list))
-                value_list = []
-            elif kind == 'op' and val in '([{':
-                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
-                value_list.extend(values_list2)
-                tokens.extend(self.tokens[token_i : token_i2])
-                token_i = token_i2
-            else:
-                value_list.append(val)
-        return results, tokens
-    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
-    def scan_to_matching(self, token_i, val):
-        """
-        self.tokens[token_i] represents an open (, [ or {.
-        
-        Return (values_list, token_i) of all tokens to the matching closing delim.
-        """
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('=====', token_i, repr(val))
-            g.trace(''.join([z.value for z in self.tokens[token_i:]]))
-        values_list = []
-        kind0, val0 = self.look_ahead(token_i)
-        assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
-        levels = [0, 0, 0]
-        level_index = '([{'.index(val)
-        levels[level_index] += 1
-        # Move past the opening delim.
-        values_list.append(val0)
-        token_i += 1
-        while token_i < len(self.tokens):
-            progress = token_i
-            kind, val = self.look_ahead(token_i)
-            token_i += 1
-            if kind == 'op' and val in ')]}':
-                values_list.append(val)
-                level_index = ')]}'.index(val)
-                levels[level_index] -= 1
-                if levels == [0, 0, 0]:
-                    if trace:
-                        g.printObj(values_list, tag=f"scan_to_matching {val!r}")
-                    return values_list, token_i
-            elif kind == 'op' and val in '([{':
-                # Recurse.
-                values_list2, token_i = self.scan_to_matching(token_i-1, val)
-                values_list.extend(values_list2)
-            else:
-                values_list.append(val)
-            assert token_i > progress, (kind, val)
-        g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
-        return [], token_i
-    #@+node:ekr.20191028085402.1: *3* fstring.do_token (override)
-    def do_token(self, token):
-        """
-        Override NullTokenBeautifier.do_token.
-
-        Handle one input token, a BeautifierToken.
-        """
-        # Only the string handler is overridden.
-        if token.kind == 'string':
-            self.kind = token.kind
-            self.val = token.value
-            self.do_string()
-        else:
-            # Same as super().do_token(token)
-            self.code_list.append(token)
-    #@+node:ekr.20191025084714.1: *3* fstring: Entries
-    #@+node:ekr.20191024044254.1: *4* fstring.fstringify_file
-    def fstringify_file(self):
-        """
-        Find the nearest @<file> node and convert % to fstrings within it.
-        
-        There is no need to sanitize code when converting an external file.
-        """
-        trace = True and not g.unitTesting
-        verbose = False
-        filename = self.find_root()
-        if not filename:
-            return
-        # Open the file.
-        with open(filename, 'r') as f:
-            contents = f.read()
-        if trace:
-            g.trace(f"Contents...\n\n{contents}")
-        # Generate tokens.
-        tokens = self.tokenize_string(contents, filename)
-        # Handle all tokens, creating the raw result.
-        result = self.scan_all_tokens(tokens)
-        # Trace the results.
-        changed = contents.rstrip() != result.rstrip()
-        if trace and verbose:
-            g.printObj(f"Code List...\n\n{self.code_list}")
-        if trace:
-            g.trace(f"Result...\n\n{result}")
-        if not changed:
-            return
-        # Write the file.
-        if 1:
-            with open(filename, 'w') as f:
-                f.write(result)
-    #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
-    def fstringify_node(self, p):
-        """
-        fstringify node p.  Return True if the node has been changed.
-        """
-        trace = True and not g.unitTesting
-        verbose = False
-        c = self.c
-        if should_kill_beautify(p):
-            return False
-        contents = p.b
-        if not contents.strip():
-            return False
-        # Unlike with external files, we must sanitize the text!
-        comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
-        # Generate tokens.
-        tokens = self.tokenize_string(contents2, p.h)
-        # Handle all tokens, creating the raw result.
-        raw_result = self.scan_all_tokens(tokens)
-        # Undo the munging of the sources.
-        result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
-        changed = contents.rstrip() != result.rstrip()
-        if changed:
-            p.b = result
-            p.setDirty()
-        # Trace the results.
-        if trace and changed and verbose:
-            g.trace(f"Contents...\n\n{contents}\n")
-            g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
-            g.trace(f"raw result...\n\n{raw_result}\n")
-            g.trace(f"Result...\n\n{result}\n")
-        if trace:
-            g.trace('Changed!' if changed else 'No change:', p.h)
-        return changed
-    #@+node:ekr.20191025084750.1: *4* fstring.fstringify_tree
-    def fstringify_tree(self, p):
-        """fstringify node p."""
-        c = self.c
-        if should_kill_beautify(p):
-            return
-        t1 = time.process_time()
-        changed = total = 0
-        for p in p.self_and_subtree():
-            if g.scanForAtLanguage(c, p) == "python":
-                total += 1
-                if self.fstringify_node(p):
-                    changed += 1
-        self.end_undo()
-        if g.unitTesting:
-            return
-        t2 = time.process_time()
-        g.es_print(
-            f"scanned {total} node{g.plural(total)}, "
-            f"changed {changed} node{g.plural(changed)}, "
-            # f"{errors} error{g.plural(errors)} "
-            f"in {t2-t1:4.2f} sec."
-        )
-    #@+node:ekr.20191028104010.1: *3* fstring: Utils
-    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
-    def munge_spec(self, spec):
-        """
-        Return (spec, tail)
-        """
-        tail = None
-        if spec.startswith('+'):
-            spec = spec[1:]
-        elif spec.startswith('-'):
-            spec = '>' + spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            spec = spec[:-1]
-            tail = 'r'
-        return spec, tail
-    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
-    def munge_string(self, string_val, aList):
-        """
-        Escape all strings as necessary to make a valid result.
-        """
-        if not string_val:
-            return aList
-        delim = string_val[0]
-        delim2 = '"' if delim == "'" else '"'
-        return [z.replace(delim, delim2) for z in aList]
-    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
-
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
-
-    def scan_format_string(self, s):
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-
-    ###
-        # import string
-        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
-            # tuples (literal_text, field_name, format_spec, conversion).
-            # This is used by vformat() to break the string into either literal text, or replacement fields.
-            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
-            # If there is no literal text (which can happen if two replacement fields occur consecutively),
-            # then literal_text will be a zero-length string.
-            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
     #@-others
 #@+node:ekr.20191102155252.1: ** class Untokenize
 class Untokenize:
