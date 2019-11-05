@@ -354,7 +354,7 @@ def check_roundtrip(f, expect_failure=False):
     """
     check_python_roundtrip(f, expect_failure)
     check_leo_roundtrip(f)
-    
+
 def check_leo_roundtrip(code, trace=False):
     """Check Leo's Untokenize class"""
     # pylint: disable=import-self
@@ -364,7 +364,7 @@ def check_leo_roundtrip(code, trace=False):
     u = leoBeautify.Untokenize(code, trace=trace)
     results = u.untokenize(tokens)
     unittest.TestCase().assertEqual(code, results)
-    
+
 def check_python_roundtrip(f, expect_failure):
     """
     This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
@@ -902,7 +902,7 @@ class NullTokenBeautifier:
 
     undo_type = "Null Undo Type"  # Should be overridden in subclasses if undoable.
     
-    dump_on_error = False # True dump tokens on any ast errors.
+    dump_on_error = False  # True dump tokens on any ast errors.
     dump_input_tokens = False  # True: scan_all_tokens dumps input tokens.
     dump_output_tokens = False  # True: scan_all_tokens dumps output tokens.
     
@@ -2679,9 +2679,9 @@ class FstringifyTokens(NullTokenBeautifier):
     #@-others
 #@+node:ekr.20191102155252.1: ** class Untokenize
 class Untokenize:
-    
+
     def __init__(self, contents, trace=False):
-        self.contents = contents # A unicode string.
+        self.contents = contents  # A unicode string.
         self.trace = trace
     
     #@+others
@@ -2708,12 +2708,13 @@ class Untokenize:
     #@+node:ekr.20191102155252.3: *3* u.do_token
     def do_token(self, token):
         """Handle the given token, including between-token whitespace"""
-        
+
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
             return f"{s:8}"
             
         # Unpack..
+
         tok_type, val, start, end, line = token
         s_row, s_col = start
         e_row, e_col = end
@@ -2722,7 +2723,7 @@ class Untokenize:
         s_offset = self.offsets[max(0, s_row-1)] + s_col
         e_offset = self.offsets[max(0, e_row-1)] + e_col
         # Add any preceding between-token whitespace.
-        ws = self.contents[self.prev_offset:s_offset]
+        ws = self.contents[self.prev_offset : s_offset]
         if ws:
             self.results.append(ws)
             if self.trace:
@@ -2731,7 +2732,7 @@ class Untokenize:
                     f"{show_tuple((self.prev_offset, s_offset)):>26} "
                     f"{ws!r}")
         # Add the token, if it contributes any real text.
-        tok_s = self.contents[s_offset:e_offset]
+        tok_s = self.contents[s_offset : e_offset]
         if tok_s:
             self.results.append(tok_s)
         if self.trace:
