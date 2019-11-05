@@ -588,7 +588,9 @@ class NullTokenBeautifier:
 
     def skip_ahead(self, n, target_kind, target_val):
         """
-        Return a list of tokens, including ws tokens, up to target_token.
+        Skip to the target token.  Only ws tokens should intervene.
+
+        Return (n, tokens):
         """
         tokens = []
         while n < len(self.tokens):
@@ -1461,7 +1463,9 @@ class FstringifyTokens(NullTokenBeautifier):
 
     def skip_ahead(self, n, target_kind, target_val):
         """
-        Return a list of tokens, including ws tokens, up to target_token.
+        Skip to the target token.  Only ws tokens should intervene.
+
+        Return (n, tokens):
         """
         tokens = []
         while n < len(self.tokens):
