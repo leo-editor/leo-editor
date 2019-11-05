@@ -279,7 +279,7 @@
 <v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20150610064911.1"><vh>OLD @test beautifier (small) </vh>
+<v t="ekr.20150610064911.1"><vh>@test beautifier (small) </vh>
 <v t="ekr.20150610064930.1"><vh>before</vh></v>
 <v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
