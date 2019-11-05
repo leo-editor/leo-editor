@@ -35,7 +35,7 @@ try:
 except Exception:
     black = None
 #@-<< leoBeautify imports >>
-new = False
+new = True
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions
 #@+node:ekr.20150528131012.1: *3* Beautify:commands
@@ -220,26 +220,21 @@ def test_FstringifyTokens(c, contents,
     dump_input_tokens=False,
     dump_output_tokens=False,
 ):
-
     # pylint: disable=import-self
     import tokenize
     import leo.core.leoBeautify as leoBeautify
     # Tokenize.
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-    # Untokenize.
+    # Create a list of input tokens (BeautifierTokens).
     x = leoBeautify.FstringifyTokens(c)
     x.dump_input_tokens = dump_input_tokens
     x.dump_output_tokens = dump_output_tokens
+    # Scan the input tokens, creating, a string.
     results = x.scan_all_tokens(contents, tokens)
     # Show results.
-    show(contents, 'Contents', dump)
+    show(contents, 'Contents', dump=dump)
     print('')
-    show(results, 'Results', dump)
-    # if dump_input_tokens:
-        # show(contents, 'Contents', dump)
-    # if dump_output_tokens:
-        # print('')
-        # show(results, 'Results', dump)
+    show(results, 'Results', dump=dump)
 #@+node:ekr.20191028140946.1: *4* test_NullTokenBeautifier
 def test_NullTokenBeautifier(c, contents,
     dump=True,
@@ -257,14 +252,11 @@ def test_NullTokenBeautifier(c, contents,
     x.dump_input_tokens = dump_input_tokens
     x.dump_output_tokens = dump_output_tokens
     results = x.scan_all_tokens(contents, tokens)
-    # Compare.
-    show(contents, 'Contents', dump)
-    if contents != results:
-        print('')
-        print('ERROR...\n')
-        show(results, 'Results', dump)
-    else:
-        print('Unchanged')
+    # Show results.
+    show(contents, 'Contents', dump=dump)
+    print('')
+    show(results, 'Results', dump=dump)
+    return contents == results
 #@+node:ekr.20191029184028.1: *4* test_PythonTokenBeautifier
 def test_PythonTokenBeautifier(c, contents,
     dump=True,
@@ -663,7 +655,8 @@ class NullTokenBeautifier:
         Create self.tokens, a *list* (not a generator) of BeautifierTokens.
         """
         if new:
-            InputTokenizer(generate_ws_tokens=True).create_input_tokens(contents, tokens)
+            x = InputTokenizer(generate_ws_tokens=True)
+            self.tokens = x.create_input_tokens(contents, tokens)
         else:
             self.OLD_make_input_tokens(tokens)
     #@+node:ekr.20191105052917.1: *4* OLD_make_input_tokens
@@ -747,8 +740,8 @@ class NullTokenBeautifier:
         self.prev_col = 0
         self.encoding = None  # Not used!
         # Init the input_list,
-        self.tokens = []
         self.prev_input_token = None
+        self.tokens = []
         self.make_input_tokens(contents, tokens)
         if self.dump_input_tokens:
             g.printObj(self.tokens, tag='INPUT TOKENS')
@@ -1265,9 +1258,8 @@ class FstringifyTokens(NullTokenBeautifier):
         if not changed:
             return
         # Write the file.
-        if 1:
-            with open(filename, 'w') as f:
-                f.write(result)
+        with open(filename, 'w') as f:
+            f.write(result)
     #@+node:ekr.20191024081033.1: *4* fstring.fstringify_node
     def fstringify_node(self, p):
         """
@@ -2106,6 +2098,16 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         """Handle a 'string' token."""
         self.add_token('string', self.val)
         self.blank()
+    #@+node:ekr.20191105081403.1: *4* ptb.do_ws (new)
+    def do_ws(self):
+        """
+        Handle the "ws" pseudo-token, with attention on backslash-newlines.
+        """
+        val = self.val
+        if '\\\n' in val:
+            # Strip any leading whitespace.
+            val = val.lstrip()
+        self.add_token('ws', val)
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
@@ -2770,10 +2772,13 @@ class InputTokenizer:
     #@+others
     #@+node:ekr.20191105064919.1: *3* tok.add_token
     def add_token(self, kind, value=''):
-        """Add a token to the results list."""
+        """
+        Add a token to the results list.
+        
+        Subclasses could override this method to filter out specific tokens.
+        """
         tok = BeautifierToken(kind, value)
         self.results.append(tok)
-        ### self.prev_output_token = self.results[-1]
     #@+node:ekr.20191102155252.2: *3* tok.create_input_tokens
     def create_input_tokens(self, contents, tokens):
         """
@@ -2800,7 +2805,6 @@ class InputTokenizer:
             self.show_results(contents)
         # Return the concatentated results.
         return self.results
-        ### return ''.join(self.results)
     #@+node:ekr.20191102155252.3: *3* tok.do_token
     def do_token(self, contents, token):
         """
