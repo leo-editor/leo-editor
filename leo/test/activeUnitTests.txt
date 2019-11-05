@@ -3633,7 +3633,6 @@ for i, contents in enumerate(table):
                 dump_string(j, s)
             assert False
 # print('done')
-#@+node:ekr.20191104220451.1: *4* @test fstringify
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge

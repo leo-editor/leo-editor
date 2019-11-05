@@ -774,13 +774,14 @@ class BeautifierToken:
             # The entire line containing the token. Same as token.line.
 
     def __repr__(self):
-        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind:12} {val}"
+        # val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        # return f"{self.kind:12} {val}"
+        return f"{self.kind:12} {self.value!r}"
 
     def __str__(self):
         """A more compact version of __repr__"""
-        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
-        return f"{self.kind} {val}"
+        # val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        return f"{self.kind} {self.value!r}"
 
     def to_string(self):
         """
@@ -1925,6 +1926,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                     if self.dump_on_error:
                         g.printObj(s2, tag=tag)
                     else:
+                        print(tag, '\n')
                         print(s2)
                     raise AssertionError(tag)
                 p.v.setMarked()
@@ -1979,6 +1981,12 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         else:
             val = '  ' + self.val.rstrip()
         self.add_token('comment', val)
+    #@+node:ekr.20191105094430.1: *4* pdb.do_encoding (new)
+    def do_encoding(self):
+        """
+        Handle the encoding token.
+        """
+        pass
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker(self):
         """Handle an endmarker token."""
@@ -2007,8 +2015,17 @@ class PythonTokenBeautifier(NullTokenBeautifier):
 
     def do_indent(self):
         """Handle indent token."""
-        self.level += 1
-        self.lws = self.level * self.tab_width * ' '
+        if new:
+            new_indent = self.val
+            old_indent = self.level * self.tab_width * ' '
+            if new_indent > old_indent:
+                self.level += 1
+            elif new_indent < old_indent:
+                g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+            self.lws = new_indent
+        else:
+            self.level += 1
+            self.lws = self.level * self.tab_width * ' '
         self.line_indent()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
@@ -2103,11 +2120,12 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         """
         Handle the "ws" pseudo-token, with attention on backslash-newlines.
         """
-        val = self.val
-        if '\\\n' in val:
-            # Strip any leading whitespace.
-            val = val.lstrip()
-        self.add_token('ws', val)
+        pass
+        # val = self.val
+        # if '\\\n' in val:
+            # # Strip any leading whitespace.
+            # val = val.lstrip()
+        # self.add_token('ws', val)
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
@@ -2812,6 +2830,7 @@ class InputTokenizer:
         
         This is part of the "gem".
         """
+        # self.trace = True
 
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
@@ -2839,9 +2858,8 @@ class InputTokenizer:
                     f"{ws!r}")
         # Add the token, if it contributes any real text.
         tok_s = contents[s_offset : e_offset]
-        if tok_s:
-            ### self.results.append(tok_s)
-            self.add_token(kind, tok_s)
+        # Bug fix: always add token, even it contributes text!
+        self.add_token(kind, tok_s)
         if self.trace:
             print(
                 f"{kind:>10} {val!r:20} "

@@ -404,8 +404,8 @@
 </v>
 </v>
 <v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
-<v t="ekr.20191104220451.1"><vh>@test fstringify</vh></v>
 </v>
+<v t="ekr.20191031110731.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4104,6 +4104,5 @@ for i, contents in enumerate(table):
             assert False
 # print('done')
 </t>
-<t tx="ekr.20191104220451.1"></t>
 </tnodes>
 </leo_file>
