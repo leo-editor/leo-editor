@@ -38,95 +38,32 @@ except Exception:
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
 #@+node:ekr.20191025084338.1: *3* beautify commands
-#@+node:ekr.20150528131012.3: *4* beautify-c (changed)
+#@+node:ekr.20150528131012.3: *4* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
 def beautifyCCode(event):
     """Beautify all C code in the selected tree."""
     c = event.get('c')
-    if not c:
-        return
-    if should_kill_beautify(c.p):
-        return
-    u, undoType = c.undoer, 'beautify-c'
-    pp = CPrettyPrinter(c)
-    u.beforeChangeGroup(c.p, undoType)
-    dirtyVnodeList = []
-    changed = False
-    for p in c.p.self_and_subtree():
-        if g.scanForAtLanguage(c, p) == "c":
-            bunch = u.beforeChangeNodeContents(p)
-            s = pp.indent(p)
-            if p.b != s:
-                # g.es('changed: %s' % (p.h))
-                p.b = s
-                dirtyVnodeList2 = p.setDirty()  # Was p.v.setDirty.
-                dirtyVnodeList.extend(dirtyVnodeList2)
-                ### p.v.setDirty()
-                ### dirtyVnodeList.append(p.v)
-                u.afterChangeNodeContents(p, undoType, bunch)
-                changed = True
-    if changed:
-        u.afterChangeGroup(
-            c.p, undoType, reportFlag=False, dirtyVnodeList=dirtyVnodeList
-        )
-    c.bodyWantsFocus()
+    if c:
+        CPrettyPrinter(c).pretty_print_tree(c.p)
 #@+node:ekr.20150528131012.4: *4* beautify-node
 @g.command('beautify-node')
 @g.command('pretty-print-node')
 def prettyPrintPythonNode(event):
     """Beautify a single Python node."""
     c = event.get('c')
-    if not c:
-        return
-    t1 = time.process_time()
-    pp = PythonTokenBeautifier(c)
-    pp.errors = 0
-    changed = 0
-    if g.scanForAtLanguage(c, c.p) == "python":
-        if pp.prettyPrintNode(c.p):
-            changed += 1
-    pp.end_undo()
-    if g.unitTesting:
-        return
-    t2 = time.process_time()
-    g.es_print(
-        f"changed {changed} node{g.plural(changed)}, "
-        f"{pp.errors} error{g.plural(pp.errors)} "
-        f"in {t2-t1:4.2f} sec."
-    )
+    if c:
+        PythonTokenBeautifier(c).beautify_node(c.p)
+    
+    
 #@+node:ekr.20150528131012.5: *4* beautify-tree
 @g.command('beautify-tree')
 @g.command('pretty-print-tree')
 def beautifyPythonTree(event):
-    """Beautify the Python code in the selected outline."""
+    """Beautify all python files in the selected outline."""
     c = event.get('c')
-    p0 = event.get('p0')
-    # is_auto = bool(p0)
-    p0 = p0 or c.p
-    if should_kill_beautify(p0):
-        return
-    t1 = time.process_time()
-    pp = PythonTokenBeautifier(c)
-    pp.errors = 0
-    changed = errors = total = 0
-    for p in p0.self_and_subtree():
-        if g.scanForAtLanguage(c, p) == "python":
-            total += 1
-            if pp.prettyPrintNode(p):
-                changed += 1
-            errors += pp.errors
-            pp.errors = 0
-    pp.end_undo()
-    if g.unitTesting:
-        return
-    t2 = time.process_time()
-    g.es_print(
-        f"scanned {total} node{g.plural(total)}, "
-        f"changed {changed} node{g.plural(changed)}, "
-        f"{errors} error{g.plural(errors)} "
-        f"in {t2-t1:4.2f} sec."
-    )
+    if c:
+        PythonTokenBeautifier(c).beautify_tree(c.p)
 #@+node:ekr.20191025084349.1: *3* blacken commands
 #@+node:ekr.20190830043650.1: *4* blacken-check-tree
 @g.command('blkc')
@@ -204,17 +141,15 @@ def blacken_tree(event):
 def fstringify_file(event):
     """fstringify the nearest @<file> node."""
     c = event.get('c')
-    if not c:
-        return
-    FstringifyTokens(c).fstringify_file()
+    if c:
+        FstringifyTokens(c).fstringify_file()
 #@+node:ekr.20191025084230.1: *4* fstringify-node
 @g.command('fstringify-node')
 def fstringity_node(event):
     """fstringity the selected node."""
     c = event.get('c')
-    if not c:
-        return
-    FstringifyTokens(c).fstringify_node(c.p)
+    if c:
+        FstringifyTokens(c).fstringify_node(c.p)
 #@+node:ekr.20191025084237.1: *4* fstringify-tree
 @g.command('fstringify-tree')
 def fstringify_tree(event):
@@ -223,9 +158,8 @@ def fstringify_tree(event):
     or the first @<file> node in an ancestor.
     """
     c = event.get('c')
-    if not c:
-        return
-    FstringifyTokens(c).fstringify_tree(c.p)
+    if c:
+        FstringifyTokens(c).fstringify_tree(c.p)
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
@@ -650,9 +584,32 @@ class CPrettyPrinter:
         self.result = []
             # The list of tokens that form the final result.
         self.tab_width = 4
-
-
             # The number of spaces in each unit of leading indentation.
+    #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree (new)
+    def pretty_print_tree(self, p):
+        
+        c = self.c
+        if should_kill_beautify(p):
+            return
+        u, undoType = c.undoer, 'beautify-c'
+        u.beforeChangeGroup(c.p, undoType)
+        dirtyVnodeList = []
+        changed = False
+        for p in c.p.self_and_subtree():
+            if g.scanForAtLanguage(c, p) == "c":
+                bunch = u.beforeChangeNodeContents(p)
+                s = self.indent(p)
+                if p.b != s:
+                    p.b = s
+                    dirtyVnodeList2 = p.setDirty()
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+                    u.afterChangeNodeContents(p, undoType, bunch)
+                    changed = True
+        if changed:
+            u.afterChangeGroup(
+                c.p, undoType, reportFlag=False, dirtyVnodeList=dirtyVnodeList
+            )
+        c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
         """Beautify a node with @language C in effect."""
@@ -1441,6 +1398,54 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # Add the new token, updating self.prev_input_token.
         self.add_input_token(kind, val)
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
+    #@+node:ekr.20191104194524.1: *4* ptb.beautify_tree (new)
+    def beautify_tree(self, p):
+
+        c = self.c
+        if should_kill_beautify(p):
+            return
+        t1 = time.process_time()
+        ### pp = PythonTokenBeautifier(c)
+        self.errors = 0
+        changed = errors = total = 0
+        for p in p.self_and_subtree():
+            if g.scanForAtLanguage(c, p) == "python":
+                total += 1
+                if self.prettyPrintNode(p):
+                    changed += 1
+                errors += self.errors
+                self.errors = 0
+        self.end_undo()
+        if g.unitTesting:
+            return
+        t2 = time.process_time()
+        g.es_print(
+            f"scanned {total} node{g.plural(total)}, "
+            f"changed {changed} node{g.plural(changed)}, "
+            f"{errors} error{g.plural(errors)} "
+            f"in {t2-t1:4.2f} sec."
+        )
+    #@+node:ekr.20191104194924.1: *4* ptb.beautify_node (new)
+    def beautify_node(self, p):
+
+        t1 = time.process_time()
+        c = self.c
+        self.errors = 0
+        changed = 0
+        if g.scanForAtLanguage(c, c.p) != "python":
+            g.es_print(f"{p.h} does not contain python code")
+            return
+        if self.prettyPrintNode(c.p):
+            changed += 1
+            self.end_undo()
+        if g.unitTesting:
+            return
+        t2 = time.process_time()
+        g.es_print(
+            f"changed {changed} node{g.plural(changed)}, "
+            f"{self.errors} error{g.plural(self.errors)} "
+            f"in {t2-t1:4.2f} sec."
+        )
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (sets stats)
     def prettyPrintNode(self, p):
         """
