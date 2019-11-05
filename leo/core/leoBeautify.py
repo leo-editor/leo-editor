@@ -1157,31 +1157,36 @@ class NullTokenBeautifier:
         See also: https://docs.python.org/3/reference/lexical_analysis.html
         """
         trace = False and not g.unitTesting
-        tm = token_module
+        ### tm = token_module
         indents = []
         startline = False
         for t in tokens:
             tok_type, val, start, end, line = t
-            kind = tm.tok_name[t.type].lower()
+            kind = token_module.tok_name[t.type].lower()
             if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
-            if tok_type == tm.ENCODING:
+            ### if tok_type == tm.ENCODING:
+            if kind == 'encoding':
                 self.encoding = val
                 continue
-            if tok_type == tm.ENDMARKER:
+            ### if tok_type == tm.ENDMARKER:
+            if kind == 'endmarker':
                 break
-            if tok_type == tm.INDENT:
+            #if tok_type == tm.INDENT:
+            if kind == 'indent':
                 self.indent_hook(val)
                     # Added hook for flexibility.
                 indents.append(val)
                 continue
-            elif tok_type == tm.DEDENT:
+            # elif tok_type == tm.DEDENT:
+            if kind == 'dedent':
                 indents.pop()
                 self.prev_row, self.prev_col = end
                     # The row, col of *this* token.
                 self.dedent_hook()
                     # Added hook for flexibility.
                 continue
-            elif tok_type in (tm.NEWLINE, tm.NL):
+            # elif tok_type in (tm.NEWLINE, tm.NL):
+            elif kind in ('newline', 'nl'):
                 startline = True
             elif startline and indents:
                 indent = indents[-1]
@@ -1203,7 +1208,8 @@ class NullTokenBeautifier:
             # Subclasses need this to handle single-line comments properly.
             self.prev_input_token.line = line
             self.prev_row, self.prev_col = end
-            if tok_type in (tm.NEWLINE, tm.NL):
+            # if tok_type in (tm.NEWLINE, tm.NL):
+            if kind in ('newline', 'nl'):
                 self.prev_row += 1
                 self.prev_col = 0
         # Return value not used.  Only self.tokens.
