@@ -1337,10 +1337,9 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
         """
-        trace = True and not g.unitTesting
         prev = self.prev_input_token
         if ws:
-            if trace: g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
+            ### g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
             if '\\\n' in ws:
                 self.add_input_token('newline', ws)
             elif isinstance(prev.value, str):
@@ -1440,10 +1439,13 @@ class FstringifyTokens(NullTokenBeautifier):
             result.append('}')
             i = end
         # Finish.
+        # g.trace('result 1', result)
         if i < len(string_val):
             result.append(string_val[i:])
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
+            result[-1] = result[-1].rstrip()
+        # g.trace('result 2', result)
         self.add_token('string', ''.join(result))
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
@@ -1465,8 +1467,8 @@ class FstringifyTokens(NullTokenBeautifier):
         results, value_list = [], []
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
-            kind, val = token.kind, token.value.rstrip() ###
-            g.trace(kind, repr(val))
+            kind, val = token.kind, token.value.rstrip()
+            ### g.trace(kind, repr(val))
             token_i += 1
             tokens.append(token)
             if (kind, val) == ('op', ')'):
@@ -1488,7 +1490,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             else:
                 value_list.append(val)
-        g.trace(results, tokens)
+        ### g.trace(results, tokens)
         return results, tokens
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
@@ -1579,7 +1581,6 @@ class FstringifyTokens(NullTokenBeautifier):
     def scan_format_string(self, s):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
-        g.trace(s, result)
         return result
 
     ###
