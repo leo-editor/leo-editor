@@ -467,36 +467,6 @@ class NullTokenBeautifier:
         The file-start token has already been added to self.code_list.
         """
         pass
-    #@+node:ekr.20191030160237.1: *4* null_tok_b.hooks
-    # NullTokenBeautifier.make_input_tokens calls these hooks so that
-    # subclasses can customize how they create input tokens.
-
-    def bs_nl_hook(self, bs_nl):
-        """
-        Create an optional token for a backslash-newline, including preceding
-        whitespace.
-        """
-        pass
-
-    def dedent_hook(self):
-        """Handle the tokenizer's dedent token."""
-        pass
-
-    def indent_hook(self, ws):
-        """Handle the tokenizer's indent token."""
-        pass
-
-    def indent_changed_hook(self, ws):
-        """A hook called when indentation changes."""
-        self.add_input_token('indent', ws)
-
-    def token_hook(self, kind, val, ws):
-        """Create a token, preceded by ws added by add_whitespace"""
-        # Create a pseudo ws token.
-        if ws:
-            self.add_input_token('ws', ws)
-        # Add the actual token.
-        self.add_input_token(kind, val)
     #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
     #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
@@ -601,123 +571,46 @@ class NullTokenBeautifier:
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
         self.prev_output_token = self.code_list[-1]
-    #@+node:ekr.20191028014602.2: *3* null_tok_b.add_whitespace
-    def add_whitespace(self, start, t):
-        """
-        A *lightly* modified version of Untokenizer.add_whitespace.
-        
-        It computes **between-token** whitespace.
-        
-        Note: this method never includes bs-nl continuations for strings.
-        """
-        row, col = start
-        if row < self.prev_row or row == self.prev_row and col < self.prev_col:
-            raise ValueError(
-                f"start ({row},{col}) precedes previous end "
-                f"{self.prev_row}, {self.prev_col}")
-        ws = ''
-        row_offset = row - self.prev_row
-        if row_offset:
-            ws = "\\\n" * row_offset
-            self.prev_col = 0
-        col_offset = col - self.prev_col
-        if col_offset:
-            ws = ws + " " * col_offset
-        # if ws: g.trace(f"{ws!r}")
-        return ws
-    #@+node:ekr.20191029014023.6: *3* fstring.look_ahead & look_ahead_ws
+    #@+node:ekr.20191029014023.6: *3* fstring.look_ahead (changed) & skip_ahead
     def look_ahead(self, n):
         """
-        Look ahead n tokens.  n >= 0.
-        Return (token.kind, token.value.rstrip())
+        Look ahead n tokens, skipping ws tokens  n >= 0.
+        Return (token.kind, token.value)
         """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.kind, token.value.rstrip()
+        while n < len(self.tokens):
+            token = self.tokens[n]
+            n += 1
+            assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+            if token.kind != 'ws':
+                return token.kind, token.value
+        return None, None
             # Strip trailing whitespace from the token value.
 
-    # def look_ahead_token(self, n):
-        # """
-        # Look ahead n tokens.  n >= 0.
-        # Return the token itself.
-        # """
-        # if len(self.tokens) <= n:
-            # return ''
-        # token = self.tokens[n]
-        # assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        # return token
+    def skip_ahead(self, n, target_kind, target_val):
+        """
+        Return a list of tokens, including ws tokens, up to target_token.
+        """
+        tokens = []
+        while n < len(self.tokens):
+            token = self.tokens[n]
+            tokens.append(token)
+            n += 1
+            if (token.kind, token.value) == (target_kind, target_val):
+                return n, tokens
+            assert token.kind == 'ws', (token.kind, token.value)
+        # Should never happen.
+        return n, []
     #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
     def make_input_tokens(self, contents, tokens):
         """
         Create self.tokens, a *list* (not a generator) of BeautifierTokens.
         """
+        ### To do: clean this.
         if new:
             x = InputTokenizer()
             self.tokens = x.create_input_tokens(contents, tokens)
         else:
-            self.OLD_make_input_tokens(tokens)
-    #@+node:ekr.20191105052917.1: *4* OLD_make_input_tokens
-    def OLD_make_input_tokens(self, tokens):
-        """
-        A *lightly* modified version of Untokenizer.untokenize.
-        
-        Scan all tokenizer tokens (an iterable of 5-tuples).
-        
-        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
-        """
-        trace = False and not g.unitTesting
-        indents = []
-        startline = False
-        for t in tokens:
-            tok_type, val, start, end, line = t
-            kind = token_module.tok_name[t.type].lower()
-            if trace: g.trace(f"{kind:>10} {repr(val):10} {line!r}")
-            if kind == 'encoding':
-                self.encoding = val
-                continue
-            if kind == 'endmarker':
-                break
-            if kind == 'indent':
-                self.indent_hook(val)
-                    # Added hook for flexibility.
-                indents.append(val)
-                continue
-            if kind == 'dedent':
-                indents.pop()
-                self.prev_row, self.prev_col = end
-                    # The row, col of *this* token.
-                self.dedent_hook()
-                    # Added hook for flexibility.
-                continue
-            elif kind in ('newline', 'nl'):
-                startline = True
-            elif startline and indents:
-                indent = indents[-1]
-                if start[1] >= len(indent):
-                    # Original: self.tokens.append(indent)
-                    self.indent_changed_hook(indent)
-                        # Added hook for flexibility.
-                    self.prev_col = len(indent)
-                startline = False
-            # Original code
-                # self.add_whitespace(start)
-                # self.tokens.append(val) # Was token
-            ws = self.add_whitespace(start, t)
-                # Add t for traces
-            self.token_hook(kind, val, ws)
-                # Added hook for flexibility.
-            #
-            # Changed: inject token.line
-            # Subclasses need this to handle single-line comments properly.
-            self.prev_input_token.line = line
-            self.prev_row, self.prev_col = end
-            # if tok_type in (tm.NEWLINE, tm.NL):
-            if kind in ('newline', 'nl'):
-                self.prev_row += 1
-                self.prev_col = 0
-        # Return value not used.  Only self.tokens.
+            g.trace('NO LONGER USED')
     #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
     def scan_all_tokens(self, contents, tokens):
         """
@@ -773,11 +666,11 @@ class BeautifierToken:
             # The entire line containing the token. Same as token.line.
 
     def __repr__(self):
+        # g.printObj calls repr.
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
         return f"{self.kind:12} {val}"
 
     def __str__(self):
-        """A more compact version of __repr__"""
         val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
         return f"{self.kind} {val}"
 
@@ -1316,68 +1209,6 @@ class FstringifyTokens(NullTokenBeautifier):
             # f"{errors} error{g.plural(errors)} "
             f"in {t2-t1:4.2f} sec."
         )
-    #@+node:ekr.20191104202706.1: *3*  fstring:Overrides
-    #@+node:ekr.20191028085402.1: *4* fstring.do_token (override)
-    def do_token(self, token):
-        """
-        Override NullTokenBeautifier.do_token.
-
-        Handle one input token, a BeautifierToken.
-        """
-        # Only the string handler is overridden.
-        if token.kind == 'string':
-            self.kind = token.kind
-            self.val = token.value
-            self.do_string()
-        else:
-            # Same as super().do_token(token)
-            self.code_list.append(token)
-    #@+node:ekr.20191030174233.1: *4* fstring.hooks (override)
-    # Overrides of default hooks.
-
-    def token_hook(self, kind, val, ws):
-        """
-        Create a token given by (kind, val).
-        
-        ws is between-token ws.
-        
-        Unlike PythonTokenBeautifier.token_hook, we must never ignore ws.
-        """
-        prev = self.prev_input_token
-        if ws:
-            ### g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
-            if '\\\n' in ws:
-                self.add_input_token('newline', ws)
-            elif isinstance(prev.value, str):
-                prev.value = prev.value + ws
-            else:
-                # Something is wrong.
-                g.trace('IGNORE', repr(ws))
-        # Add the new token, updating self.prev_input_token.
-        self.add_input_token(kind, val)
-    #@+node:ekr.20191029014023.6: *4* fstring.look_ahead & look_ahead_ws
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens.  n >= 0.
-        Return (token.kind, token.value.rstrip())
-        """
-        if len(self.tokens) <= n:
-            return None, None
-        token = self.tokens[n]
-        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        return token.kind, token.value.rstrip()
-            # Strip trailing whitespace from the token value.
-
-    # def look_ahead_token(self, n):
-        # """
-        # Look ahead n tokens.  n >= 0.
-        # Return the token itself.
-        # """
-        # if len(self.tokens) <= n:
-            # return ''
-        # token = self.tokens[n]
-        # assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-        # return token
     #@+node:ekr.20191028091917.1: *3* fstring.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -1398,6 +1229,7 @@ class FstringifyTokens(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
+        ### g.trace(self.val, repr(self.look_ahead(0)))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val
@@ -1417,6 +1249,7 @@ class FstringifyTokens(NullTokenBeautifier):
         string_val = self.val
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
+        ### g.trace('specs:', len(specs), 'values', len(values))
         if len(specs) != len(values):
             g.trace('\nMISMATCH\n')
             self.add_token('string', string_val)
@@ -1445,54 +1278,91 @@ class FstringifyTokens(NullTokenBeautifier):
             result.append('}')
             i = end
         # Finish.
-        ### g.trace('result 1', result)
+        # g.trace('\nresult 1', result)
         if i < len(string_val):
             result.append(string_val[i:])
         if len(result) > 2:
             result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
             result[-1] = result[-1].rstrip()
-        ### g.trace('result 2', result)
+        # g.trace('result 2', result)
         self.add_token('string', ''.join(result))
+    #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (head, tail).
+        
+        The format is spec !head:tail or :tail
+        
+        Example specs: s2, r3
+        """
+        ### To do: handle more specs.
+        head, tail = [], []
+        if spec.startswith('+'):
+            spec = spec[1:]
+        elif spec.startswith('-'):
+            tail.append('>')
+            spec = spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            head.append('r')
+            spec = spec[:-1]
+        tail = ''.join(tail) + spec
+        head = ''.join(head)
+        return head, tail
+    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
+    def munge_string(self, string_val, aList):
+        """
+        Escape all strings as necessary to make a valid result.
+        """
+        if not string_val:
+            return aList
+        delim = string_val[0]
+        delim2 = '"' if delim == "'" else '"'
+        return [z.replace(delim, delim2) for z in aList]
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values ***
     def scan_for_values(self):
         """
         Return a list of possibly parenthesized values for the format string.
         
         This method never actually consumes tokens.
+        
+        If all goes well, we'll skip all tokens in the tokens list.
         """
         # Skip the '%'
         assert self.look_ahead(0) == ('op', '%')
-        tokens = [self.tokens[0]]
-        token_i = 1
-        include_paren = self.look_ahead(1) == ('op', '(')
+        token_i, tokens = self.skip_ahead(0, 'op', '%')
+        # Skip '(' if it's next
+        include_paren = self.look_ahead(token_i) == ('op', '(')
         if include_paren:
-            token = self.tokens[token_i]
-            token_i += 1
-            tokens.append(token)
+            token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+            tokens.extend(skipped_tokens)
         # Find all tokens up to the first ')' or 'for'
-        results, value_list = [], []
+        values, value_list = [], []
         while token_i < len(self.tokens):
             token = self.tokens[token_i]
-            kind, val = token.kind, token.value.rstrip()
-            # g.trace(kind, repr(val))
+            kind, val = token.kind, token.value
+            ### g.trace(kind, repr(val))
             token_i += 1
             tokens.append(token)
+            if kind == 'ws':
+                continue
             if kind in ('newline', 'nl') and not val.endswith('\\\n'):
-                results.append(''.join(value_list))
+                values.append(''.join(value_list))
                 if not include_paren:
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('op', ')'):
-                results.append(''.join(value_list))
+                values.append(''.join(value_list))
                 if not include_paren:
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('name', 'for'):
                 tokens.pop()  # Rescan the 'for'
-                results.append(''.join(value_list))
+                values.append(''.join(value_list))
                 break
             if (kind, val) == ('op', ','):
-                results.append(''.join(value_list))
+                values.append(''.join(value_list))
                 value_list = []
             elif kind == 'op' and val in '([{':
                 values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
@@ -1501,8 +1371,23 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             else:
                 value_list.append(val)
-        # g.trace(results, tokens)
-        return results, tokens
+        # g.trace(values, [str(z) for z in tokens])
+        return values, tokens
+    #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
     #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
         """
@@ -1544,65 +1429,50 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
-    #@+node:ekr.20191025043607.1: *3* fstring.munge_spec
-    def munge_spec(self, spec):
+    #@+node:ekr.20191028085402.1: *3* fstring.do_token (override)
+    def do_token(self, token):
         """
-        Return (head, tail).
-        
-        The format is spec !head:tail or :tail
-        
-        Example specs: s2, r3
-        """
-        ### To do: handle more specs.
-        head, tail = [], []
-        if spec.startswith('+'):
-            spec = spec[1:]
-        elif spec.startswith('-'):
-            tail.append('>')
-            spec = spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            head.append('r')
-            spec = spec[:-1]
-        tail = ''.join(tail) + spec
-        head = ''.join(head)
-        return head, tail
-    #@+node:ekr.20191025034715.1: *3* fstring.munge_string
-    def munge_string(self, string_val, aList):
-        """
-        Escape all strings as necessary to make a valid result.
-        """
-        if not string_val:
-            return aList
-        delim = string_val[0]
-        delim2 = '"' if delim == "'" else '"'
-        return [z.replace(delim, delim2) for z in aList]
-    #@+node:ekr.20191024110603.1: *3* fstring.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+        Override NullTokenBeautifier.do_token.
 
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+        Handle one input token, a BeautifierToken.
+        """
+        # Only the string handler is overridden.
+        if token.kind == 'string':
+            self.kind = token.kind
+            self.val = token.value
+            self.do_string()
+        else:
+            # Same as super().do_token(token)
+            self.code_list.append(token)
+    #@+node:ekr.20191029014023.6: *3* fstring.look_ahead (changed) & skip_ahead
+    def look_ahead(self, n):
+        """
+        Look ahead n tokens, skipping ws tokens  n >= 0.
+        Return (token.kind, token.value)
+        """
+        while n < len(self.tokens):
+            token = self.tokens[n]
+            n += 1
+            assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+            if token.kind != 'ws':
+                return token.kind, token.value
+        return None, None
+            # Strip trailing whitespace from the token value.
 
-    def scan_format_string(self, s):
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-
-    ###
-        # import string
-        # g.printObj(list(string.Formatter().parse(s)), tag='string.parse')
-            # tuples (literal_text, field_name, format_spec, conversion).
-            # This is used by vformat() to break the string into either literal text, or replacement fields.
-            # The values in the tuple conceptually represent a span of literal text followed by a single replacement field.
-            # If there is no literal text (which can happen if two replacement fields occur consecutively),
-            # then literal_text will be a zero-length string.
-            # If there is no replacement field, then the values of field_name, format_spec and conversion will be None.
+    def skip_ahead(self, n, target_kind, target_val):
+        """
+        Return a list of tokens, including ws tokens, up to target_token.
+        """
+        tokens = []
+        while n < len(self.tokens):
+            token = self.tokens[n]
+            tokens.append(token)
+            n += 1
+            if (token.kind, token.value) == (target_kind, target_val):
+                return n, tokens
+            assert token.kind == 'ws', (token.kind, token.value)
+        # Should never happen.
+        return n, []
     #@-others
 #@+node:ekr.20150527113020.1: ** class ParseState
 class ParseState:
@@ -1746,54 +1616,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         The file-start token has already been added to self.code_list.
         """
         self.push_state('file-start')
-    #@+node:ekr.20191030161757.1: *4* ptb.hooks (override)
-    # NullTokenBeautifier.make_input_tokens calls these hooks so that
-    # subclasses can customize how they create input tokens.
-
-    # Overrides of default hooks.
-
-    def bs_nl_hook(self, bs_nl):
-        """
-        Create backslash-newline, including preceding whitespace.
-        """
-        g.trace(repr(bs_nl))
-        self.add_input_token('newline', bs_nl)
-
-    def dedent_hook(self):
-        """Handle the tokenizer's dedent token."""
-        self.add_input_token('dedent')
-
-    def indent_hook(self, ws):
-        """Handle the tokenizer's indent token."""
-        self.add_input_token('indent')
-
-    def indent_changed_hook(self, ws):
-        """A hook called when indentation changes."""
-        pass
-
-    def token_hook(self, kind, val, ws):
-        """
-        Create a token given by (kind, val).
-        
-        ws is between-token ws. Ignore it unless it follows a newline.
-        """
-        prev = self.prev_input_token
-        if ws:
-            # g.trace(f"WS: {repr(ws):10} PREV: {prev!r}")
-            if '\\\n' in ws:
-                self.add_input_token('newline', ws)
-            elif isinstance(prev.value, str):
-                if prev.kind in ('nl', 'newline'):
-                    # Indentation must not be ignored.
-                    prev.value = prev.value + ws
-                else:
-                    # It can be safely ignore..
-                    pass
-            else:
-                # Something is wrong.
-                g.trace('IGNORE', repr(ws))
-        # Add the new token, updating self.prev_input_token.
-        self.add_input_token(kind, val)
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
     #@+node:ekr.20191104194524.1: *4* ptb.beautify_tree (new)
     def beautify_tree(self, p):
@@ -1943,13 +1765,12 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         """Handle a comment token."""
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
-        ### g.trace(entire_line, repr(self.line), repr(self.val))
         if entire_line:
             self.clean('line-indent')
             val = self.line.rstrip()
         else:
+            # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
-            # Add two spaces.
         self.add_token('comment', val)
     #@+node:ekr.20191105094430.1: *4* pdb.do_encoding (new)
     def do_encoding(self):
