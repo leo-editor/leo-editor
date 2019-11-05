@@ -2847,9 +2847,8 @@ class InputTokenizer:
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset : s_offset]
         if ws:
-            # This test eliminates the need for a hook.
+            # No need for a hook.
             if self.generate_ws_tokens:
-                ### self.results.append(ws)
                 self.add_token('ws', ws)
             if self.trace:
                 print(
@@ -2858,7 +2857,7 @@ class InputTokenizer:
                     f"{ws!r}")
         # Add the token, if it contributes any real text.
         tok_s = contents[s_offset : e_offset]
-        # Bug fix: always add token, even it contributes text!
+        # Bug fix 2019/11/05: always add token, even it contributes text!
         self.add_token(kind, tok_s)
         if self.trace:
             print(
