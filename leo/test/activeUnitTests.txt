@@ -3568,7 +3568,8 @@ spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
-#@+node:ekr.20191031110731.1: *4* @test beautifiers
+#@+node:ekr.20191031110731.1: *4* @test beautifiers (backslash-newline)
+import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
 
@@ -3615,14 +3616,14 @@ print\
 '''
 )
 beautifiers = (
-    ('null',    leoBeautify.NullTokenBeautifier(c)),
-    ('ptb',     leoBeautify.PythonTokenBeautifier(c)),
-    ('fstring', leoBeautify.FstringifyTokens(c)),
+    ('NullTokenBeautifier', leoBeautify.NullTokenBeautifier(c)),
+    ('FstringifyTokens', leoBeautify.FstringifyTokens(c)),
+    ('PythonTokenBeautifier', leoBeautify.PythonTokenBeautifier(c)),
 )
 for i, contents in enumerate(table):
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
     for name, b in beautifiers:
+        # Careful: must retokenize each time.
+        tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
         results = b.scan_all_tokens(contents, tokens)
         if results.strip() != contents.strip():
             print(f"\nFAIL test {i} for {name} beautifier")
@@ -3631,7 +3632,7 @@ for i, contents in enumerate(table):
             print('\nResults...')
             for j, s in enumerate(g.splitLines(results)):
                 dump_string(j, s)
-            assert False
+            assert False, f"Test failed for {name}"
 # print('done')
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic

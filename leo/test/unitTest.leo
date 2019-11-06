@@ -279,7 +279,7 @@
 <v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20150610064911.1"><vh>@test beautifier (small) </vh>
+<v t="ekr.20150610064911.1"><vh>OLD @test beautifier (small) </vh>
 <v t="ekr.20150610064930.1"><vh>before</vh></v>
 <v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
@@ -403,7 +403,7 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20191031110731.1"><vh>@test beautifiers</vh></v>
+<v t="ekr.20191031110731.1"><vh>@test beautifiers (backslash-newline)</vh></v>
 </v>
 <v t="ekr.20191031110731.1"></v>
 </vnodes>
@@ -4039,7 +4039,8 @@ e - f  # comment
 # Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
-<t tx="ekr.20191031110731.1">import tokenize
+<t tx="ekr.20191031110731.1">import io
+import tokenize
 import leo.core.leoBeautify as leoBeautify
 
 def dump_string(i, s):
@@ -4085,14 +4086,14 @@ print\
 '''
 )
 beautifiers = (
-    ('null',    leoBeautify.NullTokenBeautifier(c)),
-    ('ptb',     leoBeautify.PythonTokenBeautifier(c)),
-    ('fstring', leoBeautify.FstringifyTokens(c)),
+    ('NullTokenBeautifier', leoBeautify.NullTokenBeautifier(c)),
+    ('FstringifyTokens', leoBeautify.FstringifyTokens(c)),
+    ('PythonTokenBeautifier', leoBeautify.PythonTokenBeautifier(c)),
 )
 for i, contents in enumerate(table):
-    readlines = g.ReadLinesClass(contents).next
-    tokens = list(tokenize.generate_tokens(readlines))
     for name, b in beautifiers:
+        # Careful: must retokenize each time.
+        tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
         results = b.scan_all_tokens(contents, tokens)
         if results.strip() != contents.strip():
             print(f"\nFAIL test {i} for {name} beautifier")
@@ -4101,7 +4102,7 @@ for i, contents in enumerate(table):
             print('\nResults...')
             for j, s in enumerate(g.splitLines(results)):
                 dump_string(j, s)
-            assert False
+            assert False, f"Test failed for {name}"
 # print('done')
 </t>
 </tnodes>
