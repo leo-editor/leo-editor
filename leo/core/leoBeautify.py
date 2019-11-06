@@ -1541,7 +1541,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-        self.prev_input_token = None
+        ### self.prev_input_token = None
             # The presvious input token.
         self.state_stack = []
             # Stack of ParseState objects.
@@ -1604,7 +1604,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.kind, self.val, self.line = token.kind, token.value, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
-        self.prev_input_token = token
+        ### self.prev_input_token = token
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
     def file_end(self):
         """
@@ -1922,6 +1922,11 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         
         Put the whitespace only if if ends with backslash-newline.
         """
+        # Short-circuit if there is no ws to add.
+        if not self.val:
+            return
+        #
+        # Handle backslash-newline.
         if '\\\n' in self.val:
             # Prepend a *real* blank, so later code won't add any more ws.
             self.clean('blank')
@@ -1930,13 +1935,14 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             if self.val.endswith((' ', '\t')):
                 # Add a *empty* blank, so later code won't add any more ws.
                 self.add_token('blank', '')
+            return
         #
-        # An experimental hack.
-        elif self.paren_level > 0:
-            prev = self.prev_input_token
-            if prev.kind in ('nl', 'newline'):
-                # Retain indentation.
-                self.add_token('blank', self.val)
+        # Handle start-of-line whitespace.
+        prev = self.code_list[-1]
+        inner = self.paren_level or self.square_brackets_level or self.curly_brackets_level
+        if prev.kind == 'line-indent' and inner:
+            # Add four spaces.
+            self.add_token('blank', '    ')
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
