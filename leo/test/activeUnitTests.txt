@@ -3667,7 +3667,7 @@ for i, contents in enumerate(table):
                 print(f"{j:2}: {s!r}")
             assert False, f"FAIL: Test {i} for {name}"
 # print('done')
-#@+node:ekr.20191106072009.1: *4* @test fstringify easier tests
+#@+node:ekr.20191106072009.1: *4* @test fstringify tests
 import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
@@ -3701,43 +3701,18 @@ mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
 ''',
 ), # End of test 2.
 
-) # End of all tests.
+( # Start test 3
 
-for test, expected in table:
-    contents = test.strip() + '\n'
-    x = leoBeautify.FstringifyTokens(c)
-    # x.dump_input_tokens = True
-    # x.dump_output_tokens = True
-    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-    results = x.scan_all_tokens(contents, tokens)
-    if results.strip() != expected.strip():
-        print('\nExpected...')
-        for j, s in enumerate(g.splitLines(expected.strip())):
-            print(f"{j:2}: {s!r}")
-        print('\nResults...')
-        for j, s in enumerate(g.splitLines(results.strip())):
-            print(f"{j:2}: {s!r}")
-        assert False, f"FAIL"
-#@+node:ekr.20191106104206.1: *4* @test fstringify harder tests
-import io
-import tokenize
-import leo.core.leoBeautify as leoBeautify
-
-table = (
-
-( # Start harder test 1.
-
-# Test 1: contents.
+# Test 3: contents.
 r'''
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 ''',
 
-# Test 1: expected
+# Test 3: expected
 r'''
 ret = f'[{','.join([self.show(z) for z in arg])}]'
 ''',
 ), # End of test 3
-
 
 ) # End of all tests.
 
