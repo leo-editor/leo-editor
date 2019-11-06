@@ -1127,9 +1127,10 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191024051733.11: *3* fstring: Conversion
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, results):
-        # Finish.
-        # g.trace('\nresult 1', results)
-        g.printObj(results, tag='RESULTS 1')
+
+        trace = True and not g.unitTesting
+        if trace:
+            g.printObj(results, tag='RESULTS 1')
         
         ### The old code was a mess.
             # if len(results) > 2:

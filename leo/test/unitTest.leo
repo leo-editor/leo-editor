@@ -4163,8 +4163,8 @@ g.es(f'{g.angleBrackets('*')} blah blah')
 for test, expected in table:
     contents = test.strip() + '\n'
     x = leoBeautify.FstringifyTokens(c)
-    x.dump_input_tokens = True
-    x.dump_output_tokens = True
+    # x.dump_input_tokens = True
+    # x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
     if results.strip() != expected.strip():
@@ -4174,6 +4174,7 @@ for test, expected in table:
         print('\nResults...')
         for j, s in enumerate(g.splitLines(results.strip())):
             print(f"{j:2}: {s!r}")
-        assert False, f"FAIL"</t>
+        assert False, f"FAIL"
+</t>
 </tnodes>
 </leo_file>

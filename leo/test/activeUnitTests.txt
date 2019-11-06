@@ -3692,8 +3692,8 @@ g.es(f'{g.angleBrackets('*')} blah blah')
 for test, expected in table:
     contents = test.strip() + '\n'
     x = leoBeautify.FstringifyTokens(c)
-    x.dump_input_tokens = True
-    x.dump_output_tokens = True
+    # x.dump_input_tokens = True
+    # x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
     if results.strip() != expected.strip():
