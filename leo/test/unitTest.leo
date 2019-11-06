@@ -405,7 +405,7 @@
 </v>
 <v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
 <v t="ekr.20191106072009.1"><vh>@test fstringify easier tests</vh></v>
-<v t="ekr.20191106104206.1"><vh>@@@test fstringify harder tests</vh></v>
+<v t="ekr.20191106104206.1"><vh>@test fstringify harder tests</vh></v>
 </v>
 <v t="ekr.20191106072009.1"></v>
 <v t="ekr.20191106104206.1"></v>
@@ -4152,7 +4152,7 @@ table = (
 # Test 1: contents.
 r'''
 g.es('%s blah blah' % (
-g.angleBrackets('*')))
+    g.angleBrackets('*')))
 ''',
 
 # Test 1: expected.
@@ -4179,8 +4179,8 @@ mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
 for test, expected in table:
     contents = test.strip() + '\n'
     x = leoBeautify.FstringifyTokens(c)
-    # x.dump_input_tokens = True
-    # x.dump_output_tokens = True
+    x.dump_input_tokens = True
+    x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
     if results.strip() != expected.strip():
@@ -4207,7 +4207,7 @@ ret = '[%s]' % ','.join([self.show(z) for z in arg])
 
 # Test 1: expected
 r'''
-ret = f'[{','.join([self.show(z) for z in arg)}]'
+ret = f'[{','.join([self.show(z) for z in arg])}]'
 ''',
 ), # End of test 3
 

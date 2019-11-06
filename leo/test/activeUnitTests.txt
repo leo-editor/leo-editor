@@ -3679,7 +3679,7 @@ table = (
 # Test 1: contents.
 r'''
 g.es('%s blah blah' % (
-g.angleBrackets('*')))
+    g.angleBrackets('*')))
 ''',
 
 # Test 1: expected.
@@ -3706,8 +3706,8 @@ mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
 for test, expected in table:
     contents = test.strip() + '\n'
     x = leoBeautify.FstringifyTokens(c)
-    # x.dump_input_tokens = True
-    # x.dump_output_tokens = True
+    x.dump_input_tokens = True
+    x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
     if results.strip() != expected.strip():
@@ -3718,7 +3718,7 @@ for test, expected in table:
         for j, s in enumerate(g.splitLines(results.strip())):
             print(f"{j:2}: {s!r}")
         assert False, f"FAIL"
-#@+node:ekr.20191106104206.1: *4* @@@test fstringify harder tests
+#@+node:ekr.20191106104206.1: *4* @test fstringify harder tests
 import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
@@ -3734,7 +3734,7 @@ ret = '[%s]' % ','.join([self.show(z) for z in arg])
 
 # Test 1: expected
 r'''
-ret = f'[{','.join([self.show(z) for z in arg)}]'
+ret = f'[{','.join([self.show(z) for z in arg])}]'
 ''',
 ), # End of test 3
 

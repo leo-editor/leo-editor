@@ -1128,39 +1128,37 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, results):
 
-        trace = True and not g.unitTesting
-        ### # pylint: disable=import-self
-        ### import leo.core.leoBeautify as leoBeautify
-        ### c = self.c
+        trace = True # and not g.unitTesting
+        # pylint: disable=import-self
+        import leo.core.leoBeautify as leoBeautify
+        c = self.c
         if trace:
-            g.printObj(results, tag='RESULTS 1')
-        aList = []
+            g.printObj(results, tag='TOKENS 1')
+        #
+        # Flatten the token list.
+        tokens = []
         for z in results:
             if isinstance(z, (list, tuple)):
-                aList.extend(z)
+                tokens.extend(z)
             else:
-                aList.append(z)
+                tokens.append(z)
         if trace:
-            g.printObj(aList, tag='RESULTS 2')
-        ### Hehe.  We must have real tokens here.
-        
-        
-        # Create tokens by hand
-            # tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-            # # Beautify.
-            # x = leoBeautify.PythonTokenBeautifier(c)
-            # x.dump_input_tokens = True
-            # x.dump_output_tokens = True
-            # results = x.scan_all_tokens(contents, tokens)
-        ### Doomed. The results will be tokenized as a list.
-            # contents = ''.join(aList)
-            # tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-            # # Beautify.
-            # x = leoBeautify.PythonTokenBeautifier(c)
-            # x.dump_input_tokens = True
-            # x.dump_output_tokens = True
-            # results = x.scan_all_tokens(contents, tokens)
-        return ''.join([z.to_string() for z in aList])
+            g.printObj(tokens, tag='TOKENS 2')
+        #
+        # Instantiate the PythonTokenBeautifier.
+        x = leoBeautify.PythonTokenBeautifier(c)
+        x.dump_input_tokens = True
+        x.dump_output_tokens = True
+        #
+        # Monkey-patch ptb.oops, to allow more token kinds.
+        def oops(self=x):
+            """Allow "synthesized" kinds."""
+            self.add_token('fstringify', x.val)
+            
+        x.oops = oops
+        #
+        # Use ptb to clean up inter-token whitespace.
+        return x.scan_all_beautifier_tokens(tokens)
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -1193,7 +1191,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 results.append(new_token('string-tail', string_val[i : start]))
             head, tail = self.munge_spec(spec)
             ### results.append('{')
-            results.append(new_token('string-part', '{'))
+            results.append(new_token('op', '{'))
             ### results.append(value)
             results.append(new_token('string-part', value))
             if head:
@@ -1207,7 +1205,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 ### results.append(tail)
                 results.append(new_token('string-part', tail))
             ### results.append('}')
-            results.append(new_token('string-part', '}'))
+            results.append(new_token('op', '}'))
             i = end
         tail = string_val[i:]
         if tail:
@@ -1249,7 +1247,7 @@ class FstringifyTokens(NullTokenBeautifier):
         delim = string_val[0]
         delim2 = '"' if delim == "'" else '"'
         return [z.replace(delim, delim2) for z in aList]
-    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values ***
+    #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
         """
         Return a list of possibly parenthesized values for the format string.
@@ -1336,7 +1334,7 @@ class FstringifyTokens(NullTokenBeautifier):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching ***
+    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
     def scan_to_matching(self, token_i, val):
         """
         self.tokens[token_i] represents an open (, [ or {.
@@ -1488,11 +1486,10 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106095910.1: *4* fstring.new_token
     def new_token(self, kind, value):
         """Return a new token"""
-        g.trace(kind, repr(value))
+        ### g.trace(kind, repr(value))
 
         def item_kind(z):
-            kind = 'str' if isinstance(z, str) else z.kind
-            return f"item-{kind}"
+            return 'string' if isinstance(z, str) else z.kind
 
         def val(z):
             return z if isinstance(z, str) else z.value
@@ -1576,6 +1573,9 @@ class FstringifyTokens(NullTokenBeautifier):
             assert token.kind == 'ws', (token.kind, token.value)
         # Should never happen.
         return n, []
+    #@+node:ekr.20191106105311.1: *4* null_tok_b.scan_all_beautifier_tokens
+
+
     #@-others
 #@+node:ekr.20150527113020.1: ** class ParseState
 class ParseState:
@@ -1865,6 +1865,28 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.total_time += t5 - t1
         # self.print_stats()
         return changed
+    #@+node:ekr.20191106105540.1: *4* ptb.scan_all_beautifier_tokens ***
+    def scan_all_beautifier_tokens(self, tokens):
+        """
+        This is a helper for the fstringify class.
+        
+        It is similar to null_b.scan_all_tokens,
+        but tokens is a list of beautifier tokens.
+        """
+        self.tokens = tokens
+        self.code_list = []
+        self.add_token('file-start')
+        # Allow subclasses to init state.
+        self.file_start()
+        # Generate output tokens.
+        # Important: self.tokens may *mutate* in this loop.
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        # Allow last-minute adjustments.
+        self.file_end()
+        g.printObj(self.code_list, tag='CODE LIST')
+        return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
