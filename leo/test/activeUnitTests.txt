@@ -3717,13 +3717,16 @@ ret = f'[{','.join([self.show(z) for z in arg])}]'
 ) # End of all tests.
 
 for test, expected in table:
-    contents = test.strip() + '\n'
+    contents = test.strip() ###### + '\n'
     x = leoBeautify.FstringifyTokens(c)
     # x.dump_input_tokens = True
     # x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
     if results.strip() != expected.strip():
+        print('\nContents...')
+        for j, s in enumerate(g.splitLines(contents.strip())):
+            print(f"{j:2}: {s!r}")
         print('\nExpected...')
         for j, s in enumerate(g.splitLines(expected.strip())):
             print(f"{j:2}: {s!r}")

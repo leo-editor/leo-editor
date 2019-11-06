@@ -1122,19 +1122,20 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, results):
 
+        trace = True and not g.unitTesting
         # pylint: disable=import-self
         import leo.core.leoBeautify as leoBeautify
         c = self.c
         #
         # Flatten the token list.
-        # g.printObj(results, tag='TOKENS 1')
+        if trace: g.printObj(results, tag='TOKENS 1')
         tokens = []
         for z in results:
             if isinstance(z, (list, tuple)):
                 tokens.extend(z)
             else:
                 tokens.append(z)
-        # g.printObj(tokens, tag='TOKENS 2')
+        if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         #
         # Use ptb to clean up inter-token whitespace.
         x = leoBeautify.PythonTokenBeautifier(c)
@@ -1143,7 +1144,7 @@ class FstringifyTokens(NullTokenBeautifier):
         result_tokens = x.scan_all_beautifier_tokens(tokens)
         #
         # Create the result.
-        # g.printObj(result_tokens, tag='TOKENS 3')
+        if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
         return ''.join([z.to_string() for z in result_tokens])
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
@@ -1256,10 +1257,13 @@ class FstringifyTokens(NullTokenBeautifier):
                     # Continue scanning, ignoring the newline.
                     continue
                 else:
+                    ### Experimental: bad.
+                    ### value_list.append(new_token(kind, val))
                     # The newline ends the scan.
                     values.append(value_list)
                         # Retain the tokens!
-                    if include_paren:
+                    ### if include_paren:
+                    if not include_paren: # Bug fix.
                         tokens.pop()  # Rescan the ')'
                     break
             if (kind, val) == ('op', ')'):
@@ -1308,7 +1312,7 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Return (values_list, token_i) of all tokens to the matching closing delim.
         """
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         new_token = self.new_token
         if trace:
             g.trace('=====', token_i, repr(val))
@@ -1329,6 +1333,8 @@ class FstringifyTokens(NullTokenBeautifier):
             token_i += 1
             kind, val = token.kind, token.value
             if kind == 'ws':
+                continue
+            if kind in ('nl', 'newline'):
                 continue
             if kind == 'op' and val in ')]}':
                 values_list.append(new_token('op', val))
