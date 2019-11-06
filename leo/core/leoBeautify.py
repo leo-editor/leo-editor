@@ -1122,36 +1122,28 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, results):
 
-        trace = False and not g.unitTesting
         # pylint: disable=import-self
         import leo.core.leoBeautify as leoBeautify
         c = self.c
-        if trace: g.printObj(results, tag='TOKENS 1')
         #
         # Flatten the token list.
+        # g.printObj(results, tag='TOKENS 1')
         tokens = []
         for z in results:
             if isinstance(z, (list, tuple)):
                 tokens.extend(z)
             else:
                 tokens.append(z)
-        if trace: g.printObj(tokens, tag='TOKENS 2')
+        # g.printObj(tokens, tag='TOKENS 2')
         #
-        # Instantiate the PythonTokenBeautifier.
+        # Use ptb to clean up inter-token whitespace.
         x = leoBeautify.PythonTokenBeautifier(c)
         x.dump_input_tokens = True
         x.dump_output_tokens = True
-        #
-        # Monkey-patch ptb.oops, to allow more token kinds.
-        def oops(self=x):
-            """Allow "synthesized" kinds."""
-            self.add_token('fstringify', x.val)
-            
-        x.oops = oops
-        #
-        # Use ptb to clean up inter-token whitespace.
         result_tokens = x.scan_all_beautifier_tokens(tokens)
-        if trace: g.printObj(result_tokens, tag='TOKENS 3')
+        #
+        # Create the result.
+        # g.printObj(result_tokens, tag='TOKENS 3')
         return ''.join([z.to_string() for z in result_tokens])
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
@@ -1175,26 +1167,26 @@ class FstringifyTokens(NullTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
-        i, results = 0, [new_token('string-part', 'f')]
+        i, results = 0, [new_token('fstringify', 'f')]
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
-                results.append(new_token('string-tail', string_val[i : start]))
+                results.append(new_token('fstringify', string_val[i : start]))
             head, tail = self.munge_spec(spec)
             results.append(new_token('op', '{'))
-            results.append(new_token('string-part', value))
+            results.append(new_token('fstringify', value))
             if head:
-                results.append(new_token('string-part', '!'))
-                results.append(new_token('string-part', head))
+                results.append(new_token('fstringify', '!'))
+                results.append(new_token('fstringify', head))
             if tail:
-                results.append(new_token('string-part', ':'))
-                results.append(new_token('string-part', tail))
+                results.append(new_token('fstringify', ':'))
+                results.append(new_token('fstringify', tail))
             results.append(new_token('op', '}'))
             i = end
         tail = string_val[i:]
         if tail:
-            results.append(new_token('string-part', tail))
+            results.append(new_token('fstringify', tail))
         result = self.compute_result(results)
         self.add_token('string', result)
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
@@ -1901,6 +1893,14 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
+    #@+node:ekr.20191106121141.1: *4* ptb.do_fstringify
+    def do_fstringify(self):
+        """
+        A helper for the FstringifyTokens class.
+        
+        This class creates synthetic "fstringify" tokens.
+        """
+        self.add_token('fstringify', self.val)
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         """Handle a name token."""
