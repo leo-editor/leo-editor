@@ -1930,7 +1930,9 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             if self.val.endswith((' ', '\t')):
                 # Add a *empty* blank, so later code won't add any more ws.
                 self.add_token('blank', '')
-        else:
+        #
+        # An experimental hack.
+        elif self.paren_level > 0:
             prev = self.prev_input_token
             if prev.kind in ('nl', 'newline'):
                 # Retain indentation.

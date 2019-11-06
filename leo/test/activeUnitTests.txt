@@ -2238,7 +2238,7 @@ assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
 # This trace is less important, but interesting.
 g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
-#@+node:ekr.20150610064911.1: *4* OLD @test beautifier (small) 
+#@+node:ekr.20150610064911.1: *4* @test beautifier (small) 
 # This tests only recent bugs.
 p1 = p.firstChild()
 s = p1.b
@@ -3258,7 +3258,7 @@ try:
         try:
             # Beautify "test" node in place.
             assert should_beautify(test), repr(test.h)
-            ok = PythonTokenBeautifier(c).prettyPrintNode(test) or test.b == expected.b
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test) or test.b.strip() == expected.b.strip()
             if not ok:
                 errors.append(peeve.h)
                 print(
