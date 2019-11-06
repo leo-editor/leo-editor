@@ -3676,16 +3676,44 @@ table = (
 
 ( # Start test 1.
 
-# Test1: contents.
+# Test 1: contents.
 r'''
 g.es('%s blah blah' % (
 g.angleBrackets('*')))
 ''',
-# Test1: expected.
+
+# Test 1: expected.
 r'''
 g.es(f'{g.angleBrackets('*')} blah blah')
 ''',
 ), # End test 1
+
+( # Start of test 2.
+
+# Test 2: contents.
+r'''
+mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+''',
+
+# Test 2: expected.
+r'''
+mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
+''',
+), # End of test 2.
+
+( # Start of test 3.
+
+# Test 3: contents.
+r'''
+ret = '[%s]' % ','.join([self.show(z) for z in arg])
+''',
+
+# Test 3: expected
+r'''
+ret = f'[{','.join([self.show(z) for z in arg)}]'
+''',
+), # End of test 3
+
 
 ) # End of all tests.
 
