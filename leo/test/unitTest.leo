@@ -307,7 +307,7 @@
 <v t="ekr.20190914104955.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20190914105123.1"><vh>@test beautifier (large)</vh>
+<v t="ekr.20190914105123.1"><vh>@test ptb (large)</vh>
 <v t="ekr.20190914105123.2"><vh>basic test</vh></v>
 <v t="ekr.20190914105123.3"><vh>@others &amp; sections references</vh></v>
 <v t="ekr.20190914105123.4"><vh>fast_at.scan_lines</vh>
@@ -331,7 +331,7 @@
 <v t="ekr.20190914105123.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20190914111357.1"><vh>@test beautifier (pet peeves) </vh>
+<v t="ekr.20190914111357.1"><vh>@test ptb (pet peeves) </vh>
 <v t="ekr.20190915083933.1"><vh>peeve: two spaces before a trailing comment</vh>
 <v t="ekr.20190915083945.1"><vh>test</vh></v>
 <v t="ekr.20190915084039.1"><vh>expected</vh></v>
@@ -403,9 +403,8 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20191031110731.1"><vh>@test beautifiers (backslash-newline)</vh></v>
+<v t="ekr.20191106035017.1"><vh>@testall beautifiers (bs-nl)</vh></v>
 </v>
-<v t="ekr.20191031110731.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4039,39 +4038,31 @@ e - f  # comment
 # Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
-<t tx="ekr.20191031110731.1">import io
+<t tx="ekr.20191106035017.1">import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
 
-def dump_string(i, s):
-    verbose = True
-    if verbose:
-        val = repr(s)
-    elif not s.strip():
-        val = repr(s)
-    elif s.endswith('\n'):
-        val = s[:-1]
-    else:
-        val = s + '&lt;NO NL&gt;'
-    print(f"{i:2}: {val}")
-    
-
 table = (
+
+# Test 0: Backslash-newline test.
+# There must be a single blank before the bs-nl
+# because *regularizes* whitespace before bs-nl.
 r'''
-a = "b\
-c\
-d"
-''',
-r'''
-print\
-    (\
-    a,\
-    b\
+print \
+    ( \
+    a, \
+    b \
 )
+a = "b \
+c \
+d"
+print \
+    ('done')
 ''',
-# Note: Null beautifier will delete space before bs-nl.
+
+# Test 1: Indentation test.
+# Note: ptb retains the exact spelling of all strings.
 r'''
-# Single-line comment 2.
 print('hi')
 print(
     'thing 1',
@@ -4079,30 +4070,32 @@ print(
 )
 print(
     'thing 3\
-    thing4'
+    thing 4 \
+    thing5'
 )
-print\
-    ('done')
-'''
-)
+''',
+) # End of table.
+
 beautifiers = (
-    ('NullTokenBeautifier', leoBeautify.NullTokenBeautifier(c)),
-    ('FstringifyTokens', leoBeautify.FstringifyTokens(c)),
-    ('PythonTokenBeautifier', leoBeautify.PythonTokenBeautifier(c)),
+    ('NullTokenBeautifier', leoBeautify.NullTokenBeautifier),
+    ('FstringifyTokens', leoBeautify.FstringifyTokens),
+    ('PythonTokenBeautifier', leoBeautify.PythonTokenBeautifier),
 )
 for i, contents in enumerate(table):
-    for name, b in beautifiers:
+    for name, beautifier_class in beautifiers:
         # Careful: must retokenize each time.
+        x = beautifier_class(c)
+        # x.dump_input_tokens = True
+        # x.dump_output_tokens = True
         tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
-        results = b.scan_all_tokens(contents, tokens)
+        results = x.scan_all_tokens(contents, tokens)
         if results.strip() != contents.strip():
-            print(f"\nFAIL test {i} for {name} beautifier")
-            for j, s in enumerate(g.splitLines(contents)):
-                dump_string(j, s)
+            for j, s in enumerate(g.splitLines(contents.strip())):
+                print(f"{j:2}: {s!r}")
             print('\nResults...')
-            for j, s in enumerate(g.splitLines(results)):
-                dump_string(j, s)
-            assert False, f"Test failed for {name}"
+            for j, s in enumerate(g.splitLines(results.strip())):
+                print(f"{j:2}: {s!r}")
+            assert False, f"FAIL: Test {i} for {name}"
 # print('done')
 </t>
 </tnodes>

@@ -274,9 +274,11 @@ def test_PythonTokenBeautifier(c, contents,
     x.dump_output_tokens = dump_output_tokens
     results = x.scan_all_tokens(contents, tokens)
     # Show results.
+    print('')
     show(contents, 'Contents', dump)
     print('')
     show(results, 'Results', dump)
+    return results.strip() == contents.strip()
 #@+node:ekr.20150530061745.1: *3* function: main & helpers
 def main():
     """External entry point for Leo's beautifier."""
@@ -1539,6 +1541,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
+        self.prev_input_token = None
+            # The presvious input token.
         self.state_stack = []
             # Stack of ParseState objects.
         #
@@ -1600,6 +1604,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.kind, self.val, self.line = token.kind, token.value, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
+        self.prev_input_token = token
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
     def file_end(self):
         """
@@ -1913,14 +1918,23 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@+node:ekr.20191105081403.1: *4* ptb.do_ws (new)
     def do_ws(self):
         """
-        Handle the "ws" pseudo-token, with attention on backslash-newlines.
+        Handle the "ws" pseudo-token.
+        
+        Put the whitespace only if if ends with backslash-newline.
         """
-        pass
-        # val = self.val
-        # if '\\\n' in val:
-            # # Strip any leading whitespace.
-            # val = val.lstrip()
-        # self.add_token('ws', val)
+        if '\\\n' in self.val:
+            # Prepend a *real* blank, so later code won't add any more ws.
+            self.clean('blank')
+            self.add_token('blank', ' ')
+            self.add_token('ws', self.val.lstrip())
+            if self.val.endswith((' ', '\t')):
+                # Add a *empty* blank, so later code won't add any more ws.
+                self.add_token('blank', '')
+        else:
+            prev = self.prev_input_token
+            if prev.kind in ('nl', 'newline'):
+                # Retain indentation.
+                self.add_token('blank', self.val)
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
