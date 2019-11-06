@@ -35,7 +35,6 @@ try:
 except Exception:
     black = None
 #@-<< leoBeautify imports >>
-new = True
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions
 #@+node:ekr.20150528131012.1: *3* Beautify:commands
@@ -311,7 +310,6 @@ def beautify(options, path):
     tokens = list(tokenize.generate_tokens(readlines))
     x = PythonTokenBeautifier(c=None)
     # Compute the tokens.
-    ### s2 = beautifier.run(tokens)
     s2 = x.scan_all_tokens(s, tokens)
     try:
         s2_e = g.toEncodedString(s2)
@@ -610,12 +608,8 @@ class NullTokenBeautifier:
         """
         Create self.tokens, a *list* (not a generator) of BeautifierTokens.
         """
-        ### To do: clean this.
-        if new:
-            x = InputTokenizer()
-            self.tokens = x.create_input_tokens(contents, tokens)
-        else:
-            g.trace('NO LONGER USED')
+        x = InputTokenizer()
+        self.tokens = x.create_input_tokens(contents, tokens)
     #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
     def scan_all_tokens(self, contents, tokens):
         """
@@ -1128,12 +1122,11 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, results):
 
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         # pylint: disable=import-self
         import leo.core.leoBeautify as leoBeautify
         c = self.c
-        if trace:
-            g.printObj(results, tag='TOKENS 1')
+        if trace: g.printObj(results, tag='TOKENS 1')
         #
         # Flatten the token list.
         tokens = []
@@ -1142,8 +1135,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.extend(z)
             else:
                 tokens.append(z)
-        if trace:
-            g.printObj(tokens, tag='TOKENS 2')
+        if trace: g.printObj(tokens, tag='TOKENS 2')
         #
         # Instantiate the PythonTokenBeautifier.
         x = leoBeautify.PythonTokenBeautifier(c)
@@ -1159,8 +1151,7 @@ class FstringifyTokens(NullTokenBeautifier):
         #
         # Use ptb to clean up inter-token whitespace.
         result_tokens = x.scan_all_beautifier_tokens(tokens)
-        if trace:
-            g.printObj(result_tokens, tag='TOKENS 3')
+        if trace: g.printObj(result_tokens, tag='TOKENS 3')
         return ''.join([z.to_string() for z in result_tokens])
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
@@ -1184,35 +1175,25 @@ class FstringifyTokens(NullTokenBeautifier):
         for token in tokens:
             self.tokens.pop(0)
         # Substitute the values.
-        ### g.printObj(values, tag='VALUES')
         i, results = 0, [new_token('string-part', 'f')]
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
-                ### results.append(string_val[i : start])
                 results.append(new_token('string-tail', string_val[i : start]))
             head, tail = self.munge_spec(spec)
-            ### results.append('{')
             results.append(new_token('op', '{'))
-            ### results.append(value)
             results.append(new_token('string-part', value))
             if head:
-                ### results.append('!')
                 results.append(new_token('string-part', '!'))
-                ### results.append(head)
                 results.append(new_token('string-part', head))
             if tail:
-                ### results.append(':')
                 results.append(new_token('string-part', ':'))
-                ### results.append(tail)
                 results.append(new_token('string-part', tail))
-            ### results.append('}')
             results.append(new_token('op', '}'))
             i = end
         tail = string_val[i:]
         if tail:
-            ### results.append(tail)
             results.append(new_token('string-part', tail))
         result = self.compute_result(results)
         self.add_token('string', result)
@@ -1276,7 +1257,6 @@ class FstringifyTokens(NullTokenBeautifier):
             token_i += 1
             tokens.append(token)
             kind, val = token.kind, token.value
-            ### g.trace(kind, repr(val))
             if kind == 'ws':
                 continue
             if kind in ('newline', 'nl'):
@@ -1285,25 +1265,21 @@ class FstringifyTokens(NullTokenBeautifier):
                     continue
                 else:
                     # The newline ends the scan.
-                    ### values.append(''.join(value_list))
                     values.append(value_list)
-                        ### Retain the tokens!
+                        # Retain the tokens!
                     if include_paren:
                         tokens.pop()  # Rescan the ')'
                     break
             if (kind, val) == ('op', ')'):
-                ### values.append(''.join(value_list))
                 values.append(value_list)
                 if not include_paren:
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('name', 'for'):
                 tokens.pop()  # Rescan the 'for'
-                ### values.append(''.join(value_list))
                 values.append(value_list)
                 break
             if (kind, val) == ('op', ','):
-                ### values.append(''.join(value_list))
                 values.append(value_list)
                 value_list = []
             elif kind == 'op' and val in '([{':
@@ -1313,14 +1289,10 @@ class FstringifyTokens(NullTokenBeautifier):
                 token_i = token_i2
             elif kind == 'name':
                 # Ensure separation of names.
-                ### value_list.append(val)
-                ### value_list.append(' ')
                 value_list.append(new_token(kind, val))
                 value_list.append(new_token('ws', ' '))
             else:
-                ### value_list.append(val)
                 value_list.append(new_token(kind, val))
-        # g.trace(values, [str(z) for z in tokens])
         return values, tokens
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
@@ -1356,7 +1328,6 @@ class FstringifyTokens(NullTokenBeautifier):
         level_index = '([{'.index(val)
         levels[level_index] += 1
         # Move past the opening delim.
-        ### values_list.append(val0)
         values_list.append(new_token('op', val0))
         token_i += 1
         while token_i < len(self.tokens):
@@ -1365,11 +1336,9 @@ class FstringifyTokens(NullTokenBeautifier):
             token = self.tokens[token_i]
             token_i += 1
             kind, val = token.kind, token.value
-            # g.trace('----', token_i, kind, repr(val))
             if kind == 'ws':
                 continue
             if kind == 'op' and val in ')]}':
-                ### values_list.append(val)
                 values_list.append(new_token('op', val))
                 level_index = ')]}'.index(val)
                 levels[level_index] -= 1
@@ -1379,20 +1348,16 @@ class FstringifyTokens(NullTokenBeautifier):
                     return values_list, token_i
             elif kind == 'op' and val in '([{':
                 # Recurse.
-                ### g.trace('===== recurse', token_i)
                 values_list2, token_i = self.scan_to_matching(token_i-1, val)
                 values_list.extend(values_list2)
-                ### g.trace('===== end recurse', token_i)
             elif kind == 'name':
                 # Ensure separation of names.
-                ### values_list.append(val)
                 values_list.append(new_token('name', val))
-                ### values_list.append(' ')
                 values_list.append(new_token('ws', '  '))
             else:
-                ### values_list.append(val)
                 values_list.append(new_token(kind, val))
             assert token_i > progress, (kind, val)
+        # Should never happen.
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
     #@+node:ekr.20191025084714.1: *3* fstring: Entries
@@ -1489,7 +1454,6 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191106095910.1: *4* fstring.new_token
     def new_token(self, kind, value):
         """Return a new token"""
-        ### g.trace(kind, repr(value))
 
         def item_kind(z):
             return 'string' if isinstance(z, str) else z.kind
@@ -1641,8 +1605,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # Leading whitespace.
             # Typically ' '*self.tab_width*self.level,
             # but may be changed for continued lines.
-        ### self.prev_input_token = None
-            # The presvious input token.
         self.state_stack = []
             # Stack of ParseState objects.
         #
@@ -1704,7 +1666,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.kind, self.val, self.line = token.kind, token.value, token.line
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
-        ### self.prev_input_token = token
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
     def file_end(self):
         """
@@ -1733,7 +1694,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         if should_kill_beautify(p):
             return
         t1 = time.process_time()
-        ### pp = PythonTokenBeautifier(c)
         self.errors = 0
         changed = errors = total = 0
         for p in p.self_and_subtree():
@@ -1813,7 +1773,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         tokens = list(tokenize.generate_tokens(readlines))
         # Beautify into s2.
         t3 = time.process_time()
-        ### s2 = self.run(tokens)
         s2 = self.scan_all_tokens(s0, tokens)
         assert isinstance(s2, str), s2.__class__.__name__
         t4 = time.process_time()
@@ -1900,7 +1859,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
         self.add_token('comment', val)
-    #@+node:ekr.20191105094430.1: *4* pdb.do_encoding (new)
+    #@+node:ekr.20191105094430.1: *4* pdb.do_encoding
     def do_encoding(self):
         """
         Handle the encoding token.
@@ -1934,17 +1893,13 @@ class PythonTokenBeautifier(NullTokenBeautifier):
 
     def do_indent(self):
         """Handle indent token."""
-        if new:
-            new_indent = self.val
-            old_indent = self.level * self.tab_width * ' '
-            if new_indent > old_indent:
-                self.level += 1
-            elif new_indent < old_indent:
-                g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
-            self.lws = new_indent
-        else:
+        new_indent = self.val
+        old_indent = self.level * self.tab_width * ' '
+        if new_indent > old_indent:
             self.level += 1
-            self.lws = self.level * self.tab_width * ' '
+        elif new_indent < old_indent:
+            g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+        self.lws = new_indent
         self.line_indent()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
@@ -2034,7 +1989,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         """Handle a 'string' token."""
         self.add_token('string', self.val)
         self.blank()
-    #@+node:ekr.20191105081403.1: *4* ptb.do_ws (new)
+    #@+node:ekr.20191105081403.1: *4* ptb.do_ws
     def do_ws(self):
         """
         Handle the "ws" pseudo-token.
@@ -2144,8 +2099,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
-        # Retain any sidecar ws.
-        ##### self.add_token('line-end', ws or '\n')
         self.add_token('line-end', '\n')
         if self.orange:
             allow_join = True
@@ -2820,7 +2773,6 @@ class InputTokenizer:
     def show_results(self, contents):
 
         # Split the results into lines.
-        ### result = ''.join(self.results)
         result = ''.join([z.to_string() for z in self.results])
         result_lines = result.splitlines(True)
         if result == contents and result_lines == self.lines:
