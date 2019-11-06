@@ -403,7 +403,7 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20191106035017.1"><vh>@testall beautifiers (bs-nl)</vh></v>
+<v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4044,7 +4044,46 @@ import leo.core.leoBeautify as leoBeautify
 
 table = (
 
-# Test 0: Backslash-newline test.
+# New fail 1 from leoAst.py
+r'''
+def get_fields(self, node):
+    return (
+        (a, b) for a, b in ast.iter_fields(node)
+            if a not in self.disabled_fields and b not in (None, [])
+    )
+''',
+# Fail 1 from leoAst.py
+r'''
+raise AstNotEqual(
+    f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+    f"node2.__class__.__name__: {node2.__class__.__name_}"
+)
+''',
+# Fail 2 from leoAst.py
+r'''
+remove = [
+    'Interactive', 'Suite',  # Not necessary.
+    'PyCF_ONLY_AST',  # A constant,
+    'AST',  # The base class,
+]
+''',
+# Fail 3 from leoAst.py.
+'''
+table = (
+    AstFullTraverser,
+    AstFormatter,
+    AstPatternFormatter,
+    HTMLReportTraverser,
+)
+''',
+# Basic indentation test.
+r'''
+def foo(a, b):
+    foo()
+    bar()
+''',
+
+# Backslash-newline test.
 # There must be a single blank before the bs-nl
 # because *regularizes* whitespace before bs-nl.
 r'''
@@ -4060,7 +4099,7 @@ print \
     ('done')
 ''',
 
-# Test 1: Indentation test.
+# Basic Indentation test.
 # Note: ptb retains the exact spelling of all strings.
 r'''
 print('hi')
