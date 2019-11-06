@@ -1257,12 +1257,9 @@ class FstringifyTokens(NullTokenBeautifier):
                     # Continue scanning, ignoring the newline.
                     continue
                 else:
-                    ### Experimental: bad.
-                    ### value_list.append(new_token(kind, val))
                     # The newline ends the scan.
                     values.append(value_list)
                         # Retain the tokens!
-                    ### if include_paren:
                     if not include_paren: # Bug fix.
                         tokens.pop()  # Rescan the ')'
                     break
