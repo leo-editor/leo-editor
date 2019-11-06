@@ -1158,7 +1158,10 @@ class FstringifyTokens(NullTokenBeautifier):
         x.oops = oops
         #
         # Use ptb to clean up inter-token whitespace.
-        return x.scan_all_beautifier_tokens(tokens)
+        result_tokens = x.scan_all_beautifier_tokens(tokens)
+        if trace:
+            g.printObj(result_tokens, tag='TOKENS 3')
+        return ''.join([z.to_string() for z in result_tokens])
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
@@ -1719,7 +1722,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         
         May be overridden in subclasses.
         
-        The file-start token has already been added to self.code_list.
+        The file-start *token* has already been added to self.code_list.
         """
         self.push_state('file-start')
     #@+node:ekr.20150530072449.1: *3* ptb: Entries
@@ -1865,28 +1868,25 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         self.total_time += t5 - t1
         # self.print_stats()
         return changed
-    #@+node:ekr.20191106105540.1: *4* ptb.scan_all_beautifier_tokens ***
+    #@+node:ekr.20191106105540.1: *4* ptb.scan_all_beautifier_tokens
     def scan_all_beautifier_tokens(self, tokens):
         """
-        This is a helper for the fstringify class.
+        A helper for the fstringify class, similar to null_b.scan_all_tokens.
         
-        It is similar to null_b.scan_all_tokens,
-        but tokens is a list of beautifier tokens.
+        Differences:
+            
+        1. tokens is a list of BeautifierTokens, not a list of 5-tuples.
+        2. This method adds no end-of-file tokens.
+        3. This method returns a list of BeautifierTokens, not a string.
         """
         self.tokens = tokens
         self.code_list = []
         self.add_token('file-start')
-        # Allow subclasses to init state.
-        self.file_start()
-        # Generate output tokens.
-        # Important: self.tokens may *mutate* in this loop.
+        self.push_state('file-start')
         while self.tokens:
             token = self.tokens.pop(0)
             self.do_token(token)
-        # Allow last-minute adjustments.
-        self.file_end()
-        g.printObj(self.code_list, tag='CODE LIST')
-        return ''.join([z.to_string() for z in self.code_list])
+        return self.code_list
     #@+node:ekr.20150526194736.1: *3* ptb: Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
