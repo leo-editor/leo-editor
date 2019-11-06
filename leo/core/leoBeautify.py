@@ -1941,8 +1941,9 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         prev = self.code_list[-1]
         inner = self.paren_level or self.square_brackets_level or self.curly_brackets_level
         if prev.kind == 'line-indent' and inner:
-            # Add four spaces.
-            self.add_token('blank', '    ')
+            # Retain the indent that won't be cleaned away.
+            self.clean('line-indent')
+            self.add_token('hard-blank', self.val)
     #@+node:ekr.20150526201902.1: *3* ptb: Output token generators
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
@@ -1952,6 +1953,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             'blank',
             'blank-lines',
             'file-start',
+            'hard-blank', # Unique to ptb.
             'line-end',
             'line-indent',
             'lt',
@@ -2024,7 +2026,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
             self.clean_blank_lines()
         self.clean('line-indent')
         # Retain any sidecar ws.
-        self.add_token('line-end', ws or '\n')
+        ##### self.add_token('line-end', ws or '\n')
+        self.add_token('line-end', '\n')
         if self.orange:
             allow_join = True
             if self.max_split_line_length > 0:
