@@ -1129,21 +1129,45 @@ class FstringifyTokens(NullTokenBeautifier):
     def compute_result(self, results):
 
         trace = True and not g.unitTesting
+        ### # pylint: disable=import-self
+        ### import leo.core.leoBeautify as leoBeautify
+        ### c = self.c
         if trace:
             g.printObj(results, tag='RESULTS 1')
+        aList = []
+        for z in results:
+            if isinstance(z, (list, tuple)):
+                aList.extend(z)
+            else:
+                aList.append(z)
+        if trace:
+            g.printObj(aList, tag='RESULTS 2')
+        ### Hehe.  We must have real tokens here.
         
-        ### The old code was a mess.
-            # if len(results) > 2:
-                # result = result[0 : 2] + self.munge_string(string_val, result[2 : -1]) + result[-1:]
-                # result[-1] = result[-1].rstrip()
-        # g.trace('result 2', result)
-        return ''.join(results)
+        
+        # Create tokens by hand
+            # tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+            # # Beautify.
+            # x = leoBeautify.PythonTokenBeautifier(c)
+            # x.dump_input_tokens = True
+            # x.dump_output_tokens = True
+            # results = x.scan_all_tokens(contents, tokens)
+        ### Doomed. The results will be tokenized as a list.
+            # contents = ''.join(aList)
+            # tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+            # # Beautify.
+            # x = leoBeautify.PythonTokenBeautifier(c)
+            # x.dump_input_tokens = True
+            # x.dump_output_tokens = True
+            # results = x.scan_all_tokens(contents, tokens)
+        return ''.join([z.to_string() for z in aList])
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """
         Scan a string, converting it to an f-string.
         The 'string' token has already been consumed.
         """
+        new_token = self.new_token
         string_val = self.val
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
@@ -1160,26 +1184,35 @@ class FstringifyTokens(NullTokenBeautifier):
             self.tokens.pop(0)
         # Substitute the values.
         ### g.printObj(values, tag='VALUES')
-        i, results = 0, ['f']
+        i, results = 0, [new_token('string-part', 'f')]
         for spec_i, m in enumerate(specs):
             value = values[spec_i]
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
-                results.append(string_val[i : start])
+                ### results.append(string_val[i : start])
+                results.append(new_token('string-tail', string_val[i : start]))
             head, tail = self.munge_spec(spec)
-            results.append('{')
-            results.append(value)
+            ### results.append('{')
+            results.append(new_token('string-part', '{'))
+            ### results.append(value)
+            results.append(new_token('string-part', value))
             if head:
-                results.append('!')
-                results.append(head)
+                ### results.append('!')
+                results.append(new_token('string-part', '!'))
+                ### results.append(head)
+                results.append(new_token('string-part', head))
             if tail:
-                results.append(':')
-                results.append(tail)
-            results.append('}')
+                ### results.append(':')
+                results.append(new_token('string-part', ':'))
+                ### results.append(tail)
+                results.append(new_token('string-part', tail))
+            ### results.append('}')
+            results.append(new_token('string-part', '}'))
             i = end
         tail = string_val[i:]
         if tail:
-            results.append(tail)
+            ### results.append(tail)
+            results.append(new_token('string-part', tail))
         result = self.compute_result(results)
         self.add_token('string', result)
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
@@ -1226,6 +1259,7 @@ class FstringifyTokens(NullTokenBeautifier):
         If all goes well, we'll skip all tokens in the tokens list.
         """
         # Skip the '%'
+        new_token = self.new_token
         assert self.look_ahead(0) == ('op', '%')
         token_i, tokens = self.skip_ahead(0, 'op', '%')
         # Skip '(' if it's next
@@ -1236,11 +1270,12 @@ class FstringifyTokens(NullTokenBeautifier):
         # Find all tokens up to the first ')' or 'for'
         values, value_list = [], []
         while token_i < len(self.tokens):
+            # Don't use look_ahead here: handle each token exactly once.
             token = self.tokens[token_i]
-            kind, val = token.kind, token.value
-            ### g.trace(kind, repr(val))
             token_i += 1
             tokens.append(token)
+            kind, val = token.kind, token.value
+            ### g.trace(kind, repr(val))
             if kind == 'ws':
                 continue
             if kind in ('newline', 'nl'):
@@ -1249,29 +1284,41 @@ class FstringifyTokens(NullTokenBeautifier):
                     continue
                 else:
                     # The newline ends the scan.
-                    values.append(''.join(value_list))
+                    ### values.append(''.join(value_list))
+                    values.append(value_list)
+                        ### Retain the tokens!
                     if include_paren:
                         tokens.pop()  # Rescan the ')'
                     break
             if (kind, val) == ('op', ')'):
-                values.append(''.join(value_list))
+                ### values.append(''.join(value_list))
+                values.append(value_list)
                 if not include_paren:
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('name', 'for'):
                 tokens.pop()  # Rescan the 'for'
-                values.append(''.join(value_list))
+                ### values.append(''.join(value_list))
+                values.append(value_list)
                 break
             if (kind, val) == ('op', ','):
-                values.append(''.join(value_list))
+                ### values.append(''.join(value_list))
+                values.append(value_list)
                 value_list = []
             elif kind == 'op' and val in '([{':
                 values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
                 value_list.extend(values_list2)
                 tokens.extend(self.tokens[token_i : token_i2])
                 token_i = token_i2
+            elif kind == 'name':
+                # Ensure separation of names.
+                ### value_list.append(val)
+                ### value_list.append(' ')
+                value_list.append(new_token(kind, val))
+                value_list.append(new_token('ws', ' '))
             else:
-                value_list.append(val)
+                ### value_list.append(val)
+                value_list.append(new_token(kind, val))
         # g.trace(values, [str(z) for z in tokens])
         return values, tokens
     #@+node:ekr.20191024110603.1: *4* fstring.scan_format_string
@@ -1289,7 +1336,7 @@ class FstringifyTokens(NullTokenBeautifier):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching
+    #@+node:ekr.20191025022207.1: *4* fstring.scan_to_matching ***
     def scan_to_matching(self, token_i, val):
         """
         self.tokens[token_i] represents an open (, [ or {.
@@ -1297,6 +1344,7 @@ class FstringifyTokens(NullTokenBeautifier):
         Return (values_list, token_i) of all tokens to the matching closing delim.
         """
         trace = False and not g.unitTesting
+        new_token = self.new_token
         if trace:
             g.trace('=====', token_i, repr(val))
             g.trace(''.join([z.value for z in self.tokens[token_i:]]))
@@ -1307,14 +1355,21 @@ class FstringifyTokens(NullTokenBeautifier):
         level_index = '([{'.index(val)
         levels[level_index] += 1
         # Move past the opening delim.
-        values_list.append(val0)
+        ### values_list.append(val0)
+        values_list.append(new_token('op', val0))
         token_i += 1
         while token_i < len(self.tokens):
+            # Don't use look_ahead here: handle each token exactly once.
             progress = token_i
-            kind, val = self.look_ahead(token_i)
+            token = self.tokens[token_i]
             token_i += 1
+            kind, val = token.kind, token.value
+            # g.trace('----', token_i, kind, repr(val))
+            if kind == 'ws':
+                continue
             if kind == 'op' and val in ')]}':
-                values_list.append(val)
+                ### values_list.append(val)
+                values_list.append(new_token('op', val))
                 level_index = ')]}'.index(val)
                 levels[level_index] -= 1
                 if levels == [0, 0, 0]:
@@ -1323,10 +1378,19 @@ class FstringifyTokens(NullTokenBeautifier):
                     return values_list, token_i
             elif kind == 'op' and val in '([{':
                 # Recurse.
+                ### g.trace('===== recurse', token_i)
                 values_list2, token_i = self.scan_to_matching(token_i-1, val)
                 values_list.extend(values_list2)
+                ### g.trace('===== end recurse', token_i)
+            elif kind == 'name':
+                # Ensure separation of names.
+                ### values_list.append(val)
+                values_list.append(new_token('name', val))
+                ### values_list.append(' ')
+                values_list.append(new_token('ws', '  '))
             else:
-                values_list.append(val)
+                ### values_list.append(val)
+                values_list.append(new_token(kind, val))
             assert token_i > progress, (kind, val)
         g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
         return [], token_i
@@ -1421,6 +1485,21 @@ class FstringifyTokens(NullTokenBeautifier):
             f"in {t2-t1:4.2f} sec."
         )
     #@+node:ekr.20191106065637.1: *3* fstring: Tokens
+    #@+node:ekr.20191106095910.1: *4* fstring.new_token
+    def new_token(self, kind, value):
+        """Return a new token"""
+        g.trace(kind, repr(value))
+
+        def item_kind(z):
+            kind = 'str' if isinstance(z, str) else z.kind
+            return f"item-{kind}"
+
+        def val(z):
+            return z if isinstance(z, str) else z.value
+            
+        if isinstance(value, (list, tuple)):
+            return [BeautifierToken(item_kind(z), val(z)) for z in value]    
+        return BeautifierToken(kind, value)
     #@+node:ekr.20191028091917.1: *4* fstring.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -1441,7 +1520,6 @@ class FstringifyTokens(NullTokenBeautifier):
     def do_string(self):
         """Handle a 'string' token."""
         # See whether a conversion is possible.
-        ### g.trace(self.val, repr(self.look_ahead(0)))
         if (
             not self.val.lower().startswith(('f', 'r'))
             and '%' in self.val

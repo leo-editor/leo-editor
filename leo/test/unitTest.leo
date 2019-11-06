@@ -404,9 +404,11 @@
 </v>
 </v>
 <v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
-<v t="ekr.20191106072009.1"><vh>@test fstringify</vh></v>
+<v t="ekr.20191106072009.1"><vh>@test fstringify easier tests</vh></v>
+<v t="ekr.20191106104206.1"><vh>@@@test fstringify harder tests</vh></v>
 </v>
 <v t="ekr.20191106072009.1"></v>
+<v t="ekr.20191106104206.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4172,14 +4174,38 @@ mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
 ''',
 ), # End of test 2.
 
-( # Start of test 3.
+) # End of all tests.
 
-# Test 3: contents.
+for test, expected in table:
+    contents = test.strip() + '\n'
+    x = leoBeautify.FstringifyTokens(c)
+    # x.dump_input_tokens = True
+    # x.dump_output_tokens = True
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    results = x.scan_all_tokens(contents, tokens)
+    if results.strip() != expected.strip():
+        print('\nExpected...')
+        for j, s in enumerate(g.splitLines(expected.strip())):
+            print(f"{j:2}: {s!r}")
+        print('\nResults...')
+        for j, s in enumerate(g.splitLines(results.strip())):
+            print(f"{j:2}: {s!r}")
+        assert False, f"FAIL"
+</t>
+<t tx="ekr.20191106104206.1">import io
+import tokenize
+import leo.core.leoBeautify as leoBeautify
+
+table = (
+
+( # Start harder test 1.
+
+# Test 1: contents.
 r'''
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 ''',
 
-# Test 3: expected
+# Test 1: expected
 r'''
 ret = f'[{','.join([self.show(z) for z in arg)}]'
 ''',
