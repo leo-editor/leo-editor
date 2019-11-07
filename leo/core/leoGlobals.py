@@ -1922,8 +1922,7 @@ class SherlockTracer:
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
         import sys
-        ### Fail
-        print('SherlockTracer.run:patterns:\n%s' % '\n'.join(self.patterns))
+        print(f'SherlockTracer.run:patterns:\n%s' % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
         # Compute self.n, the number of frames to ignore.
@@ -2145,7 +2144,7 @@ class TracingNullObject:
             suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
             for z in suppress:
                 if z not in repr(args):
-                    print('%30s'  % 'NullObject.__call__:', args, kwargs)
+                    print(f'%30s'  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -3593,12 +3592,10 @@ def setDefaultDirectory(c, p, importing=False):
 #@+node:ekr.20101022124309.6132: *4* g.checkOpenDirectory
 def checkOpenDirectory(c):
     if c.openDirectory != c.frame.openDirectory:
-        ### Fail (partial)
         g.error(
-            'Error: c.openDirectory != c.frame.openDirectory\n'
-            'c.openDirectory: %s\n'
-        'c.frame.openDirectory: %s' % (
-                c.openDirectory, c.frame.openDirectory))
+            f"Error: c.openDirectory != c.frame.openDirectory\n"
+            f"c.openDirectory: {c.openDirectory}\n"
+            f"c.frame.openDirectory: {c.frame.openDirectory}")
     if not g.os_path_isabs(c.openDirectory):
         g.error(f"Error: relative c.openDirectory: {c.openDirectory}")
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
