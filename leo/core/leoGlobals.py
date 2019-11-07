@@ -1833,7 +1833,7 @@ class SherlockTracer:
             elif arg:
                 ret = self.show(arg)
                 if len(ret) > 40:
-                    ret = '\n    %s' % ret
+                    ret = f'\n    {ret}'
             else:
                 ret = '' if arg is None else repr(arg)
         except Exception:
@@ -2470,7 +2470,7 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
         result = result[: count]
     if verbose:
         ### Fail.
-        return ''.join(['\n  %s' % z for z in result])
+        return ''.join([f'\n  {z}' for z in result])
     return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
 def _callerName(n, verbose=False):
