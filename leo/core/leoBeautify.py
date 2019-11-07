@@ -182,7 +182,7 @@ def check_leo_roundtrip(code, trace=False):
     assert isinstance(code, str), repr(code)
     tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
     u = leoBeautify.InputTokenizer()
-    u.trace=True
+    u.trace=False and not g.unitTesting
     result_tokens = u.create_input_tokens(code, tokens)
     result = ''.join([z.to_string() for z in result_tokens])
     unittest.TestCase().assertEqual(code, result)
@@ -2837,6 +2837,8 @@ class InputTokenizer:
     #@+node:ekr.20191102155252.4: *3* tok.show_header
     def show_header(self):
         
+        if g.unitTesting:
+            return
         if not self.trace:
             return
         # Dump the lines.

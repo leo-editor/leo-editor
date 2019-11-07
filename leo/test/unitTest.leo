@@ -11,84 +11,7 @@
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh>
-<v t="ekr.20181031152735.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031152735.2"><vh>@data:#@auto</vh>
-<v t="ekr.20181031152735.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031152735.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031152735.5"><vh>@data:#@auto</vh>
-<v t="ekr.20181031152735.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031152738.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20181031152738.11"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031152738.12"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20181031152738.20"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031152738.21"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20181031152738.28"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031152738.29"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
-<v t="ekr.20181031152738.43"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031154748.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031154748.2"><vh>@data:#@auto</vh>
-<v t="ekr.20181031154748.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031154748.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031154748.5"><vh>@data:#@auto</vh>
-<v t="ekr.20181031154748.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031154902.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031154902.2"><vh>@data:#@auto</vh>
-<v t="ekr.20181031154902.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181031154902.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181031154902.5"><vh>@data:#@auto</vh>
-<v t="ekr.20181031154902.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181116142416.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181116142416.2"><vh>@data:#@auto</vh>
-<v t="ekr.20181116142416.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20181116142416.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20181116142416.5"><vh>@data:#@auto</vh>
-<v t="ekr.20181116142416.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190109152926.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20190109152926.2"><vh>@data:#@auto</vh>
-<v t="ekr.20190109152926.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190109152926.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20190109152926.5"><vh>@data:#@auto</vh>
-<v t="ekr.20190109152926.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113121854.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
-<v t="ekr.20190113124357.7"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20190113124357.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.3"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20190113124357.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.5"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
-<v t="ekr.20190113124357.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.8"><vh>@data:@auto unittest/at-auto-test.py</vh>
-<v t="ekr.20190113124357.9"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.10"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
-<v t="ekr.20190113124357.11"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.12"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20190113124357.13"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20190113124357.14"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20190113124357.15"><vh>@gnxs</vh></v>
-</v>
-</v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20190113122443.1"><vh>@bool add-context-to-headlines = False</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
@@ -236,7 +159,7 @@
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31322e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e342e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e342e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20190923014948.1"><vh>Failures when run from bridge w/ readSettings=False</vh>
 <v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
@@ -407,8 +330,6 @@
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
 <v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
-<v t="ekr.20191106072009.1"></v>
-<v t="ekr.20191106195303.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2014,136 +1935,6 @@ nodeB
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
 <t tx="ekr.20181031152556.1"></t>
-<t tx="ekr.20181031152735.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031152735.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031152735.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20181031152735.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031152735.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031152735.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20181031152738.1">gnx: ekr.20150626101842.1
-</t>
-<t tx="ekr.20181031152738.11">gnx: ekr.20171230171138.1
-unl: !Declarations
-gnx: ekr.20170504122721.2
-unl: section 1
-gnx: ekr.20170504122721.3
-unl: section 2
-</t>
-<t tx="ekr.20181031152738.12">gnx: ekr.20150626101627.1
-</t>
-<t tx="ekr.20181031152738.20">gnx: ekr.20170504122721.15
-unl: section 1
-gnx: ekr.20170504122721.16
-unl: section 2
-</t>
-<t tx="ekr.20181031152738.21">gnx: ekr.20150626100719.1
-</t>
-<t tx="ekr.20181031152738.28">gnx: ekr.20171230171355.20
-unl: First line.
-gnx: ekr.20170504122721.17
-unl: section 1
-gnx: ekr.20170504122721.18
-unl: section 2
-</t>
-<t tx="ekr.20181031152738.29">gnx: ekr.20110610122533.3407
-</t>
-<t tx="ekr.20181031152738.43">gnx: ekr.20170504122721.6
-unl: class class1
-gnx: ekr.20170504122721.7
-unl: class class1--&gt;class1_method1
-gnx: ekr.20170504122721.8
-unl: class class1--&gt;class1_method2
-gnx: ekr.20170504122721.9
-unl: class class2
-gnx: ekr.20170504122721.10
-unl: class class2--&gt;class2_method1
-gnx: ekr.20170504122721.11
-unl: class class2--&gt;class2_method2
-</t>
-<t tx="ekr.20181031154748.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031154748.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031154748.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20181031154748.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031154748.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031154748.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20181031154902.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031154902.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181031154902.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20181031154902.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031154902.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181031154902.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20181116142416.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181116142416.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20181116142416.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20181116142416.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181116142416.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20181116142416.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20190109152926.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20190109152926.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20190109152926.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20190109152926.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20190109152926.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20190109152926.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20190113120618.1"># At least one unit test uses each of these files.</t>
 <t tx="ekr.20190113120734.1">@language python
 @others
@@ -2152,8 +1943,6 @@ unl: cheese
     pass</t>
 <t tx="ekr.20190113120734.3">def eggs():
     pass</t>
-<t tx="ekr.20190113121854.1">gnx: ekr.20190113121550.1
-</t>
 <t tx="ekr.20190113122443.1"># Must be False for @auto unit tests.</t>
 <t tx="ekr.20190113123822.1">@language c
 @tabwidth -4
@@ -2189,68 +1978,6 @@ unl: cheese
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
-<t tx="ekr.20190113124357.1">gnx: ekr.20190113123439.5
-</t>
-<t tx="ekr.20190113124357.10">gnx: ekr.20190113123439.16
-</t>
-<t tx="ekr.20190113124357.11">gnx: ekr.20190113124246.32
-unl: class class1
-gnx: ekr.20190113124246.33
-unl: class class1--&gt;class1_method1
-gnx: ekr.20190113124246.34
-unl: class class1--&gt;class1_method2
-gnx: ekr.20190113124246.35
-unl: class class2
-gnx: ekr.20190113124246.36
-unl: class class2--&gt;class2_method1
-gnx: ekr.20190113124246.37
-unl: class class2--&gt;class2_method2
-</t>
-<t tx="ekr.20190113124357.12">gnx: ekr.20190113123635.2
-</t>
-<t tx="ekr.20190113124357.13">gnx: ekr.20190113124246.38
-unl: section 1
-gnx: ekr.20190113124246.39
-unl: section 2
-</t>
-<t tx="ekr.20190113124357.14">gnx: ekr.20190113123635.5
-</t>
-<t tx="ekr.20190113124357.15">gnx: ekr.20190113124246.40
-unl: First line.
-gnx: ekr.20190113124246.41
-unl: section 1
-gnx: ekr.20190113124246.42
-unl: section 2
-</t>
-<t tx="ekr.20190113124357.2">gnx: ekr.20190113124246.25
-unl: at_auto_child
-</t>
-<t tx="ekr.20190113124357.3">gnx: ekr.20190113123439.7
-</t>
-<t tx="ekr.20190113124357.4">gnx: ekr.20190113124246.26
-unl: !Declarations
-gnx: ekr.20190113124246.27
-unl: section 1
-gnx: ekr.20190113124246.28
-unl: section 2
-</t>
-<t tx="ekr.20190113124357.5">gnx: ekr.20190113123439.11
-</t>
-<t tx="ekr.20190113124357.6">gnx: ekr.20190113124246.29
-unl: Declarations
-</t>
-<t tx="ekr.20190113124357.7">gnx: ekr.20190113121909.7
-unl: spam
-gnx: ekr.20190113121909.8
-unl: eggs
-</t>
-<t tx="ekr.20190113124357.8">gnx: ekr.20190113123439.13
-</t>
-<t tx="ekr.20190113124357.9">gnx: ekr.20190113124246.30
-unl: spam
-gnx: ekr.20190113124246.31
-unl: eggs
-</t>
 <t tx="ekr.20190912065312.1">from leo.core.leoBeautify import  SyntaxSanitizer
 for child in p.subtree():
     child_s = child.b

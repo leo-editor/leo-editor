@@ -17033,6 +17033,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20191106202318.3: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20191106202318.4: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
@@ -18745,7 +18758,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20181020074640.26: *7* @@file @test python top-level later decl
+#@+node:ekr.20191106202319.57: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18753,21 +18766,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20181020074640.27: *8* Declarations
+#@+node:ekr.20191106202319.58: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20181020074640.28: *8* merge_value
+#@+node:ekr.20191106202319.59: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20181020074640.29: *8* class MainDisplay(object)
+#@+node:ekr.20191106202319.60: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20181020074640.30: *9* save_file
+#@+node:ekr.20191106202319.61: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18775,7 +18788,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20181020074640.31: *8* retab
+#@+node:ekr.20191106202319.62: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -22205,9 +22218,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20181010090013.1: *5* insertAsFirstChild
-#@+node:ekr.20181010090013.3: *5* insertAsNthChild(1)
-#@+node:ekr.20181010090013.2: *5* insertAsLastChild
+#@+node:ekr.20191106202324.1: *5* insertAsFirstChild
+#@+node:ekr.20191106202324.3: *5* insertAsNthChild(1)
+#@+node:ekr.20191106202324.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -22835,9 +22848,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190319020829.1: *6* A
-#@+node:ekr.20190319020829.3: *6* newHeadline
-#@+node:ekr.20190319020829.2: *6* B
+#@+node:ekr.20191106202325.6: *6* A
+#@+node:ekr.20191106202325.8: *6* newHeadline
+#@+node:ekr.20191106202325.7: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -28367,6 +28380,27 @@ assert do.b == do_undo_redo.b, "Redo should do the operation again"
 line 1
     line 2
       line 3
+line4
+#@+node:ekr.20191106202329.2: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20191106202329.3: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191106202329.4: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
 line4
 #@+node:ekr.20190923170025.1: *4* @test undo editHeadline
 # Brian Theado.

@@ -2148,9 +2148,9 @@ class TracingNullObject:
                     print('%30s'  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return'TracingNullObject: %s'   % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     def __str__(self):
-        return'TracingNullObject: %s'   % tracing_tags.get(id(self), "<NO TAG>")
+        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     #
     # Attribute access...
     def __delattr__(self, attr):
