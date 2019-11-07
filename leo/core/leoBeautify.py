@@ -1182,7 +1182,6 @@ class FstringifyTokens(NullTokenBeautifier):
         """
         new_token = self.new_token
         string_val = self.val
-        ### string_val0 = self.val[:]
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -1190,8 +1189,7 @@ class FstringifyTokens(NullTokenBeautifier):
             g.trace('specs:', len(specs), 'values', len(values))
             g.printObj(specs, tag='SPECS')
             g.printObj(values, tag='VALUES')
-            # Produce the default token.
-            # do_token has already popped the input token.
+            # Punt, without popping any more tokens.
             self.add_token('string', string_val)
             return
         # Substitute the values.
@@ -1223,7 +1221,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 self.tokens.pop(0)
             self.add_token('string', result)
         else:
-            # Punt.
+            # Punt, without popping any more tokens.
             self.add_token('string', string_val)
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
