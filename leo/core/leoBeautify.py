@@ -1116,6 +1116,13 @@ class FstringifyTokens(NullTokenBeautifier):
             self.error('unclosed curly bracket')
             return False
         return True
+    #@+node:ekr.20191107041026.1: *4* fstring.clean_ws
+    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+    def clean_ws(self, s):
+        """Carefully remove whitespace before ! and : specifiers."""
+        s = re.sub(self.ws_pat, r'\2', s)
+        return s
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, string_val, results):
         """
@@ -1212,6 +1219,8 @@ class FstringifyTokens(NullTokenBeautifier):
             results.append(new_token('fstringify', tail))
         result = self.compute_result(string_val, results)
         if result:
+            # Remove whitespace before ! and :.
+            result = self.clean_ws(result)
             # Actually consume the scanned tokens.
             for token in tokens:
                 self.tokens.pop(0)

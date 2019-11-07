@@ -3740,7 +3740,17 @@ return "^@(%s)" % "|".join(aList)
 r'''
 return f"^@({'|'.join(aList)})"
 '''
-)
+),
+
+( # Test 8.
+r'''
+g.trace('done: %5s page: %3s found: %s label: %s' % (
+    done, page, n, label))
+''',
+r'''
+g.trace(f'done: {done:5} page: {page:3} found: {n} label: {label}')
+'''
+),
 
 ) # End of all tests.
 
