@@ -189,9 +189,8 @@ def unit_test(raise_on_fail=True):
                 ops += 1
             else:
                 errors += 1
-                print('Missing %s visitor for: %s' % (
-                    traverser.__class__.__name__, z))
-    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
+    s = f"{nodes} node types, {ops} op types, {errors} errors"
     if raise_on_fail:
         assert not errors, s
     else:
@@ -490,8 +489,9 @@ class AstFormatter:
             result.append(',\n'.join(items))
             result.append('\n}' if keys else '}')
         else:
-            print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
-                repr(keys), repr(values)))
+            print(
+                f"Error: f.Dict: len(keys) != len(values)\n"
+                f"keys: {repr(keys)}\nvals: {repr(values)}")
         return ''.join(result)
     #@+node:ekr.20160523101618.1: *4* f.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
@@ -600,7 +600,7 @@ class AstFormatter:
     #@+node:ekr.20160521104724.1: *4* f.op_name
     def op_name(self, node, strict=True):
         """Return the print name of an operator node."""
-        name = _op_names.get(self.kind(node), '<%s>' % node.__class__.__name__)
+        name = _op_names.get(self.kind(node), f'<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
     #@+node:ekr.20141012064706.18437: *4* f.BinOp
@@ -1986,7 +1986,7 @@ class HTMLReportTraverser:
         """Return a report for the given ast node as a string."""
         self.gen(self.html_header % {
                 'css-fn': self.css_fn,
-                'title': 'Module: %s' % fn
+                'title': f"Module: {fn}"
             })
         self.parent = None
         self.parents = [None]
@@ -2879,7 +2879,7 @@ class TokenSync:
         """Check that all strings have been consumed."""
         for i, aList in enumerate(self.string_tokens):
             if aList:
-                g.trace('warning: line %s. unused strings: %s' % (i, aList))
+                g.trace(f"warning: line {i}. unused strings: {aList}")
     #@+node:ekr.20160225102931.9: *3* ts.dump_token
     def dump_token(self, token, verbose=False):
         """Dump the token. It is either a string or a 5-tuple."""
