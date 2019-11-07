@@ -3674,90 +3674,73 @@ import leo.core.leoBeautify as leoBeautify
 
 table = (
 
-( # Start test 1.
-
-# Test 1: contents.
+( # Test 1.
 r'''
 g.es('%s blah blah' % (
     g.angleBrackets('*')))
 ''',
-
-# Test 1: expected.
 r'''
 g.es(f'{g.angleBrackets("*")} blah blah')
 ''',
-), # End test 1
+),
 
-( # Start of test 2.
-
-# Test 2: contents.
+( # Test 2.
 r'''
 mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
 ''',
-
-# Test 2: expected.
 r'''
 mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
 ''',
-), # End of test 2.
+),
 
-( # Start test 3
-
-# Test 3: contents.
+( # Test 3.
 r'''
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 ''',
-
-# Test 3: expected.
 r'''
 ret = f'[{",".join([self.show(z) for z in arg])}]'
 ''',
-), # End of test 3.
+),
 
-( # Start of test 4.
-
-# Test 4: contents.
+( # Test 4.
 r'''
 return '[%s]' % ' '.join(result).strip()
 ''',
-
-# Test 4: expected.
 r'''
 return f'[{" ".join(result).strip()}]'
 '''
-), # End of test 4.
+),
 
-( # Start of test 5.
-
-# Test 5: contents.
+( # Test 5.
 r'''
 return'%s' % a
 return '%s' % b
 ''',
-
-# Test 5, expected.
 r'''
 return f'{a}'
 return f'{b}'
 ''',
+),
 
-), # End of test 5.
-
-( # Start of test 6.
-
-# Test 6: contents.
+( # Test 6.
 r'''
 print("%dx%d%+d%+d" % (300, 200, 50, 50))
 print("%dx%d%-d%-d" % (300, 200, 50, 50))
 ''',
-
-# Test 6: expected:
 r'''
 print(f"{300:d}x{200:d}{50:+d}{50:+d}")
 print(f"{300:d}x{200:d}{50:>d}{50:>d}")
 ''',
+),
 
-), # End of test 6.
+( # Test 7
+r'''
+return "^@(%s)" % "|".join(aList)
+''',
+r'''
+return f"^@({'|'.join(aList)})"
+'''
+)
 
 ) # End of all tests.
 

@@ -1248,7 +1248,7 @@ class FstringifyTokens(NullTokenBeautifier):
             g.es_print('no string_val!')
             return False
         delim = string_val[0]
-        delim2 = '"' if delim == "'" else '"'
+        delim2 = '"' if delim == "'" else "'"
         #
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
