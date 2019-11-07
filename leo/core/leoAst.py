@@ -1978,9 +1978,7 @@ class HTMLReportTraverser:
     def summary_link(self, module_name, full_name, name, classes=None):
 
         return self.name_link(
-            "%s-summary" % module_name,
-            full_name, name,
-            classes)
+            f"{module_name}-summary", full_name, name, classes)
     #@+node:ekr.20160315161259.1: *3* rt.main
     def main(self, fn, node):
         """Return a report for the given ast node as a string."""
