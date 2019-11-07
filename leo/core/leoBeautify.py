@@ -1124,7 +1124,7 @@ class FstringifyTokens(NullTokenBeautifier):
         s = re.sub(self.ws_pat, r'\2', s)
         return s
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
-    def compute_result(self, string_val, results):
+    def compute_result(self, string_val, results_list):
         """
         Create the final result as follows:
             
@@ -1143,9 +1143,10 @@ class FstringifyTokens(NullTokenBeautifier):
         c = self.c
         #
         # Flatten the token list.
-        if trace: g.printObj(results, tag='TOKENS 1')
+        if trace: g.printObj(results_list, tag='TOKENS 1')
         tokens = []
-        for z in results:
+        ### To do: define "flatten" helper.
+        for z in results_list:
             if isinstance(z, (list, tuple)):
                 tokens.extend(z)
             else:
