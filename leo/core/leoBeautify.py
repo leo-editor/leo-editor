@@ -1120,8 +1120,17 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+others
     #@+node:ekr.20191024051733.11: *3* fstring: Conversion
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
-    def compute_result(self, results):
-
+    def compute_result(self, string_val, results):
+        """
+        Create the final result as follows:
+            
+        1. Flatten the results array.
+        
+        2. Using string_val (the original string) compute whether to use single
+           or double quotes for the outer fstring.
+        
+        3. Beautify the result using the PythonTokenBeautifier class.
+        """
         trace = True and not g.unitTesting
         # pylint: disable=import-self
         import leo.core.leoBeautify as leoBeautify
@@ -1136,6 +1145,14 @@ class FstringifyTokens(NullTokenBeautifier):
             else:
                 tokens.append(z)
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+        #
+        # 
+        ok = self.change_quotes(string_val, tokens)
+        if not ok:
+            g.es_print('Can not fstringify')
+            g.es_print('Both single and double quotes found')
+            g.es_print(''.join([z.to_string() for z in tokens]))
+            return string_val
         #
         # Use ptb to clean up inter-token whitespace.
         x = leoBeautify.PythonTokenBeautifier(c)
@@ -1188,7 +1205,7 @@ class FstringifyTokens(NullTokenBeautifier):
         tail = string_val[i:]
         if tail:
             results.append(new_token('fstringify', tail))
-        result = self.compute_result(results)
+        result = self.compute_result(string_val, results)
         self.add_token('string', result)
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
@@ -1214,16 +1231,58 @@ class FstringifyTokens(NullTokenBeautifier):
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail
-    #@+node:ekr.20191025034715.1: *4* fstring.munge_string
-    def munge_string(self, string_val, aList):
+    #@+node:ekr.20191025034715.1: *4* fstring.change_quotes
+    def change_quotes(self, string_val, aList):
         """
-        Escape all strings as necessary to make a valid result.
+        Carefully change quotes in all "inner" tokens as necessary.
+        
+        Return True if all went well.
+        
+        We expect the following "outer" tokens.
+            
+        aList[0]:  ('fstringify', 'f')
+        aList[1]:  ('fstringify', a string starting with a quote)
+        aList[-1]: ('fstringify', a string ending with a quote that matches aList[1])
         """
+        # Sanity checks.
+        if len(aList) < 4:
+            return True
         if not string_val:
-            return aList
+            g.es_print('no string_val!')
+            return False
         delim = string_val[0]
         delim2 = '"' if delim == "'" else '"'
-        return [z.replace(delim, delim2) for z in aList]
+        #
+        # Check tokens 0, 1 and -1.
+        token0 = aList[0]
+        token1 = aList[1]
+        token_last = aList[-1]
+        for token in token0, token1, token_last:
+            if token.kind != 'fstringify':
+                g.es_print(f"unexpected token: {token!r}")
+                return False
+        if token0.value != 'f':
+            g.es_print('token[0] error!', repr(token0))
+            return False
+        val1 = token1.value and token1.value[0]
+        if delim != val1:
+            g.es_print('token[1] error!', delim, val1, repr(token1))
+            return False
+        val_last = token_last.value and token_last.value[-1]
+        if delim != val_last:
+            g.es_print('token[-1] error!', delim, val_last, repr(token_last))
+            return False
+        #
+        # Replace delim by delim2 in all inner tokens.
+        for z in aList[2:-1]:
+            if not isinstance(z, BeautifierToken):
+                g.es_print('Bad token:', repr(z))
+                return False
+            if delim2 in z.value:
+                g.es_print('Delim clash', repr(z))
+                return False
+            z.value = z.value.replace(delim, delim2)
+        return True
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):
         """
@@ -1309,7 +1368,7 @@ class FstringifyTokens(NullTokenBeautifier):
         
         Return (values_list, token_i) of all tokens to the matching closing delim.
         """
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         new_token = self.new_token
         if trace:
             g.trace('=====', token_i, repr(val))
@@ -1393,7 +1452,7 @@ class FstringifyTokens(NullTokenBeautifier):
         """
         fstringify node p.  Return True if the node has been changed.
         """
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         c = self.c
         if should_kill_beautify(p):

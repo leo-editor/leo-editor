@@ -406,6 +406,7 @@
 <v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
 </v>
+<v t="ekr.20191106072009.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4154,7 +4155,7 @@ g.es('%s blah blah' % (
 
 # Test 1: expected.
 r'''
-g.es(f'{g.angleBrackets('*')} blah blah')
+g.es(f'{g.angleBrackets("*")} blah blah')
 ''',
 ), # End test 1
 
@@ -4178,11 +4179,24 @@ r'''
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 ''',
 
-# Test 3: expected
+# Test 3: expected.
 r'''
-ret = f'[{','.join([self.show(z) for z in arg])}]'
+ret = f'[{",".join([self.show(z) for z in arg])}]'
 ''',
-), # End of test 3
+), # End of test 3.
+
+( # Start of test 4.
+
+# Test 4: contents.
+r'''
+return '[%s]' % ' '.join(result).strip()
+''',
+
+# Test 4: expected.
+r'''
+return f'[{" ".join(result).strip()}]'
+'''
+), # End of test 4.
 
 ) # End of all tests.
 
@@ -4193,16 +4207,17 @@ for test, expected in table:
     # x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
+    # print(results)
     if results.strip() != expected.strip():
         print('\nContents...')
         for j, s in enumerate(g.splitLines(contents.strip())):
-            print(f"{j:2}: {s!r}")
+            print(f"{j:2}: {s.rstrip()}")
         print('\nExpected...')
         for j, s in enumerate(g.splitLines(expected.strip())):
-            print(f"{j:2}: {s!r}")
+            print(f"{j:2}: {s.rstrip()}")
         print('\nResults...')
         for j, s in enumerate(g.splitLines(results.strip())):
-            print(f"{j:2}: {s!r}")
+            print(f"{j:2}: {s.rstrip()}")
         assert False, f"FAIL"
 </t>
 </tnodes>
