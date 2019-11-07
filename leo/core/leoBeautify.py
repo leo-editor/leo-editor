@@ -1131,7 +1131,7 @@ class FstringifyTokens(NullTokenBeautifier):
         
         3. Beautify the result using the PythonTokenBeautifier class.
         """
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # pylint: disable=import-self
         import leo.core.leoBeautify as leoBeautify
         c = self.c
