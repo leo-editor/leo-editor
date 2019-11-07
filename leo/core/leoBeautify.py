@@ -1281,7 +1281,7 @@ class FstringifyTokens(NullTokenBeautifier):
             g.es_print('no string_val!')
             return False
         delim = string_val[0]
-        delim2 = '"' if delim == "'" else "'"
+        ### delim2 = '"' if delim == "'" else "'"
         #
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
@@ -1302,13 +1302,22 @@ class FstringifyTokens(NullTokenBeautifier):
         if delim != val_last:
             g.es_print('token[-1] error!', delim, val_last, repr(token_last))
             return False
+        # g.printObj(aList)
+        # Regularize the outer tokens.
+        delim, delim2 = '"', "'"
+        token1.value = delim + token1.value[1:]
+        aList[1] = token1
+        token_last.value = token_last.value[:-1] + delim
+        aList[-1] = token_last
         #
         # Replace delim by delim2 in all inner tokens.
         for z in aList[2:-1]:
+            ### g.trace(z)
             if not isinstance(z, BeautifierToken):
                 g.es_print('Bad token:', repr(z))
                 return False
             z.value = z.value.replace(delim, delim2)
+        # g.printObj(aList)
         return True
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
     def scan_for_values(self):

@@ -330,8 +330,8 @@
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
 <v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
-<v t="ekr.20191106072009.1"></v>
 <v t="ekr.20191106195303.1"></v>
+<v t="ekr.20191106072009.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3882,7 +3882,7 @@ g.es('%s blah blah' % (
     g.angleBrackets('*')))
 ''',
 r'''
-g.es(f'{g.angleBrackets("*")} blah blah')
+g.es(f"{g.angleBrackets('*')} blah blah")
 ''',
 ),
 
@@ -3891,7 +3891,7 @@ r'''
 mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
 ''',
 r'''
-mods = ''.join([f'{z.capitalize()}+' for z in self.mods])
+mods = ''.join([f"{z.capitalize()}+" for z in self.mods])
 ''',
 ),
 
@@ -3900,7 +3900,7 @@ r'''
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 ''',
 r'''
-ret = f'[{",".join([self.show(z) for z in arg])}]'
+ret = f"[{','.join([self.show(z) for z in arg])}]"
 ''',
 ),
 
@@ -3909,7 +3909,7 @@ r'''
 return '[%s]' % ' '.join(result).strip()
 ''',
 r'''
-return f'[{" ".join(result).strip()}]'
+return f"[{' '.join(result).strip()}]"
 '''
 ),
 
@@ -3919,8 +3919,8 @@ return'%s' % a
 return '%s' % b
 ''',
 r'''
-return f'{a}'
-return f'{b}'
+return f"{a}"
+return f"{b}"
 ''',
 ),
 
@@ -3950,21 +3950,22 @@ g.trace('done: %5s page: %3s found: %s label: %s' % (
     done, page, n, label))
 ''',
 r'''
-g.trace(f'done: {done:5} page: {page:3} found: {n} label: {label}')
+g.trace(f"done: {done:5} page: {page:3} found: {n} label: {label}")
 '''
 ),
 
 ) # End of all tests.
 
-for test, expected in table:
+for i, data in enumerate(table):
+    test, expected = data
     contents = test.strip() ###### + '\n'
     x = leoBeautify.FstringifyTokens(c)
     # x.dump_input_tokens = True
     # x.dump_output_tokens = True
     tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
     results = x.scan_all_tokens(contents, tokens)
-    # print(results)
     if results.strip() != expected.strip():
+        print('\nFAIL test', i+1)
         print('\nContents...')
         for j, s in enumerate(g.splitLines(contents.strip())):
             print(f"{j:2}: {s.rstrip()}")
