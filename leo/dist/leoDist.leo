@@ -11,7 +11,7 @@
 <v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
 </v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
+<v t="ekr.20101025095431.1517"><vh>Obsolete: Installer/Distribution bugs &amp; to-do</vh>
 <v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
@@ -176,10 +176,15 @@
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
+<v t="mhw.20191107063807.1"><vh>Clean up root dir</vh>
 <v t="mhw.20191101123146.1"><vh>To Delete</vh>
 <v t="ekr.20151227063335.1"><vh>@@clean ../../About leo.exe.TXT</vh></v>
 <v t="maphew.20190208142757.1"><vh>@@clean ../../optional-tools.txt</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@@clean ../../INSTALL.TXT</vh></v>
+</v>
+<v t="mhw.20191107063030.1"><vh>To Move</vh>
+<v t="ekr.20150416081546.7"></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2610,6 +2615,17 @@ https://github.com/leo-editor/leo-editor/issues/1077
 Files in this tree are or will be deleted from the Leo's root directory. They're
 kept here for easy restoration or migration to another place if it's decided
 they should be kept.
+
+-matt (@maphew)
+</t>
+<t tx="mhw.20191107063030.1">_Files and nodes which could probably live somewhere else._
+
+
+This is an organizer node of clones for the things-to-be-moved, e.g. use "Go to
+clone" and move that. These nodes can be removed when satisfied nothing was
+broken.</t>
+<t tx="mhw.20191107063807.1">Refresh / audit MANIFEST.in excludes and includes
+https://github.com/leo-editor/leo-editor/issues/1077
 
 -matt (@maphew)
 </t>
