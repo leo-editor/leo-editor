@@ -150,6 +150,9 @@
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
+<v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
+</v>
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
@@ -2628,6 +2631,21 @@ broken.</t>
 https://github.com/leo-editor/leo-editor/issues/1077
 
 -matt (@maphew)
+</t>
+<t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
+scripts held in Scripts.leo. My current thinking is the scripts should be moved
+to or at least managed from Dist.
+
+-matt  </t>
+<t tx="mhw.20191107064521.1">@language unknown_language
+[Desktop Entry]
+Encoding=UTF-8
+Version=master
+Type=Application
+Terminal=true
+Exec=/snap/bin/leo-editor.leo
+Name=Leo Editor
+Icon=/snap/meta/gui/icon.png
 </t>
 </tnodes>
 </leo_file>
