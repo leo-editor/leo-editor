@@ -1149,7 +1149,11 @@ class FstringifyTokens(NullTokenBeautifier):
         #
         # Create the result.
         if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
-        return ''.join([z.to_string() for z in result_tokens])
+        result = ''.join([z.to_string() for z in result_tokens])
+        # Ensure a space between the new fstring and a previous name.
+        if self.prev_token.kind == 'name':
+            result = ' ' + result
+        return result
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
         """

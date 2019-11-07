@@ -3927,6 +3927,20 @@ return f'[{" ".join(result).strip()}]'
 '''
 ), # End of test 4.
 
+( # Start of test 5.
+r'''
+return'%s' % a
+return '%s' % b
+''',
+
+# Test 5, expected.
+r'''
+return f'{a}'
+return f'{b}'
+''',
+
+), # End of test 5.
+
 ) # End of all tests.
 
 for test, expected in table:
