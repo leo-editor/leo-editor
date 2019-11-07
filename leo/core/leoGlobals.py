@@ -505,9 +505,8 @@ class EmergencyDialog:
     #@+node:ekr.20120219154958.10498: *4* emergencyDialog.run
     def run(self):
         """Run the modal emergency dialog."""
-        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
-        ### FAIL: WRONG: regex eats '+'.
-        ### self.top.geometry(f"{300:d}x{200:d}{50:d}{50:d}")
+        # Suppress f-stringify.
+        self.top.geometry(f"%dx%d%+d%+d" % (300, 200, 50, 50))
         self.top.lift()
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
@@ -1691,13 +1690,13 @@ class SherlockTracer:
     def __call__(self, frame, event, arg):
         """Exists so that self.dispatch can return self."""
         return self.dispatch(frame, event, arg)
-    #@+node:ekr.20140326100337.16846: *4* bad_pattern
+    #@+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
     def bad_pattern(self, pattern):
         """Report a bad Sherlock pattern."""
         if pattern not in self.bad_patterns:
             self.bad_patterns.append(pattern)
             print(f'\nignoring bad pattern: {pattern}\n')
-    #@+node:ekr.20140326100337.16847: *4* check_pattern
+    #@+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
     def check_pattern(self, pattern):
         """Give an error and return False for an invalid pattern."""
         try:
@@ -1710,7 +1709,7 @@ class SherlockTracer:
         except Exception:
             self.bad_pattern(pattern)
             return False
-    #@+node:ekr.20121128031949.12609: *4* dispatch
+    #@+node:ekr.20121128031949.12609: *4* sherlock.dispatch
     def dispatch(self, frame, event, arg):
         """The dispatch method."""
         if event == 'call':
@@ -1721,7 +1720,7 @@ class SherlockTracer:
             self.do_line(frame, arg)
         # Queue the SherlockTracer instance again.
         return self
-    #@+node:ekr.20121128031949.12603: *4* do_call & helper
+    #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
     def do_call(self, frame, unused_arg):
         """Trace through a function call."""
         import os
@@ -1747,7 +1746,7 @@ class SherlockTracer:
         d = self.stats.get(fn, {})
         d[full_name] = 1 + d.get(full_name, 0)
         self.stats[fn] = d
-    #@+node:ekr.20130111185820.10194: *5* get_args
+    #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
     def get_args(self, frame):
         """Return name=val for each arg in the function call."""
         code = frame.f_code
@@ -1771,7 +1770,7 @@ class SherlockTracer:
                     if val:
                         result.append(f"{name}={val}")
         return ','.join(result)
-    #@+node:ekr.20140402060647.16845: *4* do_line (Sherlock)
+    #@+node:ekr.20140402060647.16845: *4* sherlock.do_line
     def do_line(self, frame, arg):
         """print each line of enabled functions."""
         code = frame.f_code
@@ -1795,7 +1794,7 @@ class SherlockTracer:
                 print(f'{name:3} {line}')
             else:
                 print(f"{g.shortFileName(fn)} {n} {full_name} {line}")
-    #@+node:ekr.20130109154743.10172: *4* do_return & helper
+    #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
         import os
@@ -1820,17 +1819,18 @@ class SherlockTracer:
             else:
                 ret = self.format_ret(arg)
             print(f"{path}{dots}-{full_name}{ret}")
-    #@+node:ekr.20130111120935.10192: *5* format_ret
+    #@+node:ekr.20130111120935.10192: *5* sherlock.format_ret
     def format_ret(self, arg):
         """Format arg, the value returned by a "return" statement."""
         try:
             if isinstance(arg, types.GeneratorType):
                 ret = '<generator>'
             elif isinstance(arg, (tuple, list)):
-                ### Fail.
-                ret = '[%s]' % ','.join([self.show(z) for z in arg])
+                # Clearer w/o f-string.
+                ret = f'[%s]' % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
-                    ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
+                    # Clearer w/o f-string.
+                    ret = f'[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
             elif arg:
                 ret = self.show(arg)
                 if len(ret) > 40:
@@ -1840,9 +1840,10 @@ class SherlockTracer:
         except Exception:
             exctype, value = sys.exc_info()[:2]
             s = '<**exception: %s,%s arg: %r**>' % (exctype.__name__, value, arg)
-            ret = ' ->\n    %s' % s if len(s) > 40 else f" -> {s}"
+            # Clearer w/o f-string.
+            ret = f' ->\n    %s' % s if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
-    #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
+    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
     def fn_is_enabled(self, fn, patterns):
         """
         Return True if tracing for fn is enabled.
