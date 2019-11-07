@@ -572,44 +572,6 @@ class NullTokenBeautifier:
         tok = BeautifierToken(kind, value)
         self.code_list.append(tok)
         self.prev_output_token = self.code_list[-1]
-    #@+node:ekr.20191029014023.6: *3* fstring.look_ahead & skip_ahead
-    def look_ahead(self, n):
-        """
-        Look ahead n tokens, skipping ws tokens  n >= 0.
-        Return (token.kind, token.value)
-        """
-        while n < len(self.tokens):
-            token = self.tokens[n]
-            n += 1
-            assert isinstance(token, BeautifierToken), (repr(token), g.callers())
-            if token.kind != 'ws':
-                return token.kind, token.value
-        return None, None
-            # Strip trailing whitespace from the token value.
-
-    def skip_ahead(self, n, target_kind, target_val):
-        """
-        Skip to the target token.  Only ws tokens should intervene.
-
-        Return (n, tokens):
-        """
-        tokens = []
-        while n < len(self.tokens):
-            token = self.tokens[n]
-            tokens.append(token)
-            n += 1
-            if (token.kind, token.value) == (target_kind, target_val):
-                return n, tokens
-            assert token.kind == 'ws', (token.kind, token.value)
-        # Should never happen.
-        return n, []
-    #@+node:ekr.20191028021428.1: *3* null_tok_b.make_input_tokens
-    def make_input_tokens(self, contents, tokens):
-        """
-        Create self.tokens, a *list* (not a generator) of BeautifierTokens.
-        """
-        x = InputTokenizer()
-        self.tokens = x.create_input_tokens(contents, tokens)
     #@+node:ekr.20191028070535.1: *3* null_tok_b.scan_all_tokens
     def scan_all_tokens(self, contents, tokens):
         """
@@ -633,7 +595,8 @@ class NullTokenBeautifier:
         # Init the input_list,
         self.prev_input_token = None
         self.tokens = []
-        self.make_input_tokens(contents, tokens)
+        # Convert 5-tuples to a list (not a generator) of BeautifierTokens.
+        self.tokens = InputTokenizer().create_input_tokens(contents, tokens)
         if self.dump_input_tokens:
             g.printObj(self.tokens, tag='INPUT TOKENS')
         # Init the output list.
@@ -663,6 +626,8 @@ class BeautifierToken:
         self.value = value
         self.line = ''
             # The entire line containing the token. Same as token.line.
+        self.line_number = 0
+            # The line number, for errors. Same as token.start[0]
 
     def __repr__(self):
         # g.printObj calls repr.
@@ -1118,6 +1083,12 @@ class FstringifyTokens(NullTokenBeautifier):
         self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
 
     #@+others
+    #@+node:ekr.20191107014726.1: *3* fstring.error
+    def error(self, message):
+
+        g.es_print('')
+        g.es_print(f"line {self.line_number}: {message}:")
+        g.es_print(self.line.strip())
     #@+node:ekr.20191024051733.11: *3* fstring: Conversion
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, string_val, results):
@@ -1151,16 +1122,21 @@ class FstringifyTokens(NullTokenBeautifier):
         # Fail if the result would include a backslash of any kind.
         if any(['\\' in z.value for z in tokens]):
             if not g.unitTesting:
-                g.es_print('Can not fstringify expressions containing backslashes')
-                g.es_print(''.join([z.to_string() for z in tokens]))
+                self.error('string contains backslashes')
+                ###
+                    # g.es_print('Can not fstringify expressions containing backslashes')
+                    # g.es_print(''.join([z.to_string() for z in tokens]))
+                    # g.es_print(f"{self.line_number:2}: {self.line.strip()}")
             return None
         #
         # Ensure consistent quotes.
         ok = self.change_quotes(string_val, tokens)
         if not ok:
             if not g.unitTesting:
-                g.es_print('Can not fstringify expression containing mixed quotes')
-                g.es_print(''.join([z.to_string() for z in tokens]))
+                self.error('string contains backslashes')
+                ###
+                    # g.es_print('Can not fstringify expression containing mixed quotes')
+                    # g.es_print(''.join([z.to_string() for z in tokens]))
             return None
         #
         # Use ptb to clean up inter-token whitespace.
@@ -1185,6 +1161,7 @@ class FstringifyTokens(NullTokenBeautifier):
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
+            self.error('Scanning error')
             g.trace('\nMISMATCH\n')
             g.trace('specs:', len(specs), 'values', len(values))
             g.printObj(specs, tag='SPECS')
@@ -1294,10 +1271,6 @@ class FstringifyTokens(NullTokenBeautifier):
             if not isinstance(z, BeautifierToken):
                 g.es_print('Bad token:', repr(z))
                 return False
-            ### Not a problem!
-                # if delim2 in z.value:
-                    # g.es_print('Delim clash', repr(z))
-                    # return False
             z.value = z.value.replace(delim, delim2)
         return True
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
@@ -1576,10 +1549,14 @@ class FstringifyTokens(NullTokenBeautifier):
         if token.kind == 'string':
             self.kind = token.kind
             self.val = token.value
+            # Set these for error messages.
+            self.line = token.line
+            self.line_number = token.line_number
             self.do_string()
         else:
             # Same as super().do_token(token)
             self.code_list.append(token)
+        self.prev_token = token
     #@+node:ekr.20191029014023.6: *4* fstring.look_ahead & skip_ahead
     def look_ahead(self, n):
         """
@@ -2757,7 +2734,7 @@ class InputTokenizer:
     
     #@+others
     #@+node:ekr.20191105064919.1: *3* tok.add_token
-    def add_token(self, kind, line, value):
+    def add_token(self, kind, line, s_row, value):
         """
         Add a token to the results list.
         
@@ -2765,6 +2742,7 @@ class InputTokenizer:
         """
         tok = BeautifierToken(kind, value)
         tok.line = line
+        tok.line_number = s_row
         self.results.append(tok)
     #@+node:ekr.20191102155252.2: *3* tok.create_input_tokens
     def create_input_tokens(self, contents, tokens):
@@ -2817,7 +2795,7 @@ class InputTokenizer:
         ws = contents[self.prev_offset : s_offset]
         if ws:
             # No need for a hook.
-            self.add_token('ws', line, ws)
+            self.add_token('ws', line, s_row, ws)
             if self.trace:
                 print(
                     f"{'ws':>10} {ws!r:20} "
@@ -2826,7 +2804,7 @@ class InputTokenizer:
         # Add the token, if it contributes any real text.
         tok_s = contents[s_offset : e_offset]
         # Bug fix 2019/11/05: always add token, even it contributes text!
-        self.add_token(kind, line, tok_s)
+        self.add_token(kind, line, s_row, tok_s)
         if self.trace:
             print(
                 f"{kind:>10} {val!r:20} "
