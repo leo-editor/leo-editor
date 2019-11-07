@@ -405,8 +405,10 @@
 </v>
 <v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
+<v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
 <v t="ekr.20191106072009.1"></v>
+<v t="ekr.20191106195303.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4214,6 +4216,38 @@ for test, expected in table:
             print(f"{j:2}: {s.rstrip()}")
         print('\nExpected...')
         for j, s in enumerate(g.splitLines(expected.strip())):
+            print(f"{j:2}: {s.rstrip()}")
+        print('\nResults...')
+        for j, s in enumerate(g.splitLines(results.strip())):
+            print(f"{j:2}: {s.rstrip()}")
+        assert False, f"FAIL"
+</t>
+<t tx="ekr.20191106195303.1">'''These tests cover potential fstrings that can't be automatically converted.'''
+
+import io
+import tokenize
+import leo.core.leoBeautify as leoBeautify
+
+table = (
+
+# Test 1: contents.
+r'''
+ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
+''',
+
+)
+
+for test in table:
+    contents = test.strip()
+    x = leoBeautify.FstringifyTokens(c)
+    # x.dump_input_tokens = True
+    # x.dump_output_tokens = True
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    results = x.scan_all_tokens(contents, tokens)
+    # print(results)
+    if results.strip() != test.strip():
+        print('\nContents...')
+        for j, s in enumerate(g.splitLines(contents.strip())):
             print(f"{j:2}: {s.rstrip()}")
         print('\nResults...')
         for j, s in enumerate(g.splitLines(results.strip())):

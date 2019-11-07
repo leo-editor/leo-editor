@@ -1130,6 +1130,8 @@ class FstringifyTokens(NullTokenBeautifier):
            or double quotes for the outer fstring.
         
         3. Beautify the result using the PythonTokenBeautifier class.
+        
+        Return the result string, or None if there are errors.
         """
         trace = False and not g.unitTesting
         # pylint: disable=import-self
@@ -1146,18 +1148,27 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.append(z)
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         #
+        # Fail if the result would include a backslash of any kind.
+        if any(['\\' in z.value for z in tokens]):
+            if not g.unitTesting:
+                g.es_print('Can not fstringify expressions containing backslashes')
+                g.es_print(''.join([z.to_string() for z in tokens]))
+            return None
+        #
         # Ensure consistent quotes.
         ok = self.change_quotes(string_val, tokens)
         if not ok:
-            g.es_print('Can not fstringify')
-            g.es_print('Both single and double quotes found')
-            g.es_print(''.join([z.to_string() for z in tokens]))
-            return string_val
+            if not g.unitTesting:
+                g.es_print('Can not fstringify expression containing mixed quotes')
+                g.es_print(''.join([z.to_string() for z in tokens]))
+            return None
         #
         # Use ptb to clean up inter-token whitespace.
         x = leoBeautify.PythonTokenBeautifier(c)
         x.dump_input_tokens = True
         x.dump_output_tokens = True
+        ### We can do this only if the previous token was a name.
+        ### tokens.append(self.new_token('blank', ' '))
         result_tokens = x.scan_all_beautifier_tokens(tokens)
         #
         # Create the result.
@@ -1171,6 +1182,7 @@ class FstringifyTokens(NullTokenBeautifier):
         """
         new_token = self.new_token
         string_val = self.val
+        ### string_val0 = self.val[:]
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -1178,12 +1190,10 @@ class FstringifyTokens(NullTokenBeautifier):
             g.trace('specs:', len(specs), 'values', len(values))
             g.printObj(specs, tag='SPECS')
             g.printObj(values, tag='VALUES')
-            # Add the original string.
+            # Produce the default token.
+            # do_token has already popped the input token.
             self.add_token('string', string_val)
             return
-        # Actually consume the scanned tokens.
-        for token in tokens:
-            self.tokens.pop(0)
         # Substitute the values.
         i, results = 0, [new_token('fstringify', 'f')]
         for spec_i, m in enumerate(specs):
@@ -1202,11 +1212,19 @@ class FstringifyTokens(NullTokenBeautifier):
                 results.append(new_token('fstringify', tail))
             results.append(new_token('op', '}'))
             i = end
+        # Add the tail.
         tail = string_val[i:]
         if tail:
             results.append(new_token('fstringify', tail))
         result = self.compute_result(string_val, results)
-        self.add_token('string', result)
+        if result:
+            # Actually consume the scanned tokens.
+            for token in tokens:
+                self.tokens.pop(0)
+            self.add_token('string', result)
+        else:
+            # Punt.
+            self.add_token('string', string_val)
     #@+node:ekr.20191025043607.1: *4* fstring.munge_spec
     def munge_spec(self, spec):
         """

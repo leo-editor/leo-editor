@@ -3748,6 +3748,38 @@ for test, expected in table:
         for j, s in enumerate(g.splitLines(results.strip())):
             print(f"{j:2}: {s.rstrip()}")
         assert False, f"FAIL"
+#@+node:ekr.20191106195303.1: *4* @test fstringify should fail
+'''These tests cover potential fstrings that can't be automatically converted.'''
+
+import io
+import tokenize
+import leo.core.leoBeautify as leoBeautify
+
+table = (
+
+# Test 1: contents.
+r'''
+ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
+''',
+
+)
+
+for test in table:
+    contents = test.strip()
+    x = leoBeautify.FstringifyTokens(c)
+    # x.dump_input_tokens = True
+    # x.dump_output_tokens = True
+    tokens = list(tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline))
+    results = x.scan_all_tokens(contents, tokens)
+    # print(results)
+    if results.strip() != test.strip():
+        print('\nContents...')
+        for j, s in enumerate(g.splitLines(contents.strip())):
+            print(f"{j:2}: {s.rstrip()}")
+        print('\nResults...')
+        for j, s in enumerate(g.splitLines(results.strip())):
+            print(f"{j:2}: {s.rstrip()}")
+        assert False, f"FAIL"
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
