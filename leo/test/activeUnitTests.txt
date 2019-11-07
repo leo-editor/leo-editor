@@ -3689,7 +3689,7 @@ r'''
 mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
 ''',
 r'''
-mods = ''.join([f'{z.capitalize()}+'for z in self.mods])
+mods = ''.join([f'{z.capitalize()}+' for z in self.mods])
 ''',
 ),
 

@@ -1164,7 +1164,8 @@ class FstringifyTokens(NullTokenBeautifier):
             return None
         #
         # Ensure one blank after the f-string.
-        tokens.append(self.new_token('fstringify', ' '))
+        ### Doesn't work well.
+        # tokens.append(self.new_token('fstringify', ' '))
         #
         # Use ptb to clean up inter-token whitespace.
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
@@ -1176,10 +1177,11 @@ class FstringifyTokens(NullTokenBeautifier):
         # Create the result.
         if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
         result = ''.join([z.to_string() for z in result_tokens])
-        ### result = result.rstrip()
         # Ensure a space between the new fstring and a previous name.
         if self.prev_token.kind == 'name':
             result = ' ' + result
+        if self.add_trailing_ws:
+            result = result + ' '
         return result
     #@+node:ekr.20191024102832.1: *4* fstring.convert_fstring
     def convert_fstring(self):
@@ -1189,6 +1191,7 @@ class FstringifyTokens(NullTokenBeautifier):
         """
         new_token = self.new_token
         string_val = self.val
+        self.add_trailing_ws = False
         specs = self.scan_format_string(string_val)
         values, tokens = self.scan_for_values()
         if len(specs) != len(values):
@@ -1351,6 +1354,7 @@ class FstringifyTokens(NullTokenBeautifier):
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('name', 'for'):
+                self.add_trailing_ws = True
                 tokens.pop()  # Rescan the 'for'
                 values.append(value_list)
                 break
