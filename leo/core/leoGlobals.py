@@ -361,7 +361,8 @@ class BindingInfo:
                         val = val.__name__
                     s = f'{ivar}: {val!r}'
                     result.append(s)
-        return '[%s]' % ' '.join(result).strip()
+        # Clearer w/o f-string.
+        return f'[%s]' % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
@@ -407,7 +408,7 @@ class Bunch:
                 for key in self.ivars() if key != 'tag'
         ]
         ### Fail.
-        result = ['g.Bunch(%s)' % (tag or '')]
+        result = [f'g.Bunch({tag or ""})']
         result.extend(entries)
         return '\n    '.join(result) + '\n'
     # Used by new undo code.
@@ -704,12 +705,10 @@ class KeyStroke:
             s = chr(i)
             stroke = g.KeyStroke(s)
             if stroke.s != s:
-                ### Fail: x:10!r is a bad format specifier.
-                print('%2s %10r %r' % (i, s, stroke.s))
+                print(f'{i:2} {s!r:10} {stroke.s!r}')
         for ch in ('backspace', 'linefeed', 'return', 'tab'):
             stroke = g.KeyStroke(ch)
-            ### Fail: x:10!r is a bad format specifier.
-            print('%2s %10r %r' % ('', ch, stroke.s))
+            print(f'{"":2} {ch!r:10} {stroke.s!r}')
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding):
 
@@ -1739,8 +1738,8 @@ class SherlockTracer:
             dots = '.' * max(0, n-self.n) if self.dots else ''
             path = f'{os.path.basename(fn):>20}' if self.verbose else ''
             leadin = '+' if self.show_return else ''
-            ### Fail: extra whitespace before %
-            args = '(%s)' % self.get_args(frame1) if self.show_args else ''
+            # Clearer w/o fstring.
+            args = f'(%s)' % self.get_args(frame1) if self.show_args else ''
             print(f"{path}{dots}{leadin}{full_name}{args}")
         # Always update stats.
         d = self.stats.get(fn, {})
@@ -1763,8 +1762,8 @@ class SherlockTracer:
                 arg = locals_.get(name, '*undefined*')
                 if arg:
                     if isinstance(arg, (list, tuple)):
-                        ### Fail: extra ws before %
-                        val = '[%s]' % ','.join([self.show(z) for z in arg if self.show(z)])
+                        # Clearer w/o f-string
+                        val = f'[%s]' % ','.join([self.show(z) for z in arg if self.show(z)])
                     else:
                         val = self.show(arg)
                     if val:
@@ -1839,7 +1838,7 @@ class SherlockTracer:
                 ret = '' if arg is None else repr(arg)
         except Exception:
             exctype, value = sys.exc_info()[:2]
-            s = '<**exception: %s,%s arg: %r**>' % (exctype.__name__, value, arg)
+            s = f'<**exception: {exctype.__name__}, {value} arg: {arg !r}**>'
             # Clearer w/o f-string.
             ret = f' ->\n    %s' % s if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
@@ -2149,9 +2148,9 @@ class TracingNullObject:
                     print('%30s'  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
     def __str__(self):
-        return 'TracingNullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
+        return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
     #
     # Attribute access...
     def __delattr__(self, attr):
@@ -2423,9 +2422,10 @@ def assert_is(obj, list_or_class, warn=True):
     if warn:
         ok = isinstance(obj, list_or_class)
         if not ok:
-            ### Fail.
-            g.es_print('can not happen. %r: expected %s, got: %s' % (
-                obj, list_or_class, obj.__class__.__name__))
+            g.es_print(
+                f"can not happen. {obj !r}: "
+                f"expected {list_or_class}, "
+                f"got: {obj.__class__.__name__}")
             g.es_print(g.callers())
         return ok
     ok = isinstance(obj, list_or_class)
@@ -3192,9 +3192,7 @@ def get_directives_dict(p, root=None):
             if root_node:
                 d["root"] = 0  # value not immportant
             else:
-                ### Fail
-                g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
-                    g.angleBrackets('*')))
+                g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
             break
     return d
 #@+node:ekr.20090214075058.10: *4* g.compute_directives_re
@@ -3204,11 +3202,13 @@ def compute_directives_re():
     Only g.get_directives_dict uses this pattern.
     """
     global globalDirectiveList
-    # EKR: 2016/03/30: Use a pattern that guarantees word matches.
+    # Use a pattern that guarantees word matches.
+    aList = [
+        r'\b%s\b' % (z) for z in globalDirectiveList
+            if z != 'others'
+    ]
     # Clearer w/o f-strings.
-    aList = [r'\b%s\b' % (z) for z in globalDirectiveList
-                if z != 'others']
-    return "^@(%s)" % "|".join(aList)
+    return f"^@(%s)" % "|".join(aList)
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.
@@ -4959,7 +4959,7 @@ def backupGitIssues(c, base_url=None):
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
     root = c.lastTopLevel().insertAfter()
-    root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
+    root.h = f'Backup of issues: {time.strftime("%Y/%m/%d")}'
     label_list = []
     GitIssueController().backup_issues(base_url, c, label_list, root)
     root.expand()
@@ -5048,8 +5048,7 @@ class GitIssueController:
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.
-                g.trace('done: %5s page: %3s found: %s label: %s' % (
-                    done, page, n, label))
+                g.trace(f'done: {done:5} page: {page:3} found: {n} label: {label}')
             except AttributeError:
                 g.trace('Possible rate limit')
                 self.print_header(r)
@@ -5083,8 +5082,7 @@ class GitIssueController:
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.
-                g.trace('done: %5s page: %3s found: %3s label: %s' % (
-                    done, page, n, label))
+                g.trace(f'done: {done:5} page: {page:3} found: {n:3} label: {label}')
             except AttributeError:
                 g.trace('Possible rate limit')
                 self.print_header(r)
@@ -5428,7 +5426,7 @@ def cantImport(moduleName, pluginName=None, verbose=True):
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
     ### Fail: extra ws
-    if pluginName: s = s + " from %s" % pluginName
+    if pluginName: s = s + f" from {pluginName}"
     if not g.app or not g.app.gui:
         print(s)
     elif g.unitTesting:
@@ -6929,7 +6927,7 @@ def truncate(s, n):
     if len(s) <= n:
         return s
     # Fail: weird ws.
-    s2 = s[: n - 3] + '...(%s)' % len(s)
+    s2 = s[: n - 3] + f'...({len(s)})'
     if s.endswith('\n'):
         return s2 + '\n'
     return s2
