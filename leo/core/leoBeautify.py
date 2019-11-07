@@ -1150,7 +1150,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.extend(z)
             else:
                 tokens.append(z)
-        if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+        if trace: g.printObj(tokens, tag='TOKENS 2')
         #
         # Fail if the result would include a backslash within { and }.
         if not self.check_newlines(tokens):
@@ -1163,7 +1163,11 @@ class FstringifyTokens(NullTokenBeautifier):
                 self.error('string contains backslashes')
             return None
         #
+        # Ensure one blank after the f-string.
+        tokens.append(self.new_token('fstringify', ' '))
+        #
         # Use ptb to clean up inter-token whitespace.
+        if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         x = leoBeautify.PythonTokenBeautifier(c)
         x.dump_input_tokens = True
         x.dump_output_tokens = True
@@ -1172,6 +1176,7 @@ class FstringifyTokens(NullTokenBeautifier):
         # Create the result.
         if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
         result = ''.join([z.to_string() for z in result_tokens])
+        ### result = result.rstrip()
         # Ensure a space between the new fstring and a previous name.
         if self.prev_token.kind == 'name':
             result = ' ' + result
@@ -1740,6 +1745,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # Remembering token.line is necessary, because dedent tokens
         # can happen *after* comment lines that should be dedented!
         self.kind, self.val, self.line = token.kind, token.value, token.line
+        ### g.trace(self.kind, self.val)
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)
