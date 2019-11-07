@@ -1146,7 +1146,7 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.append(z)
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         #
-        # 
+        # Ensure consistent quotes.
         ok = self.change_quotes(string_val, tokens)
         if not ok:
             g.es_print('Can not fstringify')
@@ -1178,8 +1178,8 @@ class FstringifyTokens(NullTokenBeautifier):
             g.trace('specs:', len(specs), 'values', len(values))
             g.printObj(specs, tag='SPECS')
             g.printObj(values, tag='VALUES')
+            # Add the original string.
             self.add_token('string', string_val)
-            self.blank()
             return
         # Actually consume the scanned tokens.
         for token in tokens:
@@ -1278,9 +1278,10 @@ class FstringifyTokens(NullTokenBeautifier):
             if not isinstance(z, BeautifierToken):
                 g.es_print('Bad token:', repr(z))
                 return False
-            if delim2 in z.value:
-                g.es_print('Delim clash', repr(z))
-                return False
+            ### Not a problem!
+                # if delim2 in z.value:
+                    # g.es_print('Delim clash', repr(z))
+                    # return False
             z.value = z.value.replace(delim, delim2)
         return True
     #@+node:ekr.20191024132557.1: *4* fstring.scan_for_values
