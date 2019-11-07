@@ -1119,14 +1119,10 @@ class FstringifyTokens(NullTokenBeautifier):
                 tokens.append(z)
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         #
-        # Fail if the result would include a backslash of any kind.
+        # Fail if the result would include a backslash within { and }.
         if any(['\\' in z.value for z in tokens]):
             if not g.unitTesting:
                 self.error('string contains backslashes')
-                ###
-                    # g.es_print('Can not fstringify expressions containing backslashes')
-                    # g.es_print(''.join([z.to_string() for z in tokens]))
-                    # g.es_print(f"{self.line_number:2}: {self.line.strip()}")
             return None
         #
         # Ensure consistent quotes.
@@ -1134,17 +1130,12 @@ class FstringifyTokens(NullTokenBeautifier):
         if not ok:
             if not g.unitTesting:
                 self.error('string contains backslashes')
-                ###
-                    # g.es_print('Can not fstringify expression containing mixed quotes')
-                    # g.es_print(''.join([z.to_string() for z in tokens]))
             return None
         #
         # Use ptb to clean up inter-token whitespace.
         x = leoBeautify.PythonTokenBeautifier(c)
         x.dump_input_tokens = True
         x.dump_output_tokens = True
-        ### We can do this only if the previous token was a name.
-        ### tokens.append(self.new_token('blank', ' '))
         result_tokens = x.scan_all_beautifier_tokens(tokens)
         #
         # Create the result.
