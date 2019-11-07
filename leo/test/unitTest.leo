@@ -331,6 +331,7 @@
 <v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
 <v t="ekr.20191106072009.1"></v>
+<v t="ekr.20191106195303.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3973,10 +3974,15 @@ import leo.core.leoBeautify as leoBeautify
 
 table = (
 
-# Test 1: contents.
+# Test 1.
 r'''
 ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
 ''',
+
+# Test 2.
+r'''
+print('Test %s' % '\none')
+'''
 
 )
 

@@ -1086,10 +1086,36 @@ class FstringifyTokens(NullTokenBeautifier):
     #@+node:ekr.20191107014726.1: *3* fstring.error
     def error(self, message):
 
-        g.es_print('')
-        g.es_print(f"line {self.line_number}: {message}:")
-        g.es_print(self.line.strip())
+        if not g.unitTesting:
+            g.es_print('')
+            g.es_print(f"line {self.line_number}: {message}:")
+            g.es_print(self.line.strip())
     #@+node:ekr.20191024051733.11: *3* fstring: Conversion
+    #@+node:ekr.20191107031909.1: *4* fstring.check_newlines
+    def check_newlines(self, tokens):
+        """
+        Check to ensure that no newlines appear within { and }.
+        
+        Return False if there is an error
+        """
+        level = 0
+        for token in tokens:
+            kind, val = token.kind, token.value
+            if kind == 'op':
+                if val == '{':
+                    level += 1
+                elif val == '}':
+                    level -= 1
+                    if level < 0:
+                        self.error('curly bracket underflow')
+                        return False
+            if '\\n' in val and level > 0:
+                self.error('f-expression would contain a backslash')
+                return False
+        if level > 0:
+            self.error('unclosed curly bracket')
+            return False
+        return True
     #@+node:ekr.20191106065904.1: *4* fstring.compute_result
     def compute_result(self, string_val, results):
         """
@@ -1120,9 +1146,7 @@ class FstringifyTokens(NullTokenBeautifier):
         if trace: g.printObj(tokens, tag='TOKENS: before ptb')
         #
         # Fail if the result would include a backslash within { and }.
-        if any(['\\' in z.value for z in tokens]):
-            if not g.unitTesting:
-                self.error('string contains backslashes')
+        if not self.check_newlines(tokens):
             return None
         #
         # Ensure consistent quotes.

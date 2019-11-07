@@ -3772,10 +3772,15 @@ import leo.core.leoBeautify as leoBeautify
 
 table = (
 
-# Test 1: contents.
+# Test 1.
 r'''
 ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
 ''',
+
+# Test 2.
+r'''
+print('Test %s' % '\none')
+'''
 
 )
 
