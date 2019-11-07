@@ -330,6 +330,7 @@
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
 <v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
+<v t="ekr.20191106072009.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3928,6 +3929,8 @@ return f'[{" ".join(result).strip()}]'
 ), # End of test 4.
 
 ( # Start of test 5.
+
+# Test 5: contents.
 r'''
 return'%s' % a
 return '%s' % b
@@ -3940,6 +3943,22 @@ return f'{b}'
 ''',
 
 ), # End of test 5.
+
+( # Start of test 6.
+
+# Test 6: contents.
+r'''
+print("%dx%d%+d%+d" % (300, 200, 50, 50))
+print("%dx%d%-d%-d" % (300, 200, 50, 50))
+''',
+
+# Test 6: expected:
+r'''
+print(f"{300:d}x{200:d}{50:+d}{50:+d}")
+print(f"{300:d}x{200:d}{50:&gt;d}{50:&gt;d}")
+''',
+
+), # End of test 6.
 
 ) # End of all tests.
 

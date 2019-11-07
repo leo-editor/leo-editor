@@ -1216,7 +1216,7 @@ class FstringifyTokens(NullTokenBeautifier):
         ### To do: handle more specs.
         head, tail = [], []
         if spec.startswith('+'):
-            spec = spec[1:]
+            pass # Leave it alone!
         elif spec.startswith('-'):
             tail.append('>')
             spec = spec[1:]
