@@ -11,16 +11,6 @@
 <v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
 </v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
-<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
-</v>
-<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-</v>
 <v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
 <v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
 </v>
@@ -382,169 +372,12 @@ and those who contribute Python modules to the world). -- David McNab
 </t>
 <t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
 redefine my personal computer experience and the ideas behind computing.</t>
-<t tx="ekr.20090901092556.1576">def genUninstallData(self,dirs,dirDict,filesDict):
-
-    '''Generate the manifest-specific uninstall data.'''
-
-    trace = True
-
-    s = r'''
-Section Uninstall
-
-    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
-
-    ; Delete files &amp; directories only if we own them!
-    ReadRegStr $$1 HKCR "${ext}" ""
-    StrCmp $$1 "${name}File" 0 FinishUninstall
-
-    ; Delete files &amp; directories only if there is no backup_val key.
-    ReadRegStr $$1 HKCR "${ext}" "backup_val"
-    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
-      DeleteRegKey HKCR "${ext}"
-    Goto FinishUninstall
-
-DeleteLeoKeysAndFiles:
-    WriteRegStr HKCR "${ext}" "" $$1
-    DeleteRegValue HKCR "${ext}" "backup_val"
-
-    ; ---- Start of manifest-related data...
-'''
-
-    self.put(s,substitute=True)
-
-    # Does all the hard work.
-    s = self.getUninstallVariableData(dirs,dirDict,filesDict)
-    if trace: g.trace('\n',s)
-    self.put(s,adjust = False)
-
-    s = r'''
-    ; ---- End of manifest related data.
-
-FinishUninstall:
-    ; MessageBox MB_YESNO|MB_ICONQUESTION \
-    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
-; NoDelete:
-
-  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
-  RMDir "${SMPROGRAMS}\${name}-${version}"
-  Delete "${DESKTOP}\${name}.lnk"
-
-  DeleteRegKey ${uninst_root_key} "${uninst_key}"
-  SetAutoClose false
-
-; end Uninstall section
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-</t>
-<t tx="ekr.20090901121423.1567">def getUninstallVariableData(self,dirs,dirDict,filesDict):
-
-    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
-    s2 = self.getDeleteDirectories(dirs,dirDict)
-    return '%s\n%s' % (s1,s2)
-</t>
-<t tx="ekr.20090901121423.1568">def getDeleteDirectories (self,dirs,dirDict):
-
-    reverseDirs = dirs[:]
-    reverseDirs.reverse()
-
-    result = []
-
-    if 1:
-        result.append('; Recursively delete the leo directory and everything in it.\n')
-        result.append('RMDir /r "$INSTDIR\\leo"\n\n')
-    else:
-        result.append('; Uninstall directories in reverse order\n')
-        for theDir in reverseDirs:
-            # Delete the directory even if it has files.
-            if theDir and theDir != '**top':
-                if not theDir.startswith('.bzr'):
-                    result.append('RMDir "$INSTDIR\\%s"\n' % (
-                        theDir.replace('/','\\')))
-
-    # top-level folder.
-    result.append('; Delete the top-level directory.\n')
-    result.append('RMDir "$INSTDIR"\n')
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
-<t tx="ekr.20090901121423.1569">def getDeleteFiles (self,dirs,dirDict,filesDict):
-
-    result = []
-    result.append('\n')
-    result.append('; Uninstall files...\n\n')
-
-    # top-level files.
-    result.append('; Delete top-level files...\n')
-    aList = dirDict.get('**top',[])
-    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
-    if 0: # This seems way too drastic, and not needed.
-        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
-            aList.append(fn)
-    # special case.
-    aList.append('uninst.exe')
-    # Warning: **never** delete all files in the top-level directory.
-    for fn in aList:
-        result.append('Delete "$INSTDIR\\%s"\n' % fn)
-
-    if 0:
-        wildcard_delete = True
-        if wildcard_delete:
-            result.append('\n')
-        # Use the \r option to recursively delete everything in the leo directory.
-
-        for theDir in dirs:
-            if theDir:
-                dir2 = theDir.replace('/','\\')
-                if wildcard_delete:
-                    result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
-                else:
-                    aList = dirDict.get(theDir,[])
-                    if aList:
-                        result.append('\n')
-                        result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                        result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                    for fn in aList:
-                        result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                            dir2,fn))
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 This checklist is obsolete, for the following reasons:
 
 1. There never was a SourceForge release for Leo 5.8.
 2. Matt's distribution script creates a more standard way of releasing Leo.</t>
-<t tx="ekr.20101025095431.1517">@language rest</t>
-<t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
-</t>
-<t tx="ekr.20101026142031.1516">@nocolor-node
-
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe\shell\open\command
-    val = c:\Python26\python.exe %1
-HKCU
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe\shell\open\command
-    val = c:\Python26\pythonw.exe %1
-
-HKEY_CURRENT_USER\Software\Classes\Applications\py_auto_file\shell\open\command
-    val = c:\Python26\python.exe %1
-    
-HKEY_CURRENT_USER\Software\Classes\Installer\Products\nnnnnn
-
-HKLM
-HKEY_LOCAL_MACHINE\SOFTWARE\Python
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
-    val = c:\python27\
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
-    val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
-</t>
 <t tx="ekr.20101027054254.1590">@language nsi
 
 &lt;&lt; defines &gt;&gt;
