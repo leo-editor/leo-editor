@@ -239,7 +239,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.1 b1, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -1622,7 +1622,7 @@ Overview:
 1. Do as much work as possible in "devel".
 2. Update leoVersion.py *after* creating -rel branch.
 </t>
-<t tx="ekr.20180405171433.2">LeoDocs.leo:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
@@ -1646,15 +1646,15 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
 - Remove top-level clones.
 </t>
-<t tx="ekr.20180405171433.3">- Regenerate all .html files.
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
 </t>
-<t tx="ekr.20180405171433.4">- Make sure Leo looks good without myLeoSettings.leo.
+<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
-<t tx="ekr.20180405171433.7">Create a git tag **last**
+<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
@@ -1666,13 +1666,13 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
+<t tx="ekr.20180828095749.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout -b x.y-final-rel
 git push origin x.y-final-rel
 </t>
-<t tx="ekr.20180828095843.1">leoVersion.py:
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112218.1">Matt: After merge create dev tag that matches
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge create dev tag that matches
     static version added to leoversion.py earlier.
     #static version = '6.0-b2-devel'
 
@@ -2137,23 +2137,23 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1">From rel branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From rel branch:
     
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
 - git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
 git push</t>
-<t tx="ekr.20190618104622.1">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+<t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
 There is a "Draft New Release" button at the top-right of the page.
 </t>
-<t tx="ekr.20190618104704.1">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
    
 - Announce to leo-editor.
@@ -2172,7 +2172,7 @@ There is a "Draft New Release" button at the top-right of the page.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20190802115604.1">- Run all unit tests.
+<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
 <t tx="maphew.20180128212042.1">@language md
