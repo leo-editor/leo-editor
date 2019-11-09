@@ -162,20 +162,22 @@ def funcToMethod(f, theClass, name=None):
 #@+node:ekr.20191109055417.1: *3* function: mark_tokens_visit_after_children
 #@@tabwidth -2
 
-# Monkey-patched version of mark_tokens.MarkTokens._visit_after_children
+# 
 
 def mark_tokens_visit_after_children(self, node, parent_token, token):
+  
   """
-  Process the node generically first, after all children have been processed.
-
-  Get the first and last tokens that belong to children. Note how this doesn't assume that we
-  iterate through children in order that corresponds to occurrence in source code. This
-  assumption can fail (e.g. with return annotations).
+  Monkey-patched version of mark_tokens.MarkTokens._visit_after_children.
+  
+  We must duplicate that method because the nfirst and nlast vars are not
+  available.
   """
   # pylint: disable=no-member
+    # pylint doesn't know about monkey-patches.
   from asttokens.util import is_stmt
+    # Essential
   #
-  # Start of MarkTokens._visit_after_children
+  # Start of MarkTokens._visit_after_children.
   first = token
   last = None
   for child in self._iter_children(node):
@@ -208,21 +210,16 @@ def mark_tokens_visit_after_children(self, node, parent_token, token):
   node.first_token = nfirst
   node.last_token = nlast
   #
-  # EKR: Create bi-directional links between tokens and ast nodes.
-  if 0:
-      print(
-        f"_visit_after_children\n{node.__class__.__name__:10} "
-        f"nfirst: {nfirst.index:2} {nfirst.string!r}")
-      if nfirst != nlast:
-          print(f"{' ':10} nlast:  {nlast.index:2} {nlast.string!r}")
-
+  # End of MarkTokens._visit_after_children.
+  #
+  # New code: Create bi-directional links between tokens and ast nodes.
+  # 
   # Inject a "tree" ivar into each token
   nfirst.tree = node
   nlast.tree = node
-
+  #
   # Inject a "ekr_token_info_dict" into the node.
   tag = 'ekr_token_info_dict'
-  # d = getattr(node, 'ekr_token_info_dict', {})
   assert not hasattr(node, tag), (repr(node), getattr(node, tag))
   d = {}
   # nfirst and nlast will often be the same.
@@ -3160,7 +3157,6 @@ class TokenOrderTraverser:
         if not asttokens:
             print('can not import asttokens')
             return
-        g.pdb()
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
