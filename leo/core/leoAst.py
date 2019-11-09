@@ -3356,21 +3356,26 @@ class TokenOrderTraverser:
         """Convert a 5-tuple to a string."""
         kind = token_module.tok_name[token.type].lower()
         return f"{kind:10} {token.string.rstrip()}"
-    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order ***
+    #@+node:ekr.20191109110322.1: *3* tot.visit
+    def visit(self, node):
+        """
+        Visit the node.
+        
+        Should be overridden in subclasses.
+        """
+        if isinstance(node, (float, int, str)):
+            print(f"visit: {node.__class__.__name__}: {node}")
+        else:
+            print('visit:', node.__class__.__name__)
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order
     seen = set()
 
     def walk_in_token_order(self, node):
         """visit every ast Node in token order."""
-        def visit(node):
-            if isinstance(node, (str, float)):
-                g.trace(f"{node.__class__.__name__}: {node}")
-            else:
-                g.trace(node.__class__.__name__)
-            
         if node in self.seen:
             return
         if not hasattr(node, 'token_order'):
-            visit(node)
+            self.visit(node)
             self.seen.add(node)
             return
         # Be careful never to change the token_order field.
@@ -3380,7 +3385,7 @@ class TokenOrderTraverser:
             if node in self.seen:
                 continue
             self.seen.add(node)
-            visit(node)
+            self.visit(node)
             # Recurse on all components.
             for component in node.token_order[:]:
                 self.walk_in_token_order(component)
