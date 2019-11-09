@@ -2784,7 +2784,7 @@ class HTMLReportTraverser:
         self.visit(node.value)
         self.end_div('statement')
     #@-others
-#@+node:ekr.20160225102931.1: ** class TokenSync
+#@+node:ekr.20160225102931.1: ** class TokenSync (deprecated)
 class TokenSync:
     """A class to sync and remember tokens."""
     # To do: handle comments, line breaks...
@@ -3039,6 +3039,160 @@ class TokenSync:
             i += 1
         self.first_leading_line = i
         return trailing
+    #@-others
+#@+node:ekr.20191109050221.1: ** class TokenOrderTraverser
+class TokenOrderTraverser:
+    """
+    A class traversing ast nodes in the order in which they contribute tokens.
+    
+    Requires asttokens: https://github.com/gristlabs/asttokens.
+    
+    Monkey-patches asttokens.MarkTokens._visit_after_children.
+    """
+
+    #@+others
+    #@+node:ekr.20191109053505.1: *3* tot.ctor
+    def __init__(self, contents, filename):
+        """
+        ctor for TokenOrderTraverser.
+        
+        1. Import asttokens.
+        2. Parse the contents into the atok object.
+        3. Monkey-patch asttokens.MarkTokens._visit_after_children
+        """
+        self.contents = contents
+        self.filename = filename
+        try:
+            import asttokens
+            assert asttokens
+        except Exception:
+            g.es_print('can not import asttokens')
+            return
+        try:
+            self.atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
+        except Exception:
+            self.atok = None
+            return
+        if self.atok:
+            self.monkey_patch()
+        else:
+            g.es_print(f"Error parsing {filename}")
+    #@+node:ekr.20191109050342.2: *3* tot.get_children
+    def get_children(self, node):
+        # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
+        return [
+            getattr(node, z, None) for z in node._fields
+                if z not in ('col_offset', 'ctx', 'ekr_token_info_dict')]
+    #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
+    def monkey_patch(self):
+        """Monkey patch asttokens.MarkTokens._visit_after_children"""
+    #@+node:ekr.20191109050342.3: *3* tot.show_as_tokens
+    def show_as_tokens(self, atok, contents):
+        """
+        Show atok = ASTTokens(contents) as tokens.
+        """
+        # pylint: disable=len-as-condition
+        unified = True
+        to_string = self.to_string
+       
+        # Print summary token info.
+        print('\nToken Summary...\n')
+        print('   Index Kind       String')
+        print('   ===== ====       ======')
+        for i, token in enumerate(atok.tokens):
+            kind = token_module.tok_name[token.type].lower()
+            s = contents[token.startpos:token.endpos]
+            assert s == token.string, (repr(s), repr(token.string))
+            print(f"{i:8} {to_string(token)}")
+           
+        # Print verbose token info.
+        print('\nToken Details (injected data)...\n')
+        print('        Kind String Index  Range    Token Node')
+        print('        ==== ====== =====  =====    ==========')
+        for z in atok.tokens:
+            kind = token_module.tok_name[z.type].lower()
+            s = contents[z.startpos:z.endpos].rstrip()
+            # s = s.rstrip()
+            tree = getattr(z, 'tree', None)
+            tree_cn = tree.__class__.__name__
+            d = getattr(tree, 'ekr_token_info_dict', {})
+            id_s = str(id(tree))[-6:]
+            keys_s = str(list(d.keys()))
+            if tree:
+                tree_s = f"{str(z.index):2} {keys_s:8} {id_s} {tree_cn}"
+            else:
+                tree_s = f"{str(z.index):2} {keys_s}"
+            # Print a summary.
+            print(f"{kind:>12} {s:<10} {tree_s}")
+            # Print all tokens.
+            keys = sorted(d.keys())
+            if len(keys) == 0:
+                pass
+                # Annoying.
+                    # print(f"{' '*26} {z.string.strip()}")
+            elif len(keys) == 1:
+                key = keys[0]
+                assert isinstance(key, int), repr(key)
+                token = atok.tokens[key]
+                if not unified:
+                    print(f"{' '*23} {key:2} {to_string(token)}")
+            elif len(keys) == 2 and keys[0] != 0:
+                result = []
+                for key in range(keys[0], keys[1]):
+                    assert isinstance(key, int), repr(key)
+                    token = atok.tokens[key]
+                    if unified:
+                        result.append(token.string.strip())
+                    else:
+                        print(f"{' '*23} {key:2} {to_string(token)}")
+                if unified:
+                    print(f"{' '*26} {' '.join(result)}")
+    #@+node:ekr.20191109050342.4: *3* tot.show_as_tree
+    def show_as_tree(self, atok):
+        """Show atok = ASTTokens(contents) as ast nodes."""
+        
+        def show_attr(node, attr, default='[]'):
+            """Show the node's attribute, or default if it does not exist."""
+            val = getattr(node, attr, None)
+            if not val:
+                return default
+            if isinstance(val, (list, tuple)):
+                return [z.__class__.__name__ for z in val]
+            return val.__class__.__name__
+            
+        ### for node in walk(atok.tree):
+        for node in atok.walk():
+            print(node.__class__.__name__)
+            print('  parent:     ', show_attr(node, 'parent', 'None'))
+            print('  children:   ', show_attr(node, 'children'))
+            print('  siblings:   ', show_attr(node, 'siblings'))
+            print('  token_order:', show_attr(node, 'token_order'))
+    #@+node:ekr.20191109050342.5: *3* tot.thread_tree
+    def thread_tree(self, atok):
+        """Add links to atok.tree."""
+        atok.tree.siblings = []
+        parent = None
+        ### for node in walk(x.tree):
+        for node in atok.walk():
+            # Visit the node.
+            node.parent = parent
+            node.children = children = self.get_children(node)
+            node.token_order = [node] + children
+            # Visit the children.
+            parent = node
+            for child in children:
+                if isinstance(child, (list, tuple)):
+                    pass ### To do
+                elif isinstance(child, (str, float, int)):
+                    pass
+                else:
+                    child.parent = parent
+                    child.siblings = children
+    #@+node:ekr.20191109050342.6: *3* tot.to_string
+    def to_string(self, token):
+        """Convert a 5-tuple to a string, for traces."""
+        kind = token_module.tok_name[token.type].lower()
+        return f"{kind:10} {token.string.rstrip()}"
     #@-others
 #@-others
 #@@language python
