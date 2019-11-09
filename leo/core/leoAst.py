@@ -3307,17 +3307,15 @@ class TokenOrderTraverser:
     def flatten(self, node, target):
         """Flatten node into result."""
         assert isinstance(target, list), repr(target)
-        # Ignore empty lists.
-        ### g.trace(node, target)
         if not node:
             return
         if isinstance(node, (list, tuple)):
             for item in node:
-                g.trace('inner', item.__class__.__name__, target)
+                ### g.trace('inner', item.__class__.__name__, target)
                 self.flatten(item, target)
         else:
             target.append(node)
-        g.trace('outer', node.__class__.__name__, target)
+        ### g.trace('outer', node.__class__.__name__, target)
 
     def thread_tree(self, atok):
         """Add links to atok.tree."""
@@ -3363,21 +3361,29 @@ class TokenOrderTraverser:
 
     def walk_in_token_order(self, node):
         """visit every ast Node in token order."""
+        def visit(node):
+            if isinstance(node, (str, float)):
+                g.trace(f"{node.__class__.__name__}: {node}")
+            else:
+                g.trace(node.__class__.__name__)
+            
         if node in self.seen:
             return
-        self.seen.add(node)
         if not hasattr(node, 'token_order'):
-            # Visit the node.
-            g.trace(node.__class__.__name__)
+            visit(node)
+            self.seen.add(node)
             return
+        # Be careful never to change the token_order field.
         nodes = node.token_order[:]
         while nodes:
             node = nodes.pop(0)
-            if node not in self.seen:
-                # Visit the node.
-                g.trace(node.__class__.__name__)
-                # Recurse.
-                self.walk_in_token_order(node)
+            if node in self.seen:
+                continue
+            self.seen.add(node)
+            visit(node)
+            # Recurse on all components.
+            for component in node.token_order[:]:
+                self.walk_in_token_order(component)
     #@-others
 #@-others
 #@@language python
