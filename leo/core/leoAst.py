@@ -2,6 +2,10 @@
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
 import ast
+try:
+    import asttokens
+except Exception:
+    asttokens = None
 # import re
 import xml.sax.saxutils as saxutils
 import textwrap
@@ -3056,17 +3060,14 @@ class TokenOrderTraverser:
         """
         ctor for TokenOrderTraverser.
         
-        1. Import asttokens.
+        1. Check asttokens.
         2. Parse the contents into the atok object.
         3. Monkey-patch asttokens.MarkTokens._visit_after_children
         """
         self.contents = contents
         self.filename = filename
-        try:
-            import asttokens
-            assert asttokens
-        except Exception:
-            g.es_print('can not import asttokens')
+        if not asttokens:
+            print('can not import asttokens')
             return
         try:
             self.atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
@@ -3076,7 +3077,7 @@ class TokenOrderTraverser:
         if self.atok:
             self.monkey_patch()
         else:
-            g.es_print(f"Error parsing {filename}")
+            print(f"Error parsing {filename}")
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
@@ -3086,6 +3087,76 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
         """Monkey patch asttokens.MarkTokens._visit_after_children"""
+        asttokens._visit_after_children = self._visit_after_children
+    #@+node:ekr.20191109055417.1: *3* tot._visit_after_children
+    #@@tabwidth -2
+
+    def _visit_after_children(self, node, parent_token, token):
+      """
+      Process the node generically first, after all children have been processed.
+
+      Get the first and last tokens that belong to children. Note how this doesn't assume that we
+      iterate through children in order that corresponds to occurrence in source code. This
+      assumption can fail (e.g. with return annotations).
+      """
+      # pylint: disable=no-member
+      g.pdb()
+      is_stmt = asttokens.utils.is_stmt
+      #
+      # Start of MarkTokens._visit_after_children
+      first = token
+      last = None
+      for child in self._iter_children(node):
+        if not first or child.first_token.index < first.index:
+          first = child.first_token
+        if not last or child.last_token.index > last.index:
+          last = child.last_token
+
+      # If we don't have a first token from _visit_before_children, and there were no children, then
+      # use the parent's token as the first token.
+      first = first or parent_token
+
+      # If no children, set last token to the first one.
+      last = last or first
+
+      # Statements continue to before NEWLINE. This helps cover a few different cases at once.
+      if is_stmt(node):
+        last = self._find_last_in_line(last)
+
+      # Capture any unmatched brackets.
+      first, last = self._expand_to_matching_pairs(first, last, node)
+
+      # Give a chance to node-specific methods to adjust.
+      nfirst, nlast = self._methods.get(self, node.__class__)(node, first, last)
+
+      if (nfirst, nlast) != (first, last):
+        # If anything changed, expand again to capture any unmatched brackets.
+        nfirst, nlast = self._expand_to_matching_pairs(nfirst, nlast, node)
+
+      node.first_token = nfirst
+      node.last_token = nlast
+      #
+      # EKR: Create bi-directional links between tokens and ast nodes.
+      if 0:
+          print(
+            f"_visit_after_children\n{node.__class__.__name__:10} "
+            f"nfirst: {nfirst.index:2} {nfirst.string!r}")
+          if nfirst != nlast:
+              print(f"{' ':10} nlast:  {nlast.index:2} {nlast.string!r}")
+
+      # Inject a "tree" ivar into each token
+      nfirst.tree = node
+      nlast.tree = node
+
+      # Inject a "ekr_token_info_dict" into the node.
+      tag = 'ekr_token_info_dict'
+      # d = getattr(node, 'ekr_token_info_dict', {})
+      assert not hasattr(node, tag), (repr(node), getattr(node, tag))
+      d = {}
+      # nfirst and nlast will often be the same.
+      d [nfirst.index] = nfirst
+      d [nlast.index] = nlast
+      setattr(node, tag, d)
     #@+node:ekr.20191109050342.3: *3* tot.show_as_tokens
     def show_as_tokens(self, atok, contents):
         """
@@ -3190,7 +3261,7 @@ class TokenOrderTraverser:
                     child.siblings = children
     #@+node:ekr.20191109050342.6: *3* tot.to_string
     def to_string(self, token):
-        """Convert a 5-tuple to a string, for traces."""
+        """Convert a 5-tuple to a string."""
         kind = token_module.tok_name[token.type].lower()
         return f"{kind:10} {token.string.rstrip()}"
     #@-others
