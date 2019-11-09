@@ -3189,34 +3189,31 @@ class TokenOrderTraverser:
     # `lit:` stands for one "literal" token.
     # `*` stands for special handling.
     order_dict = {
-        # Contexts.
+        # Contexts...
         'Module':           ['body'],
         'FunctionDef':      ['decorator_list', 'lit:def',       'name', 'args', 'body', 'type_comment'],
         'AsyncFunctionDef': ['decorator_list', 'lit:async def', 'name', 'args', 'body', 'type_comment'],
         'ClassDef':         ['decorator_list', 'lit:class',     'name','bases', 'keywords', 'body'],
-        # Statements
+        # Statements...
         'Return':       ['lit:return', 'value'],
         'Delete':       ['lit:delete', 'targets'],
         'Assign':       ['targets', 'node', 'value', 'type_comment'],
         'AugAssign':    ['target', 'op', 'value'],
         'AnnAssign':    ['target', 'value', 'simple', 'annotation'],
-        'Expr':         ['value'],
-              
-        # Expressions
+        'Expr':         ['value'], 
+        # Operators...
         'BoolOp': ['op', 'values'],
         'BinOp':  ['left', 'op', 'right'],
-        'Call':   ['func', 'args', 'keywords'],
-        
-        # Terms
+        # Terms...
         'Attribute': ['value', 'lit:.', 'attr'],  # 'ctx'
+        'Call':   ['func', 'args', 'keywords'],
         'List':      ['*', 'elts',], # 'ctx'
         'Name':      ['id',], # 'ctx'
         'Num':       ['n'],
-        'Subscript': ['value', 'slice'], # 'ctx'
         'Str':       ['s'],
+        'Subscript': ['value', 'slice'], # 'ctx'
         'Tuple':     ['*', 'elts'], # 'ctx' 
     }
-
 
     def compute_token_order(self, node, children):
         """
@@ -3236,6 +3233,9 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         """Return the significant children of node."""
+        def show(node, field, val):
+            print(f"get_children: {node.__class__.__name__:>12}.{field:14} {val}")
+            
         result = []
         for field in node._fields:
             if field in ('col_offset', 'ctx', 'ekr_token_info_dict'):
@@ -3244,7 +3244,12 @@ class TokenOrderTraverser:
                 val = getattr(node, field)
                 if val is not None:
                     result.append(val)
-                    g.trace(f"{node.__class__.__name__:>12}.{field:14} {val}")
+                    if isinstance(val, (list, tuple)):
+                        show(node, val.__class__.__name__, '...')
+                        for item in val:
+                            show(item, 'ITEM', item)
+                    else:
+                        show(node, field, val)
         return result
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
