@@ -3182,33 +3182,57 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order *** Revise
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (** finish dict)
+    #@@nobeautify
+
+    # Keys are ast.__class__.__name__; values are lists of fields.
+    # `lit:` stands for one "literal" token.
+    # `*` stands for special handling.
+    order_dict = {
+        # Contexts.
+        'Module':           ['body'],
+        'FunctionDef':      ['decorator_list', 'lit:def',       'name', 'args', 'body', 'type_comment'],
+        'AsyncFunctionDef': ['decorator_list', 'lit:async def', 'name', 'args', 'body', 'type_comment'],
+        'ClassDef':         ['decorator_list', 'lit:class',     'name','bases', 'keywords', 'body'],
+        # Statements
+        'Return':       ['lit:return', 'value'],
+        'Delete':       ['lit:delete', 'targets'],
+        'Assign':       ['targets', 'node', 'value', 'type_comment'],
+        'AugAssign':    ['target', 'op', 'value'],
+        'AnnAssign':    ['target', 'value', 'simple', 'annotation'],
+        'Expr':         ['value'],
+              
+        # Expressions
+        'BoolOp': ['op', 'values'],
+        'BinOp':  ['left', 'op', 'right'],
+        'Call':   ['func', 'args', 'keywords'],
+        
+        # Terms
+        'Attribute': ['value', 'lit:.', 'attr'],  # 'ctx'
+        'List':      ['*', 'elts',], # 'ctx'
+        'Name':      ['id',], # 'ctx'
+        'Num':       ['n'],
+        'Subscript': ['value', 'slice'], # 'ctx'
+        'Str':       ['s'],
+        'Tuple':     ['*', 'elts'], # 'ctx' 
+    }
+
+
     def compute_token_order(self, node, children):
         """
         Return all the given nodes in token order.
         
         It looks like special cases are required.
         """
-        if 1:
-            result = [node] + children
-            g.trace([z.__class__.__name__ for z in result])
-            return result
-                # This is WRONG in general, but it's better than below.
-
-        def key(node):
-            return node.first_token.index
-
-        trace = True
-        aList = [node] + children
-        if trace:
-            g.trace('\n1', [z.__class__.__name__ for z in aList])
-        head = [z for z in aList if hasattr(z, 'first_token')]
-        tail = [z for z in aList if not hasattr(z, 'first_token')]
-        head = sorted(head, key=key)
-        if trace:
-            g.trace('2 head:', [z.__class__.__name__ for z in head])
-            g.trace('2 tail:', [z.__class__.__name__ for z in tail])
-        return head + tail
+        name = node.__class__.__name__
+        aList = self.order_dict.get(name, [])
+        ### if not aList: g.trace('=====', node.fields)
+        result = [z for z in aList if hasattr(node, z) or z.startswith(('*', 'lit:'))]
+        g.trace(f"{name:12} {result}")
+        return result
+        
+            
+       
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         """Return the significant children of node."""
@@ -3216,11 +3240,11 @@ class TokenOrderTraverser:
         for field in node._fields:
             if field in ('col_offset', 'ctx', 'ekr_token_info_dict'):
                 continue
-            # Be very careful.
             if hasattr(node, field):
                 val = getattr(node, field)
-                if val not in (None, list(), tuple()):
+                if val is not None:
                     result.append(val)
+                    g.trace(f"{node.__class__.__name__:>12}.{field:14} {val}")
         return result
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
@@ -3375,7 +3399,7 @@ class TokenOrderTraverser:
             print(f"visit: {node.__class__.__name__}: {node}")
         else:
             print('visit:', node.__class__.__name__)
-    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order *** Revise
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order *** Test
     seen = set()
 
     def walk_in_token_order(self, node):
