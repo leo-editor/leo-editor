@@ -3182,25 +3182,33 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order *** Revise
     def compute_token_order(self, node, children):
         """
-        Return all the given nodes in the order of their first token.
+        Return all the given nodes in token order.
+        
+        It looks like special cases are required.
         """
+        if 1:
+            result = [node] + children
+            g.trace([z.__class__.__name__ for z in result])
+            return result
+                # This is WRONG in general, but it's better than below.
 
         def key(node):
             return node.first_token.index
 
-        trace = False
+        trace = True
         aList = [node] + children
         if trace:
-            g.trace('1', [z.__class__.__name__ for z in aList])
+            g.trace('\n1', [z.__class__.__name__ for z in aList])
         head = [z for z in aList if hasattr(z, 'first_token')]
         tail = [z for z in aList if not hasattr(z, 'first_token')]
-        result1 = sorted(head, key=key)
+        head = sorted(head, key=key)
         if trace:
-            g.trace('2', [z.__class__.__name__ for z in result1 + tail])
-        return result1 + tail
+            g.trace('2 head:', [z.__class__.__name__ for z in head])
+            g.trace('2 tail:', [z.__class__.__name__ for z in tail])
+        return head + tail
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         """Return the significant children of node."""
@@ -3367,7 +3375,7 @@ class TokenOrderTraverser:
             print(f"visit: {node.__class__.__name__}: {node}")
         else:
             print('visit:', node.__class__.__name__)
-    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order *** Revise
     seen = set()
 
     def walk_in_token_order(self, node):
@@ -3375,8 +3383,8 @@ class TokenOrderTraverser:
         if node in self.seen:
             return
         if not hasattr(node, 'token_order'):
-            self.visit(node)
             self.seen.add(node)
+            self.visit(node)
             return
         # Be careful never to change the token_order field.
         nodes = node.token_order[:]
