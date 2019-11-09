@@ -249,6 +249,25 @@ def parse_ast(s, headline=None):
         oops('Unexpected Exception')
         g.es_exception()
     return None
+#@+node:ekr.20191109073937.1: *3* function: test_TokenOrderTraverser
+def test_TokenOrderTraverser(contents):
+    """Test runner for TokenOrderTraverser class."""
+    import imp
+    import leo.core.leoAst as leoAst
+    imp.reload(leoAst)
+    x = TokenOrderTraverser(contents, filename='test')
+    atok = x.atok
+    print('Contents...')
+    print(contents.rstrip())
+    print('\nDump of x.tree...\n')
+    print(leoAst.AstDumper().dump(atok.tree))
+    if 1:
+        x.show_as_tokens(atok, contents)
+    if 1:
+        x.thread_tree(atok)
+    if 1:
+        print('\nafter threading...')
+        x.show_as_tree(atok)
 #@+node:ekr.20160521103254.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """Run basic unit tests for this file."""
@@ -3175,7 +3194,6 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
         """Monkey patch asttokens.MarkTokens._visit_after_children"""
-        g.trace(mark_tokens.MarkTokens)
         funcToMethod(
             mark_tokens_visit_after_children,
             mark_tokens.MarkTokens,
