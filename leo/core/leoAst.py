@@ -250,7 +250,7 @@ def parse_ast(s, headline=None):
         g.es_exception()
     return None
 #@+node:ekr.20191109073937.1: *3* function: test_TokenOrderTraverser
-def test_TokenOrderTraverser(contents):
+def test_TokenOrderTraverser(contents, trace=False):
     """Test runner for TokenOrderTraverser class."""
     # pylint: disable=import-self
     import imp
@@ -258,18 +258,19 @@ def test_TokenOrderTraverser(contents):
     imp.reload(leoAst)
     x = TokenOrderTraverser(contents, filename='test')
     atok = x.atok
-    if 1: # production
+    if trace:
+        # Debugging.
+        print('Contents...')
+        print(contents.rstrip())
+        print('\nDump of x.tree...\n')
+        print(leoAst.AstDumper().dump(atok.tree))
+        x.show_as_tokens(atok, contents)
         x.thread_tree(atok)
-        return
-    # Debugging.
-    print('Contents...')
-    print(contents.rstrip())
-    print('\nDump of x.tree...\n')
-    print(leoAst.AstDumper().dump(atok.tree))
-    x.show_as_tokens(atok, contents)
-    x.thread_tree(atok)
-    print('\nAfter threading...')
-    x.show_as_tree(atok)
+        print('\nAfter threading...')
+        x.show_as_tree(atok)
+    else:
+        # Minimal test.
+        x.thread_tree(atok)
 #@+node:ekr.20160521103254.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """Run basic unit tests for this file."""
@@ -3181,7 +3182,7 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (** to do)
     def compute_token_order(self, node, children):
         """
         Return all the given nodes in the order of their first token.
@@ -3282,20 +3283,19 @@ class TokenOrderTraverser:
             print('  children:   ', show_attr(node, 'children'))
             print('  siblings:   ', show_attr(node, 'siblings'))
             print('  token_order:', show_attr(node, 'token_order'))
-    #@+node:ekr.20191109050342.5: *3* tot.thread_tree
+    #@+node:ekr.20191109050342.5: *3* tot.thread_tree (** finish)
     def thread_tree(self, atok):
         """Add links to atok.tree."""
         from asttokens.util import walk
-        tree = atok.tree # The root of the tree, an ast.Module.
+        tree = atok.tree
+            # The root of the tree, an ast.Module.
+        # Pass 1: add the parent, children and sibling links.
         tree.siblings = []
-        #
-        # Pass 1: add the parent, children and sibling threads.
         parent = None
         for node in walk(tree):
             # Visit the node.
             node.parent = parent
             node.children = children = self.get_children(node)
-            ###node.token_order = [node] + children
             # Visit the children.
             parent = node
             for child in children:
@@ -3315,6 +3315,13 @@ class TokenOrderTraverser:
         """Convert a 5-tuple to a string."""
         kind = token_module.tok_name[token.type].lower()
         return f"{kind:10} {token.string.rstrip()}"
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order (** finish)
+    def walk_in_token_order(self, atok, tree=None):
+        
+        if not tree:
+            self.thread_tree(atok)
+        tree = atok.tree
+        assert tree
     #@-others
 #@-others
 #@@language python
