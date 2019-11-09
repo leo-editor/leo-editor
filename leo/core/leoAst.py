@@ -3430,7 +3430,12 @@ class TokenOrderTraverser:
             self.seen.add(node)
             self.visit(node)
             # Recurse on all components.
+            if not hasattr(node, 'token_order'):
+                continue
             for component in node.token_order[:]:
+                if component.startswith(('*', 'lit:')):
+                    g.trace('Special handling', component)
+                    continue
                 self.walk_in_token_order(component)
     #@-others
 #@-others
