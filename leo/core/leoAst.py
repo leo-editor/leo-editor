@@ -3182,25 +3182,24 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (** to do)
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (Test)
     def compute_token_order(self, node, children):
         """
         Return all the given nodes in the order of their first token.
         """
-        aList = [node] + children
-        
-        g.trace('1', [z.__class__.__name__ for z in aList])
-        
-        head = [z for z in aList if hasattr(z, 'first_token')]
-        tail = [z for z in aList if not hasattr(z, 'first_token')]
-        
+
         def key(node):
             return node.first_token.index
-            
+
+        trace = False
+        aList = [node] + children
+        if trace:
+            g.trace('1', [z.__class__.__name__ for z in aList])
+        head = [z for z in aList if hasattr(z, 'first_token')]
+        tail = [z for z in aList if not hasattr(z, 'first_token')]
         result1 = sorted(head, key=key)
-            
-        g.trace('2', [z.__class__.__name__ for z in result1 + tail])
-        
+        if trace:
+            g.trace('2', [z.__class__.__name__ for z in result1 + tail])
         return result1 + tail
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
@@ -3297,9 +3296,10 @@ class TokenOrderTraverser:
             print('  children:   ', show_attr(node, 'children'))
             print('  siblings:   ', show_attr(node, 'siblings'))
             print('  token_order:', show_attr(node, 'token_order'))
-    #@+node:ekr.20191109050342.5: *3* tot.thread_tree (** finish)
+    #@+node:ekr.20191109050342.5: *3* tot.thread_tree
     def thread_tree(self, atok):
         """Add links to atok.tree."""
+        trace = False and not g.unitTesting
         from asttokens.util import walk
         tree = atok.tree
             # The root of the tree, an ast.Module.
@@ -3309,20 +3309,29 @@ class TokenOrderTraverser:
         for node in walk(tree):
             # Visit the node.
             node.parent = parent
-            node.children = children = self.get_children(node)
+            children = self.get_children(node)
             # Visit the children.
             parent = node
             for child in children:
                 if isinstance(child, (list, tuple)):
-                    pass ### To do
+                    if trace: g.trace('===== LIST', node.__class__.__name__)
+                    children.remove(child)
+                    for item in child:
+                        if trace: g.trace('----- ITEM', item)
+                        children.append(item)
                 elif isinstance(child, (str, float, int)):
-                    pass
+                    pass # For now, allow the child.
                 else:
                     child.parent = parent
-                    child.siblings = children
+                    ### child.siblings = children
+            if trace:
+                g.trace(node.__class__.__name__)
+                g.trace('  children', [z.__class__.__name__ for z in children])
+            node.siblings = children
+            node.children = children
         # Pass 2: add the token_order lists.
         for node in walk(tree):
-            node.token_order = self.compute_token_order(node, children)
+            node.token_order = self.compute_token_order(node, node.children)
             
     #@+node:ekr.20191109050342.6: *3* tot.to_string
     def to_string(self, token):
@@ -3330,12 +3339,21 @@ class TokenOrderTraverser:
         kind = token_module.tok_name[token.type].lower()
         return f"{kind:10} {token.string.rstrip()}"
     #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order (** finish)
-    def walk_in_token_order(self, atok, tree=None):
-        
-        if not tree:
-            self.thread_tree(atok)
-        tree = atok.tree
-        assert tree
+    def walk_in_token_order(self, node, nodes=None):
+        """visit every ast Node in token order."""
+        # Start the recursion.
+        if nodes is None:
+            nodes = node.token_order[:]
+            ### g.pdb()
+        while nodes:
+            g.trace
+            # Get the next node in token order.
+            node = nodes.pop(0)
+            # Visit the node.
+            g.trace(node.__class__.__name__)
+            # Visit the subnodes.
+            if nodes:
+                self.walk_in_token_order(node, nodes)
     #@-others
 #@-others
 #@@language python
