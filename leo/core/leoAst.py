@@ -3182,7 +3182,7 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (Test)
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order
     def compute_token_order(self, node, children):
         """
         Return all the given nodes in the order of their first token.
@@ -3203,10 +3203,17 @@ class TokenOrderTraverser:
         return result1 + tail
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
-        # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
-        return [
-            getattr(node, z, None) for z in node._fields
-                if z not in ('col_offset', 'ctx', 'ekr_token_info_dict')]
+        """Return the significant children of node."""
+        result = []
+        for field in node._fields:
+            if field in ('col_offset', 'ctx', 'ekr_token_info_dict'):
+                continue
+            # Be very careful.
+            if hasattr(node, field):
+                val = getattr(node, field)
+                if val not in (None, list(), tuple()):
+                    result.append(val)
+        return result
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
         """Monkey patch asttokens.MarkTokens._visit_after_children"""
@@ -3297,6 +3304,21 @@ class TokenOrderTraverser:
             print('  siblings:   ', show_attr(node, 'siblings'))
             print('  token_order:', show_attr(node, 'token_order'))
     #@+node:ekr.20191109050342.5: *3* tot.thread_tree
+    def flatten(self, node, target):
+        """Flatten node into result."""
+        assert isinstance(target, list), repr(target)
+        # Ignore empty lists.
+        ### g.trace(node, target)
+        if not node:
+            return
+        if isinstance(node, (list, tuple)):
+            for item in node:
+                g.trace('inner', item.__class__.__name__, target)
+                self.flatten(item, target)
+        else:
+            target.append(node)
+        g.trace('outer', node.__class__.__name__, target)
+
     def thread_tree(self, atok):
         """Add links to atok.tree."""
         trace = False and not g.unitTesting
@@ -3314,16 +3336,14 @@ class TokenOrderTraverser:
             parent = node
             for child in children:
                 if isinstance(child, (list, tuple)):
-                    if trace: g.trace('===== LIST', node.__class__.__name__)
+                    # Flatten the list/tuple into children.
                     children.remove(child)
                     for item in child:
-                        if trace: g.trace('----- ITEM', item)
-                        children.append(item)
+                        self.flatten(item, children)
                 elif isinstance(child, (str, float, int)):
                     pass # For now, allow the child.
                 else:
                     child.parent = parent
-                    ### child.siblings = children
             if trace:
                 g.trace(node.__class__.__name__)
                 g.trace('  children', [z.__class__.__name__ for z in children])
@@ -3338,22 +3358,26 @@ class TokenOrderTraverser:
         """Convert a 5-tuple to a string."""
         kind = token_module.tok_name[token.type].lower()
         return f"{kind:10} {token.string.rstrip()}"
-    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order (** finish)
-    def walk_in_token_order(self, node, nodes=None):
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order ***
+    seen = set()
+
+    def walk_in_token_order(self, node):
         """visit every ast Node in token order."""
-        # Start the recursion.
-        if nodes is None:
-            nodes = node.token_order[:]
-            ### g.pdb()
-        while nodes:
-            g.trace
-            # Get the next node in token order.
-            node = nodes.pop(0)
+        if node in self.seen:
+            return
+        self.seen.add(node)
+        if not hasattr(node, 'token_order'):
             # Visit the node.
             g.trace(node.__class__.__name__)
-            # Visit the subnodes.
-            if nodes:
-                self.walk_in_token_order(node, nodes)
+            return
+        nodes = node.token_order[:]
+        while nodes:
+            node = nodes.pop(0)
+            if node not in self.seen:
+                # Visit the node.
+                g.trace(node.__class__.__name__)
+                # Recurse.
+                self.walk_in_token_order(node)
     #@-others
 #@-others
 #@@language python
