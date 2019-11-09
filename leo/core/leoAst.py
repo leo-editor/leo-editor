@@ -3137,7 +3137,7 @@ class TokenOrderTraverser:
     """
     A class traversing ast nodes in the order in which they contribute tokens.
     
-    Requires asttokens: https://github.com/gristlabs/asttokens.
+    Requires asttokens: https://github.com/gristlabs/asttokens
     
     Monkey-patches asttokens.MarkTokens._visit_after_children.
     """
@@ -3160,6 +3160,12 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order
+    def compute_token_order(self, node, children):
+        """
+        Return all the given nodes in the order of their first token.
+        """
+        return [node] + children
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
@@ -3239,6 +3245,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109050342.4: *3* tot.show_as_tree
     def show_as_tree(self, atok):
         """Show atok = ASTTokens(contents) as ast nodes."""
+        from asttokens.util import walk
         
         def show_attr(node, attr, default='[]'):
             """Show the node's attribute, or default if it does not exist."""
@@ -3249,8 +3256,7 @@ class TokenOrderTraverser:
                 return [z.__class__.__name__ for z in val]
             return val.__class__.__name__
             
-        ### for node in walk(atok.tree):
-        for node in atok.walk():
+        for node in walk(atok.tree):
             print(node.__class__.__name__)
             print('  parent:     ', show_attr(node, 'parent', 'None'))
             print('  children:   ', show_attr(node, 'children'))
@@ -3259,10 +3265,13 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109050342.5: *3* tot.thread_tree
     def thread_tree(self, atok):
         """Add links to atok.tree."""
-        atok.tree.siblings = []
+        from asttokens.util import walk
+        tree = atok.tree # The root of the tree, an ast.Module.
+        tree.siblings = []
+        #
+        # Pass 1: add the parent, children and sibling threads.
         parent = None
-        ### for node in walk(x.tree):
-        for node in atok.walk():
+        for node in walk(tree):
             # Visit the node.
             node.parent = parent
             node.children = children = self.get_children(node)
@@ -3277,6 +3286,10 @@ class TokenOrderTraverser:
                 else:
                     child.parent = parent
                     child.siblings = children
+        # Pass 2: add the token_order lists.
+        # for node in atok.walk():
+        #     node.token_order = self.compute_token_order(node, children)
+            
     #@+node:ekr.20191109050342.6: *3* tot.to_string
     def to_string(self, token):
         """Convert a 5-tuple to a string."""
