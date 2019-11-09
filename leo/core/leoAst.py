@@ -3295,7 +3295,7 @@ class TokenOrderTraverser:
             # Visit the node.
             node.parent = parent
             node.children = children = self.get_children(node)
-            node.token_order = [node] + children
+            ###node.token_order = [node] + children
             # Visit the children.
             parent = node
             for child in children:
@@ -3307,8 +3307,8 @@ class TokenOrderTraverser:
                     child.parent = parent
                     child.siblings = children
         # Pass 2: add the token_order lists.
-        # for node in atok.walk():
-        #     node.token_order = self.compute_token_order(node, children)
+        for node in walk(tree):
+            node.token_order = self.compute_token_order(node, children)
             
     #@+node:ekr.20191109050342.6: *3* tot.to_string
     def to_string(self, token):
