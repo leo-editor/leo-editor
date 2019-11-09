@@ -3187,7 +3187,21 @@ class TokenOrderTraverser:
         """
         Return all the given nodes in the order of their first token.
         """
-        return [node] + children
+        aList = [node] + children
+        
+        g.trace('1', [z.__class__.__name__ for z in aList])
+        
+        head = [z for z in aList if hasattr(z, 'first_token')]
+        tail = [z for z in aList if not hasattr(z, 'first_token')]
+        
+        def key(node):
+            return node.first_token.index
+            
+        result1 = sorted(head, key=key)
+            
+        g.trace('2', [z.__class__.__name__ for z in result1 + tail])
+        
+        return result1 + tail
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
