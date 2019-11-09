@@ -3182,7 +3182,7 @@ class TokenOrderTraverser:
         self.monkey_patch()
         self.atok = asttokens.ASTTokens(
             contents, parse=True, filename=filename)
-    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order (** finish dict)
+    #@+node:ekr.20191109072340.1: *3* tot.compute_token_order *** finish dict
     #@@nobeautify
 
     # Keys are ast.__class__.__name__; values are lists of fields.
@@ -3205,8 +3205,13 @@ class TokenOrderTraverser:
         'BoolOp': ['op', 'values'],
         'BinOp':  ['left', 'op', 'right'],
         # Terms...
+        'arguments': ['*', 'posonlyargs', 'args', 'vararg', 'kwonlyargs',
+                      'kw_defaults', 'kwarg', 'defaults',
+                     ],
+        'args':      ['arg'],
+        'arg':       ['arg'],
         'Attribute': ['value', 'lit:.', 'attr'],  # 'ctx'
-        'Call':   ['func', 'args', 'keywords'],
+        'Call':      ['func', 'args', 'keywords'],
         'List':      ['*', 'elts',], # 'ctx'
         'Name':      ['id',], # 'ctx'
         'Num':       ['n'],
@@ -3223,8 +3228,8 @@ class TokenOrderTraverser:
         """
         name = node.__class__.__name__
         aList = self.order_dict.get(name, [])
-        ### if not aList: g.trace('=====', node.fields)
-        result = [z for z in aList if hasattr(node, z) or z.startswith(('*', 'lit:'))]
+        result = [z for z in aList
+            if getattr(node, z, None) or z.startswith(('*', 'lit:'))]
         g.trace(f"{name:12} {result}")
         return result
         
@@ -3245,9 +3250,10 @@ class TokenOrderTraverser:
                 if val is not None:
                     result.append(val)
                     if isinstance(val, (list, tuple)):
-                        show(node, val.__class__.__name__, '...')
-                        for item in val:
-                            show(item, 'ITEM', item)
+                        if val:
+                            show(node, val.__class__.__name__, '...')
+                            for item in val:
+                                show(item, 'ITEM', item)
                     else:
                         show(node, field, val)
         return result
@@ -3404,7 +3410,7 @@ class TokenOrderTraverser:
             print(f"visit: {node.__class__.__name__}: {node}")
         else:
             print('visit:', node.__class__.__name__)
-    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order *** Test
+    #@+node:ekr.20191109075740.1: *3* tot.walk_in_token_order *** Test/Revise
     seen = set()
 
     def walk_in_token_order(self, node):
