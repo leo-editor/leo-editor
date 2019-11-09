@@ -252,22 +252,24 @@ def parse_ast(s, headline=None):
 #@+node:ekr.20191109073937.1: *3* function: test_TokenOrderTraverser
 def test_TokenOrderTraverser(contents):
     """Test runner for TokenOrderTraverser class."""
+    # pylint: disable=import-self
     import imp
     import leo.core.leoAst as leoAst
     imp.reload(leoAst)
     x = TokenOrderTraverser(contents, filename='test')
     atok = x.atok
+    if 1: # production
+        x.thread_tree(atok)
+        return
+    # Debugging.
     print('Contents...')
     print(contents.rstrip())
     print('\nDump of x.tree...\n')
     print(leoAst.AstDumper().dump(atok.tree))
-    if 1:
-        x.show_as_tokens(atok, contents)
-    if 1:
-        x.thread_tree(atok)
-    if 1:
-        print('\nafter threading...')
-        x.show_as_tree(atok)
+    x.show_as_tokens(atok, contents)
+    x.thread_tree(atok)
+    print('\nAfter threading...')
+    x.show_as_tree(atok)
 #@+node:ekr.20160521103254.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """Run basic unit tests for this file."""
