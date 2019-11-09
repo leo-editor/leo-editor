@@ -4,7 +4,9 @@
 import ast
 try:
     import asttokens
+    from asttokens import mark_tokens
 except Exception:
+    mark_tokens = None
     asttokens = None
 # import re
 import xml.sax.saxutils as saxutils
@@ -138,6 +140,95 @@ def _compare_nodes(node1, node2):
 def dump_ast(ast, tag=None):
     """Utility to dump an ast tree."""
     g.printObj(AstDumper().dump(ast), tag=tag)
+#@+node:ekr.20191109063033.1: *3* function: funcToMethod 
+
+def funcToMethod(f, theClass, name=None):
+    """
+    From the Python Cookbook...
+
+    The following method allows you to add a function as a method of
+    any class. That is, it converts the function to a method of the
+    class. The method just added is available instantly to all
+    existing instances of the class, and to all instances created in
+    the future.
+    
+    The function's first argument should be self.
+    
+    The newly created method has the same name as the function unless
+    the optional name argument is supplied, in which case that name is
+    used as the method name.
+    """
+    setattr(theClass, name or f.__name__, f)
+#@+node:ekr.20191109055417.1: *3* function: mark_tokens_visit_after_children
+#@@tabwidth -2
+
+# Monkey-patched version of mark_tokens.MarkTokens._visit_after_children
+
+def mark_tokens_visit_after_children(self, node, parent_token, token):
+  """
+  Process the node generically first, after all children have been processed.
+
+  Get the first and last tokens that belong to children. Note how this doesn't assume that we
+  iterate through children in order that corresponds to occurrence in source code. This
+  assumption can fail (e.g. with return annotations).
+  """
+  # pylint: disable=no-member
+  from asttokens.util import is_stmt
+  #
+  # Start of MarkTokens._visit_after_children
+  first = token
+  last = None
+  for child in self._iter_children(node):
+    if not first or child.first_token.index < first.index:
+      first = child.first_token
+    if not last or child.last_token.index > last.index:
+      last = child.last_token
+
+  # If we don't have a first token from _visit_before_children, and there were no children, then
+  # use the parent's token as the first token.
+  first = first or parent_token
+
+  # If no children, set last token to the first one.
+  last = last or first
+
+  # Statements continue to before NEWLINE. This helps cover a few different cases at once.
+  if is_stmt(node):
+    last = self._find_last_in_line(last)
+
+  # Capture any unmatched brackets.
+  first, last = self._expand_to_matching_pairs(first, last, node)
+
+  # Give a chance to node-specific methods to adjust.
+  nfirst, nlast = self._methods.get(self, node.__class__)(node, first, last)
+
+  if (nfirst, nlast) != (first, last):
+    # If anything changed, expand again to capture any unmatched brackets.
+    nfirst, nlast = self._expand_to_matching_pairs(nfirst, nlast, node)
+
+  node.first_token = nfirst
+  node.last_token = nlast
+  #
+  # EKR: Create bi-directional links between tokens and ast nodes.
+  if 0:
+      print(
+        f"_visit_after_children\n{node.__class__.__name__:10} "
+        f"nfirst: {nfirst.index:2} {nfirst.string!r}")
+      if nfirst != nlast:
+          print(f"{' ':10} nlast:  {nlast.index:2} {nlast.string!r}")
+
+  # Inject a "tree" ivar into each token
+  nfirst.tree = node
+  nlast.tree = node
+
+  # Inject a "ekr_token_info_dict" into the node.
+  tag = 'ekr_token_info_dict'
+  # d = getattr(node, 'ekr_token_info_dict', {})
+  assert not hasattr(node, tag), (repr(node), getattr(node, tag))
+  d = {}
+  # nfirst and nlast will often be the same.
+  d [nfirst.index] = nfirst
+  d [nlast.index] = nlast
+  setattr(node, tag, d)
 #@+node:ekr.20191027075648.1: *3* function: parse_ast
 def parse_ast(s, headline=None):
     """
@@ -3069,15 +3160,10 @@ class TokenOrderTraverser:
         if not asttokens:
             print('can not import asttokens')
             return
-        try:
-            self.atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
-        except Exception:
-            self.atok = None
-            return
-        if self.atok:
-            self.monkey_patch()
-        else:
-            print(f"Error parsing {filename}")
+        g.pdb()
+        self.monkey_patch()
+        self.atok = asttokens.ASTTokens(
+            contents, parse=True, filename=filename)
     #@+node:ekr.20191109050342.2: *3* tot.get_children
     def get_children(self, node):
         # '_attributes', '_fields', 'ekr_token_info_dict', 'first_token', 'id', 'last_token', 'lineno'
@@ -3087,76 +3173,12 @@ class TokenOrderTraverser:
     #@+node:ekr.20191109053021.1: *3* tot.monkey_patch
     def monkey_patch(self):
         """Monkey patch asttokens.MarkTokens._visit_after_children"""
-        asttokens._visit_after_children = self._visit_after_children
-    #@+node:ekr.20191109055417.1: *3* tot._visit_after_children
-    #@@tabwidth -2
-
-    def _visit_after_children(self, node, parent_token, token):
-      """
-      Process the node generically first, after all children have been processed.
-
-      Get the first and last tokens that belong to children. Note how this doesn't assume that we
-      iterate through children in order that corresponds to occurrence in source code. This
-      assumption can fail (e.g. with return annotations).
-      """
-      # pylint: disable=no-member
-      g.pdb()
-      is_stmt = asttokens.utils.is_stmt
-      #
-      # Start of MarkTokens._visit_after_children
-      first = token
-      last = None
-      for child in self._iter_children(node):
-        if not first or child.first_token.index < first.index:
-          first = child.first_token
-        if not last or child.last_token.index > last.index:
-          last = child.last_token
-
-      # If we don't have a first token from _visit_before_children, and there were no children, then
-      # use the parent's token as the first token.
-      first = first or parent_token
-
-      # If no children, set last token to the first one.
-      last = last or first
-
-      # Statements continue to before NEWLINE. This helps cover a few different cases at once.
-      if is_stmt(node):
-        last = self._find_last_in_line(last)
-
-      # Capture any unmatched brackets.
-      first, last = self._expand_to_matching_pairs(first, last, node)
-
-      # Give a chance to node-specific methods to adjust.
-      nfirst, nlast = self._methods.get(self, node.__class__)(node, first, last)
-
-      if (nfirst, nlast) != (first, last):
-        # If anything changed, expand again to capture any unmatched brackets.
-        nfirst, nlast = self._expand_to_matching_pairs(nfirst, nlast, node)
-
-      node.first_token = nfirst
-      node.last_token = nlast
-      #
-      # EKR: Create bi-directional links between tokens and ast nodes.
-      if 0:
-          print(
-            f"_visit_after_children\n{node.__class__.__name__:10} "
-            f"nfirst: {nfirst.index:2} {nfirst.string!r}")
-          if nfirst != nlast:
-              print(f"{' ':10} nlast:  {nlast.index:2} {nlast.string!r}")
-
-      # Inject a "tree" ivar into each token
-      nfirst.tree = node
-      nlast.tree = node
-
-      # Inject a "ekr_token_info_dict" into the node.
-      tag = 'ekr_token_info_dict'
-      # d = getattr(node, 'ekr_token_info_dict', {})
-      assert not hasattr(node, tag), (repr(node), getattr(node, tag))
-      d = {}
-      # nfirst and nlast will often be the same.
-      d [nfirst.index] = nfirst
-      d [nlast.index] = nlast
-      setattr(node, tag, d)
+        g.trace(mark_tokens.MarkTokens)
+        funcToMethod(
+            mark_tokens_visit_after_children,
+            mark_tokens.MarkTokens,
+            '_visit_after_children',
+        )
     #@+node:ekr.20191109050342.3: *3* tot.show_as_tokens
     def show_as_tokens(self, atok, contents):
         """
