@@ -2,11 +2,7 @@
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
 import ast
-# import re
-import xml.sax.saxutils as saxutils
 import textwrap
-import token as token_module
-assert token_module
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
@@ -180,10 +176,6 @@ def parse_ast(s, headline=None):
 #@+node:ekr.20191109073937.1: *3* function: test_TokenOrderTraverser
 def test_TokenOrderTraverser(contents, trace=False):
     """Test runner for TokenOrderTraverser class."""
-    # pylint: disable=import-self
-    import imp
-    import leo.core.leoAst as leoAst
-    imp.reload(leoAst)
     node = parse_ast(contents)
     x = TokenOrderTraverser(contents, filename='test')
     tree = x.visit(node)
@@ -191,7 +183,7 @@ def test_TokenOrderTraverser(contents, trace=False):
     print('Contents...')
     print(contents.rstrip())
     print('\nDump of tree...\n')
-    print(leoAst.AstDumper().dump(tree))
+    print(AstDumper().dump(tree))
     ### x.show_as_tokens(atok, contents)
     ### x.thread_tree(atok)
     print('\nAfter threading...')
@@ -200,7 +192,6 @@ def test_TokenOrderTraverser(contents, trace=False):
 def unit_test(raise_on_fail=True):
     """Run basic unit tests for this file."""
     import _ast
-    # import leo.core.leoAst as leoAst
     # Compute all fields to test.
     aList = sorted(dir(_ast))
     remove = [
@@ -256,6 +247,7 @@ class AstDumper:
     #@+others
     #@+node:ekr.20141012064706.18392: *3* d.dump
     def dump(self, node, level=0):
+
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
             fields = [(a, self.dump(b, level+1)) for a, b in self.get_fields(node)]
@@ -280,6 +272,7 @@ class AstDumper:
         return repr(node)
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
+
         return (
             (a, b) for a, b in ast.iter_fields(node)
                 if a not in self.disabled_fields and b not in (None, [])
@@ -310,6 +303,7 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18403: *3* f.visit
     def visit(self, node, *args, **keys):
         """Return the formatted version of an Ast node, or list of Ast nodes."""
+
         if isinstance(node, (list, tuple)):
             return ','.join([self.visit(z) for z in node])
         if node is None:
@@ -728,6 +722,7 @@ class AstFormatter:
         return self.indent(f'del %s\n' % ','.join(targets))
     #@+node:ekr.20141012064706.18449: *4* f.ExceptHandler
     def do_ExceptHandler(self, node):
+        
         result = []
         result.append(self.indent('except'))
         if getattr(node, 'type', None):
@@ -1450,6 +1445,7 @@ class AstFullTraverser:
     # Python 3: ExceptHandler(expr? type, identifier? name, stmt* body)
 
     def do_ExceptHandler(self, node):
+
         if node.type:
             self.visit(node.type)
         if node.name and isinstance(node.name, ast.Name):
@@ -1769,6 +1765,7 @@ class HTMLReportTraverser:
             self.last_doc = doc  # Attempt to suppress duplicate.
     #@+node:ekr.20150722204300.22: *4* rt.docstring
     def docstring(self, s):
+
         self.gen("<pre class='doc'>")
         self.gen('"""')
         self.gen(self.text(textwrap.dedent(s.replace('"""', '\\"\\"\\"'))))
@@ -1867,6 +1864,7 @@ class HTMLReportTraverser:
     #@+node:ekr.20160315184954.1: *4* rt.string (code generator)
     def string(self, s):
 
+        import xml.sax.saxutils as saxutils
         s = repr(s.strip().strip())
         s = saxutils.escape(s)
         self.gen(s)
@@ -2454,7 +2452,7 @@ class HTMLReportTraverser:
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node, elif_flag=False):
-
+        
         self.div('statement')
         self.keyword('elif' if elif_flag else 'if')
         self.visit(node.test)
@@ -2847,58 +2845,71 @@ class Token:
         return self.value if isinstance(self.value, str) else ''
 #@+node:ekr.20191110075225.1: ** class TokenOrderTraverser
 class TokenOrderTraverser:
+    #@+<< TokenOrderTraverser docstring >>
+    #@+node:ekr.20191110131436.1: *3*  << TokenOrderTraverser docstring >>
     """
     Ahas: https://groups.google.com/d/msg/leo-editor/FZYJmbtRBWs/qWPdxKw5AgAJ
 
     A class that supports (and defines) **token-order traversals**.
     Aha: "Elegant" code can not suffice. Per-node visitors are required.
     Aha: This code must be isomorphic to the AstFormatter class.
-    
+
     This class traverses a tree of ast nodes in *exactly* order in which
     those nodes contribute tokens.
-
-    Pass 1: Tokenize 'contents' to a *list* of Token objects.
-
-    Pass 2: Traverse the tree, verifying that the traversal order generates
-            the Token list, in order.
-    
-    Pass 3: Create a **tree-to-token mapping** inserting links: 
-        - from each token to exactly one tree node, the node that
-          "generates" the token.
-        - from tree nodes to zero or more tokens, in the order they appear
-          in the Token list.
-          
-    This is a powerful tool. It is plenty fast enough.
+        
+    Pass 1. Verifies that the token-order traversal generates exactly the
+            tokens, in their correct order.
+       
+    Pass 2. Creates a **tree-to-token mapping** inserting links:
+        
+    - from each token to exactly one tree node, the node that
+      "generates" the token.
+    - from tree nodes to zero or more tokens, in the order they appear
+      in the Token list.
     """
+    #@-<< TokenOrderTraverser docstring >>
     # pylint: disable=consider-using-enumerate
     in_expr = False
     level = 0
-
-    #@+others
-    #@+node:ekr.20191110075225.2: *3* tot.ctor
+    pass_n = 0
+        # Pass 1: Create and verify tokens.
+        # Pass 2: link tree and tokens.
+        
     def __init__(self, contents, filename):
         """Ctor for TokenOrderTraverser."""
         self.contents = contents
         self.filename = filename
-       
-    #@+node:ekr.20191110075448.3: *3* tot.format
-    def format(self, node, level, *args, **keys):
+
+    #@+others
+    #@+node:ekr.20191110075225.2: *3* tot.ctor
+    #@+node:ekr.20191110075448.83: *3* tot.indent (to do)
+    def indent(self, s): ### To do: remove s arg.
         """
-        Format the node and possibly its descendants, depending on args.
+        TokenOrderTraverser.indent
         
-        This is a top-level entry, useful for debugging.
+        Create/verify proper indent/dedent tokens.
         """
-        self.level = level
-        val = self.visit(node, *args, **keys)
-        return val.rstrip() if val else ''
-    #@+node:ekr.20191110075448.83: *3* tot.indent
-    def indent(self, s):
-        return f'%s%s' % (' ' * 4 * self.level, s)
+        ### to do.
+            # return f'%s%s' % (' ' * 4 * self.level, s)
+    #@+node:ekr.20191110132115.1: *3* tot.put (to do)
+    def put(self, kind, val):
+        """
+        TokenOrderTraverser.put.
+
+        Create and handle a token whose kind & value are given.
+        """
+        assert self.pass_n in (1, 2), f"Invalid pass number: {self.pass_n}"
+        ### To do.
+        if self.pass_n == 1:
+            g.trace(kind, val)
+        else:
+            g.trace(kind, val)
     #@+node:ekr.20191110075448.4: *3* tot.visit
-    def visit(self, node, *args, **kwargs):
+    def visit(self, node):
         """
         TokenOrderTraverser.visit.
         """
+
         def oops(method_name, *keys, **kwargs):
             g.trace('TokenOrderTraverser: missing method:', method_name)
 
@@ -2909,9 +2920,28 @@ class TokenOrderTraverser:
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
-        s = method(node, *args, **kwargs)
+        s = method(node)
         assert isinstance(s, str), type(s)
         return s
+    #@+node:ekr.20191110133426.1: *3* tot:  Passes
+    #@+node:ekr.20191110131906.1: *4* tot.pass1: tokenize (to do)
+    def tokenize(self, contents):
+        """
+        Return a list (not a generator) of Token object corresponding to the
+        list of 5-tuples generated by tokenize.tokenize.
+        """
+        return None
+    #@+node:ekr.20191110075448.3: *4* tot.pass2: verify_token_order
+    def verify_token_order(self, tokens, tree):
+        """
+        Verify that traversing the given ast tree generates exactly the given
+        tokens, in exact order.
+        """
+    #@+node:ekr.20191110132050.1: *4* tot.pass3: insert_links
+    def insert_links(self, contents, tokens, tree):
+        """
+        Insert links between tree nodes and tokens.
+        """
     #@+node:ekr.20191110075448.5: *3* tot: Contexts
     #@+node:ekr.20191110075448.6: *4* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
@@ -3318,6 +3348,7 @@ class TokenOrderTraverser:
         return self.indent(f'del %s\n' % ','.join(targets))
     #@+node:ekr.20191110075448.59: *4* tot.ExceptHandler
     def do_ExceptHandler(self, node):
+
         result = []
         result.append(self.indent('except'))
         if getattr(node, 'type', None):
@@ -3599,7 +3630,6 @@ class TokenOrderTraverser:
 
         return self.indent(f'yield from %s\n' % (
             self.visit(node.value)))
-    #@+node:ekr.20191110075448.81: *3* tot: Utils (to be removed)
     #@-others
 #@-others
 #@@language python
