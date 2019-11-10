@@ -301,14 +301,13 @@ class AstFormatter:
     level = 0
 
     #@+others
-    #@+node:ekr.20141012064706.18400: *3*  f.Entries
-    #@+node:ekr.20141012064706.18402: *4* f.format
+    #@+node:ekr.20141012064706.18402: *3* f.format
     def format(self, node, level, *args, **keys):
         """Format the node and possibly its descendants, depending on args."""
         self.level = level
         val = self.visit(node, *args, **keys)
         return val.rstrip() if val else ''
-    #@+node:ekr.20141012064706.18403: *4* f.visit
+    #@+node:ekr.20141012064706.18403: *3* f.visit
     def visit(self, node, *args, **keys):
         """Return the formatted version of an Ast node, or list of Ast nodes."""
         if isinstance(node, (list, tuple)):
@@ -321,7 +320,10 @@ class AstFormatter:
         s = method(node, *args, **keys)
         assert isinstance(s, str), type(s)
         return s
-    #@+node:ekr.20141012064706.18404: *3* f.Contexts
+    #@+node:ekr.20141012064706.18469: *3* f.indent
+    def indent(self, s):
+        return f'%s%s' % (' ' * 4 * self.level, s)
+    #@+node:ekr.20141012064706.18404: *3* f: Contexts
     #@+node:ekr.20141012064706.18405: *4* f.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
@@ -398,7 +400,7 @@ class AstFormatter:
         return self.indent(f'lambda %s: %s' % (
             self.visit(node.args),
             self.visit(node.body)))
-    #@+node:ekr.20141012064706.18410: *3* f.Expressions
+    #@+node:ekr.20141012064706.18410: *3* f: Expressions
     #@+node:ekr.20141012064706.18411: *4* f.Expr
     def do_Expr(self, node):
         """An outer expression: must be indented."""
@@ -432,7 +434,7 @@ class AstFormatter:
 
     def do_Store(self, node):
         return 'Store'
-    #@+node:ekr.20141012064706.18415: *3* f.Operands
+    #@+node:ekr.20141012064706.18415: *3* f: Operands
     #@+node:ekr.20141012064706.18416: *4* f.arguments
     # 2: arguments = (expr* args, identifier? vararg, identifier?
     #                arg? kwarg, expr* defaults)
@@ -442,7 +444,7 @@ class AstFormatter:
 
     def do_arguments(self, node):
         """Format the arguments node."""
-        kind = self.kind(node)
+        kind = node.__class__.__name__
         assert kind == 'arguments', kind
         args = [self.visit(z) for z in node.args]
         defaults = [self.visit(z) for z in node.defaults]
@@ -635,12 +637,13 @@ class AstFormatter:
     def do_Tuple(self, node):
         elts = [self.visit(z) for z in node.elts]
         return f'(%s)' % ','.join(elts)
-    #@+node:ekr.20141012064706.18436: *3* f.Operators
+    #@+node:ekr.20141012064706.18436: *3* f: Operators
     #@+node:ekr.20160521104724.1: *4* f.op_name
     def op_name(self, node, strict=True):
         """Return the print name of an operator node."""
-        name = _op_names.get(self.kind(node), f'<%s>' % node.__class__.__name__)
-        if strict: assert name, self.kind(node)
+        name = _op_names.get(node.__class__.__name__, f'<%s>' % node.__class__.__name__)
+        if strict: 
+            assert name, node.__class__.__name__
         return name
     #@+node:ekr.20141012064706.18437: *4* f.BinOp
     def do_BinOp(self, node):
@@ -678,7 +681,7 @@ class AstFormatter:
             self.visit(node.body),
             self.visit(node.test),
             self.visit(node.orelse))
-    #@+node:ekr.20141012064706.18442: *3* f.Statements
+    #@+node:ekr.20141012064706.18442: *3* f: Statements
     #@+node:ekr.20170721074105.1: *4* f.AnnAssign
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
 
@@ -810,11 +813,11 @@ class AstFormatter:
         """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
-            if self.kind(ast2) == 'alias':
+            if ast2.__class__.__name__ == 'alias':
                 data = ast2.name, ast2.asname
                 result.append(data)
             else:
-                g.trace('unsupported kind in Import.names list', self.kind(ast2))
+                g.trace('unsupported kind in Import.names list', ast2.__class__.__name__)
         return result
     #@+node:ekr.20141012064706.18456: *4* f.ImportFrom
     def do_ImportFrom(self, node):
@@ -1006,14 +1009,6 @@ class AstFormatter:
 
         return self.indent(f'yield from %s\n' % (
             self.visit(node.value)))
-    #@+node:ekr.20141012064706.18467: *3* f.Utils
-    #@+node:ekr.20141012064706.18468: *4* f.kind
-    def kind(self, node):
-        """Return the name of node's class."""
-        return node.__class__.__name__
-    #@+node:ekr.20141012064706.18469: *4* f.indent
-    def indent(self, s):
-        return f'%s%s' % (' ' * 4 * self.level, s)
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
 class AstFullTraverser:
@@ -1119,9 +1114,6 @@ class AstFullTraverser:
 
     def do_Store(self, node):
         pass
-    #@+node:ekr.20141012064706.18479: *3* ft.kind
-    def kind(self, node):
-        return node.__class__.__name__
     #@+node:ekr.20171214200319.1: *3* ft.format
     def format(self, node, level, *args, **keys):
         """Format the node and possibly its descendants, depending on args."""
@@ -1131,8 +1123,9 @@ class AstFullTraverser:
     #@+node:ekr.20160521102250.1: *4* ft.op_name
     def op_name(self, node, strict=True):
         """Return the print name of an operator node."""
-        name = _op_names.get(self.kind(node), f'<%s>' % node.__class__.__name__)
-        if strict: assert name, self.kind(node)
+        name = _op_names.get(node.__class__.__name__, f'<%s>' % node.__class__.__name__)
+        if strict:
+            assert name, node.__class__.__name__
         return name
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
     # 2: arguments = (
