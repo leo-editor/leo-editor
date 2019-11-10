@@ -330,8 +330,10 @@
 <v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
 <v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
 </v>
-<v t="ekr.20191106195303.1"></v>
-<v t="ekr.20191106072009.1"></v>
+<v t="ekr.20160318094003.1"><vh>leoAst</vh>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1898,6 +1900,42 @@ finally:
 <t tx="ekr.20150610065241.1">def spam():
     if -1 &lt; 2:
         pass
+</t>
+<t tx="ekr.20160318094003.1"></t>
+<t tx="ekr.20160318094009.1">import leo.core.leoAst as leoAst
+import leo.external.make_stub_files as msf
+import leo.external.py2cs as py2cs
+import ast, tokenize
+path = g.os_path_finalize_join(g.app.loadDir,
+    '..', 'test', 'unittest', 'python3_test.py')
+assert g.os_path_exists(path), path
+fn = g.shortFileName(path)
+source = open(path, 'r').read()
+node = ast.parse(source, filename=fn, mode='exec')
+src = open(path, 'r').read()
+readlines = g.ReadLinesClass(src).next
+tokens = list(tokenize.generate_tokens(readlines))
+leoAst.AstFullTraverser().visit(node)
+s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
+assert s
+s = leoAst.AstFormatter().format(node,level=0)
+assert s
+s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+assert s
+controller = msf.StandAloneMakeStubFile()
+msf.StubTraverser(controller).visit(node)
+</t>
+<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.core.leoAst as leoAst
+leoAst.unit_test(raise_on_fail=True)
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
 </t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
