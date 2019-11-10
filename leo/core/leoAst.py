@@ -2874,6 +2874,8 @@ class TokenOrderTraverser:
           "generates" the token.
         - from tree nodes to zero or more tokens, in the order they appear
           in the Token list.
+          
+    This is a powerful tool. It is plenty fast enough.
     """
     # pylint: disable=consider-using-enumerate
     in_expr = False
