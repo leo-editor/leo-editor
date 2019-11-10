@@ -2855,26 +2855,26 @@ class Token:
 #@+node:ekr.20191110075225.1: ** class TokenOrderTraverser
 class TokenOrderTraverser:
     """
-    Motivation: https://groups.google.com/d/msg/leo-editor/FZYJmbtRBWs/qWPdxKw5AgAJ
-    Aha: no "elegant" code can do the job as well as this careful class.
+    Ahas: https://groups.google.com/d/msg/leo-editor/FZYJmbtRBWs/qWPdxKw5AgAJ
 
-    A class traversing ast nodes in the *exact* order in which they
-    contribute tokens.
-
-    Pass 1: tokenize 'contents' to a *list* (not a generator) of Token
-    objects.
-
-    Pass 2: traverse the tree verifying that the traversal order generates
-    the Token list, in order. Pass 2 also ceates a **tree-to-token
-    mapping** inserting links:
-        
-    - From each token to exactly one tree node, the node that "generates"
-      the token.
+    A class that supports (and defines) **token-order traversals**.
+    Aha: "Elegant" code can not suffice. Per-node visitors are required.
+    Aha: This code must be isomorphic to the AstFormatter class.
     
-    - From tree nodes to zero or more tokens, in the order they appear in
-      the Token list.
-    """
+    This class traverses a tree of ast nodes in *exactly* order in which
+    those nodes contribute tokens.
 
+    Pass 1: Tokenize 'contents' to a *list* of Token objects.
+
+    Pass 2: Traverse the tree, verifying that the traversal order generates
+            the Token list, in order.
+    
+    Pass 3: Create a **tree-to-token mapping** inserting links: 
+        - from each token to exactly one tree node, the node that
+          "generates" the token.
+        - from tree nodes to zero or more tokens, in the order they appear
+          in the Token list.
+    """
     # pylint: disable=consider-using-enumerate
     in_expr = False
     level = 0
