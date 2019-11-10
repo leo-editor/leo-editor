@@ -2957,23 +2957,17 @@ class TokenOrderTraverser:
     # 3: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_AsyncFunctionDef(self, node): ### , print_body=True):
-        """Format a FunctionDef node."""
-        ### result = []
+    def do_AsyncFunctionDef(self, node):
         if node.decorator_list:
             for z in node.decorator_list:
-                ### result.append(f'@%s\n' % self.visit(z))
+                # '@%s\n' % self.visit(z)
                 self.put('op', '@')
                 self.visit(z)
                 self.put('newline', '\n')
         name = node.name  # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        ###
-            # returns = self.visit(node.returns)
-            # if getattr(node, 'returns', None):  # Python 3.
-            #   result.append(self.indent(f'asynch def %s(%s): -> %s\n' % (name, args, returns)))
-            # else:
-            #   result.append(self.indent(f'asynch def %s(%s):\n' % (name, args)))
+        #'asynch def %s(%s): -> %s\n' % (name, args, returns)))
+        # 'asynch def %s(%s):\n' % (name, args)))
         self.indent()
         self.put('name', 'asynch')
         self.put('def', name)
@@ -2985,13 +2979,6 @@ class TokenOrderTraverser:
             self.put('op', '->')
             self.visit(node.returns)
         self.put('newline', '\n')
-        ###
-            # if print_body:
-                # for z in node.body:
-                    # self.level += 1
-                    # result.append(self.visit(z))
-                    # self.level -= 1
-        ### return ''.join(result)
     #@+node:ekr.20191110075448.6: *4* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
