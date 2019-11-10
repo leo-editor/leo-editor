@@ -2943,6 +2943,32 @@ class TokenOrderTraverser:
         Insert links between tree nodes and tokens.
         """
     #@+node:ekr.20191110075448.5: *3* tot: Contexts
+    #@+node:ekr.20191110140505.1: *4* tot.AsyncFunctionDef
+    # 2: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
+
+    def do_AsyncFunctionDef(self, node, print_body=True):
+        """Format a FunctionDef node."""
+        result = []
+        if node.decorator_list:
+            for z in node.decorator_list:
+                result.append(f'@%s\n' % self.visit(z))
+        name = node.name  # Only a plain string is valid.
+        args = self.visit(node.args) if node.args else ''
+        if getattr(node, 'returns', None):  # Python 3.
+            returns = self.visit(node.returns)
+            result.append(self.indent(f'asynch def %s(%s): -> %s\n' % (
+                name, args, returns)))
+        else:
+            result.append(self.indent(f'asynch def %s(%s):\n' % (
+                name, args)))
+        if print_body:
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        return ''.join(result)
     #@+node:ekr.20191110075448.6: *4* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
@@ -2975,12 +3001,12 @@ class TokenOrderTraverser:
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-    #@+node:ekr.20191110075448.7: *4* tot.FunctionDef & AsyncFunctionDef
+    #@+node:ekr.20191110075448.7: *4* tot.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node, async_flag=False, print_body=True):
+    def do_FunctionDef(self, node, print_body=True):
         """Format a FunctionDef node."""
         result = []
         if node.decorator_list:
@@ -2988,23 +3014,19 @@ class TokenOrderTraverser:
                 result.append(f'@%s\n' % self.visit(z))
         name = node.name  # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        asynch_prefix = 'asynch ' if async_flag else ''
         if getattr(node, 'returns', None):  # Python 3.
             returns = self.visit(node.returns)
-            result.append(self.indent(f'%sdef %s(%s): -> %s\n' % (
-                asynch_prefix, name, args, returns)))
+            result.append(self.indent(f'def %s(%s): -> %s\n' % (
+                name, args, returns)))
         else:
-            result.append(self.indent(f'%sdef %s(%s):\n' % (
-                asynch_prefix, name, args)))
+            result.append(self.indent(f'def %s(%s):\n' % (
+                name, args)))
         if print_body:
             for z in node.body:
                 self.level += 1
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-
-    def do_AsyncFunctionDef(self, node):
-        return self.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20191110075448.8: *4* tot.Interactive
     def do_Interactive(self, node):
         for z in node.body:
