@@ -258,15 +258,16 @@ class AstDumper:
                 aList = [f'%s=%s' % (a, b) for a, b in fields]
             else:
                 aList = [b for a, b in fields]
-            compressed = not any([isinstance(b, list) and len(b) > 1 for a, b in fields])
+            ### compressed = not any([isinstance(b, list) and len(b) > 1 for a, b in fields])
             name = node.__class__.__name__
-            if compressed and len(','.join(aList)) < 100:
-                return f'%s(%s)' % (name, ','.join(aList))
+            ### if compressed and len(','.join(aList)) < 100:
+            ###    return f'%s(%s)' % (name, ','.join(aList))
             sep = '' if len(aList) <= 1 else sep1
             return f'%s(%s%s)' % (name, sep, sep1.join(aList))
         if isinstance(node, list):
-            compressed = not any([isinstance(z, list) and len(z) > 1 for z in node])
-            sep = '' if compressed and len(node) <= 1 else sep1
+            ### compressed = not any([isinstance(z, list) and len(z) > 1 for z in node])
+            ### sep = '' if compressed and len(node) <= 1 else sep1
+            sep = sep1
             return f'[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
@@ -2865,7 +2866,7 @@ class Tokenizer:
         self.check_results(contents)
         # Return results, as a list.
         return self.results
-    #@+node:ekr.20191110165235.4: *3* tok.do_token
+    #@+node:ekr.20191110165235.4: *3* tok.do_token (the gem)
     def do_token(self, contents, token):
         """
         Handle the given token, optionally including between-token whitespace.
@@ -3019,31 +3020,35 @@ class TokenOrderTraverser:
             # self.put_item(kind, val)
     #@+node:ekr.20191110075448.4: *3* tot.visit
     def visit(self, node):
-        """
-        TokenOrderTraverser.visit.
-        """
+        """TokenOrderTraverser.visit."""
+        
+        trace = True and not g.unitTesting
 
         def oops(method_name, *keys, **kwargs):
             g.trace('TokenOrderTraverser: missing method:', method_name)
 
         if isinstance(node, (list, tuple)):
+            if trace: g.trace('LIST')
             return ','.join([self.visit(z) for z in node])
         if node is None:
+            if trace: g.trace('NONE')
             return 'None' ###
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
-        s = method(node)
-        assert isinstance(s, str), type(s)
-        return s
-    #@+node:ekr.20191110133426.1: *3* tot:  Passes
-    #@+node:ekr.20191110075448.3: *4* tot.pass2: verify_token_order
+        if trace: g.trace('VISITOR:', method.__name__)
+        method(node)
+        ### s = method(node)
+        ### assert isinstance(s, str), type(s)
+        ### return s
+    #@+node:ekr.20191110075448.3: *3* tot.verify_token_order (to do)
     def verify_token_order(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
-    #@+node:ekr.20191110132050.1: *4* tot.pass3: insert_links
+        self.visit(tree)
+    #@+node:ekr.20191110132050.1: *3* tot.insert_links (to do)
     def insert_links(self, contents, tokens, tree):
         """
         Insert links between tree nodes and tokens.
