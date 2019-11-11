@@ -173,21 +173,6 @@ def parse_ast(s, headline=None):
         oops('Unexpected Exception')
         g.es_exception()
     return None
-#@+node:ekr.20191109073937.1: *3* function: test_TokenOrderTraverser
-def test_TokenOrderTraverser(contents, trace=False):
-    """Test runner for TokenOrderTraverser class."""
-    node = parse_ast(contents)
-    x = TokenOrderTraverser(contents, filename='test')
-    tree = x.visit(node)
-    # Debugging.
-    print('Contents...')
-    print(contents.rstrip())
-    print('\nDump of tree...\n')
-    print(AstDumper().dump(tree))
-    ### x.show_as_tokens(atok, contents)
-    ### x.thread_tree(atok)
-    print('\nAfter threading...')
-    ### x.show_as_tree(atok)
 #@+node:ekr.20160521103254.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """Run basic unit tests for this file."""
@@ -3036,9 +3021,19 @@ class TokenOrderTraverser:
         self.put('newline', '\n')
         # Required.  May be changed by put_indent.
         self.put('line-indent', ' '*self.level*4)
-    #@+node:ekr.20191111023143.1: *4* tot.insert_one_link
-    def insert_one_link(self):
-        """Insert two-way links between self.node and the next token."""
+    #@+node:ekr.20191111162851.1: *4* tot.put_conditional_comma (to do)
+    def put_conditional_comma(self):
+        
+        ### To do.
+        self.put_op('op', ',')
+    #@+node:ekr.20191111162541.1: *4* tot.put_conditional_newline (To do)
+    def put_conditional_newline(self):
+
+        ### To do.
+
+        self.put('newline', '\n')
+        # Required.  May be changed by put_indent.
+        self.put('line-indent', ' '*self.level*4)
     #@+node:ekr.20191110075448.83: *4* tot.put_indent & put_dedent
     def put_indent(self):
         """
@@ -3815,10 +3810,9 @@ class TokenOrderTraverser:
         self.put_newline()
         # Body.
         self.put_indent()
-        for i, z in enumerate(node.body):
+        for z in node.body:
             self.visit(z)
-            if i < len(node.body) - 1: ### Still experimental.
-                self.put_newline()
+            self.put_conditional_newline()
         self.put_dedent()
         # self.put_newline()
         # Else clause.
@@ -4103,6 +4097,17 @@ class TokenOrderTraverser:
         self.visit(node.value)
         self.put_newline()
     #@-others
+#@+node:ekr.20191111152653.1: ** class TokenOrderFormatter
+class TokenOrderFormatter (TokenOrderTraverser):
+    
+    def format(self, contents):
+        """
+        Format the tree into a string guaranteed to be generated in token order.
+        """
+        self.tokens = self.make_tokens(contents)
+        tree = parse_ast(contents)
+        self.visit(tree)
+        return ''.join([z.to_string() for z in self.results])
 #@-others
 #@@language python
 #@@tabwidth -4
