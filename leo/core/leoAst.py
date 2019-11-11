@@ -3032,12 +3032,14 @@ class TokenOrderTraverser:
         
         Create/verify proper indent token.
         """
+        trace = False  and not g.unitTesting
         self.level += 1
-        g.trace()
-        g.printObj(self.results[-3:])
+        if trace:
+            g.trace()
+            g.printObj(self.results[-2:])
         if self.prev_token.kind == 'line-indent':
             # Change the indent in place.
-            g.trace('PATCH', self.level, self.prev_token)
+            if trace: g.trace('PATCH', self.level, self.prev_token)
             self.prev_token.value = ' '*self.level*4
         else:
             self.put('line-indent', ' '*self.level*4)
@@ -3100,25 +3102,21 @@ class TokenOrderTraverser:
             self.token_index += 1
             return token
 
-        last_kind = kind
         token = get_token()
+        # Ignore encoding tokens.
+        if token.kind == 'encoding':
+            token = get_token()
         while token:
             if kind == token.kind:
                 return # A match.
-            if token.kind in ('encoding', 'ws'):
-                # g.trace('SKIP', token.kind)
+            if token.kind in ('ws', 'indent'):
+                if kind in ('line-indent', 'ws'):
+                    return # A good enough match
+                # Look ahead in the token list.
                 token = get_token()
-                continue
-            if kind == 'line-indent':
-                if token.kind in ('indent', 'ws'):
-                    return # The easy match.
-                if last_kind == 'line-indent':
-                    # Back up and hope for the best later.
-                    g.trace('BACK UP', token)
-                    self.token_index -= 1
-                    return
+                continue 
             break # An error
-        g.trace('MISMATCH: last_kind:', last_kind, 'kind', kind)
+        g.trace('MISMATCH at kind:', kind)
             
     #@+node:ekr.20191110075448.3: *3* tot: Entries
     def verify_token_order(self, tokens, tree):
