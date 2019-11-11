@@ -3003,6 +3003,9 @@ class TokenOrderTraverser:
 
     def put_comma(self):
         self.put('op', ',')
+        
+    def put_name(self, val):
+        self.put('name', val)
 
     def put_op(self, val):
         self.put('op', val)
@@ -3154,9 +3157,9 @@ class TokenOrderTraverser:
                 self.put_newline()
         #'asynch def %s(%s): -> %s\n' % (name, args, returns)))
         # 'asynch def %s(%s):\n' % (name, args)))
-        self.put('name', 'asynch')
+        self.put_name('asynch')
         self.put_blank()
-        self.put('def', node.name) # A string
+        self.put_name(node.name) # A string
         self.put_op('(')
         if node.args:
             args = self.visit(node.args)
@@ -3191,9 +3194,9 @@ class TokenOrderTraverser:
             self.visit(z)
             self.put_newline()
         # class name(bases):\n
-        self.put('name', 'class')
+        self.put_name('class')
         self.put_blank()
-        self.put('name', node.name) # A string.
+        self.put_name(node.name) # A string.
         if node.bases:
             self.put_op('(')
             for z in node.bases:
@@ -3220,9 +3223,9 @@ class TokenOrderTraverser:
             self.put_newline()
         # def name(args): returns\n
         # def name(args):\n
-        self.put('name', 'def')
+        self.put_name('def')
         self.put_blank()
-        self.put('name', node.name) # A string.
+        self.put_name(node.name) # A string.
         self.put_op('(')
         if node.args:
             self.visit(node.args)
@@ -3250,7 +3253,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.10: *5* tot.Lambda
     def do_Lambda(self, node):
 
-        self.put('name', 'lambda')
+        self.put_name('lambda')
         self.put_blank()
         self.visit(node.args)
         self.put_op(':')
@@ -3338,7 +3341,7 @@ class TokenOrderTraverser:
 
     def do_arg(self, node):
         
-        self.put('name', node.arg)
+        self.put_name(node.arg)
         if getattr(node, 'annotation', None):
             self.put_blank()
             self.visit(node.annotation)
@@ -3349,7 +3352,7 @@ class TokenOrderTraverser:
         
         self.visit(node.value)
         self.put_op('.')
-        self.put('name', node.attr) # A string.
+        self.put_name(node.attr) # A string.
     #@+node:ekr.20191110075448.20: *5* tot.Bytes
     def do_Bytes(self, node):  # Python 3.x only.
         self.put('string', str(node.s))
@@ -3377,7 +3380,7 @@ class TokenOrderTraverser:
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
-        self.put('name', node.arg)
+        self.put_name(node.arg)
         self.put_op('=')
         self.visit(node.value)
         # # node.arg is a string.
@@ -3401,7 +3404,7 @@ class TokenOrderTraverser:
         self.visit(node.iter)
         if node.ifs:
             self.put_blank()
-            self.put('name', 'if')
+            self.put_name('if')
             self.put_blank()
             for z in node.ifs:
                 self.visit(z)
@@ -3475,7 +3478,7 @@ class TokenOrderTraverser:
         return f'%s for %s' % (elt, ''.join(gens))
     #@+node:ekr.20191110075448.34: *5* tot.Name & NameConstant
     def do_Name(self, node):
-        self.put('name', node.id)
+        self.put_name(node.id)
         # self.put_blank()
 
     def do_NameConstant(self, node):  # Python 3 only.
@@ -3592,7 +3595,7 @@ class TokenOrderTraverser:
         
         # assert {node.test}, {node.message}
         # assert {test}'
-        self.put('name', 'assert')
+        self.put_name('assert')
         self.put_blank()
         self.visit(node.test)
         if getattr(node, 'msg', None):
@@ -3609,9 +3612,9 @@ class TokenOrderTraverser:
     def do_AsyncFor(self, node):
         
         # 'async for %s in %s:\n' % (
-        self.put('name', 'async')
+        self.put_name('async')
         self.put_blank()
-        self.put('name', 'for')
+        self.put_name('for')
         self.put_blank()
         self.visit(node.target)
         self.put_op(':')
@@ -3624,7 +3627,7 @@ class TokenOrderTraverser:
         self.put_newline()
         if node.orelse:
             # 'else:\n'
-            self.put('name', 'else')
+            self.put_name('else')
             self.put_op(':')
             self.put_indent()
             for z in node.orelse:
@@ -3644,24 +3647,24 @@ class TokenOrderTraverser:
     def do_Await(self, node):
         
         #'await %s\n'
-        self.put('name', 'await')
+        self.put_name('await')
         self.put_blank()
         self.visit(node.value)
         self.put_newline()
     #@+node:ekr.20191110075448.56: *5* tot.Break
     def do_Break(self, node):
         
-        self.put('name', 'break')
+        self.put_name('break')
         self.put_newline()
     #@+node:ekr.20191110075448.57: *5* tot.Continue
     def do_Continue(self, node):
 
-        self.put('name', 'continue')
+        self.put_name('continue')
         self.put_newline()
     #@+node:ekr.20191110075448.58: *5* tot.Delete
     def do_Delete(self, node):
 
-        self.put('name', 'del')
+        self.put_name('del')
         for i, z in enumerate(node.targets):
             self.visit(z)
             if i < len(node.targets) - 1:
@@ -3670,18 +3673,18 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.59: *5* tot.ExceptHandler
     def do_ExceptHandler(self, node):
         
-        self.put('name', 'except')
+        self.put_name('except')
         self.put_blank()
 
         if getattr(node, 'type', None):
             self.visit(node.type)
         if getattr(node, 'name', None):
             self.put_blank()
-            self.put('name', 'as')
+            self.put_name('as')
             if isinstance(node.name, ast.AST):
                 self.visit(node.name)
             else:
-                self.put('name', node.name)
+                self.put_name(node.name)
         self.put_op(':')
         self.put_newline()
         self.put_indent()
@@ -3694,12 +3697,12 @@ class TokenOrderTraverser:
 
     def do_Exec(self, node):
 
-        self.put('name', 'exec')
+        self.put_name('exec')
         self.put_blank()
         globals_ = getattr(node, 'globals', None)
         locals_ = getattr(node, 'locals', None)
         if globals_ or locals_:
-            self.put('name', 'in')
+            self.put_name('in')
             self.put_blank()
             if globals_:
                 self.visit(node.globals)
@@ -3711,7 +3714,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.61: *5* tot.For
     def do_For(self, node):
         #'for %s in %s:\n'
-        self.put('name', 'for')
+        self.put_name('for')
         self.put_blank()
         self.visit(node.target)
         self.visit(node.iter)
@@ -3723,7 +3726,7 @@ class TokenOrderTraverser:
         self.put_dedent()
         # 'else:\n'
         if node.orelse:
-            self.put('name', 'else')
+            self.put_name('else')
             self.put_op(':')
             self.put_indent()
             for z in node.orelse:
@@ -3789,7 +3792,7 @@ class TokenOrderTraverser:
         return self.indent(f'nonlocal %s\n' % ', '.join(node.names))
     #@+node:ekr.20191110075448.68: *5* tot.Pass
     def do_Pass(self, node):
-        self.put('name', 'pass')
+        self.put_name('pass')
     #@+node:ekr.20191110075448.69: *5* tot.Print
     # Python 2.x only
 
