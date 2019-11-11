@@ -3102,8 +3102,9 @@ class TokenOrderTraverser:
                 if token.kind in ('indent', 'ws'):
                     return # The easy match.
                 if last_kind == 'line-indent':
-                    # Ignoring the redundant line-indent.
-                    continue
+                    # Back up and hope for the best later.
+                    self.token_index -= 1
+                    return
             break # An error
         g.trace('MISMATCH: last_kind:', last_kind, 'kind', kind)
             
@@ -3248,9 +3249,12 @@ class TokenOrderTraverser:
             self.visit(z)
     #@+node:ekr.20191110075448.10: *5* tot.Lambda
     def do_Lambda(self, node):
-        return self.indent(f'lambda %s: %s' % (
-            self.visit(node.args),
-            self.visit(node.body)))
+
+        self.put('name', 'lambda')
+        self.put_blank()
+        self.visit(node.args)
+        self.put_op(':')
+        self.visit(node.body)
     #@+node:ekr.20191110075448.11: *4* tot: Expressions
     #@+node:ekr.20191110075448.12: *5* tot.Expr
     def do_Expr(self, node):
@@ -3576,18 +3580,24 @@ class TokenOrderTraverser:
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
 
     def do_AnnAssign(self, node):
-        return self.indent(f'%s:%s=%s\n' % (
-            self.visit(node.target),
-            self.visit(node.annotation),
-            self.visit(node.value),
-        ))
+        # {node.target}:{node.annotation}={node.value}\n'
+        self.visit(node.target)
+        self.put_op(':')
+        self.visit(node.annotation)
+        self.put_op('=')
+        self.visit(node.value)
+        self.put_newline()
     #@+node:ekr.20191110075448.52: *5* tot.Assert
     def do_Assert(self, node):
-        test = self.visit(node.test)
+        
+        # assert {node.test}, {node.message}
+        # assert {test}'
+        self.put('name', 'assert')
+        self.put_blank()
+        self.visit(node.test)
         if getattr(node, 'msg', None):
-            message = self.visit(node.msg)
-            return self.indent(f'assert %s, %s' % (test, message))
-        return self.indent(f'assert %s' % test)
+            self.put_comma()
+            self.visit(node.msg)
     #@+node:ekr.20191110075448.53: *5* tot.Assign
     def do_Assign(self, node):
         return self.indent(f'%s=%s\n' % (
