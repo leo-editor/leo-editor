@@ -3207,40 +3207,62 @@ class TokenOrderTraverser:
 
     def do_arguments(self, node):
         """Format the arguments node."""
-        kind = node.__class__.__name__
-        assert kind == 'arguments', kind
-        args = [self.visit(z) for z in node.args]
-        defaults = [self.visit(z) for z in node.defaults]
-        args2 = []
-        n_plain = len(args) - len(defaults)
-        for i in range(len(node.args)):
-            if i < n_plain:
-                args2.append(args[i])
-            else:
-                args2.append(f'%s=%s' % (args[i], defaults[i-n_plain]))
+        ### kind = node.__class__.__name__
+        ### assert kind == 'arguments', kind
+        n_plain = len(node.args) - len(node.defaults)
+        assert n_plain >= 0
+        i = 0
+        while i < n_plain:
+            self.visit(node.args[i])
+            self.put_comma()
+            i += 1
+        j = 0
+        while i < len(node.args) and j < len(node.defaults):
+            self.visit(node.args[i])
+            self.put_op('=')
+            self.visit(node.defaults[j])
+            self.put_comma()
+            i += 1
+            j += 1
+        ### args = [self.visit(z) for z in node.args]
+        ### defaults = [self.visit(z) for z in node.defaults]
+        # args2 = []
+        # n_plain = len(args) - len(defaults)
+        # for i in range(len(node.args)):
+            # if i < n_plain:
+                # args2.append(args[i])
+            # else:
+                # args2.append(f'%s=%s' % (args[i], defaults[i-n_plain]))
         # Add the vararg and kwarg expressions.
         vararg = getattr(node, 'vararg', None)
-        if vararg: args2.append('*'+self.visit(vararg))
         kwarg = getattr(node, 'kwarg', None)
-        if kwarg: args2.append(f'**'+self.visit(kwarg))
-        return ','.join(args2)
-    #@+node:ekr.20191110075448.18: *4* tot.arg (Python3 only)
+        if vararg:
+            self.put_op('*')
+            self.visit(vararg)
+            if kwarg:
+                self.put_comma()
+        if kwarg:
+            self.put_op('*')
+            self.visit(kwarg)
+    #@+node:ekr.20191110075448.18: *4* tot.arg
     # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
+        
+        self.put('name', node.arg)
         if getattr(node, 'annotation', None):
-            return self.visit(node.annotation)
-        return node.arg
+            self.visit(node.annotation)
     #@+node:ekr.20191110075448.19: *4* tot.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
     def do_Attribute(self, node):
-        return f'%s.%s' % (
-            self.visit(node.value),
-            node.attr)  # Don't visit node.attr: it is always a string.
+        
+        self.visit(node.value)
+        self.put_op('.')
+        self.put('name', node.attr) # A string.
     #@+node:ekr.20191110075448.20: *4* tot.Bytes
     def do_Bytes(self, node):  # Python 3.x only.
-        return str(node.s)
+        self.put('string', str(node.s))
     #@+node:ekr.20191110075448.21: *4* tot.Call & tot.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -3265,23 +3287,36 @@ class TokenOrderTraverser:
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
-        # node.arg is a string.
-        value = self.visit(node.value)
-        # This is a keyword *arg*, not a Python keyword!
-        return f'%s=%s' % (node.arg, value)
+        self.put('name', node.arg)
+        self.put_op('=')
+        self.visit(node.value)
+        # # node.arg is a string.
+        # value = self.visit(node.value)
+        # # This is a keyword *arg*, not a Python keyword!
+        # return f'%s=%s' % (node.arg, value)
     #@+node:ekr.20191110075448.23: *4* tot.comprehension
     def do_comprehension(self, node):
-        result = []
-        name = self.visit(node.target)  # A name.
-        it = self.visit(node.iter)  # An attribute.
-        result.append(f'%s in %s' % (name, it))
-        ifs = [self.visit(z) for z in node.ifs]
-        if ifs:
-            result.append(f' if %s' % (''.join(ifs)))
-        return ''.join(result)
+
+        # result = []
+        # name = self.visit(node.target)  # A name.
+        # it = self.visit(node.iter)  # An attribute.
+        # result.append(f'%s in %s' % (name, it))
+        # ifs = [self.visit(z) for z in node.ifs]
+        # if ifs:
+            # result.append(f' if %s' % (''.join(ifs)))
+        # return ''.join(result)
+        
+        self.visit(node.target) # A name
+        self.put_op(' in ')
+        self.visit(node.iter)
+        if node.ifs:
+            self.put_op(' if ')
+            for z in node.ifs:
+                self.visit(z)
     #@+node:ekr.20191110075448.24: *4* tot.Constant (Python 3.6+)
     def do_Constant(self, node):  # Python 3.6+ only.
-        return str(node.s)  # A guess.
+        
+        self.put('constant', str(node.s))  # A guess.
     #@+node:ekr.20191110075448.25: *4* tot.Dict
     def do_Dict(self, node):
         result = []
@@ -3310,7 +3345,7 @@ class TokenOrderTraverser:
         return f'%s:%s for %s' % (key, value, ''.join(gens))
     #@+node:ekr.20191110075448.27: *4* tot.Ellipsis
     def do_Ellipsis(self, node):
-        return '...'
+        self.put_op('...')
     #@+node:ekr.20191110075448.28: *4* tot.ExtSlice
     def do_ExtSlice(self, node):
         return ':'.join([self.visit(z) for z in node.dims])
@@ -3354,7 +3389,8 @@ class TokenOrderTraverser:
         self.put('constant', repr(node.value))
     #@+node:ekr.20191110075448.35: *4* tot.Num
     def do_Num(self, node):
-        return repr(node.n)
+        
+        self.put('number', repr(node.n))
     #@+node:ekr.20191110075448.36: *4* tot.Repr
     # Python 2.x only
 
