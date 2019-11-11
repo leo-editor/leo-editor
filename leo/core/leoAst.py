@@ -2982,8 +2982,8 @@ class TokenOrderTraverser:
         five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
         return Tokenizer().create_input_tokens(contents, five_tuples)
     #@+node:ekr.20191110132115.1: *3* tot.put & helpers
+    prev_kind = None
     results = []  # For debugging: contents are strings.
-
     ws_kinds = ('newline', 'nl', 'ws', 'line-indent')
 
     def put(self, kind, val):
@@ -2993,6 +2993,7 @@ class TokenOrderTraverser:
             indent = ' '*4*self.level
             trace_val = repr(val) if kind in self.ws_kinds else val
             g.trace(f"{indent}{kind:>12} {trace_val}")
+        self.prev_kind = kind
         self.results.append(val)
         if self.pass_n == 1:
             self.verify_token(kind, val)
@@ -3009,12 +3010,11 @@ class TokenOrderTraverser:
     def put_optional_comma(self):
         ### To do.
         self.put_comma()
-        
+    #@+node:ekr.20191111041730.1: *4* tot.put_newline
     def put_newline(self):
         self.put('newline', '\n')
-        if self.level:
+        if self.level and self.prev_kind != 'line-indent':
             self.put('line-indent', ' '*self.level*4)
-    #@+node:ekr.20191110180445.1: *4* tot.put_comma
     #@+node:ekr.20191111023143.1: *4* tot.insert_one_link
     def insert_one_link(self):
         """Insert two-way links between self.node and the next token."""
@@ -3026,7 +3026,7 @@ class TokenOrderTraverser:
         Create/verify proper indent token.
         """
         self.level += 1
-        g.trace(self.level)
+        # g.trace(self.level) # , self.prev_kind)
         self.put('line-indent', ' '*self.level*4)
         
     def put_dedent(self):
@@ -3036,7 +3036,7 @@ class TokenOrderTraverser:
         Create/verify proper dedent token.
         """
         self.level -= 1
-        g.trace(self.level)
+        # g.trace(self.level)
     #@+node:ekr.20191110075448.4: *3* tot.visit
     coverage_set = set()
 
@@ -3074,14 +3074,16 @@ class TokenOrderTraverser:
         
         """See if the val matches the next token in self.tokens."""
         
+        trace = True and not g.unitTesting
+        
         def get_token():
             if self.token_index >= len(self.tokens):
                 g.trace('bad token index', self.token_index, len(self.tokens))
                 return None # Indicate an error.
             token = self.tokens[self.token_index]
             trace_val = repr(val) if kind in self.ws_kinds else val
-            g.trace(
-                f"list index: {self.token_index:2} {token!r:20} "
+            if trace: g.trace(
+                f"list index: {self.token_index:2} {token!r:25} "
                 f"{self.node.__class__.__name__:11} "
                 f"kind: {kind:>12} val: {trace_val}")
             self.token_index += 1
@@ -3093,17 +3095,17 @@ class TokenOrderTraverser:
             if kind == token.kind:
                 return # A match.
             if token.kind in ('encoding', 'ws'):
+                # g.trace('SKIP', token.kind)
                 token = get_token()
                 continue
             if kind == 'line-indent':
                 if token.kind in ('indent', 'ws'):
                     return # The easy match.
                 if last_kind == 'line-indent':
-                    # Back up, ignoring the redundant line-indent.
-                    self.token_index -= 1
-                    return # Hope for the best later.
+                    # Ignoring the redundant line-indent.
+                    continue
             break # An error
-        g.trace('MISMATCH: last_kind:', kind)
+        g.trace('MISMATCH: last_kind:', last_kind, 'kind', kind)
             
     #@+node:ekr.20191110075448.3: *3* tot: Entries
     node_stack = []
@@ -3172,6 +3174,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.6: *5* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
+
     # 3: ClassDef(identifier name, expr* bases,
     #             keyword* keywords, expr? starargs, expr? kwargs
     #             stmt* body, expr* decorator_list)
@@ -3180,27 +3183,29 @@ class TokenOrderTraverser:
     # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node, print_body=True):
-
-        result = []
-        name = node.name  # Only a plain string is valid.
-        bases = [self.visit(z) for z in node.bases] if node.bases else []
-        if getattr(node, 'keywords', None):  # Python 3
-            for keyword in node.keywords:
-                bases.append(f'%s=%s' % (keyword.arg, self.visit(keyword.value)))
-        if getattr(node, 'starargs', None):  # Python 3
-            bases.append(f'*%s' % self.visit(node.starargs))
-        if getattr(node, 'kwargs', None):  # Python 3
-            bases.append(f'*%s' % self.visit(node.kwargs))
-        if bases:
-            result.append(self.indent(f'class %s(%s):\n' % (name, ','.join(bases))))
-        else:
-            result.append(self.indent(f'class %s:\n' % name))
-        if print_body:
-            for z in node.body:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
+        
+        for z in node.decorator_list or []:
+            # @{z}\n
+            self.put_op('@')
+            self.visit(z)
+            self.put_newline()
+        # class name(bases):\n
+        self.put('name', 'class')
+        self.put_blank()
+        self.put('name', node.name) # A string.
+        if node.bases:
+            self.put_op('(')
+            for z in node.bases:
+                self.visit(z)
+            self.put_op(')')
+        self.put_op(':')
+        self.put_newline()
+        self.put_indent()
+        for i, z in enumerate(node.body):
+            self.visit(z)
+            if i < len(node.body) - 1:
+                self.put_newline()
+        self.put_dedent()
     #@+node:ekr.20191110075448.7: *5* tot.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
