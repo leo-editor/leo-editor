@@ -2999,15 +2999,20 @@ class TokenOrderTraverser:
         five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
         return Tokenizer().create_input_tokens(contents, five_tuples)
     #@+node:ekr.20191110132115.1: *3* tot.put & helpers
+    results = []  # For debugging: contents are strings.
+
     ws_kinds = ('newline', 'nl', 'ws', 'line-indent')
 
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
         assert self.pass_n in (1, 2), f"Invalid pass number: {self.pass_n}"
-        indent = ' '*4*self.level
-        trace_val = repr(val) if kind in self.ws_kinds else val
-        g.trace(f"{indent}{kind:>8} {trace_val}")
+        if 0:
+            indent = ' '*4*self.level
+            trace_val = repr(val) if kind in self.ws_kinds else val
+            g.trace(f"{indent}{kind:>12} {trace_val}")
         self.results.append(val)
+        if self.pass_n == 1:
+            self.verify_token(kind, val)
         
     def put_blank(self):
         self.put('ws', ' ')
@@ -3027,6 +3032,18 @@ class TokenOrderTraverser:
         if self.level:
             self.put('line-indent', ' '*self.level*4)
     #@+node:ekr.20191110180445.1: *4* tot.put_comma
+    #@+node:ekr.20191111023143.1: *4* tot.insert_one_link
+    def insert_one_link(self):
+        """Insert two-way links between self.node and the next token."""
+    #@+node:ekr.20191111023054.1: *4* tot.verify_token
+    def verify_token(self, kind, val):
+
+        if self.token_index < len(self.tokens):
+            token = self.tokens[self.token_index]
+            g.trace(f"{kind:>12} {val:20} {self.token_index:2} {token}")
+            self.token_index += 1
+        else:
+            g.trace('bad token index', self.token_index, len(self.tokens))
     #@+node:ekr.20191110075448.4: *3* tot.visit
     coverage_set = set()
 
@@ -3047,19 +3064,27 @@ class TokenOrderTraverser:
             # something is wrong.
             if trace: g.trace('NONE', g.callers())
             return
+        # Update self.node and push it to self.node_stack.
         assert isinstance(node, ast.AST), node.__class__.__name__
         self.coverage_set.add(node.__class__.__name__)
+        self.node = node
+        self.node_stack.append(node)
+        # Call the visitor.
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
         # if trace: print('VISIT:', method.__name__)
         method(node)
+        # pop self.node from the node stack.
+        self.node = self.node_stack.pop()
     #@+node:ekr.20191110075448.3: *3* tot: Entries
+    node_stack = []
+
     pass_n = None
         # Pass 1: Create and verify tokens.
         # Pass 2: link tree and tokens.
         
-    results = []
-        # For debugging.
+    token_index = None
+    tokens = None
 
     def verify_token_order(self, tokens, tree):
         """
@@ -3067,6 +3092,9 @@ class TokenOrderTraverser:
         tokens, in exact order.
         """
         self.pass_n = 1
+        self.node_stack = [None]
+        self.tokens = tokens[:]
+        self.token_index = 0
         self.visit(tree)
 
     def insert_links(self, contents, tokens, tree):
@@ -3074,6 +3102,9 @@ class TokenOrderTraverser:
         Insert links between tree nodes and tokens.
         """
         self.pass_n = 2
+        self.node_stack = [None]
+        self.tokens = tokens[:]
+        self.token_index = 0
         self.visit(tree)
     #@+node:ekr.20191111013646.1: *3* tot: Visitors
     #@+node:ekr.20191110075448.5: *4* tot: Contexts
@@ -3230,7 +3261,7 @@ class TokenOrderTraverser:
     def do_arguments(self, node):
         """Format the arguments node."""
         n_plain = len(node.args) - len(node.defaults)
-        g.trace('args', len(node.args), 'defaults', len(node.defaults))
+        # g.trace('args', len(node.args), 'defaults', len(node.defaults))
         assert n_plain >= 0
         i = 0
         while i < n_plain:
