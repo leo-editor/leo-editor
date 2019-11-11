@@ -3060,6 +3060,10 @@ class TokenOrderTraverser:
         
         Create/verify proper dedent token.
         """
+        self.level -= 1
+        self.put('newline', '\n')
+        if self.level > 0:
+            self.put('line-indent', ' '*self.level*4)
         # g.trace(self.level)
     #@+node:ekr.20191111083428.1: *3* tot.report_coverage
     def report_coverage(self, report_missing):
@@ -3103,9 +3107,11 @@ class TokenOrderTraverser:
         # Call the visitor.
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
+        ### g.trace('PUSH:', self.node.__class__.__name__)
         method(node)
         # pop self.node from the node stack.
         self.node = self.node_stack.pop()
+        ### g.trace(' POP:', self.node.__class__.__name__)
     #@+node:ekr.20191111023054.1: *3* tot.verify_token
     def verify_token(self, kind, val):
         
@@ -3144,24 +3150,23 @@ class TokenOrderTraverser:
             if token.kind in ('ws', 'indent'):
                 if kind in ('line-indent', 'ws'):
                     return # A good enough match.
-                ###
-                # pylint: disable=no-else-return
-                if 0:
-                    # Rescan this token later.
-                    self.token_index -= 1
-                    return
-                else:
-                    # Look ahead in the token list.
-                    token = get_token()
-                    continue
-            if token.kind == 'dedent':
-                if kind == 'newline':
-                    return # A good enough match.
                 # Look ahead in the token list.
                 token = get_token()
                 continue
+            if token.kind == 'dedent':
+                if kind == 'newline':
+                    # Rescan this index.
+                    # We expect to match 'line-indent' next.
+                    self.token_index -= 1
+                    return # A good enough match.
+                if kind == 'line-indent':
+                    return # An excellent match.
             break # An error
-        g.trace(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
+        if 1:
+            g.trace(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
+            ### g.pdb()
+        else:
+            raise AssertionError(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
             
     #@+node:ekr.20191110075448.3: *3* tot: Entries
     def verify_token_order(self, tokens, tree):
@@ -3251,10 +3256,6 @@ class TokenOrderTraverser:
         self.put_newline()
         # Body...
         self.put_indent()
-        # for i, z in enumerate(node.body):
-            # self.visit(z)
-            # if i < len(node.body) - 1:
-                # self.put_newline()
         for z in node.body:
             self.visit(z)
         self.put_dedent()
@@ -3286,7 +3287,7 @@ class TokenOrderTraverser:
         self.put_indent()
         for i, z in enumerate(node.body):
             self.visit(z)
-            if i < len(node.body) - 1:
+            if False and i < len(node.body) - 1: ###
                 self.put_newline()
         self.put_dedent()
     #@+node:ekr.20191110075448.8: *5* tot.Interactive
@@ -3309,7 +3310,8 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.11: *4* tot: Expressions
     #@+node:ekr.20191110075448.12: *5* tot.Expr
     def do_Expr(self, node):
-        """An outer expression: must be indented."""
+        """An outer expression. It generates no tokens directly."""
+        g.trace('=====', node.value.__class__.__name__)
         self.visit(node.value)
     #@+node:ekr.20191110075448.13: *5* tot.Expression
     def do_Expression(self, node):
@@ -3744,6 +3746,7 @@ class TokenOrderTraverser:
                 self.put_name(node.name)
         self.put_op(':')
         self.put_newline()
+        # Body...
         self.put_indent()
         for z in node.body:
             self.visit(z)
