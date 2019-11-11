@@ -2968,9 +2968,6 @@ class TokenOrderTraverser:
     level = 0
 
     #@+others
-    #@+node:ekr.20191111035411.1: *3* tot.indent (to be removed)
-    def indent(self, s):
-        g.trace(s, g.callers())
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
     def make_tokens(self, contents):
         """
@@ -3633,6 +3630,12 @@ class TokenOrderTraverser:
             for z in node.orelse:
                 self.visit(z)
             self.put_dedent()
+    #@+node:ekr.20191111065842.1: *5* tot.AsyncWith
+    def do_AsyncWith(self, node):
+        
+        self.put_name('async')
+        self.put_blank()
+        self.do_With(node)
     #@+node:ekr.20191110075448.54: *5* tot.AugAssign
     def do_AugAssign(self, node):
         
@@ -3734,62 +3737,82 @@ class TokenOrderTraverser:
             self.put_dedent()
     #@+node:ekr.20191110075448.62: *5* tot.Global
     def do_Global(self, node):
-        return self.indent(f'global %s\n' % (
-            ','.join(node.names)))
+
+        self.put_name('global')
+        self.put_blank()
+        for i, name in enumerate(node.names):
+            self.put_name(name)
+            if i < len(node.names) - 1:
+                self.put_comma()
+        self.put_newline()
     #@+node:ekr.20191110075448.63: *5* tot.If
     def do_If(self, node):
-        result = []
-        result.append(self.indent(f'if %s:\n' % (
-            self.visit(node.test))))
+       
+        # if %s:\n
+        self.put_name('if')
+        self.put_blank()
+        self.visit(node.test)
+        self.put_newline()
+        # Body.
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
+            self.visit(z)
+        self.put_dedent()
+        self.put_newline()
+        # Else clause.
         if node.orelse:
-            result.append(self.indent(f'else:\n'))
+            self.put_name('else')
+            self.put_blank()
+            self.put_indent()
             for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
+                self.visit(z)
+            self.put_dedent()
+            self.put_newline()
     #@+node:ekr.20191110075448.64: *5* tot.Import & helper
     def do_Import(self, node):
-        names = []
-        for fn, asname in self.get_import_names(node):
-            if asname:
-                names.append(f'%s as %s' % (fn, asname))
-            else:
-                names.append(fn)
-        return self.indent(f'import %s\n' % (
-            ','.join(names)))
-    #@+node:ekr.20191110075448.65: *6* tot.get_import_names
-    def get_import_names(self, node):
-        """Return a list of the the full file names in the import statement."""
-        result = []
-        for ast2 in node.names:
-            if ast2.__class__.__name__ == 'alias':
-                data = ast2.name, ast2.asname
-                result.append(data)
-            else:
-                g.trace('unsupported kind in Import.names list', ast2.__class__.__name__)
-        return result
+
+        self.put_name('import')
+        self.put_blank()
+        for i, node2 in enumerate(node.names):
+            self.put_name(node2.name)
+            if i < len(node.names) - 1:
+                self.put_comma()
+        as_name = any([z.asname for z in node.names])
+        if as_name:
+            self.put_blank()
+            self.put_name(as_name)
+        self.put_newline()
     #@+node:ekr.20191110075448.66: *5* tot.ImportFrom
     def do_ImportFrom(self, node):
-        names = []
-        for fn, asname in self.get_import_names(node):
-            if asname:
-                names.append(f'%s as %s' % (fn, asname))
-            else:
-                names.append(fn)
-        return self.indent(f'from %s import %s\n' % (
-            node.module,
-            ','.join(names)))
-    #@+node:ekr.20191110075448.67: *5* tot.Nonlocal (Python 3)
+
+        self.put_name('from')
+        self.put_blank()
+        self.put_name(node.module)
+        self.put_name('import')
+        self.put_blank()
+        for i, node2 in enumerate(node.names):
+            self.put_name(node2.name)
+            if i < len(node.names) - 1:
+                self.put_comma()
+        as_name = any([z.asname for z in node.names])
+        if as_name:
+            self.put_blank()
+            self.put_name(as_name)
+        self.put_newline()
+    #@+node:ekr.20191110075448.67: *5* tot.Nonlocal
     # Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
+        
+        # nonlocal %s\n' % ','.join(node.names))
+        self.put_name('nonlocal')
+        self.put_blank()
+        for i, name in enumerate(node.names):
+            self.put_name(name)
+            if i < len(node.names) - 1:
+                self.put_comma()
+        self.put_newline()
 
-        return self.indent(f'nonlocal %s\n' % ', '.join(node.names))
     #@+node:ekr.20191110075448.68: *5* tot.Pass
     def do_Pass(self, node):
         self.put_name('pass')
@@ -3797,35 +3820,53 @@ class TokenOrderTraverser:
     # Python 2.x only
 
     def do_Print(self, node):
-        vals = []
+
+        self.put_name('print')
+        self.put_op('(')
         for z in node.values:
-            vals.append(self.visit(z))
+            self.visit(z)
         if getattr(node, 'dest', None):
-            vals.append(f'dest=%s' % self.visit(node.dest))
+            self.put_name('dest')
+            self.put_op('=')
+            self.visit(node.dest)
         if getattr(node, 'nl', None):
-            # vals.append('nl=%s' % self.visit(node.nl))
-            vals.append(f'nl=%s' % node.nl)
-        return self.indent(f'print(%s)\n' % (
-            ','.join(vals)))
+            self.put_name('nl')
+            self.put_op('=')
+            self.put_name(node.nl)
+        self.put_op(')')
+        self.put_newline()
+        
     #@+node:ekr.20191110075448.70: *5* tot.Raise
     # Raise(expr? type, expr? inst, expr? tback)    Python 2
     # Raise(expr? exc, expr? cause)                 Python 3
 
     def do_Raise(self, node):
-        args = []
-        for attr in ('exc', 'cause'):
-            if getattr(node, attr, None) is not None:
-                args.append(self.visit(getattr(node, attr)))
-        if args:
-            return self.indent(f'raise %s\n' % (
-                ','.join(args)))
-        return self.indent('raise\n')
+       
+        self.put_name('raise')
+        exc = getattr(node, 'exc', None)
+        cause = getattr(node, 'cause', None)
+        tback = getattr(node, 'tback', None)
+        if exc or cause or tback:
+            self.put_blank()
+        if exc:
+            self.visit(exc)
+        if exc and cause:
+            self.put_comma()
+        if cause:
+            self.visit(cause)
+        if tback and (exc or cause):
+            self.put_comma()
+        if tback:
+            self.visit(tback)
+        self.put_newline()
     #@+node:ekr.20191110075448.71: *5* tot.Return
     def do_Return(self, node):
+        
+        self.put_name('return')
         if node.value:
-            return self.indent(f'return %s\n' % (
-                self.visit(node.value)))
-        return self.indent('return\n')
+            self.put_blank()
+            self.visit(node.value)
+        self.put_newline()
     #@+node:ekr.20191110075448.72: *5* tot.Starred (Python 3)
     # Starred(expr value, expr_context ctx)
 
@@ -3841,128 +3882,164 @@ class TokenOrderTraverser:
 
     def do_Try(self, node):  # Python 3
 
-        result = []
-        result.append(self.indent('try:\n'))
+        self.put_name('try')
+        self.put_op(':')
+        self.put_newline()
+        # Body...
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.handlers:
-            for z in node.handlers:
-                result.append(self.visit(z))
+            self.visit(z)
+        self.put_dedent()
+        # Handlers....
+        for z in node.handlers or []:
+            self.visit(z)
+        # Else...
         if node.orelse:
-            result.append(self.indent('else:\n'))
+            self.put_name('else')
+            self.put_op(':')
+            self.put_newline()
+            self.put_indent()
             for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
+                self.visit(z)
+            self.put_dedent()
+            ###self.put_newline()
+        # Finally...
         if node.finalbody:
-            result.append(self.indent('finally:\n'))
+            self.put_name('finally')
+            self.put_op(':')
+            self.put_newline()
+            self.put_indent()
             for z in node.finalbody:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
+                self.visit(z)
+            self.put_dedent()
+            ### self.put_newline()
+        
     #@+node:ekr.20191110075448.75: *5* tot.TryExcept
     def do_TryExcept(self, node):
-        result = []
-        result.append(self.indent('try:\n'))
+
+        self.put_name('try')
+        self.put_op(':')
+        self.put_newline()
+        # Body...
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.handlers:
-            for z in node.handlers:
-                result.append(self.visit(z))
+            self.visit(z)
+        self.put_dedent()
+        for z in node.handlers or []:
+            self.visit(z)
         if node.orelse:
-            result.append('else:\n')
+            self.put_name('else')
+            self.put_op(':')
+            self.put_newline()
+            self.put_indent()
             for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
+                self.visit(z)
+            self.put_dedent()
+            ###self.put_newline()
     #@+node:ekr.20191110075448.76: *5* tot.TryFinally
     def do_TryFinally(self, node):
-        result = []
-        result.append(self.indent('try:\n'))
+        
+        self.put_name('try')
+        self.put_op(':')
+        self.put_newline()
+        # Body...
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        result.append(self.indent('finally:\n'))
-        for z in node.finalbody:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        return ''.join(result)
+            self.visit(z)
+        self.put_dedent()
+        # Finally...
+        if node.finalbody:
+            self.put_name('finally')
+            self.put_op(':')
+            self.put_newline()
+            self.put_indent()
+            for z in node.finalbody:
+                self.visit(z)
+            self.put_dedent()
+            ### self.put_newline()
     #@+node:ekr.20191110075448.77: *5* tot.While
     def do_While(self, node):
-        result = []
-        result.append(self.indent(f'while %s:\n' % (
-            self.visit(node.test))))
+        
+        # while %s:\n'
+        self.put_name('while')
+        self.put_blank()
+        self.visit(node.test)
+        self.put_op(':')
+        self.put_newline()
+        # Body...
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
+            self.visit(z)
+        self.put_dedent()
+        # Else.
         if node.orelse:
-            result.append('else:\n')
+            self.put_name('else')
+            self.put_op(':')
+            self.put_newline()
+            self.put_indent()
             for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
-    #@+node:ekr.20191110075448.78: *5* tot.With & AsyncWith (Python 3)
+                self.visit(z)
+            self.put_dedent()
+            ###self.put_newline()
+    #@+node:ekr.20191110075448.78: *5* tot.With
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node, async_flag=False):
-        result = []
-        result.append(self.indent(f'%swith ' % ('async ' if async_flag else '')))
+    def do_With(self, node):
+        
+        self.put_name('with')
+        self.put_blank()
         if getattr(node, 'context_expression', None):
-            result.append(self.visit(node.context_expresssion))
-        vars_list = []
-        if getattr(node, 'optional_vars', None):
+            self.visit(node.context_expresssion)
+
+        if getattr(node, 'optional_vars', None): # Python 2.
             try:
-                for z in node.optional_vars:
-                    vars_list.append(self.visit(z))
+                for i, z in enumerate(node.optional_vars):
+                    self.visit(z)
+                    if i < len(node.optional_vars) - 1:
+                        self.put_comma()
             except TypeError:  # Not iterable.
-                vars_list.append(self.visit(node.optional_vars))
+                self.visit(node.optional_vars)
         if getattr(node, 'items', None):  # Python 3.
-            for item in node.items:
-                result.append(self.visit(item.context_expr))
+            for i, item in enumerate(node.items):
+                self.visit(item.context_expr)
                 if getattr(item, 'optional_vars', None):
                     try:
                         for z in item.optional_vars:
-                            vars_list.append(self.visit(z))
+                            self.visit(z)
                     except TypeError:  # Not iterable.
-                        vars_list.append(self.visit(item.optional_vars))
-        result.append(','.join(vars_list))
-        result.append(':\n')
+                        self.visit(item.optional_vars)
+                if i < len(node.items) - 1:
+                    self.put_comma()
+        # End the line.
+        self.put_op(':')
+        self.put_newline()
+        # Body...
+        self.put_indent()
         for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        result.append('\n')
-        return ''.join(result)
-
-    def do_AsyncWith(self, node):
-        return self.do_With(node, async_flag=True)
+            self.visit(z)
+        self.put_dedent()
     #@+node:ekr.20191110075448.79: *5* tot.Yield
     def do_Yield(self, node):
-        if getattr(node, 'value', None):
-            return self.indent(f'yield %s\n' % (
-                self.visit(node.value)))
-        return self.indent('yield\n')
+
+        self.put_name('yield')
+        if hasattr(node, 'value'):
+            self.put_blank()
+            self.visit(node.value)
+        self.put_newline()
+        
     #@+node:ekr.20191110075448.80: *5* tot.YieldFrom (Python 3)
     # YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
 
-        return self.indent(f'yield from %s\n' % (
-            self.visit(node.value)))
+        self.put_name('yield')
+        self.put_blank()
+        self.visit(node.value)
+        self.put_newline()
     #@-others
 #@-others
 #@@language python
