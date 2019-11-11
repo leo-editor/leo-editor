@@ -2970,22 +2970,32 @@ class TokenOrderTraverser:
     pass_n = 0
         # Pass 1: Create and verify tokens.
         # Pass 2: link tree and tokens.
-        
-    def __init__(self, contents, filename):
-        """Ctor for TokenOrderTraverser."""
-        self.contents = contents
-        self.filename = filename
+
+    # def __init__(self, contents, filename):
+        # """Ctor for TokenOrderTraverser."""
+        # self.contents = contents
+        # self.filename = filename
 
     #@+others
-    #@+node:ekr.20191110075448.83: *3* tot.indent (to do)
+    #@+node:ekr.20191110075448.83: *3* tot.indent & dedent (to do)
     def indent(self, s=None): ### To do: remove s arg.
         """
         TokenOrderTraverser.indent
         
-        Create/verify proper indent/dedent tokens.
+        Create/verify proper indent token.
         """
-        ### to do.
-            # return f'%s%s' % (' ' * 4 * self.level, s)
+        self.level += 1
+        g.trace(self.level)
+
+
+    def dedent(self):
+        """
+        TokenOrderTraverser.dedent
+        
+        Create/verify proper dedent token.
+        """
+        self.level -= 1
+        g.trace(self.level)
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
     def make_tokens(self, contents):
         """
@@ -2996,28 +3006,22 @@ class TokenOrderTraverser:
         import tokenize
         five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
         return Tokenizer().create_input_tokens(contents, five_tuples)
-    #@+node:ekr.20191110132115.1: *3* tot.put (to do)
+    #@+node:ekr.20191110132115.1: *3* tot.put & helpers
     def put(self, kind, val):
-        """
-        TokenOrderTraverser.put.
-
-        Create and handle a token whose kind & value are given.
-        """
+        """Handle a token whose kind & value are given."""
         assert self.pass_n in (1, 2), f"Invalid pass number: {self.pass_n}"
-        ### To do.
-        if self.pass_n == 1:
-            g.trace(kind, val)
-        else:
-            g.trace(kind, val)
-            
-    ###
-        # if isinstance(data, list):
-            # for item in data:
-                # kind, val = item
-                # self.put_item(kind, val)
-        # else:
-            # kind, val = data
-            # self.put_item(kind, val)
+        indent = ' '*4*self.level
+        val = repr(val) if kind in ('newline', 'nl') else val
+        g.trace(f"{indent}{kind:>8} {val}")
+
+    def put_comma(self):
+        """Handle a *possibly optional* comma."""
+        self.put('comma', ',')
+
+    def put_op(self, val):
+        """put an operator."""
+        self.put('op', val)
+    #@+node:ekr.20191110180445.1: *4* tot.put_comma
     #@+node:ekr.20191110075448.4: *3* tot.visit
     def visit(self, node):
         """TokenOrderTraverser.visit."""
@@ -3029,24 +3033,24 @@ class TokenOrderTraverser:
 
         if isinstance(node, (list, tuple)):
             if trace: g.trace('LIST')
-            return ','.join([self.visit(z) for z in node])
+            for z in node:
+                self.visit(z)
+            return
         if node is None:
-            if trace: g.trace('NONE')
-            return 'None' ###
+            # if trace: g.trace('NONE')
+            return
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
-        if trace: g.trace('VISITOR:', method.__name__)
+        # if trace: print('VISIT:', method.__name__)
         method(node)
-        ### s = method(node)
-        ### assert isinstance(s, str), type(s)
-        ### return s
     #@+node:ekr.20191110075448.3: *3* tot.verify_token_order (to do)
     def verify_token_order(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
+        self.pass_n = 1
         self.visit(tree)
     #@+node:ekr.20191110132050.1: *3* tot.insert_links (to do)
     def insert_links(self, contents, tokens, tree):
@@ -3063,24 +3067,28 @@ class TokenOrderTraverser:
         if node.decorator_list:
             for z in node.decorator_list:
                 # '@%s\n' % self.visit(z)
-                self.put('op', '@')
+                self.put_op('@')
                 self.visit(z)
                 self.put('newline', '\n')
-        name = node.name  # Only a plain string is valid.
-        args = self.visit(node.args) if node.args else ''
         #'asynch def %s(%s): -> %s\n' % (name, args, returns)))
         # 'asynch def %s(%s):\n' % (name, args)))
-        self.indent()
         self.put('name', 'asynch')
-        self.put('def', name)
-        self.put('op', '(')
-        self.visit(args)
-        self.put('op', ')')
-        self.put('op', 'colon')
+        self.put('def', node.name) # A string
+        self.put_op('(')
+        if node.args:
+            args = self.visit(node.args)
+            self.visit(args)
+        self.put_op(')')
+        self.put_op('colon')
         if getattr(node, 'returns', None):  # Python 3.
-            self.put('op', '->')
+            self.put_op('->')
             self.visit(node.returns)
         self.put('newline', '\n')
+        self.indent()
+        for z in node.body:
+            self.visit(z)
+        self.dedent()
+
     #@+node:ekr.20191110075448.6: *4* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
@@ -3118,36 +3126,39 @@ class TokenOrderTraverser:
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node, print_body=True):
-        """Format a FunctionDef node."""
-        result = []
-        if node.decorator_list:
-            for z in node.decorator_list:
-                result.append(f'@%s\n' % self.visit(z))
-        name = node.name  # Only a plain string is valid.
-        args = self.visit(node.args) if node.args else ''
-        if getattr(node, 'returns', None):  # Python 3.
-            returns = self.visit(node.returns)
-            result.append(self.indent(f'def %s(%s): -> %s\n' % (
-                name, args, returns)))
-        else:
-            result.append(self.indent(f'def %s(%s):\n' % (
-                name, args)))
-        if print_body:
-            for z in node.body:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
+    def do_FunctionDef(self, node):
+        for z in node.decorator_list or []:
+            # '@%s\n' % self.visit(z)
+            self.put_op('@')
+            self.visit(z)
+            self.put('newline', '\n')
+        # 'def %s(%s): -> %s\n' % (name, args, returns)))
+        # 'def %s(%s):\n' % (name, args)))
+        self.put('name', 'def')
+        self.put('name', node.name) # A string.
+        self.put_op('(')
+        if node.args:
+            args = self.visit(node.args)
+            self.visit(args)
+        self.put_op(')')
+        self.put_op('colon')
+        if getattr(node, 'returns', None):
+            self.put_op('->')
+            self.visit(node.returns)
+        self.put('newline', '\n')
+        self.indent()
+        for z in node.body:
+            self.visit(z)
+        self.dedent()
     #@+node:ekr.20191110075448.8: *4* tot.Interactive
     def do_Interactive(self, node):
         for z in node.body:
             self.visit(z)
     #@+node:ekr.20191110075448.9: *4* tot.Module
     def do_Module(self, node):
-        assert 'body' in node._fields
-        result = ''.join([self.visit(z) for z in node.body])
-        return result
+
+        for z in node.body:
+            self.visit(z)
     #@+node:ekr.20191110075448.10: *4* tot.Lambda
     def do_Lambda(self, node):
         return self.indent(f'lambda %s: %s' % (
@@ -3159,9 +3170,8 @@ class TokenOrderTraverser:
         """An outer expression: must be indented."""
         assert not self.in_expr
         self.in_expr = True
-        value = self.visit(node.value)
+        self.visit(node.value)
         self.in_expr = False
-        return self.indent(f'%s\n' % value)
     #@+node:ekr.20191110075448.13: *4* tot.Expression
     def do_Expression(self, node):
         """An inner expression: do not indent."""
@@ -3236,19 +3246,21 @@ class TokenOrderTraverser:
 
     def do_Call(self, node):
 
-        func = self.visit(node.func)
-        args = [self.visit(z) for z in node.args]
+        self.visit(node.func)
+        self.put_op('(')
+        for z in node.args:
+            self.visit(z)
         for z in node.keywords:
-            # Calls f.do_keyword.
-            args.append(self.visit(z))
+            self.visit(z)
+            self.put_comma()
         if getattr(node, 'starargs', None):
-            args.append(f'*%s' % (self.visit(node.starargs)))
+            self.put_op('*')
+            self.visit(node.starargs)
+            self.put_comma()
         if getattr(node, 'kwargs', None):
-            args.append(f'**%s' % (self.visit(node.kwargs)))
-        args = [z for z in args if z]  # Kludge: Defensive coding.
-        s = f'%s(%s)' % (func, ','.join(args))
-        return s if self.in_expr else self.indent(s+'\n')
-            # 2017/12/15.
+            self.put_op('**')
+            self.visit(node.kwargs)
+        self.put_op(')')
     #@+node:ekr.20191110075448.22: *5* tot.keyword
     # keyword = (identifier arg, expr value)
 
@@ -3336,11 +3348,10 @@ class TokenOrderTraverser:
         return f'%s for %s' % (elt, ''.join(gens))
     #@+node:ekr.20191110075448.34: *4* tot.Name & NameConstant
     def do_Name(self, node):
-        return node.id
+        self.put('name', node.id)
 
     def do_NameConstant(self, node):  # Python 3 only.
-        s = repr(node.value)
-        return s
+        self.put('constant', repr(node.value))
     #@+node:ekr.20191110075448.35: *4* tot.Num
     def do_Num(self, node):
         return repr(node.n)
@@ -3378,7 +3389,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.40: *4* tot.Str
     def do_Str(self, node):
         """This represents a string constant."""
-        return repr(node.s)
+        self.put('string', repr(node.s))
     #@+node:ekr.20191110075448.41: *4* tot.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
