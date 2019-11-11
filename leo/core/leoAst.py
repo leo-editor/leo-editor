@@ -2965,7 +2965,15 @@ class TokenOrderTraverser:
     """
     #@-<< TokenOrderTraverser docstring >>
     # pylint: disable=consider-using-enumerate
+    
+    coverage_set = set()
     level = 0
+    node_stack = []
+    results = []  # For debugging: contents are strings.
+    pass_n = None
+    token_index = None
+    tokens = None
+    ws_kinds = ('newline', 'nl', 'ws', 'line-indent')
 
     #@+others
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
@@ -2979,10 +2987,6 @@ class TokenOrderTraverser:
         five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
         return Tokenizer().create_input_tokens(contents, five_tuples)
     #@+node:ekr.20191110132115.1: *3* tot.put & helpers
-    prev_kind = None
-    results = []  # For debugging: contents are strings.
-    ws_kinds = ('newline', 'nl', 'ws', 'line-indent')
-
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
         assert self.pass_n in (1, 2), f"Invalid pass number: {self.pass_n}"
@@ -2990,8 +2994,10 @@ class TokenOrderTraverser:
             indent = ' '*4*self.level
             trace_val = repr(val) if kind in self.ws_kinds else val
             g.trace(f"{indent}{kind:>12} {trace_val}")
-        self.prev_kind = kind
-        self.results.append(val)
+        token = Token(kind, val)
+        self.results.append(token)
+        #### self.prev_kind = kind
+        self.prev_token = token
         if self.pass_n == 1:
             self.verify_token(kind, val)
         
@@ -3012,9 +3018,10 @@ class TokenOrderTraverser:
         self.put_comma()
     #@+node:ekr.20191111041730.1: *4* tot.put_newline
     def put_newline(self):
+
         self.put('newline', '\n')
-        if self.level and self.prev_kind != 'line-indent':
-            self.put('line-indent', ' '*self.level*4)
+        # Required.  May be changed by put_indent.
+        self.put('line-indent', ' '*self.level*4)
     #@+node:ekr.20191111023143.1: *4* tot.insert_one_link
     def insert_one_link(self):
         """Insert two-way links between self.node and the next token."""
@@ -3026,8 +3033,14 @@ class TokenOrderTraverser:
         Create/verify proper indent token.
         """
         self.level += 1
-        # g.trace(self.level) # , self.prev_kind)
-        self.put('line-indent', ' '*self.level*4)
+        g.trace()
+        g.printObj(self.results[-3:])
+        if self.prev_token.kind == 'line-indent':
+            # Change the indent in place.
+            g.trace('PATCH', self.level, self.prev_token)
+            self.prev_token.value = ' '*self.level*4
+        else:
+            self.put('line-indent', ' '*self.level*4)
         
     def put_dedent(self):
         """
@@ -3038,24 +3051,23 @@ class TokenOrderTraverser:
         self.level -= 1
         # g.trace(self.level)
     #@+node:ekr.20191110075448.4: *3* tot.visit
-    coverage_set = set()
-
     def visit(self, node):
         """TokenOrderTraverser.visit."""
         
-        trace = True and not g.unitTesting
+        ### trace = True and not g.unitTesting
 
-        def oops(method_name, *keys, **kwargs):
-            g.trace('TokenOrderTraverser: missing method:', method_name)
+        def oops(method_name):
+            g.trace(f"Error: missing method: {method_name}")
 
         if isinstance(node, (list, tuple)):
-            if trace: g.trace('LIST')
-            for z in node:
-                self.visit(z)
+            # something is wrong.
+            g.trace(f"Error: node is {node.__class__.__name__}", g.callers())
+            # for z in node:
+                # self.visit(z)
             return
         if node is None:
             # something is wrong.
-            if trace: g.trace('NONE', g.callers())
+            g.trace('Error: node is None', g.callers())
             return
         # Update self.node and push it to self.node_stack.
         assert isinstance(node, ast.AST), node.__class__.__name__
@@ -3065,7 +3077,6 @@ class TokenOrderTraverser:
         # Call the visitor.
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name, oops)
-        # if trace: print('VISIT:', method.__name__)
         method(node)
         # pop self.node from the node stack.
         self.node = self.node_stack.pop()
@@ -3103,21 +3114,13 @@ class TokenOrderTraverser:
                     return # The easy match.
                 if last_kind == 'line-indent':
                     # Back up and hope for the best later.
+                    g.trace('BACK UP', token)
                     self.token_index -= 1
                     return
             break # An error
         g.trace('MISMATCH: last_kind:', last_kind, 'kind', kind)
             
     #@+node:ekr.20191110075448.3: *3* tot: Entries
-    node_stack = []
-
-    pass_n = None
-        # Pass 1: Create and verify tokens.
-        # Pass 2: link tree and tokens.
-        
-    token_index = None
-    tokens = None
-
     def verify_token_order(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -3152,7 +3155,7 @@ class TokenOrderTraverser:
                 self.put_op('@')
                 self.visit(z)
                 self.put_newline()
-        #'asynch def %s(%s): -> %s\n' % (name, args, returns)))
+        # 'asynch def (%s): -> %s\n' % (name, args, returns)))
         # 'asynch def %s(%s):\n' % (name, args)))
         self.put_name('asynch')
         self.put_blank()
@@ -3179,9 +3182,6 @@ class TokenOrderTraverser:
     # 3: ClassDef(identifier name, expr* bases,
     #             keyword* keywords, expr? starargs, expr? kwargs
     #             stmt* body, expr* decorator_list)
-    #
-    # keyword arguments supplied to call (NULL identifier for **kwargs)
-    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node, print_body=True):
         
@@ -3201,11 +3201,14 @@ class TokenOrderTraverser:
             self.put_op(')')
         self.put_op(':')
         self.put_newline()
+        # Body...
         self.put_indent()
-        for i, z in enumerate(node.body):
+        # for i, z in enumerate(node.body):
+            # self.visit(z)
+            # if i < len(node.body) - 1:
+                # self.put_newline()
+        for z in node.body:
             self.visit(z)
-            if i < len(node.body) - 1:
-                self.put_newline()
         self.put_dedent()
     #@+node:ekr.20191110075448.7: *5* tot.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
