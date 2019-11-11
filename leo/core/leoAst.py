@@ -3063,8 +3063,10 @@ class TokenOrderTraverser:
     #@+node:ekr.20191111083428.1: *3* tot.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
+
         def key(z):
             return z.lower()
+
         covered = sorted(list(self.coverage_set), key=key)
         visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
         missing = sorted([z for z in visitors if z not in covered], key=key)
@@ -3079,8 +3081,6 @@ class TokenOrderTraverser:
     def visit(self, node):
         """TokenOrderTraverser.visit."""
         
-        ### trace = True and not g.unitTesting
-
         def oops(method_name):
             g.trace(f"Error: missing method: {method_name}")
 
@@ -3283,10 +3283,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.12: *5* tot.Expr
     def do_Expr(self, node):
         """An outer expression: must be indented."""
-        ### assert not self.in_expr
-        ### self.in_expr = True
         self.visit(node.value)
-        ### self.in_expr = False
     #@+node:ekr.20191110075448.13: *5* tot.Expression
     def do_Expression(self, node):
         """An inner expression: do not indent."""
@@ -3926,7 +3923,7 @@ class TokenOrderTraverser:
             for z in node.orelse:
                 self.visit(z)
             self.put_dedent()
-            ###self.put_newline()
+            # self.put_newline()
         # Finally...
         if node.finalbody:
             self.put_name('finally')
@@ -3936,7 +3933,7 @@ class TokenOrderTraverser:
             for z in node.finalbody:
                 self.visit(z)
             self.put_dedent()
-            ### self.put_newline()
+            # self.put_newline()
         
     #@+node:ekr.20191110075448.75: *5* tot.TryExcept
     def do_TryExcept(self, node):
@@ -3959,7 +3956,7 @@ class TokenOrderTraverser:
             for z in node.orelse:
                 self.visit(z)
             self.put_dedent()
-            ###self.put_newline()
+            # self.put_newline()
     #@+node:ekr.20191110075448.76: *5* tot.TryFinally
     def do_TryFinally(self, node):
         
@@ -3980,7 +3977,7 @@ class TokenOrderTraverser:
             for z in node.finalbody:
                 self.visit(z)
             self.put_dedent()
-            ### self.put_newline()
+            # self.put_newline()
     #@+node:ekr.20191110075448.77: *5* tot.While
     def do_While(self, node):
         
@@ -4004,7 +4001,7 @@ class TokenOrderTraverser:
             for z in node.orelse:
                 self.visit(z)
             self.put_dedent()
-            ###self.put_newline()
+            # self.put_newline()
     #@+node:ekr.20191110075448.78: *5* tot.With
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
