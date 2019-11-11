@@ -3021,11 +3021,16 @@ class TokenOrderTraverser:
         self.put('newline', '\n')
         # Required.  May be changed by put_indent.
         self.put('line-indent', ' '*self.level*4)
+    #@+node:ekr.20191111164830.1: *4* tot.put_conditional_blank (to do)
+    def put_conditional_blank(self):
+        
+        ### To do.
+        self.put_op(' ')
     #@+node:ekr.20191111162851.1: *4* tot.put_conditional_comma (to do)
     def put_conditional_comma(self):
         
         ### To do.
-        self.put_op('op', ',')
+        self.put_op(',')
     #@+node:ekr.20191111162541.1: *4* tot.put_conditional_newline (To do)
     def put_conditional_newline(self):
 
@@ -3289,6 +3294,7 @@ class TokenOrderTraverser:
         self.put_dedent()
     #@+node:ekr.20191110075448.8: *5* tot.Interactive
     def do_Interactive(self, node):
+
         for z in node.body:
             self.visit(z)
     #@+node:ekr.20191110075448.9: *5* tot.Module
@@ -3308,33 +3314,41 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.12: *5* tot.Expr
     def do_Expr(self, node):
         """An outer expression. It generates no tokens directly."""
-        g.trace('=====', node.value.__class__.__name__)
+        # g.trace('=====', node.value.__class__.__name__)
         self.visit(node.value)
     #@+node:ekr.20191110075448.13: *5* tot.Expression
     def do_Expression(self, node):
-        """An inner expression: do not indent."""
-        return f'%s\n' % self.visit(node.body)
+        """An inner expression."""
+        self.visit(node.body)
+        # self.put_conditional_newline()
     #@+node:ekr.20191110075448.14: *5* tot.GeneratorExp
     def do_GeneratorExp(self, node):
-        elt = self.visit(node.elt) or ''
-        gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
-        return f'<gen %s for %s>' % (elt, ','.join(gens))
+
+        # '<gen %s for %s>' % (elt, ','.join(gens))
+
+        ### To do: this is probably wrong.
+        self.visit(node.elt)
+        self.put_blank()
+        self.put_name('for')
+        self.put_blank()
+        for z in node.generators:
+            self.visit(z)
+            self.put_conditional_comma()
     #@+node:ekr.20191110075448.15: *5* tot.ctx nodes
     def do_AugLoad(self, node):
-        return 'AugLoad'
+        pass
 
     def do_Del(self, node):
-        return 'Del'
+        pass
 
     def do_Load(self, node):
-        return 'Load'
+        pass
 
     def do_Param(self, node):
-        return 'Param'
+        pass
 
     def do_Store(self, node):
-        return 'Store'
+        pass
     #@+node:ekr.20191110075448.16: *4* tot: Operands
     #@+node:ekr.20191110075448.17: *5* tot.arguments
     # 2: arguments = (expr* args, identifier? vararg, identifier?
@@ -3434,15 +3448,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.23: *5* tot.comprehension
     def do_comprehension(self, node):
 
-        # result = []
-        # name = self.visit(node.target)  # A name.
-        # it = self.visit(node.iter)  # An attribute.
-        # result.append(f'%s in %s' % (name, it))
-        # ifs = [self.visit(z) for z in node.ifs]
-        # if ifs:
-            # result.append(f' if %s' % (''.join(ifs)))
-        # return ''.join(result)
-        
+        ### To do: test.
         self.visit(node.target) # A name
         self.put_op(' in ')
         self.visit(node.iter)
@@ -3452,57 +3458,63 @@ class TokenOrderTraverser:
             self.put_blank()
             for z in node.ifs:
                 self.visit(z)
-    #@+node:ekr.20191110075448.24: *5* tot.Constant (Python 3.6+)
+                # self.put_blank()
+    #@+node:ekr.20191110075448.24: *5* tot.Constant
     def do_Constant(self, node):  # Python 3.6+ only.
         
-        self.put('constant', str(node.s))  # A guess.
+        self.put('number', str(node.s))  # A guess.
     #@+node:ekr.20191110075448.25: *5* tot.Dict
     def do_Dict(self, node):
+
+        assert len(node.keys) == len(node.values)
+        self.put_op('{')
+        for i, z in enumerate(node.keys):
+            self.visit(node.keys[i])
+            self.put_op(':')
+            self.visit(node.values[i])
+        self.put_op('}')
         
-        ###
-        # pylint: disable=consider-using-enumerate
-        result = []
-        keys = [self.visit(z) for z in node.keys]
-        values = [self.visit(z) for z in node.values]
-        if len(keys) == len(values):
-            result.append('{\n' if keys else '{')
-            items = []
-            for i in range(len(keys)):
-                items.append(f'  %s:%s' % (keys[i], values[i]))
-            result.append(',\n'.join(items))
-            result.append('\n}' if keys else '}')
-        else:
-            print(
-                f"Error: f.Dict: len(keys) != len(values)\n"
-                f"keys: {repr(keys)}\nvals: {repr(values)}")
-        return ''.join(result)
     #@+node:ekr.20191110075448.26: *5* tot.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
-        key = self.visit(node.key)
-        value = self.visit(node.value)
-        gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
-        return f'%s:%s for %s' % (key, value, ''.join(gens))
+
+        self.visit(node.key)
+        self.put_op(':')
+        self.put_blank()
+        self.put_name('for')
+        self.put_blank()
+        for z in node.generators:
+            self.visit(z)
+            self.put_conditional_blank()
     #@+node:ekr.20191110075448.27: *5* tot.Ellipsis
     def do_Ellipsis(self, node):
         self.put_op('...')
     #@+node:ekr.20191110075448.28: *5* tot.ExtSlice
     def do_ExtSlice(self, node):
-        return ':'.join([self.visit(z) for z in node.dims])
-    #@+node:ekr.20191110075448.29: *5* tot.FormattedValue (Python 3.6+)
+        
+        for i, z in enumerate(node.dims):
+            self.visit(z)
+            if i < len(node.dims) - 1:
+                self.put_op(':')
+    #@+node:ekr.20191110075448.29: *5* tot.FormattedValue
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node):  # Python 3.6+ only.
-        return f'%s%s%s' % (
-            self.visit(node.value),
-            self.visit(node.conversion) if node.conversion else '',
-            self.visit(node.format_spec) if node.format_spec else '')
+    def do_FormattedValue(self, node):
+
+        if node.value:
+            self.visit(node.value)
+        if node.conversion:
+            self.visit(node.conversion)
+        if node.format_spec:
+            self.visit(node.format_spec)
     #@+node:ekr.20191110075448.30: *5* tot.Index
     def do_Index(self, node):
-        return self.visit(node.value)
-    #@+node:ekr.20191110075448.31: *5* tot.JoinedStr (Python 3.6)
+
+        self.visit(node.value)
+
+       
+    #@+node:ekr.20191110075448.31: *5* tot.JoinedStr
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
@@ -3512,37 +3524,49 @@ class TokenOrderTraverser:
                 self.visit(value)
     #@+node:ekr.20191110075448.32: *5* tot.List
     def do_List(self, node):
-        # Not used: list context.
-        # self.visit(node.ctx)
-        elts = [self.visit(z) for z in node.elts]
-        elts = [z for z in elts if z]  # Defensive.
-        return f'[%s]' % ','.join(elts)
+
+        self.put_op('[')
+        for i, z in enumerate(node.elts):
+            self.visit(z)
+            if i < len(node.elts) - 1:
+                self.put_comma()
+            else:
+                self.put_conditional_comma()
+        self.put_op(']')
     #@+node:ekr.20191110075448.33: *5* tot.ListComp
     def do_ListComp(self, node):
-        elt = self.visit(node.elt)
-        gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens]  # Kludge: probable bug.
-        return f'%s for %s' % (elt, ''.join(gens))
+       
+        ### Test.
+        self.visit(node.elt)
+        self.put_blank()
+        self.put_name('for')
+        self.put_blank()
+        for z in node.generators:
+            self.visit(z)
     #@+node:ekr.20191110075448.34: *5* tot.Name & NameConstant
     def do_Name(self, node):
         self.put_name(node.id)
-        # self.put_blank()
+        self.put_conditional_blank()
 
-    def do_NameConstant(self, node):  # Python 3 only.
-        self.put('constant', repr(node.value))
+    def do_NameConstant(self, node):
+        self.put('number', node.value) # ???
     #@+node:ekr.20191110075448.35: *5* tot.Num
     def do_Num(self, node):
         
-        self.put('number', repr(node.n))
+        self.put('number', node.n) # ?
     #@+node:ekr.20191110075448.36: *5* tot.Repr
-    # Python 2.x only
-
-    def do_Repr(self, node):
-        return f'repr(%s)' % self.visit(node.value)
+    def do_Repr(self, node): # Python 2.x only
+        
+        self.put_name('repr')
+        self.put_op('(')
+        self.visit(node.value)
+        self.put_op(')')
     #@+node:ekr.20191110075448.37: *5* tot.Set
     # Set(expr* elts)
 
     def do_Set(self, node):
+
+        ### Test.
         for z in node.elts:
             self.visit(z)
     #@+node:ekr.20191110075448.38: *5* tot.SetComp
@@ -3550,36 +3574,51 @@ class TokenOrderTraverser:
 
     def do_SetComp(self, node):
 
-        elt = self.visit(node.elt)
-        gens = [self.visit(z) for z in node.generators]
-        return f'%s for %s' % (elt, ''.join(gens))
+        ### Test.
+        self.visit(node.elt)
+        self.put_blank()
+        self.put_name('for')
+        self.put_blank()
+        for z in node.generators:
+            self.visit(z)
     #@+node:ekr.20191110075448.39: *5* tot.Slice
     def do_Slice(self, node):
-        lower, upper, step = '', '', ''
-        if getattr(node, 'lower', None) is not None:
-            lower = self.visit(node.lower)
-        if getattr(node, 'upper', None) is not None:
-            upper = self.visit(node.upper)
-        if getattr(node, 'step', None) is not None:
-            step = self.visit(node.step)
-        if step:
-            return f'%s:%s:%s' % (lower, upper, step)
-        return f'%s:%s' % (lower, upper)
+
+        lower = getattr(node, 'lower', None)
+        upper = getattr(node, 'upper', None)
+        step = getattr(node, 'step', None)
+        if lower is not None:
+            self.visit(node.lower)
+        self.put_op(':')
+        if upper is not None:
+            self.visit(node.upper)
+        if step is not None: ### Conditional : needed?
+            self.put_op(':')
+            self.visit(node.step)
     #@+node:ekr.20191110075448.40: *5* tot.Str
     def do_Str(self, node):
         """This represents a string constant."""
-        self.put('string', repr(node.s))
+        self.put('string', node.s)
     #@+node:ekr.20191110075448.41: *5* tot.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
     def do_Subscript(self, node):
-        value = self.visit(node.value)
-        the_slice = self.visit(node.slice)
-        return f'%s[%s]' % (value, the_slice)
+        
+        self.visit(node.value)
+        self.put_op('[')
+        self.visit(node.slice)
+        self.put_op(']')
     #@+node:ekr.20191110075448.42: *5* tot.Tuple
     def do_Tuple(self, node):
-        elts = [self.visit(z) for z in node.elts]
-        return f'(%s)' % ','.join(elts)
+
+        self.put_op('(')
+        for i, z in node.elts:
+            self.visit(z)
+            if i < len(node.elts) - 1:
+                self.put_comma()
+            else:
+                self.put_conditional_comma()
+        self.put_op(')')
     #@+node:ekr.20191110075448.43: *4* tot: Operators
     #@+node:ekr.20191110075448.44: *5* tot.op_name
     def op_name(self, node, strict=True):
@@ -3591,43 +3630,63 @@ class TokenOrderTraverser:
         return name
     #@+node:ekr.20191110075448.45: *5* tot.BinOp
     def do_BinOp(self, node):
-        return f'%s%s%s' % (
-            self.visit(node.left),
-            self.op_name(node.op),
-            self.visit(node.right))
+
+        self.visit(node.left)
+        op_name = self.op_name(node.op)
+        if op_name.startswith(' '):
+            self.put_blank()
+            self.put_op(op_name.strip())
+            self.put_blank()
+        else:
+            self.put_op(op_name)
+        self.visit(node.right)
     #@+node:ekr.20191110075448.46: *5* tot.BoolOp
     def do_BoolOp(self, node):
+
         op_name = self.op_name(node.op)
-        values = [self.visit(z).strip() for z in node.values]
-        return op_name.join(values)
+        if op_name.startswith(' '):
+            for i, z in enumerate(node.values):
+                self.put_blank()
+                self.put_op(op_name.strip())
+                self.put_blank()
+                self.visit(z)
+            return
+        for i, z in enumerate(node.values):
+            self.put_op(op_name)
+            self.visit(z)
     #@+node:ekr.20191110075448.47: *5* tot.Compare
     def do_Compare(self, node):
         
-        ### 
-        # pylint: disable=consider-using-enumerate
-        result = []
-        lt = self.visit(node.left)
-        # ops   = [self.visit(z) for z in node.ops]
-        ops = [self.op_name(z) for z in node.ops]
-        comps = [self.visit(z) for z in node.comparators]
-        result.append(lt)
-        if len(ops) == len(comps):
-            for i in range(len(ops)):
-                result.append(f'%s%s' % (ops[i], comps[i]))
-        else:
-            g.trace('ops', repr(ops), 'comparators', repr(comps))
-        return ''.join(result)
+        assert len(node.ops) == len(node.comparators)
+        self.visit(node.left)
+        for i, z in enumerate(node.ops):
+            self.visit(node.ops[i])
+            self.visit(node.comparators[i])
     #@+node:ekr.20191110075448.48: *5* tot.UnaryOp
     def do_UnaryOp(self, node):
-        return f'%s%s' % (
-            self.op_name(node.op),
-            self.visit(node.operand))
+
+        op_name = self.op_name(node.op)
+        if op_name.startswith(' '):
+            self.put_blank()
+            self.put_op(op_name.strip())
+            self.put_blank()
+        else:
+            self.put_op(op_name)
+        self.visit(node.operand)
     #@+node:ekr.20191110075448.49: *5* tot.ifExp (ternary operator)
     def do_IfExp(self, node):
-        return f'%s if %s else %s ' % (
-            self.visit(node.body),
-            self.visit(node.test),
-            self.visit(node.orelse))
+        
+        #'%s if %s else %s'
+        self.visit(node.body)
+        self.put_blank()
+        self.put_name('if')
+        self.put_blank()
+        self.visit(node.test)
+        self.put_blank()
+        self.put_name('else')
+        self.put_blank()
+        self.visit(node.orelse)
+
     #@+node:ekr.20191110075448.50: *4* tot: Statements
     #@+node:ekr.20191110075448.51: *5* tot.AnnAssign
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
@@ -3725,7 +3784,7 @@ class TokenOrderTraverser:
             self.visit(z)
             if i < len(node.targets) - 1:
                 self.put_comma()
-        self.put_newline()
+        self.put_conditional_newline()
     #@+node:ekr.20191110075448.59: *5* tot.ExceptHandler
     def do_ExceptHandler(self, node):
         
@@ -3747,12 +3806,11 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
        
     #@+node:ekr.20191110075448.60: *5* tot.Exec
-    # Python 2.x only
-
-    def do_Exec(self, node):
+    def do_Exec(self, node): # Python 2.x only
 
         self.put_name('exec')
         self.put_blank()
@@ -3780,6 +3838,7 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
         # 'else:\n'
         if node.orelse:
@@ -3788,6 +3847,7 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.orelse:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
     #@+node:ekr.20191110075448.62: *5* tot.Global
     def do_Global(self, node):
@@ -3822,6 +3882,7 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.orelse:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
             # self.put_newline()
     #@+node:ekr.20191110075448.64: *5* tot.Import & helper
@@ -3872,6 +3933,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.68: *5* tot.Pass
     def do_Pass(self, node):
         self.put_name('pass')
+        self.put_newline() ###
     #@+node:ekr.20191110075448.69: *5* tot.Print
     # Python 2.x only
 
@@ -3928,7 +3990,8 @@ class TokenOrderTraverser:
 
     def do_Starred(self, node):
 
-        return '*' + self.visit(node.value)
+        self.put_op('*')
+        self.visit(node.value)
     #@+node:ekr.20191110075448.73: *5* tot.Suite
     # def do_Suite(self,node):
         # for z in node.body:
@@ -3945,6 +4008,7 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
         # Handlers....
         for z in node.handlers or []:
@@ -3957,8 +4021,9 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.orelse:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
-            # self.put_newline()
+            # self.put_conditional_newline()
         # Finally...
         if node.finalbody:
             self.put_name('finally')
@@ -3967,8 +4032,9 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.finalbody:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
-            # self.put_newline()
+            # self.put_conditional_newline()
         
     #@+node:ekr.20191110075448.75: *5* tot.TryExcept
     def do_TryExcept(self, node):
@@ -3980,9 +4046,11 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
         for z in node.handlers or []:
             self.visit(z)
+            self.put_conditional_newline()
         if node.orelse:
             self.put_name('else')
             self.put_op(':')
@@ -3990,8 +4058,9 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.orelse:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
-            # self.put_newline()
+            # self.put_conditional_newline()
     #@+node:ekr.20191110075448.76: *5* tot.TryFinally
     def do_TryFinally(self, node):
         
@@ -4002,7 +4071,9 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
+        # self.put_conditional_newline()
         # Finally...
         if node.finalbody:
             self.put_name('finally')
@@ -4011,8 +4082,9 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.finalbody:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
-            # self.put_newline()
+            # self.put_conditional_newline()
     #@+node:ekr.20191110075448.77: *5* tot.While
     def do_While(self, node):
         
@@ -4026,7 +4098,9 @@ class TokenOrderTraverser:
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_conditional_newline()
         self.put_dedent()
+        # self.put_conditional_newline()
         # Else.
         if node.orelse:
             self.put_name('else')
@@ -4035,8 +4109,9 @@ class TokenOrderTraverser:
             self.put_indent()
             for z in node.orelse:
                 self.visit(z)
+                self.put_conditional_newline()
             self.put_dedent()
-            # self.put_newline()
+            # self.put_conditional_newline()
     #@+node:ekr.20191110075448.78: *5* tot.With
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
