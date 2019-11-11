@@ -2968,26 +2968,9 @@ class TokenOrderTraverser:
     level = 0
 
     #@+others
-    #@+node:ekr.20191110075448.83: *3* tot.indent & dedent
-    def indent(self, s=None): ### To do: remove s arg.
-        """
-        TokenOrderTraverser.indent
-        
-        Create/verify proper indent token.
-        """
-        self.level += 1
-        g.trace(self.level)
-        self.put('line-indent', ' '*self.level*4)
-        
-
-    def dedent(self):
-        """
-        TokenOrderTraverser.dedent
-        
-        Create/verify proper dedent token.
-        """
-        self.level -= 1
-        g.trace(self.level)
+    #@+node:ekr.20191111035411.1: *3* tot.indent (to be removed)
+    def indent(self, s):
+        g.trace(s, g.callers())
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
     def make_tokens(self, contents):
         """
@@ -3018,7 +3001,7 @@ class TokenOrderTraverser:
         self.put('ws', ' ')
 
     def put_comma(self):
-        self.put('comma', ',')
+        self.put('op', ',')
 
     def put_op(self, val):
         self.put('op', val)
@@ -3035,15 +3018,25 @@ class TokenOrderTraverser:
     #@+node:ekr.20191111023143.1: *4* tot.insert_one_link
     def insert_one_link(self):
         """Insert two-way links between self.node and the next token."""
-    #@+node:ekr.20191111023054.1: *4* tot.verify_token
-    def verify_token(self, kind, val):
-
-        if self.token_index < len(self.tokens):
-            token = self.tokens[self.token_index]
-            g.trace(f"{kind:>12} {val:20} {self.token_index:2} {token}")
-            self.token_index += 1
-        else:
-            g.trace('bad token index', self.token_index, len(self.tokens))
+    #@+node:ekr.20191110075448.83: *4* tot.put_indent & put_dedent
+    def put_indent(self):
+        """
+        TokenOrderTraverser.indent
+        
+        Create/verify proper indent token.
+        """
+        self.level += 1
+        g.trace(self.level)
+        self.put('line-indent', ' '*self.level*4)
+        
+    def put_dedent(self):
+        """
+        TokenOrderTraverser.dedent
+        
+        Create/verify proper dedent token.
+        """
+        self.level -= 1
+        g.trace(self.level)
     #@+node:ekr.20191110075448.4: *3* tot.visit
     coverage_set = set()
 
@@ -3076,6 +3069,42 @@ class TokenOrderTraverser:
         method(node)
         # pop self.node from the node stack.
         self.node = self.node_stack.pop()
+    #@+node:ekr.20191111023054.1: *3* tot.verify_token
+    def verify_token(self, kind, val):
+        
+        """See if the val matches the next token in self.tokens."""
+        
+        def get_token():
+            if self.token_index >= len(self.tokens):
+                g.trace('bad token index', self.token_index, len(self.tokens))
+                return None # Indicate an error.
+            token = self.tokens[self.token_index]
+            trace_val = repr(val) if kind in self.ws_kinds else val
+            g.trace(
+                f"list index: {self.token_index:2} {token!r:20} "
+                f"{self.node.__class__.__name__:11} "
+                f"kind: {kind:>12} val: {trace_val}")
+            self.token_index += 1
+            return token
+
+        last_kind = kind
+        token = get_token()
+        while token:
+            if kind == token.kind:
+                return # A match.
+            if token.kind in ('encoding', 'ws'):
+                token = get_token()
+                continue
+            if kind == 'line-indent':
+                if token.kind in ('indent', 'ws'):
+                    return # The easy match.
+                if last_kind == 'line-indent':
+                    # Back up, ignoring the redundant line-indent.
+                    self.token_index -= 1
+                    return # Hope for the best later.
+            break # An error
+        g.trace('MISMATCH: last_kind:', kind)
+            
     #@+node:ekr.20191110075448.3: *3* tot: Entries
     node_stack = []
 
@@ -3135,10 +3164,10 @@ class TokenOrderTraverser:
             self.put_op('->')
             self.visit(node.returns)
         self.put_newline()
-        self.indent()
+        self.put_indent()
         for z in node.body:
             self.visit(z)
-        self.dedent()
+        self.put_dedent()
 
     #@+node:ekr.20191110075448.6: *5* tot.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
@@ -3197,12 +3226,12 @@ class TokenOrderTraverser:
             self.put_op('->')
             self.visit(node.returns)
         self.put_newline()
-        self.indent()
+        self.put_indent()
         for i, z in enumerate(node.body):
             self.visit(z)
             if i < len(node.body) - 1:
                 self.put_newline()
-        self.dedent()
+        self.put_dedent()
     #@+node:ekr.20191110075448.8: *5* tot.Interactive
     def do_Interactive(self, node):
         for z in node.body:
