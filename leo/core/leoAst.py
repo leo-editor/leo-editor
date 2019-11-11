@@ -3060,6 +3060,21 @@ class TokenOrderTraverser:
         """
         self.level -= 1
         # g.trace(self.level)
+    #@+node:ekr.20191111083428.1: *3* tot.report_coverage
+    def report_coverage(self, report_missing):
+        """Report untested visitors."""
+        def key(z):
+            return z.lower()
+        covered = sorted(list(self.coverage_set), key=key)
+        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
+        missing = sorted([z for z in visitors if z not in covered], key=key)
+        print('Covered...\n')
+        g.printObj(covered)
+        print('')
+        if report_missing:
+            print('Missing...\n')
+            g.printObj(missing)
+            print('')
     #@+node:ekr.20191110075448.4: *3* tot.visit
     def visit(self, node):
         """TokenOrderTraverser.visit."""
