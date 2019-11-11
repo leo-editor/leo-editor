@@ -2965,16 +2965,10 @@ class TokenOrderTraverser:
     """
     #@-<< TokenOrderTraverser docstring >>
     # pylint: disable=consider-using-enumerate
-    in_expr = False
     level = 0
     pass_n = 0
         # Pass 1: Create and verify tokens.
         # Pass 2: link tree and tokens.
-
-    # def __init__(self, contents, filename):
-        # """Ctor for TokenOrderTraverser."""
-        # self.contents = contents
-        # self.filename = filename
 
     #@+others
     #@+node:ekr.20191110075448.83: *3* tot.indent & dedent (to do)
@@ -3168,10 +3162,10 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.12: *4* tot.Expr
     def do_Expr(self, node):
         """An outer expression: must be indented."""
-        assert not self.in_expr
-        self.in_expr = True
+        ### assert not self.in_expr
+        ### self.in_expr = True
         self.visit(node.value)
-        self.in_expr = False
+        ### self.in_expr = False
     #@+node:ekr.20191110075448.13: *4* tot.Expression
     def do_Expression(self, node):
         """An inner expression: do not indent."""
