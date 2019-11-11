@@ -3161,10 +3161,12 @@ class TokenOrderTraverser:
                     return # A good enough match.
                 if kind == 'line-indent':
                     return # An excellent match.
+                # Rescan and hope for the best.
+                self.token_index -= 1
+                return
             break # An error
         if 1:
             g.trace(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
-            ### g.pdb()
         else:
             raise AssertionError(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
             
@@ -3813,9 +3815,10 @@ class TokenOrderTraverser:
         self.put_newline()
         # Body.
         self.put_indent()
-        for z in node.body:
+        for i, z in enumerate(node.body):
             self.visit(z)
-            self.put_newline()
+            if i < len(node.body) - 1: ### Still experimental.
+                self.put_newline()
         self.put_dedent()
         # self.put_newline()
         # Else clause.
