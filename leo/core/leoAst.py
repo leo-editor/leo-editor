@@ -2916,6 +2916,9 @@ class Token:
     A class representing a 5-tuple.
     The TokenOrderTraverser class creates a list of such tokens.
     """
+    
+    ws_kinds = ('ws', 'indent') # 'newline', 'nl', 
+        # The kinds of tokens representing whitespace.
 
     def __init__(self, kind, value):
         self.kind = kind
@@ -2926,11 +2929,11 @@ class Token:
             # The line number, for errors. Same as token.start[0]
 
     def __repr__(self):
-        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        val = len(self.value) if self.kind in self.ws_kinds else repr(self.value)
         return f"{self.kind:12} {val}"
 
     def __str__(self):
-        val = len(self.value) if self.kind == 'line-indent' else repr(self.value)
+        val = len(self.value) if self.kind in self.ws_kinds else repr(self.value)
         return f"{self.kind} {val}"
 
     def to_string(self):
@@ -2964,7 +2967,6 @@ class TokenOrderTraverser:
       in the Token list.
     """
     #@-<< TokenOrderTraverser docstring >>
-    # pylint: disable=consider-using-enumerate
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
@@ -2985,7 +2987,7 @@ class TokenOrderTraverser:
         # The list of input tokens.
     token_index = None
         # The index into self.tokens.
-    ws_kinds = ('newline', 'nl', 'ws', 'line-indent')
+    ws_kinds = ('ws', 'line-indent') # 'newline', 'nl', 
         # For tracing only: The kinds of tokens representing whitespace.
 
     #@+others
@@ -3045,7 +3047,7 @@ class TokenOrderTraverser:
         Create/verify proper indent token.
         """
         self.level += 1
-        # This is crucial, and essential.
+        # This is essential.
         if self.prev_token.kind == 'line-indent':
             # Change the previous line-indent token in place.
             self.prev_token.value = ' '*self.level*4
@@ -3058,7 +3060,6 @@ class TokenOrderTraverser:
         
         Create/verify proper dedent token.
         """
-        self.level -= 1
         # g.trace(self.level)
     #@+node:ekr.20191111083428.1: *3* tot.report_coverage
     def report_coverage(self, report_missing):
@@ -3114,10 +3115,16 @@ class TokenOrderTraverser:
         
         def get_token():
             if self.token_index >= len(self.tokens):
-                print('verify_token: bad token index', self.token_index, len(self.tokens))
+                print('verify_tokens: bad token index', self.token_index, len(self.tokens))
                 return None # Indicate an error.
             token = self.tokens[self.token_index]
-            trace_val = repr(val) if kind in self.ws_kinds else val
+            if kind == 'newline':
+                trace_val = repr(val)
+            elif kind in self.ws_kinds:
+                trace_val = len(val)
+            else:
+                trace_val = val
+            ### trace_val = len(val) if kind in self.ws_kinds else val
             if trace: print('verify_token '
                 f"list: {self.token_index:3} {token!r:25} "
                 f"{self.node.__class__.__name__:11} "
@@ -3130,16 +3137,31 @@ class TokenOrderTraverser:
         if token.kind == 'encoding':
             token = get_token()
         while token:
+            if kind == 'ignore':
+                return # Ignore
             if kind == token.kind:
                 return # A match.
             if token.kind in ('ws', 'indent'):
                 if kind in ('line-indent', 'ws'):
-                    return # A good enough match
+                    return # A good enough match.
+                ###
+                # pylint: disable=no-else-return
+                if 0:
+                    # Rescan this token later.
+                    self.token_index -= 1
+                    return
+                else:
+                    # Look ahead in the token list.
+                    token = get_token()
+                    continue
+            if token.kind == 'dedent':
+                if kind == 'newline':
+                    return # A good enough match.
                 # Look ahead in the token list.
                 token = get_token()
-                continue 
+                continue
             break # An error
-        g.trace('MISMATCH at kind:', kind)
+        g.trace(f"MISMATCH: kind: {kind} prev_token: {self.prev_token}")
             
     #@+node:ekr.20191110075448.3: *3* tot: Entries
     def verify_token_order(self, tokens, tree):
@@ -3148,20 +3170,25 @@ class TokenOrderTraverser:
         tokens, in exact order.
         """
         self.pass_n = 1
-        self.node_stack = [None]
-        self.tokens = tokens[:]
-        self.token_index = 0
+        self.init(tokens)
         self.visit(tree)
 
     def insert_links(self, contents, tokens, tree):
-        """
-        Insert links between tree nodes and tokens.
-        """
-        self.pass_n = 2
-        self.node_stack = [None]
-        self.tokens = tokens[:]
-        self.token_index = 0
+        """Insert links between tree nodes and tokens."""
+        self.pass_n = 1
+        self.init(tokens)
         self.visit(tree)
+
+    def init(self, tokens):
+        """Reinit state-ivars."""
+        # coverage_set = set()
+        # results = []
+        self.level = 0
+        self.node = None
+        self.node_stack = [None]
+        self.prev_token = None
+        self.token_index = 0
+        self.tokens = tokens[:]
     #@+node:ekr.20191111013646.1: *3* tot: Visitors
     #@+node:ekr.20191110075448.5: *4* tot: Contexts
     #@+node:ekr.20191110140505.1: *5* tot.AsyncFunctionDef
@@ -3432,6 +3459,9 @@ class TokenOrderTraverser:
         self.put('constant', str(node.s))  # A guess.
     #@+node:ekr.20191110075448.25: *5* tot.Dict
     def do_Dict(self, node):
+        
+        ###
+        # pylint: disable=consider-using-enumerate
         result = []
         keys = [self.visit(z) for z in node.keys]
         values = [self.visit(z) for z in node.values]
@@ -3573,6 +3603,9 @@ class TokenOrderTraverser:
         return op_name.join(values)
     #@+node:ekr.20191110075448.47: *5* tot.Compare
     def do_Compare(self, node):
+        
+        ### 
+        # pylint: disable=consider-using-enumerate
         result = []
         lt = self.visit(node.left)
         # ops   = [self.visit(z) for z in node.ops]
@@ -3773,13 +3806,15 @@ class TokenOrderTraverser:
         self.put_name('if')
         self.put_blank()
         self.visit(node.test)
+        self.put_op(':')
         self.put_newline()
         # Body.
         self.put_indent()
         for z in node.body:
             self.visit(z)
+            self.put_newline()
         self.put_dedent()
-        self.put_newline()
+        # self.put_newline()
         # Else clause.
         if node.orelse:
             self.put_name('else')
@@ -3788,7 +3823,7 @@ class TokenOrderTraverser:
             for z in node.orelse:
                 self.visit(z)
             self.put_dedent()
-            self.put_newline()
+            # self.put_newline()
     #@+node:ekr.20191110075448.64: *5* tot.Import & helper
     def do_Import(self, node):
 
