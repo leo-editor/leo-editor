@@ -277,13 +277,30 @@ class AstDumper:
         elif node is None:
             pass
         elif isinstance(node, str):
-            result.append(node)
+            result.append(f"{node.__class__.__name__:>8}:{node}")
         elif isinstance(node, ast.AST):
-            result.append(f"{node.__class__.__name__}")
+            # Node and parent...
+            result.append('')
+            parent = getattr(node, 'parent', None)
+            if parent:
+                parent_id = str(id(parent))[-4:]
+                parent_s = f"{parent_id} {parent.__class__.__name__}"
+            else:
+                parent_s = ''
+            node_id = str(id(node))[-4:]
+            result.append(f"{node_id} {node.__class__.__name__:12} parent: {parent_s}")
+            # Fields.
+            result.append('Fields...')
             for a, b in ast.iter_fields(node):
                 self.flat_dump_helper(b, result) # Field
+            # Children.
+            children = getattr(node, 'children', None)
+            if children:
+                result.append('Children...')
+                for i, z in enumerate(children):
+                    result.append(f"  {i:>2} {z.__class__.__name__}")
         else:
-            result.append(repr(node))
+            result.append(f"{node.__class__.__name__:>8}:{node!r}")
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
 
