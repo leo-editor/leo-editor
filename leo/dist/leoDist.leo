@@ -160,7 +160,7 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
-<v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update versions.py in the -rel branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
@@ -1659,7 +1659,8 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
-</t>
+- tools/webroot/*  go to top of website, e.g.
+      tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
