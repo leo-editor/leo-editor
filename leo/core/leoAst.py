@@ -249,27 +249,29 @@ class AstDumper:
                 aList = [f'%s=%s' % (a, b) for a, b in fields]
             else:
                 aList = [b for a, b in fields]
-            ### compressed = not any([isinstance(b, list) and len(b) > 1 for a, b in fields])
             name = node.__class__.__name__
-            ### if compressed and len(','.join(aList)) < 100:
-            ###    return f'%s(%s)' % (name, ','.join(aList))
             sep = '' if len(aList) <= 1 else sep1
             return f'%s(%s%s)' % (name, sep, sep1.join(aList))
         if isinstance(node, list):
-            ### compressed = not any([isinstance(z, list) and len(z) > 1 for z in node])
-            ### sep = '' if compressed and len(node) <= 1 else sep1
             sep = sep1
             return f'[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
     #@+node:ekr.20191112033445.1: *3* d.flat_dump
+    seen = set()
+
     def flat_dump(self, node):
         
         result = []
         self.flat_dump_helper(node, result)
-        return '  ' + '\n  '.join(result)
+        # return '  ' + '\n  '.join(result)
+        return '  ' + '  '.join(result)
         
     def flat_dump_helper(self, node, result):
+        
+        if node in self.seen:
+            return
+        self.seen.add(node)
 
         if isinstance(node, (list, tuple)):
             for z in node:
@@ -277,10 +279,10 @@ class AstDumper:
         elif node is None:
             pass
         elif isinstance(node, str):
-            result.append(f"{node.__class__.__name__:>8}:{node}")
+            result.append(f"{node.__class__.__name__:>8}:{node}\n")
         elif isinstance(node, ast.AST):
             # Node and parent...
-            result.append('')
+            result.append('\n\n')
             parent = getattr(node, 'parent', None)
             if parent:
                 parent_id = str(id(parent))[-4:]
@@ -288,19 +290,20 @@ class AstDumper:
             else:
                 parent_s = ''
             node_id = str(id(node))[-4:]
-            result.append(f"{node_id} {node.__class__.__name__:12} parent: {parent_s}")
+            result.append(f"{node_id} {node.__class__.__name__:12} parent: {parent_s}\n")
             # Fields.
-            result.append('Fields...')
-            for a, b in ast.iter_fields(node):
-                self.flat_dump_helper(b, result) # Field
+            fields = [a for a, b in ast.iter_fields(node) if a != 'ctx']
+            if fields:
+                result.append(f"Fields: {', '.join(fields)}\n")
             # Children.
             children = getattr(node, 'children', None)
             if children:
-                result.append('Children...')
+                result.append('Children...\n')
                 for i, z in enumerate(children):
-                    result.append(f"  {i:>2} {z.__class__.__name__}")
+                    result.append(f"  {i:>2} {z.__class__.__name__}\n")
+                    self.flat_dump_helper(z, result)
         else:
-            result.append(f"{node.__class__.__name__:>8}:{node!r}")
+            result.append(f"{node.__class__.__name__:>8}:{node!r}\n")
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
 
