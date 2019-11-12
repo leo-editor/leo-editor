@@ -2938,16 +2938,21 @@ class Token:
         self.node = None
             
     def dump(self):
+        node_id = str(id(self.node))[-4:]
+        parent = self.node.parent
+        parent_class = parent.__class__.__name__ if parent else ''
+        parent_id = str(id(parent))[-4:] if parent else '    '
         return(
-            f"{self.kind:>10} {self.show_val():8} "
-            f"index: {self.index:3} line: {self.line_number:3} "
-            f"level: {self.level:3} node: {self.node.__class__.__name__}")
-            
+            f"{self.index:>3} {self.kind:>11} {self.show_val():8} "
+            f"line: {self.line_number:<2} level: {self.level} "
+            f"node: {node_id} {self.node.__class__.__name__:12} "
+            f"parent: {parent_id} {parent_class}")
+
     def show_val(self):
         return len(self.value) if self.kind in ('ws', 'indent') else repr(self.value)
 
     def __repr__(self):
-        return f"{self.kind:>10} {self.show_val()}"
+        return f"{self.kind:>11} {self.show_val()}"
 
     def __str__(self):
         return f"{self.kind} {self.show_val()}"
@@ -3011,12 +3016,25 @@ class TokenOrderTraverser:
         self.tokens = tokens[:]
         self.token_index = 0
         self.visit(tree)
+        # Patch the last tokens.
+        self.node = tree
+        self.eat('newline', '\n')
+        self.eat('endmarker', '')
         print(
             f"\ncreate_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191111023054.1: *3* tot.eat
     def eat(self, kind, val):
-        """Eat zero or more tokens in self.tokens corresponding to (kind, val)."""
+        """
+        The heart of this class.
+        
+        Eat zero or more tokens in self.tokens corresponding to (kind, val).
+        
+        Inject the desired data into each token.
+        
+        A trick: when skipping a token, associate the node with
+        self.node.parent instead of self.node.
+        """
         import leo.core.leoGlobals as g
         
         trace = True and not g.unitTesting
@@ -3029,19 +3047,24 @@ class TokenOrderTraverser:
             token = self.tokens[self.token_index]
             # Patch the token.
             token.index = self.token_index
+            token.level = self.level
             token.node = self.node
             if trace:
-                print(f"eat: kind: {kind:8} {val!r:8} token: {token.dump()}")
+                print(f"eat: kind: {kind:9} {val!r:8} token: {token.dump()}")
             self.token_index += 1
             return token
 
         token = get_token()
         # Ignore encoding tokens.
         if token.kind == 'encoding':
+            # token.node = self.root
+            token.node = self.node.parent
             token = get_token()
         while token:
             if kind == token.kind:
                 return # A direct match.
+            # Associate the skipped token with it's *parent*.
+            token.node = self.node.parent
             if kind in ('newline', 'ws'):
                 # Skip the newline.
                 if token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
