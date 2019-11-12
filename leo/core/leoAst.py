@@ -2,6 +2,7 @@
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
 # Don't import leoGlobals at the top level.
+# This is an attempt to help imp.reload(leoAst).
 import ast
 import textwrap
 #@+others
@@ -2919,34 +2920,40 @@ class Tokenizer:
 #@+node:ekr.20191110080535.1: ** class Token
 class Token:
     """
-    A class representing a 5-tuple.
+    A class representing a 5-tuple, plus additional data.
+
     The TokenOrderTraverser class creates a list of such tokens.
     """
-    
-    ws_kinds = ('ws', 'indent') # 'newline', 'nl', 
-        # The kinds of tokens representing whitespace.
-
     def __init__(self, kind, value):
+
         self.kind = kind
         self.value = value
+        # Additional fields, set by tot.eat.
+        self.index = 0
+        self.level = 0
         self.line = ''
             # The entire line containing the token. Same as token.line.
         self.line_number = 0
             # The line number, for errors. Same as token.start[0]
+        self.node = None
+            
+    def dump(self):
+        return(
+            f"{self.kind:>10} {self.show_val():8} "
+            f"index: {self.index:3} line: {self.line_number:3} "
+            f"level: {self.level:3} node: {self.node.__class__.__name__}")
+            
+    def show_val(self):
+        return len(self.value) if self.kind in ('ws', 'indent') else repr(self.value)
 
     def __repr__(self):
-        val = len(self.value) if self.kind in self.ws_kinds else repr(self.value)
-        return f"{self.kind:12} {val}"
+        return f"{self.kind:>10} {self.show_val()}"
 
     def __str__(self):
-        val = len(self.value) if self.kind in self.ws_kinds else repr(self.value)
-        return f"{self.kind} {val}"
+        return f"{self.kind} {self.show_val()}"
 
     def to_string(self):
-        """
-        Convert an output token to a string.
-        Note: repr shows the length of line-indent string.
-        """
+        """Return the contribution of the token to the source file."""
         return self.value if isinstance(self.value, str) else ''
 #@+node:ekr.20191110075225.1: ** class TokenOrderTraverser
 class TokenOrderTraverser:
@@ -2995,7 +3002,7 @@ class TokenOrderTraverser:
         # For tracing only: The kinds of tokens representing whitespace.
 
     #@+others
-    #@+node:ekr.20191110075448.3: *3* tot.create_links
+    #@+node:ekr.20191110075448.3: *3* tot.create_links (entry)
     def create_links(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -3004,32 +3011,27 @@ class TokenOrderTraverser:
         self.tokens = tokens[:]
         self.token_index = 0
         self.visit(tree)
+        print(
+            f"\ncreate_links: max_level: {self.max_level}, "
+            f"max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191111023054.1: *3* tot.eat
     def eat(self, kind, val):
         """Eat zero or more tokens in self.tokens corresponding to (kind, val)."""
         import leo.core.leoGlobals as g
         
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         
         if trace:
-            g.trace('\n', kind, val, 'callers:', g.callers(2))
+            print('')
         
         def get_token():
-            if self.token_index >= len(self.tokens):
-                print('eat: bad token index', self.token_index, len(self.tokens))
-                return None # Indicate an error.
+            assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
             token = self.tokens[self.token_index]
-            if kind == 'newline':
-                trace_val = repr(val)
-            elif kind in self.ws_kinds:
-                trace_val = len(val)
-            else:
-                trace_val = val
-            ### trace_val = len(val) if kind in self.ws_kinds else val
-            if trace: print('eat '
-                f"list: {self.token_index:3} {token!r:25} "
-                f"{self.node.__class__.__name__:11} "
-                f"kind:val {kind:>12} {trace_val}")
+            # Patch the token.
+            token.index = self.token_index
+            token.node = self.node
+            if trace:
+                print(f"eat: kind: {kind:8} {val!r:8} token: {token.dump()}")
             self.token_index += 1
             return token
 
@@ -3039,29 +3041,21 @@ class TokenOrderTraverser:
             token = get_token()
         while token:
             if kind == token.kind:
-                return # A match.
-            if token.kind in ('ws', 'indent'):
-                if kind in ('line-indent', 'ws'):
-                    return # A good enough match.
-                # Look ahead in the token list.
-                token = get_token()
-                continue
-            if token.kind == 'dedent':
-                if kind == 'newline':
-                    # Rescan this index.
-                    # We expect to match 'line-indent' next.
+                return # A direct match.
+            if kind in ('newline', 'ws'):
+                # Skip the newline.
+                if token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
+                    while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
+                        token = get_token()
                     self.token_index -= 1
-                    return # A good enough match.
-                if kind == 'line-indent':
-                    return # An excellent match.
-                # Rescan and hope for the best.
-                self.token_index -= 1
                 return
+            while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
+                token = get_token()
+            if kind == token.kind:
+                return # A delayed match.
             break # An error
-        if 1:
-            g.trace(f"MISMATCH: kind: {kind}")
-        else:
-            raise AssertionError(f"MISMATCH: kind: {kind}")
+        print('\n==========')
+        raise AssertionError(f"MISMATCH: kind: {kind}, token.kind {token.kind}")
             
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
     def make_tokens(self, contents):
