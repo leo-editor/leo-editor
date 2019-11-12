@@ -11,16 +11,6 @@
 <v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
 </v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Obsolete: Installer/Distribution bugs &amp; to-do</vh>
-<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
-</v>
-<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-</v>
 <v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
 <v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
 </v>
@@ -259,7 +249,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.1 b1, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -392,169 +382,12 @@ and those who contribute Python modules to the world). -- David McNab
 </t>
 <t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
 redefine my personal computer experience and the ideas behind computing.</t>
-<t tx="ekr.20090901092556.1576">def genUninstallData(self,dirs,dirDict,filesDict):
-
-    '''Generate the manifest-specific uninstall data.'''
-
-    trace = True
-
-    s = r'''
-Section Uninstall
-
-    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
-
-    ; Delete files &amp; directories only if we own them!
-    ReadRegStr $$1 HKCR "${ext}" ""
-    StrCmp $$1 "${name}File" 0 FinishUninstall
-
-    ; Delete files &amp; directories only if there is no backup_val key.
-    ReadRegStr $$1 HKCR "${ext}" "backup_val"
-    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
-      DeleteRegKey HKCR "${ext}"
-    Goto FinishUninstall
-
-DeleteLeoKeysAndFiles:
-    WriteRegStr HKCR "${ext}" "" $$1
-    DeleteRegValue HKCR "${ext}" "backup_val"
-
-    ; ---- Start of manifest-related data...
-'''
-
-    self.put(s,substitute=True)
-
-    # Does all the hard work.
-    s = self.getUninstallVariableData(dirs,dirDict,filesDict)
-    if trace: g.trace('\n',s)
-    self.put(s,adjust = False)
-
-    s = r'''
-    ; ---- End of manifest related data.
-
-FinishUninstall:
-    ; MessageBox MB_YESNO|MB_ICONQUESTION \
-    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
-; NoDelete:
-
-  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
-  RMDir "${SMPROGRAMS}\${name}-${version}"
-  Delete "${DESKTOP}\${name}.lnk"
-
-  DeleteRegKey ${uninst_root_key} "${uninst_key}"
-  SetAutoClose false
-
-; end Uninstall section
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-</t>
-<t tx="ekr.20090901121423.1567">def getUninstallVariableData(self,dirs,dirDict,filesDict):
-
-    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
-    s2 = self.getDeleteDirectories(dirs,dirDict)
-    return '%s\n%s' % (s1,s2)
-</t>
-<t tx="ekr.20090901121423.1568">def getDeleteDirectories (self,dirs,dirDict):
-
-    reverseDirs = dirs[:]
-    reverseDirs.reverse()
-
-    result = []
-
-    if 1:
-        result.append('; Recursively delete the leo directory and everything in it.\n')
-        result.append('RMDir /r "$INSTDIR\\leo"\n\n')
-    else:
-        result.append('; Uninstall directories in reverse order\n')
-        for theDir in reverseDirs:
-            # Delete the directory even if it has files.
-            if theDir and theDir != '**top':
-                if not theDir.startswith('.bzr'):
-                    result.append('RMDir "$INSTDIR\\%s"\n' % (
-                        theDir.replace('/','\\')))
-
-    # top-level folder.
-    result.append('; Delete the top-level directory.\n')
-    result.append('RMDir "$INSTDIR"\n')
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
-<t tx="ekr.20090901121423.1569">def getDeleteFiles (self,dirs,dirDict,filesDict):
-
-    result = []
-    result.append('\n')
-    result.append('; Uninstall files...\n\n')
-
-    # top-level files.
-    result.append('; Delete top-level files...\n')
-    aList = dirDict.get('**top',[])
-    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
-    if 0: # This seems way too drastic, and not needed.
-        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
-            aList.append(fn)
-    # special case.
-    aList.append('uninst.exe')
-    # Warning: **never** delete all files in the top-level directory.
-    for fn in aList:
-        result.append('Delete "$INSTDIR\\%s"\n' % fn)
-
-    if 0:
-        wildcard_delete = True
-        if wildcard_delete:
-            result.append('\n')
-        # Use the \r option to recursively delete everything in the leo directory.
-
-        for theDir in dirs:
-            if theDir:
-                dir2 = theDir.replace('/','\\')
-                if wildcard_delete:
-                    result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
-                else:
-                    aList = dirDict.get(theDir,[])
-                    if aList:
-                        result.append('\n')
-                        result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                        result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                    for fn in aList:
-                        result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                            dir2,fn))
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 This checklist is obsolete, for the following reasons:
 
 1. There never was a SourceForge release for Leo 5.8.
 2. Matt's distribution script creates a more standard way of releasing Leo.</t>
-<t tx="ekr.20101025095431.1517">@language rest</t>
-<t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
-</t>
-<t tx="ekr.20101026142031.1516">@nocolor-node
-
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe\shell\open\command
-    val = c:\Python26\python.exe %1
-HKCU
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe\shell\open\command
-    val = c:\Python26\pythonw.exe %1
-
-HKEY_CURRENT_USER\Software\Classes\Applications\py_auto_file\shell\open\command
-    val = c:\Python26\python.exe %1
-    
-HKEY_CURRENT_USER\Software\Classes\Installer\Products\nnnnnn
-
-HKLM
-HKEY_LOCAL_MACHINE\SOFTWARE\Python
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
-    val = c:\python27\
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
-    val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
-</t>
 <t tx="ekr.20101027054254.1590">@language nsi
 
 &lt;&lt; defines &gt;&gt;
@@ -1799,7 +1632,7 @@ Overview:
 1. Do as much work as possible in "devel".
 2. Update leoVersion.py *after* creating -rel branch.
 </t>
-<t tx="ekr.20180405171433.2">LeoDocs.leo:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
@@ -1823,15 +1656,15 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
 - Remove top-level clones.
 </t>
-<t tx="ekr.20180405171433.3">- Regenerate all .html files.
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
 </t>
-<t tx="ekr.20180405171433.4">- Make sure Leo looks good without myLeoSettings.leo.
+<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
-<t tx="ekr.20180405171433.7">Create a git tag **last**
+<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
@@ -1843,13 +1676,13 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
+<t tx="ekr.20180828095749.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout -b x.y-final-rel
 git push origin x.y-final-rel
 </t>
-<t tx="ekr.20180828095843.1">leoVersion.py:
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112218.1">Matt: After merge create dev tag that matches
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge create dev tag that matches
     static version added to leoversion.py earlier.
     #static version = '6.0-b2-devel'
 
@@ -2314,23 +2147,23 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1">From rel branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From rel branch:
     
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
 - git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
 git push</t>
-<t tx="ekr.20190618104622.1">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+<t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
 There is a "Draft New Release" button at the top-right of the page.
 </t>
-<t tx="ekr.20190618104704.1">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
    
 - Announce to leo-editor.
@@ -2349,7 +2182,7 @@ There is a "Draft New Release" button at the top-right of the page.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20190802115604.1">- Run all unit tests.
+<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
 <t tx="maphew.20180128212042.1">@language md

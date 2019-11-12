@@ -125,6 +125,11 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 - ``@image`` renders the file as an image.
 
+    The headline should start with @image.
+    All other characters in the headline are ignored.
+    
+    The first line of the body should be the full path to the image file.
+    All other lines are ignored.
 
 - ``@html`` renders the body text as html.
 
@@ -1386,7 +1391,7 @@ if QtWidgets: # NOQA
                     'numpy': np, 'np': np,
                     'pyplot': plt, 'plt': plt,
                 }
-            except ImportError:
+            except Exception:
                 g.es_print('matplotlib imports failed')
                 namespace = {}
             # Embedding already works without this!

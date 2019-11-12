@@ -208,6 +208,7 @@ class LeoQtGui(leoGui.LeoGui):
     def makeFilter(self, filetypes):
         """Return the Qt-style dialog filter from filetypes list."""
         filters = ['%s (%s)' % (z) for z in filetypes]
+            # Careful: the second %s is *not* replaced.
         return ';;'.join(filters)
     #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helpers
     def openFindDialog(self, c):

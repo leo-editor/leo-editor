@@ -3548,8 +3548,9 @@ Scripts in the scriptFile may execute any of Leo's commands except the Edit Body
 
 These are the sources for Leo's users guide.
 
-They contain sphinx markup. See::
+They contain restructured text markup for the sphinx tool. See::
 
+    http://docutils.sourceforge.net/rst.html
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
@@ -11813,7 +11814,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.1-b1
+| latest_release_version = 6.1
 | latest_release_date = {{Start date and age|2019|06|18}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
@@ -22169,7 +22170,7 @@ I don't think I have ever misunderstood a class as badly as I have misunderstood
 
 The performance bug created by calling QSyntaxHighlighter explicitly caused a "series of unfortunate events" ;-) Seeing the speed pyzo's pure python syntax colorer was the key breakthrough.
 </t>
-<t tx="ekr.20170123085934.1">Leo 5.5 March 23, 2017
+<t tx="ekr.20170123085934.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.5 March 23, 2017
 
 [Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -23945,7 +23946,7 @@ Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite the
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
 </t>
-<t tx="ekr.20170608071626.1">Leo 5.6 September 25, 2017
+<t tx="ekr.20170608071626.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.6 September 25, 2017
 
 [Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -25644,7 +25645,7 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7 final February 27, 2018
+<t tx="ekr.20180125034327.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -26496,7 +26497,7 @@ Because the the representation of a module within a WSF was XML, the source code
 
 In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
-<t tx="ekr.20180404015249.1">Leo 5.7.1 April 6, 2018
+<t tx="ekr.20180404015249.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.7.1 April 6, 2018
 
 Leo 5.7.1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
@@ -26634,7 +26635,7 @@ Theme files should contain three settings that describe the theme::
 <t tx="ekr.20180404070940.1"></t>
 <t tx="ekr.20180404172529.1">When True, adds @path directives to the root node of imported files.
 </t>
-<t tx="ekr.20180411070654.1">May 7, 2018
+<t tx="ekr.20180411070654.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">May 7, 2018
 
 Leo 5.7.2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
@@ -27120,7 +27121,7 @@ Leo University
 
 This is a backup of the online `LeoU issues`_.
 </t>
-<t tx="ekr.20180509122406.1">May 28, 2018
+<t tx="ekr.20180509122406.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">May 28, 2018
 Leo 5.7.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -28399,7 +28400,7 @@ and then predefines the animation, matplotlib, np, numpy and plt vars in the @py
 1. Once you use the VR pane to display an image, you can't (at present) display an image externally.
 
 2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.</t>
-<t tx="ekr.20180930062351.1">
+<t tx="ekr.20180930062351.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">
 Leo 5.8 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -29690,7 +29691,7 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1">Leo 5.9 final, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.9 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -30435,7 +30436,7 @@ Add the following to the headline of a new node as a child of your @settings nod
 5. Save the file and restart Leo.
 
 You should now be using myTheme.leo. You can load myTheme.leo from Leo. The font sizing and colors are under Theme Settings in the tree.</t>
-<t tx="ekr.20191003050703.1">Leo 6.1 b1, http://leoeditor.com, is now available on
+<t tx="ekr.20191003050703.1">Leo 6.1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -30645,7 +30646,7 @@ https://github.com/leo-editor/leo-editor/issues/1325
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 </t>
 <t tx="ekr.20191003061844.1">https://github.com/leo-editor/leo-editor/issues/1315</t>
-<t tx="ekr.20191003062919.1">Leo 6.0 final, http://leoeditor.com, is now available on
+<t tx="ekr.20191003062919.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).

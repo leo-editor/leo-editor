@@ -65,20 +65,20 @@ class BaseSpellWrapper:
     def find_user_dict(self):
         """Return the full path to the local dictionary."""
         c = self.c
-        fn = c.config.getString('enchant-local-dictionary')
-        if not fn:
-            fn = g.os_path_finalize_join(
-                g.app.loadDir,
-                "..", "plugins",
-                'spellpyx.txt',
-            )
-        # #108.
-        if not g.os_path_exists(fn):
-            fn = g.os_path_finalize_join(
-                g.app.homeDir,
-                '.leo',
-                'spellpyx.txt')
-        return fn
+        table = (
+            c.config.getString('enchant-local-dictionary'),
+                # Settings first.
+            g.os_path_finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt'),
+                # #108: then the .leo directory.
+            g.os_path_finalize_join(g.app.loadDir, "..", "plugins", 'spellpyx.txt'),
+                # The plugins directory as a last resort.
+        )
+        for path in table:
+            if g.os_path_exists(path):
+                return path
+        #
+        g.es_print('Do spellpyx.txt file found')
+        return None
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word):
         
