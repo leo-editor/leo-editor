@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
+# Don't import leoGlobals at the top level.
 import ast
 import textwrap
-import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 #@+node:ekr.20191027072910.1: *3* class AstNotEqual (Exception)
@@ -60,7 +60,7 @@ _op_names = {
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
-
+    import leo.core.leoGlobals as g
     # Compare the two parse trees.
     try:
         _compare_asts(ast1, ast2)
@@ -130,6 +130,7 @@ def _compare_nodes(node1, node2):
 #@+node:ekr.20191027074436.1: *3* function: dump_ast
 def dump_ast(ast, tag=None):
     """Utility to dump an ast tree."""
+    import leo.core.leoGlobals as g
     g.printObj(AstDumper().dump(ast), tag=tag)
 #@+node:ekr.20191109063033.1: *3* function: funcToMethod 
 
@@ -156,10 +157,14 @@ def parse_ast(s, headline=None):
     Parse string s, catching & reporting all exceptions.
     Return the ast node, or None.
     """
+    import leo.core.leoGlobals as g
 
     def oops(message):
         print('')
-        g.warning(f"{message} in: {headline}" if headline else message)
+        if headline:
+            g.warning(f"parse_ast: {message} in: {headline}")
+        else:
+            g.warning(f"parse_ast: {message}")
         print('')
 
     try:
@@ -261,7 +266,7 @@ class AstDumper:
         
         result = []
         self.flat_dump_helper(node, result)
-        return '\n'.join(result)
+        return '  ' + '\n  '.join(result)
         
     def flat_dump_helper(self, node, result):
 
@@ -666,11 +671,9 @@ class AstFormatter:
         ops = [self.op_name(z) for z in node.ops]
         comps = [self.visit(z) for z in node.comparators]
         result.append(lt)
-        if len(ops) == len(comps):
-            for i in range(len(ops)):
-                result.append(f'%s%s' % (ops[i], comps[i]))
-        else:
-            g.trace('ops', repr(ops), 'comparators', repr(comps))
+        assert len(ops) == len(comps), repr(node)
+        for i in range(len(ops)):
+            result.append(f'%s%s' % (ops[i], comps[i]))
         return ''.join(result)
     #@+node:ekr.20141012064706.18440: *4* f.UnaryOp
     def do_UnaryOp(self, node):
@@ -816,11 +819,9 @@ class AstFormatter:
         """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
-            if ast2.__class__.__name__ == 'alias':
-                data = ast2.name, ast2.asname
-                result.append(data)
-            else:
-                g.trace('unsupported kind in Import.names list', ast2.__class__.__name__)
+            assert ast2.__class__.__name__ == 'alias', (repr(ast2))
+            data = ast2.name, ast2.asname
+            result.append(data)
         return result
     #@+node:ekr.20141012064706.18456: *4* f.ImportFrom
     def do_ImportFrom(self, node):
@@ -1649,10 +1650,8 @@ class AstFullTraverser:
             for z in aList:
                 self.visit(z)
             return None
-        if isinstance(aList, ast.AST):
-            return self.visit(aList)
-        g.trace('(CCTraverser) ===== oops', repr(aList), g.callers())
-        return None
+        assert isinstance(aList, ast.AST), repr(aList)
+        return self.visit(aList)
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
@@ -2440,11 +2439,9 @@ class HTMLReportTraverser:
         """Return a list of the the full file names in the import statement."""
         result = []
         for ast2 in node.names:
-            if isinstance(ast2, ast.alias):
-                data = ast2.name, ast2.asname
-                result.append(data)
-            else:
-                g.trace('unsupported node in Import.names list', node.__class__.__name__)
+            assert isinstance(ast2, ast.alias), repr(ast2)
+            data = ast2.name, ast2.asname
+            result.append(data)
         return result
     #@+node:ekr.20150722204300.72: *4* rt.Global
     def do_Global(self, node):
@@ -2880,7 +2877,9 @@ class Tokenizer:
         
         This is part of the "gem".
         """
+        import leo.core.leoGlobals as g
         import token as token_module
+
         trace = False and not g.unitTesting
 
         def show_tuple(aTuple):
@@ -3008,8 +3007,9 @@ class TokenOrderTraverser:
     #@+node:ekr.20191111023054.1: *3* tot.eat
     def eat(self, kind, val):
         """Eat zero or more tokens in self.tokens corresponding to (kind, val)."""
+        import leo.core.leoGlobals as g
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         
         if trace:
             g.trace('\n', kind, val, 'callers:', g.callers(2))
@@ -3069,6 +3069,7 @@ class TokenOrderTraverser:
         Return a list (not a generator) of Token objects corresponding to the
         list of 5-tuples generated by tokenize.tokenize.
         """
+        import leo.core.leoGlobals as g
         import io
         import tokenize
         
@@ -3083,7 +3084,12 @@ class TokenOrderTraverser:
                 g.printObj(result)
             return ok
 
-        five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+        try:
+            five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+        except Exception:
+            print('make_tokens: exception in tokenize.tokenize')
+            g.es_exception()
+            return None
         tokens = Tokenizer().create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
@@ -3125,6 +3131,7 @@ class TokenOrderTraverser:
     #@+node:ekr.20191111083428.1: *3* tot.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
+        import leo.core.leoGlobals as g
 
         def key(z):
             return z.lower()
@@ -3142,11 +3149,12 @@ class TokenOrderTraverser:
     #@+node:ekr.20191110075448.4: *3* tot.visit
     def visit(self, node):
         """TokenOrderTraverser.visit."""
+        import leo.core.leoGlobals as g
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         
         def oops(method_name):
-            g.trace(f"Error: missing method: {method_name}")
+            print(f"TokenOrderTraverser.visit: missing method: {method_name}")
             
         # visitors must expand all lists/tuples, and must check for empty fields.
         assert isinstance(node, ast.AST), (node.__class__.__name__, g.callers())
