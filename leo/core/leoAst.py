@@ -2925,18 +2925,20 @@ class Token:
     The TokenOrderTraverser class creates a list of such tokens.
     """
     def __init__(self, kind, value):
-
+        
+        # Set by Tokenizer.add_token.
         self.kind = kind
+        self.line = ''
+            # The entire line containing the token. Same as token.line.
         self.value = value
+        #
         # Additional fields, set by tot.eat.
         self.index = 0
         self.level = 0
-        self.line = ''
-            # The entire line containing the token. Same as token.line.
         self.line_number = 0
             # The line number, for errors. Same as token.start[0]
         self.node = None
-            
+
     def dump(self):
         node_id = str(id(self.node))[-4:]
         parent = self.node.parent if self.node else None
@@ -3054,12 +3056,13 @@ class TokenOrderTraverser:
             self.token_index += 1
             return token
 
-        ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
+        # Get the next token.
         token = get_token()
         # Ignore encoding tokens.
         if token.kind == 'encoding':
             token.node = self.node.parent
             token = get_token()
+        ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
         while token:
             if kind == token.kind:
                 return # A direct match.
@@ -3067,7 +3070,7 @@ class TokenOrderTraverser:
             if self.node.parent:
                 token.node = self.node.parent
             if kind in ('newline', 'ws'):
-                # Skip the newline or whitespace, and associated tokens.
+                # Skip whitespace tokens and hope for a match later.
                 if token.kind in ws_kinds:
                     while token.kind in ws_kinds:
                         token = get_token()
