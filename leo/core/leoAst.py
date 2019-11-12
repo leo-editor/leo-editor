@@ -2939,11 +2939,11 @@ class Token:
             
     def dump(self):
         node_id = str(id(self.node))[-4:]
-        parent = self.node.parent
+        parent = self.node.parent if self.node else None
         parent_class = parent.__class__.__name__ if parent else ''
         parent_id = str(id(parent))[-4:] if parent else '    '
         return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val():8} "
+            f"{self.index:>3} {self.kind:>11} {self.show_val():<15} "
             f"line: {self.line_number:<2} level: {self.level} "
             f"node: {node_id} {self.node.__class__.__name__:12} "
             f"parent: {parent_id} {parent_class}")
@@ -3054,26 +3054,27 @@ class TokenOrderTraverser:
             self.token_index += 1
             return token
 
+        ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
         token = get_token()
         # Ignore encoding tokens.
         if token.kind == 'encoding':
-            # token.node = self.root
             token.node = self.node.parent
             token = get_token()
         while token:
             if kind == token.kind:
                 return # A direct match.
             # Associate the skipped token with it's *parent*.
-            token.node = self.node.parent
+            if self.node.parent:
+                token.node = self.node.parent
             if kind in ('newline', 'ws'):
                 # Skip the newline or whitespace, and associated tokens.
-                if token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
-                    while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
+                if token.kind in ws_kinds:
+                    while token.kind in ws_kinds:
                         token = get_token()
                     self.token_index -= 1
                 return
             # Skip whitespace tokens.
-            while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
+            while token.kind in ws_kinds:
                 token = get_token()
             if kind == token.kind:
                 return # A delayed match.
