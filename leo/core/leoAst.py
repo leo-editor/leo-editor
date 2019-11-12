@@ -3066,12 +3066,13 @@ class TokenOrderTraverser:
             # Associate the skipped token with it's *parent*.
             token.node = self.node.parent
             if kind in ('newline', 'ws'):
-                # Skip the newline.
+                # Skip the newline or whitespace, and associated tokens.
                 if token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
                     while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
                         token = get_token()
                     self.token_index -= 1
                 return
+            # Skip whitespace tokens.
             while token.kind in ('dedent', 'indent', 'newline', 'nl', 'ws'):
                 token = get_token()
             if kind == token.kind:
