@@ -989,10 +989,9 @@ class TokenOrderTraverser:
     #@+node:ekr.20191113051828.1: *3* tot.begin/end_node
     node_level = 0
 
-    # These methods flatten the traverser, allowing generators to be used.
+    # These methods support generators.
 
     # Subclasses may/should override these methods.
-    # For example, only the "Pass 1" subclass should inject ivars and update stats. 
 
     def begin_node(self, node):
         """Enter a visitor."""
@@ -1000,18 +999,10 @@ class TokenOrderTraverser:
         # begin_node and end_node must be paired.
         self.node_level += 1
         assert self.node_level == 1, g.callers()
-        # Update the coverage data.
-        self.coverage_set.add(node.__class__.__name__)
-        ### Now done in TokenOrderInjector.
-            # node.parent = self.node
-            # children = getattr(self.node, 'children', [])
-            # children.append(node)
-            # if self.node:
-                # self.node.children = children
         # Push the previous node.
         self.node_stack.append(self.node)
         self.max_stack_level = max(len(self.node_stack), self.max_stack_level)
-        # Update self.node.
+        # Update self.node *last*.
         self.node = node
         
     def end_node(self, node):
@@ -1021,7 +1012,7 @@ class TokenOrderTraverser:
         self.node_level -= 1
         assert self.node_level == 0, g.callers()
         assert self.node == node, (repr(self.node), repr(node))
-        # Update the indentation stat.
+        # Update the indentation stat, so subclasses don't have to.
         self.max_level = max(self.level, self.max_stack_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
@@ -4284,7 +4275,6 @@ class TokenOrderInjector (TokenOrderTraverser):
         #
         # *Now* update self.node, etc.
         super().begin_node(node)
-        
     #@-others
 #@-others
 #@@language python
