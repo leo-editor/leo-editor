@@ -2976,10 +2976,16 @@ class Token:
             f"parent: {parent_id} {parent_class}")
 
     def show_val(self):
-        import leo.core.leoGlobals as g
         return (
             len(self.value) if self.kind in ('ws', 'indent')
-            else g.truncate(repr(self.value), 11))
+            else self.truncate(repr(self.value), 11))
+            
+    def truncate(self, s, n):
+        if isinstance(s, str):
+            s = s.replace('\n','')
+        else:
+            s = repr(s)
+        return s if len(s) <  n else s[:n-3] + '...'
 
     def __repr__(self):
         return f"{self.kind:>11} {self.show_val()}"
@@ -3071,6 +3077,13 @@ class TokenOrderTraverser:
         
         if trace:
             print('')
+            
+        def truncate(s, n):
+            if isinstance(s, str):
+                s = s.replace('\n','<NL>')
+            else:
+                s = repr(s)
+            return s if len(s) <  n else s[:n-3] + '...'
         
         def get_token():
             assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
@@ -3079,8 +3092,9 @@ class TokenOrderTraverser:
             token.index = self.token_index
             token.level = self.level
             token.node = self.node
+            val_s = truncate(val, 20)
             if trace:
-                print(f"eat: kind: {kind:9} {val!r:8} token: {token.dump()}")
+                print(f"eat: kind: {kind:9} {val_s:<20} token: {token.dump()}")
             self.token_index += 1
             return token
 
@@ -3104,13 +3118,16 @@ class TokenOrderTraverser:
                         token = get_token()
                     self.token_index -= 1
                 return
+            # Skip comment tokens.
+            # while token.kind == 'comment':
+                # token = get_token()
             # Skip whitespace tokens.
             while token.kind in ws_kinds:
                 token = get_token()
             if kind == token.kind:
                 return # A delayed match.
             break # An error
-        print('\n==========')
+        print('\n========== FAIL')
         raise AssertionError(f"MISMATCH: kind: {kind}, token.kind {token.kind}")
             
     #@+node:ekr.20191110131906.1: *3* tot.make_tokens
@@ -3334,6 +3351,7 @@ class TokenOrderTraverser:
     def do_Module(self, node):
 
         for z in node.body:
+            ### print('doModule', z)
             self.visit(z)
     #@+node:ekr.20191110075448.10: *5* tot.Lambda
     def do_Lambda(self, node):
@@ -3446,7 +3464,7 @@ class TokenOrderTraverser:
         self.put_name(node.attr) # A string.
     #@+node:ekr.20191110075448.20: *5* tot.Bytes
     def do_Bytes(self, node):  # Python 3.x only.
-        self.put('string', str(node.s))
+        self.put('bytes', str(node.s))
     #@+node:ekr.20191110075448.21: *5* tot.Call & tot.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
