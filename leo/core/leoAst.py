@@ -236,30 +236,7 @@ class AstDumper:
         self.indent_ws = indent_ws
 
     #@+others
-    #@+node:ekr.20141012064706.18392: *3* d.dump
-    def dump(self, node, level=0):
-
-        sep1 = f'\n%s' % (self.indent_ws * (level + 1))
-        if isinstance(node, ast.AST):
-            fields = [(a, self.dump(b, level+1)) for a, b in self.get_fields(node)]
-            if self.include_attributes and node._attributes:
-                fields.extend([(a, self.dump(getattr(node, a), level+1))
-                    for a in node._attributes])
-            if self.annotate_fields:
-                aList = [f'%s=%s' % (a, b) for a, b in fields]
-            else:
-                aList = [b for a, b in fields]
-            name = node.__class__.__name__
-            sep = '' if len(aList) <= 1 else sep1
-            return f'%s(%s%s)' % (name, sep, sep1.join(aList))
-        if isinstance(node, list):
-            sep = sep1
-            return f'[%s]' % ''.join(
-                [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
-        return repr(node)
-    #@+node:ekr.20191112033445.1: *3* d.flat_dump
-    seen = set()
-
+    #@+node:ekr.20191112033445.1: *3* d.brief_dump
     def brief_dump(self, node):
         
         result = []
@@ -267,7 +244,7 @@ class AstDumper:
         return ''.join(result)
         
     def brief_dump_helper(self, node, level, result):
-
+        """Briefly show a tree, properly indented."""
         if node is None:
             return
         # Let block.
@@ -295,6 +272,27 @@ class AstDumper:
                 self.brief_dump_helper(z, level+1, result)
         else:
             result.append(full_s)
+    #@+node:ekr.20141012064706.18392: *3* d.dump
+    def dump(self, node, level=0):
+
+        sep1 = f'\n%s' % (self.indent_ws * (level + 1))
+        if isinstance(node, ast.AST):
+            fields = [(a, self.dump(b, level+1)) for a, b in self.get_fields(node)]
+            if self.include_attributes and node._attributes:
+                fields.extend([(a, self.dump(getattr(node, a), level+1))
+                    for a in node._attributes])
+            if self.annotate_fields:
+                aList = [f'%s=%s' % (a, b) for a, b in fields]
+            else:
+                aList = [b for a, b in fields]
+            name = node.__class__.__name__
+            sep = '' if len(aList) <= 1 else sep1
+            return f'%s(%s%s)' % (name, sep, sep1.join(aList))
+        if isinstance(node, list):
+            sep = sep1
+            return f'[%s]' % ''.join(
+                [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
+        return repr(node)
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
 
