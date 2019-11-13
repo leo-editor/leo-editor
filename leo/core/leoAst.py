@@ -1001,6 +1001,7 @@ class TokenOrderTraverser:
         assert self.node_level == 1, g.callers()
         # Push the previous node.
         self.node_stack.append(self.node)
+        # Update the stat.
         self.max_stack_level = max(len(self.node_stack), self.max_stack_level)
         # Update self.node *last*.
         self.node = node
@@ -1012,7 +1013,7 @@ class TokenOrderTraverser:
         self.node_level -= 1
         assert self.node_level == 0, g.callers()
         assert self.node == node, (repr(self.node), repr(node))
-        # Update the indentation stat, so subclasses don't have to.
+        # Update the stat.
         self.max_level = max(self.level, self.max_stack_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
