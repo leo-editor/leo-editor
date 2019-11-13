@@ -3068,12 +3068,13 @@ class TokenOrderTraverser:
         # Update self.node.
         self.node = node
         
-    def end_node(self):
+    def end_node(self, node):
         """Leave a visitor."""
         import leo.core.leoGlobals as g
         # begin_node and end_node must be paired.
         self.node_level -= 1
         assert self.node_level == 0, g.callers()
+        assert self.node == node, (repr(self.node), repr(node))
         # Update the indentation stat.
         self.max_level = max(self.level, self.max_stack_level)
         # Restore self.node.
