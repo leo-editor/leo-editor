@@ -3043,6 +3043,41 @@ class TokenOrderTraverser:
         # For tracing only: The kinds of tokens representing whitespace.
 
     #@+others
+    #@+node:ekr.20191113051828.1: *3* tot.begin/end_node
+    node_level = 0
+
+    # These methods flatten the traverser, allowing generators to be used.
+
+    def begin_node(self, node):
+        """Enter a visitor."""
+        import leo.core.leoGlobals as g
+        # begin_node and end_node must be paired.
+        self.node_level += 1
+        assert self.node_level == 1, g.callers()
+        # Update the coverage data.
+        self.coverage_set.add(node.__class__.__name__)
+        # Add parent and children links.
+        node.parent = self.node
+        children = getattr(self.node, 'children', [])
+        children.append(node)
+        if self.node:
+            self.node.children = children
+        # Push the previous node.
+        self.node_stack.append(self.node)
+        self.max_stack_level = max(len(self.node_stack), self.max_stack_level)
+        # Update self.node.
+        self.node = node
+        
+    def end_node(self):
+        """Leave a visitor."""
+        import leo.core.leoGlobals as g
+        # begin_node and end_node must be paired.
+        self.node_level -= 1
+        assert self.node_level == 0, g.callers()
+        # Update the indentation stat.
+        self.max_level = max(self.level, self.max_stack_level)
+        # Restore self.node.
+        self.node = self.node_stack.pop()
     #@+node:ekr.20191110075448.3: *3* tot.create_links (entry)
     def create_links(self, tokens, tree):
         """
@@ -3213,7 +3248,7 @@ class TokenOrderTraverser:
             print('Missing...\n')
             g.printObj(missing)
             print('')
-    #@+node:ekr.20191110075448.4: *3* tot.visit
+    #@+node:ekr.20191110075448.4: *3* tot.visit (to be removed)
     def visit(self, node):
         """TokenOrderTraverser.visit."""
         import leo.core.leoGlobals as g
