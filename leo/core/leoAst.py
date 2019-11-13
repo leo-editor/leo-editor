@@ -293,6 +293,19 @@ class AstDumper:
             return f'[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
+    #@+node:ekr.20191112183737.1: *3* d.dump_one_node (not used)
+    def dump_one_node(self, node):
+        """Briefly show a tree, properly indented."""
+        assert isinstance(node, ast.AST), repr(node)
+        # Let block.
+        node_id = str(id(node))[-4:]
+        parent = getattr(node, 'parent', None)
+        parent_id = str(id(parent))[-4:]
+        parent_s = f"{parent_id} {parent.__class__.__name__}" if parent else ''
+        children = getattr(node, 'children', [])
+        return (
+            f"node: {node_id} {node.__class__.__name__:<14} "
+            f"parent: {parent_s} children: {len(children)}")
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
 
@@ -2933,6 +2946,7 @@ class Token:
 
     The TokenOrderTraverser class creates a list of such tokens.
     """
+
     def __init__(self, kind, value):
         
         # Set by Tokenizer.add_token.
@@ -2953,14 +2967,19 @@ class Token:
         parent = self.node.parent if self.node else None
         parent_class = parent.__class__.__name__ if parent else ''
         parent_id = str(id(parent))[-4:] if parent else '    '
+        children = getattr(self.node, 'children', [])
         return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val():<15} "
+            f"{self.index:>3} {self.kind:>11} {self.show_val():<11} "
             f"line: {self.line_number:<2} level: {self.level} "
             f"node: {node_id} {self.node.__class__.__name__:12} "
+            f"children: {len(children)} "
             f"parent: {parent_id} {parent_class}")
 
     def show_val(self):
-        return len(self.value) if self.kind in ('ws', 'indent') else repr(self.value)
+        import leo.core.leoGlobals as g
+        return (
+            len(self.value) if self.kind in ('ws', 'indent')
+            else g.truncate(repr(self.value), 11))
 
     def __repr__(self):
         return f"{self.kind:>11} {self.show_val()}"
