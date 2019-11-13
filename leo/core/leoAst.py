@@ -215,6 +215,79 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
+#@+node:ekr.20191113133338.1: *3* function: test_token_traversers
+def test_token_traversers():
+    """
+    A testing framework for TokenOrderGenerator and related classes.
+    """
+    # pylint: disable=import-self
+    import leo.core.leoAst as leoAst
+    # It's not a good idea to do this within Leo itsefl.
+        # import imp
+        # imp.reload(leoAst)
+    use_file = False
+    if use_file:
+        path = r'C:\leo.repo\leo-editor\leo\core\leoGlobals.py'
+        assert g.os_path_exists(path), repr(path)
+        with open(path, 'r') as f:
+            contents = f.read()
+    elif 1:
+        # This is more than enough to test syncing.
+        contents = r'''
+    class TestClass:
+        def test(a, b=2):
+            if a:
+                a = 1
+            else:
+                a += 1
+            print('done')
+    ''' 
+    else:
+        contents = r'''
+    # -*- coding: utf-8 -*-
+#@verbatim
+    #@+leo-ver=5-thin
+#@verbatim
+    #@+node:ekr.20031218072017.3093: * @file leoGlobals.py
+#@verbatim
+    #@@first
+    """
+    Line 1
+    """
+    import sys
+    '''
+    print('Ctrl-2: leoAst tests...\n')
+    contents = contents.strip() + '\n'
+    x = leoAst.TokenOrderInjector()
+    tokens = x.make_tokens(contents)
+    tree = leoAst.parse_ast(contents)
+    # Catch exceptions so we can get data late.
+    try:
+        ok = True
+        list(x.create_links(tokens, tree))
+    except Exception:
+        g.es_exception()
+        ok = False
+    # x.report_coverage(report_missing=False)
+    if 0 and not use_file:
+        print('\nTOKENS...\n')
+        for z in tokens:
+            print(z.dump())
+        if 0: # These *have* been set.
+            print('\nTOKEN lines...\n')
+            for z in tokens:
+                if z.line.strip():
+                    print(z.line.rstrip())
+                else:
+                    print(repr(z.line))
+    if not use_file:
+        print('\nCONTENTS...\n')
+        print(contents)
+    if 1:
+        print('PATCHED TREE...\n')
+        print(leoAst.AstDumper().brief_dump(tree))
+        print('')
+    print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
 #@+node:ekr.20141012064706.18399: **  class AstFormatter
 class AstFormatter:
     """
@@ -985,7 +1058,7 @@ class TokenOrderGenerator:
 
     def begin_visitor(self, node):
         """Enter a visitor."""
-        ### g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
+        # g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
         # begin_visitor and end_visitor must be paired.
         self.begin_end_stack.append(node.__class__.__name__)
         # Push the previous node.
@@ -997,7 +1070,7 @@ class TokenOrderGenerator:
 
     def end_visitor(self, node):
         """Leave a visitor."""
-        ### g.trace('\n', node.__class__.__name__)
+        # g.trace(node.__class__.__name__)
         # begin_visitor and end_visitor must be paired.
         entry_name = self.begin_end_stack.pop()
         assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
@@ -1012,7 +1085,7 @@ class TokenOrderGenerator:
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
-        g.trace('ENTRY')
+        # g.trace('ENTRY')
         self.tokens = tokens[:]
         self.token_index = 0
         self.node = None  # The parent.
@@ -1020,18 +1093,16 @@ class TokenOrderGenerator:
         # Patch the last tokens.
         yield self.eat('newline', '\n')
         yield self.eat('endmarker', '')
-        g.trace(
+        print(
             f"\ncreate_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
-        g.trace('EXIT')
+        # g.trace('EXIT')
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
-        #
-        # We *do* want this to crash if the visitor doesn't exist.
+        # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
-        #
-        # method(node) is a generator, not a recursive call.
+        # method(node) is a generator, not a recursive call!
         return method(node)
     #@+node:ekr.20191113063144.5: *3* tog.eat
     def eat(self, kind, val):
@@ -4322,6 +4393,8 @@ class TokenEater:
     
     Subclasses for later passes will not instantiate this class.
     """
+    
+    trace = False # This is a major reason to use this class!
     
     def __init__(self, tokens):
 
