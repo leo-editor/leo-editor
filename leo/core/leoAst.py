@@ -3351,7 +3351,6 @@ class TokenOrderTraverser:
     def do_Module(self, node):
 
         for z in node.body:
-            ### print('doModule', z)
             self.visit(z)
     #@+node:ekr.20191110075448.10: *5* tot.Lambda
     def do_Lambda(self, node):
