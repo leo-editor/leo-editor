@@ -1178,9 +1178,6 @@ class TokenOrderGenerator:
             print('Missing...\n')
             g.printObj(missing)
             print('')
-    #@+node:ekr.20191113065420.1: *3* tog.visit (to be removed)
-    def visit(self, node):
-        assert False, 'To be removed'
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
