@@ -985,7 +985,7 @@ class TokenOrderGenerator:
 
     def begin_visitor(self, node):
         """Enter a visitor."""
-        g.trace(node.__class__.__name__)
+        ### g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
         # begin_visitor and end_visitor must be paired.
         self.begin_end_stack.append(node.__class__.__name__)
         # Push the previous node.
@@ -997,8 +997,8 @@ class TokenOrderGenerator:
 
     def end_visitor(self, node):
         """Leave a visitor."""
+        ### g.trace('\n', node.__class__.__name__)
         # begin_visitor and end_visitor must be paired.
-        g.trace(node.__class__.__name__)
         entry_name = self.begin_end_stack.pop()
         assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
         assert self.node == node, (repr(self.node), repr(node))
@@ -1015,11 +1015,11 @@ class TokenOrderGenerator:
         g.trace('ENTRY')
         self.tokens = tokens[:]
         self.token_index = 0
-        self.node = tree
+        self.node = None  # The parent.
         yield from (self.visitor(tree))
         # Patch the last tokens.
-        self.eat('newline', '\n')
-        self.eat('endmarker', '')
+        yield self.eat('newline', '\n')
+        yield self.eat('endmarker', '')
         g.trace(
             f"\ncreate_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
@@ -1045,20 +1045,16 @@ class TokenOrderGenerator:
         A trick: when skipping a token, associate the node with
         self.node.parent instead of self.node.
         """
-        # import leo.core.leoGlobals as g
-        
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         
         if trace:
             print('')
+
+        #@+<< define eat helpers >>
+        #@+node:ekr.20191113101641.1: *4* << define eat helpers >>
             
-        def truncate(s, n):
-            if isinstance(s, str):
-                s = s.replace('\n','<NL>')
-            else:
-                s = repr(s)
-            return s if len(s) <  n else s[:n-3] + '...'
-        
+
+
         def get_token():
             assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
             token = self.tokens[self.token_index]
@@ -1066,11 +1062,19 @@ class TokenOrderGenerator:
             token.index = self.token_index
             token.level = self.level
             token.node = self.node
-            val_s = truncate(val, 20)
+            val_s = truncate(val, 10)
             if trace:
-                print(f"eat: kind: {kind:9} {val_s:<20} token: {token.dump()}")
+                print(f"eat: kind: {kind:9} {val_s:<10} token: {token.dump()}")
             self.token_index += 1
             return token
+            
+        def truncate(s, n):
+            if isinstance(s, str):
+                s = s.replace('\n','<NL>')
+            else:
+                s = repr(s)
+            return s if len(s) <  n else s[:n-3] + '...'
+        #@-<< define eat helpers >>
             
         # Careful.
         parent = getattr(self.node, 'parent', None)
@@ -1279,7 +1283,6 @@ class TokenOrderGenerator:
         yield self.put_name(node.name) # A string.
         yield self.put_op('(')
         if node.args:
-            g.trace(node.args)
             yield from self.visitor(node.args)
         yield self.put_op(')')
         yield self.put_op(':')
@@ -1303,7 +1306,6 @@ class TokenOrderGenerator:
     def do_Module(self, node):
 
         self.begin_visitor(node)
-        g.trace(node.body)
         for z in node.body:
             yield from self.visitor(z)
         self.end_visitor(node)
@@ -5707,8 +5709,8 @@ class TokenOrderFormatter (TokenOrderTraverser):
         tree = parse_ast(contents)
         self.visit(tree)
         return ''.join([z.to_string() for z in self.tokens])
-#@+node:ekr.20191113054314.1: ** class TokenOrderInjector (TokenOrderTraverser)
-class TokenOrderInjector (TokenOrderTraverser):
+#@+node:ekr.20191113054314.1: ** class TokenOrderInjector (TokenOrderGenerator)
+class TokenOrderInjector (TokenOrderGenerator):
     """
     A class that injects data into tokens and ast nodes.
     """
@@ -5723,9 +5725,11 @@ class TokenOrderInjector (TokenOrderTraverser):
         #
         # Do this first, *before* updating self.node.
         self.coverage_set.add(node.__class__.__name__)
-        children = getattr(node, 'children', [])
-        children.append(node)
+        ### g.trace('\nINJECTOR', self.node.__class__.__name__)
+        node.parent = self.node
         if self.node:
+            children = getattr(self.node, 'children', [])
+            children.append(node)
             self.node.children = children
         #
         # *Now* update self.node, etc.
