@@ -1018,8 +1018,8 @@ class TokenOrderGenerator:
         self.node = tree
         yield from (self.visitor(tree))
         # Patch the last tokens.
-        yield from (self.eat('newline', '\n'))
-        yield from (self.eat('endmarker', ''))
+        self.eat('newline', '\n')
+        self.eat('endmarker', '')
         g.trace(
             f"\ncreate_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
@@ -1027,11 +1027,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
-        # This will crash if the visitor doesn't exist.
-        # That's what we want.
+        #
+        # We *do* want this to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
-        g.trace(method.__name__)
-        yield from method(node)
+        #
+        # method(node) is a generator, not a recursive call.
+        return method(node)
     #@+node:ekr.20191113063144.5: *3* tog.eat
     def eat(self, kind, val):
         """
@@ -1070,20 +1071,22 @@ class TokenOrderGenerator:
                 print(f"eat: kind: {kind:9} {val_s:<20} token: {token.dump()}")
             self.token_index += 1
             return token
-
+            
+        # Careful.
+        parent = getattr(self.node, 'parent', None)
         # Get the next token.
         token = get_token()
         # Ignore encoding tokens.
         if token.kind == 'encoding':
-            token.node = self.node.parent
+            token.node = parent
             token = get_token()
         ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
         while token:
             if kind == token.kind:
                 return # A direct match.
             # Associate the skipped token with it's *parent*.
-            if self.node.parent:
-                token.node = self.node.parent
+            if parent:
+                token.node = parent
             if kind in ('newline', 'ws'):
                 # Skip whitespace tokens and hope for a match later.
                 if token.kind in ws_kinds:
@@ -1136,7 +1139,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
-        yield self.eat(kind, val)
+        self.eat(kind, val)
         
     def put_blank(self):
         self.put('ws', ' ')
@@ -1263,7 +1266,6 @@ class TokenOrderGenerator:
 
     def do_FunctionDef(self, node):
         
-        ### g.pdb()
         self.begin_visitor(node)
         for z in node.decorator_list or []:
             # @{z}\n
@@ -1368,7 +1370,6 @@ class TokenOrderGenerator:
 
     def do_arguments(self, node):
         """Format the arguments node."""
-        g.pdb()
         self.begin_visitor(node)
         n_plain = len(node.args) - len(node.defaults)
         # g.trace('args', len(node.args), 'defaults', len(node.defaults))
@@ -1385,7 +1386,6 @@ class TokenOrderGenerator:
         while i < len(node.args) and j < len(node.defaults):
             yield from (self.visitor(node.args[i]))
             yield self.put_op('=')
-            g.trace(repr(node.defaults[j]))
             yield from self.visitor(node.defaults[j])
             i += 1
             j += 1
@@ -5560,31 +5560,6 @@ class Token:
             # The line number, for errors. Same as token.start[0]
         self.node = None
 
-    def dump(self):
-        node_id = str(id(self.node))[-4:]
-        parent = self.node.parent if self.node else None
-        parent_class = parent.__class__.__name__ if parent else ''
-        parent_id = str(id(parent))[-4:] if parent else '    '
-        children = getattr(self.node, 'children', [])
-        return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val():<11} "
-            f"line: {self.line_number:<2} level: {self.level} "
-            f"node: {node_id} {self.node.__class__.__name__:12} "
-            f"children: {len(children)} "
-            f"parent: {parent_id} {parent_class}")
-
-    def show_val(self):
-        return (
-            len(self.value) if self.kind in ('ws', 'indent')
-            else self.truncate(repr(self.value), 11))
-            
-    def truncate(self, s, n):
-        if isinstance(s, str):
-            s = s.replace('\n','')
-        else:
-            s = repr(s)
-        return s if len(s) <  n else s[:n-3] + '...'
-
     def __repr__(self):
         return f"{self.kind:>11} {self.show_val()}"
 
@@ -5594,6 +5569,36 @@ class Token:
     def to_string(self):
         """Return the contribution of the token to the source file."""
         return self.value if isinstance(self.value, str) else ''
+        
+    #@+others
+    #@+node:ekr.20191113095410.1: *3* token.dump
+    def dump(self):
+        
+        """Dump a token node and related links."""
+        node_id = str(id(self.node))[-4:]
+        parent = self.node.parent if getattr(self.node, 'parent', None) else None
+        parent_class = parent.__class__.__name__ if parent else ''
+        parent_id = str(id(parent))[-4:] if parent else '    '
+        children = getattr(self.node, 'children', [])
+        return(
+            f"{self.index:>3} {self.kind:>11} {self.show_val():<11} "
+            f"line: {self.line_number:<2} level: {self.level} "
+            f"node: {node_id} {self.node.__class__.__name__:12} "
+            f"children: {len(children)} "
+            f"parent: {parent_id} {parent_class}")
+    #@+node:ekr.20191113095507.1: *3* token.show_val
+    def show_val(self):
+        return (
+            len(self.value) if self.kind in ('ws', 'indent')
+            else self.truncate(repr(self.value), 11))
+    #@+node:ekr.20191113095507.2: *3* token.truncate
+    def truncate(self, s, n):
+        if isinstance(s, str):
+            s = s.replace('\n','')
+        else:
+            s = repr(s)
+        return s if len(s) <  n else s[:n-3] + '...'
+    #@-others
 #@+node:ekr.20191110165235.1: ** class Tokenizer
 class Tokenizer:
     
