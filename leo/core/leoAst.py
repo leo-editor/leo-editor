@@ -288,6 +288,13 @@ def test_token_traversers():
         print(leoAst.AstDumper().brief_dump(tree))
         print('')
     print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
+#@+node:ekr.20191113205051.1: *3* function: truncate
+def truncate(s, n):
+    if isinstance(s, str):
+        s = s.replace('\n','<NL>')
+    else:
+        s = repr(s)
+    return s if len(s) <  n else s[:n-3] + '...'
 #@+node:ekr.20141012064706.18399: **  class AstFormatter
 class AstFormatter:
     """
@@ -1116,16 +1123,13 @@ class TokenOrderGenerator:
         A trick: when skipping a token, associate the node with
         self.node.parent instead of self.node.
         """
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         
         if trace:
             print('')
 
         #@+<< define eat helpers >>
         #@+node:ekr.20191113101641.1: *4* << define eat helpers >>
-            
-
-
         def get_token():
             assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
             token = self.tokens[self.token_index]
@@ -1138,13 +1142,6 @@ class TokenOrderGenerator:
                 print(f"eat: kind: {kind:9} {val_s:<10} token: {token.dump()}")
             self.token_index += 1
             return token
-            
-        def truncate(s, n):
-            if isinstance(s, str):
-                s = s.replace('\n','<NL>')
-            else:
-                s = repr(s)
-            return s if len(s) <  n else s[:n-3] + '...'
         #@-<< define eat helpers >>
             
         # Careful.
@@ -2475,13 +2472,6 @@ class TokenOrderTraverser:
         
         if trace:
             print('')
-            
-        def truncate(s, n):
-            if isinstance(s, str):
-                s = s.replace('\n','<NL>')
-            else:
-                s = repr(s)
-            return s if len(s) <  n else s[:n-3] + '...'
         
         def get_token():
             assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
@@ -3633,12 +3623,20 @@ class AstDumper:
         self.indent_ws = indent_ws
 
     #@+others
-    #@+node:ekr.20191112033445.1: *3* d.brief_dump
+    #@+node:ekr.20191112033445.1: *3* dumper.brief_dump
     def brief_dump(self, node):
         
         result = []
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
+
+    def show_fields(self, class_name, node):
+        """Return a string showing interesting fields."""
+        if class_name in ('Num', 'Str', 'Name'):
+            aList = [f"{a}={b}" for a, b in ast.iter_fields(node) if a != 'ctx']
+            return ': ' + ','.join(aList)
+        else:
+            return ''
         
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
@@ -3651,7 +3649,9 @@ class AstDumper:
         parent_id = str(id(parent))[-4:]
         parent_s = f"{parent_id} {parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
-        full_s = f"{indent}node: {node_id} {node.__class__.__name__:<14} parent: {parent_s}\n"
+        class_name = node.__class__.__name__
+        descriptor_s = class_name + self.show_fields(class_name, node)
+        full_s = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}\n"
         if isinstance(node, (list, tuple)):
             for z in node:
                 self.brief_dump_helper(z, level, result)
@@ -3660,16 +3660,12 @@ class AstDumper:
         elif isinstance(node, ast.AST):
             # Node and parent.
             result.append(full_s)
-            # Fields.
-            if 0: # Confusing.
-                field_names = [a for a, b in ast.iter_fields(node) if a != 'ctx']
-                result.append(f"{indent}fields: {', '.join(field_names)}\n")
             # Children.
             for z in children:
                 self.brief_dump_helper(z, level+1, result)
         else:
             result.append(full_s)
-    #@+node:ekr.20141012064706.18392: *3* d.dump
+    #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
@@ -3690,7 +3686,7 @@ class AstDumper:
             return f'[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
-    #@+node:ekr.20191112183737.1: *3* d.dump_one_node (not used)
+    #@+node:ekr.20191112183737.1: *3* dumper.dump_one_node (not used)
     def dump_one_node(self, node):
         """Briefly show a tree, properly indented."""
         assert isinstance(node, ast.AST), repr(node)
@@ -3703,7 +3699,7 @@ class AstDumper:
         return (
             f"node: {node_id} {node.__class__.__name__:<14} "
             f"parent: {parent_s} children: {len(children)}")
-    #@+node:ekr.20141012064706.18393: *3* d.get_fields
+    #@+node:ekr.20141012064706.18393: *3* dumper.get_fields
     def get_fields(self, node):
 
         return (
@@ -4440,13 +4436,6 @@ class TokenEater:
                 print(f"eat: kind: {kind:9} {val_s:<20} token: {token.dump()}")
             self.token_index += 1
             return token
-
-        def truncate(s, n):
-            if isinstance(s, str):
-                s = s.replace('\n','<NL>')
-            else:
-                s = repr(s)
-            return s if len(s) <  n else s[:n-3] + '...'
         #@-<< define helpers >>
         # Get the next token.
         token = get_token()
@@ -5663,16 +5652,12 @@ class Token:
             f"parent: {parent_id} {parent_class}")
     #@+node:ekr.20191113095507.1: *3* token.show_val
     def show_val(self):
-        return (
-            len(self.value) if self.kind in ('ws', 'indent')
-            else self.truncate(repr(self.value), 11))
-    #@+node:ekr.20191113095507.2: *3* token.truncate
-    def truncate(self, s, n):
-        if isinstance(s, str):
-            s = s.replace('\n','')
+        
+        if self.kind in ('ws', 'indent'):
+            val = len(self.value)
         else:
-            s = repr(s)
-        return s if len(s) <  n else s[:n-3] + '...'
+            val = truncate(repr(self.value), 11)
+        return val
     #@-others
 #@+node:ekr.20191110165235.1: ** class Tokenizer
 class Tokenizer:
