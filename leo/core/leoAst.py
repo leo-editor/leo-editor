@@ -2424,10 +2424,8 @@ class AstDumper:
             return
         # Let block.
         indent = ' ' * 2 * level
-        # node_id = str(id(node))[-3:]
         node_id = getattr(node, 'dump_index', '??')
         parent = getattr(node, 'parent', None)
-        # parent_id = str(id(parent))[-3:]
         parent_id = getattr(parent, 'dump_index', '??')
         parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
