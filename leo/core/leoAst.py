@@ -1050,6 +1050,8 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
+    errors = []
+        # A list of error messages, for test runners.
     level = 0
         # Indentation level.
     max_level = 0
@@ -1195,9 +1197,11 @@ class TokenOrderGenerator:
         token.index = self.token_index
         token.level = self.level
         if token.node: ### Experimental.
-            g.trace('\n===== token already assigned!')
-            g.trace('token', token)
-            g.trace('old:', token.node.__class__.__name__, 'new', self.node.__class__.__name__)
+            self.errors.extend([
+                f"token already assigned! {token}",
+                f"token.node: {token.node.__class__.__name__}",
+                f" self.node: {self.node.__class__.__name__}",
+            ])
         else:
             token.node = self.node
         # Update the node.
