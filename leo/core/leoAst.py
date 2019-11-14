@@ -1042,18 +1042,16 @@ class TokenOrderGenerator:
     max_level = 0
         # Max python indentation level.
     max_stack_level = 0
-        # Max depth of node_stack.
+        # The max size of the node_stack.
     node = None
         # The node being visited.
         # The parent of the about-to-be visited node.
     node_stack = []
-        # The stack of nodes being visited.
+        # The stack of parent nodes.
     tokens = None
         # The list of input tokens.
     token_index = None
         # The index into self.tokens.
-    ws_kinds = ('ws', 'line-indent') # 'newline', 'nl', 
-        # For tracing only: The kinds of tokens representing whitespace.
 
     #@+others
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
