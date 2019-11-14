@@ -1086,7 +1086,7 @@ class TokenOrderGenerator:
         assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
         assert self.node == node, (repr(self.node), repr(node))
         # Update the stat.
-        self.max_level = max(self.level, self.max_stack_level)
+        self.max_level = max(self.level, self.max_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
@@ -1104,7 +1104,7 @@ class TokenOrderGenerator:
         yield self.eat('newline', '\n')
         yield self.eat('endmarker', '')
         print(
-            f"\ncreate_links: max_level: {self.max_level}, "
+            f"create_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
         # g.trace('EXIT')
     #@+node:ekr.20191113081443.1: *3* tog.visitor
