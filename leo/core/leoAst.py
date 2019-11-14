@@ -2496,7 +2496,22 @@ class AstDumper:
     def show_tokens(self, node):
         """Return a string showing node.token_list"""
         token_list = getattr(node, 'token_list', [])
-        return ','.join([z.kind for z in token_list])
+        result = []
+        for z in token_list:
+            if z.kind == 'indent':
+                result.append(f"{z.kind}({len(z.value)})")
+            elif z.kind == 'newline':
+                result.append(f"{z.kind}({z.line_number}:{len(z.line)})")
+            elif z.kind in ('name', 'string'):
+                val = truncate(z.value,10)
+                result.append(f"{z.kind}({val})")
+            elif z.kind == 'number':
+                result.append(f"{z.kind}({z.value})")
+            elif z.kind == 'op':
+                result.append(f"{z.kind}{z.value}")
+            else:
+                result.append(z.kind)
+        return ','.join(result)
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 
@@ -4364,7 +4379,7 @@ class Token:
         self.index = 0
         self.level = 0
         self.line_number = 0
-            # The line number, for errors. Same as token.start[0]
+            # The line number, for errors and dumps. Same as token.start[0]
         self.node = None
 
     def __repr__(self):
