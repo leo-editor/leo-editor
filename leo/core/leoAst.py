@@ -2397,7 +2397,7 @@ class AstDumper:
     #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helpers
     def brief_dump(self, node):
         
-        result = []
+        result = [self.show_header()]
         self.inject_node_indices(node, 0)
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
@@ -2418,7 +2418,7 @@ class AstDumper:
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
         tokens_s = self.show_tokens(node)
-        full_s1 = f"parent {parent_s:<16} node {node_id:<3} {indent}{descriptor_s} "
+        full_s1 = f"xxx..yyy {parent_s:<16} {node_id:<3} {indent}{descriptor_s} "
         full_s =  f"{full_s1:<60} {tokens_s}\n"
      
         if isinstance(node, (list, tuple)):
@@ -2474,12 +2474,29 @@ class AstDumper:
             val = ':op=' + _op_names.get(name, name)
         return truncate(val, truncate_n)
         
+    #@+node:ekr.20191110165235.5: *4* dumper.show_header
+    def show_header(self):
+        
+        return (
+            f"{'lines':<8} {'parent':<16} {'node':<34} {'tokens'}\n"
+            f"{'=====':<8} {'======':<16} {'====':<34} {'======'}\n")
+        
+        
+        # From token class.
+            # # Dump the lines.
+            # print('Physical lines: (row, offset, line)\n')
+            # for i, z in enumerate(self.lines):
+                # print(f"{i:3}: {self.offsets[i]:3}: {z!r}")
+            # # Print the header for the list of tokens.
+            # print('\nTokens:')
+            # print(
+                # f"{'kind':>10} {'val'} {'start':>22} {'end':>6} "
+                # f"{'offsets':>12} {'output':>7} {'line':>13}")
     #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
     def show_tokens(self, node):
         """Return a string showing node.token_list"""
         token_list = getattr(node, 'token_list', [])
-        tokens_s = ','.join([z.kind for z in token_list])
-        return f"tokens: {tokens_s}"
+        return ','.join([z.kind for z in token_list])
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 
