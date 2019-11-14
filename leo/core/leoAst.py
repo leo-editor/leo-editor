@@ -1121,7 +1121,7 @@ class TokenOrderGenerator:
         A trick: when skipping a token, associate the node with
         self.node.parent instead of self.node.
         """
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             print('')
             
@@ -1133,12 +1133,15 @@ class TokenOrderGenerator:
         # Careful.
         parent = getattr(self.node, 'parent', None)
         # Get the next token.
-        token = self.get_token()
+        token = self.eat_token()
         show_token(token)
+        # Completely ignore comment tokens.
+        if token.kind == 'comment':
+            return
         # Ignore encoding tokens.
         if token.kind == 'encoding':
             token.node = parent
-            token = self.get_token()
+            token = self.eat_token()
             show_token(token)
         ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
         while token:
@@ -1151,16 +1154,16 @@ class TokenOrderGenerator:
                 # Skip whitespace tokens and hope for a match later.
                 if token.kind in ws_kinds:
                     while token.kind in ws_kinds:
-                        token = self.get_token()
+                        token = self.eat_token()
                         show_token(token)
                     self.token_index -= 1
                 return
             # Skip comment tokens.
             # while token.kind == 'comment':
-                # token = get_token()
+                # token = eat_token()
             # Skip whitespace tokens.
             while token.kind in ws_kinds:
-                token = self.get_token()
+                token = self.eat_token()
                 show_token(token)
             if kind == token.kind:
                 return # A delayed match.
@@ -1168,14 +1171,25 @@ class TokenOrderGenerator:
         print('\n========== FAIL')
         raise AssertionError(f"MISMATCH: kind: {kind}, token.kind {token.kind}")
             
-    #@+node:ekr.20191113101641.1: *4* get_token
-    def get_token(self):
+    #@+node:ekr.20191113101641.1: *4* eat_token
+    def eat_token(self):
+        """
+        Insert links in *this* node, then "eat" (skip) it.
+        
+        This must be a method, so it can be overridden in subclasses.
+        """
         assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
         token = self.tokens[self.token_index]
         # Patch the token.
         token.index = self.token_index
         token.level = self.level
         token.node = self.node
+        # Update the node.
+        if self.node:
+            token_list = getattr(self.node, 'token_list', [])
+            token_list.append(token)
+            self.node.token_list = token_list
+        # Move to the next token.
         self.token_index += 1
         return token
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
@@ -2413,6 +2427,7 @@ class AstDumper:
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
+        token_list = getattr(node, 'token_list', None)
         full_s = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}\n"
         if isinstance(node, (list, tuple)):
             for z in node:
@@ -2422,6 +2437,9 @@ class AstDumper:
         elif isinstance(node, ast.AST):
             # Node and parent.
             result.append(full_s)
+            if token_list:
+                tokens_s = ','.join([z.kind for z in token_list])
+                result.append(f"{indent}tokens: {tokens_s}\n")
             # Children.
             for z in children:
                 self.brief_dump_helper(z, level+1, result)
