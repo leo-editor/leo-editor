@@ -292,7 +292,8 @@ def test_token_traversers():
     # Contents...
     if not use_file:
         print('\nContents...\n')
-        print(contents)
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
     # Patched tree...
     if 1:
         print('Patched tree...\n')
