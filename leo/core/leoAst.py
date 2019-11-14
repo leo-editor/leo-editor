@@ -2439,7 +2439,7 @@ class AstDumper:
         """Inject dump_index field into all nodes."""
         
         def show_index(index, node):
-            if 1:
+            if 0:
                 node_id = str(id(node))[-3:]
                 print(f"index: {index:2}: node: {node_id} {node.__class__.__name__}")
 
@@ -2477,9 +2477,7 @@ class AstDumper:
     #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
     def show_tokens(self, node):
         """Return a string showing node.token_list"""
-        token_list = getattr(node, 'token_list', None)
-        if not token_list:
-            return ''
+        token_list = getattr(node, 'token_list', [])
         tokens_s = ','.join([z.kind for z in token_list])
         return f"tokens: {tokens_s}"
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
