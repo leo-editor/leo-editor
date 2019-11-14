@@ -2408,16 +2408,17 @@ class AstDumper:
             return
         # Let block.
         indent = ' ' * 2 * level
-        node_id = str(id(node))[-3:]
+        # node_id = str(id(node))[-3:]
+        node_id = getattr(node, 'dump_index', '??')
         parent = getattr(node, 'parent', None)
-        parent_id = str(id(parent))[-3:]
-        parent_s = f"{parent_id} {parent.__class__.__name__}" if parent else ''
+        # parent_id = str(id(parent))[-3:]
+        parent_id = getattr(parent, 'dump_index', '??')
+        parent_s = f"{parent_id:<3}:{parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
         tokens_s = self.show_tokens(node)
-        # full_s1 = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}"
-        full_s1 = f"parent: {parent_s:<16} {indent}node: {node_id} {descriptor_s} "
+        full_s1 = f"parent: {parent_s:<16}:{node_id:<3}:{indent}node: {descriptor_s} "
         full_s =  f"{full_s1:<65} {tokens_s}\n"
      
         if isinstance(node, (list, tuple)):
