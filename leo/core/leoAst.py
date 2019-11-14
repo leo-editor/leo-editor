@@ -2394,33 +2394,13 @@ class AstDumper:
         self.indent_ws = indent_ws
 
     #@+others
-    #@+node:ekr.20191112033445.1: *3* dumper.brief_dump
+    #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helpers
     def brief_dump(self, node):
         
         result = []
+        self.inject_node_indices(node, 0)
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
-
-    def show_fields(self, class_name, node, truncate_n):
-        """Return a string showing interesting fields."""
-        val = ''
-        suppress = ('ctx', 'annotation', 'target', 'value')
-        fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
-        aList = [f"{a}={b}" for a, b in fields]
-        if class_name in ('Num', 'Str', 'Name'):
-            val = ': ' + ','.join(aList)
-        elif class_name == 'AugAssign':
-            name = node.op.__class__.__name__
-            val = ':op=' + _op_names.get(name, name)
-        return truncate(val, truncate_n)
-        
-    def show_tokens(self, node):
-        """Return a string showing node.token_list"""
-        token_list = getattr(node, 'token_list', None)
-        if not token_list:
-            return ''
-        tokens_s = ','.join([z.kind for z in token_list])
-        return f"tokens: {tokens_s}"
 
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
@@ -2453,6 +2433,54 @@ class AstDumper:
                 self.brief_dump_helper(z, level+1, result)
         else:
             result.append(full_s)
+    #@+node:ekr.20191113223524.1: *4* dumper.inject_node_indices
+    def inject_node_indices(self, node, index):
+        """Inject dump_index field into all nodes."""
+        
+        def show_index(index, node):
+            if 1:
+                node_id = str(id(node))[-3:]
+                print(f"index: {index:2}: node: {node_id} {node.__class__.__name__}")
+
+        if isinstance(node, (list, tuple)):
+            for z in node:
+                index = self.inject_node_indices(z, index)
+        elif isinstance(node, ast.AST):
+            # Node.
+            show_index(index, node)
+            setattr(node, 'dump_index', index)
+            index += 1
+            # Children.
+            children = getattr(node, 'children', [])
+            for z in children:
+                index = self.inject_node_indices(z, index)
+        else:
+            show_index(index, node)
+            setattr(node, 'dump_index', index)
+            index += 1
+        return index
+    #@+node:ekr.20191113223424.1: *4* dumper.show_fields
+    def show_fields(self, class_name, node, truncate_n):
+        """Return a string showing interesting fields."""
+        val = ''
+        suppress = ('ctx', 'annotation', 'target', 'value')
+        fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
+        aList = [f"{a}={b}" for a, b in fields]
+        if class_name in ('Num', 'Str', 'Name'):
+            val = ': ' + ','.join(aList)
+        elif class_name == 'AugAssign':
+            name = node.op.__class__.__name__
+            val = ':op=' + _op_names.get(name, name)
+        return truncate(val, truncate_n)
+        
+    #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
+    def show_tokens(self, node):
+        """Return a string showing node.token_list"""
+        token_list = getattr(node, 'token_list', None)
+        if not token_list:
+            return ''
+        tokens_s = ','.join([z.kind for z in token_list])
+        return f"tokens: {tokens_s}"
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 
