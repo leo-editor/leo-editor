@@ -3632,11 +3632,11 @@ class AstDumper:
 
     def show_fields(self, class_name, node):
         """Return a string showing interesting fields."""
+        val = ''
         if class_name in ('Num', 'Str', 'Name'):
             aList = [f"{a}={b}" for a, b in ast.iter_fields(node) if a != 'ctx']
-            return ': ' + ','.join(aList)
-        else:
-            return ''
+            val = ': ' + ','.join(aList)
+        return val
         
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
