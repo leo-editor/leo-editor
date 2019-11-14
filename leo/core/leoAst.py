@@ -4376,17 +4376,21 @@ class Token:
 
     def __init__(self, kind, value):
         
-        # Set by Tokenizer.add_token.
         self.kind = kind
-        self.line = ''
-            # The entire line containing the token. Same as token.line.
         self.value = value
         #
-        # Additional fields, set by tot.eat.
+        # Injected by Tokenizer.add_token.
+        self.five_tuple = None
+        self.line = ''
+            # The entire line containing the token.
+            # Same as five_tuple.line.
+        self.line_number = 0
+            # The line number, for errors and dumps.
+            # Same as five_tuple.start[0]
+        #
+        # Injected by TokenOrderGenerator.eat_token.
         self.index = 0
         self.level = 0
-        self.line_number = 0
-            # The line number, for errors and dumps. Same as token.start[0]
         self.node = None
 
     def __repr__(self):
@@ -4431,13 +4435,14 @@ class Tokenizer:
     
     #@+others
     #@+node:ekr.20191110165235.2: *3* tok.add_token
-    def add_token(self, kind, line, s_row, value):
+    def add_token(self, kind, five_tuple, line, s_row, value):
         """
         Add a token to the results list.
         
         Subclasses could override this method to filter out specific tokens.
         """
         tok = Token(kind, value)
+        tok.five_tuple = five_tuple
         tok.line = line
         tok.line_number = s_row
         self.results.append(tok)
@@ -4476,7 +4481,7 @@ class Tokenizer:
         # Return results, as a list.
         return self.results
     #@+node:ekr.20191110165235.4: *3* tok.do_token (the gem)
-    def do_token(self, contents, token):
+    def do_token(self, contents, five_tuple):
         """
         Handle the given token, optionally including between-token whitespace.
         
@@ -4492,7 +4497,7 @@ class Tokenizer:
             return f"{s:8}"
             
         # Unpack..
-        tok_type, val, start, end, line = token
+        tok_type, val, start, end, line = five_tuple
         s_row, s_col = start
         e_row, e_col = end
         kind = token_module.tok_name[tok_type].lower()
@@ -4503,16 +4508,15 @@ class Tokenizer:
         ws = contents[self.prev_offset : s_offset]
         if ws:
             # No need for a hook.
-            self.add_token('ws', line, s_row, ws)
+            self.add_token('ws', five_tuple, line, s_row, ws)
             if trace:
                 print(
                     f"{'ws':>10} {ws!r:20} "
                     f"{show_tuple((self.prev_offset, s_offset)):>26} "
                     f"{ws!r}")
-        # Add the token, if it contributes any real text.
+        # Always add token, even if it contributes no text!
         tok_s = contents[s_offset : e_offset]
-        # Bug fix 2019/11/05: always add token, even it contributes text!
-        self.add_token(kind, line, s_row, tok_s)
+        self.add_token(kind, five_tuple, line, s_row, tok_s)
         if trace:
             print(
                 f"{kind:>10} {val!r:20} "
