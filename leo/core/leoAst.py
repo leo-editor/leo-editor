@@ -2418,7 +2418,7 @@ class AstDumper:
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
         tokens_s = self.show_tokens(node)
-        full_s1 = f"parent: {parent_s:<16}:{node_id:<3}:{indent}node: {descriptor_s} "
+        full_s1 = f"parent {parent_s:<16} node {node_id:<3}:{indent}{descriptor_s} "
         full_s =  f"{full_s1:<65} {tokens_s}\n"
      
         if isinstance(node, (list, tuple)):
