@@ -2433,7 +2433,8 @@ class AstDumper:
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
         tokens_s = self.show_tokens(node)
-        full_s1 = f"xxx..yyy {parent_s:<16} {node_id:<3} {indent}{descriptor_s} "
+        lines = self.show_line_range(node)
+        full_s1 = f"{lines:<8} {parent_s:<16} {node_id:<3} {indent}{descriptor_s} "
         full_s =  f"{full_s1:<60} {tokens_s}\n"
      
         if isinstance(node, (list, tuple)):
@@ -2507,6 +2508,15 @@ class AstDumper:
             # print(
                 # f"{'kind':>10} {'val'} {'start':>22} {'end':>6} "
                 # f"{'offsets':>12} {'output':>7} {'line':>13}")
+    #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
+    def show_line_range(self, node):
+        
+        token_list = getattr(node, 'token_list', [])
+        if not token_list:
+            return ''
+        min_ = min([z.line_number for z in token_list])
+        max_ = max([z.line_number for z in token_list])
+        return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
     #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
     def show_tokens(self, node):
         """Return a string showing node.token_list"""
