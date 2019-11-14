@@ -2552,8 +2552,8 @@ class AstDumper:
                     result.append(f"({z.value})")
                 elif z.kind == 'op':
                     result.append(f"{z.value}")
-                result.append(',')
-            result=''.join(result[:-1])
+                result.append(' ')
+            result=''.join(result).rstrip()
         return result
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
