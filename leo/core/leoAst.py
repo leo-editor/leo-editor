@@ -1193,7 +1193,12 @@ class TokenOrderGenerator:
         # Patch the token.
         token.index = self.token_index
         token.level = self.level
-        token.node = self.node
+        if token.node: ### Experimental.
+            g.trace('\n===== token already assigned!')
+            g.trace('token', token)
+            g.trace('old:', token.node.__class__.__name__, 'new', self.node.__class__.__name__)
+        else:
+            token.node = self.node
         # Update the node.
         if self.node:
             token_list = getattr(self.node, 'token_list', [])
