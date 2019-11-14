@@ -300,6 +300,12 @@ def test_token_traversers():
         print(leoAst.AstDumper().brief_dump(tree))
         print('')
     # Summary.
+    if x.errors:
+        print('\nErrors...\n')
+        for z in x.errors:
+            print('  ' + z)
+        print('')
+    ok = ok and not x.errors
     print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
