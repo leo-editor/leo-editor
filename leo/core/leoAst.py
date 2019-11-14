@@ -2414,6 +2414,14 @@ class AstDumper:
             val = ':op=' + _op_names.get(name, name)
         return truncate(val, truncate_n)
         
+    def show_tokens(self, node):
+        """Return a string showing node.token_list"""
+        token_list = getattr(node, 'token_list', None)
+        if not token_list:
+            return ''
+        tokens_s = ','.join([z.kind for z in token_list])
+        return f"tokens: {tokens_s}"
+
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
         if node is None:
@@ -2427,8 +2435,10 @@ class AstDumper:
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
-        token_list = getattr(node, 'token_list', None)
-        full_s = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}\n"
+        tokens_s = self.show_tokens(node)
+        full_s1 = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}"
+        full_s =  f"{full_s1:<65} {tokens_s}\n"
+     
         if isinstance(node, (list, tuple)):
             for z in node:
                 self.brief_dump_helper(z, level, result)
@@ -2437,9 +2447,6 @@ class AstDumper:
         elif isinstance(node, ast.AST):
             # Node and parent.
             result.append(full_s)
-            if token_list:
-                tokens_s = ','.join([z.kind for z in token_list])
-                result.append(f"{indent}tokens: {tokens_s}\n")
             # Children.
             for z in children:
                 self.brief_dump_helper(z, level+1, result)
