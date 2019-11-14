@@ -2434,7 +2434,7 @@ class AstDumper:
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
         tokens_s = self.show_tokens(node)
         lines = self.show_line_range(node)
-        full_s1 = f"{lines:<8} {parent_s:<16} {node_id:<3} {indent}{descriptor_s} "
+        full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
         full_s =  f"{full_s1:<60} {tokens_s}\n"
      
         if isinstance(node, (list, tuple)):
@@ -2494,8 +2494,8 @@ class AstDumper:
     def show_header(self):
         
         return (
-            f"{'lines':<8} {'parent':<16} {'node':<34} {'tokens'}\n"
-            f"{'=====':<8} {'======':<16} {'====':<34} {'======'}\n")
+            f"{'parent':<16} {'lines':<8} {'node':<34} {'tokens'}\n"
+            f"{'======':<16} {'=====':<8} {'====':<34} {'======'}\n")
         
         
         # From token class.
