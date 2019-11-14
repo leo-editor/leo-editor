@@ -1851,7 +1851,7 @@ class TokenOrderGenerator:
             yield self.put_op(op_name)
         yield from self.visitor(node.operand)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.59: *5* tog.ifExp (ternary operator)
+    #@+node:ekr.20191113063144.59: *5* tog.IfExp (ternary operator)
     def do_IfExp(self, node):
         
         #'%s if %s else %s'
@@ -2487,16 +2487,21 @@ class AstDumper:
         return index
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
-        """Return a string showing interesting fields."""
+        """Return a string showing interesting fields of the node."""
+        # suppress = ('ctx', 'annotation', 'target', 'value')
+        # fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
+        # aList = [f"{a}={b}" for a, b in fields]
         val = ''
-        suppress = ('ctx', 'annotation', 'target', 'value')
-        fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
-        aList = [f"{a}={b}" for a, b in fields]
-        if class_name in ('Num', 'Str', 'Name'):
-            val = ': ' + ','.join(aList)
-        elif class_name == 'AugAssign':
+        if class_name == 'Str':
+            val = f": s={node.s!r}"
+        elif class_name == 'Name':
+            val = f": id={node.id!r}"
+        elif class_name == 'Num':
+            val = f": n={node.n}"
+            # val = ': ' + ','.join(aList)
+        elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'Compare', 'UnaryOp'): # IfExp
             name = node.op.__class__.__name__
-            val = ':op=' + _op_names.get(name, name)
+            val = f": {_op_names.get(name, name)}"
         return truncate(val, truncate_n)
         
     #@+node:ekr.20191110165235.5: *4* dumper.show_header
