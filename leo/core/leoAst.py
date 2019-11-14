@@ -260,8 +260,10 @@ def test_token_traversers():
     """
     import sys
     '''
+    # Start test.
     print('Ctrl-2: leoAst tests...\n')
     contents = contents.strip() + '\n'
+    # Create tokens and tree.
     x = leoAst.TokenOrderInjector()
     tokens = x.make_tokens(contents)
     tree = leoAst.parse_ast(contents)
@@ -274,10 +276,12 @@ def test_token_traversers():
         ok = False
     if 0:
         x.report_coverage(report_missing=False)
-    if 1 and not use_file:
+    # Tokens...
+    if 0 and not use_file:
         print('\nTokens...\n')
         for z in tokens:
             print(z.dump())
+    # Lines...
     if 0 and not use_file: # These *have* been set.
         print('\nTOKEN lines...\n')
         for z in tokens:
@@ -285,13 +289,16 @@ def test_token_traversers():
                 print(z.line.rstrip())
             else:
                 print(repr(z.line))
+    # Contents...
     if not use_file:
         print('\nContents...\n')
         print(contents)
+    # Patched tree...
     if 1:
         print('Patched tree...\n')
         print(leoAst.AstDumper().brief_dump(tree))
         print('')
+    # Summary.
     print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
