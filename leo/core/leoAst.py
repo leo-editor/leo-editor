@@ -225,6 +225,8 @@ def test_token_traversers():
     # It's not a good idea to do this within Leo itsefl.
         # import imp
         # imp.reload(leoAst)
+
+    # This is more than enough to test syncing.
     use_file = False
     if use_file:
         path = r'C:\leo.repo\leo-editor\leo\core\leoGlobals.py'
@@ -232,14 +234,16 @@ def test_token_traversers():
         with open(path, 'r') as f:
             contents = f.read()
     elif 1:
-        # This is more than enough to test syncing.
         contents = r'''
+    """ds 1"""
     class TestClass:
-        def test(a, b=2):
+        """ds 2"""
+        def long_name(a, b=2):
+            """ds 3"""
             if a:
                 a = 1
             else:
-                a += 1
+                a -= 1
             print('done')
     ''' 
     else:
@@ -268,23 +272,24 @@ def test_token_traversers():
     except Exception:
         g.es_exception()
         ok = False
-    # x.report_coverage(report_missing=False)
-    if 0 and not use_file:
-        print('\nTOKENS...\n')
+    if 0:
+        x.report_coverage(report_missing=False)
+    if 1 and not use_file:
+        print('\nTokens...\n')
         for z in tokens:
             print(z.dump())
-        if 0: # These *have* been set.
-            print('\nTOKEN lines...\n')
-            for z in tokens:
-                if z.line.strip():
-                    print(z.line.rstrip())
-                else:
-                    print(repr(z.line))
+    if 0 and not use_file: # These *have* been set.
+        print('\nTOKEN lines...\n')
+        for z in tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
     if not use_file:
-        print('\nCONTENTS...\n')
+        print('\nContents...\n')
         print(contents)
     if 1:
-        print('PATCHED TREE...\n')
+        print('Patched tree...\n')
         print(leoAst.AstDumper().brief_dump(tree))
         print('')
     print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
@@ -2496,22 +2501,26 @@ class AstDumper:
     def show_tokens(self, node):
         """Return a string showing node.token_list"""
         token_list = getattr(node, 'token_list', [])
-        result = []
-        for z in token_list:
-            if z.kind == 'indent':
-                result.append(f"{z.kind}({len(z.value)})")
-            elif z.kind == 'newline':
-                result.append(f"{z.kind}({z.line_number}:{len(z.line)})")
-            elif z.kind in ('name', 'string'):
-                val = truncate(z.value,10)
-                result.append(f"{z.kind}({val})")
-            elif z.kind == 'number':
-                result.append(f"{z.kind}({z.value})")
-            elif z.kind == 'op':
-                result.append(f"{z.kind}{z.value}")
-            else:
+        if 0: # Too brief.
+            result = ','.join([z.kind for z in token_list])
+        else:
+            result = []
+            for z in token_list:
                 result.append(z.kind)
-        return ','.join(result)
+                if z.kind in ('indent', 'ws'):
+                    result.append(f"({len(z.value)})")
+                elif z.kind == 'newline':
+                    result.append(f"({z.line_number}:{len(z.line)})")
+                elif z.kind in ('name', 'string'):
+                    val = truncate(z.value,10)
+                    result.append(f"({val})")
+                elif z.kind == 'number':
+                    result.append(f"({z.value})")
+                elif z.kind == 'op':
+                    result.append(f"{z.value}")
+                result.append(',')
+            result=''.join(result[:-1])
+        return result
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 
