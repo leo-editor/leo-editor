@@ -1095,18 +1095,16 @@ class TokenOrderGenerator:
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
-        # g.trace('ENTRY')
         self.tokens = tokens[:]
         self.token_index = 0
         self.node = None  # The parent.
-        yield from (self.visitor(tree))
+        yield from self.visitor(tree)
         # Patch the last tokens.
         yield self.eat('newline', '\n')
         yield self.eat('endmarker', '')
         print(
             f"create_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
-        # g.trace('EXIT')
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
