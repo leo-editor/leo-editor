@@ -3630,13 +3630,18 @@ class AstDumper:
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
 
-    def show_fields(self, class_name, node):
+    def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields."""
+        suppress = ('ctx', 'annotation', 'target', 'value')
+        fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
         val = ''
+        aList = [f"{a}={b}" for a, b in fields]
         if class_name in ('Num', 'Str', 'Name'):
-            aList = [f"{a}={b}" for a, b in ast.iter_fields(node) if a != 'ctx']
             val = ': ' + ','.join(aList)
-        return val
+        elif class_name == 'AugAssign':
+            name = node.op.__class__.__name__
+            val = ':op=' + _op_names.get(name, name)
+        return truncate(val, truncate_n)
         
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
@@ -3650,7 +3655,7 @@ class AstDumper:
         parent_s = f"{parent_id} {parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
-        descriptor_s = class_name + self.show_fields(class_name, node)
+        descriptor_s = class_name + self.show_fields(class_name, node, 20)
         full_s = f"{indent}node: {node_id} {descriptor_s:<20} parent: {parent_s}\n"
         if isinstance(node, (list, tuple)):
             for z in node:
