@@ -1780,7 +1780,7 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_op('(')
-        for i, z in node.elts:
+        for i, z in enumerate(node.elts):
             yield from self.visitor(z)
             if i < len(node.elts) - 1:
                 yield self.put_comma()
