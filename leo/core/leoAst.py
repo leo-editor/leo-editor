@@ -3632,9 +3632,9 @@ class AstDumper:
 
     def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields."""
+        val = ''
         suppress = ('ctx', 'annotation', 'target', 'value')
         fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
-        val = ''
         aList = [f"{a}={b}" for a, b in fields]
         if class_name in ('Num', 'Str', 'Name'):
             val = ': ' + ','.join(aList)
