@@ -1125,9 +1125,12 @@ class TokenOrderGenerator:
         print(
             f"create_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
-    #@+node:ekr.20191114161840.1: *3* tog.diff
-    def diff(self, trace=True):
-        """Diff self.tokens against self.results."""
+    #@+node:ekr.20191114161840.1: *3* tog.verify
+    def verify(self, trace=True):
+        """
+        Verify that tokens match (in some reasonable, subclass-defined way)
+        the contents of self.results.
+        """
         tokens = list((z.kind, z.value) for z in self.tokens)
         results = self.results
         gen = difflib.ndiff(tokens, results)
@@ -1197,6 +1200,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
+        assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
         val2 = val if isinstance(val, str) else str(val)
         self.results.append((kind,val2),)
         ### Gone forever.
