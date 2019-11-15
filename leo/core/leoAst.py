@@ -3,6 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
+import difflib
 import textwrap
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -1069,6 +1070,8 @@ class TokenOrderGenerator:
         # The parent of the about-to-be visited node.
     node_stack = []
         # The stack of parent nodes.
+    results = []
+        # The results, for difflib.
     tokens = None
         # The list of input tokens.
     token_index = None
@@ -1116,11 +1119,32 @@ class TokenOrderGenerator:
         self.node = None  # The parent.
         yield from self.visitor(tree)
         # Patch the last tokens.
-        yield self.eat('newline', '\n')
-        yield self.eat('endmarker', '')
+        yield self.put('newline', '\n')
+        yield self.put('endmarker', '')
         print(
             f"create_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
+    #@+node:ekr.20191114161840.1: *3* tog.diff
+    def diff(self):
+        
+        # Create two generators.
+        tokens = list((z.kind, z.value) for z in self.tokens)
+        # results = [z if isinstance(z, str) else str(z) for z in self.results]
+        results = self.results
+            
+        if 1: # Print the diffs.
+            for z in difflib.ndiff(tokens, results):
+                print(z)
+        elif 1:
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag="Results")
+        else: # Print the actual values.
+            print('Tokens...')
+            for i, z in enumerate(tokens):
+                print(f"{i:2} {z}")
+            print('Results...')
+            for i, z in enumerate(results):
+                print(f"{i:2} {z}")
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1128,96 +1152,6 @@ class TokenOrderGenerator:
         method = getattr(self, 'do_' + node.__class__.__name__)
         # method(node) is a generator, not a recursive call!
         return method(node)
-    #@+node:ekr.20191113063144.5: *3* tog.eat & helper
-    def eat(self, kind, val):
-        """
-        The heart of this class.
-        
-        Eat zero or more tokens in self.tokens corresponding to (kind, val).
-        
-        Inject the desired data into each token.
-        
-        A trick: when skipping a token, associate the node with
-        self.node.parent instead of self.node.
-        """
-        trace = False and not g.unitTesting
-        if trace:
-            print('')
-            
-        def show_token(token):
-            if trace:
-                val_s = truncate(val, 10)
-                print(f"eat: kind: {kind:9} {val_s:<10} token: {token.dump()}")
-
-        # Careful.
-        parent = getattr(self.node, 'parent', None)
-        # Get the next token.
-        token = self.eat_token()
-        show_token(token)
-        # Completely ignore comment tokens.
-        if token.kind == 'comment':
-            return
-        # Ignore encoding tokens.
-        if token.kind == 'encoding':
-            token.node = parent
-            token = self.eat_token()
-            show_token(token)
-        ws_kinds = ('dedent', 'indent', 'newline', 'nl', 'ws')
-        while token:
-            if kind == token.kind:
-                return # A direct match.
-            # Associate the skipped token with it's *parent*.
-            if parent:
-                token.node = parent
-            if kind in ('newline', 'ws'):
-                # Skip whitespace tokens and hope for a match later.
-                if token.kind in ws_kinds:
-                    while token.kind in ws_kinds:
-                        token = self.eat_token()
-                        show_token(token)
-                    self.token_index -= 1
-                return
-            # Skip comment tokens.
-            # while token.kind == 'comment':
-                # token = eat_token()
-            # Skip whitespace tokens.
-            while token.kind in ws_kinds:
-                token = self.eat_token()
-                show_token(token)
-            if kind == token.kind:
-                return # A delayed match.
-            break # An error
-        print('\n========== FAIL')
-        raise AssertionError(f"MISMATCH: kind: {kind}, token.kind {token.kind}")
-            
-    #@+node:ekr.20191113101641.1: *4* eat_token
-    def eat_token(self):
-        """
-        Insert links in *this* node, then "eat" (skip) it.
-        
-        This must be a method, so it can be overridden in subclasses.
-        """
-        assert self.token_index < len(self.tokens), (self.token_index, len(self.tokens))
-        token = self.tokens[self.token_index]
-        # Patch the token.
-        token.index = self.token_index
-        token.level = self.level
-        if token.node: ### Experimental.
-            self.errors.extend([
-                f"token already assigned! {token}",
-                f"token.node: {token.node.__class__.__name__}",
-                f" self.node: {self.node.__class__.__name__}",
-            ])
-        else:
-            token.node = self.node
-        # Update the node.
-        if self.node:
-            token_list = getattr(self.node, 'token_list', [])
-            token_list.append(token)
-            self.node.token_list = token_list
-        # Move to the next token.
-        self.token_index += 1
-        return token
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1251,8 +1185,11 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
-        self.eat(kind, val)
-        
+        val2 = val if isinstance(val, str) else str(val)
+        self.results.append((kind,val2),)
+        ### Gone forever.
+            # self.eat(kind, val)
+
     def put_blank(self):
         self.put('ws', ' ')
 
@@ -1280,9 +1217,9 @@ class TokenOrderGenerator:
         self.put_op(' ')
     #@+node:ekr.20191113063144.10: *4* tog.put_conditional_comma (to do)
     def put_conditional_comma(self):
-        
+        """Put a comma only if it exists in the stream of input tokens."""
         ### To do.
-        self.put_op(',')
+        ### self.put_op(',')
     #@+node:ekr.20191113063144.11: *3* tog.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
@@ -1414,6 +1351,7 @@ class TokenOrderGenerator:
     def do_Module(self, node):
 
         self.begin_visitor(node)
+        self.put('encoding', '')
         for z in node.body:
             yield from self.visitor(z)
         self.end_visitor(node)
@@ -1762,7 +1700,8 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This represents a string constant."""
         self.begin_visitor(node)
-        yield self.put('string', node.s)
+        yield self.put('string', repr(node.s))
+            # Repr is correct. It matches what tokenize.tokenize does.
         self.end_visitor(node)
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
