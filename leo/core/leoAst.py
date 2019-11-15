@@ -4,6 +4,7 @@
 import leo.core.leoGlobals as g
 import ast
 import difflib
+import itertools
 import textwrap
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -1125,26 +1126,37 @@ class TokenOrderGenerator:
             f"create_links: max_level: {self.max_level}, "
             f"max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191114161840.1: *3* tog.diff
-    def diff(self):
-        
-        # Create two generators.
+    def diff(self, trace=True):
+        """Diff self.tokens against self.results."""
         tokens = list((z.kind, z.value) for z in self.tokens)
-        # results = [z if isinstance(z, str) else str(z) for z in self.results]
         results = self.results
-            
-        if 1: # Print the diffs.
-            for z in difflib.ndiff(tokens, results):
+        gen = difflib.ndiff(tokens, results)
+        gen1, gen2 = itertools.tee(gen, 2)
+        if trace: # Print the diffs.
+            for z in gen1:
                 print(z)
-        elif 1:
+        if 0:
             g.printObj(tokens, tag='Tokens')
             g.printObj(results, tag="Results")
-        else: # Print the actual values.
+        if 0: # Print the actual values.
             print('Tokens...')
             for i, z in enumerate(tokens):
                 print(f"{i:2} {z}")
             print('Results...')
             for i, z in enumerate(results):
                 print(f"{i:2} {z}")
+        print('count(ndiff(tokens, results)):', sum([ 1 for z in gen2]))
+    #@+node:ekr.20191115034242.1: *3* got.post_pass
+    def post_pass(self):
+        """
+        Use difflib to test self.results, adjusting the parse tree and creating
+        output tokens as required.
+        
+        Subclasses should override this method.
+        """
+        tokens = list((z.kind, z.value) for z in self.tokens)
+        for z in difflib.ndiff(tokens, self.results):
+            print(z)
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1393,6 +1405,11 @@ class TokenOrderGenerator:
             yield from self.visitor(z)
             yield self.put_conditional_comma()
         self.end_visitor(node)
+    #@+node:ekr.20191115104619.1: *5* tog.generator (new)
+    def do_generator(self, node):
+
+        yield from node
+            # *Not* yield from self.visitor(node)
     #@+node:ekr.20191113063144.25: *5* tog.ctx nodes
     def do_AugLoad(self, node):
         pass
@@ -1466,6 +1483,14 @@ class TokenOrderGenerator:
             yield self.put_blank()
             yield from self.visitor(node.annotation)
         self.end_visitor(node)
+    #@+node:ekr.20191115105821.1: *5* tog.int (New, bug fix)
+    def do_int(self, node):
+        
+        ### g.trace(node, g.callers())
+        assert isinstance(node, int), repr(node)
+        ### self.begin_visitor(node)
+        yield self.put('num', node)
+        ### self.end_visitor(node)
     #@+node:ekr.20191113063144.29: *5* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -1533,19 +1558,33 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put('number', str(node.s))  # A guess.
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.35: *5* tog.Dict
+    #@+node:ekr.20191113063144.35: *5* tog.Dict (bug fix)
+    # Dict(expr* keys, expr* values)
+
     def do_Dict(self, node):
 
         assert len(node.keys) == len(node.values)
         self.begin_visitor(node)
         yield self.put_op('{')
-        for i, z in enumerate(node.keys):
-            yield from self.visitor(self.visitor(node.keys[i]))
-            yield self.put_op(':')
-            yield from self.visitor(node.values[i])
+        for i, key in enumerate(node.keys):
+            key, value = node.keys[i], node.values[i]
+            try: ###
+                yield self.visitor(key) # a Str node.
+                yield self.put_op(':')
+                if value is not None:
+                    try:
+                        for j, z in enumerate(value): # Zero or more expressions.
+                            yield from self.visitor(z)
+                    except TypeError:
+                        yield from self.visitor(value)
+                ### yield self.put_comma() ###
+            except TypeError:
+                g.trace(i, z)
+                g.es_exception()
+                raise
         yield self.put_op('}')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.36: *5* tog.DictComp
+    #@+node:ekr.20191113063144.36: *5* tog.DictComp (changed)
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
@@ -1556,9 +1595,12 @@ class TokenOrderGenerator:
         yield self.put_blank()
         yield self.put_name('for')
         yield self.put_blank()
-        for z in node.generators:
+        for i, z in enumerate(node.generators):
             yield from self.visitor(z)
-            yield self.put_conditional_blank()
+            if i < len(node.generators) - 1:
+                yield self.put_blank()
+            else:
+                yield self.put_conditional_blank()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
@@ -1575,17 +1617,18 @@ class TokenOrderGenerator:
             if i < len(node.dims) - 1:
                 self.put_op(':')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (changed, bug fix)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
 
         self.begin_visitor(node)
-        if node.value:
+        if node.value is not None:
             yield from self.visitor(node.value)
-        if node.conversion:
-            yield from self.visitor(node.conversion)
-        if node.format_spec:
+        if node.conversion is not None:
+            ### yield from self.visitor(node.conversion)
+            yield self.put('num', node.conversion)
+        if node.format_spec is not None:
             yield from self.visitor(node.format_spec)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.40: *5* tog.Index
@@ -1696,7 +1739,7 @@ class TokenOrderGenerator:
             self.put_op(':')
             yield from self.visitor(node.step)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.50: *5* tog.Str
+    #@+node:ekr.20191113063144.50: *5* tog.Str (changed)
     def do_Str(self, node):
         """This represents a string constant."""
         self.begin_visitor(node)
@@ -1714,17 +1757,23 @@ class TokenOrderGenerator:
         yield from self.visitor(node.slice)
         yield self.put_op(']')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.52: *5* tog.Tuple
+    #@+node:ekr.20191113063144.52: *5* tog.Tuple (changed)
     def do_Tuple(self, node):
 
         self.begin_visitor(node)
         yield self.put_op('(')
-        for i, z in enumerate(node.elts):
-            yield from self.visitor(z)
-            if i < len(node.elts) - 1:
-                yield self.put_comma()
-            else:
-                yield self.put_conditional_comma()
+        if len(node.elts) == 1:
+            # Require a trailing comma.
+            yield from self.visitor(node.elts[0])
+            yield self.put_comma()
+        else:
+            # The trailing comma is optional.
+            for i, z in enumerate(node.elts):
+                yield from self.visitor(z)
+                if i < len(node.elts) - 1:
+                    yield self.put_comma()
+                else:
+                    yield self.put_conditional_comma()
         yield self.put_op(')')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.53: *4* tog: Operators
@@ -1762,19 +1811,22 @@ class TokenOrderGenerator:
                 yield self.put_op(op_name.strip())
                 yield self.put_blank()
                 yield from self.visitor(z)
-            return
-        for i, z in enumerate(node.values):
-            yield self.put_op(op_name)
-            yield from self.visitor(z)
+        else:
+            for i, z in enumerate(node.values):
+                yield self.put_op(op_name)
+                yield from self.visitor(z)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.57: *5* tog.Compare
+    #@+node:ekr.20191113063144.57: *5* tog.Compare (bug fix)
+    # Compare(expr left, cmpop* ops, expr* comparators)
+
     def do_Compare(self, node):
         
         assert len(node.ops) == len(node.comparators)
         self.begin_visitor(node)
         yield from self.visitor(node.left)
         for i, z in enumerate(node.ops):
-            yield from self.visitor(node.ops[i])
+            ### yield from self.visitor(node.ops[i])
+            yield self.put_op(self.op_name(node.ops[i]).strip())
             yield from self.visitor(node.comparators[i])
         self.end_visitor(node)
     #@+node:ekr.20191113063144.58: *5* tog.UnaryOp
@@ -1882,14 +1934,17 @@ class TokenOrderGenerator:
         self.end_visitor(node)
         # Delegate the rest.
         self.do_With(node)
-    #@+node:ekr.20191113063144.66: *5* tog.AugAssign
+    #@+node:ekr.20191113063144.66: *5* tog.AugAssign (bug fix)
+    # AugAssign(expr target, operator op, expr value)
+
     def do_AugAssign(self, node):
         
         # %s%s=%s\n'
         self.begin_visitor(node)
         yield from self.visitor(node.target)
-        self.op_name(node.op)
-        yield self.put_op('=')
+        ### self.op_name(node.op)
+        ### yield self.put_op('=')
+        yield self.put_op(self.op_name(node.op).strip())
         yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
