@@ -1133,10 +1133,10 @@ class TokenOrderGenerator:
         Verify that tokens match (in some reasonable, subclass-defined way)
         the contents of self.results.
         """
-        import itertools ###
-        assert itertools ###
+        # import itertools ###
+        # assert itertools ###
         
-        use_unified_diff = True
+        use_unified_diff = False
         
         if use_unified_diff:
             results = [f"{z[0]}:{z[1]}" for z in self.results]
@@ -1145,6 +1145,16 @@ class TokenOrderGenerator:
         else: 
             results = self.results
             tokens = [(z.kind, z.value) for z in self.tokens]
+            # ndiff appears to crash it the two sequences don't have the same length!
+            n_r, n_t = len(results), len(tokens)
+            if n_r < n_t:
+                while n_r < n_t:
+                    results.append(('ignore', ''))
+                    n_r += 1
+            elif n_t < n_r:
+                while n_t < n_r:
+                    tokens.append(('ignore', ''))
+            assert len(results) == len(tokens)
             gen = difflib.ndiff(tokens, results)
         # gen1, gen2 = itertools.tee(gen, 2)
         try:
@@ -1154,19 +1164,18 @@ class TokenOrderGenerator:
             if len(diffs) < 1000:
                 for z in diffs:
                     print(z)
-            else:
-                print(f"difflib produced {len(diffs)} diffs")
-            print(f"verify: diff: {(t2-t1):4.2f} sec.")
+            print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
         except Exception:
-            print('')
-            print(f"   {'tokens':<30} {'results':<30}")
-            print(f"   {'======':<30} {'=======':<30}")
-            limit = max(30, min(len(tokens), len(results)))
-            for i in range(limit):
-                t = truncate(tokens[i], 30)
-                r = truncate(results[i], 30)
-                print(f"{i:2} {t:<30} {r:<30}")
-            print('')
+            if 1:
+                print('\nERROR...\n')
+                print(f"     {'tokens':<30} {'results':<30}")
+                print(f"     {'======':<30} {'=======':<30}")
+                for i in range(len(tokens)):
+                    t = truncate(tokens[i], 30)
+                    r = truncate(results[i], 30)
+                    print(f"{i:>4} {t:<30} {r:<30}")
+                print('')
+            # print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
             raise
         if 0:
             g.printObj(tokens, tag='Tokens')
