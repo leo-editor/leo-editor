@@ -2419,8 +2419,6 @@ class AstDumper:
     def brief_dump(self, node):
         
         result = [self.show_header()]
-        # self.inject_node_indices(node, 0)
-            # TokenOrderGenerator.begin_visitor inject node_index field.
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
 
@@ -2429,7 +2427,7 @@ class AstDumper:
         if node is None:
             return
         # Let block.
-        index_ivar = 'node_index' # was 'dump_index'.
+        index_ivar = 'node_index'
         indent = ' ' * 2 * level
         parent = getattr(node, 'parent', None)
         node_id = getattr(node, index_ivar, '??')
@@ -2456,32 +2454,6 @@ class AstDumper:
                 self.brief_dump_helper(z, level+1, result)
         else:
             result.append(full_s)
-    #@+node:ekr.20191113223524.1: *4* dumper.inject_node_indices
-    def inject_node_indices(self, node, index):
-        """Inject dump_index field into all nodes."""
-        
-        def show_index(index, node):
-            if 0:
-                node_id = str(id(node))[-3:]
-                print(f"index: {index:2}: node: {node_id} {node.__class__.__name__}")
-
-        if isinstance(node, (list, tuple)):
-            for z in node:
-                index = self.inject_node_indices(z, index)
-        elif isinstance(node, ast.AST):
-            # Node.
-            show_index(index, node)
-            setattr(node, 'dump_index', index)
-            index += 1
-            # Children.
-            children = getattr(node, 'children', [])
-            for z in children:
-                index = self.inject_node_indices(z, index)
-        else:
-            show_index(index, node)
-            setattr(node, 'dump_index', index)
-            index += 1
-        return index
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields of the node."""
