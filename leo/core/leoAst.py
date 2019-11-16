@@ -8,9 +8,12 @@ import textwrap
 import time
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
-#@+node:ekr.20191027072910.1: *3* class AstNotEqual (Exception)
+#@+node:ekr.20191027072910.1: *3* exception classes
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
+
+class AssignLinksError(Exception):
+    """Assigning links to ast nodes failed."""
 #@+node:ekr.20160521104555.1: *3* function: _op_names
 #@@nobeautify
 
@@ -1098,6 +1101,10 @@ class TokenOrderGenerator:
         self.max_level = max(self.level, self.max_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
+    #@+node:ekr.20191116160557.1: *3* tog.assign_links
+    def assign_links(self):
+        """Assign two-way links between tokens and results."""
+        AssignLinks().assign_links(self.tokens, self.results)
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
     def create_links(self, tokens, tree):
         """
@@ -1156,17 +1163,6 @@ class TokenOrderGenerator:
                 if z[0] != '?': # A mystery.
                     print(f"{i:<4}: {truncate(z, 80)!r}")
             print(legend)
-    #@+node:ekr.20191115034242.1: *3* got.post_pass
-    def post_pass(self):
-        """
-        Use difflib to test self.results, adjusting the parse tree and creating
-        output tokens as required.
-        
-        Subclasses should override this method.
-        """
-        tokens = list((z.kind, z.value) for z in self.tokens)
-        for z in difflib.ndiff(tokens, self.results):
-            print(z)
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -2404,6 +2400,93 @@ class TokenOrderGenerator:
         yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
+    #@-others
+#@+node:ekr.20191116160325.1: ** class AssignLinks
+class AssignLinks:
+    
+
+    #@+others
+    #@+node:ekr.20191115034242.1: *3* links.assign_links
+    def assign_links(self, tokens, results):
+        """Assign two-way links between tokens and results."""
+        self.results = results
+        self.tokens = tokens
+        node, rx, tx = self.init()
+        while tx < len(self.tokens) and rx < self.results:
+            assert node
+            progress = rx, tx
+            kind = self.tokens[tx].kind
+            handler = getattr(self, f"do_{kind}")
+            node, rx, tx = handler(node, rx, tx)
+            assert progress < rx, tx
+
+        ### Old.
+            # t = self.tokens[tx]
+            # r = self.results[rx]
+            # key = f"{t.kind}:{r.kind}"
+    #@+node:ekr.20191116160136.1: *3* links.do_comment
+    def do_comment(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116152657.1: *3* links.do_encoding
+    def do_encoding(self, node, rx, tx):
+        
+        raise AssignLinksError(f"do_encoding: unexpected 'encoding' token. tx={tx}")
+    #@+node:ekr.20191116161848.1: *3* links.do_name
+    def do_name(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161718.1: *3* links.do_newline
+    def do_newline(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161922.1: *3* links.do_number
+    def do_number(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116160124.1: *3* links.do_nl
+    def do_nl(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161828.1: *3* links.do_op
+    def do_op(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161759.1: *3* links.do_string
+    def do_string(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116152037.1: *3* links.init
+    def init(self):
+        """Initialize the token scan."""
+        rx, tx = 0, 0
+        token = self.tokens[0]
+        if token.kind == 'encoding':
+            node = token.node
+            assert node
+            self.set_links(node, token)
+            return node, rx, tx + 1
+        # Assign all prefix tokens to the first node.
+        for tx, token in enumerate(self.tokens):
+            node = self.tokens[tx].node
+            if node:
+                for i in range(tx):
+                    self.set_links(node, self.tokens[i])
+                return node, 0, tx + 1
+        raise AssignLinksError(f"All tokens have null token.node fields")
+    #@+node:ekr.20191116153348.1: *3* links.set_links
+    def set_links(self, node, token):
+        """Set two-way links between self.tokens[tx] and the given ast node."""
+        # Check everything.
+        assert isinstance(node, ast.AST), g.callers()
+        assert isinstance(token, Token), g.callers()
+        if token.index is None:
+            raise AssignLinksError(
+                f"set_links: token.index is None: "
+                f"token: {token.error_dump()}")
+        if token.level is None:
+            raise AssignLinksError(
+                f"set_links: token.level is None: "
+                f"token: {token.error_dump()}")
+        # Patch the token.
+        token.node = node
+        # Create/update node.token_list.
+        token_list = getattr(node, 'token_list', [])
+        token_list.append(token)
+        node.token_list = token_list
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -4434,6 +4517,20 @@ class Token:
             f"node: {node_id} {self.node.__class__.__name__:12} "
             f"children: {len(children)} "
             f"parent: {parent_id} {parent_class}")
+    #@+node:ekr.20191116154328.1: *3* token.error_dump
+    def error_dump(self):
+        """Dump a token node for error message."""
+        if self.node:
+            node_id = str(id(self.node))[-4:]
+            node_s = f"{node_id} {self.node.__class__.__name__}"
+        else:
+            node_s = "None"
+        return(
+            f"{self.index:} kind: {self.kind:} "
+            f"value: {self.show_val()} "
+            f"line: {self.line_number} "
+            f"level: {self.level} "
+            f"node: {node_s}")
     #@+node:ekr.20191113095507.1: *3* token.show_val
     def show_val(self):
         
