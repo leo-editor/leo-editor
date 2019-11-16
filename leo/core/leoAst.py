@@ -4,7 +4,6 @@
 import leo.core.leoGlobals as g
 import ast
 import difflib
-import itertools
 import textwrap
 import time
 #@+others
@@ -1134,27 +1133,30 @@ class TokenOrderGenerator:
         Verify that tokens match (in some reasonable, subclass-defined way)
         the contents of self.results.
         """
-        tokens = [(z.kind, z.value) for z in self.tokens]
-        for z in tokens:
-            a, b = z
-            # assert not isinstance(b, (list, tuple)), repr(z)
-            assert isinstance(b, str), repr(z)
-        for z in self.results:
-            a, b = z
-            # assert not isinstance(b, (list, tuple)), repr(z)
-            assert isinstance(b, str), repr(z)
-        results = self.results
-        gen = difflib.ndiff(tokens, results)
-        gen1, gen2 = itertools.tee(gen, 2)
+        import itertools ###
+        assert itertools ###
+        
+        use_unified_diff = True
+        
+        if use_unified_diff:
+            results = [f"{z[0]}:{z[1]}" for z in self.results]
+            tokens = [f"{z.kind}:{z.value}" for z in self.tokens]
+            gen = difflib.unified_diff(tokens, results)
+        else: 
+            results = self.results
+            tokens = [(z.kind, z.value) for z in self.tokens]
+            gen = difflib.ndiff(tokens, results)
+        # gen1, gen2 = itertools.tee(gen, 2)
         try:
             if 1 and trace: # Print the diffs.
-                for z in gen1:
+                for z in gen:
                     print(z)
         except Exception:
             print('')
             print(f"   {'tokens':<30} {'results':<30}")
             print(f"   {'======':<30} {'=======':<30}")
-            for i in range(20):
+            limit = max(30, min(len(tokens), len(results)))
+            for i in range(limit):
                 t = truncate(tokens[i], 30)
                 r = truncate(results[i], 30)
                 print(f"{i:2} {t:<30} {r:<30}")
