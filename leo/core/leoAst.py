@@ -6,6 +6,7 @@ import ast
 import difflib
 import itertools
 import textwrap
+import time
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
 #@+node:ekr.20191027072910.1: *3* class AstNotEqual (Exception)
@@ -1115,6 +1116,7 @@ class TokenOrderGenerator:
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
+        t1 = time.process_time()
         self.tokens = tokens[:]
         self.token_index = 0
         self.node = None  # The parent.
@@ -1122,22 +1124,42 @@ class TokenOrderGenerator:
         # Patch the last tokens.
         yield self.put('newline', '\n')
         yield self.put('endmarker', '')
+        t2 = time.process_time()
         print(
-            f"create_links: max_level: {self.max_level}, "
-            f"max_stack_level: {self.max_stack_level}")
+            f"create_links: created {len(self.results)} results in {(t2-t1):4.2f} sec."
+            f"max_level: {self.max_level}, max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191114161840.1: *3* tog.verify
     def verify(self, trace=True):
         """
         Verify that tokens match (in some reasonable, subclass-defined way)
         the contents of self.results.
         """
-        tokens = list((z.kind, z.value) for z in self.tokens)
+        tokens = [(z.kind, z.value) for z in self.tokens]
+        for z in tokens:
+            a, b = z
+            # assert not isinstance(b, (list, tuple)), repr(z)
+            assert isinstance(b, str), repr(z)
+        for z in self.results:
+            a, b = z
+            # assert not isinstance(b, (list, tuple)), repr(z)
+            assert isinstance(b, str), repr(z)
         results = self.results
         gen = difflib.ndiff(tokens, results)
         gen1, gen2 = itertools.tee(gen, 2)
-        if trace: # Print the diffs.
-            for z in gen1:
-                print(z)
+        try:
+            if 1 and trace: # Print the diffs.
+                for z in gen1:
+                    print(z)
+        except Exception:
+            print('')
+            print(f"   {'tokens':<30} {'results':<30}")
+            print(f"   {'======':<30} {'=======':<30}")
+            for i in range(20):
+                t = truncate(tokens[i], 30)
+                r = truncate(results[i], 30)
+                print(f"{i:2} {t:<30} {r:<30}")
+            print('')
+            raise
         if 0:
             g.printObj(tokens, tag='Tokens')
             g.printObj(results, tag="Results")
@@ -1148,7 +1170,8 @@ class TokenOrderGenerator:
             print('Results...')
             for i, z in enumerate(results):
                 print(f"{i:2} {z}")
-        print('count(ndiff(tokens, results)):', sum([ 1 for z in gen2]))
+        g.trace(f"tokens: {len(tokens)}, results: {len(results)}")
+        # print('count(ndiff(tokens, results)):', sum([1 for z in gen2]))
     #@+node:ekr.20191115034242.1: *3* got.post_pass
     def post_pass(self):
         """
@@ -1200,18 +1223,18 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
+        # Don't even *think* about "helping" difflib.
+            # self.synch(kind, val)
         assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
         val2 = val if isinstance(val, str) else str(val)
         self.results.append((kind,val2),)
-        ### Gone forever.
-            # self.eat(kind, val)
 
     def put_blank(self):
         self.put('ws', ' ')
 
     def put_comma(self):
         self.put('op', ',')
-        
+
     def put_name(self, val):
         self.put('name', val)
 
