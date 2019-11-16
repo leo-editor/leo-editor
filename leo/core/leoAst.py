@@ -267,11 +267,14 @@ def test_token_traversers(contents, reports=None):
         elif report == 'diff':
             print('\nDiff...\n')
             x.diff()
+        elif report == 'assign-links':
+            print('\nAssigning links...\n')
+            x.assign_links()
         elif report == 'results':
             print('\nResults...\n')
-            results = ''.join([b for a, b in x.results])
-            for i, z in enumerate(g.splitLines(results)):
-                 print(f"{i+1:<3} ", g.truncate(z.rstrip(), 60))
+            for i, z in enumerate(x.results):
+                kind, val, node = z
+                print(f"{i:<3} {kind:>10} {truncate(val,15):<15} {node.__class__.__name__}")
         elif report == 'lines':
             print('\nTOKEN lines...\n')
             for z in tokens:
@@ -1198,11 +1201,10 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
-        # Don't even *think* about "helping" difflib.
-            # self.synch(kind, val)
+        assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
         assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
         val2 = val if isinstance(val, str) else str(val)
-        self.results.append((kind,val2),)
+        self.results.append((kind,val2, self.node))
 
     def put_blank(self):
         self.put('ws', ' ')
