@@ -230,12 +230,52 @@ def test_token_traversers():
 
     # This is more than enough to test syncing.
     use_file = False
+    small = not use_file
     if use_file:
-        path = r'C:\leo.repo\leo-editor\leo\core\leoGlobals.py'
+        small = True
+        path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
         assert g.os_path_exists(path), repr(path)
         with open(path, 'r') as f:
             contents = f.read()
     elif 1:
+        # From runLeo.py
+        contents = r'''
+    #! /usr/bin/env python
+#@verbatim
+    #@+leo-ver=5-thin
+#@verbatim
+    #@+node:ekr.20031218072017.2605: * @file runLeo.py
+#@verbatim
+    #@@first
+    """Entry point for Leo in Python."""
+#@verbatim
+    #@+< < imports and inits > >
+#@verbatim
+    #@+node:ekr.20080921091311.1: ** < < imports and inits > > (runLeo.py)
+    # import pdb ; pdb = pdb.set_trace
+    import os
+    import sys
+    # Partial fix for #541.
+    # See https://stackoverflow.com/questions/24835155/
+    # pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
+    if sys.executable.endswith("pythonw.exe"):
+        sys.stdout = open(os.devnull, "w");
+        sys.stderr = open(
+            os.path.join(os.getenv("TEMP"),
+            "stderr-"+os.path.basename(sys.argv[0])),
+            "w")
+    path = os.getcwd()
+    '''
+    # Smaller tests...
+    elif 1: # fstringify...
+        # tokenize.tokenize *does* put the optional commas.
+        # tokenize.tokenize *does* put blanks.
+        # toeknize.tokenize *does* put \\\n into strings.
+        # tokenize.tokenize *does* put ws tokens containing "\\\n" between tokens.
+        contents = r'''
+    print('test %s=%s'%(a, 2))
+    '''
+    elif 1: # Basic tests.
         contents = r'''
     """ds 1"""
     class TestClass:
@@ -247,23 +287,9 @@ def test_token_traversers():
             else:
                 a -= 1
             print('done')
-    ''' 
-    else:
-        contents = r'''
-    # -*- coding: utf-8 -*-
-#@verbatim
-    #@+leo-ver=5-thin
-#@verbatim
-    #@+node:ekr.20031218072017.3093: * @file leoGlobals.py
-#@verbatim
-    #@@first
-    """
-    Line 1
-    """
-    import sys
     '''
     # Start test.
-    print('Ctrl-2: leoAst tests...\n')
+    print('leoAst tests...\n')
     contents = contents.strip() + '\n'
     # Create tokens and tree.
     x = leoAst.TokenOrderInjector()
@@ -278,11 +304,27 @@ def test_token_traversers():
         ok = False
     if 0:
         x.report_coverage(report_missing=False)
-    # Tokens...
-    if 0 and not use_file:
+    # Tokens, after patches...
+    if 0 and small:
         print('\nTokens...\n')
-        for z in tokens:
+        # pylint: disable=not-an-iterable
+        for z in x.tokens:
             print(z.dump())
+    # Contents...
+    if small:
+        print('\nContents...\n')
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
+    # Diff...
+    if 1:
+        print('\nDiff...\n')
+        x.verify()
+    # Results...
+    if 0:
+        print('\nResults...\n')
+        results = ''.join([b for a, b in x.results])
+        for i, z in enumerate(g.splitLines(results)):
+             print(f"{i+1:<3} ", g.truncate(z.rstrip(), 60))
     # Lines...
     if 0 and not use_file: # These *have* been set.
         print('\nTOKEN lines...\n')
@@ -291,14 +333,9 @@ def test_token_traversers():
                 print(z.line.rstrip())
             else:
                 print(repr(z.line))
-    # Contents...
-    if not use_file:
-        print('\nContents...\n')
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
     # Patched tree...
-    if 1:
-        print('Patched tree...\n')
+    if 0:
+        print('\nPatched tree...\n')
         print(leoAst.AstDumper().brief_dump(tree))
         print('')
     # Summary.
@@ -308,7 +345,7 @@ def test_token_traversers():
             print('  ' + z)
         print('')
     ok = ok and not x.errors
-    print(f"Ctrl-2: {'PASS' if ok else 'FAIL'}")
+    print('PASS' if ok else 'FAIL')
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
