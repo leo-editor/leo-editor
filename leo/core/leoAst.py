@@ -1132,61 +1132,28 @@ class TokenOrderGenerator:
         """
         Verify that tokens match (in some reasonable, subclass-defined way)
         the contents of self.results.
+        
+        To do: add two-way links between tokens and nodes.
         """
-        # import itertools ###
-        # assert itertools ###
-        
-        use_unified_diff = False
-        
-        if use_unified_diff:
-            results = [f"{z[0]}:{z[1]}" for z in self.results]
-            tokens = [f"{z.kind}:{z.value}" for z in self.tokens]
-            gen = difflib.unified_diff(tokens, results)
-        else: 
-            results = self.results
-            tokens = [(z.kind, z.value) for z in self.tokens]
-            # ndiff appears to crash it the two sequences don't have the same length!
-            n_r, n_t = len(results), len(tokens)
-            if n_r < n_t:
-                while n_r < n_t:
-                    results.append(('ignore', ''))
-                    n_r += 1
-            elif n_t < n_r:
-                while n_t < n_r:
-                    tokens.append(('ignore', ''))
-            assert len(results) == len(tokens)
-            gen = difflib.ndiff(tokens, results)
-        # gen1, gen2 = itertools.tee(gen, 2)
-        try:
-            t1 = time.process_time()
-            diffs = list(gen)
-            t2 = time.process_time()
-            if len(diffs) < 1000:
-                for z in diffs:
-                    print(z)
-            print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
-        except Exception:
-            if 1:
-                print('\nERROR...\n')
-                print(f"     {'tokens':<30} {'results':<30}")
-                print(f"     {'======':<30} {'=======':<30}")
-                for i in range(len(tokens)):
-                    t = truncate(tokens[i], 30)
-                    r = truncate(results[i], 30)
-                    print(f"{i:>4} {t:<30} {r:<30}")
-                print('')
-            # print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
-            raise
-        if 0:
-            g.printObj(tokens, tag='Tokens')
-            g.printObj(results, tag="Results")
-        if 0: # Print the actual values.
-            print('Tokens...')
-            for i, z in enumerate(tokens):
-                print(f"{i:2} {z}")
-            print('Results...')
-            for i, z in enumerate(results):
-                print(f"{i:2} {z}")
+        results = [
+            f"{z[0]:>12}:{z[1]}" for z in self.results
+                if z[0] not in ('ws',)]
+        tokens = [
+            f"{z.kind:>12}:{z.value}" for z in self.tokens
+                if z.kind not in ('indent', 'dedent', 'ws')]
+                    # nl ends comments, docstrings.
+        gen = difflib.Differ().compare(tokens, results)
+        t1 = time.process_time()
+        diffs = list(gen)
+        t2 = time.process_time()
+        if len(diffs) < 1000:
+            legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
+            print(legend)
+            for i, z in enumerate(diffs):
+                if z[0] != '?': # A mystery.
+                    print(f"{i:<4}: {truncate(z, 80)!r}")
+            print(legend)
+        print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
         g.trace(f"tokens: {len(tokens)}, results: {len(results)}")
         # print('count(ndiff(tokens, results)):', sum([1 for z in gen2]))
     #@+node:ekr.20191115034242.1: *3* got.post_pass
