@@ -218,78 +218,22 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20191113133338.1: *3* function: test_token_traversers
-def test_token_traversers():
+def test_token_traversers(contents, reports=None):
     """
     A testing framework for TokenOrderGenerator and related classes.
+    
+    The caller should call imp.reload if desired.
+    
+    Reports is a list of reports. A suggested order is shown below.
     """
     # pylint: disable=import-self
     import leo.core.leoAst as leoAst
-    # It's not a good idea to do this within Leo itsefl.
-        # import imp
-        # imp.reload(leoAst)
+    
+    reports = [z.lower() for z in reports or []]
+    assert isinstance(reports, list), repr(reports)
 
-    # This is more than enough to test syncing.
-    use_file = False
-    small = not use_file
-    if use_file:
-        small = True
-        path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
-        assert g.os_path_exists(path), repr(path)
-        with open(path, 'r') as f:
-            contents = f.read()
-    elif 1:
-        # From runLeo.py
-        contents = r'''
-    #! /usr/bin/env python
-#@verbatim
-    #@+leo-ver=5-thin
-#@verbatim
-    #@+node:ekr.20031218072017.2605: * @file runLeo.py
-#@verbatim
-    #@@first
-    """Entry point for Leo in Python."""
-#@verbatim
-    #@+< < imports and inits > >
-#@verbatim
-    #@+node:ekr.20080921091311.1: ** < < imports and inits > > (runLeo.py)
-    # import pdb ; pdb = pdb.set_trace
-    import os
-    import sys
-    # Partial fix for #541.
-    # See https://stackoverflow.com/questions/24835155/
-    # pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
-    if sys.executable.endswith("pythonw.exe"):
-        sys.stdout = open(os.devnull, "w");
-        sys.stderr = open(
-            os.path.join(os.getenv("TEMP"),
-            "stderr-"+os.path.basename(sys.argv[0])),
-            "w")
-    path = os.getcwd()
-    '''
-    # Smaller tests...
-    elif 1: # fstringify...
-        # tokenize.tokenize *does* put the optional commas.
-        # tokenize.tokenize *does* put blanks.
-        # toeknize.tokenize *does* put \\\n into strings.
-        # tokenize.tokenize *does* put ws tokens containing "\\\n" between tokens.
-        contents = r'''
-    print('test %s=%s'%(a, 2))
-    '''
-    elif 1: # Basic tests.
-        contents = r'''
-    """ds 1"""
-    class TestClass:
-        """ds 2"""
-        def long_name(a, b=2):
-            """ds 3"""
-            if a:
-                a = 1
-            else:
-                a -= 1
-            print('done')
-    '''
     # Start test.
-    print('leoAst tests...\n')
+    print('\nleoAst.py:test_token_traversers...\n')
     contents = contents.strip() + '\n'
     # Create tokens and tree.
     x = leoAst.TokenOrderInjector()
@@ -302,50 +246,53 @@ def test_token_traversers():
     except Exception:
         g.es_exception()
         ok = False
-    if 0:
-        x.report_coverage(report_missing=False)
-    # Tokens, after patches...
-    if 0 and small:
-        print('\nTokens...\n')
-        # pylint: disable=not-an-iterable
-        for z in x.tokens:
-            print(z.dump())
-    # Contents...
-    if small:
-        print('\nContents...\n')
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-    # Diff...
-    if 1:
-        print('\nDiff...\n')
-        x.verify()
-    # Results...
-    if 0:
-        print('\nResults...\n')
-        results = ''.join([b for a, b in x.results])
-        for i, z in enumerate(g.splitLines(results)):
-             print(f"{i+1:<3} ", g.truncate(z.rstrip(), 60))
-    # Lines...
-    if 0 and not use_file: # These *have* been set.
-        print('\nTOKEN lines...\n')
-        for z in tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-    # Patched tree...
-    if 0:
-        print('\nPatched tree...\n')
-        print(leoAst.AstDumper().brief_dump(tree))
-        print('')
-    # Summary.
-    if x.errors:
-        print('\nErrors...\n')
-        for z in x.errors:
-            print('  ' + z)
-        print('')
-    ok = ok and not x.errors
-    print('PASS' if ok else 'FAIL')
+    # Print reports, in the order they appear in the results list.
+    # The following is a reasoable order.
+    bad_reports = []
+    while reports:
+        report = reports.pop(0)
+        if report == 'coverage':
+            x.report_coverage(report_missing=False)
+        elif report == 'tokens':
+            print('\nTokens...\n')
+            # pylint: disable=not-an-iterable
+            for z in x.tokens:
+                print(z.dump())
+        elif report == 'contents':
+            print('\nContents...\n')
+            for i, z in enumerate(g.splitLines(contents)):
+                print(f"{i+1:<3} ", z.rstrip())
+        elif report == 'diff':
+            print('\nDiff...\n')
+            x.verify()
+        elif report == 'results':
+            print('\nResults...\n')
+            results = ''.join([b for a, b in x.results])
+            for i, z in enumerate(g.splitLines(results)):
+                 print(f"{i+1:<3} ", g.truncate(z.rstrip(), 60))
+        elif report == 'lines':
+            print('\nTOKEN lines...\n')
+            for z in tokens:
+                if z.line.strip():
+                    print(z.line.rstrip())
+                else:
+                    print(repr(z.line))
+        elif report == 'tree':
+            print('\nPatched tree...\n')
+            print(leoAst.AstDumper().brief_dump(tree))
+        elif report == 'summary':
+            if x.errors:
+                print('\nErrors...\n')
+                for z in x.errors:
+                    print('  ' + z)
+                print('')
+            ok = ok and not x.errors
+            print('')
+            print('PASS' if ok else 'FAIL')
+        else:
+            bad_reports.append(report)
+    if bad_reports:
+        print(f"\nIgnoring unknown reports {','.join(bad_reports)}\n")
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
@@ -1119,6 +1066,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
     begin_end_stack = []
 
+    node_index = 0
+
     # These methods support generators.
 
     # Subclasses may/should override these methods.
@@ -1126,6 +1075,10 @@ class TokenOrderGenerator:
     def begin_visitor(self, node):
         """Enter a visitor."""
         # g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
+        # Inject the node_index field.
+        assert not hasattr(node, 'node_index'), g.callers()
+        node.node_index =self.node_index
+        self.node_index += 1
         # begin_visitor and end_visitor must be paired.
         self.begin_end_stack.append(node.__class__.__name__)
         # Push the previous node.
@@ -1183,6 +1136,9 @@ class TokenOrderGenerator:
         t1 = time.process_time()
         diffs = list(gen)
         t2 = time.process_time()
+        print(
+            f"verify: tokens: {len(tokens)}, results: {len(results)}, "
+            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec.\n")
         if len(diffs) < 1000:
             legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
             print(legend)
@@ -1190,9 +1146,6 @@ class TokenOrderGenerator:
                 if z[0] != '?': # A mystery.
                     print(f"{i:<4}: {truncate(z, 80)!r}")
             print(legend)
-        print(f"verify: produced {len(diffs)} diffs in {(t2-t1):4.2f} sec.")
-        g.trace(f"tokens: {len(tokens)}, results: {len(results)}")
-        # print('count(ndiff(tokens, results)):', sum([1 for z in gen2]))
     #@+node:ekr.20191115034242.1: *3* got.post_pass
     def post_pass(self):
         """
@@ -2466,7 +2419,8 @@ class AstDumper:
     def brief_dump(self, node):
         
         result = [self.show_header()]
-        self.inject_node_indices(node, 0)
+        # self.inject_node_indices(node, 0)
+            # TokenOrderGenerator.begin_visitor inject node_index field.
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
 
@@ -2475,10 +2429,11 @@ class AstDumper:
         if node is None:
             return
         # Let block.
+        index_ivar = 'node_index' # was 'dump_index'.
         indent = ' ' * 2 * level
-        node_id = getattr(node, 'dump_index', '??')
         parent = getattr(node, 'parent', None)
-        parent_id = getattr(parent, 'dump_index', '??')
+        node_id = getattr(node, index_ivar, '??')
+        parent_id = getattr(parent, index_ivar, '??')
         parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
@@ -2487,7 +2442,7 @@ class AstDumper:
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
         full_s =  f"{full_s1:<60} {tokens_s}\n"
-     
+        # Dump...
         if isinstance(node, (list, tuple)):
             for z in node:
                 self.brief_dump_helper(z, level, result)
