@@ -266,7 +266,7 @@ def test_token_traversers(contents, reports=None):
                 print(f"{i+1:<3} ", z.rstrip())
         elif report == 'diff':
             print('\nDiff...\n')
-            x.verify()
+            x.diff()
         elif report == 'results':
             print('\nResults...\n')
             results = ''.join([b for a, b in x.results])
@@ -1123,14 +1123,9 @@ class TokenOrderGenerator:
         print(
             f"create_links: created {len(self.results)} results in {(t2-t1):4.2f} sec."
             f"max_level: {self.max_level}, max_stack_level: {self.max_stack_level}")
-    #@+node:ekr.20191114161840.1: *3* tog.verify
-    def verify(self):
-        """
-        Verify that tokens match (in some reasonable, subclass-defined way)
-        the contents of self.results.
-        
-        To do: add two-way links between tokens and nodes.
-        """
+    #@+node:ekr.20191114161840.1: *3* tog.diff
+    def diff(self):
+        """Produce a diff of self.tokens vs self.results."""
         ndiff = False
         if ndiff:
             # FAILS:
@@ -1154,7 +1149,7 @@ class TokenOrderGenerator:
         diffs = list(gen)
         t2 = time.process_time()
         print(
-            f"verify: tokens: {len(tokens)}, results: {len(results)}, "
+            f"diff: tokens: {len(tokens)}, results: {len(results)}, "
             f"{len(diffs)} diffs in {(t2-t1):4.2f} sec.\n")
         if len(diffs) < 1000:
             legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
@@ -2404,6 +2399,8 @@ class TokenOrderGenerator:
 #@+node:ekr.20191116160325.1: ** class AssignLinks
 class AssignLinks:
     
+    last_node = None
+    last_token = None
 
     #@+others
     #@+node:ekr.20191115034242.1: *3* links.assign_links
@@ -2424,31 +2421,6 @@ class AssignLinks:
             # t = self.tokens[tx]
             # r = self.results[rx]
             # key = f"{t.kind}:{r.kind}"
-    #@+node:ekr.20191116160136.1: *3* links.do_comment
-    def do_comment(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116152657.1: *3* links.do_encoding
-    def do_encoding(self, node, rx, tx):
-        
-        raise AssignLinksError(f"do_encoding: unexpected 'encoding' token. tx={tx}")
-    #@+node:ekr.20191116161848.1: *3* links.do_name
-    def do_name(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116161718.1: *3* links.do_newline
-    def do_newline(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116161922.1: *3* links.do_number
-    def do_number(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116160124.1: *3* links.do_nl
-    def do_nl(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116161828.1: *3* links.do_op
-    def do_op(self, node, rx, tx):
-        pass
-    #@+node:ekr.20191116161759.1: *3* links.do_string
-    def do_string(self, node, rx, tx):
-        pass
     #@+node:ekr.20191116152037.1: *3* links.init
     def init(self):
         """Initialize the token scan."""
@@ -2487,6 +2459,32 @@ class AssignLinks:
         token_list = getattr(node, 'token_list', [])
         token_list.append(token)
         node.token_list = token_list
+    #@+node:ekr.20191116164159.1: *3* links:Visitors
+    #@+node:ekr.20191116160136.1: *4* links.do_comment
+    def do_comment(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116152657.1: *4* links.do_encoding
+    def do_encoding(self, node, rx, tx):
+        
+        raise AssignLinksError(f"do_encoding: unexpected 'encoding' token. tx={tx}")
+    #@+node:ekr.20191116161848.1: *4* links.do_name
+    def do_name(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161718.1: *4* links.do_newline
+    def do_newline(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161922.1: *4* links.do_number
+    def do_number(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116160124.1: *4* links.do_nl
+    def do_nl(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161828.1: *4* links.do_op
+    def do_op(self, node, rx, tx):
+        pass
+    #@+node:ekr.20191116161759.1: *4* links.do_string
+    def do_string(self, node, rx, tx):
+        pass
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
