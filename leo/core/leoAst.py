@@ -249,8 +249,7 @@ def test_token_traversers(contents, reports=None):
     # Print reports, in the order they appear in the results list.
     # The following is a reasoable order.
     bad_reports = []
-    while reports:
-        report = reports.pop(0)
+    for report in reports:
         if report == 'coverage':
             x.report_coverage(report_missing=False)
         elif report == 'tokens':
@@ -1125,14 +1124,25 @@ class TokenOrderGenerator:
         
         To do: add two-way links between tokens and nodes.
         """
-        results = [
-            f"{z[0]:>12}:{z[1]}" for z in self.results
-                if z[0] not in ('ws',)]
-        tokens = [
-            f"{z.kind:>12}:{z.value}" for z in self.tokens
-                if z.kind not in ('indent', 'dedent', 'ws')]
-                    # nl ends comments, docstrings.
-        gen = difflib.Differ().compare(tokens, results)
+        ndiff = False
+        if ndiff:
+            # FAILS:
+            #  File "C:\Users\edreamleo\Anaconda3\lib\difflib.py", line 1017, in _fancy_replace
+            #  yield '  ' + aelt
+            #  TypeError: can only concatenate str (not "tuple") to str
+            results = self.results
+            tokens = [(z.kind, z.value) for z in self.tokens]
+            gen = difflib.ndiff(tokens, results)
+        else:
+            # Works.
+            results = [
+                f"{z[0]:>12}:{z[1]}" for z in self.results
+                    if z[0] not in ('ws',)]
+            tokens = [
+                f"{z.kind:>12}:{z.value}" for z in self.tokens
+                    if z.kind not in ('indent', 'dedent', 'ws')]
+                        # nl ends comments, docstrings.
+            gen = difflib.Differ().compare(tokens, results)
         t1 = time.process_time()
         diffs = list(gen)
         t2 = time.process_time()
