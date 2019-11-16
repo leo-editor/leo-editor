@@ -1128,7 +1128,7 @@ class TokenOrderGenerator:
             f"create_links: created {len(self.results)} results in {(t2-t1):4.2f} sec."
             f"max_level: {self.max_level}, max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191114161840.1: *3* tog.verify
-    def verify(self, trace=True):
+    def verify(self):
         """
         Verify that tokens match (in some reasonable, subclass-defined way)
         the contents of self.results.
@@ -1148,9 +1148,15 @@ class TokenOrderGenerator:
             gen = difflib.ndiff(tokens, results)
         # gen1, gen2 = itertools.tee(gen, 2)
         try:
-            if 1 and trace: # Print the diffs.
-                for z in gen:
+            t1 = time.process_time()
+            diffs = list(gen)
+            t2 = time.process_time()
+            if len(diffs) < 1000:
+                for z in diffs:
                     print(z)
+            else:
+                print(f"difflib produced {len(diffs)} diffs")
+            print(f"verify: diff: {(t2-t1):4.2f} sec.")
         except Exception:
             print('')
             print(f"   {'tokens':<30} {'results':<30}")
