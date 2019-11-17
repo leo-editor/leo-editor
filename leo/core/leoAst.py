@@ -2420,14 +2420,12 @@ class AssignLinks:
         self.tokens = tokens
         self.node = tree
         self.rx, self.tx = 0, 0
-        ### self.find_first_node()
-        ### assert self.tx > 0, ('bad tx', self.tx)
         while self.tx < len(self.tokens) and self.rx < len(self.results):
             assert self.node, g.callers()
             kind = self.tokens[self.tx].kind
             name = f"{kind}_handler"
             handler = getattr(self, name)
-            # print(f"{name:12} {rx:<3} {tx:<3} {node.__class__.__name__}")
+            # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
             handler()
             self.tx += 1
     #@+node:ekr.20191116153348.1: *3* links.set_links
@@ -2496,7 +2494,6 @@ class AssignLinks:
         if tx == 0:
             # Update the links and ivars.
             self.set_links(rx, tx)
-            ### self.tx += 1
             return
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
     #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
@@ -2589,7 +2586,6 @@ class AssignLinks:
         # A special case.  Use the *token's* spelling in the result.
         r_kind, r_val, r_node = self.results[rx2]
         assert token_value == r_val, (repr(token_value), repr(r_val))
-        ###
             # if token_value != r_val:
                 # g.trace(f"token.value: {token_value} result.val: {r_val}")
                 # self.results[rx2] = r_kind, token_value, r_node
