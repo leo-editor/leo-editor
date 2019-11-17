@@ -1110,7 +1110,7 @@ class TokenOrderGenerator:
     def assign_links(self):
         """Assign two-way links between tokens and results."""
         try:
-            AssignLinks().assign_links(self.tokens, self.results)
+            AssignLinks().assign_links(self.results, self.tokens, self.tree)
             return True
         except Exception as e:
             g.trace(e)
@@ -1124,6 +1124,7 @@ class TokenOrderGenerator:
         tokens, in exact order.
         """
         t1 = time.process_time()
+        self.tree = tree # Immutable.
         self.tokens = tokens[:]
         self.token_index = 0
         self.node = None  # The parent.
@@ -2413,15 +2414,15 @@ class AssignLinks:
 
     #@+others
     #@+node:ekr.20191115034242.1: *3* links.assign_links
-    def assign_links(self, tokens, results):
+    def assign_links(self, results, tokens, tree):
         """Assign two-way links between tokens and results."""
         self.results = results
         self.tokens = tokens
+        self.node = tree
         self.rx, self.tx = 0, 0
-        self.find_first_node()
-        assert self.tx > 0, ('bad tx', self.tx)
+        ### self.find_first_node()
+        ### assert self.tx > 0, ('bad tx', self.tx)
         while self.tx < len(self.tokens) and self.rx < len(self.results):
-            ### g.trace('self.tx', self.tx)
             assert self.node, g.callers()
             kind = self.tokens[self.tx].kind
             name = f"{kind}_handler"
@@ -2433,7 +2434,6 @@ class AssignLinks:
     def set_links(self, rx, tx):
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
         # Check everything.
-        ### g.trace('tx', repr(tx))
         token = self.tokens[tx]
         r_kind, r_val, node = self.results[rx]
         assert isinstance(node, ast.AST), g.callers()
@@ -2456,24 +2456,6 @@ class AssignLinks:
         self.node = node
         self.rx = rx + 1
         # The main loop updates self.tx.
-    #@+node:ekr.20191116152037.1: *3* links.find_first_node
-    def find_first_node(self):
-        """Set self.node"""
-        tx = self.tx
-        kind = self.tokens[tx].kind
-        if kind == 'encoding':
-            self.encoding_handler()
-            assert self.tx == 1, g.callers()
-            return
-        # Assign all prefix tokens to the first node.
-        for tx, token in enumerate(self.tokens):
-            node = self.tokens[tx].node
-            if node:
-                for rx in range(tx):
-                    self.set_links(rx, tx)
-                self.tx = tx + 1
-                return
-        raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
     def find_in_results(self, rx, tx, optional=False):
         """
@@ -2514,7 +2496,7 @@ class AssignLinks:
         if tx == 0:
             # Update the links and ivars.
             self.set_links(rx, tx)
-            self.tx += 1
+            ### self.tx += 1
             return
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
     #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
