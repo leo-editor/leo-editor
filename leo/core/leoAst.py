@@ -2428,18 +2428,6 @@ class AssignLinks:
             # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
             handler()
             self.tx += 1
-    #@+node:ekr.20191117092616.1: *3* links.dump_result & dump_token
-    def dump_result(self, rx):
-        """Return a string representing self.results[rx]."""
-        result = self.results[rx]
-        kind, val, node = result
-        val = truncate(val, 30)
-        return f"rx: {rx:<3} {kind:12} {val:30} {node.__class__.__name__}"
-
-    def dump_token(self, tx):
-        """Return a string representing self.tokens[tx]."""
-        token = self.tokens[tx]
-        print(f"tx: {tx<3} {token.error_dump()}")
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, rx, tx):
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
@@ -2485,18 +2473,39 @@ class AssignLinks:
                 if optional:
                     if trace: print(f"{tag} SKIP  {kind:12} at rx: {rx}")
                     return None
-                # This will likely be the only serious failure possible.
-                message = f"\n{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}\n"
-                print(message)
-                for tx2 in range(max(0,tx-5),tx):
-                    print('tx', tx2, self.tokens[tx2])
-                    # print(self.dump_token(tx2))
-                for rx2 in range(max(0,rx-5),rx):
-                    print(self.dump_result(rx2))
+                # This is the only possible serious failure.
+                message = f"{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}"
+                self.sync_error(message, rx, tx)
                 raise AssignLinksError(message)
             rx += 1
         raise AssignLinksError(end_message)
-    #@+node:ekr.20191116164159.1: *3* links:Visitors
+    #@+node:ekr.20191117121053.1: *3* links.sync_error & helpers
+    def sync_error(self, message, rx, tx):
+        
+        print('')
+        print(message)
+        print('\nNearby tokens...\n')
+        for tx2 in range(max(0,tx-5),tx):
+            print(self.dump_token(tx2))
+        print('\nNearby results...\n')
+        for rx2 in range(max(0,rx-5),rx):
+            print(self.dump_result(rx2))
+        print('')
+    #@+node:ekr.20191117092616.1: *4* links.dump_result & dump_token
+    def dump_result(self, rx):
+        """Return a string representing self.results[rx]."""
+        result = self.results[rx]
+        kind, val, node = result
+        val = truncate(val, 20)
+        node_id = str(id(self.node))[-4:]
+        node_s = f"{node_id} {self.node.__class__.__name__}"
+        return f"rx: {rx:<3} {kind:>12} {val:<20} {node_s}"
+
+    def dump_token(self, tx):
+        """Return a string representing self.tokens[tx]."""
+        token = self.tokens[tx]
+        return token.error_dump()
+    #@+node:ekr.20191116164159.1: *3* links: Visitors
     #@+node:ekr.20191116160124.1: *4* links.comment, dedent, indent
     # The results list never contains items matching these tokens.
 
@@ -4634,7 +4643,7 @@ class Token:
         parent_id = str(id(parent))[-4:] if parent else '    '
         children = getattr(self.node, 'children', [])
         return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val():<11} "
+            f"{self.index:>3} {self.kind:>11} {self.show_val(11):<11} "
             f"line: {self.line_number:<2} level: {self.level} "
             f"node: {node_id} {self.node.__class__.__name__:12} "
             f"children: {len(children)} "
@@ -4648,18 +4657,17 @@ class Token:
         else:
             node_s = "None"
         return(
-            f"{self.index:} kind: {self.kind:} "
-            f"value: {self.show_val()} "
-            f"line: {self.line_number} "
-            f"level: {self.level} "
-            f"node: {node_s}")
+            f"tx: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
+            # f"line: {self.line_number} "
+            # f"level: {self.level} "
+            f"{node_s}")
     #@+node:ekr.20191113095507.1: *3* token.show_val
-    def show_val(self):
+    def show_val(self, truncate_n=20):
         
         if self.kind in ('ws', 'indent'):
             val = len(self.value)
         else:
-            val = truncate(repr(self.value), 11)
+            val = truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20191110165235.1: ** class Tokenizer
