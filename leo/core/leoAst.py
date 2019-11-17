@@ -269,7 +269,9 @@ def test_token_traversers(contents, reports=None):
             x.diff()
         elif report == 'assign-links':
             print('\nAssigning links...')
-            x.assign_links()
+            ok = x.assign_links()
+            if not ok:
+                break
         elif report == 'results':
             print('\nResults...\n')
             for i, z in enumerate(x.results):
@@ -1107,7 +1109,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191116160557.1: *3* tog.assign_links
     def assign_links(self):
         """Assign two-way links between tokens and results."""
-        AssignLinks().assign_links(self.tokens, self.results)
+        try:
+            AssignLinks().assign_links(self.tokens, self.results)
+            return True
+        except Exception as e:
+            g.trace(e)
+            return False
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
     def create_links(self, tokens, tree):
         """
@@ -2457,7 +2464,7 @@ class AssignLinks:
                 return node, 0, tx + 1
         raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
-    def find_in_results(self, kind, rx):
+    def find_in_results(self, kind, rx, optional=False):
         """
         Scan forward from self.results[rx], looking for result of the given kind.
         """
@@ -2465,11 +2472,15 @@ class AssignLinks:
         while rx < len(self.results):
             r = self.results[rx]
             r_kind, r_val, r_node = r
-            ### g.trace(rx, r_kind)
+            # g.trace(rx, r_kind)
             if r_kind == kind:
+                g.trace(f"FOUND {kind:12} at rx: {rx}")
                 return rx
             if r_kind in ('name', 'number', 'op'):
-                raise AssignLinksError(f"FAIL at {rx}: looking for {kind}, found {r_kind}")
+                if optional:
+                    g.trace(f"SKIP  {kind:12} at rx: {rx}")
+                    return None
+                raise AssignLinksError(f"FAIL at rx: {rx}. target: {kind}, found: {r_kind}")
             rx += 1
         raise AssignLinksError(end_message)
     #@+node:ekr.20191116164159.1: *3* links:Visitors
@@ -2507,7 +2518,10 @@ class AssignLinks:
     def do_newline(self, node, rx, tx):
 
         token = self.tokens[tx]
-        rx2 = self.find_in_results(token.kind, rx)
+        # Special case: newlines are optional.
+        rx2 = self.find_in_results(token.kind, rx, optional=True)
+        if not rx2:
+            return node, rx + 1, tx + 1
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
         return r_node, rx + 1, tx + 1
