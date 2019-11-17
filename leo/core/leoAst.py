@@ -268,7 +268,7 @@ def test_token_traversers(contents, reports=None):
             print('\nDiff...\n')
             x.diff()
         elif report == 'assign-links':
-            print('\nAssigning links...\n')
+            print('\nAssigning links...')
             x.assign_links()
         elif report == 'results':
             print('\nResults...\n')
@@ -1120,6 +1120,7 @@ class TokenOrderGenerator:
         self.node = None  # The parent.
         yield from self.visitor(tree)
         # Patch the last tokens.
+        self.node = tree
         yield self.put('newline', '\n')
         yield self.put('endmarker', '')
         t2 = time.process_time()
@@ -2400,9 +2401,6 @@ class TokenOrderGenerator:
     #@-others
 #@+node:ekr.20191116160325.1: ** class AssignLinks
 class AssignLinks:
-    
-    last_node = None
-    last_token = None
 
     #@+others
     #@+node:ekr.20191115034242.1: *3* links.assign_links
@@ -2410,37 +2408,16 @@ class AssignLinks:
         """Assign two-way links between tokens and results."""
         self.results = results
         self.tokens = tokens
-        node, rx, tx = self.init()
-        while tx < len(self.tokens) and rx < self.results:
+        node, rx, tx = self.start()
+        while tx < len(self.tokens) and rx < len(self.results):
             assert node
             progress = rx, tx
             kind = self.tokens[tx].kind
-            handler = getattr(self, f"do_{kind}")
+            name = f"do_{kind}"
+            handler = getattr(self, name)
+            # print(f"{name:12} {rx:<3} {tx:<3} {node.__class__.__name__}")
             node, rx, tx = handler(node, rx, tx)
-            assert progress < rx, tx
-
-        ### Old.
-            # t = self.tokens[tx]
-            # r = self.results[rx]
-            # key = f"{t.kind}:{r.kind}"
-    #@+node:ekr.20191116152037.1: *3* links.init
-    def init(self):
-        """Initialize the token scan."""
-        rx, tx = 0, 0
-        token = self.tokens[0]
-        if token.kind == 'encoding':
-            node = token.node
-            assert node
-            self.set_links(node, token)
-            return node, rx, tx + 1
-        # Assign all prefix tokens to the first node.
-        for tx, token in enumerate(self.tokens):
-            node = self.tokens[tx].node
-            if node:
-                for i in range(tx):
-                    self.set_links(node, self.tokens[i])
-                return node, 0, tx + 1
-        raise AssignLinksError(f"All tokens have null token.node fields")
+            assert progress < (rx, tx), (progress, rx, tx)
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, node, token):
         """Set two-way links between self.tokens[tx] and the given ast node."""
@@ -2461,32 +2438,120 @@ class AssignLinks:
         token_list = getattr(node, 'token_list', [])
         token_list.append(token)
         node.token_list = token_list
+    #@+node:ekr.20191116152037.1: *3* links.start
+    def start(self):
+        """Initialize the token scan."""
+        rx, tx = 0, 0
+        token = self.tokens[tx]
+        res = self.results[rx]
+        if token.kind == 'encoding':
+            node = res[2]
+            self.set_links(node, token)
+            return node, rx, tx + 1
+        # Assign all prefix tokens to the first node.
+        for tx, token in enumerate(self.tokens):
+            node = self.tokens[tx].node
+            if node:
+                for i in range(tx):
+                    self.set_links(node, self.tokens[i])
+                return node, 0, tx + 1
+        raise AssignLinksError(f"All tokens have null token.node fields")
+    #@+node:ekr.20191117010102.1: *3* links.find_in_results
+    def find_in_results(self, kind, rx):
+        """
+        Scan forward from self.results[rx], looking for result of the given kind.
+        """
+        end_message = f"FAIL at end: {kind} not found starting at {rx}"
+        while rx < len(self.results):
+            r = self.results[rx]
+            r_kind, r_val, r_node = r
+            ### g.trace(rx, r_kind)
+            if r_kind == kind:
+                return rx
+            if r_kind in ('name', 'number', 'op'):
+                raise AssignLinksError(f"FAIL at {rx}: looking for {kind}, found {r_kind}")
+            rx += 1
+        raise AssignLinksError(end_message)
     #@+node:ekr.20191116164159.1: *3* links:Visitors
     #@+node:ekr.20191116160136.1: *4* links.do_comment
     def do_comment(self, node, rx, tx):
-        pass
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        self.set_links(r_node, token)
+        return r_node, rx2 + 1, tx + 1
+
     #@+node:ekr.20191116152657.1: *4* links.do_encoding
     def do_encoding(self, node, rx, tx):
         
-        raise AssignLinksError(f"do_encoding: unexpected 'encoding' token. tx={tx}")
+        """Handle an encoding token appearing at tx > 0."""
+        raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
+    #@+node:ekr.20191117015348.1: *4* links.do_endmarker
+    def do_endmarker(self, node, rx, tx):
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        self.set_links(r_node, token)
+        return r_node, rx2 + 1, tx + 1
     #@+node:ekr.20191116161848.1: *4* links.do_name
     def do_name(self, node, rx, tx):
-        pass
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        self.set_links(r_node, token)
+        return r_node, rx2 + 1, tx + 1
     #@+node:ekr.20191116161718.1: *4* links.do_newline
     def do_newline(self, node, rx, tx):
-        pass
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        self.set_links(r_node, token)
+        return r_node, rx + 1, tx + 1
     #@+node:ekr.20191116161922.1: *4* links.do_number
     def do_number(self, node, rx, tx):
-        pass
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
+        self.set_links(r_node, token)
+        return r_node, rx2 + 1, tx + 1
     #@+node:ekr.20191116160124.1: *4* links.do_nl
     def do_nl(self, node, rx, tx):
-        pass
+
+        # Just skip this token.
+        return node, rx, tx + 1
     #@+node:ekr.20191116161828.1: *4* links.do_op
     def do_op(self, node, rx, tx):
-        pass
+            
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
+        self.set_links(r_node, token)
+        return r_node, rx2 + 1, tx + 1
+
     #@+node:ekr.20191116161759.1: *4* links.do_string
     def do_string(self, node, rx, tx):
-        pass
+
+        token = self.tokens[tx]
+        rx2 = self.find_in_results(token.kind, rx)
+        r_kind, r_val, r_node = self.results[rx2]
+        assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
+        self.set_links(r_node, token)
+        # A special case.  Use the *token's* spelling in the result.
+        self.results[rx2] = r_kind, token.value, r_node
+        return r_node, rx2 + 1, tx + 1
+    #@+node:ekr.20191117015251.1: *4* links.do_ws
+    def do_ws(self, node, rx, tx):
+
+        # Just skip this token.
+        return node, rx, tx + 1
+            
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
