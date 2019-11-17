@@ -2429,8 +2429,6 @@ class AssignLinks:
             handler()
             self.tx += 1
     #@+node:ekr.20191116153348.1: *3* links.set_links
-    ### def set_links(self, rx, token):
-    ###    """Set two-way links between token and self.results[rx].node"""
     def set_links(self, rx, tx):
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
         # Check everything.
@@ -2465,17 +2463,14 @@ class AssignLinks:
         if kind == 'encoding':
             self.encoding_handler()
             assert self.tx == 1, g.callers()
-            ### self.tx += 1
             return
         # Assign all prefix tokens to the first node.
         for tx, token in enumerate(self.tokens):
             node = self.tokens[tx].node
             if node:
                 for rx in range(tx):
-                    ### self.set_links(node, self.tokens[i])
-                    self.set_links(rx, tx) ### node, self.tokens[i])
-                ### self.node = node
-                ### self.tx = tx + 1
+                    self.set_links(rx, tx)
+                self.tx = tx + 1
                 return
         raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
@@ -2515,10 +2510,7 @@ class AssignLinks:
         """Handle an encoding token. It should appear first"""
         rx, tx = self.rx, self.tx
         if tx == 0:
-            # Find the matching result.
-            ### token = self.tokens[tx]
             # Update the links and ivars.
-            ### self.set_links(rx, token)
             self.set_links(rx, tx)
             self.tx += 1
             return
@@ -2531,11 +2523,7 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        ### self.set_links(rx, token)
         self.set_links(rx2, tx)
-        # Update.
-        ### self.rx = rx2 + 1
-        ### To do: run final checks.
     #@+node:ekr.20191116161848.1: *4* links.name
     def name_handler(self):
         """
@@ -2546,10 +2534,7 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        ### self.set_links(rx2, token)
         self.set_links(rx2, tx)
-        # Update.
-        ## self.rx = rx2 + 1
     #@+node:ekr.20191116161718.1: *4* links.newline
     def newline_handler(self):
         """
@@ -2567,10 +2552,7 @@ class AssignLinks:
         if not rx2:
             return
         # Update the links and ivars.
-        ### self.set_links(rx2, token)
         self.set_links(rx2, tx)
-        # Update.
-        ### self.rx = rx2 + 1
     #@+node:ekr.20191117073210.1: *4* links.nl & ws
     # The results list never contains these tokens.
 
@@ -2601,8 +2583,6 @@ class AssignLinks:
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
-        # Update.
-        ### self.rx = rx2 + 1
     #@+node:ekr.20191116161828.1: *4* links.op
     def op_handler(self):
         """
@@ -2614,9 +2594,6 @@ class AssignLinks:
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
-        # Update.
-        ### self.rx = rx2 + 1
-
     #@+node:ekr.20191116161759.1: *4* links.string
     def string_handler(self):
         """
@@ -2633,14 +2610,11 @@ class AssignLinks:
         rx2 = self.find_in_results(token.kind, rx, optional=True)
         r_kind, r_val, r_node = self.results[rx2]
         # Update the links and ivars.
-        ### self.set_links(rx2, token)
         self.set_links(rx2, tx)
         # A special case.  Use the *token's* spelling in the result.
         if token.value != r_val:
             g.trace(f"token.value: {token.value} result.val: {r_val}")
             self.results[rx2] = r_kind, token.value, r_node
-        # Update.
-        ### self.rx = rx2 + 1
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
