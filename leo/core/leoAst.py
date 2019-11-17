@@ -2418,16 +2418,13 @@ class AssignLinks:
         self.rx, self.tx = 0, 0
         self.find_first_node()
         while self.tx < len(self.tokens) and self.rx < len(self.results):
-            ### progress = self.rx, self.tx
             assert self.node, g.callers()
             kind = self.tokens[self.tx].kind
             name = f"{kind}_handler"
             handler = getattr(self, name)
             # print(f"{name:12} {rx:<3} {tx:<3} {node.__class__.__name__}")
-            ### node, rx, tx = handler(node, rx, tx)
             handler()
             self.tx += 1
-            ### assert progress < (self.rx, self.tx), (progress, self.rx, self.tx)
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, node, token):
         """Set two-way links between self.tokens[tx] and the given ast node."""
@@ -2453,11 +2450,7 @@ class AssignLinks:
         """Set self.node"""
         tx = self.tx
         kind = self.tokens[tx].kind
-        ### res = self.results[rx]
         if kind == 'encoding':
-            # node = res[2]
-            # self.set_links(node, token)
-            # return node, rx, tx + 1
             self.encoding_handler()
             self.tx += 1
             return
@@ -2467,9 +2460,9 @@ class AssignLinks:
             if node:
                 for i in range(tx):
                     self.set_links(node, self.tokens[i])
-                ### return node, 0, tx + 1
                 self.node = node
                 self.tx = tx + 1
+                return
         raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
     def find_in_results(self, kind, rx, optional=False):
@@ -2492,7 +2485,7 @@ class AssignLinks:
             rx += 1
         raise AssignLinksError(end_message)
     #@+node:ekr.20191116164159.1: *3* links:Visitors
-    #@+node:ekr.20191116160124.1: *4* links.comment, dedent, indent, nl
+    #@+node:ekr.20191116160124.1: *4* links.comment, dedent, indent
     # The results list never contains items matching these tokens.
 
     def comment_handler(self):
@@ -2503,23 +2496,19 @@ class AssignLinks:
         
     def indent_handler(self):
         pass
-        
-    def nl_handler(self, node, rx, tx):
-        """
-        Handle a 'nl' token.
-        These tokens follow comment tokens and multi-line string tokens.
-        """
-        pass
     #@+node:ekr.20191116152657.1: *4* links.encoding
     def encoding_handler(self):
         """Handle an encoding token. It should appear first"""
         rx, tx = self.rx, self.tx
         if tx == 0:
+            # Find the matching result.
             token = self.tokens[tx]
             res = self.results[rx]
             node = res[2]
             assert node, 'no node for encoding token'
+            # Update the links.
             self.set_links(node, token)
+            # Update.
             self.node = node
             return
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
@@ -2527,22 +2516,28 @@ class AssignLinks:
     def endmarker_handler(self):
 
         rx, tx = self.rx, self.tx
+        # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         r_kind, r_val, r_node = self.results[rx2]
+        # Update the links.
         self.set_links(r_node, token)
-        ### return r_node, rx2 + 1, tx + 1
+        # Update.
+        self.rx = rx2 + 1
+        ### To do: run final checks.
     #@+node:ekr.20191116161848.1: *4* links.name
     def name_handler(self):
         """
         'name' tokens block lookahead.
         """
         rx, tx = self.rx, self.tx
+        # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
+        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
-        ### return r_node, rx2 + 1, tx + 1
+        # Update.
         self.node = r_node
         self.rx = rx2 + 1
     #@+node:ekr.20191116161718.1: *4* links.newline
@@ -2555,28 +2550,50 @@ class AssignLinks:
         Note that 'nl' tokens represent newlines in continued strings.
         """
         rx, tx = self.rx, self.tx
-        token = self.tokens[tx]
+        # Find the matching result.
         # Special case: newlines are optional.
+        token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx, optional=True)
         if not rx2:
-            return ### node, rx + 1, tx + 1
+            return
+        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
-        ### return r_node, rx + 1, tx + 1
+        # Update.
         self.node = r_node
         self.rx = rx2 + 1
+    #@+node:ekr.20191117073210.1: *4* links.nl & ws
+    # The results list never contains these tokens.
+
+    def nl_handler(self, node, rx, tx):
+        """
+        Handle a 'nl' token.
+        These tokens follow comment tokens and multi-line string tokens.
+        """
+        pass
+
+    def ws_handler(self):
+        """
+        'ws' tokens represent *actual* whitespace in the token stream, and
+        *suggested* whitespace in the results list.
+        
+        This handler just skips this token, leaving it for later to decide
+        whether to associate the token an ast node.
+        """
+        pass
     #@+node:ekr.20191116161922.1: *4* links.number
     def number_handler(self):
         """
         'number' tokens block lookahead.
         """
         rx, tx = self.rx, self.tx
+        # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
+        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
-        assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
         self.set_links(r_node, token)
-        ### return r_node, rx2 + 1, tx + 1
+        # Update.
         self.node = r_node
         self.rx = rx2 + 1
     #@+node:ekr.20191116161828.1: *4* links.op
@@ -2585,11 +2602,13 @@ class AssignLinks:
         'op' tokens block lookahead.
         """
         rx, tx = self.rx, self.tx
+        # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
+        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
-        ### return r_node, rx2 + 1, tx + 1
+        # Update.
         self.node = r_node
         self.rx = rx2 + 1
 
@@ -2604,28 +2623,19 @@ class AssignLinks:
         replace the spelling of strings in results.
         """
         rx, tx = self.rx, self.tx
+        # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx, optional=True)
+        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
         # A special case.  Use the *token's* spelling in the result.
         if token.value != r_val:
             g.trace(f"token.value: {token.value} result.val: {r_val}")
             self.results[rx2] = r_kind, token.value, r_node
-        ### return r_node, rx2 + 1, tx + 1
         # Update.
         self.node = r_node
         self.rx = rx2 + 1
-    #@+node:ekr.20191117015251.1: *4* links.ws
-    def ws_handler(self):
-        """
-        'ws' tokens represent *actual* whitespace in the token stream, and
-        *suggested* whitespace in the results list.
-        
-        This handler just skips this token, leaving it for later to decide
-        whether to associate the token an ast node.
-        """
-        pass
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
