@@ -2475,10 +2475,9 @@ class AssignLinks:
                 return
         raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
-    ### def find_in_results(self, rx, tx, optional=False):
     def find_in_results(self, rx, tx, optional=False):
         """
-        Scan forward from self.results[rx], looking for result matching self.tokens[tx].kind
+        Scan forward from self.results[rx], looking for self.tokens[tx].kind.
         """
         trace = False and not g.unitTesting
         kind = self.tokens[tx].kind
@@ -2486,7 +2485,6 @@ class AssignLinks:
         while rx < len(self.results):
             r = self.results[rx]
             r_kind, r_val, r_node = r
-            # g.trace(rx, r_kind)
             if r_kind == kind:
                 if trace: g.trace(f"FOUND {kind:12} at rx: {rx}")
                 return rx
@@ -2524,8 +2522,6 @@ class AssignLinks:
 
         rx, tx = self.rx, self.tx
         # Find the matching result.
-        ###token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx)
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
@@ -2536,8 +2532,6 @@ class AssignLinks:
         """
         rx, tx = self.rx, self.tx
         # Find the matching result.
-        ### token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx)
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
@@ -2552,10 +2546,7 @@ class AssignLinks:
         """
         rx, tx = self.rx, self.tx
         # Find the matching result.
-        # Special case: newlines are optional.
-        ### token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx, optional=True)
-        rx2 = self.find_in_results(rx, tx)
+        rx2 = self.find_in_results(rx, tx, optional=True)
         if rx2:
             # Update the links and ivars.
             self.set_links(rx2, tx)
@@ -2585,20 +2576,14 @@ class AssignLinks:
         """
         rx, tx = self.rx, self.tx
         # Find the matching result.
-        ### token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx)
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
     #@+node:ekr.20191116161828.1: *4* links.op
     def op_handler(self):
-        """
-        'op' tokens block lookahead.
-        """
+        """The 'op' token blocks lookahead."""
         rx, tx = self.rx, self.tx
         # Find the matching result.
-        ### token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx)
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
@@ -2616,16 +2601,16 @@ class AssignLinks:
         # For later.
         token_value = self.tokens[tx].value
         # Find the matching result.
-        ### token = self.tokens[tx]
-        ### rx2 = self.find_in_results(token.kind, rx, optional=True)
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
         # A special case.  Use the *token's* spelling in the result.
         r_kind, r_val, r_node = self.results[rx2]
-        if token_value != r_val:
-            g.trace(f"token.value: {token_value} result.val: {r_val}")
-            self.results[rx2] = r_kind, token_value, r_node
+        assert token_value == r_val, (repr(token_value), repr(r_val))
+        ###
+            # if token_value != r_val:
+                # g.trace(f"token.value: {token_value} result.val: {r_val}")
+                # self.results[rx2] = r_kind, token_value, r_node
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
