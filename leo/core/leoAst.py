@@ -1114,6 +1114,7 @@ class TokenOrderGenerator:
             return True
         except Exception as e:
             g.trace(e)
+            g.es_exception()
             return False
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
     def create_links(self, tokens, tree):
@@ -2417,7 +2418,9 @@ class AssignLinks:
         self.tokens = tokens
         self.rx, self.tx = 0, 0
         self.find_first_node()
+        assert self.tx > 0, ('bad tx', self.tx)
         while self.tx < len(self.tokens) and self.rx < len(self.results):
+            g.trace('self.tx', self.tx)
             assert self.node, g.callers()
             kind = self.tokens[self.tx].kind
             name = f"{kind}_handler"
@@ -2426,9 +2429,13 @@ class AssignLinks:
             handler()
             self.tx += 1
     #@+node:ekr.20191116153348.1: *3* links.set_links
-    def set_links(self, rx, token):
-        """Set two-way links between token and self.results[rx].node"""
+    ### def set_links(self, rx, token):
+    ###    """Set two-way links between token and self.results[rx].node"""
+    def set_links(self, rx, tx):
+        """Set two-way links between self.tokens[tx] and self.results[rx].node"""
         # Check everything.
+        g.trace('tx', repr(tx))
+        token = self.tokens[tx]
         r_kind, r_val, node = self.results[rx]
         assert isinstance(node, ast.AST), g.callers()
         assert isinstance(token, Token), g.callers()
@@ -2446,8 +2453,10 @@ class AssignLinks:
         token_list = getattr(node, 'token_list', [])
         token_list.append(token)
         node.token_list = token_list
-        # Update.
+        # Update ivars.
         self.node = node
+        self.rx = rx + 1
+        # The main loop updates self.tx.
     #@+node:ekr.20191116152037.1: *3* links.find_first_node
     def find_first_node(self):
         """Set self.node"""
@@ -2455,16 +2464,18 @@ class AssignLinks:
         kind = self.tokens[tx].kind
         if kind == 'encoding':
             self.encoding_handler()
-            self.tx += 1
+            assert self.tx == 1, g.callers()
+            ### self.tx += 1
             return
         # Assign all prefix tokens to the first node.
         for tx, token in enumerate(self.tokens):
             node = self.tokens[tx].node
             if node:
-                for i in range(tx):
-                    self.set_links(node, self.tokens[i])
-                self.node = node
-                self.tx = tx + 1
+                for rx in range(tx):
+                    ### self.set_links(node, self.tokens[i])
+                    self.set_links(rx, tx) ### node, self.tokens[i])
+                ### self.node = node
+                ### self.tx = tx + 1
                 return
         raise AssignLinksError(f"All tokens have null token.node fields")
     #@+node:ekr.20191117010102.1: *3* links.find_in_results
@@ -2505,9 +2516,11 @@ class AssignLinks:
         rx, tx = self.rx, self.tx
         if tx == 0:
             # Find the matching result.
-            token = self.tokens[tx]
+            ### token = self.tokens[tx]
             # Update the links and ivars.
-            self.set_links(rx, token)
+            ### self.set_links(rx, token)
+            self.set_links(rx, tx)
+            self.tx += 1
             return
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
     #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
@@ -2518,9 +2531,10 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        self.set_links(rx, token)
+        ### self.set_links(rx, token)
+        self.set_links(rx2, tx)
         # Update.
-        self.rx = rx2 + 1
+        ### self.rx = rx2 + 1
         ### To do: run final checks.
     #@+node:ekr.20191116161848.1: *4* links.name
     def name_handler(self):
@@ -2532,9 +2546,10 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        self.set_links(rx2, token)
+        ### self.set_links(rx2, token)
+        self.set_links(rx2, tx)
         # Update.
-        self.rx = rx2 + 1
+        ## self.rx = rx2 + 1
     #@+node:ekr.20191116161718.1: *4* links.newline
     def newline_handler(self):
         """
@@ -2552,9 +2567,10 @@ class AssignLinks:
         if not rx2:
             return
         # Update the links and ivars.
-        self.set_links(rx2, token)
+        ### self.set_links(rx2, token)
+        self.set_links(rx2, tx)
         # Update.
-        self.rx = rx2 + 1
+        ### self.rx = rx2 + 1
     #@+node:ekr.20191117073210.1: *4* links.nl & ws
     # The results list never contains these tokens.
 
@@ -2584,9 +2600,9 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        self.set_links(rx2, token)
+        self.set_links(rx2, tx)
         # Update.
-        self.rx = rx2 + 1
+        ### self.rx = rx2 + 1
     #@+node:ekr.20191116161828.1: *4* links.op
     def op_handler(self):
         """
@@ -2597,9 +2613,9 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links and ivars.
-        self.set_links(rx2, token)
+        self.set_links(rx2, tx)
         # Update.
-        self.rx = rx2 + 1
+        ### self.rx = rx2 + 1
 
     #@+node:ekr.20191116161759.1: *4* links.string
     def string_handler(self):
@@ -2617,13 +2633,14 @@ class AssignLinks:
         rx2 = self.find_in_results(token.kind, rx, optional=True)
         r_kind, r_val, r_node = self.results[rx2]
         # Update the links and ivars.
-        self.set_links(rx2, token)
+        ### self.set_links(rx2, token)
+        self.set_links(rx2, tx)
         # A special case.  Use the *token's* spelling in the result.
         if token.value != r_val:
             g.trace(f"token.value: {token.value} result.val: {r_val}")
             self.results[rx2] = r_kind, token.value, r_node
         # Update.
-        self.rx = rx2 + 1
+        ### self.rx = rx2 + 1
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
