@@ -2486,13 +2486,11 @@ class AssignLinks:
     #@+node:ekr.20191116164159.1: *3* links:Visitors
     #@+node:ekr.20191116160136.1: *4* links.do_comment
     def do_comment(self, node, rx, tx):
-
-        token = self.tokens[tx]
-        rx2 = self.find_in_results(token.kind, rx)
-        r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
-        return r_node, rx2 + 1, tx + 1
-
+        
+        # The results never contain 'nl' tokens.
+        # Just skip this token.
+        
+        return node, rx, tx + 1
     #@+node:ekr.20191116152657.1: *4* links.do_encoding
     def do_encoding(self, node, rx, tx):
         
@@ -2537,6 +2535,7 @@ class AssignLinks:
     #@+node:ekr.20191116160124.1: *4* links.do_nl
     def do_nl(self, node, rx, tx):
 
+        # The results never contain 'nl' tokens.
         # Just skip this token.
         return node, rx, tx + 1
     #@+node:ekr.20191116161828.1: *4* links.do_op
