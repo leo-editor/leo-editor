@@ -220,8 +220,8 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
-#@+node:ekr.20191113133338.1: *3* function: test_token_traversers
-def test_token_traversers(contents, reports=None):
+#@+node:ekr.20191113133338.1: *3* function: test_runner
+def test_runner(contents, reports=None):
     """
     A testing framework for TokenOrderGenerator and related classes.
     
@@ -2420,7 +2420,7 @@ class AssignLinks:
             assert node
             progress = rx, tx
             kind = self.tokens[tx].kind
-            name = f"do_{kind}"
+            name = f"{kind}_handler"
             handler = getattr(self, name)
             # print(f"{name:12} {rx:<3} {tx:<3} {node.__class__.__name__}")
             node, rx, tx = handler(node, rx, tx)
@@ -2484,36 +2484,45 @@ class AssignLinks:
             rx += 1
         raise AssignLinksError(end_message)
     #@+node:ekr.20191116164159.1: *3* links:Visitors
-    #@+node:ekr.20191116160136.1: *4* links.do_comment
-    def do_comment(self, node, rx, tx):
+    #@+node:ekr.20191116160136.1: *4* links.comment
+    def comment_handler(self, node, rx, tx):
         
         # The results never contain 'nl' tokens.
         # Just skip this token.
         
         return node, rx, tx + 1
-    #@+node:ekr.20191116152657.1: *4* links.do_encoding
-    def do_encoding(self, node, rx, tx):
+    #@+node:ekr.20191116152657.1: *4* links.encoding
+    def encoding_handler(self, node, rx, tx):
         
         """Handle an encoding token appearing at tx > 0."""
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
-    #@+node:ekr.20191117015348.1: *4* links.do_endmarker
-    def do_endmarker(self, node, rx, tx):
+    #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
+    def endmarker_handler(self, node, rx, tx):
 
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
         return r_node, rx2 + 1, tx + 1
-    #@+node:ekr.20191116161848.1: *4* links.do_name
-    def do_name(self, node, rx, tx):
-
+    #@+node:ekr.20191116161848.1: *4* links.name
+    def name_handler(self, node, rx, tx):
+        """
+        'name' tokens block lookahead.
+        """
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
         return r_node, rx2 + 1, tx + 1
-    #@+node:ekr.20191116161718.1: *4* links.do_newline
-    def do_newline(self, node, rx, tx):
+    #@+node:ekr.20191116161718.1: *4* links.newline
+    def newline_handler(self, node, rx, tx):
+        """
+        'newline' tokens represent newlines in the token stream.
+        
+        They may not correspond exactly to results.
+
+        Note that 'nl' tokens represent newlines in continued strings.
+        """
 
         token = self.tokens[tx]
         # Special case: newlines are optional.
@@ -2523,24 +2532,42 @@ class AssignLinks:
         r_kind, r_val, r_node = self.results[rx2]
         self.set_links(r_node, token)
         return r_node, rx + 1, tx + 1
-    #@+node:ekr.20191116161922.1: *4* links.do_number
-    def do_number(self, node, rx, tx):
-
+    #@+node:ekr.20191116161922.1: *4* links.number
+    def number_handler(self, node, rx, tx):
+        """
+        'number' tokens block lookahead.
+        """
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         r_kind, r_val, r_node = self.results[rx2]
         assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
         self.set_links(r_node, token)
         return r_node, rx2 + 1, tx + 1
-    #@+node:ekr.20191116160124.1: *4* links.do_nl
-    def do_nl(self, node, rx, tx):
+    #@+node:ekr.20191116160124.1: *4* links.dedent, indent, nl
+    # The results list never contains items matching these tokens.
 
-        # The results never contain 'nl' tokens.
+    def dedent_handler(self, node, rx, tx):
+        """Handle a 'dedent' token."""
         # Just skip this token.
         return node, rx, tx + 1
-    #@+node:ekr.20191116161828.1: *4* links.do_op
-    def do_op(self, node, rx, tx):
-            
+        
+    def indent_handler(self, node, rx, tx):
+        """Handle an 'indent' token."""
+        # Just skip this token.
+        return node, rx, tx + 1
+        
+    def nl_handler(self, node, rx, tx):
+        """
+        Handle a 'nl' token.
+        These tokens follow comment tokens and multi-line string tokens.
+        """
+        # Just skip this token.
+        return node, rx, tx + 1
+    #@+node:ekr.20191116161828.1: *4* links.op
+    def op_handler(self, node, rx, tx):
+        """
+        'op' tokens block lookahead.
+        """
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         r_kind, r_val, r_node = self.results[rx2]
@@ -2548,23 +2575,34 @@ class AssignLinks:
         self.set_links(r_node, token)
         return r_node, rx2 + 1, tx + 1
 
-    #@+node:ekr.20191116161759.1: *4* links.do_string
-    def do_string(self, node, rx, tx):
-
+    #@+node:ekr.20191116161759.1: *4* links.string
+    def string_handler(self, node, rx, tx):
+        """
+        'string' tokens are a difficult special case. They are associated with
+        normal strings and with docstrings. Therefore, scanning for them must
+        be optional, which can cause problems laters.
+        
+        Also, the spelling of strings in tokens is the "ground truth". It should
+        replace the spelling of strings in results.
+        """
         token = self.tokens[tx]
-        rx2 = self.find_in_results(token.kind, rx)
+        rx2 = self.find_in_results(token.kind, rx, optional=True)
         r_kind, r_val, r_node = self.results[rx2]
         assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
         self.set_links(r_node, token)
         # A special case.  Use the *token's* spelling in the result.
         self.results[rx2] = r_kind, token.value, r_node
         return r_node, rx2 + 1, tx + 1
-    #@+node:ekr.20191117015251.1: *4* links.do_ws
-    def do_ws(self, node, rx, tx):
-
-        # Just skip this token.
+    #@+node:ekr.20191117015251.1: *4* links.ws
+    def ws_handler(self, node, rx, tx):
+        """
+        'ws' tokens represent *actual* whitespace in the token stream, and
+        *suggested* whitespace in the results list.
+        
+        This handler just skips this token, leaving it for later to decide
+        whether to associate the token an ast node.
+        """
         return node, rx, tx + 1
-            
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -4557,6 +4595,7 @@ class Token:
         #
         # Injected by Tokenizer.add_token.
         self.five_tuple = None
+        self.index = 0
         self.line = ''
             # The entire line containing the token.
             # Same as five_tuple.line.
@@ -4564,8 +4603,7 @@ class Token:
             # The line number, for errors and dumps.
             # Same as five_tuple.start[0]
         #
-        # Injected by TokenOrderGenerator.eat_token.
-        self.index = 0
+        # Injected by AssignLinks class.
         self.level = 0
         self.node = None
 
@@ -4624,7 +4662,9 @@ class Tokenizer:
     """Create a list of Tokens from contents."""
     
     #@+others
-    #@+node:ekr.20191110165235.2: *3* tok.add_token
+    #@+node:ekr.20191110165235.2: *3* tokenizer.add_token
+    token_index = 0
+
     def add_token(self, kind, five_tuple, line, s_row, value):
         """
         Add a token to the results list.
@@ -4633,10 +4673,12 @@ class Tokenizer:
         """
         tok = Token(kind, value)
         tok.five_tuple = five_tuple
+        tok.index = self.token_index
+        self.token_index += 1
         tok.line = line
         tok.line_number = s_row
         self.results.append(tok)
-    #@+node:ekr.20191110170551.1: *3* tok.check_results
+    #@+node:ekr.20191110170551.1: *3* tokenizer.check_results
     def check_results(self, contents):
 
         # Split the results into lines.
@@ -4650,7 +4692,7 @@ class Tokenizer:
             f"result_lines: {result_lines}\n"
             f"lines:        {self.lines}"
         )
-    #@+node:ekr.20191110165235.3: *3* tok.create_input_tokens
+    #@+node:ekr.20191110165235.3: *3* tokenizer.create_input_tokens
     def create_input_tokens(self, contents, tokens):
         """
         Generate a list of Token's from tokens, a list of 5-tuples.
@@ -4670,7 +4712,7 @@ class Tokenizer:
         self.check_results(contents)
         # Return results, as a list.
         return self.results
-    #@+node:ekr.20191110165235.4: *3* tok.do_token (the gem)
+    #@+node:ekr.20191110165235.4: *3* tokenizer.do_token (the gem)
     def do_token(self, contents, five_tuple):
         """
         Handle the given token, optionally including between-token whitespace.
