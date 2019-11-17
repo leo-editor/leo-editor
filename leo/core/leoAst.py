@@ -2428,13 +2428,18 @@ class AssignLinks:
             # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
             handler()
             self.tx += 1
-    #@+node:ekr.20191117092616.1: *3* links.dump_result
+    #@+node:ekr.20191117092616.1: *3* links.dump_result & dump_token
     def dump_result(self, rx):
         """Return a string representing self.results[rx]."""
-        r = self.results[rx]
-        kind, val, node = r
+        result = self.results[rx]
+        kind, val, node = result
         val = truncate(val, 30)
         return f"rx: {rx:<3} {kind:12} {val:30} {node.__class__.__name__}"
+
+    def dump_token(self, tx):
+        """Return a string representing self.tokens[tx]."""
+        token = self.tokens[tx]
+        print(f"tx: {tx<3} {token.error_dump()}")
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, rx, tx):
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
@@ -2474,17 +2479,20 @@ class AssignLinks:
             r = self.results[rx]
             r_kind, r_val, r_node = r
             if r_kind == kind:
-                if trace: g.trace(f"FOUND {kind:12} at rx: {rx}")
+                if trace: print(f"{tag} FOUND {kind:12} at rx: {rx}")
                 return rx
             if r_kind in ('name', 'number', 'op'):
                 if optional:
-                    if trace: g.trace(f"SKIP  {kind:12} at rx: {rx}")
+                    if trace: print(f"{tag} SKIP  {kind:12} at rx: {rx}")
                     return None
                 # This will likely be the only serious failure possible.
-                message = f"{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}"
+                message = f"\n{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}\n"
                 print(message)
-                for i in range(max(0,rx-5),rx):
-                    print(self.dump_result(i))
+                for tx2 in range(max(0,tx-5),tx):
+                    print('tx', tx2, self.tokens[tx2])
+                    # print(self.dump_token(tx2))
+                for rx2 in range(max(0,rx-5),rx):
+                    print(self.dump_result(rx2))
                 raise AssignLinksError(message)
             rx += 1
         raise AssignLinksError(end_message)
