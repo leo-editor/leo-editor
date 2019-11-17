@@ -1167,10 +1167,24 @@ class TokenOrderGenerator:
             f"{len(diffs)} diffs in {(t2-t1):4.2f} sec.\n")
         if len(diffs) < 1000:
             legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
+            heading = f"tx  rx  kind {'diff key kind:value':>15}"
+            line    = f"=== === ==== {'===================':>15}"
             print(legend)
+            print(heading)
+            print(line)
+            rx = tx = 0
             for i, z in enumerate(diffs):
-                if z[0] != '?': # A mystery.
-                    print(f"{i:<4}: {truncate(z, 80)!r}")
+                kind = z[0]
+                if kind != '?': # A mystery.
+                    print(f"{tx:<3} {rx:<3} {kind!r:4} {truncate(z[1:], 80)!s}")
+                if kind == ' ':
+                    rx, tx = rx + 1, tx + 1
+                elif kind == '+':
+                    rx += 1
+                elif kind == '-':
+                    tx += 1
+            print(line)
+            print(heading)
             print(legend)
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
