@@ -2428,6 +2428,13 @@ class AssignLinks:
             # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
             handler()
             self.tx += 1
+    #@+node:ekr.20191117092616.1: *3* links.dump_result
+    def dump_result(self, rx):
+        """Return a string representing self.results[rx]."""
+        r = self.results[rx]
+        kind, val, node = r
+        val = truncate(val, 30)
+        return f"rx: {rx:<3} {kind:12} {val:30} {node.__class__.__name__}"
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, rx, tx):
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
@@ -2461,7 +2468,8 @@ class AssignLinks:
         """
         trace = False and not g.unitTesting
         kind = self.tokens[tx].kind
-        end_message = f"FAIL at end: {kind} not found starting at {rx}"
+        tag = 'find_in_results:'
+        end_message = f"{tag} at end: {kind} not found starting at {rx}"
         while rx < len(self.results):
             r = self.results[rx]
             r_kind, r_val, r_node = r
@@ -2472,7 +2480,12 @@ class AssignLinks:
                 if optional:
                     if trace: g.trace(f"SKIP  {kind:12} at rx: {rx}")
                     return None
-                raise AssignLinksError(f"FAIL at rx: {rx}. target: {kind}, found: {r_kind}")
+                # This will likely be the only serious failure possible.
+                message = f"{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}"
+                print(message)
+                for i in range(max(0,rx-5),rx):
+                    print(self.dump_result(i))
+                raise AssignLinksError(message)
             rx += 1
         raise AssignLinksError(end_message)
     #@+node:ekr.20191116164159.1: *3* links:Visitors
@@ -2585,10 +2598,9 @@ class AssignLinks:
         self.set_links(rx2, tx)
         # A special case.  Use the *token's* spelling in the result.
         r_kind, r_val, r_node = self.results[rx2]
-        assert token_value == r_val, (repr(token_value), repr(r_val))
-            # if token_value != r_val:
-                # g.trace(f"token.value: {token_value} result.val: {r_val}")
-                # self.results[rx2] = r_kind, token_value, r_node
+        if token_value != r_val:
+            # g.trace(f"use token.value: {token_value}, not result.val: {r_val}")
+            self.results[rx2] = r_kind, token_value, r_node
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
