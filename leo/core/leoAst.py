@@ -2426,9 +2426,12 @@ class AssignLinks:
             handler()
             self.tx += 1
     #@+node:ekr.20191116153348.1: *3* links.set_links
-    def set_links(self, node, token):
-        """Set two-way links between self.tokens[tx] and the given ast node."""
+    ### def set_links(self, node, token):
+    def set_links(self, rx, token):
+        """Set two-way links between token and self.results[rx].node"""
+        # """Set two-way links between self.tokens[tx] and the given ast node."""
         # Check everything.
+        r_kind, r_val, node = self.results[rx]
         assert isinstance(node, ast.AST), g.callers()
         assert isinstance(token, Token), g.callers()
         if token.index is None:
@@ -2445,6 +2448,8 @@ class AssignLinks:
         token_list = getattr(node, 'token_list', [])
         token_list.append(token)
         node.token_list = token_list
+        # Update.
+        self.node = node
     #@+node:ekr.20191116152037.1: *3* links.find_first_node
     def find_first_node(self):
         """Set self.node"""
@@ -2503,13 +2508,14 @@ class AssignLinks:
         if tx == 0:
             # Find the matching result.
             token = self.tokens[tx]
-            res = self.results[rx]
-            node = res[2]
-            assert node, 'no node for encoding token'
+            ### res = self.results[rx]
+            ### node = res[2]
+            ###assert node, 'no node for encoding token'
             # Update the links.
-            self.set_links(node, token)
+            ### self.set_links(node, token)
+            self.set_links(rx, token)
             # Update.
-            self.node = node
+            ### self.node = node
             return
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
     #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
@@ -2519,9 +2525,10 @@ class AssignLinks:
         # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
-        r_kind, r_val, r_node = self.results[rx2]
         # Update the links.
-        self.set_links(r_node, token)
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx, token)
         # Update.
         self.rx = rx2 + 1
         ### To do: run final checks.
@@ -2535,10 +2542,11 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links.
-        r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx2, token)
         # Update.
-        self.node = r_node
+        ### self.node = r_node
         self.rx = rx2 + 1
     #@+node:ekr.20191116161718.1: *4* links.newline
     def newline_handler(self):
@@ -2557,10 +2565,11 @@ class AssignLinks:
         if not rx2:
             return
         # Update the links.
-        r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx2, token)
         # Update.
-        self.node = r_node
+        ### self.node = r_node
         self.rx = rx2 + 1
     #@+node:ekr.20191117073210.1: *4* links.nl & ws
     # The results list never contains these tokens.
@@ -2591,10 +2600,11 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links.
-        r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx2, token)
         # Update.
-        self.node = r_node
+        ### self.node = r_node
         self.rx = rx2 + 1
     #@+node:ekr.20191116161828.1: *4* links.op
     def op_handler(self):
@@ -2606,10 +2616,11 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx)
         # Update the links.
-        r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx2, token)
         # Update.
-        self.node = r_node
+        ### self.node = r_node
         self.rx = rx2 + 1
 
     #@+node:ekr.20191116161759.1: *4* links.string
@@ -2626,15 +2637,17 @@ class AssignLinks:
         # Find the matching result.
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx, optional=True)
-        # Update the links.
         r_kind, r_val, r_node = self.results[rx2]
-        self.set_links(r_node, token)
+        # Update the links.
+        ### r_kind, r_val, r_node = self.results[rx2]
+        ### self.set_links(r_node, token)
+        self.set_links(rx2, token)
         # A special case.  Use the *token's* spelling in the result.
         if token.value != r_val:
             g.trace(f"token.value: {token.value} result.val: {r_val}")
             self.results[rx2] = r_kind, token.value, r_node
         # Update.
-        self.node = r_node
+        ### self.node = r_node
         self.rx = rx2 + 1
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
