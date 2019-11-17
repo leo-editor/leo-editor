@@ -2415,15 +2415,15 @@ class AssignLinks:
         """Assign two-way links between tokens and results."""
         self.results = results
         self.tokens = tokens
-        node, rx, tx = self.start()
+        node, rx, tx = None, 0, 0
         while tx < len(self.tokens) and rx < len(self.results):
-            assert node
             progress = rx, tx
             kind = self.tokens[tx].kind
             name = f"{kind}_handler"
             handler = getattr(self, name)
             # print(f"{name:12} {rx:<3} {tx:<3} {node.__class__.__name__}")
             node, rx, tx = handler(node, rx, tx)
+            assert node, g.callers()
             assert progress < (rx, tx), (progress, rx, tx)
     #@+node:ekr.20191116153348.1: *3* links.set_links
     def set_links(self, node, token):
@@ -2445,7 +2445,7 @@ class AssignLinks:
         token_list = getattr(node, 'token_list', [])
         token_list.append(token)
         node.token_list = token_list
-    #@+node:ekr.20191116152037.1: *3* links.start
+    #@+node:ekr.20191116152037.1: *3* links.start (not used)
     def start(self):
         """Initialize the token scan."""
         rx, tx = 0, 0
@@ -2493,8 +2493,14 @@ class AssignLinks:
         return node, rx, tx + 1
     #@+node:ekr.20191116152657.1: *4* links.encoding
     def encoding_handler(self, node, rx, tx):
-        
-        """Handle an encoding token appearing at tx > 0."""
+        """Handle an encoding token. It should appear first"""
+        if tx == 0:
+            token = self.tokens[tx]
+            res = self.results[rx]
+            node = res[2]
+            assert node, 'no node for encoding token'
+            self.set_links(node, token)
+            return node, rx, tx + 1
         raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
     #@+node:ekr.20191117015348.1: *4* links.endmarker (revise)
     def endmarker_handler(self, node, rx, tx):
@@ -2588,10 +2594,11 @@ class AssignLinks:
         token = self.tokens[tx]
         rx2 = self.find_in_results(token.kind, rx, optional=True)
         r_kind, r_val, r_node = self.results[rx2]
-        assert r_kind == token.kind, (repr(token.kind), repr(r_kind))
         self.set_links(r_node, token)
         # A special case.  Use the *token's* spelling in the result.
-        self.results[rx2] = r_kind, token.value, r_node
+        if token.value != r_val:
+            g.trace(f"token.value: {token.value} result.val: {r_val}")
+            self.results[rx2] = r_kind, token.value, r_node
         return r_node, rx2 + 1, tx + 1
     #@+node:ekr.20191117015251.1: *4* links.ws
     def ws_handler(self, node, rx, tx):
