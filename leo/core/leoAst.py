@@ -226,7 +226,7 @@ def test_runner(contents, reports=None):
     A testing framework for TokenOrderGenerator and related classes.
     
     The caller should call imp.reload if desired.
-    
+
     Reports is a list of reports. A suggested order is shown below.
     """
     # pylint: disable=import-self
@@ -234,7 +234,11 @@ def test_runner(contents, reports=None):
     
     reports = [z.lower() for z in reports or []]
     assert isinstance(reports, list), repr(reports)
-
+    fail_fast = 'fail-fast' in reports
+    g.trace('reports', reports)
+    if fail_fast:
+        reports.remove('fail-fast')
+    g.trace('reports', reports)
     # Start test.
     print('\nleoAst.py:test_token_traversers...\n')
     contents = contents.strip() + '\n'
@@ -268,10 +272,14 @@ def test_runner(contents, reports=None):
             print('\nDiff...\n')
             x.diff()
         elif report == 'assign-links':
-            print('\nAssigning links...')
+            print('\nAssign links...')
             ok = x.assign_links()
             if not ok:
-                break
+                print('\nFAIL Assign link\n')
+                if fail_fast:
+                    break
+                else:
+                    print('Continuing...')
         elif report == 'results':
             print('\nResults...\n')
             for i, z in enumerate(x.results):
@@ -2488,7 +2496,7 @@ class AssignLinks:
                     if trace: print(f"{tag} SKIP  {kind:12} at rx: {rx}")
                     return None
                 # This is the only possible serious failure.
-                message = f"{tag} MISMATCH at rx: {rx}. target: {kind}, found: {r_kind}"
+                message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r_kind}"
                 self.sync_error(message, rx, tx)
                 raise AssignLinksError(message)
             rx += 1
