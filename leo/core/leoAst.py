@@ -255,6 +255,8 @@ def test_runner(contents, reports=None):
     for report in reports:
         if report == 'fail-fast':
             fail_fast = True
+        elif report == 'no-fail-fast':
+            fail_fast = False
         elif report == 'coverage':
             x.report_coverage(report_missing=False)
         elif report == 'tokens':
