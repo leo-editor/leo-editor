@@ -335,7 +335,16 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
-<v t="ekr.20191118154059.2"><vh>&lt;&lt; define the tests &gt;&gt;</vh></v>
+<v t="ekr.20191118154839.1"><vh>&lt;&lt; make_tests function &gt;&gt;</vh></v>
+<v t="ekr.20191118155024.1"><vh>token-order-tests</vh>
+<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
+<v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
+<v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
+<v t="ekr.20191118155611.3"><vh>contents-test: class, def, if</vh></v>
+<v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
+<v t="ekr.20191118155612.2"><vh>contents-test: semicolon between statements</vh></v>
+<v t="ekr.20191118160305.1"><vh>contents-test: redundant semicolon</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -4055,35 +4064,41 @@ for test in table:
             print(f"{j:2}: {s.rstrip()}")
         assert False, f"FAIL"
 </t>
-<t tx="ekr.20191118154059.1">use_file = False
-path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
-&lt;&lt; define the tests &gt;&gt;
-contents = contents.strip() + '\n'
-# 'contents','coverage', 'diff', 'results', 'summary', 'tokens', 'tree',
+<t tx="ekr.20191118154059.1">"""
+The master unit test for leoAst.TokenOrderGenerator and related classes.
+"""
+tests_node = g.findNodeInChildren(c, p, 'token-order-tests')
+assert tests_node, 'child not found: token-order-tests'
+&lt;&lt; make_tests function &gt;&gt;
+tests = make_tests(tests_node)
 reports = ['assign-links']
-
+    # 'contents','coverage', 'diff', 'results', 'summary', 'tokens', 'tree',
 # Run the tests.
 for contents, description in tests:
     assert leoAst.test_runner(contents, reports), description</t>
-<t tx="ekr.20191118154059.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">if use_file:
-    assert g.os_path_exists(path), repr(path)
-    with open(path, 'r') as f:
-        contents = f.read()
-# Smaller tests...
-elif 0: # shortest test, fstringify...
-    contents = r'''
-print('test %s=%s'%(a, 2))
-'''
-elif 0: # Pass.  There was a bug in do_If.
-    contents = r'''
-if a:
+<t tx="ekr.20191118154839.1">def make_tests(test_root):
+    """
+    Return a list of tuples (contents, description) generated
+    by all the children of the @token-order-tests node.
+    """
+    
+    # assert g.os_path_exists(path), repr(path)
+    # with open(path, 'r') as f:
+        # contents = f.read()
+
+    return []
+</t>
+<t tx="ekr.20191118155024.1"></t>
+<t tx="ekr.20191118155609.1"></t>
+<t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
+
+</t>
+<t tx="ekr.20191118155611.2">if a:
     a = 1
 else:
     a -= 1
-'''
-elif 0: # Pass. Basic tests.
-    contents = r'''
-"""ds 1"""
+</t>
+<t tx="ekr.20191118155611.3">"""ds 1"""
 class TestClass:
     """ds 2"""
     def long_name(a, b=2):
@@ -4093,45 +4108,13 @@ class TestClass:
         else:
             a -= 1
         print('done')
-'''
-elif 0: # Pass. There was a bug in do_If. from runLeo.py.
-    contents = '''
-sys.stdout = open(os.devnull, "w")
-'''
-elif 1: # Semicolon at end of statement. From runLeo.py.
-    contents = '''
-sys.stdout = open(os.devnull, "w");
-'''
-elif 1:
-    small = False
-    path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
-    assert g.os_path_exists(path), repr(path)
-    with open(path, 'r') as f:
-        contents = f.read()
-elif 1:
-    # From runLeo.py
-    contents = r'''
-#! /usr/bin/env python
-#@+leo-ver=5-thin
-#@+node:ekr.20031218072017.2605: * @file runLeo.py
-#@@first
-"""Entry point for Leo in Python."""
-#@+&lt; &lt; imports and inits &gt; &gt;
-#@+node:ekr.20080921091311.1: ** &lt; &lt; imports and inits &gt; &gt; (runLeo.py)
-# import pdb ; pdb = pdb.set_trace
-import os
-import sys
-# Partial fix for #541.
-# See https://stackoverflow.com/questions/24835155/
-# pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
-if sys.executable.endswith("pythonw.exe"):
-    sys.stdout = open(os.devnull, "w");
-    sys.stderr = open(
-        os.path.join(os.getenv("TEMP"),
-        "stderr-"+os.path.basename(sys.argv[0])),
-        "w")
-path = os.getcwd()
-'''
 </t>
+<t tx="ekr.20191118155612.1">open(os.devnull, "w")
+</t>
+<t tx="ekr.20191118155612.2">a = 1 ; b = 2
+print('a') ; print('b')
+</t>
+<t tx="ekr.20191118160305.1">print('c');
+print('d')</t>
 </tnodes>
 </leo_file>
