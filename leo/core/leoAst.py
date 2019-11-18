@@ -280,10 +280,8 @@ def test_runner(contents, reports=None):
                     print('Continuing...')
         elif report == 'results':
             print('\nResults...\n')
-            for i, z in enumerate(x.results):
-                print(
-                    f"{i:<3} {z.kind:>10} {truncate(z.value,15):<15} "
-                    f"{z.node.__class__.__name__}")
+            for z in x.results:
+                print(z.dump())
         elif report == 'lines':
             print('\nTOKEN lines...\n')
             for z in tokens:
@@ -1231,6 +1229,8 @@ class TokenOrderGenerator:
         assert check(contents, tokens)
         return tokens
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
+    result_index = 0
+
     def put(self, kind, val):
         """Handle a token whose kind & value are given."""
         assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
@@ -1239,6 +1239,8 @@ class TokenOrderGenerator:
         val2 = val if isinstance(val, str) else str(val)
         token = Token(kind, val2)
         token.node = self.node
+        token.index = self.result_index
+        self.result_index += 1
         self.results.append(token)
 
     def put_blank(self):
@@ -2502,28 +2504,20 @@ class AssignLinks:
                 raise AssignLinksError(message)
             rx += 1
         raise AssignLinksError(end_message)
-    #@+node:ekr.20191117121053.1: *3* links.sync_error & helpers
+    #@+node:ekr.20191117121053.1: *3* links.sync_error
     def sync_error(self, message, rx, tx):
         
         print('')
         print(message)
         print('\nNearby tokens...\n')
         for tx2 in range(max(0,tx-5),tx):
-            print(self.dump_token(tx2))
+            t = self.tokens[tx2]
+            print(t.error_dump())
         print('\nNearby results...\n')
         for rx2 in range(max(0,rx-5),rx):
-            print(self.dump_result(rx2))
+            r = self.results[rx2]
+            print(r.error_dump())
         print('')
-    #@+node:ekr.20191117092616.1: *4* links.dump_result & dump_token
-    def dump_result(self, rx):
-        """Return a string representing self.results[rx]."""
-        result = self.results[rx]
-        return result.error_dump()
-
-    def dump_token(self, tx):
-        """Return a string representing self.tokens[tx]."""
-        token = self.tokens[tx]
-        return token.error_dump()
     #@+node:ekr.20191116164159.1: *3* links: Visitors
     #@+node:ekr.20191116160124.1: *4* links.comment, dedent, indent
     # The results list never contains items matching these tokens.
@@ -4668,16 +4662,15 @@ class Token:
             f"parent: {parent_id} {parent_class}")
     #@+node:ekr.20191116154328.1: *3* token.error_dump
     def error_dump(self):
-        """Dump a token node for error message."""
+        """Dump a token or result node for error message."""
         if self.node:
             node_id = str(id(self.node))[-4:]
             node_s = f"{node_id} {self.node.__class__.__name__}"
         else:
             node_s = "None"
         return(
-            f"tx: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
-            # f"line: {self.line_number} "
-            # f"level: {self.level} "
+            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
+            # f"line: {self.line_number} level: {self.level} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *3* token.show_val
     def show_val(self, truncate_n=20):
