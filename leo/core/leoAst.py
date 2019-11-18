@@ -1552,11 +1552,15 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.func)
         self.put_op('(')
-        for z in node.args:
+        for i, z in enumerate(node.args):
             yield from self.visitor(z)
-        for z in node.keywords:
+            if i < len(node.args) - 1:
+                self.put_comma()
+        ### To do:  add commas properly.
+        for i, z in enumerate(node.keywords):
             yield from self.visitor(z)
-            self.put_comma()
+            if i < len(node.args) - 1:
+                self.put_comma()
         if getattr(node, 'starargs', None):
             self.put_op('*')
             yield from self.visitor(node.starargs)
@@ -2484,7 +2488,7 @@ class AssignLinks:
         """
         Scan forward from self.results[rx], looking for self.tokens[tx].kind.
         """
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         kind = self.tokens[tx].kind
         tag = 'find_in_results:'
         end_message = f"{tag} at end: {kind} not found starting at {rx}"
@@ -2576,7 +2580,7 @@ class AssignLinks:
     #@+node:ekr.20191117073210.1: *4* links.nl & ws
     # The results list never contains these tokens.
 
-    def nl_handler(self, node, rx, tx):
+    def nl_handler(self):
         """
         Handle a 'nl' token.
         These tokens follow comment tokens and multi-line string tokens.
