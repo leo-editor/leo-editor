@@ -2347,6 +2347,17 @@
 <v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
+<v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
+<v t="ekr.20191118120136.1"><vh>High level overview</vh>
+<v t="ekr.20191118120821.1"><vh>Tokenize &amp; parse</vh></v>
+<v t="ekr.20191118121341.1"><vh>Generate the results list</vh></v>
+<v t="ekr.20191118121412.1"><vh>Sync and link</vh></v>
+<v t="ekr.20191118121618.1"><vh>Both the tokens and results lists are required</vh></v>
+</v>
+<v t="ekr.20191118120711.1"><vh>Executive summary</vh></v>
+<v t="ekr.20191118120256.1"><vh>Testing</vh></v>
+<v t="ekr.20191118120202.1"><vh>Summary</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30988,6 +30999,106 @@ Much like the corresponding adoc commands, but uses pandoc markup, which is a va
 
 The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
 <t tx="ekr.20191026191805.1">https://github.com/leo-editor/leo-editor/issues/1388
+</t>
+<t tx="ekr.20191118115949.1">This is the first draft of the Theory of Operation for the token-order generator classes, and related classes.</t>
+<t tx="ekr.20191118120136.1">The **TokenOrderGenerator** (TOG) class contains most of the infrastructure.
+
+The **TokenOrderInjector** (TOI) subclass injects parent/children links.
+
+The **Token** class represents one token, created by tokenize.tokenize.
+
+The **Linker** class is the heart of the code:
+
+- It runs in time proportional to the number of tokens.
+
+- It is a gem: it is simple, elegant and flexible.
+</t>
+<t tx="ekr.20191118120202.1">The notion of token-order tree traversals got this project started.
+
+The TokenOrderGenerator class is nothing but straightforward infrastructure. Almost all of it is already elegant and simple. I'll improve the remaining ugly bits next.
+
+Everything depends on the Linker class. This class is dead simple and very fast.
+
+</t>
+<t tx="ekr.20191118120256.1">The linker issues detailed error messages if the token and results lists
+can't be properly synced.
+
+Errors in visitors cause the Linker class to fail, as it should.
+
+The diff reporter shows the diffs between the token and results list. These
+diffs show why the token and results list can't be synced and highlight
+which visitor is to blame.
+
+</t>
+<t tx="ekr.20191118120711.1">- The tokens list contains the ground truth. Its data are more reliable
+  than data in the results list.
+
+- The tog class creates the results list by visiting the tree in token
+  order.
+
+- The results list exists only to hold data to be transferred to the tokens
+  list.
+
+- Syncing the tokens and results lists is the only way make this transfer!
+
+- Syncing is feasible and fast because significant (non-optional) tokens
+  appear in exactly the same order in the two lists. The linker can look
+  ahead in either list because the linker runs in a post pass, after all
+  tokens have been generated.
+
+That's all anyone needs to know.
+</t>
+<t tx="ekr.20191118120821.1">The **contents** are a string, a snippet of python code.
+
+The TOG calls python's tokenize module to create the tokens list, a list
+of Token objects.
+
+The TOG then calls python's ast module to create the parse tree, a tree of
+ast.AST nodes.</t>
+<t tx="ekr.20191118121341.1">Next, the TOG traverses the parse tree, generating the results list, again a list of Token objects.
+
+Crucially, this traversal happens in token order. This is the one and only order that guarantees the token and results lists will match exactly, except for optional tokens. Optional tokens may appear in either the tokens list or results list.
+
+To generate result tokens in the proper order, the tog class must have a separate visitor for every kind of parse tree node.
+
+All visitors are generators, ensuring that the traversal can't overflow python's run-time stack. Visitors use "yield" or "yield from" to generate results from sub-trees. These yields must be done in token order, which is why a separate visitor is required for each kind of parse tree node.
+
+All visitors end with begin_visitor and end with the end_visitor method. Among other things, these methods save, set and restore the tog.node ivar. This ivar is the tree node corresponding to each visitor.
+
+Visitors call tog.put to create new result tokens. Crucially, the tog.node ivar tells tog.put which parse-tree node is responsible for the token. The node ivar of each result token remembers that node.</t>
+<t tx="ekr.20191118121412.1">Finally, the TOG assigns two-way links between input tokens and parse-tree
+nodes, as explained next.
+
+The Linker class is the heart of the entire enterprise. It must be bullet
+proof.
+
+To review, the tree traversal generates results list, a list of Token
+objects. All result tokens contain a link (token.node) to the parse tree
+node that generated the token.
+
+The linker runs in a post pass. The linker syncs both lists, looking ahead
+in either list as necessary.
+
+Syncing is easy because significant (non-optional) tokens appear in the
+same order in the two lists! The linker need only ignore optional tokens.
+When syncing two nodes, the linker transfers the token.node data from the
+result list to the corresponding node in the tokens list.
+
+
+
+</t>
+<t tx="ekr.20191118121618.1">The tokens list, not the results list, must be the primary "product" of the
+tog class.
+
+Indeed, the tokens list is the "ground truth", containing details that are
+not (at present) present in the parse trees. These details include comment
+tokens (missing entirely from the parse tree) and the spelling of
+whitespace tokens (more reliable in the tokens list).
+
+Note: Despite being essential for the algorithm, the results list is
+unlikely to be otherwise useful. For most apps, filtering the tokens list
+should almost always be simpler and better.
+
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
