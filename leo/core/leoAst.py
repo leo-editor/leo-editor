@@ -307,6 +307,7 @@ def test_runner(contents, reports=None):
             bad_reports.append(report)
     if bad_reports:
         print(f"\nIgnoring unknown reports {','.join(bad_reports)}\n")
+    return ok
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
