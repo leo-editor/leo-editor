@@ -234,9 +234,7 @@ def test_runner(contents, reports=None):
     #
     reports = [z.lower() for z in reports or []]
     assert isinstance(reports, list), repr(reports)
-    fail_fast = 'fail-fast' in reports
-    if fail_fast:
-        reports.remove('fail-fast')
+    fail_fast = False
     # Start test.
     print('\nleoAst.py:test_runner...\n')
     contents = contents.strip() + '\n'
@@ -255,7 +253,9 @@ def test_runner(contents, reports=None):
     # The following is a reasoable order.
     bad_reports = []
     for report in reports:
-        if report == 'coverage':
+        if report == 'fail-fast':
+            fail_fast = True
+        elif report == 'coverage':
             x.report_coverage(report_missing=False)
         elif report == 'tokens':
             print('\nTokens...\n')
