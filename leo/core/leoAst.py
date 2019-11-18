@@ -1115,7 +1115,7 @@ class TokenOrderGenerator:
     def assign_links(self):
         """Assign two-way links between tokens and results."""
         try:
-            AssignLinks().assign_links(self.results, self.tokens, self.tree)
+            Linker().assign_links(self.results, self.tokens, self.tree)
             return True
         except Exception as e:
             g.trace(e)
@@ -1544,7 +1544,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put('bytes', str(node.s))
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword
+    #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword (more work needed)
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self, node):
@@ -2436,8 +2436,8 @@ class TokenOrderGenerator:
         yield self.put_newline()
         self.end_visitor(node)
     #@-others
-#@+node:ekr.20191116160325.1: ** class AssignLinks
-class AssignLinks:
+#@+node:ekr.20191116160325.1: ** class Linker
+class Linker:
 
     #@+others
     #@+node:ekr.20191115034242.1: *3* links.assign_links
@@ -4635,7 +4635,7 @@ class Token:
             # The line number, for errors and dumps.
             # Same as five_tuple.start[0]
         #
-        # Injected by AssignLinks class.
+        # Injected by Linker class.
         self.level = 0
         self.node = None
 
