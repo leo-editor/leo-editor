@@ -1156,12 +1156,10 @@ class TokenOrderGenerator:
             gen = difflib.ndiff(tokens, results)
         else:
             # Works.
-            results = [
-                f"{z.kind:>12}:{z.value}" for z in self.results
-                    if z.kind not in ('ws',)]
-            tokens = [
-                f"{z.kind:>12}:{z.value}" for z in self.tokens
-                    if z.kind not in ('indent', 'dedent', 'ws')]
+            results = [f"{z.kind:>12}:{z.value}" for z in self.results]
+                    ### if z.kind not in ('ws',)]
+            tokens = [f"{z.kind:>12}:{z.value}" for z in self.tokens]
+                    ### if z.kind not in ('indent', 'dedent', 'ws')]
                         # nl ends comments, docstrings.
             gen = difflib.Differ().compare(tokens, results)
         t1 = time.process_time()
@@ -2122,7 +2120,8 @@ class TokenOrderGenerator:
         if node.orelse:
             yield self.put_newline()
             yield self.put_name('else')
-            yield self.put_blank()
+            yield self.put_op(':')
+            yield self.put_newline()
             self.level += 1
             for z in node.orelse:
                 yield from self.visitor(z)
@@ -2489,19 +2488,21 @@ class AssignLinks:
         kind = self.tokens[tx].kind
         tag = 'find_in_results:'
         end_message = f"{tag} at end: {kind} not found starting at {rx}"
+        if trace: print(f"{tag} ENTRY: {kind:12} tx: {tx} rx: {rx}")
         while rx < len(self.results):
             r = self.results[rx]
             if r.kind == kind:
-                if trace: print(f"{tag} FOUND {kind:12} at rx: {rx}")
+                if trace: print(f"{tag} FOUND: {kind:12} tx: {tx} rx: {rx}")
                 return rx
             if r.kind in ('name', 'number', 'op'):
                 if optional:
-                    if trace: print(f"{tag} SKIP  {kind:12} at rx: {rx}")
+                    if trace: print(f"{tag} SKIP: {kind:12} tx: {tx} rx: {rx}")
                     return None
                 # This is the only possible serious failure.
                 message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r.kind}"
                 self.sync_error(message, rx, tx)
                 raise AssignLinksError(message)
+            if trace: print(f"{tag} SKIP:  {r.kind:12} tx: {tx} rx: {rx}")
             rx += 1
         raise AssignLinksError(end_message)
     #@+node:ekr.20191117121053.1: *3* links.sync_error
