@@ -231,16 +231,14 @@ def test_runner(contents, reports=None):
     """
     # pylint: disable=import-self
     import leo.core.leoAst as leoAst
-    
+    #
     reports = [z.lower() for z in reports or []]
     assert isinstance(reports, list), repr(reports)
     fail_fast = 'fail-fast' in reports
-    g.trace('reports', reports)
     if fail_fast:
         reports.remove('fail-fast')
-    g.trace('reports', reports)
     # Start test.
-    print('\nleoAst.py:test_token_traversers...\n')
+    print('\nleoAst.py:test_runner...\n')
     contents = contents.strip() + '\n'
     # Create tokens and tree.
     x = leoAst.TokenOrderInjector()
@@ -283,8 +281,10 @@ def test_runner(contents, reports=None):
         elif report == 'results':
             print('\nResults...\n')
             for i, z in enumerate(x.results):
-                kind, val, node = z
-                print(f"{i:<3} {kind:>10} {truncate(val,15):<15} {node.__class__.__name__}")
+                ### kind, val, node = z
+                print(
+                    f"{i:<3} {z.kind:>10} {truncate(z.value,15):<15} "
+                    f"{z.node.__class__.__name__}")
         elif report == 'lines':
             print('\nTOKEN lines...\n')
             for z in tokens:
@@ -1071,7 +1071,7 @@ class TokenOrderGenerator:
     node_stack = []
         # The stack of parent nodes.
     results = []
-        # The results, for difflib.
+        # The results, for diff. A list of tokens.
     tokens = None
         # The list of input tokens.
     token_index = None
@@ -1160,8 +1160,11 @@ class TokenOrderGenerator:
         else:
             # Works.
             results = [
-                f"{z[0]:>12}:{z[1]}" for z in self.results
-                    if z[0] not in ('ws',)]
+                ###
+                    # f"{z[0]:>12}:{z[1]}" for z in self.results
+                    #    if z[0] not in ('ws',)]
+                f"{z.kind:>12}:{z.value}" for z in self.results
+                    if z.kind not in ('ws',)]
             tokens = [
                 f"{z.kind:>12}:{z.value}" for z in self.tokens
                     if z.kind not in ('indent', 'dedent', 'ws')]
@@ -1191,9 +1194,9 @@ class TokenOrderGenerator:
                     rx += 1
                 elif kind == '-':
                     tx += 1
-            print(line)
-            print(heading)
-            print(legend)
+            # print(line)
+            # print(heading)
+            # print(legend)
     #@+node:ekr.20191113081443.1: *3* tog.visitor
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1237,7 +1240,11 @@ class TokenOrderGenerator:
         assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
         assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
         val2 = val if isinstance(val, str) else str(val)
-        self.results.append((kind,val2, self.node))
+        ### self.results.append((kind,val2, self.node))d
+        # Similar to Tokenizer.add_token.
+        token = Token(kind, val2)
+        token.node = self.node
+        self.results.append(token)
 
     def put_blank(self):
         self.put('ws', ' ')
@@ -2455,9 +2462,12 @@ class AssignLinks:
         """Set two-way links between self.tokens[tx] and self.results[rx].node"""
         # Check everything.
         token = self.tokens[tx]
-        r_kind, r_val, node = self.results[rx]
+        ### r_kind, r_val, node = self.results[rx]
+        result = self.results[rx] 
+        node = result.node
         assert isinstance(node, ast.AST), g.callers()
         assert isinstance(token, Token), g.callers()
+        assert isinstance(result, Token), g.callers()
         if token.index is None:
             raise AssignLinksError(
                 f"set_links: token.index is None: "
@@ -2487,16 +2497,18 @@ class AssignLinks:
         end_message = f"{tag} at end: {kind} not found starting at {rx}"
         while rx < len(self.results):
             r = self.results[rx]
-            r_kind, r_val, r_node = r
-            if r_kind == kind:
+            ###r_kind, r_val, r_node = r
+            ###if r_kind == kind:
+            if r.kind == kind:
                 if trace: print(f"{tag} FOUND {kind:12} at rx: {rx}")
                 return rx
-            if r_kind in ('name', 'number', 'op'):
+            ### if r_kind in ('name', 'number', 'op'):
+            if r.kind in ('name', 'number', 'op'):
                 if optional:
                     if trace: print(f"{tag} SKIP  {kind:12} at rx: {rx}")
                     return None
                 # This is the only possible serious failure.
-                message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r_kind}"
+                message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r.kind}"
                 self.sync_error(message, rx, tx)
                 raise AssignLinksError(message)
             rx += 1
@@ -2517,11 +2529,13 @@ class AssignLinks:
     def dump_result(self, rx):
         """Return a string representing self.results[rx]."""
         result = self.results[rx]
-        kind, val, node = result
-        val = truncate(val, 20)
-        node_id = str(id(self.node))[-4:]
-        node_s = f"{node_id} {self.node.__class__.__name__}"
-        return f"rx: {rx:<3} {kind:>12} {val:<20} {node_s}"
+            # ### kind, val, node = result
+            # val = truncate(r.value, 20)
+            # ### node_id = str(id(self.node))[-4:]
+            # node_id = str(id(r.node))[-4:]
+            # node_s = f"{node_id} {r.node.__class__.__name__}"
+            # return f"rx: {rx:<3} {r.kind:>12} {val:<20} {node_s}"
+        return result.error_dump()
 
     def dump_token(self, tx):
         """Return a string representing self.tokens[tx]."""
@@ -2630,16 +2644,19 @@ class AssignLinks:
         """
         rx, tx = self.rx, self.tx
         # For later.
-        token_value = self.tokens[tx].value
+        ### token_value = self.tokens[tx].value
+        old_token = self.tokens[tx]
         # Find the matching result.
         rx2 = self.find_in_results(rx, tx)
         # Update the links and ivars.
         self.set_links(rx2, tx)
         # A special case.  Use the *token's* spelling in the result.
-        r_kind, r_val, r_node = self.results[rx2]
-        if token_value != r_val:
+        ### r_kind, r_val, r_node = self.results[rx2]
+        result = self.results[rx2]
+        if old_token.value != result.value: ### r_val:
             # g.trace(f"use token.value: {token_value}, not result.val: {r_val}")
-            self.results[rx2] = r_kind, token_value, r_node
+            ### self.results[rx2] = r_kind, token_value, r_node
+            self.results[rx2].value = old_token.value
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
