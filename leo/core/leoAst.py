@@ -231,12 +231,13 @@ def test_runner(contents, reports=None):
     """
     # pylint: disable=import-self
     import leo.core.leoAst as leoAst
+    trace = True and not g.unitTesting
     #
     reports = [z.lower() for z in reports or []]
     assert isinstance(reports, list), repr(reports)
     fail_fast = False
     # Start test.
-    print('\nleoAst.py:test_runner...\n')
+    if trace: print('\nleoAst.py:test_runner...\n')
     contents = contents.strip() + '\n'
     # Create tokens and tree.
     x = leoAst.TokenOrderInjector()
@@ -272,13 +273,14 @@ def test_runner(contents, reports=None):
             print('\nDiff...\n')
             x.diff()
         elif report == 'assign-links':
-            print('\nAssign links...')
+            if trace:
+                print('\nAssign links...')
             ok = x.assign_links()
             if not ok:
                 print('\nFAIL Assign link\n')
                 if fail_fast:
                     break
-                else:
+                if trace:
                     print('Continuing...')
         elif report == 'results':
             print('\nResults...\n')
@@ -1142,9 +1144,12 @@ class TokenOrderGenerator:
         yield self.put('newline', '\n')
         yield self.put('endmarker', '')
         t2 = time.process_time()
-        print(
-            f"create_links: created {len(self.results)} results in {(t2-t1):4.2f} sec."
-            f"max_level: {self.max_level}, max_stack_level: {self.max_stack_level}")
+        if not g.unitTesting:
+            print(
+                f"create_links: created {len(self.results)} results "
+                f" in {(t2-t1):4.2f} sec."
+                f"max_level: {self.max_level}, "
+                f"max_stack_level: {self.max_stack_level}")
     #@+node:ekr.20191114161840.1: *3* tog.diff
     def diff(self):
         """Produce a diff of self.tokens vs self.results."""
