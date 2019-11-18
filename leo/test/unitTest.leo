@@ -334,6 +334,9 @@
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </v>
+<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
+<v t="ekr.20191118154059.2"><vh>&lt;&lt; define the tests &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4051,6 +4054,84 @@ for test in table:
         for j, s in enumerate(g.splitLines(results.strip())):
             print(f"{j:2}: {s.rstrip()}")
         assert False, f"FAIL"
+</t>
+<t tx="ekr.20191118154059.1">use_file = False
+path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
+&lt;&lt; define the tests &gt;&gt;
+contents = contents.strip() + '\n'
+# 'contents','coverage', 'diff', 'results', 'summary', 'tokens', 'tree',
+reports = ['assign-links']
+
+# Run the tests.
+for contents, description in tests:
+    assert leoAst.test_runner(contents, reports), description</t>
+<t tx="ekr.20191118154059.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">if use_file:
+    assert g.os_path_exists(path), repr(path)
+    with open(path, 'r') as f:
+        contents = f.read()
+# Smaller tests...
+elif 0: # shortest test, fstringify...
+    contents = r'''
+print('test %s=%s'%(a, 2))
+'''
+elif 0: # Pass.  There was a bug in do_If.
+    contents = r'''
+if a:
+    a = 1
+else:
+    a -= 1
+'''
+elif 0: # Pass. Basic tests.
+    contents = r'''
+"""ds 1"""
+class TestClass:
+    """ds 2"""
+    def long_name(a, b=2):
+        """ds 3"""
+        if a:
+            a = 1
+        else:
+            a -= 1
+        print('done')
+'''
+elif 0: # Pass. There was a bug in do_If. from runLeo.py.
+    contents = '''
+sys.stdout = open(os.devnull, "w")
+'''
+elif 1: # Semicolon at end of statement. From runLeo.py.
+    contents = '''
+sys.stdout = open(os.devnull, "w");
+'''
+elif 1:
+    small = False
+    path = r'C:\leo.repo\leo-editor\leo\core\runLeo.py'
+    assert g.os_path_exists(path), repr(path)
+    with open(path, 'r') as f:
+        contents = f.read()
+elif 1:
+    # From runLeo.py
+    contents = r'''
+#! /usr/bin/env python
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.2605: * @file runLeo.py
+#@@first
+"""Entry point for Leo in Python."""
+#@+&lt; &lt; imports and inits &gt; &gt;
+#@+node:ekr.20080921091311.1: ** &lt; &lt; imports and inits &gt; &gt; (runLeo.py)
+# import pdb ; pdb = pdb.set_trace
+import os
+import sys
+# Partial fix for #541.
+# See https://stackoverflow.com/questions/24835155/
+# pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
+if sys.executable.endswith("pythonw.exe"):
+    sys.stdout = open(os.devnull, "w");
+    sys.stderr = open(
+        os.path.join(os.getenv("TEMP"),
+        "stderr-"+os.path.basename(sys.argv[0])),
+        "w")
+path = os.getcwd()
+'''
 </t>
 </tnodes>
 </leo_file>
