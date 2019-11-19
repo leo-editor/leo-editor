@@ -1458,7 +1458,7 @@ class TokenOrderGenerator:
             yield from self.visitor(z)
             yield self.put_conditional_comma()
         self.end_visitor(node)
-    #@+node:ekr.20191115104619.1: *5* tog.generator (new)
+    #@+node:ekr.20191115104619.1: *5* tog.generator
     def do_generator(self, node):
 
         yield from node
@@ -1536,7 +1536,7 @@ class TokenOrderGenerator:
             yield self.put_blank()
             yield from self.visitor(node.annotation)
         self.end_visitor(node)
-    #@+node:ekr.20191115105821.1: *5* tog.int (New, bug fix)
+    #@+node:ekr.20191115105821.1: *5* tog.int
     def do_int(self, node):
         
         assert isinstance(node, int), repr(node)
@@ -1614,7 +1614,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put('number', str(node.s))  # A guess.
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.35: *5* tog.Dict (bug fix)
+    #@+node:ekr.20191113063144.35: *5* tog.Dict
     # Dict(expr* keys, expr* values)
 
     def do_Dict(self, node):
@@ -1640,7 +1640,7 @@ class TokenOrderGenerator:
                 raise
         yield self.put_op('}')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.36: *5* tog.DictComp (changed)
+    #@+node:ekr.20191113063144.36: *5* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
@@ -1673,7 +1673,7 @@ class TokenOrderGenerator:
             if i < len(node.dims) - 1:
                 self.put_op(':')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (changed, bug fix)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
@@ -1795,7 +1795,7 @@ class TokenOrderGenerator:
             self.put_op(':')
             yield from self.visitor(node.step)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.50: *5* tog.Str (changed)
+    #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This represents a string constant."""
         self.begin_visitor(node)
@@ -1813,7 +1813,7 @@ class TokenOrderGenerator:
         yield from self.visitor(node.slice)
         yield self.put_op(']')
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.52: *5* tog.Tuple (changed)
+    #@+node:ekr.20191113063144.52: *5* tog.Tuple
     def do_Tuple(self, node):
 
         self.begin_visitor(node)
@@ -1873,7 +1873,7 @@ class TokenOrderGenerator:
                 yield self.put_op(op_name)
                 yield from self.visitor(z)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.57: *5* tog.Compare (bug fix)
+    #@+node:ekr.20191113063144.57: *5* tog.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
 
     def do_Compare(self, node):
@@ -1996,7 +1996,7 @@ class TokenOrderGenerator:
         self.end_visitor(node)
         # Delegate the rest.
         self.do_With(node)
-    #@+node:ekr.20191113063144.66: *5* tog.AugAssign (bug fix)
+    #@+node:ekr.20191113063144.66: *5* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
 
     def do_AugAssign(self, node):
