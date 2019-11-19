@@ -1589,8 +1589,10 @@ class TokenOrderGenerator:
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
-        self.put_name(node.arg)
-        self.put_op('=')
+        g.trace(node, node.arg, node.value)
+        if node.arg:
+            self.put_name(node.arg)
+            self.put_op('=')
         yield from self.visitor(node.value)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     def do_comprehension(self, node):
@@ -1935,10 +1937,10 @@ class TokenOrderGenerator:
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.62: *5* tog.Assert
+    # Assert(expr test, expr? msg)
+
     def do_Assert(self, node):
-        
-        # assert {node.test}, {node.message}
-        # assert {test}'
+
         self.begin_visitor(node)
         yield self.put_name('assert')
         yield self.put_blank()
@@ -2535,9 +2537,12 @@ class Linker:
         
         Subclasses might override this for special purposes.
         """
+        # Don't override this without careful thought and testing.
+        # We can use commas, semicolons or parens for syncing
+        # because the tree visitors don't know how to generate them.
         return (
             token.kind in ('name', 'number') or
-            token.kind == 'op' and token.value != ';')
+            token.kind == 'op' and token.value not in ',;()')
     #@+node:ekr.20191119020852.1: *3* linker.set_links
     tx = 0  # The index of the last patched token.
 
@@ -2662,9 +2667,12 @@ class AstDumper:
         elif class_name == 'Num':
             val = f": n={node.n}"
             # val = ': ' + ','.join(aList)
-        elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'Compare', 'UnaryOp'): # IfExp
+        elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'UnaryOp'): # IfExp
             name = node.op.__class__.__name__
             val = f": {_op_names.get(name, name)}"
+        elif class_name == 'Compare':
+            ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
+            val = f": ops={ops}"
         return truncate(val, truncate_n)
         
     #@+node:ekr.20191110165235.5: *4* dumper.show_header
