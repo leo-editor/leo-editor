@@ -1256,7 +1256,14 @@ class TokenOrderGenerator:
         self.put('op', ',')
 
     def put_name(self, val):
-        self.put('name', val)
+        aList = val.split('.')
+        if len(aList) == 1:
+            self.put('name', val)
+        else:
+            for i, part in enumerate(aList):
+                self.put('name', part)
+                if i < len(aList) - 1:
+                    self.put_op('.')
 
     def put_op(self, val):
         self.put('op', val)
@@ -1875,8 +1882,13 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.left)
         for i, z in enumerate(node.ops):
-            ### yield from self.visitor(node.ops[i])
-            yield self.put_op(self.op_name(node.ops[i]).strip())
+            op_name = self.op_name(node.ops[i]).strip()
+            if op_name == 'not in':
+                yield self.put_name('not')
+                yield self.put_blank()
+                yield self.put_name('in')
+            else:
+                yield self.put_op(op_name)
             yield from self.visitor(node.comparators[i])
         self.end_visitor(node)
     #@+node:ekr.20191113063144.58: *5* tog.UnaryOp
@@ -2145,14 +2157,12 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_name('import')
         yield self.put_blank()
-        for i, node2 in enumerate(node.names):
-            yield self.put_name(node2.name)
-            if i < len(node.names) - 1:
-                yield self.put_comma()
-        as_name = any([z.asname for z in node.names])
-        if as_name:
-            yield self.put_blank()
-            yield self.put_name(as_name)
+        for alias in node.names:
+            yield self.put_name(alias.name)
+            if alias.asname:
+                yield self.put_name('as')
+                yield self.put_blank()
+                yield self.put_name(alias.asname)
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.77: *5* tog.ImportFrom
@@ -2568,6 +2578,8 @@ class Linker:
         
         This method encapsulates a policy question, namely which kinds of
         tokens should appear in the tokens list for the given ast node.
+        
+        The default policy ignores the node.
         
         Subclasses may change this policy by overriding this method.
         """
@@ -4602,7 +4614,7 @@ class Token:
         parent_id = str(id(parent))[-4:] if parent else '    '
         children = getattr(self.node, 'children', [])
         return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val(11):<11} "
+            f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
             f"line: {self.line_number:<2} level: {self.level} "
             f"node: {node_id} {self.node.__class__.__name__:12} "
             f"children: {len(children)} "
