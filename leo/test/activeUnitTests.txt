@@ -763,6 +763,102 @@ msf.unit_test(raise_on_fail=True)
 import leo.external.py2cs as py2cs
 py2cs.unit_test(raise_on_fail=True)
 
+#@+node:ekr.20191118154059.1: *4* @test TokenOrder classes
+"""
+The master unit test for leoAst.TokenOrderGenerator and related classes.
+"""
+import leo.core.leoAst as leoAst
+import imp
+imp.reload(leoAst)
+# Make the tests.
+<< function: make_tests >>
+root = c.p
+tests = make_tests(c.p)
+# Run the tests.
+reports = [
+    'fail-fast',
+    # 'coverage',
+    # 'contents',
+    # 'results',
+    # 'diff',
+    'assign-links',
+    # 'tokens',
+    # 'tree',
+]
+for contents, description in tests:
+    # print(f"len(contents): {len(contents):>5} {description}")
+    assert leoAst.test_runner(contents, reports), description
+print(f"\n{root.h}: Ran {len(tests)} tests")
+#@+node:ekr.20191118154839.1: *5* << function: make_tests >>
+def make_tests(root):
+    """
+    Return a list of tuples (contents, description) generated
+    by all the children of the @token-order-tests node.
+    """
+    import os
+    tests = []
+    contents_tag = 'contents-test:'
+    file_tag = 'file-test:'
+    while p:
+        # g.trace(p.h)
+        if 'make_tests' in p.h:
+            # skip this node.
+            p.moveToNext()
+        elif p.h.startswith(contents_tag):
+            description = p.h
+            contents = p.b.strip() + '\n'
+            tests.append((contents, description))
+            p.moveToThreadNext()
+        elif p.h.startswith(file_tag):
+            description = p.h
+            s = p.h[len(file_tag):].strip()
+            parts = [g.app.loadDir, '..'] + s.split('..')
+            path = os.path.sep.join(parts)
+            if os.path.exists(path):
+                with open(path, 'r') as f:
+                    contents = f.read()
+                tests.append((contents, description))
+                p.moveToThreadNext()
+            else:
+                assert False, f"file not found: {path}"
+        elif p.h.startswith('@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+    return tests
+#@+node:ekr.20191119101115.1: *5* @ignore fail
+#@+node:ekr.20191118155609.1: *6* file-test: core..runLeo.py
+#@+node:ekr.20191119133927.1: *5* new
+#@+node:ekr.20191118164156.1: *5* pass
+#@+node:ekr.20191118155612.1: *6* contents-test: attribute
+open(os.devnull, "w")
+#@+node:ekr.20191118155611.2: *6* contents-test: bug in do_If
+if a:
+    a = 1
+else:
+    a -= 1
+#@+node:ekr.20191118155611.3: *6* contents-test: class, def, if
+"""ds 1"""
+class TestClass:
+    """ds 2"""
+    def long_name(a, b=2):
+        """ds 3"""
+        if a:
+            a = 1
+        else:
+            a -= 1
+        print('done')
+#@+node:ekr.20191118155611.1: *6* contents-test: one-line test
+print('test %s=%s'%(a, 2))
+
+#@+node:ekr.20191118160305.1: *6* contents-test: redundant semicolon
+print('c');
+print('d')
+#@+node:ekr.20191118155612.2: *6* contents-test: semicolon between statements
+a = 1 ; b = 2
+print('a') ; print('b')
+#@+node:ekr.20191119101124.1: *6* contents-test: from runLeo.py
+name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1

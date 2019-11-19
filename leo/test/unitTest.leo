@@ -333,13 +333,12 @@
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-</v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191118155024.1"><vh>token-order-tests</vh>
 <v t="ekr.20191119101115.1"><vh>@ignore fail</vh>
 <v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
 </v>
+<v t="ekr.20191119133927.1"><vh>new</vh></v>
 <v t="ekr.20191118164156.1"><vh>pass</vh>
 <v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
 <v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
@@ -351,7 +350,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191118155024.1"></v>
+<v t="ekr.20191118154059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4073,17 +4072,13 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-g.cls() ###
 import leo.core.leoAst as leoAst
-# import imp
-### imp.reload(leoAst)
-h0 = p.h
-h = 'token-order-tests'
-root = g.findNodeInChildren(c, p, h)
-assert root, f"child not found: {h!r}"
+import imp
+imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
-tests = make_tests(root)
+root = c.p
+tests = make_tests(c.p)
 # Run the tests.
 reports = [
     'fail-fast',
@@ -4098,7 +4093,7 @@ reports = [
 for contents, description in tests:
     # print(f"len(contents): {len(contents):&gt;5} {description}")
     assert leoAst.test_runner(contents, reports), description
-print(f"{h0}: Ran {len(tests)} tests")</t>
+print(f"\n{root.h}: Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root):
     """
     Return a list of tuples (contents, description) generated
@@ -4108,10 +4103,12 @@ print(f"{h0}: Ran {len(tests)} tests")</t>
     tests = []
     contents_tag = 'contents-test:'
     file_tag = 'file-test:'
-    after = root.nodeAfterTree()
-    while p and p != after:
+    while p:
         # g.trace(p.h)
-        if p.h.startswith(contents_tag):
+        if 'make_tests' in p.h:
+            # skip this node.
+            p.moveToNext()
+        elif p.h.startswith(contents_tag):
             description = p.h
             contents = p.b.strip() + '\n'
             tests.append((contents, description))
@@ -4133,8 +4130,6 @@ print(f"{h0}: Ran {len(tests)} tests")</t>
         else:
             p.moveToThreadNext()
     return tests
-</t>
-<t tx="ekr.20191118155024.1"># This node must exist.
 </t>
 <t tx="ekr.20191118155609.1"></t>
 <t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
@@ -4166,5 +4161,6 @@ print('d')</t>
 <t tx="ekr.20191118164156.1"></t>
 <t tx="ekr.20191119101115.1"></t>
 <t tx="ekr.20191119101124.1">name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))</t>
+<t tx="ekr.20191119133927.1"></t>
 </tnodes>
 </leo_file>
