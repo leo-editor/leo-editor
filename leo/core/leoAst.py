@@ -1117,7 +1117,7 @@ class TokenOrderGenerator:
     def assign_links(self):
         """Assign two-way links between tokens and results."""
         try:
-            Linker().assign_links(self.results, self.tokens)
+            Linker().assign_links(self.results, self.tokens, self.tree)
             return True
         except Exception as e:
             g.trace(e)
@@ -2454,10 +2454,9 @@ class Linker:
 
     #@+others
     #@+node:ekr.20191119020953.1: *3* linker.assign_links
-    def assign_links(self, results, tokens):
+    def assign_links(self, results, tokens, tree):
         """Assign two-way links between tokens and results."""
-        self.results = results
-        self.tokens = tokens
+        self.tree = tree
         #
         # Create the lists of significant tokens and results.
         sig_tokens = list(filter(self.is_significant, tokens))
@@ -2468,7 +2467,7 @@ class Linker:
         #
         # Make two-way links between tokens and results.
         for r, t in zip(sig_results, sig_tokens):
-            self.set_links(r, t)
+            self.set_links(r, t, tokens)
     #@+node:ekr.20191119022836.1: *3* linker.check
     def check(self, results, tokens):
         """
@@ -2533,12 +2532,13 @@ class Linker:
     #@+node:ekr.20191119020852.1: *3* linker.set_links
     tx = 0  # The index of the last patched token.
 
-    def set_links(self, r, t):
+    def set_links(self, r, t, tokens):
         """
         Set two-way links between one tree node and one or more tokens.
         
-        r is a significant result.
-        t is a significant results.
+        r is the list of significant results.
+        t is the list of significant tokens.
+        tokens is the list of all tokens.
         """
         # Check everything.
         assert isinstance(r, Token), repr(r)
@@ -2549,8 +2549,9 @@ class Linker:
         assert t.index is not None, repr(t)
         # Patch all previous assignable tokens.
         while self.tx <= t.index:
-            token = self.tokens[self.tx]
+            token = tokens[self.tx]
             if self.should_be_assigned(token, r.node):
+                # g.trace(f"{self.tx:<3} {r.node.__class__.__name__:>12} {token!r}")
                 # Patch the token.
                 assert token.node is None, repr(token)
                 token.node = r.node
@@ -2571,21 +2572,7 @@ class Linker:
         
         Subclasses may change this policy by overriding this method.
         """
-        return True
-    #@+node:ekr.20191119021011.1: *3* linker.sync_error
-    def sync_error(self, message, rx, tx):
-        
-        print('')
-        print(message)
-        print('\nNearby tokens...\n')
-        for tx2 in range(max(0,tx-5),tx):
-            t = self.tokens[tx2]
-            print(t.error_dump())
-        print('\nNearby results...\n')
-        for rx2 in range(max(0,rx-5),rx):
-            r = self.results[rx2]
-            print(r.error_dump())
-        print('')
+        return token.kind not in ('encoding', 'endmarker', 'ws')
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
