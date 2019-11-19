@@ -4077,6 +4077,7 @@ g.cls() ###
 import leo.core.leoAst as leoAst
 # import imp
 ### imp.reload(leoAst)
+h0 = p.h
 h = 'token-order-tests'
 root = g.findNodeInChildren(c, p, h)
 assert root, f"child not found: {h!r}"
@@ -4087,7 +4088,7 @@ tests = make_tests(root)
 reports = [
     'fail-fast',
     # 'coverage',
-    'contents',
+    # 'contents',
     # 'results',
     # 'diff',
     'assign-links',
@@ -4097,7 +4098,7 @@ reports = [
 for contents, description in tests:
     # print(f"len(contents): {len(contents):&gt;5} {description}")
     assert leoAst.test_runner(contents, reports), description
-print(f"Ran {len(tests)} tests")</t>
+print(f"{h0}: Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root):
     """
     Return a list of tuples (contents, description) generated

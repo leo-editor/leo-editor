@@ -1074,7 +1074,9 @@ class TokenOrderGenerator:
     node_stack = []
         # The stack of parent nodes.
     results = []
-        # The results, for diff. A list of tokens.
+        # The results of the tree traversal *only*.
+        # It should *never* be used except as input to the Linker class.
+        # Important: the linker completely ignores non-significant result tokens.
     tokens = None
         # The list of input tokens.
     token_index = None
@@ -1255,10 +1257,10 @@ class TokenOrderGenerator:
         self.results.append(token)
 
     def put_blank(self):
-        self.put('ws', ' ')
+        if 0: self.put('ws', ' ')
 
     def put_comma(self):
-        self.put('op', ',')
+        if 0: self.put('op', ',')
 
     def put_name(self, val):
         aList = val.split('.')
@@ -1269,28 +1271,13 @@ class TokenOrderGenerator:
                 self.put('name', part)
                 if i < len(aList) - 1:
                     self.put_op('.')
-
-    def put_op(self, val):
-        self.put('op', val)
-        
-    def put_optional_comma(self):
-        ### To do.
-        self.put_comma()
-    #@+node:ekr.20191113063144.8: *4* tog.put_newline
+                    
     def put_newline(self):
-
         self.put('newline', '\n')
 
-    #@+node:ekr.20191113063144.9: *4* tog.put_conditional_blank (to do)
-    def put_conditional_blank(self):
-        
-        ### To do.
-        self.put_op(' ')
-    #@+node:ekr.20191113063144.10: *4* tog.put_conditional_comma (to do)
-    def put_conditional_comma(self):
-        """Put a comma only if it exists in the stream of input tokens."""
-        ### To do.
-        ### self.put_op(',')
+    def put_op(self, val):
+        if val not in ',()':
+            self.put('op', val)
     #@+node:ekr.20191113063144.11: *3* tog.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
@@ -1461,7 +1448,7 @@ class TokenOrderGenerator:
         yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
-            yield self.put_conditional_comma()
+            # yield self.put_conditional_comma()
         self.end_visitor(node)
     #@+node:ekr.20191115104619.1: *5* tog.generator
     def do_generator(self, node):
@@ -1660,10 +1647,11 @@ class TokenOrderGenerator:
         yield self.put_blank()
         for i, z in enumerate(node.generators):
             yield from self.visitor(z)
-            if i < len(node.generators) - 1:
-                yield self.put_blank()
-            else:
-                yield self.put_conditional_blank()
+            ###
+                # if i < len(node.generators) - 1:
+                    # yield self.put_blank()
+                # else:
+                    # yield self.put_conditional_blank()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
@@ -1717,10 +1705,11 @@ class TokenOrderGenerator:
         yield self.put_op('[')
         for i, z in enumerate(node.elts):
             yield from self.visitor(z)
-            if i < len(node.elts) - 1:
-                yield self.put_comma()
-            else:
-                yield self.put_conditional_comma()
+            ###
+                # if i < len(node.elts) - 1:
+                    # yield self.put_comma()
+                # else:
+                    # yield self.put_conditional_comma()
         yield self.put_op(']')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.43: *5* tog.ListComp
@@ -1825,20 +1814,25 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_op('(')
-        if len(node.elts) == 1:
-            # Require a trailing comma.
-            yield from self.visitor(node.elts[0])
-            yield self.put_comma()
-        else:
-            # The trailing comma is optional.
-            for i, z in enumerate(node.elts):
+        for i, z in enumerate(node.elts):
                 yield from self.visitor(z)
-                if i < len(node.elts) - 1:
-                    yield self.put_comma()
-                else:
-                    yield self.put_conditional_comma()
         yield self.put_op(')')
         self.end_visitor(node)
+        ### Old code, that cares about commas.
+            # if len(node.elts) == 1:
+                # # Require a trailing comma.
+                # yield from self.visitor(node.elts[0])
+                # yield self.put_comma()
+            # else:
+                # # The trailing comma is optional.
+                # for i, z in enumerate(node.elts):
+                    # yield from self.visitor(z)
+                    # if i < len(node.elts) - 1:
+                        # yield self.put_comma()
+                    # else:
+                        # yield self.put_conditional_comma()
+            # yield self.put_op(')')
+            # self.end_visitor(node)
     #@+node:ekr.20191113063144.53: *4* tog: Operators
     #@+node:ekr.20191113063144.54: *5* tog.op_name
     def op_name(self, node, strict=True):
