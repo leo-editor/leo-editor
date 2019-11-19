@@ -2570,7 +2570,8 @@ class Linker:
         while self.tx <= t.index:
             token = tokens[self.tx]
             if self.should_be_assigned(token, r.node):
-                # g.trace(f"{self.tx:<3} {obj_id(r.node)} {r.node.__class__.__name__:<12} {token!r}")
+                # g.trace(f"{self.tx:<3} {obj_id(r.node)} "
+                #         f"{r.node.__class__.__name__:<12} {token!r}")
                 # Patch the token.
                 assert token.node is None, repr(token)
                 token.node = r.node
