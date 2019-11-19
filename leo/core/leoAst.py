@@ -1315,7 +1315,7 @@ class TokenOrderGenerator:
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
         yield self.put_name('asynch')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name(node.name) # A string
         yield self.put_op('(')
         if node.args:
@@ -1350,7 +1350,7 @@ class TokenOrderGenerator:
             yield self.put_newline()
         # class name(bases):\n
         yield self.put_name('class')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name(node.name) # A string.
         if node.bases:
             yield self.put_op('(')
@@ -1381,7 +1381,7 @@ class TokenOrderGenerator:
         # def name(args): returns\n
         # def name(args):\n
         yield self.put_name('def')
-        yield self.put_blank()
+        # yield self.put_blank()
         yield self.put_name(node.name) # A string.
         yield self.put_op('(')
         if node.args:
@@ -1417,7 +1417,7 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('lambda')
-        yield self.put_blank()
+        # yield self.put_blank()
         yield from self.visitor(node.args)
         yield self.put_op(':')
         yield from self.visitor(node.body)
@@ -1443,9 +1443,9 @@ class TokenOrderGenerator:
         ### To do: this is probably wrong.
         self.begin_visitor(node)
         yield from self.visitor(node.elt)
-        yield self.put_blank()
+        # yield self.put_blank()
         yield self.put_name('for')
-        yield self.put_blank()
+        # yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
             # yield self.put_conditional_comma()
@@ -1488,10 +1488,12 @@ class TokenOrderGenerator:
         while i < n_plain:
             yield from self.visitor(node.args[i])
             i += 1
-            if i != n_plain:
-                yield self.put_comma()
-        if node.defaults:
-            yield self.put_comma()
+            ### 
+                # if i != n_plain:
+                    # yield self.put_comma()
+        ###
+            # if node.defaults:
+                # yield self.put_comma()
         j = 0
         while i < len(node.args) and j < len(node.defaults):
             yield from (self.visitor(node.args[i]))
@@ -1499,20 +1501,21 @@ class TokenOrderGenerator:
             yield from self.visitor(node.defaults[j])
             i += 1
             j += 1
-            if j != len(node.defaults):
-                yield self.put_comma()
+            ###
+                # if j != len(node.defaults):
+                    # yield self.put_comma()
         # Add the vararg and kwarg expressions.
         vararg = getattr(node, 'vararg', None)
         kwarg = getattr(node, 'kwarg', None)
-        # Add comma if necessary.
-        if node.args and (vararg or kwarg):
-            yield self.put_comma()
+        ### Add comma if necessary.
+            # if node.args and (vararg or kwarg):
+                # yield self.put_comma()
         if vararg:
             yield self.put_op('*')
             yield from self.visitor(vararg)
-        # Add a comma if necessary.
-        if vararg and kwarg:
-            yield self.put_comma()
+        ### Add a comma if necessary.
+            # if vararg and kwarg:
+                # yield self.put_comma()
         if kwarg:
             yield self.put_op('*')
             yield from self.visitor(kwarg)
@@ -1525,7 +1528,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_name(node.arg)
         if getattr(node, 'annotation', None):
-            yield self.put_blank()
+            # yield self.put_blank()
             yield from self.visitor(node.annotation)
         self.end_visitor(node)
     #@+node:ekr.20191115105821.1: *5* tog.int
@@ -1559,19 +1562,24 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.func)
         self.put_op('(')
-        for i, z in enumerate(node.args):
+        for z in node.args:
             yield from self.visitor(z)
-            if i < len(node.args) - 1:
-                self.put_comma()
-        ### To do:  add commas properly.
-        for i, z in enumerate(node.keywords):
+        ###
+            # for i, z in enumerate(node.args):
+                # yield from self.visitor(z)
+                # if i < len(node.args) - 1:
+                    # self.put_comma()
+        for z in node.keywords:
             yield from self.visitor(z)
-            if i < len(node.args) - 1:
-                self.put_comma()
+        ###
+            # for i, z in enumerate(node.keywords):
+                # yield from self.visitor(z)
+                # if i < len(node.args) - 1:
+                    # self.put_comma()
         if getattr(node, 'starargs', None):
             self.put_op('*')
             yield from self.visitor(node.starargs)
-            self.put_comma()
+            ### self.put_comma()
         if getattr(node, 'kwargs', None):
             self.put_op('**')
             yield from self.visitor(node.kwargs)
@@ -1595,9 +1603,9 @@ class TokenOrderGenerator:
         yield self.put_op(' in ')
         yield from self.visitor(node.iter)
         if node.ifs:
-            yield self.put_blank()
+            # yield self.put_blank()
             yield self.put_name('if')
-            yield self.put_blank()
+            # yield self.put_blank()
             for z in node.ifs:
                 yield from self.visitor(z)
                 # self.put_blank()
@@ -1627,7 +1635,7 @@ class TokenOrderGenerator:
                             yield from self.visitor(z)
                     except TypeError:
                         yield from self.visitor(value)
-                ### yield self.put_comma() ###
+                ### yield self.put_comma()
             except TypeError:
                 g.trace(i, z)
                 g.es_exception()
@@ -1642,9 +1650,9 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.key)
         yield self.put_op(':')
-        yield self.put_blank()
+        # yield self.put_blank()
         yield self.put_name('for')
-        yield self.put_blank()
+        # yield self.put_blank()
         for i, z in enumerate(node.generators):
             yield from self.visitor(z)
             ###
@@ -1718,9 +1726,9 @@ class TokenOrderGenerator:
         ### Test.
         self.begin_visitor(node)
         yield from self.visitor(node.elt)
-        yield self.put_blank()
+        # yield self.put_blank()
         yield self.put_name('for')
-        yield self.put_blank()
+        # yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
         self.end_visitor(node)
@@ -1769,9 +1777,9 @@ class TokenOrderGenerator:
         ### Test.
         self.begin_visitor(node)
         yield from self.visitor(node.elt)
-        yield self.put_blank()
+        # yield self.put_blank()
         yield self.put_name('for')
-        yield self.put_blank()
+        ### yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
         self.end_visitor(node)
@@ -1850,9 +1858,9 @@ class TokenOrderGenerator:
         yield from self.visitor(node.left)
         op_name = self.op_name(node.op)
         if op_name.startswith(' '):
-            yield self.put_blank()
+            ### yield self.put_blank()
             yield self.put_op(op_name.strip())
-            yield self.put_blank()
+            ### yield self.put_blank()
         else:
             self.put_op(op_name)
         yield from self.visitor(node.right)
@@ -1865,9 +1873,9 @@ class TokenOrderGenerator:
         g.trace(op_name)
         if op_name.startswith(' '):
             for i, z in enumerate(node.values):
-                yield self.put_blank()
+                ### yield self.put_blank()
                 yield self.put_op(op_name.strip())
-                yield self.put_blank()
+                ### yield self.put_blank()
                 yield from self.visitor(z)
         else:
             for i, z in enumerate(node.values):
@@ -1886,7 +1894,7 @@ class TokenOrderGenerator:
             op_name = self.op_name(node.ops[i]).strip()
             if op_name == 'not in':
                 yield self.put_name('not')
-                yield self.put_blank()
+                ### yield self.put_blank()
                 yield self.put_name('in')
             else:
                 yield self.put_op(op_name)
@@ -1898,9 +1906,9 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         op_name = self.op_name(node.op)
         if op_name.startswith(' '):
-            yield self.put_blank()
+            ### yield self.put_blank()
             yield self.put_op(op_name.strip())
-            yield self.put_blank()
+            ### yield self.put_blank()
         else:
             yield self.put_op(op_name)
         yield from self.visitor(node.operand)
@@ -1911,13 +1919,13 @@ class TokenOrderGenerator:
         #'%s if %s else %s'
         self.begin_visitor(node)
         yield from self.visitor(node.body)
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name('if')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.test)
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name('else')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.orelse)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.60: *4* tog: Statements
@@ -1942,10 +1950,10 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('assert')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.test)
         if getattr(node, 'msg', None):
-            yield self.put_comma()
+            ### yield self.put_comma()
             yield from self.visitor(node.msg)
         yield self.put_newline()
         self.end_visitor(node)
@@ -1965,9 +1973,9 @@ class TokenOrderGenerator:
         # 'async for %s in %s:\n' % (
         self.begin_visitor(node)
         yield self.put_name('async')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name('for')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.target)
         yield self.put_op(':')
         yield from self.visitor(node.iter)
@@ -1993,7 +2001,7 @@ class TokenOrderGenerator:
         
         self.begin_visitor(node)
         yield self.put_name('async')
-        yield self.put_blank()
+        ### yield self.put_blank()
         self.end_visitor(node)
         # Delegate the rest.
         self.do_With(node)
@@ -2018,7 +2026,7 @@ class TokenOrderGenerator:
         #'await %s\n'
         self.begin_visitor(node)
         yield self.put_name('await')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
@@ -2043,8 +2051,9 @@ class TokenOrderGenerator:
         yield self.put_name('del')
         for i, z in enumerate(node.targets):
             yield from self.visitor(z)
-            if i < len(node.targets) - 1:
-                yield self.put_comma()
+            ###
+                # if i < len(node.targets) - 1:
+                    # yield self.put_comma()
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.71: *5* tog.ExceptHandler
@@ -2052,11 +2061,11 @@ class TokenOrderGenerator:
         
         self.begin_visitor(node)
         yield self.put_name('except')
-        yield self.put_blank()
+        ### yield self.put_blank()
         if getattr(node, 'type', None):
             yield from self.visitor(node.type)
         if getattr(node, 'name', None):
-            yield self.put_blank()
+            ### yield self.put_blank()
             yield self.put_name('as')
             if isinstance(node.name, ast.AST):
                 yield from self.visitor(node.name)
@@ -2075,16 +2084,17 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('exec')
-        yield self.put_blank()
+        ### yield self.put_blank()
         globals_ = getattr(node, 'globals', None)
         locals_ = getattr(node, 'locals', None)
         if globals_ or locals_:
             yield self.put_name('in')
-            yield self.put_blank()
+            ### yield self.put_blank()
             if globals_:
                 yield from self.visitor(node.globals)
-            if locals_ and globals_:
-                yield self.put_comma()
+            ###
+                # if locals_ and globals_:
+                    # yield self.put_comma()
             if globals_:
                 yield from self.visitor(node.locals)
         yield self.put_newline()
@@ -2095,7 +2105,7 @@ class TokenOrderGenerator:
         #'for %s in %s:\n'
         self.begin_visitor(node)
         yield self.put_name('for')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.target)
         yield from self.visitor(node.iter)
         yield self.put_newline()
@@ -2119,11 +2129,13 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('global')
-        yield self.put_blank()
+        ###
+            # yield self.put_blank()
         for i, name in enumerate(node.names):
             yield self.put_name(name)
-            if i < len(node.names) - 1:
-                yield self.put_comma()
+            ###
+                # if i < len(node.names) - 1:
+                    # yield self.put_comma()
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.75: *5* tog.If
@@ -2132,7 +2144,7 @@ class TokenOrderGenerator:
         # if %s:\n
         self.begin_visitor(node)
         yield self.put_name('if')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.test)
         yield self.put_op(':')
         yield self.put_newline()
@@ -2157,12 +2169,12 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('import')
-        yield self.put_blank()
+        ### yield self.put_blank()
         for alias in node.names:
             yield self.put_name(alias.name)
             if alias.asname:
                 yield self.put_name('as')
-                yield self.put_blank()
+                ### yield self.put_blank()
                 yield self.put_name(alias.asname)
         yield self.put_newline()
         self.end_visitor(node)
@@ -2171,18 +2183,19 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('from')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield self.put_name(node.module)
         yield self.put_name('import')
-        yield self.put_blank()
-        for i, node2 in enumerate(node.names):
-            yield self.put_name(node2.name)
-            if i < len(node.names) - 1:
-                yield self.put_comma()
-        as_name = any([z.asname for z in node.names])
-        if as_name:
-            yield self.put_blank()
-            yield self.put_name(as_name)
+        ### yield self.put_blank()
+        for alias in node.names:
+            yield self.put_name(alias.name)
+            if alias.asname:
+                yield self.put_name('as')
+                ### yield self.put_blank()s
+                yield self.put_name(alias.asname)
+            ###
+                # if i < len(node.names) - 1:
+                    # yield self.put_comma()
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.78: *5* tog.Nonlocal
@@ -2193,11 +2206,13 @@ class TokenOrderGenerator:
         # nonlocal %s\n' % ','.join(node.names))
         self.begin_visitor(node)
         yield self.put_name('nonlocal')
-        yield self.put_blank()
-        for i, name in enumerate(node.names):
+        ### yield self.put_blank()
+        for name in node.names:
             yield self.put_name(name)
-            if i < len(node.names) - 1:
-                yield self.put_comma()
+        ###
+            # for i, name in enumerate(node.names): 
+                # if i < len(node.names) - 1:
+                    # yield self.put_comma()
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.79: *5* tog.Pass
@@ -2237,16 +2252,19 @@ class TokenOrderGenerator:
         exc = getattr(node, 'exc', None)
         cause = getattr(node, 'cause', None)
         tback = getattr(node, 'tback', None)
-        if exc or cause or tback:
-            yield self.put_blank()
+        ###
+            # if exc or cause or tback:
+                # yield self.put_blank()
         if exc:
             yield from self.visitor(exc)
-        if exc and cause:
-            yield self.put_comma()
+        ###
+            # if exc and cause:
+                # yield self.put_comma()
         if cause:
             yield from self.visitor(cause)
-        if tback and (exc or cause):
-            yield self.put_comma()
+        ###
+            # if tback and (exc or cause):
+                # yield self.put_comma()
         if tback:
             yield from self.visitor(tback)
         yield self.put_newline()
@@ -2257,7 +2275,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_name('return')
         if node.value:
-            yield self.put_blank()
+            ### yield self.put_blank()
             yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
@@ -2370,7 +2388,7 @@ class TokenOrderGenerator:
         # while %s:\n'
         self.begin_visitor(node)
         yield self.put_name('while')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.test)
         yield self.put_op(':')
         yield self.put_newline()
@@ -2401,20 +2419,23 @@ class TokenOrderGenerator:
         
         self.begin_visitor(node)
         yield self.put_name('with')
-        yield self.put_blank()
+        ### yield self.put_blank()
         if getattr(node, 'context_expression', None):
             yield from self.visitor(node.context_expresssion)
 
         if getattr(node, 'optional_vars', None): # Python 2.
             try:
-                for i, z in enumerate(node.optional_vars):
+                for z in node.optional_vars:
                     yield from self.visitor(z)
-                    if i < len(node.optional_vars) - 1:
-                        yield self.put_comma()
+                ###
+                    # for i, z in enumerate(node.optional_vars):
+                        # yield from self.visitor(z)
+                        # if i < len(node.optional_vars) - 1:
+                            # yield self.put_comma()
             except TypeError:  # Not iterable.
                 yield from self.visitor(node.optional_vars)
         if getattr(node, 'items', None):  # Python 3.
-            for i, item in enumerate(node.items):
+            for item in node.items:
                 yield from self.visitor(item.context_expr)
                 if getattr(item, 'optional_vars', None):
                     try:
@@ -2422,8 +2443,17 @@ class TokenOrderGenerator:
                             yield from self.visitor(z)
                     except TypeError:  # Not iterable.
                         yield from self.visitor(item.optional_vars)
-                if i < len(node.items) - 1:
-                    yield self.put_comma()
+            ###
+                # for i, item in enumerate(node.items):
+                    # yield from self.visitor(item.context_expr)
+                    # if getattr(item, 'optional_vars', None):
+                        # try:
+                            # for z in item.optional_vars:
+                                # yield from self.visitor(z)
+                        # except TypeError:  # Not iterable.
+                            # yield from self.visitor(item.optional_vars)
+                    # if i < len(node.items) - 1:
+                        # yield self.put_comma()
         # End the line.
         yield self.put_op(':')
         yield self.put_newline()
@@ -2439,7 +2469,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_name('yield')
         if hasattr(node, 'value'):
-            yield self.put_blank()
+            ### yield self.put_blank()
             yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
@@ -2450,7 +2480,7 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_name('yield')
-        yield self.put_blank()
+        ### yield self.put_blank()
         yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
