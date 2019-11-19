@@ -1333,15 +1333,6 @@ class TokenOrderGenerator:
         self.end_visitor(node)
 
     #@+node:ekr.20191113063144.16: *5* tog.ClassDef
-    # 2: ClassDef(identifier name, expr* bases,
-    #             stmt* body, expr* decorator_list)
-
-    # 3: ClassDef(identifier name,
-                 # expr* bases,
-                 # keyword* keywords,
-                 # stmt* body,
-                 # expr* decorator_list)
-
     def do_ClassDef(self, node, print_body=True):
         
         self.begin_visitor(node)
@@ -1519,7 +1510,7 @@ class TokenOrderGenerator:
             # if vararg and kwarg:
                 # yield self.put_comma()
         if kwarg:
-            yield self.put_op('*')
+            yield self.put_op('**')
             yield from self.visitor(kwarg)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.28: *5* tog.arg
@@ -1616,7 +1607,7 @@ class TokenOrderGenerator:
     def do_Constant(self, node):  # Python 3.6+ only.
         
         self.begin_visitor(node)
-        yield self.put('number', str(node.s))  # A guess.
+        yield self.put('number', str(node.s))
         self.end_visitor(node)
     #@+node:ekr.20191113063144.35: *5* tog.Dict
     # Dict(expr* keys, expr* values)
@@ -1746,13 +1737,13 @@ class TokenOrderGenerator:
     def do_NameConstant(self, node):
         
         self.begin_visitor(node)
-        yield self.put('number', node.value)
+        yield self.put('name', node.value)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.45: *5* tog.Num
     def do_Num(self, node):
         
         self.begin_visitor(node)
-        yield self.put('number', node.n) ### ?
+        yield self.put('number', node.n)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.46: *5* tog.Repr
     def do_Repr(self, node): # Python 2.x only
