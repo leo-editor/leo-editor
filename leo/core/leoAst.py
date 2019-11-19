@@ -1336,9 +1336,11 @@ class TokenOrderGenerator:
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
 
-    # 3: ClassDef(identifier name, expr* bases,
-    #             keyword* keywords, expr? starargs, expr? kwargs
-    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name,
+                 # expr* bases,
+                 # keyword* keywords,
+                 # stmt* body,
+                 # expr* decorator_list)
 
     def do_ClassDef(self, node, print_body=True):
         
@@ -1682,13 +1684,15 @@ class TokenOrderGenerator:
     def do_FormattedValue(self, node):
 
         self.begin_visitor(node)
-        if node.value is not None:
-            yield from self.visitor(node.value)
-        if node.conversion is not None:
-            ### yield from self.visitor(node.conversion)
-            yield self.put('num', node.conversion)
-        if node.format_spec is not None:
-            yield from self.visitor(node.format_spec)
+        if 0:
+            # Don't do any of this. It doesn't correspond with the token list.
+            if node.value is not None:
+                yield from self.visitor(node.value)
+            if node.conversion is not None:
+                yield from self.visitor(node.conversion)
+                yield self.put('num', node.conversion)
+            if node.format_spec is not None:
+                yield from self.visitor(node.format_spec)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
@@ -4641,7 +4645,7 @@ class Token:
             return(
                 f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
                 f"line: {self.line_number:<2} level: {self.level:<2} "
-                f"{obj_id(self.node)} {self.node.__class__.__name__:12} "
+                f"{obj_id(self.node)} {self.node.__class__.__name__:16} "
                 f"children: {len(children)} "
                 f"parent: {parent_id} {parent_class}")
         return(

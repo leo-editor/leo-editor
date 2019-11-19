@@ -767,6 +767,7 @@ py2cs.unit_test(raise_on_fail=True)
 """
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
+g.cls()
 import leo.core.leoAst as leoAst
 import imp
 imp.reload(leoAst)
@@ -776,7 +777,7 @@ root = c.p
 tests = make_tests(c.p)
 # Run the tests.
 reports = [
-    'fail-fast',
+    # 'fail-fast',
     # 'coverage',
     # 'contents',
     # 'results',
@@ -826,10 +827,11 @@ def make_tests(root):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191119101115.1: *5* @ignore fail
-#@+node:ekr.20191118155609.1: *6* file-test: core..runLeo.py
-#@+node:ekr.20191119133927.1: *5* new
-#@+node:ekr.20191118164156.1: *5* pass
+#@+node:ekr.20191118155609.1: *5* xx file-test: core..runLeo.py
+#@+node:ekr.20191119142414.1: *5* contents-test: def
+def run(fileName=None, pymacs=None, *args, **keywords):
+    pass
+#@+node:ekr.20191118164156.1: *5* @ignore pass
 #@+node:ekr.20191118155612.1: *6* contents-test: attribute
 open(os.devnull, "w")
 #@+node:ekr.20191118155611.2: *6* contents-test: bug in do_If
@@ -837,6 +839,20 @@ if a:
     a = 1
 else:
     a -= 1
+#@+node:ekr.20191119133927.1: *6* contents-test: class
+class TestClass1:
+    pass
+    
+def decorator():
+    pass
+    
+@decorator
+class TestClass2:
+    pass
+    
+@decorator
+class TestClass(base1, base2):
+    pass
 #@+node:ekr.20191118155611.3: *6* contents-test: class, def, if
 """ds 1"""
 class TestClass:
@@ -848,6 +864,10 @@ class TestClass:
         else:
             a -= 1
         print('done')
+#@+node:ekr.20191119135937.1: *6* contents-test: FormattedValue: f-string
+print(f'profiling binary stats to {xxx}')
+#@+node:ekr.20191119101124.1: *6* contents-test: from runLeo.py
+name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20191118155611.1: *6* contents-test: one-line test
 print('test %s=%s'%(a, 2))
 
@@ -857,8 +877,6 @@ print('d')
 #@+node:ekr.20191118155612.2: *6* contents-test: semicolon between statements
 a = 1 ; b = 2
 print('a') ; print('b')
-#@+node:ekr.20191119101124.1: *6* contents-test: from runLeo.py
-name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
