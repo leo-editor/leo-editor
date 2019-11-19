@@ -2481,7 +2481,7 @@ class Linker:
         n1, n2 = len(results), len(tokens)
         if 0: # Simpler.
             assert n1 == n2, (n1, n2)
-            for i, (r, t) in enumerate(zip(results, tokens)):
+            for r, t in zip(results, tokens):
                 assert r.kind == t.kind, (repr(r), repr(t))
                 assert self.compare_values(r, t), (repr(r), repr(t))
         else: # More detailed error info.
@@ -2490,28 +2490,29 @@ class Linker:
             for i, (r, t) in enumerate(it):
                 if t.kind != r.kind:
                     raise AssignLinksError(
-                        f"Mismatched kinds at {i}: token: {t!r}, result: {r!r}")
+                        f"Mismatched kinds at {i}: token: {t}, result: {r}")
                 if not self.compare_values(r, t):
                     raise AssignLinksError(
-                        f"Mismatched values at {i}: token: {t!r}, result: {r!r}")
+                        f"Mismatched values at {i}: token: {t}, result: {r}")
             # Defensive programming.
             assert n1 == n2, (n1, n2)
-    #@+node:ekr.20191119025334.1: *3* linker compare_values
+    #@+node:ekr.20191119025334.1: *3* linker.compare_values (to do)
     def compare_values(self, r, t):
         """
+        Return True if tokens r and t substantially match.
+        Be more lenient with 'string' tokens.
+        
         r is a token from the results list.
         t is a token in the token list.
-
-        Return true if their values match.
         
-        Use a lenient compare for 'string' tokens.
         
         Subclasses may override.
         """
-        assert t.kind == r.kind, (t, r)
         if t.kind == 'string':
-            return True ### to do.
-        return t.value == r.value
+            val = True ### to do.
+        else:
+            val = t.value == r.value
+        return val
     #@+node:ekr.20191119021330.1: *3* linker.is_significant
     def is_significant(self, token):
         """
@@ -2524,11 +2525,9 @@ class Linker:
         
         Subclasses might override this for special purposes.
         """
-        kind = token.kind
         return (
-            kind in ('name', 'number')
-            or kind == 'op' and token.value != ';'
-        )
+            token.kind in ('name', 'number') or
+            token.kind == 'op' and token.value != ';')
     #@+node:ekr.20191119020852.1: *3* linker.set_links
     tx = 0  # The index of the last patched token.
 
