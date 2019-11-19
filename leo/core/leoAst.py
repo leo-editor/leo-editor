@@ -1854,6 +1854,7 @@ class TokenOrderGenerator:
         
         self.begin_visitor(node)
         op_name = self.op_name(node.op)
+        g.trace(op_name)
         if op_name.startswith(' '):
             for i, z in enumerate(node.values):
                 yield self.put_blank()
@@ -1991,9 +1992,8 @@ class TokenOrderGenerator:
         # %s%s=%s\n'
         self.begin_visitor(node)
         yield from self.visitor(node.target)
-        ### self.op_name(node.op)
-        ### yield self.put_op('=')
-        yield self.put_op(self.op_name(node.op).strip())
+        op_name = self.op_name(node.op).strip()
+        yield self.put_op(op_name+'=')
         yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
@@ -2571,7 +2571,11 @@ class Linker:
         
         Subclasses may change this policy by overriding this method.
         """
-        return token.kind not in ('encoding', 'endmarker', 'ws')
+        return token.kind not in (
+            'encoding', 'endmarker',
+            'dedent', 'indent',
+            'ws'
+        )
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
