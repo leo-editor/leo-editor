@@ -340,6 +340,7 @@
 <v t="ekr.20191118164156.1"><vh>pass</vh>
 <v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
 </v>
+<v t="ekr.20191119092220.1"><vh>@ignore unused tests</vh>
 <v t="ekr.20191118164403.1"><vh>fail</vh>
 <v t="ekr.20191118155612.1"><vh>xx contents-test: attribute</vh></v>
 </v>
@@ -350,7 +351,7 @@
 <v t="ekr.20191118155609.1"><vh>xx file-test: core..runLeo.py</vh></v>
 </v>
 </v>
-<v t="ekr.20191118155024.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4072,9 +4073,11 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-g.cls() ###
+# g.cls() ###
+import imp
 import os
 import leo.core.leoAst as leoAst
+imp.reload(leoAst)
 h = 'token-order-tests'
 root = g.findNodeInChildren(c, p, h)
 assert root, f"child not found: {h!r}"
@@ -4082,8 +4085,16 @@ assert root, f"child not found: {h!r}"
 &lt;&lt; function: make_tests &gt;&gt;
 tests = make_tests(root)
 # Run the tests.
-reports = ['fail-fast', 'assign-links']
-    # 'contents','coverage', 'diff', 'results', 'summary', 'tokens', 'tree',
+reports = [
+    # 'fail-fast',
+    # 'coverage',
+    'contents',
+    'results',
+    'diff',
+    'assign-links',
+    'tokens',
+    'tree',
+]
 for contents, description in tests:
     print(f"len(contents): {len(contents):&gt;5} {description}")
     assert leoAst.test_runner(contents, reports), description</t>
@@ -4095,11 +4106,14 @@ for contents, description in tests:
     tests = []
     contents_tag = 'contents-test:'
     file_tag = 'file-test:'
-    for p in root.subtree():
+    after = root.nodeAfterTree()
+    while p and p != after:
+        # g.trace(p.h)
         if p.h.startswith(contents_tag):
             description = p.h
             contents = p.b.strip() + '\n'
             tests.append((contents, description))
+            p.moveToThreadNext()
         elif p.h.startswith(file_tag):
             description = p.h
             s = p.h[len(file_tag):].strip()
@@ -4109,10 +4123,13 @@ for contents, description in tests:
                 with open(path, 'r') as f:
                     contents = f.read()
                 tests.append((contents, description))
+                p.moveToThreadNext()
             else:
                 assert False, f"file not found: {path}"
+        elif p.h.startswith('@ignore'):
+            p.moveToNodeAfterTree()
         else:
-            pass  # Allow organizer nodes.
+            p.moveToThreadNext()
     return tests
 </t>
 <t tx="ekr.20191118155024.1"></t>
@@ -4145,5 +4162,6 @@ print('a') ; print('b')
 print('d')</t>
 <t tx="ekr.20191118164156.1"></t>
 <t tx="ekr.20191118164403.1"></t>
+<t tx="ekr.20191119092220.1"></t>
 </tnodes>
 </leo_file>

@@ -277,7 +277,6 @@ def test_runner(contents, reports=None):
         elif report == 'coverage':
             x.report_coverage(report_missing=False)
         elif report == 'diff':
-            print('\nDiff...\n')
             x.diff()
         elif report == 'lines':
             print('\nTOKEN lines...\n')
@@ -1138,6 +1137,7 @@ class TokenOrderGenerator:
         import time
         t1 = time.process_time()
         self.tree = tree # Immutable.
+        self.results = []
         self.tokens = tokens[:]
         self.token_index = 0
         self.node = None  # The parent.
@@ -1179,8 +1179,8 @@ class TokenOrderGenerator:
         diffs = list(gen)
         t2 = time.process_time()
         print(
-            f"diff: tokens: {len(tokens)}, results: {len(results)}, "
-            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec.\n")
+            f"\nDiff: tokens: {len(tokens)}, results: {len(results)}, "
+            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec...")
         if len(diffs) < 1000:
             legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
             heading = f"tx  rx  kind {'diff key kind:value':>15}"
@@ -2502,7 +2502,7 @@ class Linker:
                 assert r.kind == t.kind, (repr(r), repr(t))
                 assert self.compare_values(r, t), (repr(r), repr(t))
         else: # More detailed error info.
-            fillvalue = Token('missing', '')
+            fillvalue = Token('MISSING', '')
             it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
             for i, (r, t) in enumerate(it):
                 if t.kind != r.kind:
