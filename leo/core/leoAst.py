@@ -1556,25 +1556,16 @@ class TokenOrderGenerator:
         yield from self.visitor(node.func)
         self.put_op('(')
         for z in node.args:
+            # g.trace('arg', z)
             yield from self.visitor(z)
-        ###
-            # for i, z in enumerate(node.args):
-                # yield from self.visitor(z)
-                # if i < len(node.args) - 1:
-                    # self.put_comma()
         for z in node.keywords:
+            # g.trace('keyword', z)
             yield from self.visitor(z)
-        ###
-            # for i, z in enumerate(node.keywords):
-                # yield from self.visitor(z)
-                # if i < len(node.args) - 1:
-                    # self.put_comma()
         if getattr(node, 'starargs', None):
-            self.put_op('*')
+            # The visitor puts the '*'.
             yield from self.visitor(node.starargs)
-            ### self.put_comma()
         if getattr(node, 'kwargs', None):
-            self.put_op('**')
+            # The visitor puts the '**'.
             yield from self.visitor(node.kwargs)
         yield self.put_op(')')
         self.end_visitor(node)
@@ -1582,8 +1573,9 @@ class TokenOrderGenerator:
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
-        g.trace(node, node.arg, node.value)
-        if node.arg:
+
+        self.put_op('**')
+        if node.arg is not None:
             self.put_name(node.arg)
             self.put_op('=')
         yield from self.visitor(node.value)
@@ -2274,13 +2266,15 @@ class TokenOrderGenerator:
             yield from self.visitor(node.value)
         yield self.put_newline()
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.83: *5* tog.Starred (Python 3)
+    #@+node:ekr.20191113063144.83: *5* tog.Starred
     # Starred(expr value, expr_context ctx)
 
     def do_Starred(self, node):
 
         ### Test.
         self.begin_visitor(node)
+        yield self.put_op('*')
+        g.trace(node.value)
         yield from self.visitor(node.value)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.84: *5* tog.Suite
