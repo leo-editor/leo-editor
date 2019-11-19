@@ -3458,377 +3458,6 @@ def mark_tokens_visit_after_children(self, node, parent_token, token):
   d [nfirst.index] = nfirst
   d [nlast.index] = nlast
   setattr(node, tag, d)
-#@+node:ekr.20191110074556.1: *3* class TokenOrderTraverser (old version)
-class TokenOrderTraverser:
-    """
-    A class traversing ast nodes in the order in which they contribute tokens.
-    
-    Requires asttokens: https://github.com/gristlabs/asttokens
-    
-    Monkey-patches asttokens.MarkTokens._visit_after_children.
-    """
-
-    @others
-#@+node:ekr.20191110074556.2: *4* tot.ctor
-def __init__(self, contents, filename):
-    """
-    ctor for TokenOrderTraverser.
-    
-    1. Check asttokens.
-    2. Parse the contents into the atok object.
-    3. Monkey-patch asttokens.MarkTokens._visit_after_children
-    """
-    self.contents = contents
-    self.filename = filename
-    if not asttokens:
-        print('can not import asttokens')
-        return
-    self.monkey_patch()
-    self.atok = asttokens.ASTTokens(
-        contents, parse=True, filename=filename)
-#@+node:ekr.20191110074556.3: *4* tot.compute_token_order
-@nobeautify
-
-<< define order_dict >>
-
-def compute_token_order(self, node): ###, children):
-    """
-    Return all the node's existing fields (strings), in token order.
-    """
-    name = node.__class__.__name__
-    aList = self.order_dict.get(name, [])
-    result = [z for z in aList
-        if getattr(node, z, None) or z.startswith(('*', 'lit:'))]
-    g.trace(f"{name:12} {result}")
-    return result
-    
-#@+node:ekr.20191110074556.4: *5* << define order_dict >>
-
-# Keys are ast.__class__.__name__; values are lists of fields.
-# `lit:` stands for one "literal" token.
-# `*` stands for special handling.
-order_dict = {
-    # Contexts...
-    'Module':           ['body'],
-    'FunctionDef':      ['decorator_list', 'lit:def',       'name', 'args', 'body', 'type_comment'],
-    'AsyncFunctionDef': ['decorator_list', 'lit:async def', 'name', 'args', 'body', 'type_comment'],
-    'ClassDef':         ['decorator_list', 'lit:class',     'name','bases', 'keywords', 'body'],
-    # Statements...
-    'Return':       ['lit:return', 'value'],
-    'Delete':       ['lit:delete', 'targets'],
-    'Assign':       ['targets', 'node', 'value', 'type_comment'],
-    'AugAssign':    ['target', 'op', 'value'],
-    'AnnAssign':    ['target', 'value', 'simple', 'annotation'],
-    'Expr':         ['value'], 
-    # Operators...
-    'BoolOp': ['op', 'values'],
-    'BinOp':  ['left', 'op', 'right'],
-    # Terms...
-    'arguments': ['*', 'posonlyargs', 'args', 'vararg', 'kwonlyargs',
-                  'kw_defaults', 'kwarg', 'defaults',
-                 ],
-    'args':      ['arg'],
-    'arg':       ['arg'],
-    'Attribute': ['value', 'lit:.', 'attr'],  # 'ctx'
-    'Call':      ['func', 'args', 'keywords'],
-    'List':      ['*', 'elts',], # 'ctx'
-    'Name':      ['id',], # 'ctx'
-    'Num':       ['n'],
-    'Str':       ['s'],
-    'Subscript': ['value', 'slice'], # 'ctx'
-    'Tuple':     ['*', 'elts'], # 'ctx' 
-}
-
-# For(expr target, expr iter, stmt* body, stmt* orelse, string? type_comment)
-# AsyncFor(expr target, expr iter, stmt* body, stmt* orelse, string? type_comment)
-# While(expr test, stmt* body, stmt* orelse)
-# If(expr test, stmt* body, stmt* orelse)
-# With(withitem* items, stmt* body, string? type_comment)
-# AsyncWith(withitem* items, stmt* body, string? type_comment)
-
-# Raise(expr? exc, expr? cause)
-# Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
-# Assert(expr test, expr? msg)
-
-# Import(alias* names)
-# ImportFrom(identifier? module, alias* names, int? level)
-
-# Global(identifier* names)
-# Nonlocal(identifier* names)
-# Pass | Break | Continue
-
-
-# NamedExpr(expr target, expr value)
-# UnaryOp(unaryop op, expr operand)
-# Lambda(arguments args, expr body)
-# IfExp(expr test, expr body, expr orelse)
-# Dict(expr* keys, expr* values)
-# Set(expr* elts)
-# ListComp(expr elt, comprehension* generators)
-# SetComp(expr elt, comprehension* generators)
-# DictComp(expr key, expr value, comprehension* generators)
-# GeneratorExp(expr elt, comprehension* generators)
- # -- the grammar constrains where yield expressions can occur
-# Await(expr value)
-# Yield(expr? value)
-# YieldFrom(expr value)
- # -- need sequences for compare to distinguish between
- # -- x < 4 < 3 and (x < 4) < 3
-# Compare(expr left, cmpop* ops, expr* comparators)
-# Call(expr func, expr* args, keyword* keywords)
-# FormattedValue(expr value, int? conversion, expr? format_spec)
-# JoinedStr(expr* values)
-# Constant(constant value, string? kind)
-
-# Starred(expr value, expr_context ctx)
-
-# slice = Slice(expr? lower, expr? upper, expr? step)
-  # | ExtSlice(slice* dims)
-  # | Index(expr value)
-
-# boolop = And | Or
-
-# operator = Add | Sub | Mult | MatMult | Div | Mod | Pow | LShift
-             # | RShift | BitOr | BitXor | BitAnd | FloorDiv
-
-# unaryop = Invert | Not | UAdd | USub
-
-# cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
-
-# comprehension = (expr target, expr iter, expr* ifs, int is_async)
-
-# excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)
-                # attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)
-
-# -- keyword arguments supplied to call (NULL identifier for **kwargs)
-# keyword = (identifier? arg, expr value)
-
-# -- import name with optional 'as' alias.
-# alias = ('name', identifier? asname)
-
-# withitem = (expr context_expr, expr? optional_vars)
-
-# type_ignore = TypeIgnore(int lineno, string tag)
-#@+node:ekr.20191110074556.5: *4* tot.get_children
-def get_children(self, node):
-    """Return the significant children of node."""
-    def show(node, field, val):
-        print(f"get_children: {node.__class__.__name__:>12}.{field:14} {val}")
-        
-    result = []
-    for field in node._fields:
-        if field in ('col_offset', 'ctx', 'ekr_token_info_dict'):
-            continue
-        if hasattr(node, field):
-            val = getattr(node, field)
-            if val is not None:
-                result.append(val)
-                if isinstance(val, (list, tuple)):
-                    if val:
-                        show(node, val.__class__.__name__, '...')
-                        for item in val:
-                            show(item, 'ITEM', item)
-                else:
-                    show(node, field, val)
-    return result
-#@+node:ekr.20191110074556.6: *4* tot.monkey_patch
-def monkey_patch(self):
-    """Monkey patch asttokens.MarkTokens._visit_after_children"""
-    funcToMethod(
-        mark_tokens_visit_after_children,
-        mark_tokens.MarkTokens,
-        '_visit_after_children',
-    )
-#@+node:ekr.20191110074556.7: *4* tot.show_as_tokens
-def show_as_tokens(self, atok, contents):
-    """
-    Show atok = ASTTokens(contents) as tokens.
-    """
-    # pylint: disable=len-as-condition
-    unified = True
-    to_string = self.to_string
-   
-    # Print summary token info.
-    print('\nToken Summary...\n')
-    print('   Index Kind       String')
-    print('   ===== ====       ======')
-    for i, token in enumerate(atok.tokens):
-        kind = token_module.tok_name[token.type].lower()
-        s = contents[token.startpos:token.endpos]
-        assert s == token.string, (repr(s), repr(token.string))
-        print(f"{i:8} {to_string(token)}")
-       
-    # Print verbose token info.
-    print('\nToken Details (injected data)...\n')
-    print('        Kind String Index  Range    Token Node')
-    print('        ==== ====== =====  =====    ==========')
-    for z in atok.tokens:
-        kind = token_module.tok_name[z.type].lower()
-        s = contents[z.startpos:z.endpos].rstrip()
-        # s = s.rstrip()
-        tree = getattr(z, 'tree', None)
-        tree_cn = tree.__class__.__name__
-        d = getattr(tree, 'ekr_token_info_dict', {})
-        id_s = str(id(tree))[-6:]
-        keys_s = str(list(d.keys()))
-        if tree:
-            tree_s = f"{str(z.index):2} {keys_s:8} {id_s} {tree_cn}"
-        else:
-            tree_s = f"{str(z.index):2} {keys_s}"
-        # Print a summary.
-        print(f"{kind:>12} {s:<10} {tree_s}")
-        # Print all tokens.
-        keys = sorted(d.keys())
-        if len(keys) == 0:
-            pass
-            # Annoying.
-                # print(f"{' '*26} {z.string.strip()}")
-        elif len(keys) == 1:
-            key = keys[0]
-            assert isinstance(key, int), repr(key)
-            token = atok.tokens[key]
-            if not unified:
-                print(f"{' '*23} {key:2} {to_string(token)}")
-        elif len(keys) == 2 and keys[0] != 0:
-            result = []
-            for key in range(keys[0], keys[1]):
-                assert isinstance(key, int), repr(key)
-                token = atok.tokens[key]
-                if unified:
-                    result.append(token.string.strip())
-                else:
-                    print(f"{' '*23} {key:2} {to_string(token)}")
-            if unified:
-                print(f"{' '*26} {' '.join(result)}")
-#@+node:ekr.20191110074556.8: *4* tot.show_as_tree
-def show_as_tree(self, atok):
-    """Show atok = ASTTokens(contents) as ast nodes."""
-    from asttokens.util import walk
-    
-    def show_attr(node, attr, default='[]'):
-        """Show the node's attribute, or default if it does not exist."""
-        val = getattr(node, attr, None)
-        if not val:
-            return default
-        if isinstance(val, (list, tuple)):
-            return [z.__class__.__name__ for z in val]
-        return val.__class__.__name__
-        
-    for node in walk(atok.tree):
-        print(node.__class__.__name__)
-        print('  parent:     ', show_attr(node, 'parent', 'None'))
-        print('  children:   ', show_attr(node, 'children'))
-        print('  siblings:   ', show_attr(node, 'siblings'))
-        print('  token_order:', show_attr(node, 'token_order'))
-#@+node:ekr.20191110074556.9: *4* tot.thread_tree
-def flatten(self, node, target):
-    """Flatten node into result."""
-    assert isinstance(target, list), repr(target)
-    if not node:
-        return
-    if isinstance(node, (list, tuple)):
-        for item in node:
-            ### g.trace('inner', item.__class__.__name__, target)
-            self.flatten(item, target)
-    else:
-        target.append(node)
-    ### g.trace('outer', node.__class__.__name__, target)
-
-def thread_tree(self, atok):
-    """
-    Pass 1: Add parent, children, sibling links to atok.tree.
-    Pass 2: Add token_order lists to all nodes of atok.tree.
-    """
-    trace = False and not g.unitTesting
-    from asttokens.util import walk
-    tree = atok.tree
-        # The root of the tree, an ast.Module.
-    # Pass 1: add the parent, children and sibling links.
-    tree.siblings = []
-    parent = None
-    for node in walk(tree):
-        # Visit the node.
-        node.parent = parent
-        children = self.get_children(node)
-        # Visit the children.
-        parent = node
-        for child in children:
-            if isinstance(child, (list, tuple)):
-                # Flatten the list/tuple into children.
-                children.remove(child)
-                for item in child:
-                    self.flatten(item, children)
-            elif isinstance(child, (str, float, int)):
-                pass # For now, allow the child.
-            else:
-                child.parent = parent
-        if trace:
-            g.trace(node.__class__.__name__)
-            g.trace('  children', [z.__class__.__name__ for z in children])
-        node.siblings = children
-        node.children = children
-    # Pass 2: add the token_order lists.
-    for node in walk(tree):
-        node.token_order = self.compute_token_order(node) ###, node.children)
-        
-#@+node:ekr.20191110074556.10: *4* tot.to_string
-def to_string(self, token):
-    """Convert a 5-tuple to a string."""
-    kind = token_module.tok_name[token.type].lower()
-    return f"{kind:10} {token.string.rstrip()}"
-#@+node:ekr.20191110074556.11: *4* tot.visit & tot.visit_special
-def visit(self, node):
-    """
-    Visit the node.
-    
-    Should be overridden in subclasses.
-    """
-    if isinstance(node, (float, int, str)):
-        print(f"visit: {node.__class__.__name__:>20} {node}")
-    else:
-        print(f"visit: {node.__class__.__name__:>20}")
-        
-def visit_special(self, field, node):
-    
-    assert isinstance(field, str), repr(field)
-    assert field.startswith(('*', 'lit:')), repr(field)
-    print(f"visit_special: {node.__class__.__name__:>12} {field}")
-#@+node:ekr.20191110074556.12: *4* tot.walk_in_token_order
-seen = set()
-
-def walk_in_token_order(self, node):
-    """visit every ast Node in token order."""
-    token_order = getattr(node, 'token_order', None)
-    ### g.trace(f"{node.__class__.__name__:12} ordered fields: {token_order}")
-    if isinstance(node, str):
-        self.visit(node)
-        return
-    if isinstance(node, (list, tuple)):
-        ### g.trace('===== LIST')
-        for item in node:
-            self.walk_in_token_order(item)
-        return
-    if node in self.seen:
-        return
-    # Visit the node.
-    self.seen.add(node)
-    self.visit(node)
-    if not token_order:
-        ### g.trace('===== no token order', node)
-        return
-    # Be careful never to change the token_order field.
-    fields = token_order[:]
-    while fields:
-        field = fields.pop(0)
-        ### g.trace('FIELD', field)
-        if field.startswith(('*', 'lit:')):
-            ### g.trace('  Special field', field)
-            self.visit_special(field, node)
-        else:
-            field_node = getattr(node, field)
-            self.walk_in_token_order(field_node)
-            
-    
 #@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
 class TokenSync:
     """A class to sync and remember tokens."""
@@ -4084,6 +3713,205 @@ def trailing_lines(self):
         i += 1
     self.first_leading_line = i
     return trailing
+#@+node:ekr.20191116160325.1: *3* OLD class Linker
+class Linker:
+
+    @others
+#@+node:ekr.20191115034242.1: *4* links.assign_links
+def assign_links(self, results, tokens, tree):
+    """Assign two-way links between tokens and results."""
+    self.results = results
+    self.tokens = tokens
+    self.node = tree
+    self.rx, self.tx = 0, 0
+    while self.tx < len(self.tokens) and self.rx < len(self.results):
+        assert self.node, g.callers()
+        kind = self.tokens[self.tx].kind
+        name = f"{kind}_handler"
+        handler = getattr(self, name)
+        # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
+        handler()
+        self.tx += 1
+#@+node:ekr.20191116153348.1: *4* links.set_links
+def set_links(self, rx, tx):
+    """Set two-way links between self.tokens[tx] and self.results[rx].node"""
+    # Check everything.
+    token = self.tokens[tx]
+    result = self.results[rx] 
+    node = result.node
+    assert isinstance(node, ast.AST), g.callers()
+    assert isinstance(token, Token), g.callers()
+    assert isinstance(result, Token), g.callers()
+    if token.index is None:
+        raise AssignLinksError(
+            f"set_links: token.index is None: "
+            f"token: {token.error_dump()}")
+    if token.level is None:
+        raise AssignLinksError(
+            f"set_links: token.level is None: "
+            f"token: {token.error_dump()}")
+    # Patch the token.
+    token.node = node
+    # Create/update node.token_list.
+    token_list = getattr(node, 'token_list', [])
+    token_list.append(token)
+    node.token_list = token_list
+    # Update ivars.
+    self.node = node
+    self.rx = rx + 1
+    # The main loop updates self.tx.
+#@+node:ekr.20191117010102.1: *4* links.find_in_results
+def find_in_results(self, rx, tx, optional=False):
+    """
+    Scan forward from self.results[rx], looking for self.tokens[tx].kind.
+    """
+    trace = True and not g.unitTesting
+    kind = self.tokens[tx].kind
+    tag = 'find_in_results:'
+    end_message = f"{tag} at end: {kind} not found starting at {rx}"
+    if trace: print(f"{tag} ENTRY: {kind:12} tx: {tx} rx: {rx}")
+    while rx < len(self.results):
+        r = self.results[rx]
+        if r.kind == kind:
+            if trace: print(f"{tag} FOUND: {kind:12} tx: {tx} rx: {rx}")
+            return rx
+        if r.kind in ('name', 'number', 'op'):
+            if optional:
+                if trace: print(f"{tag} SKIP: {kind:12} tx: {tx} rx: {rx}")
+                return None
+            # This is the only possible serious failure.
+            message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r.kind}"
+            self.sync_error(message, rx, tx)
+            raise AssignLinksError(message)
+        if trace: print(f"{tag} SKIP:  {r.kind:12} tx: {tx} rx: {rx}")
+        rx += 1
+    raise AssignLinksError(end_message)
+#@+node:ekr.20191117121053.1: *4* links.sync_error
+def sync_error(self, message, rx, tx):
+    
+    print('')
+    print(message)
+    print('\nNearby tokens...\n')
+    for tx2 in range(max(0,tx-5),tx):
+        t = self.tokens[tx2]
+        print(t.error_dump())
+    print('\nNearby results...\n')
+    for rx2 in range(max(0,rx-5),rx):
+        r = self.results[rx2]
+        print(r.error_dump())
+    print('')
+#@+node:ekr.20191116164159.1: *4* links: Visitors
+#@+node:ekr.20191116160124.1: *5* links.comment, dedent, indent
+# The results list never contains items matching these tokens.
+
+def comment_handler(self):
+    pass
+
+def dedent_handler(self):
+    pass
+    
+def indent_handler(self):
+    pass
+#@+node:ekr.20191116152657.1: *5* links.encoding
+def encoding_handler(self):
+    """Handle an encoding token. It should appear first"""
+    rx, tx = self.rx, self.tx
+    if tx == 0:
+        # Update the links and ivars.
+        self.set_links(rx, tx)
+        return
+    raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
+#@+node:ekr.20191117015348.1: *5* links.endmarker (revise)
+def endmarker_handler(self):
+
+    rx, tx = self.rx, self.tx
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx)
+    # Update the links and ivars.
+    self.set_links(rx2, tx)
+#@+node:ekr.20191116161848.1: *5* links.name
+def name_handler(self):
+    """
+    'name' tokens block lookahead.
+    """
+    rx, tx = self.rx, self.tx
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx)
+    # Update the links and ivars.
+    self.set_links(rx2, tx)
+#@+node:ekr.20191116161718.1: *5* links.newline
+def newline_handler(self):
+    """
+    'newline' tokens represent newlines in the token stream.
+    
+    They may not correspond exactly to results.
+
+    Note that 'nl' tokens represent newlines in continued strings.
+    """
+    rx, tx = self.rx, self.tx
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx, optional=True)
+    if rx2:
+        # Update the links and ivars.
+        self.set_links(rx2, tx)
+#@+node:ekr.20191117073210.1: *5* links.nl & ws
+# The results list never contains these tokens.
+
+def nl_handler(self):
+    """
+    Handle a 'nl' token.
+    These tokens follow comment tokens and multi-line string tokens.
+    """
+    pass
+
+def ws_handler(self):
+    """
+    'ws' tokens represent *actual* whitespace in the token stream, and
+    *suggested* whitespace in the results list.
+    
+    This handler just skips this token, leaving it for later to decide
+    whether to associate the token an ast node.
+    """
+    pass
+#@+node:ekr.20191116161922.1: *5* links.number
+def number_handler(self):
+    """
+    'number' tokens block lookahead.
+    """
+    rx, tx = self.rx, self.tx
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx)
+    # Update the links and ivars.
+    self.set_links(rx2, tx)
+#@+node:ekr.20191116161828.1: *5* links.op
+def op_handler(self):
+    """The 'op' token blocks lookahead."""
+    rx, tx = self.rx, self.tx
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx)
+    # Update the links and ivars.
+    self.set_links(rx2, tx)
+#@+node:ekr.20191116161759.1: *5* links.string
+def string_handler(self):
+    """
+    'string' tokens are a difficult special case. They are associated with
+    normal strings and with docstrings. Therefore, scanning for them must
+    be optional, which can cause problems laters.
+    
+    Also, the spelling of strings in tokens is the "ground truth". It should
+    replace the spelling of strings in results.
+    """
+    rx, tx = self.rx, self.tx
+    # For later.
+    old_token = self.tokens[tx]
+    # Find the matching result.
+    rx2 = self.find_in_results(rx, tx)
+    # Update the links and ivars.
+    self.set_links(rx2, tx)
+    # A special case.  Use the *token's* spelling in the result.
+    result = self.results[rx2]
+    if old_token.value != result.value:
+        self.results[rx2].value = old_token.value
 #@+node:ekr.20190923093951.1: ** leo_excepthook
 def leo_excepthook(type, value, tb):
     # Note: Leo will still exit!

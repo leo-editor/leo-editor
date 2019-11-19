@@ -337,21 +337,21 @@
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191118155024.1"><vh>token-order-tests</vh>
+<v t="ekr.20191119101115.1"><vh>@ignore fail</vh>
+<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
+</v>
 <v t="ekr.20191118164156.1"><vh>pass</vh>
+<v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
+<v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
+<v t="ekr.20191118155611.3"><vh>contents-test: class, def, if</vh></v>
 <v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
-</v>
-<v t="ekr.20191119092220.1"><vh>@ignore unused tests</vh>
-<v t="ekr.20191118164403.1"><vh>fail</vh>
-<v t="ekr.20191118155612.1"><vh>xx contents-test: attribute</vh></v>
-</v>
-<v t="ekr.20191118155611.2"><vh>xx contents-test: bug in do_If</vh></v>
-<v t="ekr.20191118155611.3"><vh>xx contents-test: class, def, if</vh></v>
-<v t="ekr.20191118155612.2"><vh>xx contents-test: semicolon between statements</vh></v>
-<v t="ekr.20191118160305.1"><vh>xx contents-test: redundant semicolon</vh></v>
-<v t="ekr.20191118155609.1"><vh>xx file-test: core..runLeo.py</vh></v>
+<v t="ekr.20191118160305.1"><vh>contents-test: redundant semicolon</vh></v>
+<v t="ekr.20191118155612.2"><vh>contents-test: semicolon between statements</vh></v>
+<v t="ekr.20191119101124.1"><vh>contents-test: from runLeo.py</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20191118155024.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4073,11 +4073,10 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-# g.cls() ###
-import imp
-import os
+g.cls() ###
 import leo.core.leoAst as leoAst
-imp.reload(leoAst)
+# import imp
+### imp.reload(leoAst)
 h = 'token-order-tests'
 root = g.findNodeInChildren(c, p, h)
 assert root, f"child not found: {h!r}"
@@ -4086,23 +4085,25 @@ assert root, f"child not found: {h!r}"
 tests = make_tests(root)
 # Run the tests.
 reports = [
-    # 'fail-fast',
+    'fail-fast',
     # 'coverage',
     'contents',
-    'results',
-    'diff',
+    # 'results',
+    # 'diff',
     'assign-links',
-    'tokens',
-    'tree',
+    # 'tokens',
+    # 'tree',
 ]
 for contents, description in tests:
-    print(f"len(contents): {len(contents):&gt;5} {description}")
-    assert leoAst.test_runner(contents, reports), description</t>
+    # print(f"len(contents): {len(contents):&gt;5} {description}")
+    assert leoAst.test_runner(contents, reports), description
+print(f"Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root):
     """
     Return a list of tuples (contents, description) generated
     by all the children of the @token-order-tests node.
     """
+    import os
     tests = []
     contents_tag = 'contents-test:'
     file_tag = 'file-test:'
@@ -4132,7 +4133,8 @@ for contents, description in tests:
             p.moveToThreadNext()
     return tests
 </t>
-<t tx="ekr.20191118155024.1"></t>
+<t tx="ekr.20191118155024.1"># This node must exist.
+</t>
 <t tx="ekr.20191118155609.1"></t>
 <t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
 
@@ -4161,7 +4163,7 @@ print('a') ; print('b')
 <t tx="ekr.20191118160305.1">print('c');
 print('d')</t>
 <t tx="ekr.20191118164156.1"></t>
-<t tx="ekr.20191118164403.1"></t>
-<t tx="ekr.20191119092220.1"></t>
+<t tx="ekr.20191119101115.1"></t>
+<t tx="ekr.20191119101124.1">name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))</t>
 </tnodes>
 </leo_file>
