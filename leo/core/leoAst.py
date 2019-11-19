@@ -2460,13 +2460,11 @@ class Linker:
         self.tokens = tokens
         #
         # Create the lists of significant tokens and results.
-        sig_tokens = filter(self.is_significant, tokens)
-        sig_results = filter(self.is_significant, results)
+        sig_tokens = list(filter(self.is_significant, tokens))
+        sig_results = list(filter(self.is_significant, results))
         #
         # Raise an exception if the two lists are not compatible.
         self.check(sig_results, sig_tokens)
-        n1, n2 = len(sig_results), len(sig_tokens)
-        assert n1 == n2, (n1, n2)
         #
         # Make two-way links between tokens and results.
         for r, t in zip(sig_results, sig_tokens):
@@ -2481,17 +2479,24 @@ class Linker:
         May be overridden in subclasses for special purposes.
         """
         import itertools
-        # pylint: disable=no-value-for-parameter
-            # Looks like a pylint bug.
-        it = itertools.zip_longest(
-            results, tokens, fillvalue=Token('missing'))
-        for i, (r, t) in enumerate(it):
-            if t.kind != r.kind:
-                raise AssignLinksError(
-                    f"Mismatched kinds at {i}: token: {t!r}, result: {r!r}")
-            if not self.compare_values(r, t):
-                raise AssignLinksError(
-                    f"Mismatched values at {i}: token: {t!r}, result: {r!r}")
+        n1, n2 = len(results), len(tokens)
+        if 0: # Simpler.
+            assert n1 == n2, (n1, n2)
+            for i, (r, t) in enumerate(zip(results, tokens)):
+                assert r.kind == t.kind, (repr(r), repr(t))
+                assert self.compare_values(r, t), (repr(r), repr(t))
+        else: # More detailed error info.
+            fillvalue = Token('missing', '')
+            it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
+            for i, (r, t) in enumerate(it):
+                if t.kind != r.kind:
+                    raise AssignLinksError(
+                        f"Mismatched kinds at {i}: token: {t!r}, result: {r!r}")
+                if not self.compare_values(r, t):
+                    raise AssignLinksError(
+                        f"Mismatched values at {i}: token: {t!r}, result: {r!r}")
+            # Defensive programming.
+            assert n1 == n2, (n1, n2)
     #@+node:ekr.20191119025334.1: *3* linker compare_values
     def compare_values(self, r, t):
         """
