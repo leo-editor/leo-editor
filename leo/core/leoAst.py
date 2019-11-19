@@ -153,6 +153,10 @@ def funcToMethod(f, theClass, name=None):
     used as the method name.
     """
     setattr(theClass, name or f.__name__, f)
+#@+node:ekr.20191119085222.1: *3* function: obj_id
+def obj_id(obj):
+    """Return the last four digits of id(obj), for dumps & traces."""
+    return str(id(obj))[-4:]
 #@+node:ekr.20191027075648.1: *3* function: parse_ast
 def parse_ast(s, headline=None):
     """
@@ -248,27 +252,14 @@ def test_runner(contents, reports=None):
         g.es_exception()
         ok = False
     # Print reports, in the order they appear in the results list.
-    # The following is a reasoable order.
     bad_reports = []
     for report in reports:
+        # Switches...
         if report == 'fail-fast':
             fail_fast = True
         elif report == 'no-fail-fast':
             fail_fast = False
-        elif report == 'coverage':
-            x.report_coverage(report_missing=False)
-        elif report == 'tokens':
-            print('\nTokens...\n')
-            # pylint: disable=not-an-iterable
-            for z in x.tokens:
-                print(z.dump())
-        elif report == 'contents':
-            print('\nContents...\n')
-            for i, z in enumerate(g.splitLines(contents)):
-                print(f"{i+1:<3} ", z.rstrip())
-        elif report == 'diff':
-            print('\nDiff...\n')
-            x.diff()
+        # Tests...
         elif report == 'assign-links':
             if trace:
                 print('\nAssign links...')
@@ -279,10 +270,15 @@ def test_runner(contents, reports=None):
                     break
                 if trace:
                     print('Continuing...')
-        elif report == 'results':
-            print('\nResults...\n')
-            for z in x.results:
-                print(z.dump())
+        elif report == 'contents':
+            print('\nContents...\n')
+            for i, z in enumerate(g.splitLines(contents)):
+                print(f"{i+1:<3} ", z.rstrip())
+        elif report == 'coverage':
+            x.report_coverage(report_missing=False)
+        elif report == 'diff':
+            print('\nDiff...\n')
+            x.diff()
         elif report == 'lines':
             print('\nTOKEN lines...\n')
             for z in tokens:
@@ -290,9 +286,10 @@ def test_runner(contents, reports=None):
                     print(z.line.rstrip())
                 else:
                     print(repr(z.line))
-        elif report == 'tree':
-            print('\nPatched tree...\n')
-            print(leoAst.AstDumper().brief_dump(tree))
+        elif report == 'results':
+            print('\nResults...\n')
+            for z in x.results:
+                print(z.dump())
         elif report == 'summary':
             if x.errors:
                 print('\nErrors...\n')
@@ -302,6 +299,14 @@ def test_runner(contents, reports=None):
             ok = ok and not x.errors
             print('')
             print('PASS' if ok else 'FAIL')
+        elif report == 'tokens':
+            print('\nTokens...\n')
+            # pylint: disable=not-an-iterable
+            for z in x.tokens:
+                print(z.dump())
+        elif report == 'tree':
+            print('\nPatched tree...\n')
+            print(leoAst.AstDumper().brief_dump(tree))
         else:
             bad_reports.append(report)
     if bad_reports:
@@ -2565,7 +2570,7 @@ class Linker:
         while self.tx <= t.index:
             token = tokens[self.tx]
             if self.should_be_assigned(token, r.node):
-                # g.trace(f"{self.tx:<3} {r.node.__class__.__name__:>12} {token!r}")
+                # g.trace(f"{self.tx:<3} {obj_id(r.node)} {r.node.__class__.__name__:<12} {token!r}")
                 # Patch the token.
                 assert token.node is None, repr(token)
                 token.node = r.node
@@ -2747,19 +2752,6 @@ class AstDumper:
             return f'[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
-    #@+node:ekr.20191112183737.1: *3* dumper.dump_one_node (not used)
-    def dump_one_node(self, node):
-        """Briefly show a tree, properly indented."""
-        assert isinstance(node, ast.AST), repr(node)
-        # Let block.
-        node_id = str(id(node))[-4:]
-        parent = getattr(node, 'parent', None)
-        parent_id = str(id(parent))[-4:]
-        parent_s = f"{parent_id} {parent.__class__.__name__}" if parent else ''
-        children = getattr(node, 'children', [])
-        return (
-            f"node: {node_id} {node.__class__.__name__:<14} "
-            f"parent: {parent_s} children: {len(children)}")
     #@+node:ekr.20141012064706.18393: *3* dumper.get_fields
     def get_fields(self, node):
 
@@ -4616,22 +4608,25 @@ class Token:
     def dump(self):
         
         """Dump a token node and related links."""
-        node_id = str(id(self.node))[-4:]
-        parent = self.node.parent if getattr(self.node, 'parent', None) else None
-        parent_class = parent.__class__.__name__ if parent else ''
-        parent_id = str(id(parent))[-4:] if parent else '    '
-        children = getattr(self.node, 'children', [])
+        if self.node:
+            parent = self.node.parent if getattr(self.node, 'parent', None) else None
+            parent_class = parent.__class__.__name__ if parent else ''
+            parent_id = obj_id(parent) if parent else '    '
+            children = getattr(self.node, 'children', [])
+            return(
+                f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
+                f"line: {self.line_number:<2} level: {self.level:<2} "
+                f"{obj_id(self.node)} {self.node.__class__.__name__:12} "
+                f"children: {len(children)} "
+                f"parent: {parent_id} {parent_class}")
         return(
             f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
-            f"line: {self.line_number:<2} level: {self.level} "
-            f"node: {node_id} {self.node.__class__.__name__:12} "
-            f"children: {len(children)} "
-            f"parent: {parent_id} {parent_class}")
+            f"line: {self.line_number:<2} level: {self.level}")
     #@+node:ekr.20191116154328.1: *3* token.error_dump
     def error_dump(self):
         """Dump a token or result node for error message."""
         if self.node:
-            node_id = str(id(self.node))[-4:]
+            node_id = obj_id(self.node)
             node_s = f"{node_id} {self.node.__class__.__name__}"
         else:
             node_s = "None"
