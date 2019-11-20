@@ -335,6 +335,7 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -4114,9 +4115,9 @@ else:
         'assign-links',
         # 'diff',
         # 'tokens',
-        # 'results',
+        'results',
         # 'raw-tree',
-        # 'tree',
+        'tree',
         # 'contents',
     ]
 ok = True
@@ -4271,5 +4272,18 @@ else:
 <t tx="ekr.20191120162720.1"></t>
 <t tx="ekr.20191120162740.1"></t>
 <t tx="ekr.20191120162807.1"></t>
+<t tx="ekr.20191120163559.1">try:
+    print('a1')
+    print('a2')
+except ImportError:
+    print('b1')
+    print('b2')
+except SyntaxError:
+    print('c1')
+    print('c2')
+finally:
+    print('d1')
+    print('d2')
+</t>
 </tnodes>
 </leo_file>

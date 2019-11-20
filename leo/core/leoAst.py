@@ -2181,66 +2181,15 @@ class TokenOrderGenerator:
         self.level -= 1
         # Handlers....
         for z in node.handlers or []:
+            self.level += 1
             yield from self.visitor(z)
+            self.level -= 1
         # Else...
         if node.orelse:
-            yield self.put_newline()
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield self.put_newline()
             self.level += 1
             for z in node.orelse:
                 yield from self.visitor(z)
             self.level -= 1
-        # Finally...
-        if node.finalbody:
-            yield self.put_newline()
-            yield self.put_name('finally')
-            yield self.put_op(':')
-            yield self.put_newline()
-            self.level += 1
-            for z in node.finalbody:
-                yield from self.visitor(z)
-            self.level -= 1
-        self.end_visitor(node)
-    #@+node:ekr.20191113063144.86: *5* tog.TryExcept
-    def do_TryExcept(self, node):
-
-        self.begin_visitor(node)
-        yield self.put_name('try')
-        yield self.put_op(':')
-        yield self.put_newline()
-        # Body...
-        self.level += 1
-        for z in node.body:
-            yield from self.visitor(z)
-        self.level -= 1
-        # Handlers...
-        for z in node.handlers or []:
-            yield from self.visitor(z)
-        # Else...
-        if node.orelse:
-            yield self.put_newline()
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield self.put_newline()
-            self.level += 1
-            for z in node.orelse:
-                yield from self.visitor(z)
-            self.level -= 1
-        self.end_visitor(node)
-    #@+node:ekr.20191113063144.87: *5* tog.TryFinally
-    def do_TryFinally(self, node):
-        
-        self.begin_visitor(node)
-        yield self.put_name('try')
-        yield self.put_op(':')
-        yield self.put_newline()
-        # Body...
-        self.level += 1
-        for z in node.body:
-            yield from self.visitor(z)
-        self.level -= 1
         # Finally...
         if node.finalbody:
             yield self.put_newline()
