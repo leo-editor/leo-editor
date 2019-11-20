@@ -335,8 +335,6 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
-<v t="ekr.20191120132351.1"><vh>fails test: leoFind bug (partial)</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -347,13 +345,18 @@
 <v t="ekr.20191118155611.3"><vh>test: ClassDef, FunctionDef &amp; If</vh></v>
 <v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
-<v t="ekr.20191120074951.1"><vh>Statements</vh>
+<v t="ekr.20191120162807.1"><vh>Statements...</vh>
+<v t="ekr.20191120162720.1"><vh>If tests</vh>
+<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
+<v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
+</v>
+<v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
+</v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
-<v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -4108,13 +4111,12 @@ if all:
 else:
     reports = [
         # 'fail-fast',
-        # 'contents',
         'assign-links',
-        'diff',
+        # 'diff',
         # 'tokens',
         # 'results',
         # 'raw-tree',
-        'tree',
+        # 'tree',
         # 'contents',
     ]
 ok = True
@@ -4127,7 +4129,7 @@ for contents, description in tests:
         if all:
             break # Overrides fail-fast.
 status = 'PASS' if ok else 'FAIL'
-print(f"{status} Ran {len(tests)} tests")
+print(f"\n{status} Ran {len(tests)} tests")
 if 'assign-links' not in reports:
     print('\nWarning: assign-links not in reports\n')
 </t>
@@ -4175,8 +4177,14 @@ print('test %s=%s'%(a, 2))
 </t>
 <t tx="ekr.20191118155611.2">if a:
     a = 1
+    b = 2
 else:
     a -= 1
+    b += 2
+if a:
+    pass
+else:
+    return
 </t>
 <t tx="ekr.20191118155611.3">"""ds 1"""
 class TestClass:
@@ -4238,33 +4246,30 @@ if -(2):
 <t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])
 </t>
 <t tx="ekr.20191120064442.1">if (a):
-    print('a')
+    print('a1')
+    print('a2')
 elif b:
-    print('b')
+    print('b1')
+    print('b2')
 else:
-    print('else')
+    print('c1')
+    print('c2')
 </t>
 <t tx="ekr.20191120064512.1"></t>
 <t tx="ekr.20191120074811.1"></t>
-<t tx="ekr.20191120074951.1"></t>
 <t tx="ekr.20191120075520.1"></t>
 <t tx="ekr.20191120075559.1"></t>
 <t tx="ekr.20191120092048.1"></t>
-<t tx="ekr.20191120132351.1">def findDefHelper(self, event, defFlag):
-
-    if found:
-        self.find_seen.add(c.p.v)
-        self.restoreAfterFindDef()
-    else:
-        c.selectPosition(old_p)
-        self.restoreAfterFindDef()
-    print('after')</t>
 <t tx="ekr.20191120132531.1"># Second line in else clause causes the fail.
 # There are two 'else' names!
 if found:
     print('a')
 else:
-    print('b')
-    print('c')</t>
+    pass
+    break
+</t>
+<t tx="ekr.20191120162720.1"></t>
+<t tx="ekr.20191120162740.1"></t>
+<t tx="ekr.20191120162807.1"></t>
 </tnodes>
 </leo_file>

@@ -782,13 +782,12 @@ if all:
 else:
     reports = [
         # 'fail-fast',
-        # 'contents',
         'assign-links',
-        'diff',
+        # 'diff',
         # 'tokens',
         # 'results',
         # 'raw-tree',
-        'tree',
+        # 'tree',
         # 'contents',
     ]
 ok = True
@@ -801,7 +800,7 @@ for contents, description in tests:
         if all:
             break # Overrides fail-fast.
 status = 'PASS' if ok else 'FAIL'
-print(f"{status} Ran {len(tests)} tests")
+print(f"\n{status} Ran {len(tests)} tests")
 if 'assign-links' not in reports:
     print('\nWarning: assign-links not in reports\n')
 #@+node:ekr.20191118154839.1: *5* << function: make_tests >>
@@ -841,24 +840,6 @@ def make_tests(root, all):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191120132531.1: *5* test: If w/ only else
-# Second line in else clause causes the fail.
-# There are two 'else' names!
-if found:
-    print('a')
-else:
-    print('b')
-    print('c')
-#@+node:ekr.20191120132351.1: *5* fails test: leoFind bug (partial)
-def findDefHelper(self, event, defFlag):
-
-    if found:
-        self.find_seen.add(c.p.v)
-        self.restoreAfterFindDef()
-    else:
-        c.selectPosition(old_p)
-        self.restoreAfterFindDef()
-    print('after')
 #@+node:ekr.20191119203945.1: *5* xx file: core..leoFind.py
 #@+node:ekr.20191120092048.1: *5* ignore: f-strings tests
 #@+node:ekr.20191118155611.1: *6* test: f-strings
@@ -895,28 +876,47 @@ class TestClass:
 #@+node:ekr.20191119142414.1: *7* test: FunctionDef & NamedConstant
 def run(fileName=None, pymacs=None, *args, **keywords):
     pass
-#@+node:ekr.20191120074951.1: *6* Statements
-#@+node:ekr.20191119143517.1: *7* test: Call, arguments & keyword
+#@+node:ekr.20191120162807.1: *6* Statements...
+#@+node:ekr.20191120162720.1: *7* If tests
+#@+node:ekr.20191120064442.1: *8* test: If w/ elif
+if (a):
+    print('a1')
+    print('a2')
+elif b:
+    print('b1')
+    print('b2')
+else:
+    print('c1')
+    print('c2')
+#@+node:ekr.20191118155611.2: *8* test: If w/o elif
+if a:
+    a = 1
+    b = 2
+else:
+    a -= 1
+    b += 2
+if a:
+    pass
+else:
+    return
+#@+node:ekr.20191120132531.1: *8* test: If w/ only else
+# Second line in else clause causes the fail.
+# There are two 'else' names!
+if found:
+    print('a')
+else:
+    pass
+    break
+#@+node:ekr.20191120162740.1: *7* Call tests
+#@+node:ekr.20191119143517.1: *8* test: Call, arguments & keyword
 f2(a,b=2)
-#@+node:ekr.20191119150253.1: *7* test: Call, arguments & Starred
+#@+node:ekr.20191119150253.1: *8* test: Call, arguments & Starred
 f1(arg, *args, **kwargs)
-#@+node:ekr.20191119101124.1: *7* test: Call, Str
+#@+node:ekr.20191119101124.1: *8* test: Call, Str
 name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20191119213126.1: *7* test: For, Tuple
 for i, j in b:
     pass
-#@+node:ekr.20191118155611.2: *7* test: If w/o elif
-if a:
-    a = 1
-else:
-    a -= 1
-#@+node:ekr.20191120064442.1: *7* test: If w/ elif
-if (a):
-    print('a')
-elif b:
-    print('b')
-else:
-    print('else')
 #@+node:ekr.20191120075520.1: *6* Expression & operators
 #@+node:ekr.20191118155612.1: *7* test: attribute
 open(os.devnull, "w")

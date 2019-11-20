@@ -2045,13 +2045,13 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.75: *5* tog.If
     # If(expr test, stmt* body, stmt* orelse)
 
-    def do_If(self, node, name='if'):
+    def do_If(self, node, elif_flag=False):
        
         # If or elif line...
             # if %s:\n
             # elif %s: \n
         self.begin_visitor(node)
-        yield self.put_name(name)
+        yield self.put_name('elif' if elif_flag else 'if')
         yield from self.visitor(node.test)
         yield self.put_op(':')
         yield self.put_newline()
@@ -2061,17 +2061,17 @@ class TokenOrderGenerator:
             yield from self.visitor(z)
         self.level -= 1
         # Else clause...
-        for z in node.orelse or []:
+        if node.orelse:
             self.level += 1
-            if isinstance(z, ast.If):
-                # Recursive call.
-                yield from self.do_If(z, name='elif')
+            node1 = node.orelse[0]
+            if isinstance(node1, ast.If) and len(node.orelse) == 1:
+                yield from self.do_If(node1, elif_flag=True)
             else:
-                self.level += 1
                 yield self.put_name('else')
                 yield self.put_op(':')
                 yield self.put_newline()
-                yield from self.visitor(z)
+                for z in node.orelse:
+                    yield from self.visitor(z)
             self.level -= 1
         self.end_visitor(node)
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
