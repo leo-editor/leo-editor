@@ -365,8 +365,8 @@
 <v t="ekr.20191120075559.1"><vh>f-strings</vh></v>
 </v>
 <v t="ekr.20191120064512.1"><vh>ignore: passed file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>xx file: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 </v>
 </v>
 </v>
@@ -4099,7 +4099,7 @@ imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-all = False # True, ignore @ignore nodes.
+all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
 if all:

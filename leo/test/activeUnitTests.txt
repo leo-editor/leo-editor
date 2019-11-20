@@ -774,7 +774,7 @@ imp.reload(leoAst)
 # Make the tests.
 << function: make_tests >>
 root = c.p
-all = False # True, ignore @ignore nodes.
+all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
 if all:
@@ -928,8 +928,8 @@ if -(2):
 print(f'profiling binary stats to {xxx}')
 #@+node:ekr.20191120075559.1: *6* f-strings
 #@+node:ekr.20191120064512.1: *5* ignore: passed file tests
-#@+node:ekr.20191118155609.1: *6* file: core..runLeo.py
-#@+node:ekr.20191119203945.1: *6* file: core..leoFind.py
+#@+node:ekr.20191118155609.1: *6* xx file: core..runLeo.py
+#@+node:ekr.20191119203945.1: *6* xx file: core..leoFind.py
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1

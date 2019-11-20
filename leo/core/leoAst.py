@@ -2382,21 +2382,15 @@ class Linker:
                         f"Mismatched values at {i}: token: {t}, result: {r}")
             # Defensive programming.
             assert n1 == n2, (n1, n2)
-    #@+node:ekr.20191119025334.1: *3* linker.compare_values (to do)
+    #@+node:ekr.20191119025334.1: *3* linker.compare_values
     def compare_values(self, r, t):
         """
         r is a token from the results list.
         t is a token in the token list.
         
-        Return True if tokens r and t match.
-        
-        Special case: 
+        Return True r.value == t.value, exempting 'string' tokens.
         """
-        if t.kind == 'string':
-            val = True ### to do.
-        else:
-            val = t.value == r.value
-        return val
+        return True if t.kind == 'string' else t.value == r.value
     #@+node:ekr.20191119021330.1: *3* linker.is_significant
     def is_significant(self, token):
         """
