@@ -1382,7 +1382,7 @@ class TokenOrderGenerator:
         yield self.put_newline()
         # Body...
         self.level += 1
-        for i, z in enumerate(node.body):
+        for z in node.body:
             yield from self.visitor(z)
         self.level -= 1
         self.end_visitor(node)
@@ -1619,7 +1619,7 @@ class TokenOrderGenerator:
         yield self.put_op(':')
         yield self.put_name('for')
         # No need to put commas.
-        for i, z in enumerate(node.generators):
+        for z in node.generators:
             yield from self.visitor(z)
             yield self.put_comma()
         self.end_visitor(node)
@@ -1677,7 +1677,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_op('[')
         # No need to put commas.
-        for i, z in enumerate(node.elts):
+        for z in node.elts:
             yield from self.visitor(z)
         yield self.put_op(']')
         self.end_visitor(node)
@@ -1796,6 +1796,7 @@ class TokenOrderGenerator:
     def do_BoolOp(self, node):
         
         self.begin_visitor(node)
+        # op.join(node.values)
         op_name = node.op.__class__.__name__
         for i, z in enumerate(node.values):
             yield from self.visitor(z)
