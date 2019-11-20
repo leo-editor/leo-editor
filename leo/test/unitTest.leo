@@ -4091,22 +4091,21 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 g.cls()
 import leo.core.leoAst as leoAst
-# import imp
-# imp.reload(leoAst)
+import imp
+imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-all = False # True, ignore @ignore nodes.
+all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
-reports = ['assign-links']
+reports = ['assign-links'] # 'coverage',
 if not all:
     reports.extend([
-        # 'coverage',
         'contents',
         # 'diff',
-        # 'tokens',
-        # 'results',
+        'tokens',
+        'results',
         # 'raw-tree',
         'tree',
         # 'contents',

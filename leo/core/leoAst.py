@@ -1771,7 +1771,9 @@ class TokenOrderGenerator:
         """
         self.begin_visitor(node)
         yield self.put('string', node.s)
-        node.token_list = [Token('string', node.s)]
+        token = Token('string', node.s)
+        token.node = node
+        node.token_list = [token]
         self.end_visitor(node)
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -2377,14 +2379,12 @@ class Linker:
     #@+node:ekr.20191119025334.1: *3* linker.compare_values (to do)
     def compare_values(self, r, t):
         """
-        Return True if tokens r and t substantially match.
-        Be more lenient with 'string' tokens.
-        
         r is a token from the results list.
         t is a token in the token list.
         
+        Return True if tokens r and t match.
         
-        Subclasses may override.
+        Special case: 
         """
         if t.kind == 'string':
             val = True ### to do.
@@ -2430,6 +2430,7 @@ class Linker:
         # Patch all previous assignable tokens.
         while self.tx <= t.index:
             token = tokens[self.tx]
+            # Don't assign "cruft" tokens to the ast node.
             if self.should_be_assigned(token, r.node):
                 # g.trace(f"{self.tx:<3} {obj_id(r.node)} "
                 #         f"{r.node.__class__.__name__:<12} {token!r}")
@@ -2437,8 +2438,20 @@ class Linker:
                 assert token.node is None, repr(token)
                 token.node = r.node
                 # Add the token to r.node.token_list.
-                # Special case: the Str visitor has added the 'string' token.
-                if token.kind != 'string':
+                ### Alas, Str tokens do not appear in the results list!
+                if r.node.__class__.__name__ == 'Str':
+                    assert False, g.callers()
+                    # Strings are an essential special case.
+                    # 1: The Str visitor has already injected token.node
+                    assert token.node, repr(token)
+                    # 2: The Str visitor has already injected node.token_list.
+                    assert token.node.token_list, repr(token.node)
+                    # 3: Override the spelling *now*.
+                    assert len(token.node.token_list) == 1, repr(token.node.token_list)
+                    token2 = token.node.token_list[0]
+                    g.trace('UPDATE SPELLING', token2.value, '==>', token.value)
+                    token2.value = token.value
+                else:
                     token_list = getattr(r.node, 'token_list', [])
                     r.node.token_list = token_list + [token]
             self.tx += 1
