@@ -774,7 +774,8 @@ imp.reload(leoAst)
 # Make the tests.
 << function: make_tests >>
 root = c.p
-tests = make_tests(c.p)
+all = True # True, ignore @ignore nodes.
+tests = make_tests(c.p, all)
 # Run the tests.
 reports = [
     # 'fail-fast',
@@ -798,15 +799,15 @@ for contents, description in tests:
 status = 'PASS' if ok else 'FAIL'
 print(f"{status} Ran {len(tests)} tests")
 #@+node:ekr.20191118154839.1: *5* << function: make_tests >>
-def make_tests(root):
+def make_tests(root, all):
     """
-    Return a list of tuples (contents, description) generated
-    by all the children of the @token-order-tests node.
+    Return a list of tuples (contents, description) found in all children of the
+    root, except this node.
     """
     import os
     tests = []
-    contents_tag = 'contents-test:'
-    file_tag = 'file-test:'
+    contents_tag = 'test:'
+    file_tag = 'file:'
     while p:
         # g.trace(p.h)
         if 'make_tests' in p.h:
@@ -829,25 +830,31 @@ def make_tests(root):
                 p.moveToThreadNext()
             else:
                 assert False, f"file not found: {path}"
-        elif p.h.startswith('@ignore'):
+        elif not all and p.h.startswith('ignore:'):
             p.moveToNodeAfterTree()
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191119203945.1: *5* file-test: core..leoFind.py
-#@+node:ekr.20191118164156.1: *5* @ignore passed
-#@+node:ekr.20191118155612.1: *6* contents-test: attribute
+#@+node:ekr.20191120064442.1: *5* test: If
+if (a):
+    print('a')
+elif b:
+    print('b')
+else:
+    print('else')
+#@+node:ekr.20191118164156.1: *5* ignore: passed contents tests
+#@+node:ekr.20191118155612.1: *6* test: attribute
 open(os.devnull, "w")
-#@+node:ekr.20191118155611.2: *6* contents-test: bug in do_If
+#@+node:ekr.20191118155611.2: *6* test: bug in do_If
 if a:
     a = 1
 else:
     a -= 1
-#@+node:ekr.20191119143517.1: *6* contents-test: Call & keyword
+#@+node:ekr.20191119143517.1: *6* test: Call, arguments & keyword
 f2(a,b=2)
-#@+node:ekr.20191119150253.1: *6* contents-test: Call & Starred
+#@+node:ekr.20191119150253.1: *6* test: Call, arguments & Starred
 f1(arg, *args, **kwargs)
-#@+node:ekr.20191119133927.1: *6* contents-test: class
+#@+node:ekr.20191119133927.1: *6* test: ClassDef
 class TestClass1:
     pass
     
@@ -861,7 +868,7 @@ class TestClass2:
 @decorator
 class TestClass(base1, base2):
     pass
-#@+node:ekr.20191118155611.3: *6* contents-test: class, def, if
+#@+node:ekr.20191118155611.3: *6* test: ClassDef, FunctionDef & If
 """ds 1"""
 class TestClass:
     """ds 2"""
@@ -872,36 +879,38 @@ class TestClass:
         else:
             a -= 1
         print('done')
-#@+node:ekr.20191119211714.1: *6* contents-test: CompareOp
+#@+node:ekr.20191119211714.1: *6* test: CompareOp
 if a and not b and c:
     pass
-#@+node:ekr.20191119213126.1: *6* contents-test: For, Tuple
+#@+node:ekr.20191119213126.1: *6* test: For, Tuple
 for i, j in b:
     pass
-#@+node:ekr.20191119135937.1: *6* contents-test: FormattedValue: f-string
+#@+node:ekr.20191119135937.1: *6* test: FormattedValue: f-string
 print(f'profiling binary stats to {xxx}')
-#@+node:ekr.20191119101124.1: *6* contents-test: from runLeo.py
+#@+node:ekr.20191119101124.1: *6* test: from runLeo.py
 name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
-#@+node:ekr.20191119142414.1: *6* contents-test: FunctionDef & NamedConstant
+#@+node:ekr.20191119142414.1: *6* test: FunctionDef & NamedConstant
 def run(fileName=None, pymacs=None, *args, **keywords):
     pass
-#@+node:ekr.20191119213940.1: *6* contents-test: ListComp and comprehension
+#@+node:ekr.20191119213940.1: *6* test: ListComp and comprehension
 any([p2.isDirty() for p2 in p.subtree()])
-#@+node:ekr.20191118155611.1: *6* contents-test: one-line test
+#@+node:ekr.20191118155611.1: *6* test: one-line test
 print('test %s=%s'%(a, 2))
 
-#@+node:ekr.20191118160305.1: *6* contents-test: redundant semicolon
+#@+node:ekr.20191118160305.1: *6* test: redundant semicolon
 print('c');
 print('d')
-#@+node:ekr.20191118155612.2: *6* contents-test: semicolon between statements
+#@+node:ekr.20191118155612.2: *6* test: semicolon between statements
 a = 1 ; b = 2
 print('a') ; print('b')
-#@+node:ekr.20191119210429.1: *6* contents-test: UnaryOp
+#@+node:ekr.20191119210429.1: *6* test: UnaryOp
 if not a:
     pass
 if -(2):
     pass
-#@+node:ekr.20191118155609.1: *6* file-test: core..runLeo.py
+#@+node:ekr.20191120064512.1: *5* ignore: passed file tests
+#@+node:ekr.20191118155609.1: *6* file: core..runLeo.py
+#@+node:ekr.20191119203945.1: *6* file: core..leoFind.py
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1

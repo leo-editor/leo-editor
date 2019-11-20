@@ -335,25 +335,28 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191119203945.1"><vh>file-test: core..leoFind.py</vh></v>
-<v t="ekr.20191118164156.1"><vh>@ignore passed</vh>
-<v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
-<v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
-<v t="ekr.20191119143517.1"><vh>contents-test: Call &amp; keyword</vh></v>
-<v t="ekr.20191119150253.1"><vh>contents-test: Call &amp; Starred</vh></v>
-<v t="ekr.20191119133927.1"><vh>contents-test: class</vh></v>
-<v t="ekr.20191118155611.3"><vh>contents-test: class, def, if</vh></v>
-<v t="ekr.20191119211714.1"><vh>contents-test: CompareOp</vh></v>
-<v t="ekr.20191119213126.1"><vh>contents-test: For, Tuple</vh></v>
-<v t="ekr.20191119135937.1"><vh>contents-test: FormattedValue: f-string</vh></v>
-<v t="ekr.20191119101124.1"><vh>contents-test: from runLeo.py</vh></v>
-<v t="ekr.20191119142414.1"><vh>contents-test: FunctionDef &amp; NamedConstant</vh></v>
-<v t="ekr.20191119213940.1"><vh>contents-test: ListComp and comprehension</vh></v>
-<v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
-<v t="ekr.20191118160305.1"><vh>contents-test: redundant semicolon</vh></v>
-<v t="ekr.20191118155612.2"><vh>contents-test: semicolon between statements</vh></v>
-<v t="ekr.20191119210429.1"><vh>contents-test: UnaryOp</vh></v>
-<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: If</vh></v>
+<v t="ekr.20191118164156.1"><vh>ignore: passed contents tests</vh>
+<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
+<v t="ekr.20191118155611.2"><vh>test: bug in do_If</vh></v>
+<v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
+<v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
+<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191118155611.3"><vh>test: ClassDef, FunctionDef &amp; If</vh></v>
+<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
+<v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
+<v t="ekr.20191119135937.1"><vh>test: FormattedValue: f-string</vh></v>
+<v t="ekr.20191119101124.1"><vh>test: from runLeo.py</vh></v>
+<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: one-line test</vh></v>
+<v t="ekr.20191118160305.1"><vh>test: redundant semicolon</vh></v>
+<v t="ekr.20191118155612.2"><vh>test: semicolon between statements</vh></v>
+<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
+</v>
+<v t="ekr.20191120064512.1"><vh>ignore: passed file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 </v>
 </v>
 </v>
@@ -4086,7 +4089,8 @@ imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-tests = make_tests(c.p)
+all = True # True, ignore @ignore nodes.
+tests = make_tests(c.p, all)
 # Run the tests.
 reports = [
     # 'fail-fast',
@@ -4110,15 +4114,15 @@ for contents, description in tests:
 status = 'PASS' if ok else 'FAIL'
 print(f"{status} Ran {len(tests)} tests")
 </t>
-<t tx="ekr.20191118154839.1">def make_tests(root):
+<t tx="ekr.20191118154839.1">def make_tests(root, all):
     """
-    Return a list of tuples (contents, description) generated
-    by all the children of the @token-order-tests node.
+    Return a list of tuples (contents, description) found in all children of the
+    root, except this node.
     """
     import os
     tests = []
-    contents_tag = 'contents-test:'
-    file_tag = 'file-test:'
+    contents_tag = 'test:'
+    file_tag = 'file:'
     while p:
         # g.trace(p.h)
         if 'make_tests' in p.h:
@@ -4141,7 +4145,7 @@ print(f"{status} Ran {len(tests)} tests")
                 p.moveToThreadNext()
             else:
                 assert False, f"file not found: {path}"
-        elif p.h.startswith('@ignore'):
+        elif not all and p.h.startswith('ignore:'):
             p.moveToNodeAfterTree()
         else:
             p.moveToThreadNext()
@@ -4213,6 +4217,15 @@ if -(2):
 <t tx="ekr.20191119213126.1">for i, j in b:
     pass
 </t>
-<t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])</t>
+<t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])
+</t>
+<t tx="ekr.20191120064442.1">if (a):
+    print('a')
+elif b:
+    print('b')
+else:
+    print('else')
+</t>
+<t tx="ekr.20191120064512.1"></t>
 </tnodes>
 </leo_file>
