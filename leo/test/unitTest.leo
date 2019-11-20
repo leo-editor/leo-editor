@@ -335,7 +335,10 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
+<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+</v>
 <v t="ekr.20191118164156.1"><vh>ignore: passed contents tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -347,8 +350,8 @@
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
-<v t="ekr.20191118155611.2"><vh>test: If</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: If</vh></v>
+<v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
+<v t="ekr.20191120064442.1"></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -4096,20 +4099,23 @@ imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
-reports = ['assign-links'] # 'coverage',
-if not all:
-    reports.extend([
+if all:
+    reports = ['assign-links'] # 'coverage',
+else:
+    reports = [
+        # 'fail-fast',
         'contents',
         # 'diff',
-        'tokens',
-        'results',
+        # 'tokens',
+        # 'results',
+        'assign-links',
         # 'raw-tree',
         'tree',
         # 'contents',
-])
+    ]
 ok = True
 for contents, description in tests:
     try:
@@ -4117,7 +4123,8 @@ for contents, description in tests:
     except Exception as e:
         ok = False
         print('ERROR in', e)
-        break # Overrides fail-fast.
+        if all:
+            break # Overrides fail-fast.
 status = 'PASS' if ok else 'FAIL'
 print(f"{status} Ran {len(tests)} tests")
 if 'assign-links' not in reports:
@@ -4241,5 +4248,6 @@ else:
 <t tx="ekr.20191120074951.1"></t>
 <t tx="ekr.20191120075520.1"></t>
 <t tx="ekr.20191120075559.1"></t>
+<t tx="ekr.20191120092048.1"></t>
 </tnodes>
 </leo_file>

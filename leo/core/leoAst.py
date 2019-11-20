@@ -2043,12 +2043,15 @@ class TokenOrderGenerator:
         yield self.put_newline()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.75: *5* tog.If
-    def do_If(self, node):
+    # If(expr test, stmt* body, stmt* orelse)
+
+    def do_If(self, node, name='if'):
        
-        # If line...
+        # If or elif line...
             # if %s:\n
+            # elif %s: \n
         self.begin_visitor(node)
-        yield self.put_name('if')
+        yield self.put_name(name)
         yield from self.visitor(node.test)
         yield self.put_op(':')
         yield self.put_newline()
@@ -2058,13 +2061,16 @@ class TokenOrderGenerator:
             yield from self.visitor(z)
         self.level -= 1
         # Else clause...
-        if node.orelse:
-            yield self.put_newline()
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield self.put_newline()
+        for z in node.orelse or []:
             self.level += 1
-            for z in node.orelse:
+            if isinstance(z, ast.If):
+                # Recursive call.
+                yield from self.do_If(z, name='elif')
+            else:
+                self.level += 1
+                yield self.put_name('else')
+                yield self.put_op(':')
+                yield self.put_newline()
                 yield from self.visitor(z)
             self.level -= 1
         self.end_visitor(node)
@@ -2517,7 +2523,7 @@ class AstDumper:
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
-        tokens_s = self.show_tokens(node)
+        tokens_s = self.show_tokens(node, 60, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
         full_s =  f"{full_s1:<60} {tokens_s}\n"
@@ -2585,29 +2591,40 @@ class AstDumper:
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
     #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
-    def show_tokens(self, node):
-        """Return a string showing node.token_list"""
+    def show_tokens(self, node, n, m):
+        """
+        Return a string showing node.token_list.
+        
+        Split the result if n + len(result) > m
+        """
         token_list = getattr(node, 'token_list', [])
         if 0: # Too brief.
-            result = ','.join([z.kind for z in token_list])
-        else:
-            result = []
-            for z in token_list:
-                result.append(z.kind)
-                if z.kind in ('indent', 'ws'):
-                    result.append(f"({len(z.value)})")
-                elif z.kind == 'newline':
-                    result.append(f"({z.line_number}:{len(z.line)})")
-                elif z.kind in ('name', 'string'):
-                    val = truncate(z.value,10)
-                    result.append(f"({val})")
-                elif z.kind == 'number':
-                    result.append(f"({z.value})")
-                elif z.kind == 'op':
-                    result.append(f"{z.value}")
-                result.append(' ')
-            result=''.join(result).rstrip()
-        return result
+            return ','.join([z.kind for z in token_list])
+        result = []
+        for z in token_list:
+            if z.kind in ('indent', 'ws'):
+                result.append(f"{z.kind}({len(z.value)})")
+            elif z.kind == 'newline':
+                result.append(f"{z.kind}({z.line_number}:{len(z.line)})")
+            elif z.kind in ('name', 'string'):
+                val = truncate(z.value,10)
+                result.append(f"{z.kind}({val})")
+            elif z.kind == 'number':
+                result.append(f"{z.kind}({z.value})")
+            elif z.kind == 'op':
+                result.append(f"{z.kind}{z.value}")
+            result.append(' ')
+        # split the line if it is too long.
+        # return ''.join(result)
+        line, lines = [], []
+        for r in result:
+            line.append(r)
+            if n + len(''.join(line)) >= m:
+                lines.append(''.join(line))
+                line = []
+        lines.append(''.join(line))
+        pad = '\n' + ' '*n
+        return pad.join(lines)
     #@+node:ekr.20141012064706.18392: *3* dumper.dump
     def dump(self, node, level=0):
 

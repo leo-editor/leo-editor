@@ -774,20 +774,23 @@ imp.reload(leoAst)
 # Make the tests.
 << function: make_tests >>
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
-reports = ['assign-links'] # 'coverage',
-if not all:
-    reports.extend([
+if all:
+    reports = ['assign-links'] # 'coverage',
+else:
+    reports = [
+        # 'fail-fast',
         'contents',
         # 'diff',
-        'tokens',
-        'results',
+        # 'tokens',
+        # 'results',
+        'assign-links',
         # 'raw-tree',
         'tree',
         # 'contents',
-])
+    ]
 ok = True
 for contents, description in tests:
     try:
@@ -795,7 +798,8 @@ for contents, description in tests:
     except Exception as e:
         ok = False
         print('ERROR in', e)
-        break # Overrides fail-fast.
+        if all:
+            break # Overrides fail-fast.
 status = 'PASS' if ok else 'FAIL'
 print(f"{status} Ran {len(tests)} tests")
 if 'assign-links' not in reports:
@@ -837,7 +841,15 @@ def make_tests(root, all):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191118155611.1: *5* test: f-strings
+#@+node:ekr.20191120064442.1: *5* test: If w/ elif
+if (a):
+    print('a')
+elif b:
+    print('b')
+else:
+    print('else')
+#@+node:ekr.20191120092048.1: *5* ignore: f-strings tests
+#@+node:ekr.20191118155611.1: *6* test: f-strings
 """Docstring."""
 print('test %s=%s'%(a, 2))
 
@@ -881,12 +893,12 @@ name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20191119213126.1: *7* test: For, Tuple
 for i, j in b:
     pass
-#@+node:ekr.20191118155611.2: *7* test: If
+#@+node:ekr.20191118155611.2: *7* test: If w/o elif
 if a:
     a = 1
 else:
     a -= 1
-#@+node:ekr.20191120064442.1: *7* test: If
+#@+node:ekr.20191120064442.1: *7* test: If w/ elif
 if (a):
     print('a')
 elif b:
