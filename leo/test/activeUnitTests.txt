@@ -774,7 +774,7 @@ imp.reload(leoAst)
 # Make the tests.
 << function: make_tests >>
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
 if all:
@@ -782,11 +782,11 @@ if all:
 else:
     reports = [
         # 'fail-fast',
-        'contents',
-        # 'diff',
+        # 'contents',
+        'assign-links',
+        'diff',
         # 'tokens',
         # 'results',
-        'assign-links',
         # 'raw-tree',
         'tree',
         # 'contents',
@@ -841,13 +841,25 @@ def make_tests(root, all):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191120064442.1: *5* test: If w/ elif
-if (a):
+#@+node:ekr.20191120132531.1: *5* test: If w/ only else
+# Second line in else clause causes the fail.
+# There are two 'else' names!
+if found:
     print('a')
-elif b:
-    print('b')
 else:
-    print('else')
+    print('b')
+    print('c')
+#@+node:ekr.20191120132351.1: *5* fails test: leoFind bug (partial)
+def findDefHelper(self, event, defFlag):
+
+    if found:
+        self.find_seen.add(c.p.v)
+        self.restoreAfterFindDef()
+    else:
+        c.selectPosition(old_p)
+        self.restoreAfterFindDef()
+    print('after')
+#@+node:ekr.20191119203945.1: *5* xx file: core..leoFind.py
 #@+node:ekr.20191120092048.1: *5* ignore: f-strings tests
 #@+node:ekr.20191118155611.1: *6* test: f-strings
 """Docstring."""
@@ -928,8 +940,7 @@ if -(2):
 print(f'profiling binary stats to {xxx}')
 #@+node:ekr.20191120075559.1: *6* f-strings
 #@+node:ekr.20191120064512.1: *5* ignore: passed file tests
-#@+node:ekr.20191118155609.1: *6* xx file: core..runLeo.py
-#@+node:ekr.20191119203945.1: *6* xx file: core..leoFind.py
+#@+node:ekr.20191118155609.1: *6* file: core..runLeo.py
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1

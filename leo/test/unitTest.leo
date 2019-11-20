@@ -335,7 +335,9 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
+<v t="ekr.20191120132351.1"><vh>fails test: leoFind bug (partial)</vh></v>
+<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 </v>
@@ -351,7 +353,7 @@
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
 <v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
-<v t="ekr.20191120064442.1"></v>
+<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -365,8 +367,7 @@
 <v t="ekr.20191120075559.1"><vh>f-strings</vh></v>
 </v>
 <v t="ekr.20191120064512.1"><vh>ignore: passed file tests</vh>
-<v t="ekr.20191118155609.1"><vh>xx file: core..runLeo.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 </v>
 </v>
@@ -4099,7 +4100,7 @@ imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
 if all:
@@ -4107,11 +4108,11 @@ if all:
 else:
     reports = [
         # 'fail-fast',
-        'contents',
-        # 'diff',
+        # 'contents',
+        'assign-links',
+        'diff',
         # 'tokens',
         # 'results',
-        'assign-links',
         # 'raw-tree',
         'tree',
         # 'contents',
@@ -4249,5 +4250,21 @@ else:
 <t tx="ekr.20191120075520.1"></t>
 <t tx="ekr.20191120075559.1"></t>
 <t tx="ekr.20191120092048.1"></t>
+<t tx="ekr.20191120132351.1">def findDefHelper(self, event, defFlag):
+
+    if found:
+        self.find_seen.add(c.p.v)
+        self.restoreAfterFindDef()
+    else:
+        c.selectPosition(old_p)
+        self.restoreAfterFindDef()
+    print('after')</t>
+<t tx="ekr.20191120132531.1"># Second line in else clause causes the fail.
+# There are two 'else' names!
+if found:
+    print('a')
+else:
+    print('b')
+    print('c')</t>
 </tnodes>
 </leo_file>

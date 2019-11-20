@@ -1760,12 +1760,12 @@ class TokenOrderGenerator:
         """
         This node represents a string constant.
         
-        There are several special cases relating to string:
+        There are several special cases relating to strings:
             
         1. Strings are non-synchronizing tokens, so this method
-           is free to assign node.s to the 'string' token.
+           is free to assign any value to the 'string' token.
            
-        2. *This* method, not Linker.set_links, sets the node.tokens_list.
+        2. *This* method, not Linker.set_links, sets node.tokens_list.
         
         3. Linker.set_links removes strings from all non-Str nodes.
         """
@@ -2375,11 +2375,17 @@ class Linker:
             it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
             for i, (r, t) in enumerate(it):
                 if t.kind != r.kind:
-                    raise AssignLinksError(
-                        f"Mismatched kinds at {i}: token: {t}, result: {r}")
+                    print(
+                        f"Mismatched kinds!\n"
+                        f"line {t.line_number}: {t.line.strip()}\n"
+                        f"tx: {i}: token: {t}, result: {r}")
+                    raise AssignLinksError('Mismatched kinds!')
                 if not self.compare_values(r, t):
-                    raise AssignLinksError(
-                        f"Mismatched values at {i}: token: {t}, result: {r}")
+                    print(
+                        f"Mismatched values!\n"
+                        f"line {t.line_number}: {t.line.strip()}\n"
+                        f"tx: {i}: token: {t}, result: {r}")
+                    raise AssignLinksError('Mismatched values!')
             # Defensive programming.
             assert n1 == n2, (n1, n2)
     #@+node:ekr.20191119025334.1: *3* linker.compare_values
