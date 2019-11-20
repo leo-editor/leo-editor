@@ -1600,7 +1600,7 @@ class TokenOrderGenerator:
         assert len(node.keys) == len(node.values)
         self.begin_visitor(node)
         yield self.put_op('{')
-        # No need to put commas, but it doesn't hurt.
+        # No need to put commas.
         for i, key in enumerate(node.keys):
             key, value = node.keys[i], node.values[i]
             yield self.visitor(key) # a Str node.
@@ -1613,7 +1613,6 @@ class TokenOrderGenerator:
                 except TypeError:
                     # Not an error.
                     yield from self.visitor(value)
-            self.put_comma()
         yield self.put_op('}')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.36: *5* tog.DictComp
@@ -1624,16 +1623,11 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.key)
         yield self.put_op(':')
-        # yield self.put_blank()
         yield self.put_name('for')
-        # yield self.put_blank()
+        # No need to put commas.
         for i, z in enumerate(node.generators):
             yield from self.visitor(z)
-            ###
-                # if i < len(node.generators) - 1:
-                    # yield self.put_blank()
-                # else:
-                    # yield self.put_conditional_blank()
+            yield self.put_comma()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
@@ -1648,16 +1642,17 @@ class TokenOrderGenerator:
         for i, z in enumerate(node.dims):
             yield from self.visitor(z)
             if i < len(node.dims) - 1:
-                self.put_op(':')
+                yield self.put_op(':')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
 
-        self.begin_visitor(node)
+        # Don't do any of this.
+        # It doesn't correspond with the token list.
         if 0:
-            # Don't do any of this. It doesn't correspond with the token list.
+            self.begin_visitor(node)
             if node.value is not None:
                 yield from self.visitor(node.value)
             if node.conversion is not None:
@@ -1665,7 +1660,7 @@ class TokenOrderGenerator:
                 yield self.put('num', node.conversion)
             if node.format_spec is not None:
                 yield from self.visitor(node.format_spec)
-        self.end_visitor(node)
+            self.end_visitor(node)
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
@@ -1687,13 +1682,9 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_op('[')
+        # No need to put commas.
         for i, z in enumerate(node.elts):
             yield from self.visitor(z)
-            ###
-                # if i < len(node.elts) - 1:
-                    # yield self.put_comma()
-                # else:
-                    # yield self.put_conditional_comma()
         yield self.put_op(']')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.43: *5* tog.ListComp
@@ -1704,9 +1695,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_op('[')
         yield from self.visitor(node.elt)
-        # yield self.put_blank()
         yield self.put_name('for')
-        # yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
         yield self.put_op(']')
@@ -1729,7 +1718,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put('number', node.n)
         self.end_visitor(node)
-    #@+node:ekr.20191113063144.46: *5* tog.Repr
+    #@+node:ekr.20191113063144.46: *5* tog.Repr (Python 2 only)
     def do_Repr(self, node): # Python 2.x only
         
         self.begin_visitor(node)
@@ -1743,7 +1732,6 @@ class TokenOrderGenerator:
 
     def do_Set(self, node):
 
-        ### Test.
         self.begin_visitor(node)
         for z in node.elts:
             yield from self.visitor(z)
@@ -1753,12 +1741,9 @@ class TokenOrderGenerator:
 
     def do_SetComp(self, node):
 
-        ### Test.
         self.begin_visitor(node)
         yield from self.visitor(node.elt)
-        # yield self.put_blank()
         yield self.put_name('for')
-        ### yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
         self.end_visitor(node)
@@ -1774,7 +1759,7 @@ class TokenOrderGenerator:
         self.put_op(':')
         if upper is not None:
             yield from self.visitor(node.upper)
-        if step is not None: ### Conditional : needed?
+        if step is not None:
             self.put_op(':')
             yield from self.visitor(node.step)
         self.end_visitor(node)
@@ -1782,8 +1767,9 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This represents a string constant."""
         self.begin_visitor(node)
-        yield self.put('string', repr(node.s))
-            # Repr is correct. It matches what tokenize.tokenize does.
+        # The value returned here doesn't matter:
+        # the spelling in the token takes precedence.
+        yield self.put('string', node.s)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -1801,35 +1787,21 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield self.put_op('(')
-        for i, z in enumerate(node.elts):
+        # no need to put commas.
+        for z in node.elts:
             yield from self.visitor(z)
         yield self.put_op(')')
         self.end_visitor(node)
-        ### Old code, that cares about commas.
-            # if len(node.elts) == 1:
-                # # Require a trailing comma.
-                # yield from self.visitor(node.elts[0])
-                # yield self.put_comma()
-            # else:
-                # # The trailing comma is optional.
-                # for i, z in enumerate(node.elts):
-                    # yield from self.visitor(z)
-                    # if i < len(node.elts) - 1:
-                        # yield self.put_comma()
-                    # else:
-                        # yield self.put_conditional_comma()
-            # yield self.put_op(')')
-            # self.end_visitor(node)
     #@+node:ekr.20191113063144.53: *4* tog: Operators
     #@+node:ekr.20191113063144.54: *5* tog.op_name
-    def op_name(self, node, strict=True):
+    def op_name(self, node):
         """Return the print name of an operator node."""
         # This is not a visitor.
-        class_name = node.__class__.__name__
-        name = _op_names.get(class_name, f'<%s>' % class_name)
-        if strict:
-            assert name, class_name
-        return name
+        return node.__class__.__name__
+        # name = _op_names.get(class_name, f'<%s>' % class_name)
+        # if strict:
+            # assert name, class_name
+        # return name
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):
 
