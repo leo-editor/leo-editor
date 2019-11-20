@@ -4096,21 +4096,21 @@ import leo.core.leoAst as leoAst
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
-reports = [
-    # 'fail-fast',
-    # 'coverage',
-    # 'contents',
-    'assign-links',
-    # 'diff',
-    # 'tokens',
-    # 'results',
-    # 'raw-tree',
-    # 'tree',
-    # 'contents',
-]
+reports = ['assign-links']
+if not all:
+    reports.extend([
+        # 'coverage',
+        'contents',
+        # 'diff',
+        # 'tokens',
+        # 'results',
+        # 'raw-tree',
+        'tree',
+        # 'contents',
+])
 ok = True
 for contents, description in tests:
     try:
@@ -4162,7 +4162,8 @@ if 'assign-links' not in reports:
     return tests
 </t>
 <t tx="ekr.20191118155609.1"></t>
-<t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
+<t tx="ekr.20191118155611.1">"""Docstring."""
+print('test %s=%s'%(a, 2))
 
 </t>
 <t tx="ekr.20191118155611.2">if a:

@@ -1757,11 +1757,21 @@ class TokenOrderGenerator:
         self.end_visitor(node)
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
-        """This represents a string constant."""
+        """
+        This node represents a string constant.
+        
+        There are several special cases relating to string:
+            
+        1. Strings are non-synchronizing tokens, so this method
+           is free to assign node.s to the 'string' token.
+           
+        2. *This* method, not Linker.set_links, sets the node.tokens_list.
+        
+        3. Linker.set_links removes strings from all non-Str nodes.
+        """
         self.begin_visitor(node)
-        # The value returned here doesn't matter:
-        # the spelling in the token takes precedence.
         yield self.put('string', node.s)
+        node.token_list = [Token('string', node.s)]
         self.end_visitor(node)
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -2427,8 +2437,10 @@ class Linker:
                 assert token.node is None, repr(token)
                 token.node = r.node
                 # Add the token to r.node.token_list.
-                token_list = getattr(r.node, 'token_list', [])
-                r.node.token_list = token_list + [token]
+                # Special case: the Str visitor has added the 'string' token.
+                if token.kind != 'string':
+                    token_list = getattr(r.node, 'token_list', [])
+                    r.node.token_list = token_list + [token]
             self.tx += 1
         assert self.tx == t.index + 1, (self.tx, t.index, repr(t))
         

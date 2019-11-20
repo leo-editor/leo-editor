@@ -774,21 +774,21 @@ import leo.core.leoAst as leoAst
 # Make the tests.
 << function: make_tests >>
 root = c.p
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
-reports = [
-    # 'fail-fast',
-    # 'coverage',
-    # 'contents',
-    'assign-links',
-    # 'diff',
-    # 'tokens',
-    # 'results',
-    # 'raw-tree',
-    # 'tree',
-    # 'contents',
-]
+reports = ['assign-links']
+if not all:
+    reports.extend([
+        # 'coverage',
+        'contents',
+        # 'diff',
+        # 'tokens',
+        # 'results',
+        # 'raw-tree',
+        'tree',
+        # 'contents',
+])
 ok = True
 for contents, description in tests:
     try:
@@ -839,6 +839,7 @@ def make_tests(root, all):
             p.moveToThreadNext()
     return tests
 #@+node:ekr.20191118155611.1: *5* test: f-strings
+"""Docstring."""
 print('test %s=%s'%(a, 2))
 
 #@+node:ekr.20191118164156.1: *5* ignore: passed contents tests
