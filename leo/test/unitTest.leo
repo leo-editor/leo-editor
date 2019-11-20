@@ -335,12 +335,12 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191118155609.1"><vh>xx file-test: core..runLeo.py</vh></v>
-<v t="ekr.20191119150253.1"><vh>contents-test: Call &amp; Starred</vh></v>
-<v t="ekr.20191119143517.1"><vh>contents-test: Call &amp; keyword</vh></v>
-<v t="ekr.20191118164156.1"><vh>#@ignore passed</vh>
+<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
+<v t="ekr.20191118164156.1"><vh>@ignore passed</vh>
 <v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
 <v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
+<v t="ekr.20191119143517.1"><vh>contents-test: Call &amp; keyword</vh></v>
+<v t="ekr.20191119150253.1"><vh>contents-test: Call &amp; Starred</vh></v>
 <v t="ekr.20191119133927.1"><vh>contents-test: class</vh></v>
 <v t="ekr.20191118155611.3"><vh>contents-test: class, def, if</vh></v>
 <v t="ekr.20191119135937.1"><vh>contents-test: FormattedValue: f-string</vh></v>
@@ -4103,7 +4103,8 @@ for contents, description in tests:
         ok = False
         print(e)
 status = 'PASS' if ok else 'FAIL'
-print(f"{status} Ran {len(tests)} tests")</t>
+print(f"{status} Ran {len(tests)} tests")
+</t>
 <t tx="ekr.20191118154839.1">def make_tests(root):
     """
     Return a list of tuples (contents, description) generated

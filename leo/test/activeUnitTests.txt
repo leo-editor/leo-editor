@@ -834,12 +834,8 @@ def make_tests(root):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191118155609.1: *5* xx file-test: core..runLeo.py
-#@+node:ekr.20191119150253.1: *5* contents-test: Call & Starred
-f1(arg, *args, **kwargs)
-#@+node:ekr.20191119143517.1: *5* contents-test: Call & keyword
-f2(a,b=2)
-#@+node:ekr.20191118164156.1: *5* #@ignore passed
+#@+node:ekr.20191118155609.1: *5* file-test: core..runLeo.py
+#@+node:ekr.20191118164156.1: *5* @ignore passed
 #@+node:ekr.20191118155612.1: *6* contents-test: attribute
 open(os.devnull, "w")
 #@+node:ekr.20191118155611.2: *6* contents-test: bug in do_If
@@ -847,6 +843,10 @@ if a:
     a = 1
 else:
     a -= 1
+#@+node:ekr.20191119143517.1: *6* contents-test: Call & keyword
+f2(a,b=2)
+#@+node:ekr.20191119150253.1: *6* contents-test: Call & Starred
+f1(arg, *args, **kwargs)
 #@+node:ekr.20191119133927.1: *6* contents-test: class
 class TestClass1:
     pass
