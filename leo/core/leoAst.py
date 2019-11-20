@@ -1186,7 +1186,7 @@ class TokenOrderGenerator:
         print(
             f"\nDiff: tokens: {len(tokens)}, results: {len(results)}, "
             f"{len(diffs)} diffs in {(t2-t1):4.2f} sec...")
-        if len(diffs) < 1000:
+        if True: ### len(diffs) < 1000:
             legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
             heading = f"tx  rx  kind {'diff key kind:value':>15}"
             line    = f"=== === ==== {'===================':>15}"
@@ -1823,7 +1823,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield self.put_op('(')
         for i, z in enumerate(node.elts):
-                yield from self.visitor(z)
+            yield from self.visitor(z)
         yield self.put_op(')')
         self.end_visitor(node)
         ### Old code, that cares about commas.
@@ -1866,21 +1866,16 @@ class TokenOrderGenerator:
         yield from self.visitor(node.right)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.56: *5* tog.BoolOp
+    # boolop = And | Or
+
     def do_BoolOp(self, node):
         
         self.begin_visitor(node)
-        op_name = self.op_name(node.op)
-        g.trace(op_name)
-        if op_name.startswith(' '):
-            for i, z in enumerate(node.values):
-                ### yield self.put_blank()
-                yield self.put_op(op_name.strip())
-                ### yield self.put_blank()
-                yield from self.visitor(z)
-        else:
-            for i, z in enumerate(node.values):
-                yield self.put_op(op_name)
-                yield from self.visitor(z)
+        op_name = self.op_name(node.op).strip()
+        for i, z in enumerate(node.values):
+            yield from self.visitor(z)
+            if i < len(node.values) - 1:
+                yield self.put_name(op_name)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.57: *5* tog.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
@@ -1892,11 +1887,15 @@ class TokenOrderGenerator:
         yield from self.visitor(node.left)
         for i, z in enumerate(node.ops):
             op_name = self.op_name(node.ops[i]).strip()
-            if op_name == 'not in':
-                yield self.put_name('not')
-                ### yield self.put_blank()
-                yield self.put_name('in')
+            if op_name in ('not in', 'is not'):
+                for z in op_name.split(' '):
+                    g.trace('SPLIT', repr(z))
+                    yield self.put_name(z)
+            elif op_name.isalpha():
+                g.trace('NAME', op_name)
+                yield self.put_name(op_name)
             else:
+                g.trace('OP', op_name)
                 yield self.put_op(op_name)
             yield from self.visitor(node.comparators[i])
         self.end_visitor(node)
@@ -1904,11 +1903,9 @@ class TokenOrderGenerator:
     def do_UnaryOp(self, node):
 
         self.begin_visitor(node)
-        op_name = self.op_name(node.op)
-        if op_name.startswith(' '):
-            ### yield self.put_blank()
-            yield self.put_op(op_name.strip())
-            ### yield self.put_blank()
+        op_name = self.op_name(node.op).strip()
+        if op_name.isalpha():
+            yield self.put_name(op_name)
         else:
             yield self.put_op(op_name)
         yield from self.visitor(node.operand)
@@ -2107,7 +2104,9 @@ class TokenOrderGenerator:
         yield self.put_name('for')
         ### yield self.put_blank()
         yield from self.visitor(node.target)
+        yield self.put_name('in') ###
         yield from self.visitor(node.iter)
+        yield self.put_op(':')
         yield self.put_newline()
         # Body...
         self.level += 1

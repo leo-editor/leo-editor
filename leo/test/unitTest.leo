@@ -335,7 +335,7 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>xx file-test: core..leoFind.py</vh></v>
 <v t="ekr.20191118164156.1"><vh>@ignore passed</vh>
 <v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
 <v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
@@ -343,12 +343,16 @@
 <v t="ekr.20191119150253.1"><vh>contents-test: Call &amp; Starred</vh></v>
 <v t="ekr.20191119133927.1"><vh>contents-test: class</vh></v>
 <v t="ekr.20191118155611.3"><vh>contents-test: class, def, if</vh></v>
+<v t="ekr.20191119211714.1"><vh>contents-test: CompareOp</vh></v>
+<v t="ekr.20191119213126.1"><vh>contents-test: For, Tuple</vh></v>
 <v t="ekr.20191119135937.1"><vh>contents-test: FormattedValue: f-string</vh></v>
 <v t="ekr.20191119101124.1"><vh>contents-test: from runLeo.py</vh></v>
 <v t="ekr.20191119142414.1"><vh>contents-test: FunctionDef &amp; NamedConstant</vh></v>
 <v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
 <v t="ekr.20191118160305.1"><vh>contents-test: redundant semicolon</vh></v>
 <v t="ekr.20191118155612.2"><vh>contents-test: semicolon between statements</vh></v>
+<v t="ekr.20191119210429.1"><vh>contents-test: UnaryOp</vh></v>
+<v t="ekr.20191118155609.1"><vh>file-test: core..runLeo.py</vh></v>
 </v>
 </v>
 </v>
@@ -4087,13 +4091,13 @@ reports = [
     # 'fail-fast',
     # 'coverage',
     # 'contents',
-    # 'diff',
     'assign-links',
-    # 'tokens',
-    # 'results',
+    # 'diff',
+    'tokens',
+    'results',
     # 'raw-tree',
-    # 'tree',
-   #  'contents',
+    'tree',
+    # 'contents',
 ]
 ok = True
 for contents, description in tests:
@@ -4196,5 +4200,15 @@ class TestClass(base1, base2):
 </t>
 <t tx="ekr.20191119150253.1">f1(arg, *args, **kwargs)
 </t>
+<t tx="ekr.20191119203945.1"></t>
+<t tx="ekr.20191119210429.1">if not a:
+    pass
+if -(2):
+    pass</t>
+<t tx="ekr.20191119211714.1">if a and not b and c:
+    pass
+</t>
+<t tx="ekr.20191119213126.1">for i, j in b:
+    pass</t>
 </tnodes>
 </leo_file>

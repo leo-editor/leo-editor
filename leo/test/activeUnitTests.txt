@@ -780,13 +780,13 @@ reports = [
     # 'fail-fast',
     # 'coverage',
     # 'contents',
-    # 'diff',
     'assign-links',
-    # 'tokens',
-    # 'results',
+    # 'diff',
+    'tokens',
+    'results',
     # 'raw-tree',
-    # 'tree',
-   #  'contents',
+    'tree',
+    # 'contents',
 ]
 ok = True
 for contents, description in tests:
@@ -834,7 +834,7 @@ def make_tests(root):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191118155609.1: *5* file-test: core..runLeo.py
+#@+node:ekr.20191119203945.1: *5* xx file-test: core..leoFind.py
 #@+node:ekr.20191118164156.1: *5* @ignore passed
 #@+node:ekr.20191118155612.1: *6* contents-test: attribute
 open(os.devnull, "w")
@@ -872,6 +872,12 @@ class TestClass:
         else:
             a -= 1
         print('done')
+#@+node:ekr.20191119211714.1: *6* contents-test: CompareOp
+if a and not b and c:
+    pass
+#@+node:ekr.20191119213126.1: *6* contents-test: For, Tuple
+for i, j in b:
+    pass
 #@+node:ekr.20191119135937.1: *6* contents-test: FormattedValue: f-string
 print(f'profiling binary stats to {xxx}')
 #@+node:ekr.20191119101124.1: *6* contents-test: from runLeo.py
@@ -888,6 +894,12 @@ print('d')
 #@+node:ekr.20191118155612.2: *6* contents-test: semicolon between statements
 a = 1 ; b = 2
 print('a') ; print('b')
+#@+node:ekr.20191119210429.1: *6* contents-test: UnaryOp
+if not a:
+    pass
+if -(2):
+    pass
+#@+node:ekr.20191118155609.1: *6* file-test: core..runLeo.py
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
