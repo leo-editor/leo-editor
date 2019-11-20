@@ -1086,6 +1086,17 @@ class TokenOrderGenerator:
         # The index into self.tokens.
 
     #@+others
+    #@+node:ekr.20191116160557.1: *3* tog.assign_links
+    def assign_links(self):
+        """Assign two-way links between tokens and results."""
+        try:
+            Linker().assign_links(self.results, self.tokens, self.tree)
+            return True
+        except Exception as e:
+            g.trace(e)
+            if 0: # Annoying, but good for mysteries.
+                g.es_exception()
+            return False
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
     begin_end_stack = []
 
@@ -1122,17 +1133,6 @@ class TokenOrderGenerator:
         self.max_level = max(self.level, self.max_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@+node:ekr.20191116160557.1: *3* tog.assign_links
-    def assign_links(self):
-        """Assign two-way links between tokens and results."""
-        try:
-            Linker().assign_links(self.results, self.tokens, self.tree)
-            return True
-        except Exception as e:
-            g.trace(e)
-            if 0: # Annoying, but good for mysteries.
-                g.es_exception()
-            return False
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
     def create_links(self, tokens, tree):
         """
@@ -1204,13 +1204,6 @@ class TokenOrderGenerator:
             # print(line)
             # print(heading)
             # print(legend)
-    #@+node:ekr.20191113081443.1: *3* tog.visitor
-    def visitor(self, node):
-        """Given an ast node, return a *generator* from its visitor."""
-        # We *do* want to crash if the visitor doesn't exist.
-        method = getattr(self, 'do_' + node.__class__.__name__)
-        # method(node) is a generator, not a recursive call!
-        return method(node)
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1241,6 +1234,13 @@ class TokenOrderGenerator:
         tokens = Tokenizer().create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
+    #@+node:ekr.20191113063144.54: *3* tog.op_name
+    def op_name(self, node):
+        """Return the print name of an operator node."""
+        # This is *not* a visitor.
+        class_name = node.__class__.__name__
+        assert class_name in _op_names, repr(class_name)
+        return _op_names [class_name].strip()
     #@+node:ekr.20191113063144.7: *3* tog.put & helpers
     result_index = 0
 
@@ -1296,6 +1296,13 @@ class TokenOrderGenerator:
             print('Missing...\n')
             g.printObj(missing)
             print('')
+    #@+node:ekr.20191113081443.1: *3* tog.visitor
+    def visitor(self, node):
+        """Given an ast node, return a *generator* from its visitor."""
+        # We *do* want to crash if the visitor doesn't exist.
+        method = getattr(self, 'do_' + node.__class__.__name__)
+        # method(node) is a generator, not a recursive call!
+        return method(node)
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
@@ -1783,7 +1790,7 @@ class TokenOrderGenerator:
 
         self.begin_visitor(node)
         yield from self.visitor(node.left)
-        op_name = node.op.__class__.__name__
+        op_name = self.op_name(node.op)
         if op_name.startswith(' '):
             yield self.put_op(op_name.strip())
         else:
@@ -1797,7 +1804,7 @@ class TokenOrderGenerator:
         
         self.begin_visitor(node)
         # op.join(node.values)
-        op_name = node.op.__class__.__name__
+        op_name = self.op_name(node.op)
         for i, z in enumerate(node.values):
             yield from self.visitor(z)
             if i < len(node.values) - 1:
@@ -1812,7 +1819,7 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.left)
         for i, z in enumerate(node.ops):
-            op_name = node.ops[i].__class__.__name__
+            op_name = self.op_name(node.ops[i])
             if op_name in ('not in', 'is not'):
                 for z in op_name.split(' '):
                     yield self.put_name(z)
@@ -1826,7 +1833,7 @@ class TokenOrderGenerator:
     def do_UnaryOp(self, node):
 
         self.begin_visitor(node)
-        op_name = node.op.__class__.__name__
+        op_name = self.op_name(node.op)
         if op_name.isalpha():
             yield self.put_name(op_name)
         else:
@@ -1926,7 +1933,7 @@ class TokenOrderGenerator:
         # %s%s=%s\n'
         self.begin_visitor(node)
         yield from self.visitor(node.target)
-        op_name = node.op.__class__.__name__
+        op_name = self.op_name(node.op)
         yield self.put_op(op_name+'=')
         yield from self.visitor(node.value)
         yield self.put_newline()
