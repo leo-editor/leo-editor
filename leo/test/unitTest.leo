@@ -4084,8 +4084,8 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 g.cls()
 import leo.core.leoAst as leoAst
-import imp
-imp.reload(leoAst)
+# import imp
+# imp.reload(leoAst)
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p

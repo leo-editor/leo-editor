@@ -1793,25 +1793,14 @@ class TokenOrderGenerator:
         yield self.put_op(')')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.53: *4* tog: Operators
-    #@+node:ekr.20191113063144.54: *5* tog.op_name
-    def op_name(self, node):
-        """Return the print name of an operator node."""
-        # This is not a visitor.
-        return node.__class__.__name__
-        # name = _op_names.get(class_name, f'<%s>' % class_name)
-        # if strict:
-            # assert name, class_name
-        # return name
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):
 
         self.begin_visitor(node)
         yield from self.visitor(node.left)
-        op_name = self.op_name(node.op)
+        op_name = node.op.__class__.__name__
         if op_name.startswith(' '):
-            ### yield self.put_blank()
             yield self.put_op(op_name.strip())
-            ### yield self.put_blank()
         else:
             self.put_op(op_name)
         yield from self.visitor(node.right)
@@ -1822,7 +1811,8 @@ class TokenOrderGenerator:
     def do_BoolOp(self, node):
         
         self.begin_visitor(node)
-        op_name = self.op_name(node.op).strip()
+        ### op_name = self.op_name(node.op).strip()
+        op_name = node.op.__class__.__name__
         for i, z in enumerate(node.values):
             yield from self.visitor(z)
             if i < len(node.values) - 1:
@@ -1837,16 +1827,14 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from self.visitor(node.left)
         for i, z in enumerate(node.ops):
-            op_name = self.op_name(node.ops[i]).strip()
+            ### op_name = self.op_name(node.ops[i]).strip()
+            op_name = node.ops[i].__class__.__name__
             if op_name in ('not in', 'is not'):
                 for z in op_name.split(' '):
-                    # g.trace('SPLIT', repr(z))
                     yield self.put_name(z)
             elif op_name.isalpha():
-                # g.trace('NAME', op_name)
                 yield self.put_name(op_name)
             else:
-                # g.trace('OP', op_name)
                 yield self.put_op(op_name)
             yield from self.visitor(node.comparators[i])
         self.end_visitor(node)
@@ -1854,7 +1842,8 @@ class TokenOrderGenerator:
     def do_UnaryOp(self, node):
 
         self.begin_visitor(node)
-        op_name = self.op_name(node.op).strip()
+        ### op_name = self.op_name(node.op).strip()
+        op_name = node.op.__class__.__name__
         if op_name.isalpha():
             yield self.put_name(op_name)
         else:
@@ -1867,13 +1856,9 @@ class TokenOrderGenerator:
         #'%s if %s else %s'
         self.begin_visitor(node)
         yield from self.visitor(node.body)
-        ### yield self.put_blank()
         yield self.put_name('if')
-        ### yield self.put_blank()
         yield from self.visitor(node.test)
-        ### yield self.put_blank()
         yield self.put_name('else')
-        ### yield self.put_blank()
         yield from self.visitor(node.orelse)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.60: *4* tog: Statements
@@ -1961,7 +1946,8 @@ class TokenOrderGenerator:
         # %s%s=%s\n'
         self.begin_visitor(node)
         yield from self.visitor(node.target)
-        op_name = self.op_name(node.op).strip()
+        ### op_name = self.op_name(node.op).strip()
+        op_name = node.op.__class__.__name__
         yield self.put_op(op_name+'=')
         yield from self.visitor(node.value)
         yield self.put_newline()
