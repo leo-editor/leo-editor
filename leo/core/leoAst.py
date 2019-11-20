@@ -285,6 +285,9 @@ def test_runner(contents, reports=None):
                     print(z.line.rstrip())
                 else:
                     print(repr(z.line))
+        elif report == 'raw-tree':
+            print('\nRaw tree...\n')
+            print(leoAst.AstDumper().dump(tree))
         elif report == 'results':
             print('\nResults...\n')
             for z in x.results:
@@ -1560,11 +1563,14 @@ class TokenOrderGenerator:
             yield from self.visitor(z)
         for z in node.keywords:
             # g.trace('keyword', z)
+            # The visitor puts the '**' if there is no name field(!).
             yield from self.visitor(z)
         if getattr(node, 'starargs', None):
+            # g.trace('starargs', node.starargs)
             # The visitor puts the '*'.
             yield from self.visitor(node.starargs)
         if getattr(node, 'kwargs', None):
+            # g.trace('kwargs', node.kwargs)
             # The visitor puts the '**'.
             yield from self.visitor(node.kwargs)
         yield self.put_op(')')
@@ -1572,13 +1578,20 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.32: *6* tog.keyword
     # keyword = (identifier arg, expr value)
 
+    # Represent arg = value
+
     def do_keyword(self, node):
 
-        self.put_op('**')
-        if node.arg is not None:
+        self.begin_visitor(node)
+        ### g.trace('NODE.ARG', node.arg)
+        if node.arg:
             self.put_name(node.arg)
             self.put_op('=')
+        else:
+            self.put_op('**') # weird, but true.
+        ### g.trace('NODE.VALUE', node.value)
         yield from self.visitor(node.value)
+        self.end_visitor(node)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     def do_comprehension(self, node):
 
@@ -2271,10 +2284,8 @@ class TokenOrderGenerator:
 
     def do_Starred(self, node):
 
-        ### Test.
         self.begin_visitor(node)
         yield self.put_op('*')
-        g.trace(node.value)
         yield from self.visitor(node.value)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.84: *5* tog.Suite
@@ -2763,7 +2774,7 @@ class AstDumper:
             return f'%s(%s%s)' % (name, sep, sep1.join(aList))
         if isinstance(node, list):
             sep = sep1
-            return f'[%s]' % ''.join(
+            return f'LIST[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
     #@+node:ekr.20141012064706.18393: *3* dumper.get_fields

@@ -336,8 +336,9 @@
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191118155609.1"><vh>xx file-test: core..runLeo.py</vh></v>
-<v t="ekr.20191119143517.1"><vh>contents-test: Call &amp; Starred</vh></v>
-<v t="ekr.20191118164156.1"><vh>@ignore pass</vh>
+<v t="ekr.20191119150253.1"><vh>contents-test: Call &amp; Starred</vh></v>
+<v t="ekr.20191119143517.1"><vh>contents-test: Call &amp; keyword</vh></v>
+<v t="ekr.20191118164156.1"><vh>#@ignore passed</vh>
 <v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
 <v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
 <v t="ekr.20191119133927.1"><vh>contents-test: class</vh></v>
@@ -352,7 +353,6 @@
 </v>
 </v>
 <v t="ekr.20191118154059.1"></v>
-<v t="ekr.20191119143517.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4086,18 +4086,24 @@ tests = make_tests(c.p)
 reports = [
     # 'fail-fast',
     # 'coverage',
-    'contents',
-    'results',
+    # 'contents',
     # 'diff',
     'assign-links',
-    'tokens',
-    'tree',
+    # 'tokens',
+    # 'results',
+    # 'raw-tree',
+    # 'tree',
+   #  'contents',
 ]
+ok = True
 for contents, description in tests:
-    # print(f"len(contents): {len(contents):&gt;5} {description}")
-    assert leoAst.test_runner(contents, reports), description
-print(f"\n{root.h}: Ran {len(tests)} tests")
-</t>
+    try:
+        assert leoAst.test_runner(contents, reports), description
+    except Exception as e:
+        ok = False
+        print(e)
+status = 'PASS' if ok else 'FAIL'
+print(f"{status} Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root):
     """
     Return a list of tuples (contents, description) generated
@@ -4185,6 +4191,9 @@ class TestClass(base1, base2):
 <t tx="ekr.20191119142414.1">def run(fileName=None, pymacs=None, *args, **keywords):
     pass
 </t>
-<t tx="ekr.20191119143517.1">run(*args, **kwargs)</t>
+<t tx="ekr.20191119143517.1">f2(a,b=2)
+</t>
+<t tx="ekr.20191119150253.1">f1(arg, *args, **kwargs)
+</t>
 </tnodes>
 </leo_file>

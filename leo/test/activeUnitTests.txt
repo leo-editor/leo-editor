@@ -779,17 +779,24 @@ tests = make_tests(c.p)
 reports = [
     # 'fail-fast',
     # 'coverage',
-    'contents',
-    'results',
+    # 'contents',
     # 'diff',
     'assign-links',
-    'tokens',
-    'tree',
+    # 'tokens',
+    # 'results',
+    # 'raw-tree',
+    # 'tree',
+   #  'contents',
 ]
+ok = True
 for contents, description in tests:
-    # print(f"len(contents): {len(contents):>5} {description}")
-    assert leoAst.test_runner(contents, reports), description
-print(f"\n{root.h}: Ran {len(tests)} tests")
+    try:
+        assert leoAst.test_runner(contents, reports), description
+    except Exception as e:
+        ok = False
+        print(e)
+status = 'PASS' if ok else 'FAIL'
+print(f"{status} Ran {len(tests)} tests")
 #@+node:ekr.20191118154839.1: *5* << function: make_tests >>
 def make_tests(root):
     """
@@ -828,9 +835,11 @@ def make_tests(root):
             p.moveToThreadNext()
     return tests
 #@+node:ekr.20191118155609.1: *5* xx file-test: core..runLeo.py
-#@+node:ekr.20191119143517.1: *5* contents-test: Call & Starred
-run(*args, **kwargs)
-#@+node:ekr.20191118164156.1: *5* @ignore pass
+#@+node:ekr.20191119150253.1: *5* contents-test: Call & Starred
+f1(arg, *args, **kwargs)
+#@+node:ekr.20191119143517.1: *5* contents-test: Call & keyword
+f2(a,b=2)
+#@+node:ekr.20191118164156.1: *5* #@ignore passed
 #@+node:ekr.20191118155612.1: *6* contents-test: attribute
 open(os.devnull, "w")
 #@+node:ekr.20191118155611.2: *6* contents-test: bug in do_If
