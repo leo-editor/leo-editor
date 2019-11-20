@@ -1595,18 +1595,14 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     def do_comprehension(self, node):
 
-        ### test.
         self.begin_visitor(node)
         yield from self.visitor(node.target) # A name
-        yield self.put_op(' in ')
+        yield self.put_name('in')
         yield from self.visitor(node.iter)
         if node.ifs:
-            # yield self.put_blank()
             yield self.put_name('if')
-            # yield self.put_blank()
             for z in node.ifs:
                 yield from self.visitor(z)
-                # self.put_blank()
         self.end_visitor(node)
     #@+node:ekr.20191113063144.34: *5* tog.Constant
     def do_Constant(self, node):  # Python 3.6+ only.
@@ -1721,16 +1717,19 @@ class TokenOrderGenerator:
         yield self.put_op(']')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.43: *5* tog.ListComp
+    # ListComp(expr elt, comprehension* generators)
+
     def do_ListComp(self, node):
        
-        ### Test.
         self.begin_visitor(node)
+        yield self.put_op('[')
         yield from self.visitor(node.elt)
         # yield self.put_blank()
         yield self.put_name('for')
         # yield self.put_blank()
         for z in node.generators:
             yield from self.visitor(z)
+        yield self.put_op(']')
         self.end_visitor(node)
     #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant
     def do_Name(self, node):
@@ -1889,13 +1888,13 @@ class TokenOrderGenerator:
             op_name = self.op_name(node.ops[i]).strip()
             if op_name in ('not in', 'is not'):
                 for z in op_name.split(' '):
-                    g.trace('SPLIT', repr(z))
+                    # g.trace('SPLIT', repr(z))
                     yield self.put_name(z)
             elif op_name.isalpha():
-                g.trace('NAME', op_name)
+                # g.trace('NAME', op_name)
                 yield self.put_name(op_name)
             else:
-                g.trace('OP', op_name)
+                # g.trace('OP', op_name)
                 yield self.put_op(op_name)
             yield from self.visitor(node.comparators[i])
         self.end_visitor(node)
@@ -2085,7 +2084,7 @@ class TokenOrderGenerator:
         globals_ = getattr(node, 'globals', None)
         locals_ = getattr(node, 'locals', None)
         if globals_ or locals_:
-            yield self.put_name('in')
+            yield self.put_name(33)
             ### yield self.put_blank()
             if globals_:
                 yield from self.visitor(node.globals)

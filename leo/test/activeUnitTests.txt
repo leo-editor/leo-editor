@@ -780,12 +780,12 @@ reports = [
     # 'fail-fast',
     # 'coverage',
     # 'contents',
-    'assign-links',
+    # 'assign-links',
     # 'diff',
-    'tokens',
-    'results',
+    # 'tokens',
+    # 'results',
     # 'raw-tree',
-    'tree',
+    # 'tree',
     # 'contents',
 ]
 ok = True
@@ -834,7 +834,7 @@ def make_tests(root):
         else:
             p.moveToThreadNext()
     return tests
-#@+node:ekr.20191119203945.1: *5* xx file-test: core..leoFind.py
+#@+node:ekr.20191119203945.1: *5* file-test: core..leoFind.py
 #@+node:ekr.20191118164156.1: *5* @ignore passed
 #@+node:ekr.20191118155612.1: *6* contents-test: attribute
 open(os.devnull, "w")
@@ -885,6 +885,8 @@ name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 #@+node:ekr.20191119142414.1: *6* contents-test: FunctionDef & NamedConstant
 def run(fileName=None, pymacs=None, *args, **keywords):
     pass
+#@+node:ekr.20191119213940.1: *6* contents-test: ListComp and comprehension
+any([p2.isDirty() for p2 in p.subtree()])
 #@+node:ekr.20191118155611.1: *6* contents-test: one-line test
 print('test %s=%s'%(a, 2))
 

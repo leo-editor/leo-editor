@@ -335,7 +335,7 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191119203945.1"><vh>xx file-test: core..leoFind.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file-test: core..leoFind.py</vh></v>
 <v t="ekr.20191118164156.1"><vh>@ignore passed</vh>
 <v t="ekr.20191118155612.1"><vh>contents-test: attribute</vh></v>
 <v t="ekr.20191118155611.2"><vh>contents-test: bug in do_If</vh></v>
@@ -348,6 +348,7 @@
 <v t="ekr.20191119135937.1"><vh>contents-test: FormattedValue: f-string</vh></v>
 <v t="ekr.20191119101124.1"><vh>contents-test: from runLeo.py</vh></v>
 <v t="ekr.20191119142414.1"><vh>contents-test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20191119213940.1"><vh>contents-test: ListComp and comprehension</vh></v>
 <v t="ekr.20191118155611.1"><vh>contents-test: one-line test</vh></v>
 <v t="ekr.20191118160305.1"><vh>contents-test: redundant semicolon</vh></v>
 <v t="ekr.20191118155612.2"><vh>contents-test: semicolon between statements</vh></v>
@@ -4091,12 +4092,12 @@ reports = [
     # 'fail-fast',
     # 'coverage',
     # 'contents',
-    'assign-links',
+    # 'assign-links',
     # 'diff',
-    'tokens',
-    'results',
+    # 'tokens',
+    # 'results',
     # 'raw-tree',
-    'tree',
+    # 'tree',
     # 'contents',
 ]
 ok = True
@@ -4204,11 +4205,14 @@ class TestClass(base1, base2):
 <t tx="ekr.20191119210429.1">if not a:
     pass
 if -(2):
-    pass</t>
+    pass
+</t>
 <t tx="ekr.20191119211714.1">if a and not b and c:
     pass
 </t>
 <t tx="ekr.20191119213126.1">for i, j in b:
-    pass</t>
+    pass
+</t>
+<t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])</t>
 </tnodes>
 </leo_file>
