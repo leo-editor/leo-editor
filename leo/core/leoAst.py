@@ -323,7 +323,7 @@ def test_runner(contents, reports=None):
                 import token as tm
                 for z in tokens:
                     kind = tm.tok_name[z.type].lower()
-                    print(f"{z.index:4} {kind:>12} {z.string}")
+                    print(f"{z.index:4} {kind:>12} {z.string!r}")
         elif report == 'tree':
             print('\nPatched tree...\n')
             dumper = leoAst.AstDumper()

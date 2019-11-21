@@ -4324,18 +4324,18 @@ import asttokens
 import glob
 import os
 import time
-
+print_tokens = False
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
 file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-for file_name in file_names[:5]:
+for file_name in file_names[:1]:
     path = g.os_path_finalize_join(core_directory, file_name)
     assert os.path.exists(path), path
     with open(path, 'r') as f:
         contents = f.read()
     # Setup asttokens data.
     t1 = time.process_time()
-    atok = asttokens.ASTTokens(contents, parse=True)
+    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
     ast_tree = atok.tree
     ast_tokens = atok._tokens
     ast_nodes = list(asttokens.util.walk(ast_tree))
@@ -4346,6 +4346,16 @@ for file_name in file_names[:5]:
     tog_tree = leoAst.parse_ast(contents)
     tog_nodes = list(x.create_links(tog_tokens, tog_tree))
     t3 = time.process_time()
+    # Print tokens.
+    if print_tokens:
+        import token as tm
+        print('asttokens.tokens...')
+        for z in ast_tokens[:10]:
+            kind = tm.tok_name[z.type].lower()
+            print(f"{z.index:4} {kind:&gt;12} {z.string!r}")
+        print('tog.tokens...')
+        for z in tog_tokens[:10]:
+            print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
     print(
         f"{g.shortFileName(file_name)}:\n"
         f"ast_tokens: {len(ast_tokens):&gt;5} "
