@@ -380,7 +380,6 @@
 </v>
 <v t="ekr.20191118154059.1"></v>
 <v t="ekr.20191121063148.1"><vh>@test TOG vs asttokens</vh></v>
-<v t="ekr.20191121104320.1"><vh>print test range</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4328,6 +4327,7 @@ import time
 compare_tokens = False
 compare_trees = False
 print_tokens = False
+print_summary = True
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
 file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
@@ -4388,15 +4388,14 @@ for file_name in file_names:
         print('tog.tokens...')
         for z in tog_tokens[:10]:
             print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
-    print(
-        f"{g.shortFileName(file_name)}:\n"
-        f"ast_tokens: {len(ast_tokens):&gt;5} "
-        f"ast_nodes: {len(ast_nodes):&gt;5} "
-        f"{t2-t1:5.2f} sec.\n"
-        f"tog.tokens: {len(tog_tokens):&gt;5} "
-        f"tog.nodes: {len(tog_nodes):&gt;5} "
-        f"{t3-t2:5.2f} sec.\n")</t>
-<t tx="ekr.20191121104320.1">for i in range(-10, 0):
-    print(i)</t>
+    if print_summary:
+        print(
+            f"{g.shortFileName(file_name)}:\n"
+            f"ast_tokens: {len(ast_tokens):&gt;5} "
+            f"ast_nodes: {len(ast_nodes):&gt;5} "
+            f"{t2-t1:5.2f} sec.\n"
+            f"tog.tokens: {len(tog_tokens):&gt;5} "
+            f"tog.nodes: {len(tog_nodes):&gt;5} "
+            f"{t3-t2:5.2f} sec.\n")</t>
 </tnodes>
 </leo_file>
