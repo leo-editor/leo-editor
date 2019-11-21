@@ -1352,6 +1352,7 @@ class TokenOrderGenerator:
         # This saves a lot of tests.
         if node is None:
             return
+        # More general, more convenient.
         if isinstance(node, (list, tuple)):
             for z in node or []:
                 if isinstance(z, ast.AST):
@@ -1366,8 +1367,6 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from method(node)
         self.end_visitor(node)
-
-    ### visit_list = visitor
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
