@@ -1876,7 +1876,6 @@ class TokenOrderGenerator:
         yield from self.visit_list(node.body)
         # Else clause...
         if node.orelse:
-            ### yield self.put_newline()
             # 'else:\n'
             yield self.put_name('else')
             yield self.put_op(':')
@@ -1959,7 +1958,6 @@ class TokenOrderGenerator:
         yield from self.visit_list(node.body)
         # 'else:\n'
         if node.orelse:
-            ### yield self.put_newline()
             yield self.put_name('else')
             yield self.put_op(':')
             yield from self.visit_list(node.orelse)
@@ -2073,7 +2071,6 @@ class TokenOrderGenerator:
         yield from self.visit_list(node.orelse)
         # Finally...
         if node.finalbody:
-            ### yield self.put_newline()
             yield self.put_name('finally')
             yield self.put_op(':')
             yield self.put_newline()
@@ -2093,7 +2090,6 @@ class TokenOrderGenerator:
         yield from self.visit_list(node.body)
         # Else clause...
         if node.orelse:
-            ### yield self.put_newline()
             yield self.put_name('else')
             yield self.put_op(':')
             yield self.put_newline()
@@ -2109,7 +2105,6 @@ class TokenOrderGenerator:
         expr = getattr(node, 'context_expression', None)
         items = getattr(node, 'items', [])
         yield self.put_name('with')
-        ### if expr is not None:
         yield from self.visitor(expr)
         # No need to put commas.
         for item in items:
