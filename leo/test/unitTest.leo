@@ -335,8 +335,14 @@
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
+<v t="ekr.20191120171921.1"><vh>test: If, acid test</vh></v>
+<v t="ekr.20191120162720.1"><vh>ignore: If tests</vh>
+<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
+<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
+<v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
+<v t="ekr.20191120165433.1"><vh>test: If, elif, else</vh></v>
+</v>
 <v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 </v>
@@ -347,17 +353,13 @@
 <v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120162807.1"><vh>Statements...</vh>
-<v t="ekr.20191120162720.1"><vh>If tests</vh>
-<v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
-<v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
-</v>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 </v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -371,11 +373,13 @@
 <v t="ekr.20191120075559.1"><vh>f-strings</vh></v>
 </v>
 <v t="ekr.20191120064512.1"><vh>ignore: passed file tests</vh>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20191118154059.1"></v>
+<v t="ekr.20191121063148.1"><vh>@test TOG vs asttokens</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4100,26 +4104,26 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 g.cls()
 import leo.core.leoAst as leoAst
 import imp
-imp.reload(leoAst)
+imp.reload(leoAst) ###
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
+use_asttokens = True
 all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 # Run the tests.
 if all:
-    reports = ['assign-links'] # 'coverage',
+    reports = [] # 'coverage', 'fail-fast',
 else:
     reports = [
-        # 'fail-fast',
-        'assign-links',
         # 'diff',
-        # 'tokens',
-        'results',
+        'tokens',
+        # 'results',
         # 'raw-tree',
         'tree',
-        # 'contents',
+        'contents',
     ]
+reports.append('asttokens' if use_asttokens else 'assign-links')
 ok = True
 for contents, description in tests:
     try:
@@ -4131,8 +4135,6 @@ for contents, description in tests:
             break # Overrides fail-fast.
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")
-if 'assign-links' not in reports:
-    print('\nWarning: assign-links not in reports\n')
 </t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
     """
@@ -4143,7 +4145,8 @@ if 'assign-links' not in reports:
     tests = []
     contents_tag = 'test:'
     file_tag = 'file:'
-    while p:
+    after = root.nodeAfterTree()
+    while p and p != after:
         # g.trace(p.h)
         if 'make_tests' in p.h:
             # skip this node.
@@ -4285,5 +4288,71 @@ finally:
     print('d1')
     print('d2')
 </t>
+<t tx="ekr.20191120164539.1">if a:
+    if b:
+        print('b')
+else:
+    if d:
+        print('d')
+</t>
+<t tx="ekr.20191120165433.1">if 1:
+    if 2:
+        'if 2'
+elif 3:
+    'elif 3'
+else:  # outer else.
+    if 4:
+        'if 4'
+</t>
+<t tx="ekr.20191120171921.1">if 1:
+    '1'
+elif 2:
+    '2'
+'----'
+if 3:
+    '3'
+else:
+    if 4:
+        '4'
+'done'
+</t>
+<t tx="ekr.20191121063148.1">g.cls() ###
+import imp
+import leo.core.leoAst as leoAst
+imp.reload(leoAst) ###
+import asttokens
+import glob
+import os
+import time
+
+core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+assert os.path.exists(core_directory), core_directory
+file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
+for file_name in file_names[:5]:
+    path = g.os_path_finalize_join(core_directory, file_name)
+    assert os.path.exists(path), path
+    with open(path, 'r') as f:
+        contents = f.read()
+    # Setup asttokens data.
+    t1 = time.process_time()
+    atok = asttokens.ASTTokens(contents, parse=True)
+    ast_tree = atok.tree
+    ast_tokens = atok._tokens
+    ast_nodes = list(asttokens.util.walk(ast_tree))
+    # Setup TOG data.
+    t2 = time.process_time()
+    x = leoAst.TokenOrderGenerator() # Use the base class.
+    tog_tokens = x.make_tokens(contents)
+    tog_tree = leoAst.parse_ast(contents)
+    tog_nodes = list(x.create_links(tog_tokens, tog_tree))
+    t3 = time.process_time()
+    print(
+        f"{g.shortFileName(file_name)}:\n"
+        f"ast_tokens: {len(ast_tokens):&gt;5} "
+        f"ast_nodes: {len(ast_nodes):&gt;5} "
+        f"{t2-t1:5.2f} sec.\n"
+        f"tog.tokens: {len(tog_tokens):&gt;5} "
+        f"tog.nodes: {len(tog_nodes):&gt;5} "
+        f"{t3-t2:5.2f} sec.\n")</t>
 </tnodes>
 </leo_file>

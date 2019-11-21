@@ -241,16 +241,23 @@ def test_runner(contents, reports=None):
     if trace: print('\nleoAst.py:test_runner...\n')
     contents = contents.strip() + '\n'
     # Create tokens and tree.
-    x = leoAst.TokenOrderInjector()
-    tokens = x.make_tokens(contents)
-    tree = leoAst.parse_ast(contents)
-    # Catch exceptions so we can get data late.
-    try:
-        ok = True
-        list(x.create_links(tokens, tree))
-    except Exception:
-        g.es_exception()
-        ok = False
+    ok = True
+    if 'asttokens' in reports:
+        import asttokens
+        atok = asttokens.ASTTokens(contents, parse=True)
+        tree = atok.tree
+        tokens = atok._tokens
+        x = None
+    else:
+        x = leoAst.TokenOrderInjector()
+        tokens = x.make_tokens(contents)
+        tree = leoAst.parse_ast(contents)
+        # Catch exceptions so we can get data late.
+        try:
+            list(x.create_links(tokens, tree))
+        except Exception:
+            g.es_exception()
+            ok = False
     # Print reports, in the order they appear in the results list.
     bad_reports = []
     for report in reports:
@@ -270,14 +277,18 @@ def test_runner(contents, reports=None):
                     break
                 if trace:
                     print('Continuing...')
+        elif report == 'asttokens':
+            pass # Done above.
         elif report == 'contents':
             print('\nContents...\n')
             for i, z in enumerate(g.splitLines(contents)):
                 print(f"{i+1:<3} ", z.rstrip())
         elif report == 'coverage':
-            x.report_coverage(report_missing=False)
+            if x:
+                x.report_coverage(report_missing=False)
         elif report == 'diff':
-            x.diff()
+            if x:
+                x.diff()
         elif report == 'lines':
             print('\nTOKEN lines...\n')
             for z in tokens:
@@ -289,26 +300,48 @@ def test_runner(contents, reports=None):
             print('\nRaw tree...\n')
             print(leoAst.AstDumper().dump(tree))
         elif report == 'results':
-            print('\nResults...\n')
-            for z in x.results:
-                print(z.dump())
+            if x:
+                print('\nResults...\n')
+                for z in x.results:
+                    print(z.dump())
         elif report == 'summary':
-            if x.errors:
+            if x and x.errors:
                 print('\nErrors...\n')
                 for z in x.errors:
                     print('  ' + z)
                 print('')
-            ok = ok and not x.errors
+                ok = ok and not x.errors
             print('')
             print('PASS' if ok else 'FAIL')
         elif report == 'tokens':
             print('\nTokens...\n')
             # pylint: disable=not-an-iterable
-            for z in x.tokens:
-                print(z.dump())
+            if x:
+                for z in tokens:
+                    print(z.dump())
+            else:
+                import token as tm
+                for z in tokens:
+                    kind = tm.tok_name[z.type].lower()
+                    print(f"{z.index:4} {kind:>12} {z.string}")
         elif report == 'tree':
             print('\nPatched tree...\n')
-            print(leoAst.AstDumper().brief_dump(tree))
+            dumper = leoAst.AstDumper()
+            if x:
+                print(dumper.brief_dump(tree))
+            else:
+                from asttokens.util import walk
+                # print(dumper.dump(tree))
+                for z in walk(tree):
+                    class_name = z.__class__.__name__
+                    first, last = z.first_token.index, z.last_token.index
+                    token_range = f"{first:>4}..{last:<4}"
+                    if isinstance(z, ast.Module):
+                        tokens_s = ''
+                    else:
+                        tokens_s = ' '.join(
+                            repr(z.string) for z in tokens[first:last] if z)
+                    print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
         else:
             bad_reports.append(report)
     if bad_reports:
@@ -1090,7 +1123,7 @@ class TokenOrderGenerator:
     def assign_links(self):
         """Assign two-way links between tokens and results."""
         try:
-            Linker().assign_links(self.results, self.tokens, self.tree)
+            Linker().assign_links(self.results, self.strings, self.tokens, self.tree)
             return True
         except Exception as e:
             g.trace(e)
@@ -1143,7 +1176,8 @@ class TokenOrderGenerator:
         t1 = time.process_time()
         self.tree = tree # Immutable.
         self.results = []
-        self.tokens = tokens[:]
+        self.tokens = tokens ### [:]
+        self.strings = [z for z in self.tokens if z.kind == 'string']
         self.token_index = 0
         self.node = None  # The parent.
         yield from self.visitor(tree)
@@ -2058,20 +2092,24 @@ class TokenOrderGenerator:
         # Body...
         self.level += 1
         for z in node.body:
+            # g.trace('BODY', z)
             yield from self.visitor(z)
         self.level -= 1
-        # Else clause...
+        # Else and elif clauses...
+        # All except the last are elif's.
         if node.orelse:
             self.level += 1
-            node1 = node.orelse[0]
-            if isinstance(node1, ast.If) and len(node.orelse) == 1:
-                yield from self.do_If(node1, elif_flag=True)
-            else:
-                yield self.put_name('else')
-                yield self.put_op(':')
-                yield self.put_newline()
-                for z in node.orelse:
-                    yield from self.visitor(z)
+            #for i, z in enumerate(node.orelse):
+            # g.trace('ORELSE', node.orelse)
+            # node1 = node.orelse[0]
+            # if isinstance(node1, ast.If): # and len(node1.orelse) == 1:
+                # yield from self.do_If(node1, elif_flag=True)
+            # else:
+                # yield self.put_name('else')
+                # yield self.put_op(':')
+                # yield self.put_newline()
+                # for z in node.orelse:
+                    # yield from self.visitor(z)
             self.level -= 1
         self.end_visitor(node)
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
@@ -2289,8 +2327,9 @@ class Linker:
 
     #@+others
     #@+node:ekr.20191119020953.1: *3* linker.assign_links
-    def assign_links(self, results, tokens, tree):
+    def assign_links(self, results, strings, tokens, tree):
         """Assign two-way links between tokens and results."""
+        self.strings = strings
         self.tree = tree
         #
         # Create the lists of significant tokens and results.
