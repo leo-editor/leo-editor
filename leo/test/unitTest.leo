@@ -380,6 +380,7 @@
 </v>
 <v t="ekr.20191118154059.1"></v>
 <v t="ekr.20191121063148.1"><vh>@test TOG vs asttokens</vh></v>
+<v t="ekr.20191121104320.1"><vh>print test range</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4316,7 +4317,7 @@ else:
         '4'
 'done'
 </t>
-<t tx="ekr.20191121063148.1">g.cls() ###
+<t tx="ekr.20191121063148.1">### g.cls() ###
 import imp
 import leo.core.leoAst as leoAst
 imp.reload(leoAst) ###
@@ -4324,6 +4325,8 @@ import asttokens
 import glob
 import os
 import time
+compare_tokens = False
+compare_trees = True
 print_tokens = False
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
@@ -4346,6 +4349,35 @@ for file_name in file_names[:1]:
     tog_tree = leoAst.parse_ast(contents)
     tog_nodes = list(x.create_links(tog_tokens, tog_tree))
     t3 = time.process_time()
+    if compare_tokens:
+        import token as tm
+        def ast_key(t):
+            kind = tm.tok_name[t.type].lower()
+            return f"{kind}:{t.string}"
+        ast_list = [ast_key(z) for z in ast_tokens]
+        # Skip the encoding.
+        def token_filter(t):
+            return t.kind not in ('encoding', 'ws')
+        tog_compare_list = list(filter(token_filter, tog_tokens))
+        tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
+        print('Comparing token lists...')
+        i = leoAst.compare_lists(ast_list, tog_list)
+        if i is not None:
+            print('Mismatch at', i)
+            print('ast', repr(ast_list[i]))
+            print('tog', repr(tog_compare_list[i]))
+    if compare_trees:
+        print('Comparing trees...')
+        ast_node_list = [z.__class__.__name__ for z in ast_nodes
+            if z.__class__.__name__ not in ('alias',)]
+        tog_node_list = [z.__class__.__name__ for z in x.node_list]
+        i = leoAst.compare_lists(ast_node_list, tog_node_list)
+        if i is not None:
+            print('Mismatch at', i)
+            for j in range(i-5, i+1):
+                if j &lt; 0: break
+                print('ast', j, ast_node_list[j])
+                print('tog', j, tog_node_list[j])
     # Print tokens.
     if print_tokens:
         import token as tm
@@ -4364,5 +4396,7 @@ for file_name in file_names[:1]:
         f"tog.tokens: {len(tog_tokens):&gt;5} "
         f"tog.nodes: {len(tog_nodes):&gt;5} "
         f"{t3-t2:5.2f} sec.\n")</t>
+<t tx="ekr.20191121104320.1">for i in range(-10, 0):
+    print(i)</t>
 </tnodes>
 </leo_file>
