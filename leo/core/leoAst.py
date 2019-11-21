@@ -1263,7 +1263,7 @@ class TokenOrderGenerator:
         # import leo.core.leoGlobals as g
         import io
         import tokenize
-        
+
         def check(contents, tokens):
             result = ''.join([z.to_string() for z in tokens])
             ok = result == contents
@@ -2137,159 +2137,6 @@ class TokenOrderGenerator:
         yield self.put_name('yield')
         yield from self.visitor(node.value)
         yield self.put_newline()
-    #@-others
-#@+node:ekr.20191119020803.1: ** class Linker
-class Linker:
-    """
-    A class that creates two-way links between tokens and results.
-    
-    Version 2: use "significant" tokens as sync points.
-    """
-
-    #@+others
-    #@+node:ekr.20191119020953.1: *3* linker.assign_links
-    def assign_links(self, results, strings, tokens, tree):
-        """Assign two-way links between tokens and results."""
-        self.strings = strings
-        self.tree = tree
-        #
-        # Create the lists of significant tokens and results.
-        sig_tokens = list(filter(self.is_significant, tokens))
-        sig_results = list(filter(self.is_significant, results))
-        #
-        # Raise an exception if the two lists are not compatible.
-        self.check(sig_results, sig_tokens)
-        #
-        # Make two-way links between tokens and results.
-        for r, t in zip(sig_results, sig_tokens):
-            self.set_links(r, t, tokens)
-    #@+node:ekr.20191119022836.1: *3* linker.check
-    def check(self, results, tokens):
-        """
-        tokens and results are lists of significant tokens.
-
-        Throw AssignLinksError if they are not virtually identical.
-        
-        May be overridden in subclasses for special purposes.
-        """
-        import itertools
-        n1, n2 = len(results), len(tokens)
-        if 0: # Simpler.
-            assert n1 == n2, (n1, n2)
-            for r, t in zip(results, tokens):
-                assert r.kind == t.kind, (repr(r), repr(t))
-                assert self.compare_values(r, t), (repr(r), repr(t))
-        else: # More detailed error info.
-            fillvalue = Token('MISSING', '')
-            it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
-            for i, (r, t) in enumerate(it):
-                if t.kind != r.kind:
-                    print(
-                        f"Mismatched kinds!\n"
-                        f"line {t.line_number}: {t.line.strip()}\n"
-                        f"tx: {i}: token: {t}, result: {r}")
-                    raise AssignLinksError('Mismatched kinds!')
-                if not self.compare_values(r, t):
-                    print(
-                        f"Mismatched values!\n"
-                        f"line {t.line_number}: {t.line.strip()}\n"
-                        f"tx: {i}: token: {t}, result: {r}")
-                    raise AssignLinksError('Mismatched values!')
-            # Defensive programming.
-            assert n1 == n2, (n1, n2)
-    #@+node:ekr.20191119025334.1: *3* linker.compare_values
-    def compare_values(self, r, t):
-        """
-        r is a token from the results list.
-        t is a token in the token list.
-        
-        Return True r.value == t.value, exempting 'string' tokens.
-        """
-        return True if t.kind == 'string' else t.value == r.value
-    #@+node:ekr.20191119021330.1: *3* linker.is_significant
-    def is_significant(self, token):
-        """
-        Return True if the token is "significant".
-        
-        The list of significant tokens and results must be identical.
-        
-        Note: 'string' tokens should not be considered significant because
-              there is no way for visitors to generate them from docstrings.
-        
-        Subclasses might override this for special purposes.
-        """
-        # Don't override this without careful thought and testing.
-        # We can use commas, semicolons or parens for syncing
-        # because the tree visitors don't know how to generate them.
-        return (
-            token.kind in ('name', 'number') or
-            token.kind == 'op' and token.value not in ',;()')
-    #@+node:ekr.20191119020852.1: *3* linker.set_links
-    tx = 0  # The index of the last patched token.
-
-    def set_links(self, r, t, tokens):
-        """
-        Set two-way links between one tree node and one or more tokens.
-        
-        r is the list of significant results.
-        t is the list of significant tokens.
-        tokens is the list of all tokens.
-        """
-        # Check everything.
-        assert isinstance(r, Token), repr(r)
-        assert isinstance(t, Token), repr(t)
-        assert self.is_significant(r), repr(r)
-        assert self.is_significant(t), repr(t)
-        assert isinstance(r.node, ast.AST), repr(r.node)
-        assert t.index is not None, repr(t)
-        # Patch all previous assignable tokens.
-        while self.tx <= t.index:
-            token = tokens[self.tx]
-            # Don't assign "cruft" tokens to the ast node.
-            if self.should_be_assigned(token, r.node):
-                # g.trace(f"{self.tx:<3} {obj_id(r.node)} "
-                #         f"{r.node.__class__.__name__:<12} {token!r}")
-                # Patch the token.
-                assert token.node is None, repr(token)
-                token.node = r.node
-                # Add the token to r.node.token_list.
-                ### Alas, Str tokens do not appear in the results list!
-                if r.node.__class__.__name__ == 'Str':
-                    assert False, g.callers()
-                    # Strings are an essential special case.
-                    # 1: The Str visitor has already injected token.node
-                    assert token.node, repr(token)
-                    # 2: The Str visitor has already injected node.token_list.
-                    assert token.node.token_list, repr(token.node)
-                    # 3: Override the spelling *now*.
-                    assert len(token.node.token_list) == 1, repr(token.node.token_list)
-                    token2 = token.node.token_list[0]
-                    g.trace('UPDATE SPELLING', token2.value, '==>', token.value)
-                    token2.value = token.value
-                else:
-                    token_list = getattr(r.node, 'token_list', [])
-                    r.node.token_list = token_list + [token]
-            self.tx += 1
-        assert self.tx == t.index + 1, (self.tx, t.index, repr(t))
-        
-    #@+node:ekr.20191119021140.1: *3* linker.should_be_assigned
-    def should_be_assigned(self, token, node):
-        """
-        Return True if the linker should create a link from the given ast node
-        to the token.
-        
-        This method encapsulates a policy question, namely which kinds of
-        tokens should appear in the tokens list for the given ast node.
-        
-        The default policy ignores the node.
-        
-        Subclasses may change this policy by overriding this method.
-        """
-        return token.kind not in (
-            'encoding', 'endmarker',
-            'dedent', 'indent',
-            'ws'
-        )
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -4269,6 +4116,159 @@ class HTMLReportTraverser:
         self.visit(node.value)
         self.end_div('statement')
     #@-others
+#@+node:ekr.20191119020803.1: ** class Linker
+class Linker:
+    """
+    A class that creates two-way links between tokens and results.
+    
+    Version 2: use "significant" tokens as sync points.
+    """
+
+    #@+others
+    #@+node:ekr.20191119020953.1: *3* linker.assign_links
+    def assign_links(self, results, strings, tokens, tree):
+        """Assign two-way links between tokens and results."""
+        self.strings = strings
+        self.tree = tree
+        #
+        # Create the lists of significant tokens and results.
+        sig_tokens = list(filter(self.is_significant, tokens))
+        sig_results = list(filter(self.is_significant, results))
+        #
+        # Raise an exception if the two lists are not compatible.
+        self.check(sig_results, sig_tokens)
+        #
+        # Make two-way links between tokens and results.
+        for r, t in zip(sig_results, sig_tokens):
+            self.set_links(r, t, tokens)
+    #@+node:ekr.20191119022836.1: *3* linker.check
+    def check(self, results, tokens):
+        """
+        tokens and results are lists of significant tokens.
+
+        Throw AssignLinksError if they are not virtually identical.
+        
+        May be overridden in subclasses for special purposes.
+        """
+        import itertools
+        n1, n2 = len(results), len(tokens)
+        if 0: # Simpler.
+            assert n1 == n2, (n1, n2)
+            for r, t in zip(results, tokens):
+                assert r.kind == t.kind, (repr(r), repr(t))
+                assert self.compare_values(r, t), (repr(r), repr(t))
+        else: # More detailed error info.
+            fillvalue = Token('MISSING', '')
+            it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
+            for i, (r, t) in enumerate(it):
+                if t.kind != r.kind:
+                    print(
+                        f"Mismatched kinds!\n"
+                        f"line {t.line_number}: {t.line.strip()}\n"
+                        f"tx: {i}: token: {t}, result: {r}")
+                    raise AssignLinksError('Mismatched kinds!')
+                if not self.compare_values(r, t):
+                    print(
+                        f"Mismatched values!\n"
+                        f"line {t.line_number}: {t.line.strip()}\n"
+                        f"tx: {i}: token: {t}, result: {r}")
+                    raise AssignLinksError('Mismatched values!')
+            # Defensive programming.
+            assert n1 == n2, (n1, n2)
+    #@+node:ekr.20191119025334.1: *3* linker.compare_values
+    def compare_values(self, r, t):
+        """
+        r is a token from the results list.
+        t is a token in the token list.
+        
+        Return True r.value == t.value, exempting 'string' tokens.
+        """
+        return True if t.kind == 'string' else t.value == r.value
+    #@+node:ekr.20191119021330.1: *3* linker.is_significant
+    def is_significant(self, token):
+        """
+        Return True if the token is "significant".
+        
+        The list of significant tokens and results must be identical.
+        
+        Note: 'string' tokens should not be considered significant because
+              there is no way for visitors to generate them from docstrings.
+        
+        Subclasses might override this for special purposes.
+        """
+        # Don't override this without careful thought and testing.
+        # We can use commas, semicolons or parens for syncing
+        # because the tree visitors don't know how to generate them.
+        return (
+            token.kind in ('name', 'number') or
+            token.kind == 'op' and token.value not in ',;()')
+    #@+node:ekr.20191119020852.1: *3* linker.set_links
+    tx = 0  # The index of the last patched token.
+
+    def set_links(self, r, t, tokens):
+        """
+        Set two-way links between one tree node and one or more tokens.
+        
+        r is the list of significant results.
+        t is the list of significant tokens.
+        tokens is the list of all tokens.
+        """
+        # Check everything.
+        assert isinstance(r, Token), repr(r)
+        assert isinstance(t, Token), repr(t)
+        assert self.is_significant(r), repr(r)
+        assert self.is_significant(t), repr(t)
+        assert isinstance(r.node, ast.AST), repr(r.node)
+        assert t.index is not None, repr(t)
+        # Patch all previous assignable tokens.
+        while self.tx <= t.index:
+            token = tokens[self.tx]
+            # Don't assign "cruft" tokens to the ast node.
+            if self.should_be_assigned(token, r.node):
+                # g.trace(f"{self.tx:<3} {obj_id(r.node)} "
+                #         f"{r.node.__class__.__name__:<12} {token!r}")
+                # Patch the token.
+                assert token.node is None, repr(token)
+                token.node = r.node
+                # Add the token to r.node.token_list.
+                ### Alas, Str tokens do not appear in the results list!
+                if r.node.__class__.__name__ == 'Str':
+                    assert False, g.callers()
+                    # Strings are an essential special case.
+                    # 1: The Str visitor has already injected token.node
+                    assert token.node, repr(token)
+                    # 2: The Str visitor has already injected node.token_list.
+                    assert token.node.token_list, repr(token.node)
+                    # 3: Override the spelling *now*.
+                    assert len(token.node.token_list) == 1, repr(token.node.token_list)
+                    token2 = token.node.token_list[0]
+                    g.trace('UPDATE SPELLING', token2.value, '==>', token.value)
+                    token2.value = token.value
+                else:
+                    token_list = getattr(r.node, 'token_list', [])
+                    r.node.token_list = token_list + [token]
+            self.tx += 1
+        assert self.tx == t.index + 1, (self.tx, t.index, repr(t))
+        
+    #@+node:ekr.20191119021140.1: *3* linker.should_be_assigned
+    def should_be_assigned(self, token, node):
+        """
+        Return True if the linker should create a link from the given ast node
+        to the token.
+        
+        This method encapsulates a policy question, namely which kinds of
+        tokens should appear in the tokens list for the given ast node.
+        
+        The default policy ignores the node.
+        
+        Subclasses may change this policy by overriding this method.
+        """
+        return token.kind not in (
+            'encoding', 'endmarker',
+            'dedent', 'indent',
+            'ws'
+        )
+    #@-others
 #@+node:ekr.20191110080535.1: ** class Token
 class Token:
     """
@@ -4484,6 +4484,35 @@ class TokenOrderInjector (TokenOrderGenerator):
         # *Now* update self.node, etc.
         super().begin_visitor(node)
     #@-others
+#@+node:ekr.20191121122230.1: ** class TokenOrderNodeGenerator (TokenOrderGenerator)
+class TokenOrderNodeGenerator(TokenOrderGenerator):
+    """A class that yields a stream of nodes."""
+    
+    node_list = []
+    
+    def generate_nodes(self, tree):
+        """Entry: yield a stream of nodes."""
+        ### self.node = None  # The parent.
+        g.trace(tree)
+        yield from self.visitor(tree)
+
+    # Easy overrides...
+    
+    def begin_visitor(self, node):
+        """Enter a visitor."""
+        self.node_list.append(node)
+        ### self.node_stack.append(self.node)
+        ### self.node = node
+        
+    def end_visitor(self, node):
+        """Leave a visitor."""
+        ### self.node = self.node_stack.pop()
+
+    def put(self, kind, val):
+        pass
+        ### g.trace(kind, val)
+        # if self.node:
+            # yield self.node
 #@-others
 #@@language python
 #@@tabwidth -4
