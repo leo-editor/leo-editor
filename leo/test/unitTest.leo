@@ -4326,12 +4326,12 @@ import glob
 import os
 import time
 compare_tokens = False
-compare_trees = True
+compare_trees = False
 print_tokens = False
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
 file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-for file_name in file_names[:1]:
+for file_name in file_names:
     path = g.os_path_finalize_join(core_directory, file_name)
     assert os.path.exists(path), path
     with open(path, 'r') as f:
