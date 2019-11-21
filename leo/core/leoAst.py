@@ -1352,6 +1352,13 @@ class TokenOrderGenerator:
         # This saves a lot of tests.
         if node is None:
             return
+        if isinstance(node, (list, tuple)):
+            for z in node or []:
+                if isinstance(z, ast.AST):
+                    yield from self.visitor(z)
+                else:
+                    assert isinstance(z, (int, str)), z.__class__.__name__
+            return
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
         #
@@ -1359,15 +1366,8 @@ class TokenOrderGenerator:
         self.begin_visitor(node)
         yield from method(node)
         self.end_visitor(node)
-    #@+node:ekr.20191121111648.1: *3* tog.visit_list
-    def visit_list(self, node):
-        
-        assert node is None or isinstance(node, (list, tuple)), repr(node)
-        for z in node or []:
-            if isinstance(z, ast.AST):
-                yield from self.visitor(z)
-            else:
-                assert isinstance(z, (int, str)), z.__class__.__name__
+
+    visit_list = visitor
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
