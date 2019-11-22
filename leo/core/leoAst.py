@@ -4231,7 +4231,10 @@ class TestRunner:
    #@+node:ekr.20191122022728.1: *3* TestRunner.assign_links
    def assign_links(self):
 
-       ok = self.x.assign_links()
+       x = self.x
+       if not x:
+           return
+       ok = x.assign_links()
        if not ok:
            # print('\nFAIL Assign link\n')
            self.dump_contents()

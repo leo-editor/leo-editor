@@ -333,6 +333,9 @@
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+</v>
+<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
+<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: If, acid test</vh></v>
@@ -377,10 +380,6 @@
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
-<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191118154059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
