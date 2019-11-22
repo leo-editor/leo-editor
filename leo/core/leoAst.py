@@ -1600,7 +1600,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('for')
         yield from self.gen(node.generators)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant (Fixed)
+    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant (tested)
     def do_Name(self, node):
         
         yield from self.gen_name(node.id)
@@ -4025,18 +4025,18 @@ class Linker:
     """
 
     #@+others
-    #@+node:ekr.20191119020953.1: *3* linker.assign_links
+    #@+node:ekr.20191119020953.1: *3* linker.assign_links & is_significant
     def assign_links(self, results, strings, tokens, tree):
         """Assign two-way links between tokens and results."""
         self.strings = strings
         self.tree = tree
-        
-        # Don't change this without careful thought and testing.
+        #
+        # Don't change this without thorough testing.
+        #
         # We can *not* use commas, semicolons or parens for syncing
         # because the tree visitors don't know how to generate them.
         def is_significant(token):
             return (
-                ### 'string' is Experimental.
                 token.kind in ('name', 'number', 'string') or
                 token.kind == 'op' and token.value not in ',;()')
         #
