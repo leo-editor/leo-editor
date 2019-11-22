@@ -4108,22 +4108,22 @@ imp.reload(leoAst) ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-all = False # True, ignore @ignore nodes.
+all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 assert tests, 'No tests!'
 # Run the tests.
 if all:
-    reports = [] # 'coverage'
+    reports = ['assign-links',] # 'coverage'
 else:
     reports = [
         # 'diff',
-        'contents',
-        'asttokens',
-        # 'assign-links',
+        # 'contents',
+        # 'asttokens',
+        'assign-links',
         # 'tokens',
         # 'results',
         # 'raw-tree',
-        'tree',
+        # 'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
 # The test-runner issues a good enough warning.

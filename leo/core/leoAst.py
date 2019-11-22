@@ -4032,10 +4032,18 @@ class Linker:
         """Assign two-way links between tokens and results."""
         self.strings = strings
         self.tree = tree
+        
+        # Don't change this without careful thought and testing.
+        # We can *not* use commas, semicolons or parens for syncing
+        # because the tree visitors don't know how to generate them.
+        def is_significant(token):
+            return (
+                token.kind in ('name', 'number') or
+                token.kind == 'op' and token.value not in ',;()')
         #
         # Create the lists of significant tokens and results.
-        sig_tokens = list(filter(self.is_significant, tokens))
-        sig_results = list(filter(self.is_significant, results))
+        sig_tokens = list(filter(is_significant, tokens))
+        sig_results = list(filter(is_significant, results))
         #
         # Raise an exception if the two lists are not compatible.
         self.check(sig_results, sig_tokens)
@@ -4086,24 +4094,6 @@ class Linker:
         Return True r.value == t.value, exempting 'string' tokens.
         """
         return True if t.kind == 'string' else t.value == r.value
-    #@+node:ekr.20191119021330.1: *3* linker.is_significant
-    def is_significant(self, token):
-        """
-        Return True if the token is "significant".
-        
-        The list of significant tokens and results must be identical.
-        
-        Note: 'string' tokens should not be considered significant because
-              there is no way for visitors to generate them from docstrings.
-        
-        Subclasses might override this for special purposes.
-        """
-        # Don't override this without careful thought and testing.
-        # We can *not* use commas, semicolons or parens for syncing
-        # because the tree visitors don't know how to generate them.
-        return (
-            token.kind in ('name', 'number') or
-            token.kind == 'op' and token.value not in ',;()')
     #@+node:ekr.20191119020852.1: *3* linker.set_links
     tx = 0  # The index of the last patched token.
 
@@ -4116,10 +4106,6 @@ class Linker:
         tokens is the list of all tokens.
         """
         # Check everything.
-        assert isinstance(r, Token), repr(r)
-        assert isinstance(t, Token), repr(t)
-        assert self.is_significant(r), repr(r)
-        assert self.is_significant(t), repr(t)
         assert isinstance(r.node, ast.AST), repr(r.node)
         assert t.index is not None, repr(t)
         # Patch all previous assignable tokens.
@@ -4239,10 +4225,12 @@ class TestRunner:
             return
         ok = x.assign_links()
         if not ok:
-            # print('\nFAIL Assign link\n')
-            self.dump_contents()
-            self.dump_results()
-            self.dump_tree()
+            print('\nFAIL Assign link\n')
+            lines = g.splitLines(self.sources)
+            if False and len(lines) < 20:
+                self.dump_contents()
+                self.dump_results()
+                self.dump_tree()
             raise FailFast('assign_links Failed')
     #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
     def coverage(self):
