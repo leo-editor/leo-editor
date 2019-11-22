@@ -336,7 +336,7 @@
 </v>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
+<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes (acid test fails)</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: If, acid test</vh></v>
 <v t="ekr.20191120162720.1"><vh>ignore: If tests</vh>
