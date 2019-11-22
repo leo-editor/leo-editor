@@ -4099,7 +4099,7 @@ class Linker:
         Subclasses might override this for special purposes.
         """
         # Don't override this without careful thought and testing.
-        # We can use commas, semicolons or parens for syncing
+        # We can *not* use commas, semicolons or parens for syncing
         # because the tree visitors don't know how to generate them.
         return (
             token.kind in ('name', 'number') or

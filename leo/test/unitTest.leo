@@ -4118,7 +4118,8 @@ else:
     reports = [
         # 'diff',
         'contents',
-        'assign-links',
+        'asttokens',
+        # 'assign-links',
         # 'tokens',
         # 'results',
         # 'raw-tree',
