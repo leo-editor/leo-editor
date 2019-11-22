@@ -338,7 +338,7 @@
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes (acid test fails)</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
 <v t="ekr.20191120162720.1"><vh>ignore: If tests (3 fail)</vh>
 <v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
 <v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
@@ -347,7 +347,9 @@
 <v t="ekr.20191120171921.1"><vh>xx test: If, acid test</vh></v>
 <v t="ekr.20191120165433.1"><vh>xx test: If, elif, else</vh></v>
 </v>
-<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh></v>
+<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+</v>
 <v t="ekr.20191118164156.1"><vh>ignore: passed contents tests</vh>
 <v t="ekr.20191120162807.1"><vh>Statements...</vh>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
@@ -379,7 +381,6 @@
 <v t="ekr.20191118155609.1"><vh>xx file: core..runLeo.py</vh></v>
 </v>
 </v>
-<v t="ekr.20191118155611.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4101,7 +4102,6 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-### g.cls()
 import leo.core.leoAst as leoAst
 import imp
 imp.reload(leoAst) ###
@@ -4109,21 +4109,22 @@ imp.reload(leoAst) ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-all = True # True, ignore @ignore nodes.
-tests = make_tests(c.p, all)
+ALL = False # True, ignore @ignore nodes.
+tests = make_tests(c.p, ALL)
 assert tests, 'No tests!'
 # Run the tests.
-if all:
+if ALL:
     reports = ['assign-links',] # 'coverage'
 else:
     reports = [
-        # 'diff',
-        # 'contents',
-        # 'asttokens',
+        # 'verbose',
         'assign-links',
-        'tokens',
-        'results',
+        # 'diff',
+        'contents',
+        # 'asttokens',
         # 'raw-tree',
+        # 'tokens',
+        # 'results',
         'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
@@ -4181,7 +4182,6 @@ print(f"\n{status} Ran {len(tests)} tests")</t>
 print('test %s=%s'%(a, 2))
 # Comment.
 print(f"test {a}={2}")
-
 </t>
 <t tx="ekr.20191118155611.2">if a:
     a = 1
@@ -4459,5 +4459,6 @@ for file_name in file_names[:1]:
             f"{t3-t2:5.2f} sec.\n"
             f"compare nodes: {t4-t3:4.2f}")
     assert ok</t>
+<t tx="ekr.20191122153258.1">run(a=None, b=str)</t>
 </tnodes>
 </leo_file>

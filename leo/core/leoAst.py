@@ -1575,9 +1575,11 @@ class TokenOrderGenerator:
                 
         if 1:
             yield from self.gen_token('string', 'STUB')
-        
-        if 1:
-            # This matches asttokens.
+            
+        if 0:
+            pass
+        elif 1:
+            # This matches asttokens??
             yield from self.visitor(None)
         else:
             yield from self.gen(node.values)
@@ -1598,15 +1600,14 @@ class TokenOrderGenerator:
         yield from self.gen_name('for')
         yield from self.gen(node.generators)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant (changed)
+    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant (Fixed)
     def do_Name(self, node):
         
         yield from self.gen_name(node.id)
 
     def do_NameConstant(self, node):
 
-        yield from self.gen_name(node.value.__class__.__name__)
-            # Experimental.
+        yield from self.gen_name(repr(node.value))
     #@+node:ekr.20191113063144.45: *5* tog.Num
     def do_Num(self, node):
         
@@ -2088,10 +2089,10 @@ class AstDumper:
         children = getattr(node, 'children', [])
         class_name = node.__class__.__name__
         descriptor_s = class_name + self.show_fields(class_name, node, 20)
-        tokens_s = self.show_tokens(node, 60, 100)
+        tokens_s = self.show_tokens(node, 65, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
-        full_s =  f"{full_s1:<60} {tokens_s}\n"
+        full_s =  f"{full_s1:<65} {tokens_s}\n"
         # Dump...
         if isinstance(node, (list, tuple)):
             for z in node:
@@ -2117,6 +2118,8 @@ class AstDumper:
             val = f": s={node.s!r}"
         elif class_name == 'Name':
             val = f": id={node.id!r}"
+        elif class_name == 'NameConstant':
+            val = f": value={node.value!r}"
         elif class_name == 'Num':
             val = f": n={node.n}"
             # val = ': ' + ','.join(aList)
@@ -2132,20 +2135,8 @@ class AstDumper:
     def show_header(self):
         
         return (
-            f"{'parent':<16} {'lines':<8} {'node':<34} {'tokens'}\n"
-            f"{'======':<16} {'=====':<8} {'====':<34} {'======'}\n")
-        
-        
-        # From token class.
-            # # Dump the lines.
-            # print('Physical lines: (row, offset, line)\n')
-            # for i, z in enumerate(self.lines):
-                # print(f"{i:3}: {self.offsets[i]:3}: {z!r}")
-            # # Print the header for the list of tokens.
-            # print('\nTokens:')
-            # print(
-                # f"{'kind':>10} {'val'} {'start':>22} {'end':>6} "
-                # f"{'offsets':>12} {'output':>7} {'line':>13}")
+            f"{'parent':<16} {'lines':<8} {'node':<39} {'tokens'}\n"
+            f"{'======':<16} {'=====':<8} {'====':<39} {'======'}\n")
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
     def show_line_range(self, node):
         
@@ -4045,7 +4036,8 @@ class Linker:
         # because the tree visitors don't know how to generate them.
         def is_significant(token):
             return (
-                token.kind in ('name', 'number', 'string') or ### 'string' is Experimental.
+                ### 'string' is Experimental.
+                token.kind in ('name', 'number', 'string') or
                 token.kind == 'op' and token.value not in ',;()')
         #
         # Create the lists of significant tokens and results.
@@ -4180,11 +4172,11 @@ class TestRunner:
         """
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
-        # Start test.
-        # print('\nleoAst.py:TestRunner().run_tests...\n')
+        # Set defaults.
+        self.ok = True
+        self.verbose_flag = False
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
-        self.ok = True
         if 'asttokens' in reports:
             import asttokens
             reports.remove('asttokens')
@@ -4215,8 +4207,10 @@ class TestRunner:
             if helper:
                 try:
                     helper()
-                except Exception:
-                    g.es_exception()
+                except Exception as e:
+                    g.trace(f"Exception in {report}: {e}")
+                    # This will usually be FailFast.
+                    # g.es_exception()
                     return False
             else:
                 bad_reports.append(report)
@@ -4232,14 +4226,15 @@ class TestRunner:
         if not x:
             return
         ok = x.assign_links()
-        if not ok:
+        if ok:
+            return
+        if self.verbose_flag:
             print('\nFAIL Assign link\n')
-            lines = g.splitLines(self.sources)
-            if False and len(lines) < 20:
-                self.dump_contents()
-                self.dump_results()
-                self.dump_tree()
-            raise FailFast('assign_links Failed')
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_results()
+            self.dump_tree()
+        raise FailFast('assign_links Failed')
     #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
     def coverage(self):
         if self.x:
@@ -4318,6 +4313,9 @@ class TestRunner:
             print('')
         print('')
         print('PASS' if ok else 'FAIL')
+    #@+node:ekr.20191122151912.1: *3* TestRunner.verbose
+    def verbose(self):
+        self.verbose_flag = True
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token
