@@ -338,7 +338,8 @@
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes (acid test fails)</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191120171921.1"><vh>test: If, acid test</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191120171921.1"><vh>xx test: If, acid test</vh></v>
 <v t="ekr.20191120162720.1"><vh>ignore: If tests</vh>
 <v t="ekr.20191120064442.1"><vh>test: If w/ elif</vh></v>
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
@@ -346,9 +347,7 @@
 <v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
 <v t="ekr.20191120165433.1"><vh>test: If, elif, else</vh></v>
 </v>
-<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
-</v>
+<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh></v>
 <v t="ekr.20191118164156.1"><vh>ignore: passed contents tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -4109,7 +4108,7 @@ imp.reload(leoAst) ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-all = True # True, ignore @ignore nodes.
+all = False # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
 assert tests, 'No tests!'
 # Run the tests.
@@ -4118,24 +4117,28 @@ if all:
 else:
     reports = [
         # 'diff',
-        'tokens',
+        'contents',
+        'assign-links',
+        # 'tokens',
         # 'results',
         # 'raw-tree',
         'tree',
-        'contents',
     ]
-reports.append('asttokens' if use_asttokens else 'assign-links')
+# It may be useful for some tests *not* to invoke assign-links.
+# The test-runner issues a good enough warning.
 ok = True
 for contents, description in tests:
     try:
-        assert leoAst.test_runner(contents, reports), description
+        ok = ok and leoAst.test_runner(contents, reports), description
     except Exception as e:
         ok = False
+        g.es_exception()
         print('\nERROR in', e)
         break
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")
-# assert ok, description
+if 0: ### Enable this for production testing.
+    assert ok, description
 </t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
     """
@@ -4176,8 +4179,9 @@ print(f"\n{status} Ran {len(tests)} tests")
     return tests
 </t>
 <t tx="ekr.20191118155609.1"></t>
-<t tx="ekr.20191118155611.1">"""Docstring."""
+<t tx="ekr.20191118155611.1">"""DS."""
 print('test %s=%s'%(a, 2))
+print(f"test {a}={2}")
 
 </t>
 <t tx="ekr.20191118155611.2">if a:
