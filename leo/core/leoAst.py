@@ -241,7 +241,7 @@ def unit_test(raise_on_fail=True):
 #@+node:ekr.20191122021704.1: *3* function: test_runner
 def test_runner(contents, reports=None):
 
-    TestRunner().run_tests(contents, reports)
+    return TestRunner().run_tests(contents, reports)
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
@@ -1336,6 +1336,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.17: *5* tog.FunctionDef
     def do_FunctionDef(self, node):
         
+        # Guards...
+        returns = getattr(node, 'returns', None)
         # Decorators...
             # @{z}\n
         for z in node.decorator_list or []:
@@ -1351,7 +1353,7 @@ class TokenOrderGenerator:
         yield from self.gen(node.args)
         yield from self.gen_op(')')
         yield from self.gen_op(':')
-        if getattr(node, 'returns', None) is not None:
+        if returns is not None:
             yield from self.gen_op('->')
             yield from self.gen(node.returns)
         yield from self.gen_newline()
@@ -1570,6 +1572,9 @@ class TokenOrderGenerator:
         if 0:
             for z in node.values or []:
                 g.trace(z)
+                
+        if 1:
+            yield from self.gen_token('string', 'STUB')
         
         if 1:
             # This matches asttokens.
@@ -1742,11 +1747,13 @@ class TokenOrderGenerator:
     # Assert(expr test, expr? msg)
 
     def do_Assert(self, node):
-
+        
+        # Guards...
+        msg = getattr(node, 'msg', None)
         # No need to put parentheses or commas.
         yield from self.gen_name('assert')
         yield from self.gen(node.test)
-        if getattr(node, 'msg', None):
+        if msg is not None:
             yield from self.gen(node.msg)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.63: *5* tog.Assign
@@ -4038,7 +4045,7 @@ class Linker:
         # because the tree visitors don't know how to generate them.
         def is_significant(token):
             return (
-                token.kind in ('name', 'number') or
+                token.kind in ('name', 'number', 'string') or ### 'string' is Experimental.
                 token.kind == 'op' and token.value not in ',;()')
         #
         # Create the lists of significant tokens and results.
@@ -4073,13 +4080,13 @@ class Linker:
             for i, (r, t) in enumerate(it):
                 if t.kind != r.kind:
                     print(
-                        f"Mismatched kinds!\n"
+                        f"Linker.check: Mismatched kinds!\n"
                         f"line {t.line_number}: {t.line.strip()}\n"
                         f"tx: {i}: token: {t}, result: {r}")
                     raise AssignLinksError('Mismatched kinds!')
                 if not self.compare_values(r, t):
                     print(
-                        f"Mismatched values!\n"
+                        f"Linker.check: Mismatched values!\n"
                         f"line {t.line_number}: {t.line.strip()}\n"
                         f"tx: {i}: token: {t}, result: {r}")
                     raise AssignLinksError('Mismatched values!')
@@ -4196,7 +4203,7 @@ class TestRunner:
                 list(x.create_links(self.tokens, self.tree))
             except Exception:
                 g.es_exception()
-                self.ok = False
+                return False
         # Print reports, in the order they appear in the results list.
         bad_reports = []
         for report in reports:
@@ -4208,14 +4215,15 @@ class TestRunner:
             if helper:
                 try:
                     helper()
-                except FailFast:
-                    self.ok = False
-                    break
                 except Exception:
-                    self.ok = False
                     g.es_exception()
+                    return False
             else:
                 bad_reports.append(report)
+        if bad_reports:
+            for report in list(set(bad_reports)):
+                print('bad report option:', repr(report))
+        return True
         
     #@+node:ekr.20191122022728.1: *3* TestRunner.assign_links
     def assign_links(self):
@@ -4546,6 +4554,268 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
 
     def put_token(self, kind, val):
         pass
+#@+node:ekr.20160225102931.1: ** class TokenSync (deprecated)
+class TokenSync:
+    """A class to sync and remember tokens."""
+    # To do: handle comments, line breaks...
+    #@+others
+    #@+node:ekr.20160225102931.2: *3*  ts.ctor & helpers
+    def __init__(self, s, tokens):
+        """Ctor for TokenSync class."""
+        assert isinstance(tokens, list)  # Not a generator.
+        self.s = s
+        self.first_leading_line = None
+        self.lines = [z.rstrip() for z in g.splitLines(s)]
+        # Order is important from here on...
+        self.nl_token = self.make_nl_token()
+        self.line_tokens = self.make_line_tokens(tokens)
+        self.blank_lines = self.make_blank_lines()
+        self.string_tokens = self.make_string_tokens()
+        self.ignored_lines = self.make_ignored_lines()
+    #@+node:ekr.20160225102931.3: *4* ts.make_blank_lines
+    def make_blank_lines(self):
+        """Return of list of line numbers of blank lines."""
+        result = []
+        for i, aList in enumerate(self.line_tokens):
+            # if any([self.token_kind(z) == 'nl' for z in aList]):
+            if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
+                result.append(i)
+        return result
+    #@+node:ekr.20160225102931.4: *4* ts.make_ignored_lines
+    def make_ignored_lines(self):
+        """
+        Return a copy of line_tokens containing ignored lines,
+        that is, full-line comments or blank lines.
+        These are the lines returned by leading_lines().
+        """
+        result = []
+        for i, aList in enumerate(self.line_tokens):
+            for z in aList:
+                if self.is_line_comment(z):
+                    result.append(z)
+                    break
+            else:
+                if i in self.blank_lines:
+                    result.append(self.nl_token)
+                else:
+                    result.append(None)
+        assert len(result) == len(self.line_tokens)
+        for i, aList in enumerate(result):
+            if aList:
+                self.first_leading_line = i
+                break
+        else:
+            self.first_leading_line = len(result)
+        return result
+    #@+node:ekr.20160225102931.5: *4* ts.make_line_tokens (trace tokens)
+    def make_line_tokens(self, tokens):
+        """
+        Return a list of lists of tokens for each list in self.lines.
+        The strings in self.lines may end in a backslash, so care is needed.
+        """
+        import token as tm
+        n, result = len(self.lines), []
+        for i in range(0, n+1):
+            result.append([])
+        for token in tokens:
+            t1, t2, t3, t4, t5 = token
+            kind = tm.tok_name[t1].lower()
+            srow, scol = t3
+            erow, ecol = t4
+            line = erow - 1 if kind == 'string' else srow - 1
+            result[line].append(token)
+        assert len(self.lines) + 1 == len(result), len(result)
+        return result
+    #@+node:ekr.20160225102931.6: *4* ts.make_nl_token
+    def make_nl_token(self):
+        """Return a newline token with '\n' as both val and raw_val."""
+        import token as tm
+        t1 = tm.NEWLINE
+        t2 = '\n'
+        t3 = (0, 0)  # Not used.
+        t4 = (0, 0)  # Not used.
+        t5 = '\n'
+        return t1, t2, t3, t4, t5
+    #@+node:ekr.20160225102931.7: *4* ts.make_string_tokens
+    def make_string_tokens(self):
+        """Return a copy of line_tokens containing only string tokens."""
+        result = []
+        for aList in self.line_tokens:
+            result.append([z for z in aList if self.token_kind(z) == 'string'])
+        assert len(result) == len(self.line_tokens)
+        return result
+    #@+node:ekr.20160225102931.8: *3* ts.check_strings
+    def check_strings(self):
+        """Check that all strings have been consumed."""
+        for i, aList in enumerate(self.string_tokens):
+            if aList:
+                g.trace(f"warning: line {i}. unused strings: {aList}")
+    #@+node:ekr.20160225102931.10: *3* ts.is_line_comment
+    def is_line_comment(self, token):
+        """Return True if the token represents a full-line comment."""
+        import token as tm
+        t1, t2, t3, t4, t5 = token
+        kind = tm.tok_name[t1].lower()
+        raw_val = t5
+        return kind == 'comment' and raw_val.lstrip().startswith('#')
+    #@+node:ekr.20160225102931.12: *3* ts.last_node
+    def last_node(self, node):
+        """Return the node of node's tree with the largest lineno field."""
+
+        class LineWalker(ast.NodeVisitor):
+
+            def __init__(self):
+                """Ctor for LineWalker class."""
+                self.node = None
+                self.lineno = -1
+
+            def visit(self, node):
+                """LineWalker.visit."""
+                if hasattr(node, 'lineno'):
+                    if node.lineno > self.lineno:
+                        self.lineno = node.lineno
+                        self.node = node
+                if isinstance(node, list):
+                    for z in node:
+                        self.visit(z)
+                else:
+                    self.generic_visit(node)
+
+        w = LineWalker()
+        w.visit(node)
+        return w.node
+    #@+node:ekr.20160225102931.13: *3* ts.leading_lines
+    def leading_lines(self, node):
+        """Return a list of the preceding comment and blank lines"""
+        # This can be called on arbitrary nodes.
+        leading = []
+        if hasattr(node, 'lineno'):
+            i, n = self.first_leading_line, node.lineno
+            while i < n:
+                token = self.ignored_lines[i]
+                if token:
+                    s = self.token_raw_val(token).rstrip() + '\n'
+                    leading.append(s)
+                i += 1
+            self.first_leading_line = i
+        return leading
+    #@+node:ekr.20160225102931.14: *3* ts.leading_string
+    def leading_string(self, node):
+        """Return a string containing all lines preceding node."""
+        return ''.join(self.leading_lines(node))
+    #@+node:ekr.20160225102931.15: *3* ts.line_at
+    def line_at(self, node, continued_lines=True):
+        """Return the lines at the node, possibly including continuation lines."""
+        n = getattr(node, 'lineno', None)
+        if n is None:
+            return f'<no line> for %s' % node.__class__.__name__
+        if continued_lines:
+            aList, n = [], n - 1
+            while n < len(self.lines):
+                s = self.lines[n]
+                if s.endswith('\\'):
+                    aList.append(s[:-1])
+                    n += 1
+                else:
+                    aList.append(s)
+                    break
+            return ''.join(aList)
+        return self.lines[n - 1]
+    #@+node:ekr.20160225102931.16: *3* ts.sync_string
+    def sync_string(self, node):
+        """Return the spelling of the string at the given node."""
+        n = node.lineno
+        tokens = self.string_tokens[n - 1]
+        if tokens:
+            token = tokens.pop(0)
+            self.string_tokens[n - 1] = tokens
+            return self.token_val(token)
+        g.trace('===== underflow', n, node.s)
+        return node.s
+    #@+node:ekr.20160225102931.18: *3* ts.tokens_for_statement
+    def tokens_for_statement(self, node):
+        assert isinstance(node, ast.AST), node
+        name = node.__class__.__name__
+        if hasattr(node, 'lineno'):
+            tokens = self.line_tokens[node.lineno - 1]
+            g.trace(' '.join([self.dump_token(z) for z in tokens]))
+        else:
+            g.trace('no lineno', name)
+    #@+node:ekr.20160225102931.19: *3* ts.trailing_comment
+    def trailing_comment(self, node):
+        """
+        Return a string containing the trailing comment for the node, if any.
+        The string always ends with a newline.
+        """
+        if hasattr(node, 'lineno'):
+            return self.trailing_comment_at_lineno(node.lineno)
+        g.trace('no lineno', node.__class__.__name__, g.callers())
+        return '\n'
+    #@+node:ekr.20160225102931.20: *3* ts.trailing_comment_at_lineno
+    def trailing_comment_at_lineno(self, lineno):
+        """Return any trailing comment at the given node.lineno."""
+        tokens = self.line_tokens[lineno - 1]
+        for token in tokens:
+            if self.token_kind(token) == 'comment':
+                raw_val = self.token_raw_val(token).rstrip()
+                if not raw_val.strip().startswith('#'):
+                    val = self.token_val(token).rstrip()
+                    s = f' %s\n' % val
+                    return s
+        return '\n'
+    #@+node:ekr.20160225102931.21: *3* ts.trailing_lines
+    def trailing_lines(self):
+        """return any remaining ignored lines."""
+        trailing = []
+        i = self.first_leading_line
+        while i < len(self.ignored_lines):
+            token = self.ignored_lines[i]
+            if token:
+                s = self.token_raw_val(token).rstrip() + '\n'
+                trailing.append(s)
+            i += 1
+        self.first_leading_line = i
+        return trailing
+    #@+node:ekr.20191122105543.1: *3* ts:dumps
+    #@+node:ekr.20160225102931.9: *4* ts.dump_token
+    def dump_token(self, token, verbose=False):
+        """Dump the token. It is either a string or a 5-tuple."""
+        import token as tm
+        if isinstance(token, str):
+            return token
+        t1, t2, t3, t4, t5 = token
+        kind = g.toUnicode(tm.tok_name[t1].lower())
+        # raw_val = g.toUnicode(t5)
+        val = g.toUnicode(t2)
+        if verbose:
+            return f'token: %10s %r' % (kind, val)
+        return val
+    #@+node:ekr.20160225102931.17: *4* ts.token_kind/raw_val/val
+    def token_kind(self, token):
+        """Return the token's type."""
+        t1, t2, t3, t4, t5 = token
+        import token as tm
+        return g.toUnicode(tm.tok_name[t1].lower())
+
+    def token_raw_val(self, token):
+        """Return the value of the token."""
+        t1, t2, t3, t4, t5 = token
+        return g.toUnicode(t5)
+
+    def token_val(self, token):
+        """Return the raw value of the token."""
+        t1, t2, t3, t4, t5 = token
+        return g.toUnicode(t2)
+    #@+node:ekr.20160225102931.11: *4* ts.join
+    def join(self, aList, sep=','):
+        """return the items of the list joined by sep string."""
+        tokens = []
+        for i, token in enumerate(aList or []):
+            tokens.append(token)
+            if i < len(aList) - 1:
+                tokens.append(sep)
+        return tokens
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
