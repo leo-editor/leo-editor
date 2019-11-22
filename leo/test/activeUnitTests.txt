@@ -774,12 +774,13 @@ imp.reload(leoAst) ###
 # Make the tests.
 << function: make_tests >>
 root = c.p
-use_asttokens = True
+use_asttokens = False
 all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
+assert tests, 'No tests!'
 # Run the tests.
 if all:
-    reports = [] # 'coverage', 'fail-fast',
+    reports = [] # 'coverage'
 else:
     reports = [
         # 'diff',
@@ -796,11 +797,11 @@ for contents, description in tests:
         assert leoAst.test_runner(contents, reports), description
     except Exception as e:
         ok = False
-        print('ERROR in', e)
-        if all:
-            break # Overrides fail-fast.
+        print('\nERROR in', e)
+        break
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")
+# assert ok, description
 #@+node:ekr.20191118154839.1: *5* << function: make_tests >>
 def make_tests(root, all):
     """

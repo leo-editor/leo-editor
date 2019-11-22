@@ -3,6 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
+import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
 #@+node:ekr.20191027072910.1: *3* exception classes
@@ -11,6 +12,9 @@ class AstNotEqual(Exception):
 
 class AssignLinksError(Exception):
     """Assigning links to ast nodes failed."""
+    
+class FailFast(Exception):
+    """Abort tests in TestRunner class."""
 #@+node:ekr.20160521104555.1: *3* function: _op_names
 #@@nobeautify
 
@@ -234,132 +238,10 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
-#@+node:ekr.20191113133338.1: *3* function: test_runner
+#@+node:ekr.20191122021704.1: *3* function: test_runner
 def test_runner(contents, reports=None):
-    """
-    A testing framework for TokenOrderGenerator and related classes.
-    
-    The caller should call imp.reload if desired.
 
-    Reports is a list of reports. A suggested order is shown below.
-    """
-    # pylint: disable=import-self
-    import leo.core.leoAst as leoAst
-    trace = True and not g.unitTesting
-    #
-    reports = [z.lower() for z in reports or []]
-    assert isinstance(reports, list), repr(reports)
-    fail_fast = False
-    # Start test.
-    if trace: print('\nleoAst.py:test_runner...\n')
-    contents = contents.strip() + '\n'
-    # Create tokens and tree.
-    ok = True
-    if 'asttokens' in reports:
-        import asttokens
-        atok = asttokens.ASTTokens(contents, parse=True)
-        tree = atok.tree
-        tokens = atok._tokens
-        x = None
-    else:
-        x = leoAst.TokenOrderInjector()
-        tokens = x.make_tokens(contents)
-        tree = leoAst.parse_ast(contents)
-        # Catch exceptions so we can get data late.
-        try:
-            list(x.create_links(tokens, tree))
-        except Exception:
-            g.es_exception()
-            ok = False
-    # Print reports, in the order they appear in the results list.
-    bad_reports = []
-    for report in reports:
-        # Switches...
-        if report == 'fail-fast':
-            fail_fast = True
-        elif report == 'no-fail-fast':
-            fail_fast = False
-        # Tests...
-        elif report == 'assign-links':
-            if trace:
-                print('\nAssign links...')
-            ok = x.assign_links()
-            if not ok:
-                print('\nFAIL Assign link\n')
-                if fail_fast:
-                    break
-                if trace:
-                    print('Continuing...')
-        elif report == 'asttokens':
-            pass # Done above.
-        elif report == 'contents':
-            print('\nContents...\n')
-            for i, z in enumerate(g.splitLines(contents)):
-                print(f"{i+1:<3} ", z.rstrip())
-        elif report == 'coverage':
-            if x:
-                x.report_coverage(report_missing=False)
-        elif report == 'diff':
-            if x:
-                x.diff()
-        elif report == 'lines':
-            print('\nTOKEN lines...\n')
-            for z in tokens:
-                if z.line.strip():
-                    print(z.line.rstrip())
-                else:
-                    print(repr(z.line))
-        elif report == 'raw-tree':
-            print('\nRaw tree...\n')
-            print(leoAst.AstDumper().dump(tree))
-        elif report == 'results':
-            if x:
-                print('\nResults...\n')
-                for z in x.results:
-                    print(z.dump())
-        elif report == 'summary':
-            if x and x.errors:
-                print('\nErrors...\n')
-                for z in x.errors:
-                    print('  ' + z)
-                print('')
-                ok = ok and not x.errors
-            print('')
-            print('PASS' if ok else 'FAIL')
-        elif report == 'tokens':
-            print('\nTokens...\n')
-            # pylint: disable=not-an-iterable
-            if x:
-                for z in tokens:
-                    print(z.dump())
-            else:
-                import token as tm
-                for z in tokens:
-                    kind = tm.tok_name[z.type].lower()
-                    print(f"{z.index:4} {kind:>12} {z.string!r}")
-        elif report == 'tree':
-            print('\nPatched tree...\n')
-            dumper = leoAst.AstDumper()
-            if x:
-                print(dumper.brief_dump(tree))
-            else:
-                from asttokens.util import walk
-                # print(dumper.dump(tree))
-                for z in walk(tree):
-                    class_name = z.__class__.__name__
-                    first, last = z.first_token.index, z.last_token.index
-                    token_range = f"{first:>4}..{last:<4}"
-                    if isinstance(z, ast.Module):
-                        tokens_s = ''
-                    else:
-                        tokens_s = ' '.join(
-                            repr(z.string) for z in tokens[first:last] if z)
-                    print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
-        else:
-            bad_reports.append(report)
-    if bad_reports:
-        print(f"\nIgnoring unknown reports {','.join(bad_reports)}\n")
-    return ok
+    TestRunner().run_tests(contents, reports)
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
@@ -1381,21 +1263,24 @@ class TokenOrderGenerator:
                 if isinstance(z, ast.AST):
                     yield from self.visitor(z)
                 else:
+                    # Some fields contain ints or strings.
                     assert isinstance(z, (int, str)), z.__class__.__name__
             return
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
         # Allow begin/end visitor to be generators.
-        try:
-            yield from self.begin_visitor(node)
-        except TypeError:
-            pass
+        val = self.begin_visitor(node)
+        if isinstance(val, types.GeneratorType):
+            yield from val
         # method(node) is a generator, not a recursive call!
-        yield from method(node)
-        try:
-            yield from self.end_visitor(node)
-        except TypeError:
-            pass
+        val = method(node)
+        if isinstance(val, types.GeneratorType):
+            yield from method(node)
+        else:
+            raise ValueError(f"Visitor is not a generator: {method!r}")
+        val = self.end_visitor(node)
+        if isinstance(val, types.GeneratorType):
+            yield from val
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
@@ -1617,6 +1502,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.34: *5* tog.Constant
     def do_Constant(self, node):
         
+        g.trace(node.s) ###
         yield from self.gen_token('number', str(node.s))
     #@+node:ekr.20191113063144.35: *5* tog.Dict
     # Dict(expr* keys, expr* values)
@@ -1984,6 +1870,10 @@ class TokenOrderGenerator:
 
     def do_If(self, node):
        
+        #
+        # A big problem.  The trees for 'elif' and 'else if' can be identical!
+        # This must be fixed with a hack in Linker.check, or some other way.
+
         # If or elif line...
             # if %s:\n
             # elif %s: \n
@@ -1996,7 +1886,7 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         # Else and elif clauses...
         if node.orelse:
-            yield from self.gen_name('elif') # It might also be 'else'
+            yield from self.gen_name('else') # It might also be 'elif'
             yield from self.gen_op(':')
             yield from self.gen_newline()
             yield from self.gen(node.orelse)
@@ -4281,6 +4171,154 @@ class Linker:
             'ws'
         )
     #@-others
+#@+node:ekr.20191113133338.1: ** class TestRunner
+class TestRunner:
+    
+   #@+others
+   #@+node:ekr.20191122021515.1: *3*  TestRunner.run_tests
+   def run_tests(self, contents, reports=None):
+       """
+       A testing framework for TokenOrderGenerator and related classes.
+       
+       The caller should call imp.reload if desired.
+
+       Reports is a list of reports. A suggested order is shown below.
+       """
+       # pylint: disable=import-self
+       import leo.core.leoAst as leoAst
+       trace = self.trace = True and not g.unitTesting
+       reports = [z.lower() for z in reports or []]
+       assert isinstance(reports, list), repr(reports)
+       # Start test.
+       if trace: print('\nleoAst.py:TestRunner().run_tests...\n')
+       self.contents = contents = contents.strip() + '\n'
+       # Create tokens and tree.
+       self.ok = True
+       if 'asttokens' in reports:
+           import asttokens
+           reports.remove('asttokens')
+           x = self.x = None
+           atok = asttokens.ASTTokens(contents, parse=True)
+           self.tree = atok.tree
+           self.tokens = atok._tokens
+       else:
+           x = self.x = leoAst.TokenOrderInjector()
+           self.tokens = x.make_tokens(contents)
+           self.tree = leoAst.parse_ast(contents)
+           # Catch exceptions so we can get data late.
+           try:
+               list(x.create_links(self.tokens, self.tree))
+           except Exception:
+               g.es_exception()
+               self.ok = False
+       # Print reports, in the order they appear in the results list.
+       bad_reports = []
+       for report in reports:
+           name = report.replace('-', '_')
+           helper = getattr(self, name, None) or getattr('dump_'+name, None)
+           if helper:
+               try:
+                   helper()
+               except FailFast:
+                   self.ok = False
+                   break
+               except Exception:
+                   self.ok = False
+                   g.es_exception()
+           else:
+               bad_reports.append(report)
+       
+   #@+node:ekr.20191122022728.1: *3* TestRunner.assign_links
+   def assign_links(self):
+
+       ok = self.x.assign_links()
+       if not ok:
+           # print('\nFAIL Assign link\n')
+           self.dump_contents()
+           self.dump_results()
+           self.dump_tree()
+           raise FailFast('assign_links Failed')
+   #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
+   def coverage(self):
+       if self.x:
+           self.x.report_coverage(report_missing=False)
+   #@+node:ekr.20191122025216.1: *3* TestRunner.diff
+   def diff(self):
+       if self.x:
+           self.x.diff()
+   #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
+   def dump_contents(self):
+       contents = self.contents
+       print('\nContents...\n')
+       for i, z in enumerate(g.splitLines(contents)):
+           print(f"{i+1:<3} ", z.rstrip())
+   #@+node:ekr.20191122025306.1: *3* TestRunner.dump_lines
+   def dump_lines(self):
+       print('\nTOKEN lines...\n')
+       for z in self.tokens:
+           if z.line.strip():
+               print(z.line.rstrip())
+           else:
+               print(repr(z.line))
+   #@+node:ekr.20191122025306.2: *3* TestRunner.dump_raw_tree
+   def dump_raw_tree(self):
+       print('\nRaw tree...\n')
+       print(AstDumper().dump(self.tree))
+   #@+node:ekr.20191122025306.3: *3* TestRunner.dump_results
+   def dump_results(self):
+       x = self.x
+       if not x:
+           return
+       print('\nResults...\n')
+       for z in x.results:
+           print(z.dump())
+   #@+node:ekr.20191122025418.1: *3* TestRunner.dump_tokens
+   def dump_tokens(self):
+       tokens = self.tokens
+       print('\nTokens...\n')
+       # pylint: disable=not-an-iterable
+       if self.x:
+           for z in tokens:
+               print(z.dump())
+       else:
+           import token as tm
+           for z in tokens:
+               kind = tm.tok_name[z.type].lower()
+               print(f"{z.index:4} {kind:>12} {z.string!r}")
+   #@+node:ekr.20191122025419.1: *3* TestRunner.dump_tree
+   def dump_tree(self):
+       print('\nPatched tree...\n')
+       tokens, tree = self.tokens, self.tree
+       dumper = AstDumper()
+       if self.x:
+           print(dumper.brief_dump(tree))
+           return
+       from asttokens.util import walk
+       # print(dumper.dump(tree))
+       for z in walk(tree):
+           class_name = z.__class__.__name__
+           first, last = z.first_token.index, z.last_token.index
+           token_range = f"{first:>4}..{last:<4}"
+           if isinstance(z, ast.Module):
+               tokens_s = ''
+           else:
+               tokens_s = ' '.join(
+                   repr(z.string) for z in tokens[first:last] if z)
+           print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
+   #@+node:ekr.20191122021140.1: *3* TestRunner.summary
+   def summary(self):
+       x = self.x
+       ok = self.ok
+       if x and x.errors:
+           ok = False
+           print('\nErrors...\n')
+           for z in x.errors:
+               print('  ' + z)
+           print('')
+       print('')
+       print('PASS' if ok else 'FAIL')
+   #@-others
+   
 #@+node:ekr.20191110080535.1: ** class Token
 class Token:
     """

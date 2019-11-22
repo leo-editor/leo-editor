@@ -378,9 +378,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191118154059.1"></v>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
-<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens</vh></v>
+<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
+<v t="ekr.20191118154059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4109,12 +4109,13 @@ imp.reload(leoAst) ###
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-use_asttokens = True
+use_asttokens = False
 all = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, all)
+assert tests, 'No tests!'
 # Run the tests.
 if all:
-    reports = [] # 'coverage', 'fail-fast',
+    reports = [] # 'coverage'
 else:
     reports = [
         # 'diff',
@@ -4131,11 +4132,11 @@ for contents, description in tests:
         assert leoAst.test_runner(contents, reports), description
     except Exception as e:
         ok = False
-        print('ERROR in', e)
-        if all:
-            break # Overrides fail-fast.
+        print('\nERROR in', e)
+        break
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")
+# assert ok, description
 </t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
     """
@@ -4360,9 +4361,8 @@ for file_name in file_names[:1]:
     # Compare.
     i = leoAst.compare_lists(ast_list, tog_list)
     t4 = time.process_time()
-    if i is None:
-        print('All tokens match')
-    else:
+    ok = i is None
+    if not ok:
         print('Token mismatch at', i)
         print('ast', repr(ast_list[i]))
         print('tog', repr(tog_compare_list[i]))
@@ -4377,7 +4377,7 @@ for file_name in file_names[:1]:
         for z in tog_tokens[:10]:
             print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
     # Print summary.
-    if 1:
+    if not ok:
         print(
             f"{g.shortFileName(file_name)}:\n"
             f"ast_tokens: {len(ast_tokens):&gt;5} "
@@ -4385,6 +4385,7 @@ for file_name in file_names[:1]:
             f"tog.tokens: {len(tog_tokens):&gt;5} "
             f"{t3-t2:4.2f} sec.\n"
             f"compare tokens: {t4-t3:4.2f}")
+    assert ok
             </t>
 <t tx="ekr.20191121163350.1">import leo.core.leoAst as leoAst
 if 1: ###
@@ -4433,7 +4434,8 @@ for file_name in file_names[:1]:
     print('len(ast):', len(ast_nodes2), 'len(tog)', len(tog_nodes2))
     ### g.printObj([z.__class__.__name__ for z in tog_nodes[:10]])
     i = leoAst.compare_lists(ast_nodes2, tog_nodes2)
-    if i is None:
+    ok = i is None
+    if ok:
         print('Tree match!', file_name)
     else:
         print('Tree mismatch at', i)
@@ -4453,6 +4455,7 @@ for file_name in file_names[:1]:
             f"{t2-t1:5.2f} sec.\n"
             f"tog.nodes: {len(tog_nodes):&gt;5} "
             f"{t3-t2:5.2f} sec.\n"
-            f"compare nodes: {t4-t3:4.2f}")</t>
+            f"compare nodes: {t4-t3:4.2f}")
+    assert ok</t>
 </tnodes>
 </leo_file>
