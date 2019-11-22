@@ -1370,14 +1370,9 @@ class TokenOrderGenerator:
             g.printObj(missing)
             print('')
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
-    count = 0
-
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
-        self.count += 1
-        if self.count < 30:
-            g.trace(node.__class__.__name__ if isinstance(node, (list, tuple)) else repr(node))
         if node is None:
             return
         # More general, more convenient.
@@ -1666,30 +1661,35 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (changed)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
 
-        # Don't do any of this.
-        # It doesn't correspond with the token list.
-        if 0:
-            yield from self.gen(node.value)
-            if node.conversion is not None:
-                yield from self.gen(node.conversion)
-                yield from self.gen_token('num', node.conversion)
-            yield from self.gen(node.format_spec)
+        yield from self.gen(node.value)
+        if node.conversion is not None:
+            yield from self.gen(node.conversion)
+            yield from self.gen_token('num', node.conversion)
+        yield from self.gen(node.format_spec)
 
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (hack to match asttokens) 
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
         
-        yield from self.gen(node.values)
+        if 0:
+            for z in node.values or []:
+                g.trace(z)
+        
+        if 1:
+            # This matches asttokens.
+            yield from self.visitor(None)
+        else:
+            yield from self.gen(node.values)
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1707,14 +1707,15 @@ class TokenOrderGenerator:
         yield from self.gen_name('for')
         yield from self.gen(node.generators)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant
+    #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant (changed)
     def do_Name(self, node):
         
         yield from self.gen_name(node.id)
 
     def do_NameConstant(self, node):
-        
-        yield from self.gen_name(node.value)
+
+        yield from self.gen_name(node.value.__class__.__name__)
+            # Experimental.
     #@+node:ekr.20191113063144.45: *5* tog.Num
     def do_Num(self, node):
         
@@ -1745,7 +1746,7 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str & do_str
+    #@+node:ekr.20191113063144.50: *5* tog.Str (to do: link to *real* token)
     def do_Str(self, node):
         """
         This node represents a string constant.
@@ -1763,10 +1764,6 @@ class TokenOrderGenerator:
         token = Token('string', node.s)
         token.node = node
         node.token_list = [token]
-
-    ###
-    # def do_str(self, node):
-        # pass
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -1982,7 +1979,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         yield from self.gen(node.names)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.75: *5* tog.If
+    #@+node:ekr.20191113063144.75: *5* tog.If (*** adjust to match tokens ***)
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
@@ -4505,7 +4502,6 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
 
     def generate_nodes(self, tree):
         """Entry: yield a stream of nodes."""
-        g.trace('*'*20, repr(tree))
         yield from self.visitor(tree)
 
     # Overrides...
@@ -4517,7 +4513,7 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
     def end_visitor(self, node):
         pass
 
-    def put(self, kind, val):
+    def put_token(self, kind, val):
         pass
 #@-others
 #@@language python

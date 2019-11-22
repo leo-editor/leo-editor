@@ -4102,7 +4102,7 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-g.cls()
+### g.cls()
 import leo.core.leoAst as leoAst
 import imp
 imp.reload(leoAst) ###
@@ -4318,6 +4318,9 @@ else:
 'done'
 </t>
 <t tx="ekr.20191121063148.1">import leo.core.leoAst as leoAst
+if 1: ###
+    import imp
+    imp.reload(leoAst)
 import asttokens
 import glob
 import os
@@ -4327,7 +4330,7 @@ import token as tm
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
 file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-for file_name in file_names:
+for file_name in file_names[:1]:
     path = g.os_path_finalize_join(core_directory, file_name)
     assert os.path.exists(path), path
     with open(path, 'r') as f:
@@ -4383,22 +4386,33 @@ for file_name in file_names:
             f"{t3-t2:4.2f} sec.\n"
             f"compare tokens: {t4-t3:4.2f}")
             </t>
-<t tx="ekr.20191121163350.1">import imp
-import leo.core.leoAst as leoAst
-imp.reload(leoAst) ###
+<t tx="ekr.20191121163350.1">import leo.core.leoAst as leoAst
+if 1: ###
+    import imp
+    imp.reload(leoAst)
 import ast
 import asttokens
 import glob
 import os
 import time
-core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
-assert os.path.exists(core_directory), core_directory
-file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
+if 0:
+    file_names = ['contents']
+    contents = '''
+g.es_print(f"removing callback: {callback}")
+'''
+else:
+    core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+    assert os.path.exists(core_directory), core_directory
+    file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
+
 for file_name in file_names[:1]:
-    path = g.os_path_finalize_join(core_directory, file_name)
-    assert os.path.exists(path), path
-    with open(path, 'r') as f:
-        contents = f.read()
+    if file_name == 'contents':
+        pass
+    else:
+        path = g.os_path_finalize_join(core_directory, file_name)
+        assert os.path.exists(path), path
+        with open(path, 'r') as f:
+            contents = f.read()
     # Setup asttokens data.
     t1 = time.process_time()
     atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
@@ -4412,25 +4426,29 @@ for file_name in file_names[:1]:
     # Filter the nodes.
     t3 = time.process_time()
     ast_nodes2 = [z.__class__.__name__ for z in ast_nodes
-        if not isinstance(z, ast.alias)]
+        if not isinstance(z, (ast.alias, int, bool, str))]
     tog_nodes2 = [z.__class__.__name__ for z in tog_nodes]
     t4 = time.process_time()
-    print('Comparing trees...')
+    print('Comparing trees in', g.shortFileName(file_name), '...')
     print('len(ast):', len(ast_nodes2), 'len(tog)', len(tog_nodes2))
-    g.printObj(tog_nodes[:10])
+    ### g.printObj([z.__class__.__name__ for z in tog_nodes[:10]])
     i = leoAst.compare_lists(ast_nodes2, tog_nodes2)
     if i is None:
         print('Tree match!', file_name)
     else:
         print('Tree mismatch at', i)
-        for j in range(i-5, i+1):
+        # limit = min(len(ast_nodes2), len(tog_nodes2))
+        for j in range(i-5, i+5):
             if j &gt;= 0:
-                print('ast', j, ast_nodes2[j])
-                print('tog', j, tog_nodes2[j])
+                print('ast', j, ast_nodes2[j-1:j][0])
+                print('tog', j, tog_nodes2[j-1:j][0])
+                print('')
+        print('Tree mismatch at', i)
     # Print tokens.
     if 1:
+        print('')
         print(
-            f"{g.shortFileName(file_name)}:\n"
+            f"file: {g.shortFileName(file_name)}:\n"
             f"ast_nodes: {len(ast_nodes):&gt;5} "
             f"{t2-t1:5.2f} sec.\n"
             f"tog.nodes: {len(tog_nodes):&gt;5} "

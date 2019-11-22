@@ -767,7 +767,7 @@ py2cs.unit_test(raise_on_fail=True)
 """
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-g.cls()
+### g.cls()
 import leo.core.leoAst as leoAst
 import imp
 imp.reload(leoAst) ###
