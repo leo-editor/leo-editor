@@ -379,7 +379,8 @@
 </v>
 </v>
 <v t="ekr.20191118154059.1"></v>
-<v t="ekr.20191121063148.1"><vh>@test TOG vs asttokens</vh></v>
+<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
+<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4316,18 +4317,80 @@ else:
         '4'
 'done'
 </t>
-<t tx="ekr.20191121063148.1">### g.cls() ###
-import imp
-import leo.core.leoAst as leoAst
-imp.reload(leoAst) ###
+<t tx="ekr.20191121063148.1">import leo.core.leoAst as leoAst
 import asttokens
 import glob
 import os
 import time
-compare_tokens = False
-compare_trees = True ###
-print_tokens = False
-print_summary = True
+import token as tm
+# Calculate files
+core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+assert os.path.exists(core_directory), core_directory
+file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
+for file_name in file_names:
+    path = g.os_path_finalize_join(core_directory, file_name)
+    assert os.path.exists(path), path
+    with open(path, 'r') as f:
+        contents = f.read()
+    # Setup asttokens data.
+    t1 = time.process_time()
+    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
+    ast_tree = atok.tree
+    ast_tokens = atok._tokens
+    # Setup TOG data.
+    t2 = time.process_time()
+    x = leoAst.TokenOrderGenerator() # Use the base class.
+    tog_tokens = x.make_tokens(contents)
+    tog_tree = leoAst.parse_ast(contents)
+    # Compare tokens
+    t3 = time.process_time()
+    def ast_key(t):
+        kind = tm.tok_name[t.type].lower()
+        return f"{kind}:{t.string}"
+
+    def token_filter(t):
+        return t.kind not in ('encoding', 'ws')
+    
+    ast_list = [ast_key(z) for z in ast_tokens]
+    tog_compare_list = list(filter(token_filter, tog_tokens))
+    tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
+    # Compare.
+    i = leoAst.compare_lists(ast_list, tog_list)
+    t4 = time.process_time()
+    if i is None:
+        print('All tokens match')
+    else:
+        print('Token mismatch at', i)
+        print('ast', repr(ast_list[i]))
+        print('tog', repr(tog_compare_list[i]))
+    # Print tokens.
+    if 0:
+        import token as tm
+        print('asttokens.tokens...')
+        for z in ast_tokens[:10]:
+            kind = tm.tok_name[z.type].lower()
+            print(f"{z.index:4} {kind:&gt;12} {z.string!r}")
+        print('tog.tokens...')
+        for z in tog_tokens[:10]:
+            print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
+    # Print summary.
+    if 1:
+        print(
+            f"{g.shortFileName(file_name)}:\n"
+            f"ast_tokens: {len(ast_tokens):&gt;5} "
+            f"{t2-t1:4.2f} sec.\n"
+            f"tog.tokens: {len(tog_tokens):&gt;5} "
+            f"{t3-t2:4.2f} sec.\n"
+            f"compare tokens: {t4-t3:4.2f}")
+            </t>
+<t tx="ekr.20191121163350.1">import imp
+import leo.core.leoAst as leoAst
+imp.reload(leoAst) ###
+import ast
+import asttokens
+import glob
+import os
+import time
 core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
 assert os.path.exists(core_directory), core_directory
 file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
@@ -4340,74 +4403,38 @@ for file_name in file_names[:1]:
     t1 = time.process_time()
     atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
     ast_tree = atok.tree
-    ast_tokens = atok._tokens
     ast_nodes = list(asttokens.util.walk(ast_tree))
-    # Setup TOG data.
+    # Compute tog nodes.
     t2 = time.process_time()
-    x = leoAst.TokenOrderGenerator() # Use the base class.
-    tog_tokens = x.make_tokens(contents)
+    x = leoAst.TokenOrderNodeGenerator()
     tog_tree = leoAst.parse_ast(contents)
-    # Compute node.
-    x_n = leoAst.TokenOrderNodeGenerator()
-    list(x_n.generate_nodes(tog_tree))
-    tog_nodes = x_n.node_list
+    tog_nodes = list(x.generate_nodes(tog_tree))
+    # Filter the nodes.
     t3 = time.process_time()
-    if compare_tokens:
-        import token as tm
-        def ast_key(t):
-            kind = tm.tok_name[t.type].lower()
-            return f"{kind}:{t.string}"
-        ast_list = [ast_key(z) for z in ast_tokens]
-        # Skip the encoding.
-        def token_filter(t):
-            return t.kind not in ('encoding', 'ws')
-        tog_compare_list = list(filter(token_filter, tog_tokens))
-        tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
-        print('Comparing token lists...')
-        i = leoAst.compare_lists(ast_list, tog_list)
-        if i is not None:
-            print('Token mismatch at', i)
-            print('ast', repr(ast_list[i]))
-            print('tog', repr(tog_compare_list[i]))
-    if compare_trees:
-        print('Comparing trees...')
-        if 1:
-            tog_node_list = [z.__class__.__name__ for z in tog_nodes[:10]]
-            g.printObj(tog_node_list, tag='tog_nodes')
-        else:
-            ast_node_list = [z.__class__.__name__ for z in ast_nodes
-                if z.__class__.__name__ not in ('alias',)]
-            tog_node_list = [z.__class__.__name__ for z in tog_nodes]
-            i = leoAst.compare_lists(ast_node_list, tog_node_list)
-            if i is None:
-                print('Match!', file_name)
-            else:
-                print('Tree mismatch at', i)
-                print('len(ast):', len(ast_node_list), 'len(tog)', len(tog_node_list))
-                for z in tog_node_list[:10]:
-                    print(z)
-                for j in range(i-5, i+1):
-                    if j &gt;= 0:
-                        print('ast', j, ast_node_list[j])
-                        print('tog', j, tog_node_list[j])
+    ast_nodes2 = [z.__class__.__name__ for z in ast_nodes
+        if not isinstance(z, ast.alias)]
+    tog_nodes2 = [z.__class__.__name__ for z in tog_nodes]
+    t4 = time.process_time()
+    print('Comparing trees...')
+    print('len(ast):', len(ast_nodes2), 'len(tog)', len(tog_nodes2))
+    g.printObj(tog_nodes[:10])
+    i = leoAst.compare_lists(ast_nodes2, tog_nodes2)
+    if i is None:
+        print('Tree match!', file_name)
+    else:
+        print('Tree mismatch at', i)
+        for j in range(i-5, i+1):
+            if j &gt;= 0:
+                print('ast', j, ast_nodes2[j])
+                print('tog', j, tog_nodes2[j])
     # Print tokens.
-    if print_tokens:
-        import token as tm
-        print('asttokens.tokens...')
-        for z in ast_tokens[:10]:
-            kind = tm.tok_name[z.type].lower()
-            print(f"{z.index:4} {kind:&gt;12} {z.string!r}")
-        print('tog.tokens...')
-        for z in tog_tokens[:10]:
-            print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
-    if print_summary:
+    if 1:
         print(
             f"{g.shortFileName(file_name)}:\n"
-            f"ast_tokens: {len(ast_tokens):&gt;5} "
             f"ast_nodes: {len(ast_nodes):&gt;5} "
             f"{t2-t1:5.2f} sec.\n"
-            f"tog.tokens: {len(tog_tokens):&gt;5} "
             f"tog.nodes: {len(tog_nodes):&gt;5} "
-            f"{t3-t2:5.2f} sec.\n")</t>
+            f"{t3-t2:5.2f} sec.\n"
+            f"compare nodes: {t4-t3:4.2f}")</t>
 </tnodes>
 </leo_file>

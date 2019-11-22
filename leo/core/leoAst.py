@@ -1199,8 +1199,8 @@ class TokenOrderGenerator:
         yield from self.visitor(tree)
         # Patch the last tokens.
         self.node = tree
-        yield self.put('newline', '\n')
-        yield self.put('endmarker', '')
+        yield from self.gen_token('newline', '\n')
+        yield from self.gen_token('endmarker', '')
         t2 = time.process_time()
         if not g.unitTesting:
             print(
@@ -1291,10 +1291,33 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191113063144.7: *3* tog.put & helpers
+    #@+node:ekr.20191121180100.1: *3* tog.gen* (new)
+    # Useful wrappers.
+
+    def gen(self, z):
+        yield from self.visitor(z)
+
+    def gen_blank(self):
+        yield from self.visitor(self.put_blank())
+
+    def gen_comma(self):
+        yield from self.visitor(self.put_comma())
+
+    def gen_name(self, val):
+        yield from self.visitor(self.put_name(val))
+                    
+    def gen_newline(self):
+        yield from self.visitor(self.put_token('newline', '\n'))
+
+    def gen_op(self, val):
+        yield from self.visitor(self.put_op(val))
+        
+    def gen_token(self, kind, val):
+        yield from self.visitor(self.put_token(kind, val))
+    #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
     result_index = 0
 
-    def put(self, kind, val):
+    def put_token(self, kind, val):
         """Handle a token whose kind & value are given."""
         assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
         assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
@@ -1307,27 +1330,27 @@ class TokenOrderGenerator:
         self.results.append(token)
 
     def put_blank(self):
-        if 0: self.put('ws', ' ')
+        if 0: self.put_token('ws', ' ')
 
     def put_comma(self):
-        if 0: self.put('op', ',')
+        if 0: self.put_token('op', ',')
 
     def put_name(self, val):
         aList = val.split('.')
         if len(aList) == 1:
-            self.put('name', val)
+            self.put_token('name', val)
         else:
             for i, part in enumerate(aList):
-                self.put('name', part)
+                self.put_token('name', part)
                 if i < len(aList) - 1:
                     self.put_op('.')
                     
     def put_newline(self):
-        self.put('newline', '\n')
+        self.put_token('newline', '\n')
 
     def put_op(self, val):
         if val not in ',()':
-            self.put('op', val)
+            self.put_token('op', val)
     #@+node:ekr.20191113063144.11: *3* tog.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
@@ -1347,9 +1370,14 @@ class TokenOrderGenerator:
             g.printObj(missing)
             print('')
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
+    count = 0
+
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
+        self.count += 1
+        if self.count < 30:
+            g.trace(node.__class__.__name__ if isinstance(node, (list, tuple)) else repr(node))
         if node is None:
             return
         # More general, more convenient.
@@ -1362,11 +1390,17 @@ class TokenOrderGenerator:
             return
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
-        #
+        # Allow begin/end visitor to be generators.
+        try:
+            yield from self.begin_visitor(node)
+        except TypeError:
+            pass
         # method(node) is a generator, not a recursive call!
-        self.begin_visitor(node)
         yield from method(node)
-        self.end_visitor(node)
+        try:
+            yield from self.end_visitor(node)
+        except TypeError:
+            pass
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
@@ -1379,44 +1413,45 @@ class TokenOrderGenerator:
         if node.decorator_list:
             for z in node.decorator_list:
                 # '@%s\n'
-                yield self.put_op('@')
-                yield from self.visitor(z)
-                yield self.put_newline()
+                yield from self.gen_op('@')
+                yield from self.gen(z)
+                yield from self.gen_newline()
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        yield self.put_name('asynch')
-        yield self.put_name(node.name) # A string
-        yield self.put_op('(')
-        yield from self.visitor(node.args)
-        yield self.put_op(')')
-        yield self.put_op(':')
-        if getattr(node, 'returns', None):
-            yield self.put_op('->')
-            yield from self.visitor(node.returns)
-        yield self.put_newline()
+        yield from self.gen_name('asynch')
+        yield from self.gen_name(node.name) # A string
+        yield from self.gen_op('(')
+        yield from self.gen(node.args)
+        yield from self.gen_op(')')
+        yield from self.gen_op(':')
+        returns = getattr(node, 'returns', None)
+        if returns is not None:
+            yield from self.gen_op('->')
+            yield from self.gen(node.returns)
+        yield from self.gen_newline()
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.16: *5* tog.ClassDef
     def do_ClassDef(self, node, print_body=True):
         
         for z in node.decorator_list or []:
             # @{z}\n
-            yield self.put_op('@')
-            yield from self.visitor(z)
-            yield self.put_newline()
+            yield from self.gen_op('@')
+            yield from self.gen(z)
+            yield from self.gen_newline()
         # class name(bases):\n
-        yield self.put_name('class')
-        yield self.put_name(node.name) # A string.
+        yield from self.gen_name('class')
+        yield from self.gen_name(node.name) # A string.
         if node.bases:
-            yield self.put_op('(')
-            yield from self.visitor(node.bases)
-            self.put_op(')')
-        yield self.put_op(':')
-        yield self.put_newline()
+            yield from self.gen_op('(')
+            yield from self.gen(node.bases)
+            yield from self.gen_op(')')
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.17: *5* tog.FunctionDef
     def do_FunctionDef(self, node):
@@ -1424,94 +1459,70 @@ class TokenOrderGenerator:
         # Decorators...
             # @{z}\n
         for z in node.decorator_list or []:
-            yield self.put_op('@')
-            yield from self.visitor(z)
-            yield self.put_newline()
+            yield from self.gen_op('@')
+            yield from self.gen(z)
+            yield from self.gen_newline()
         # Signature...
             # def name(args): returns\n
             # def name(args):\n
-        yield self.put_name('def')
-        yield self.put_name(node.name) # A string.
-        yield self.put_op('(')
-        if node.args:
-            yield from self.visitor(node.args)
-        yield self.put_op(')')
-        yield self.put_op(':')
+        yield from self.gen_name('def')
+        yield from self.gen_name(node.name) # A string.
+        yield from self.gen_op('(')
+        yield from self.gen(node.args)
+        yield from self.gen_op(')')
+        yield from self.gen_op(':')
         if getattr(node, 'returns', None) is not None:
-            yield self.put_op('->')
-            yield from self.visitor(node.returns)
-        yield self.put_newline()
+            yield from self.gen_op('->')
+            yield from self.gen(node.returns)
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.18: *5* tog.Interactive
     def do_Interactive(self, node):
         
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
     #@+node:ekr.20191113063144.20: *5* tog.Lambda
     def do_Lambda(self, node):
 
-        yield self.put_name('lambda')
-        yield from self.visitor(node.args)
-        yield self.put_op(':')
-        yield from self.visitor(node.body)
+        yield from self.gen_name('lambda')
+        yield from self.gen(node.args)
+        yield from self.gen_op(':')
+        yield from self.gen(node.body)
     #@+node:ekr.20191113063144.19: *5* tog.Module
     def do_Module(self, node):
 
         # Encoding is a non-syncing statement.
-        self.put('encoding', '')
-        yield from self.visitor(node.body)
+        yield from self.gen_token('encoding', '')
+        yield from self.gen(node.body)
     #@+node:ekr.20191113063144.21: *4* tog: Expressions
     #@+node:ekr.20191113063144.22: *5* tog.Expr
     def do_Expr(self, node):
         """An outer expression."""
         # No need to put parentheses.
-        yield from self.visitor(node.value)
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.23: *5* tog.Expression
     def do_Expression(self, node):
         """An inner expression."""
         # No need to put parentheses.
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
     #@+node:ekr.20191113063144.24: *5* tog.GeneratorExp
     def do_GeneratorExp(self, node):
 
-        # No need to put parentheses or commas.
         # '<gen %s for %s>' % (elt, ','.join(gens))
-        yield from self.visitor(node.elt)
-        yield self.put_name('for')
-        yield from self.visitor(node.generators)
+        # No need to put parentheses or commas.
+        yield from self.gen(node.elt)
+        yield from self.gen_name('for')
+        yield from self.gen(node.generators)
     #@+node:ekr.20191115104619.1: *5* tog.generator
     def do_generator(self, node):
 
         # No need to put commas or parentheses.
         yield from node
-            # *Not* yield from self.visitor(node)
-    #@+node:ekr.20191113063144.25: *5* tog.ctx nodes
-    def do_AugLoad(self, node):
-        pass
-
-    def do_Del(self, node):
-        pass
-
-    def do_Load(self, node):
-        pass
-
-    def do_Param(self, node):
-        pass
-
-    def do_Store(self, node):
-        pass
+            # *Not* yield from self.gen(node)
     #@+node:ekr.20191113063144.26: *4* tog: Operands
     #@+node:ekr.20191113063144.27: *5* tog.arguments
-    # arguments = (
-    #               arg*  args,
-    #               arg? vararg,
-    #               arg* kwonlyargs,
-    #               expr* kw_defaults,
-    #               arg? kwarg,
-    #               expr* defaults
-    #             )
     def do_arguments(self, node):
 
         # No need to generate commas anywhere below.
@@ -1519,14 +1530,14 @@ class TokenOrderGenerator:
         # Add the plain arguments.
         i = 0
         while i < n_plain:
-            yield from self.visitor(node.args[i])
+            yield from self.gen(node.args[i])
             i += 1
         # Add the arguments with defaults.
         j = 0
         while i < len(node.args) and j < len(node.defaults):
-            yield from (self.visitor(node.args[i]))
-            yield self.put_op('=')
-            yield from self.visitor(node.defaults[j])
+            yield from (self.gen(node.args[i]))
+            yield from self.gen_op('=')
+            yield from self.gen(node.defaults[j])
             i += 1
             j += 1
         assert i == len(node.args)
@@ -1534,20 +1545,21 @@ class TokenOrderGenerator:
         # Add the vararg and kwarg expressions.
         vararg = getattr(node, 'vararg', None)
         if vararg is not None:
-            yield self.put_op('*')
-            yield from self.visitor(vararg)
+            yield from self.gen_op('*')
+            yield from self.gen(vararg)
         kwarg = getattr(node, 'kwarg', None)
         if kwarg is not None:
-            yield self.put_op('**')
-            yield from self.visitor(kwarg)
+            yield from self.gen_op('**')
+            yield from self.gen(kwarg)
     #@+node:ekr.20191113063144.28: *5* tog.arg
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
         
-        yield self.put_name(node.arg)
-        if getattr(node, 'annotation', None) is not None:
-            yield from self.visitor(node.annotation)
+        yield from self.gen_name(node.arg)
+        annotation = getattr(node, 'annotation', None)
+        if annotation is not None:
+            yield from self.gen(node.annotation)
     #@+node:ekr.20191115105821.1: *5* tog.int
     def do_int(self, node):
         
@@ -1555,105 +1567,105 @@ class TokenOrderGenerator:
         # Do *not* call begin/end visitor!
         assert isinstance(node, int), repr(node)
         # Assign the int to the parent.
-        yield self.put('num', node)
+        yield from self.gen_token('num', node)
     #@+node:ekr.20191113063144.29: *5* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
     def do_Attribute(self, node):
-        
-        yield from self.visitor(node.value)
-        yield self.put_op('.')
-        yield self.put_name(node.attr) # A string.
+
+        yield from self.gen(node.value)
+        yield from self.gen_op('.')
+        yield from self.gen_name(node.attr) # A string.
     #@+node:ekr.20191113063144.30: *5* tog.Bytes
     def do_Bytes(self, node):
 
-        yield self.put('bytes', str(node.s))
-    #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword (more work needed)
+        yield from self.gen_token('bytes', str(node.s))
+    #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self, node):
 
-        yield from self.visitor(node.func)
-        self.put_op('(')
-        yield from self.visitor(node.args)
-        yield from self.visitor(node.keywords)
+        yield from self.gen(node.func)
+        yield from self.gen_op('(')
+        yield from self.gen(node.args)
+        yield from self.gen(node.keywords)
             # The visitors puts the '**' if there is no name field.
         if hasattr(node, 'starargs'):
             # The visitor puts the '*'.
-            yield from self.visitor(node.starargs)
+            yield from self.gen(node.starargs)
         if hasattr(node, 'kwargs'):
             # The visitor puts the '**'.
-            yield from self.visitor(node.kwargs)
-        yield self.put_op(')')
+            yield from self.gen(node.kwargs)
+        yield from self.gen_op(')')
     #@+node:ekr.20191113063144.32: *6* tog.keyword
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
 
         if node.arg:
-            self.put_name(node.arg)
-            self.put_op('=')
+            yield from self.gen_name(node.arg)
+            yield from self.gen_op('=')
         else:
             # weird, but correct.
-            self.put_op('**') 
-        yield from self.visitor(node.value)
+            yield from self.gen_op('**') 
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     def do_comprehension(self, node):
 
         # No need to put parentheses.
-        yield from self.visitor(node.target) # A name
-        yield self.put_name('in')
-        yield from self.visitor(node.iter)
+        yield from self.gen(node.target) # A name
+        yield from self.gen_name('in')
+        yield from self.gen(node.iter)
         if node.ifs:
-            yield self.put_name('if')
-            yield from self.visitor(node.ifs)
+            yield from self.gen_name('if')
+            yield from self.gen(node.ifs)
     #@+node:ekr.20191113063144.34: *5* tog.Constant
     def do_Constant(self, node):
         
-        yield self.put('number', str(node.s))
+        yield from self.gen_token('number', str(node.s))
     #@+node:ekr.20191113063144.35: *5* tog.Dict
     # Dict(expr* keys, expr* values)
 
     def do_Dict(self, node):
 
         assert len(node.keys) == len(node.values)
-        yield self.put_op('{')
+        yield from self.gen_op('{')
         # No need to put commas.
         for i, key in enumerate(node.keys):
             key, value = node.keys[i], node.values[i]
-            yield self.visitor(key) # a Str node.
-            yield self.put_op(':')
+            yield from self.gen(key) # a Str node.
+            yield from self.gen_op(':')
             if value is not None:
                 try:
                     # Zero or more expressions.
                     for z in value:
-                        yield from self.visitor(z)
+                        yield from self.gen(z)
                 except TypeError:
                     # Not an error.
-                    yield from self.visitor(value)
-        yield self.put_op('}')
+                    yield from self.gen(value)
+        yield from self.gen_op('}')
     #@+node:ekr.20191113063144.36: *5* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
 
-        yield from self.visitor(node.key)
-        yield self.put_op(':')
-        yield self.put_name('for')
+        yield from self.gen(node.key)
+        yield from self.gen_op(':')
+        yield from self.gen_name('for')
         # No need to put commas.
-        yield from self.visitor(node.generators)
+        yield from self.gen(node.generators)
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
         
-        yield self.put_op('...')
+        yield from self.gen_op('...')
     #@+node:ekr.20191113063144.38: *5* tog.ExtSlice
     def do_ExtSlice(self, node):
         
         # ':'.join(node.dims)
         for i, z in enumerate(node.dims):
-            yield from self.visitor(z)
+            yield from self.gen(z)
             if i < len(node.dims) - 1:
-                yield self.put_op(':')
+                yield from self.gen_op(':')
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
@@ -1662,77 +1674,77 @@ class TokenOrderGenerator:
         # Don't do any of this.
         # It doesn't correspond with the token list.
         if 0:
-            yield from self.visitor(node.value)
+            yield from self.gen(node.value)
             if node.conversion is not None:
-                yield from self.visitor(node.conversion)
-                yield self.put('num', node.conversion)
-            yield from self.visitor(node.format_spec)
+                yield from self.gen(node.conversion)
+                yield from self.gen_token('num', node.conversion)
+            yield from self.gen(node.format_spec)
 
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
-        yield from self.visitor(node.value)
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
         
-        yield from self.visitor(node.values)
+        yield from self.gen(node.values)
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
         # No need to put commas.
-        yield self.put_op('[')
-        yield from self.visitor(node.elts)
-        yield self.put_op(']')
+        yield from self.gen_op('[')
+        yield from self.gen(node.elts)
+        yield from self.gen_op(']')
     #@+node:ekr.20191113063144.43: *5* tog.ListComp
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
        
-        yield self.put_op('[')
-        yield from self.visitor(node.elt)
-        yield self.put_name('for')
-        yield from self.visitor(node.generators)
-        yield self.put_op(']')
+        yield from self.gen_op('[')
+        yield from self.gen(node.elt)
+        yield from self.gen_name('for')
+        yield from self.gen(node.generators)
+        yield from self.gen_op(']')
     #@+node:ekr.20191113063144.44: *5* tog.Name & NameConstant
     def do_Name(self, node):
         
-        yield self.put_name(node.id)
+        yield from self.gen_name(node.id)
 
     def do_NameConstant(self, node):
         
-        yield self.put('name', node.value)
+        yield from self.gen_name(node.value)
     #@+node:ekr.20191113063144.45: *5* tog.Num
     def do_Num(self, node):
         
-        yield self.put('number', node.n)
+        yield from self.gen_token('number', node.n)
     #@+node:ekr.20191113063144.47: *5* tog.Set
     # Set(expr* elts)
 
     def do_Set(self, node):
 
-        yield from self.visitor(node.elts)
+        yield from self.gen(node.elts)
     #@+node:ekr.20191113063144.48: *5* tog.SetComp
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
 
-        yield from self.visitor(node.elt)
-        yield self.put_name('for')
-        yield from self.visitor(node.generators)
+        yield from self.gen(node.elt)
+        yield from self.gen_name('for')
+        yield from self.gen(node.generators)
     #@+node:ekr.20191113063144.49: *5* tog.Slice
     def do_Slice(self, node):
 
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
-        yield from self.visitor(lower)
-        self.put_op(':')
-        yield from self.visitor(upper)
+        yield from self.gen(lower)
+        yield from self.gen_op(':')
+        yield from self.gen(upper)
         if step is not None:
-            self.put_op(':')
-            yield from self.visitor(step)
+            yield from self.gen_op(':')
+            yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str & do_str
     def do_Str(self, node):
         """
@@ -1747,40 +1759,43 @@ class TokenOrderGenerator:
         
         3. Linker.set_links removes strings from all non-Str nodes.
         """
-        yield self.put('string', node.s)
+        yield from self.gen_token('string', node.s)
         token = Token('string', node.s)
         token.node = node
         node.token_list = [token]
 
-    def do_str(self, node):
-        pass
+    ###
+    # def do_str(self, node):
+        # pass
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
     def do_Subscript(self, node):
         
-        yield from self.visitor(node.value)
-        yield self.put_op('[')
-        yield from self.visitor(node.slice)
-        yield self.put_op(']')
+        yield from self.gen(node.value)
+        yield from self.gen_op('[')
+        yield from self.gen(node.slice)
+        yield from self.gen_op(']')
     #@+node:ekr.20191113063144.52: *5* tog.Tuple
     def do_Tuple(self, node):
 
         # no need to put commas.
-        yield self.put_op('(')
-        yield from self.visitor(node.elts)
-        yield self.put_op(')')
+        yield from self.gen_op('(')
+        yield from self.gen(node.elts)
+        yield from self.gen_op(')')
     #@+node:ekr.20191113063144.53: *4* tog: Operators
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):
 
-        yield from self.visitor(node.left)
+        yield from self.gen(node.left)
         op_name = self.op_name(node.op)
-        if op_name.startswith(' '):
-            yield self.put_op(op_name.strip())
-        else:
-            self.put_op(op_name)
-        yield from self.visitor(node.right)
+        yield from self.gen_op(op_name)
+        yield from self.gen(node.right)
+        ###
+            # if op_name.startswith(' '):
+                # yield from self.gen_op(op_name.strip())
+            # else:
+                # yield from self.gen_op(op_name)
     #@+node:ekr.20191113063144.56: *5* tog.BoolOp
     # boolop = And | Or
 
@@ -1789,44 +1804,44 @@ class TokenOrderGenerator:
         # op.join(node.values)
         op_name = self.op_name(node.op)
         for i, z in enumerate(node.values):
-            yield from self.visitor(z)
+            yield from self.gen(z)
             if i < len(node.values) - 1:
-                yield self.put_name(op_name)
+                yield from self.gen_name(op_name)
     #@+node:ekr.20191113063144.57: *5* tog.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
 
     def do_Compare(self, node):
         
         assert len(node.ops) == len(node.comparators)
-        yield from self.visitor(node.left)
+        yield from self.gen(node.left)
         for i, z in enumerate(node.ops):
             op_name = self.op_name(node.ops[i])
             if op_name in ('not in', 'is not'):
                 for z in op_name.split(' '):
-                    yield self.put_name(z)
+                    yield from self.gen_name(z)
             elif op_name.isalpha():
-                yield self.put_name(op_name)
+                yield from self.gen_name(op_name)
             else:
-                yield self.put_op(op_name)
-            yield from self.visitor(node.comparators[i])
+                yield from self.gen_op(op_name)
+            yield from self.gen(node.comparators[i])
     #@+node:ekr.20191113063144.58: *5* tog.UnaryOp
     def do_UnaryOp(self, node):
 
         op_name = self.op_name(node.op)
         if op_name.isalpha():
-            yield self.put_name(op_name)
+            yield from self.gen_name(op_name)
         else:
-            yield self.put_op(op_name)
-        yield from self.visitor(node.operand)
+            yield from self.gen_op(op_name)
+        yield from self.gen(node.operand)
     #@+node:ekr.20191113063144.59: *5* tog.IfExp (ternary operator)
     def do_IfExp(self, node):
         
         #'%s if %s else %s'
-        yield from self.visitor(node.body)
-        yield self.put_name('if')
-        yield from self.visitor(node.test)
-        yield self.put_name('else')
-        yield from self.visitor(node.orelse)
+        yield from self.gen(node.body)
+        yield from self.gen_name('if')
+        yield from self.gen(node.test)
+        yield from self.gen_name('else')
+        yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *4* tog: Statements
     #@+node:ekr.20191113063144.61: *5* tog.AnnAssign
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
@@ -1834,57 +1849,57 @@ class TokenOrderGenerator:
     def do_AnnAssign(self, node):
 
         # {node.target}:{node.annotation}={node.value}\n'
-        yield from self.visitor(node.target)
-        yield self.put_op(':')
-        yield from self.visitor(node.annotation)
-        yield self.put_op('=')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+        yield from self.gen(node.target)
+        yield from self.gen_op(':')
+        yield from self.gen(node.annotation)
+        yield from self.gen_op('=')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.62: *5* tog.Assert
     # Assert(expr test, expr? msg)
 
     def do_Assert(self, node):
 
         # No need to put parentheses or commas.
-        yield self.put_name('assert')
-        yield from self.visitor(node.test)
+        yield from self.gen_name('assert')
+        yield from self.gen(node.test)
         if getattr(node, 'msg', None):
-            yield from self.visitor(node.msg)
-        yield self.put_newline()
+            yield from self.gen(node.msg)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.63: *5* tog.Assign
     def do_Assign(self, node):
             
         for z in node.targets:
-            yield from self.visitor(z)
-            yield self.put_op('=')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+            yield from self.gen(z)
+            yield from self.gen_op('=')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.64: *5* tog.AsyncFor
     def do_AsyncFor(self, node):
         
         # The def line...
         # 'async for %s in %s:\n' % (
-        yield self.put_name('async')
-        yield self.put_name('for')
-        yield from self.visitor(node.target)
-        yield self.put_op(':')
-        yield from self.visitor(node.iter)
-        yield self.put_newline()
+        yield from self.gen_name('async')
+        yield from self.gen_name('for')
+        yield from self.gen(node.target)
+        yield from self.gen_op(':')
+        yield from self.gen(node.iter)
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         # Else clause...
         if node.orelse:
             # 'else:\n'
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield from self.visitor(node.orelse)
+            yield from self.gen_name('else')
+            yield from self.gen_op(':')
+            yield from self.gen(node.orelse)
         self.level -= 1
-        yield self.put_newline()
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.65: *5* tog.AsyncWith
     def do_AsyncWith(self, node):
         
-        yield self.put_name('async')
+        yield from self.gen_name('async')
         yield from self.do_With(node)
     #@+node:ekr.20191113063144.66: *5* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
@@ -1892,126 +1907,126 @@ class TokenOrderGenerator:
     def do_AugAssign(self, node):
         
         # %s%s=%s\n'
-        yield from self.visitor(node.target)
         op_name = self.op_name(node.op)
-        yield self.put_op(op_name+'=')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+        yield from self.gen(node.target)
+        yield from self.gen_op(op_name+'=')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.67: *5* tog.Await
     # Await(expr value)
 
     def do_Await(self, node):
         
         #'await %s\n'
-        yield self.put_name('await')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+        yield from self.gen_name('await')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.68: *5* tog.Break
     def do_Break(self, node):
         
-        yield self.put_name('break')
-        yield self.put_newline()
+        yield from self.gen_name('break')
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.69: *5* tog.Continue
     def do_Continue(self, node):
 
-        yield self.put_name('continue')
-        yield self.put_newline()
+        yield from self.gen_name('continue')
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.70: *5* tog.Delete
     def do_Delete(self, node):
 
         # No need to put commas.
-        yield self.put_name('del')
-        yield from self.visitor(node.targets)
-        yield self.put_newline()
+        yield from self.gen_name('del')
+        yield from self.gen(node.targets)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.71: *5* tog.ExceptHandler
     def do_ExceptHandler(self, node):
         
         # Except line...
-        yield self.put_name('except')
+        yield from self.gen_name('except')
         if getattr(node, 'type', None):
-            yield from self.visitor(node.type)
+            yield from self.gen(node.type)
         if getattr(node, 'name', None):
-            yield self.put_name('as')
+            yield from self.gen_name('as')
             if isinstance(node.name, ast.AST):
-                yield from self.visitor(node.name)
+                yield from self.gen(node.name)
             else:
-                yield self.put_name(node.name)
-        yield self.put_op(':')
-        yield self.put_newline()
+                yield from self.gen_name(node.name)
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.73: *5* tog.For
     def do_For(self, node):
 
         #'for %s in %s:\n'
-        yield self.put_name('for')
-        yield from self.visitor(node.target)
-        yield self.put_name('in')
-        yield from self.visitor(node.iter)
-        yield self.put_op(':')
-        yield self.put_newline()
+        yield from self.gen_name('for')
+        yield from self.gen(node.target)
+        yield from self.gen_name('in')
+        yield from self.gen(node.iter)
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         # 'else:\n'
         if node.orelse:
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield from self.visitor(node.orelse)
+            yield from self.gen_name('else')
+            yield from self.gen_op(':')
+            yield from self.gen(node.orelse)
         self.level -= 1
     #@+node:ekr.20191113063144.74: *5* tog.Global
     def do_Global(self, node):
 
-        yield self.put_name('global')
-        yield from self.visitor(node.names)
-        yield self.put_newline()
+        yield from self.gen_name('global')
+        yield from self.gen(node.names)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.75: *5* tog.If
     # If(expr test, stmt* body, stmt* orelse)
 
-    def do_If(self, node, elif_flag=False):
+    def do_If(self, node):
        
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        yield self.put_name('elif' if elif_flag else 'if')
-        yield from self.visitor(node.test)
-        yield self.put_op(':')
-        yield self.put_newline()
+        yield from self.gen_name('if') # It might also be 'elif'
+        yield from self.gen(node.test)
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         # Else and elif clauses...
         if node.orelse:
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield self.put_newline()
-            yield from self.visitor(node.orelse)
+            yield from self.gen_name('elif') # It might also be 'else'
+            yield from self.gen_op(':')
+            yield from self.gen_newline()
+            yield from self.gen(node.orelse)
         self.level -= 1
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
-
-        yield self.put_name('import')
+        
+        yield from self.gen_name('import')
         for alias in node.names:
-            yield self.put_name(alias.name)
+            yield from self.gen_name(alias.name)
             if alias.asname:
-                yield self.put_name('as')
-                yield self.put_name(alias.asname)
-        yield self.put_newline()
+                yield from self.gen_name('as')
+                yield from self.gen_name(alias.asname)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.77: *5* tog.ImportFrom
     def do_ImportFrom(self, node):
 
-        yield self.put_name('from')
-        yield self.put_name(node.module)
-        yield self.put_name('import')
+        yield from self.gen_name('from')
+        yield from self.gen_name(node.module)
+        yield from self.gen_name('import')
         # No need to put commas.
         for alias in node.names:
-            yield self.put_name(alias.name)
+            yield from self.gen_name(alias.name)
             if alias.asname:
-                yield self.put_name('as')
-                yield self.put_name(alias.asname)
-        yield self.put_newline()
+                yield from self.gen_name('as')
+                yield from self.gen_name(alias.asname)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.78: *5* tog.Nonlocal
     # Nonlocal(identifier* names)
 
@@ -2019,80 +2034,80 @@ class TokenOrderGenerator:
         
         # nonlocal %s\n' % ','.join(node.names))
         # No need to put commas.
-        yield self.put_name('nonlocal')
-        yield from self.visitor(node.names)
-        yield self.put_newline()
+        yield from self.gen_name('nonlocal')
+        yield from self.gen(node.names)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.79: *5* tog.Pass
     def do_Pass(self, node):
         
-        yield self.put_name('pass')
-        yield self.put_newline()
+        yield from self.gen_name('pass')
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.81: *5* tog.Raise
     # Raise(expr? exc, expr? cause)
 
     def do_Raise(self, node):
        
         # No need to put commas.
-        yield self.put_name('raise')
+        yield from self.gen_name('raise')
         exc = getattr(node, 'exc', None)
         cause = getattr(node, 'cause', None)
         tback = getattr(node, 'tback', None)
-        yield from self.visitor(exc)
-        yield from self.visitor(cause)
-        yield from self.visitor(tback)
-        yield self.put_newline()
+        yield from self.gen(exc)
+        yield from self.gen(cause)
+        yield from self.gen(tback)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.82: *5* tog.Return
     def do_Return(self, node):
         
-        yield self.put_name('return')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+        yield from self.gen_name('return')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.83: *5* tog.Starred
     # Starred(expr value, expr_context ctx)
 
     def do_Starred(self, node):
 
-        yield self.put_op('*')
-        yield from self.visitor(node.value)
+        yield from self.gen_op('*')
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.85: *5* tog.Try
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node):
 
         # Try line...
-        yield self.put_name('try')
-        yield self.put_op(':')
-        yield self.put_newline()
+        yield from self.gen_name('try')
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
-        yield from self.visitor(node.handlers)
-        yield from self.visitor(node.orelse)
+        yield from self.gen(node.body)
+        yield from self.gen(node.handlers)
+        yield from self.gen(node.orelse)
         # Finally...
         if node.finalbody:
-            yield self.put_name('finally')
-            yield self.put_op(':')
-            yield self.put_newline()
-            yield from self.visitor(node.finalbody)
+            yield from self.gen_name('finally')
+            yield from self.gen_op(':')
+            yield from self.gen_newline()
+            yield from self.gen(node.finalbody)
         self.level -= 1
     #@+node:ekr.20191113063144.88: *5* tog.While
     def do_While(self, node):
         
         # While line...
             # while %s:\n'
-        yield self.put_name('while')
-        yield from self.visitor(node.test)
-        yield self.put_op(':')
-        yield self.put_newline()
+        yield from self.gen_name('while')
+        yield from self.gen(node.test)
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         # Else clause...
         if node.orelse:
-            yield self.put_name('else')
-            yield self.put_op(':')
-            yield self.put_newline()
-            yield from self.visitor(node.orelse)
+            yield from self.gen_name('else')
+            yield from self.gen_op(':')
+            yield from self.gen_newline()
+            yield from self.gen(node.orelse)
         self.level -= 1
     #@+node:ekr.20191113063144.89: *5* tog.With
     # With(withitem* items, stmt* body)
@@ -2103,40 +2118,40 @@ class TokenOrderGenerator:
         
         expr = getattr(node, 'context_expression', None)
         items = getattr(node, 'items', [])
-        yield self.put_name('with')
-        yield from self.visitor(expr)
+        yield from self.gen_name('with')
+        yield from self.gen(expr)
         # No need to put commas.
         for item in items:
-            yield from self.visitor(item.context_expr)
+            yield from self.gen(item.context_expr)
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 try:
                     for z in item.optional_vars:
-                        yield from self.visitor(z)
+                        yield from self.gen(z)
                 except TypeError:  # Not iterable.
-                    yield from self.visitor(item.optional_vars)
+                    yield from self.gen(item.optional_vars)
         # End the line.
-        yield self.put_op(':')
-        yield self.put_newline()
+        yield from self.gen_op(':')
+        yield from self.gen_newline()
         # Body...
         self.level += 1
-        yield from self.visitor(node.body)
+        yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.90: *5* tog.Yield
     def do_Yield(self, node):
 
-        yield self.put_name('yield')
+        yield from self.gen_name('yield')
         if hasattr(node, 'value'):
-            yield from self.visitor(node.value)
-        yield self.put_newline()
+            yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@+node:ekr.20191113063144.91: *5* tog.YieldFrom
     # YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
 
-        yield self.put_name('yield')
-        yield from self.visitor(node.value)
-        yield self.put_newline()
+        yield from self.gen_name('yield')
+        yield from self.gen(node.value)
+        yield from self.gen_newline()
     #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -4487,32 +4502,23 @@ class TokenOrderInjector (TokenOrderGenerator):
 #@+node:ekr.20191121122230.1: ** class TokenOrderNodeGenerator (TokenOrderGenerator)
 class TokenOrderNodeGenerator(TokenOrderGenerator):
     """A class that yields a stream of nodes."""
-    
-    node_list = []
-    
+
     def generate_nodes(self, tree):
         """Entry: yield a stream of nodes."""
-        ### self.node = None  # The parent.
-        g.trace(tree)
+        g.trace('*'*20, repr(tree))
         yield from self.visitor(tree)
 
-    # Easy overrides...
+    # Overrides...
     
     def begin_visitor(self, node):
-        """Enter a visitor."""
-        self.node_list.append(node)
-        ### self.node_stack.append(self.node)
-        ### self.node = node
+        if node:
+            yield node
         
     def end_visitor(self, node):
-        """Leave a visitor."""
-        ### self.node = self.node_stack.pop()
+        pass
 
     def put(self, kind, val):
         pass
-        ### g.trace(kind, val)
-        # if self.node:
-            # yield self.node
 #@-others
 #@@language python
 #@@tabwidth -4
