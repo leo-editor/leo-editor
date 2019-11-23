@@ -1012,22 +1012,22 @@ class TokenOrderGenerator:
         # The list of input tokens.
     token_index = None
         # The index into self.tokens.
-    use_generators = False
+    use_generators = True
 
     #@+others
     #@+node:ekr.20191116160557.1: *3* tog.assign_links
     def assign_links(self):
         """Assign two-way links between tokens and results."""
-        if 1:
-            return True # To be removed.
-        try:
-            Linker().assign_links(self.results, self.strings, self.tokens, self.tree)
-            return True
-        except Exception as e:
-            g.trace(e)
-            if 0: # Annoying, but good for mysteries.
-                g.es_exception()
-            return False
+        return True # To be removed.
+        ###
+            # try:
+                # Linker().assign_links(self.results, self.strings, self.tokens, self.tree)
+                # return True
+            # except Exception as e:
+                # g.trace(e)
+                # if 0: # Annoying, but good for mysteries.
+                    # g.es_exception()
+                # return False
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
     begin_end_stack = []
 
@@ -1314,6 +1314,7 @@ class TokenOrderGenerator:
 
         def if_advance(self):
             # Must handle all if tokens.
+            # g.trace(self._if_peek)
             assert self._if_peek, g.callers()
             self._if_peek = None
 
@@ -1958,23 +1959,20 @@ class TokenOrderGenerator:
               if 2:            pass
                   pass
                   
-        Therefore, there is *no* way for the code to disambiguate the above two
+        So there is *no* way for the 'if' visitor to disambiguate the above two
         cases from the parse tree alone.
 
-        Instead, the code uses the if-list to tell what results tokens to generate.
-
-        The Linker can't fix things up later because the number and order of
-        *significant* tokens would differ in the two cases above.
+        Instead, if-item list/generator tells the 'if' visitor what to do.
         """
         #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        ### if_value = self.if_gen[self.if_list_index].value
-        ### self.if_list_index += 1
+        # Get the proper value from the token list.
         if_value = self.if_peek().value
-        self.if_advance()
         assert if_value in ('if', 'elif'), if_value
+        # Consume the if-item.
+        self.if_advance()
         yield from self.gen_name(if_value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
@@ -1986,11 +1984,9 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            ### if_value = self.if_gen[self.if_list_index].value
             if_value = self.if_peek().value
             if if_value == 'else':
-                # Consume one if-list entry.
-                ### self.if_list_index += 1
+                # Consume one if-item.
                 self.if_advance()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
@@ -2001,8 +1997,8 @@ class TokenOrderGenerator:
                 assert if_value in ('if', 'elif'), if_value
                 node1 = node.orelse[0]
                 assert isinstance(node1, ast.If), repr(node1)
-                # Don't consume an if-list entry here.
                 # Call ourselves recursively.
+                # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
