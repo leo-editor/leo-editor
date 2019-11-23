@@ -1015,7 +1015,7 @@ class TokenOrderGenerator:
     use_generators = True
 
     #@+others
-    #@+node:ekr.20191116160557.1: *3* tog.assign_links
+    #@+node:ekr.20191116160557.1: *3* tog.assign_links (to be removed)
     def assign_links(self):
         """Assign two-way links between tokens and results."""
         return True # To be removed.
@@ -1066,7 +1066,7 @@ class TokenOrderGenerator:
         self.max_level = max(self.level, self.max_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
+    #@+node:ekr.20191113063144.4: *3* tog.create_links (entry) & helper
     def create_links(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -1095,6 +1095,21 @@ class TokenOrderGenerator:
                 f" in {(t2-t1):4.2f} sec."
                 f"max_level: {self.max_level}, "
                 f"max_stack_level: {self.max_stack_level}")
+    #@+node:ekr.20191123101144.1: *4* tog.create_generators
+    def create_generators(self):
+        
+        def is_if(token):
+            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+             
+        def is_string(token):
+            return token.kind == 'string'
+        
+        if self.use_generators:
+            self.if_gen = filter(is_if, self.tokens)
+            self.string_gen = filter(is_string, self.tokens)
+        else:
+            self.if_gen = list(filter(is_if, self.tokens))
+            self.string_gen = list(filter(is_string, self.tokens))
     #@+node:ekr.20191114161840.1: *3* tog.diff
     def diff(self):
         """Produce a diff of self.tokens vs self.results."""
@@ -1286,72 +1301,6 @@ class TokenOrderGenerator:
         val = self.end_visitor(node)
         if isinstance(val, types.GeneratorType):
             yield from val
-    #@+node:ekr.20191123095031.1: *3* tog: Generator support
-    #@+node:ekr.20191123101144.1: *4* tog.create_generators
-    def create_generators(self):
-        
-        def is_if(token):
-            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-             
-        def is_string(token):
-            return token.kind == 'string'
-        
-        if self.use_generators:
-            self.if_gen = filter(is_if, self.tokens)
-            self.string_gen = filter(is_string, self.tokens)
-        else:
-            self.if_gen = list(filter(is_if, self.tokens))
-            self.string_gen = list(filter(is_string, self.tokens))
-    #@+node:ekr.20191123100731.1: *4* tog.if_peek & if_advance
-    if use_generators:
-
-        _if_peek = None
-
-        def if_peek(self):
-            if not self._if_peek:
-                self._if_peek = next(self.if_gen)
-            return self._if_peek
-
-        def if_advance(self):
-            # Must handle all if tokens.
-            # g.trace(self._if_peek)
-            assert self._if_peek, g.callers()
-            self._if_peek = None
-
-    else:
-
-        _if_index = 0
-
-        def if_peek(self):
-            return self.if_gen[self._if_index]
-           
-        def if_advance(self):
-            self._if_index += 1
-    #@+node:ekr.20191123100820.1: *4* tog:.string_peek & string_advance
-    if use_generators:
-        
-        # This should a plain list.
-        _string_peek = None
-
-        def string_peek(self):
-            if not self._string_peek:
-                self._string_peek = next(self.if_gen)
-            return self._string_peek
-           
-        def string_advance(self):
-            # Must handle all string tokens.
-            assert self._string_peek, g.callers()
-            self._string_peek = None
-        
-    else:
-        
-        _string_index = 0
-
-        def string_peek(self):
-            return self.if_gen[self._string_index]
-           
-        def string_advance(self):
-            self._string_index += 1
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
@@ -1965,15 +1914,43 @@ class TokenOrderGenerator:
         Instead, if-item list/generator tells the 'if' visitor what to do.
         """
         #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
+        #@+<< define peek and advance >>
+        #@+node:ekr.20191123152511.1: *6* << define peek and advance >>
+        if self.use_generators:
+            _peek = None
+            
+            def peek():
+                nonlocal _peek
+                if not _peek:
+                    _peek = next(self.if_gen)
+                return _peek
+
+            def advance():
+                # Must handle all if tokens.
+                nonlocal _peek
+                assert _peek, g.callers()
+                _peek = None
+
+        else:
+            _index = None
+
+            def peek():
+                nonlocal _index
+                return self.if_gen[_index]
+               
+            def advance():
+                nonlocal _index
+                _index += 1
+        #@-<< define peek and advance >>
         # If or elif line...
             # if %s:\n
             # elif %s: \n
         # Get the proper value from the token list.
-        if_value = self.if_peek().value
-        assert if_value in ('if', 'elif'), if_value
+        val = peek().value
+        assert val in ('if', 'elif'), val
         # Consume the if-item.
-        self.if_advance()
-        yield from self.gen_name(if_value)
+        advance()
+        yield from self.gen_name(val)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
@@ -1984,19 +1961,18 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            if_value = self.if_peek().value
-            if if_value == 'else':
+            val = peek().value
+            if val == 'else':
                 # Consume one if-item.
-                self.if_advance()
+                advance()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
                 yield from self.gen(node.orelse)
             else:
                 # Sanity checks.
-                assert if_value in ('if', 'elif'), if_value
-                node1 = node.orelse[0]
-                assert isinstance(node1, ast.If), repr(node1)
+                assert val in ('if', 'elif'), val
+                assert isinstance(node.orelse[0], ast.If), repr(node.orelse[0])
                 # Call ourselves recursively.
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
