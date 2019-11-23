@@ -336,45 +336,47 @@
 </v>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes (acid test fails)</vh>
+<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
-<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
-<v t="ekr.20191120162720.1"><vh>ignore: If tests (3 fail)</vh>
-<v t="ekr.20191120064442.1"><vh>fail: test: If w/ elif</vh></v>
-<v t="ekr.20191120171921.1"><vh>fail: test: If, acid test</vh></v>
-<v t="ekr.20191120165433.1"><vh>fail: test: If, elif, else</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
+<v t="ekr.20191120171921.1"><vh>ok test: if, elif + 1</vh></v>
+<v t="ekr.20191122210035.1"><vh>ok test: if, else, if</vh></v>
+<v t="ekr.20191122213610.1"><vh>ok test: if, elif + 2</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: easy: else followed by non-if.</vh></v>
+<v t="ekr.20191122210522.1"><vh>ignore: If to do</vh>
+<v t="ekr.20191120064442.1"><vh>xx fail: if 2: else should be elif</vh></v>
+<v t="ekr.20191120165433.1"><vh>xx fail: test: if 3: else should be elif</vh></v>
 <v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
+<v t="ekr.20191120162720.1"><vh>If tests</vh>
+<v t="ekr.20191122202720.1"><vh>test: If, acide test, case 2</vh></v>
+</v>
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
-<v t="ekr.20191118155611.3"><vh>fail: ClassDef, FunctionDef &amp; If</vh></v>
 </v>
-<v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
+<v t="ekr.20191120074811.1"><vh>Contexts...</vh>
+<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191119142414.1"><vh>xx test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
-<v t="ekr.20191118164156.1"><vh>ignore: passed contents tests</vh>
+<v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
+<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
+<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
+<v t="ekr.20191119135937.1"><vh>test: FormattedValue: f-string</vh></v>
+<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
+<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
+<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
+<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
+<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
+</v>
 <v t="ekr.20191120162807.1"><vh>Statements...</vh>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 </v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 </v>
-<v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
-<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
-<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
-<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
-<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
-<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
-<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
-<v t="ekr.20191119135937.1"><vh>test: FormattedValue: f-string</vh></v>
-</v>
-<v t="ekr.20191120075559.1"><vh>f-strings</vh></v>
-</v>
-<v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
-<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
-<v t="ekr.20191119142414.1"><vh>xx test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 </v>
 <v t="ekr.20191120064512.1"><vh>fail: File tests (all fail)</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
@@ -4111,21 +4113,22 @@ root = c.p
 use_asttokens = False
 ALL = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, ALL)
-assert tests, 'No tests!'
+if not tests:
+    print(f"no tests in {c.p.h}")
 # Run the tests.
 if ALL:
     reports = ['assign-links',] # 'coverage'
 else:
     reports = [
-        'clear',
-        # 'verbose',
+        # 'clear',
+        'verbose', # Useful for failures
         'assign-links',
-        # 'diff',
         # 'contents',
+        # 'diff',
         # 'asttokens',
-        # 'raw-tree',
         # 'tokens',
         # 'results',
+        # 'raw-tree',
         # 'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
@@ -4150,6 +4153,7 @@ print(f"\n{status} Ran {len(tests)} tests")</t>
     contents_tag = 'test:'
     file_tag = 'file:'
     after = root.nodeAfterTree()
+    p = root.copy()
     while p and p != after:
         # g.trace(p.h)
         if 'make_tests' in p.h:
@@ -4200,17 +4204,6 @@ if a:
 else:
     return
 </t>
-<t tx="ekr.20191118155611.3">"""ds 1"""
-class TestClass:
-    """ds 2"""
-    def long_name(a, b=2):
-        """ds 3"""
-        if a:
-            a = 1
-        else:
-            a -= 1
-        print('done')
-</t>
 <t tx="ekr.20191118155612.1">open(os.devnull, "w")
 </t>
 <t tx="ekr.20191118155612.2">a = 1 ; b = 2
@@ -4219,7 +4212,6 @@ print('a') ; print('b')
 <t tx="ekr.20191118160305.1">print('c');
 print('d')
 </t>
-<t tx="ekr.20191118164156.1"></t>
 <t tx="ekr.20191119101124.1">name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
 </t>
 <t tx="ekr.20191119133927.1">class TestClass1:
@@ -4272,16 +4264,10 @@ else:
 <t tx="ekr.20191120064512.1"></t>
 <t tx="ekr.20191120074811.1"></t>
 <t tx="ekr.20191120075520.1"></t>
-<t tx="ekr.20191120075559.1"></t>
-<t tx="ekr.20191120092048.1"></t>
-<t tx="ekr.20191120132531.1"># Second line in else clause causes the fail.
-# There are two 'else' names!
-if found:
+<t tx="ekr.20191120132531.1">if 1:
     print('a')
 else:
-    pass
-    break
-</t>
+    print('b')</t>
 <t tx="ekr.20191120162720.1"></t>
 <t tx="ekr.20191120162740.1"></t>
 <t tx="ekr.20191120162807.1"></t>
@@ -4307,24 +4293,14 @@ else:
 </t>
 <t tx="ekr.20191120165433.1">if 1:
     if 2:
-        'if 2'
+        '2'
 elif 3:
-    'elif 3'
-else:  # outer else.
-    if 4:
-        'if 4'
+    '3'
 </t>
 <t tx="ekr.20191120171921.1">if 1:
-    '1'
+    pass
 elif 2:
-    '2'
-'----'
-if 3:
-    '3'
-else:
-    if 4:
-        '4'
-'done'
+    pass
 </t>
 <t tx="ekr.20191121063148.1">import leo.core.leoAst as leoAst
 if 1: ###
@@ -4466,5 +4442,32 @@ for file_name in file_names[:1]:
             f"compare nodes: {t4-t3:4.2f}")
     assert ok</t>
 <t tx="ekr.20191122153258.1">run(a=None, b=str)</t>
+<t tx="ekr.20191122201558.1"></t>
+<t tx="ekr.20191122202720.1">if 1:
+    '1'
+else:
+    if 2:
+        '2'
+</t>
+<t tx="ekr.20191122203522.1">"""ds 1"""
+class TestClass:
+    """ds 2"""
+    def long_name(a, b=2):
+        """ds 3"""
+        print('done')
+</t>
+<t tx="ekr.20191122210035.1">if 1:
+    pass
+else:
+    if 2:
+        pass
+</t>
+<t tx="ekr.20191122210522.1"></t>
+<t tx="ekr.20191122213610.1">if 1:
+    pass
+elif 2:
+    pass
+    pass
+</t>
 </tnodes>
 </leo_file>

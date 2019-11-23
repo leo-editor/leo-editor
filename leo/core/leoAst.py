@@ -1075,9 +1075,16 @@ class TokenOrderGenerator:
         self.tokens = tokens
         self.node_list = []  # For testing. Set by begin_visitor.
         self.results = []
-        self.strings = [z for z in self.tokens if z.kind == 'string']
         self.token_index = 0
         self.node = None  # The parent.
+        # Create "synchronizing lists.
+        
+        self.if_list = [z for z in self.tokens
+            if z.kind == 'name' and z.value in ('if', 'elif', 'else')]
+        self.if_list_index = 0
+        self.strings = [z for z in self.tokens if z.kind == 'string']
+        self.string_index = 0
+        # Create the generator
         yield from self.visitor(tree)
         # Patch the last tokens.
         self.node = tree
@@ -1873,32 +1880,62 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         yield from self.gen(node.names)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.75: *5* tog.If (*** adjust to match tokens ***)
+    #@+node:ekr.20191113063144.75: *5* tog.If
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
-       
-        #
-        # A big problem.  The trees for 'elif' and 'else if' can be identical!
-        # This must be fixed with a hack in Linker.check, or some other way.
-
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        yield from self.gen_name('if') # It might also be 'elif'
+        if_value = self.if_list[self.if_list_index].value
+        self.if_list_index += 1
+        assert if_value in ('if', 'elif'), if_value
+        yield from self.gen_name(if_value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
+        self.level -= 1
         # Else and elif clauses...
         if node.orelse:
-            yield from self.gen_name('else') # It might also be 'elif'
-            yield from self.gen_op(':')
-            yield from self.gen_newline()
-            yield from self.gen(node.orelse)
-        self.level -= 1
+            #@+<< about disambiguating elif and else, if >>
+            #@+node:ekr.20191122222412.1: *6* << about disambiguating elif and else, if >>
+            # The parse trees for the following are identical!
+
+              # if 1:            if 1:
+                  # pass             pass
+              # else:            elif 2:
+                  # if 2:            pass
+                      # pass
+                      
+            # Therefore, there is *no* way for the code to disambiguate the above two
+            # cases from the parse tree alone.
+
+            # Instead, the code uses the if-list to tell what results tokens to generate.
+
+            # The Linker can't fix things up later because the number and order of
+            # *significant* tokens would differ in the two cases above.
+            #@-<< about disambiguating elif and else, if >>
+            self.level += 1
+            if_value = self.if_list[self.if_list_index].value
+            if if_value == 'else':
+                # Consume one if-list entry.
+                self.if_list_index += 1
+                yield from self.gen_name('else')
+                yield from self.gen_op(':')
+                yield from self.gen_newline()
+                yield from self.gen(node.orelse)
+            else:
+                # Sanity checks.
+                assert if_value in ('if', 'elif'), if_value
+                node1 = node.orelse[0]
+                assert isinstance(node1, ast.If), repr(node1)
+                # Don't consume an if-list entry here.
+                # Call ourselves recursively.
+                yield from self.gen(node.orelse)
+            self.level -= 1
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
         
@@ -4028,7 +4065,7 @@ class Linker:
     #@+node:ekr.20191119020953.1: *3* linker.assign_links & is_significant
     def assign_links(self, results, strings, tokens, tree):
         """Assign two-way links between tokens and results."""
-        self.strings = strings
+        self.strings = strings  ### Not used at present.
         self.tree = tree
         #
         # Don't change this without thorough testing.
@@ -4050,7 +4087,7 @@ class Linker:
         # Make two-way links between tokens and results.
         for r, t in zip(sig_results, sig_tokens):
             self.set_links(r, t, tokens)
-    #@+node:ekr.20191119022836.1: *3* linker.check
+    #@+node:ekr.20191119022836.1: *3* linker.check & helper
     def check(self, results, tokens):
         """
         tokens and results are lists of significant tokens.
@@ -4066,25 +4103,26 @@ class Linker:
             for r, t in zip(results, tokens):
                 assert r.kind == t.kind, (repr(r), repr(t))
                 assert self.compare_values(r, t), (repr(r), repr(t))
-        else: # More detailed error info.
-            fillvalue = Token('MISSING', '')
-            it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
-            for i, (r, t) in enumerate(it):
-                if t.kind != r.kind:
-                    print(
-                        f"Linker.check: Mismatched kinds!\n"
-                        f"line {t.line_number}: {t.line.strip()}\n"
-                        f"tx: {i}: token: {t}, result: {r}")
-                    raise AssignLinksError('Mismatched kinds!')
-                if not self.compare_values(r, t):
-                    print(
-                        f"Linker.check: Mismatched values!\n"
-                        f"line {t.line_number}: {t.line.strip()}\n"
-                        f"tx: {i}: token: {t}, result: {r}")
-                    raise AssignLinksError('Mismatched values!')
-            # Defensive programming.
-            assert n1 == n2, (n1, n2)
-    #@+node:ekr.20191119025334.1: *3* linker.compare_values
+            return
+        # More detailed error info.
+        fillvalue = Token('MISSING', '')
+        it = itertools.zip_longest(results, tokens, fillvalue=fillvalue)
+        for i, (r, t) in enumerate(it):
+            if t.kind != r.kind:
+                print(
+                    f"Linker.check: Mismatched kinds!\n"
+                    f"line {t.line_number}: {t.line.strip()}\n"
+                    f"tx: {i}: token: {t}, result: {r}")
+                raise AssignLinksError('Mismatched kinds!')
+            if not self.compare_values(r, t):
+                print(
+                    f"Linker.check: Mismatched values!\n"
+                    f"line {t.line_number}: {t.line.strip()}\n"
+                    f"tx: {i}: token: {t}, result: {r}")
+                raise AssignLinksError('Mismatched values!')
+        # There should already have been a fail, if this fails.
+        assert n1 == n2, (n1, n2)
+    #@+node:ekr.20191119025334.1: *3* linker.compare_values (to do: stronger string tests)
     def compare_values(self, r, t):
         """
         r is a token from the results list.
@@ -4188,6 +4226,7 @@ class TestRunner:
             if 'assign_links' not in reports:
                 print('\nWARNING: assign-links not in reports')
             x = self.x = TokenOrderInjector()
+                # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources)
             self.tree = parse_ast(sources)
             # Catch exceptions so we can get data late.
@@ -4234,6 +4273,7 @@ class TestRunner:
             self.dump_tokens()
             self.dump_results()
             self.dump_tree()
+            self.dump_raw_tree()
         raise FailFast('assign_links Failed')
     #@+node:ekr.20191122200015.1: *3* TestRunner.clear
     def clear(self):
