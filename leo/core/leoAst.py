@@ -1034,12 +1034,19 @@ class TokenOrderGenerator:
             # The tree of ast.AST nodes.
         # Create "synchronizing" lists/generators
         self.create_generators()
-        if 1:
-            # Traverse the tree.
-            list(self.visitor(tree))
-        else:
-            # Create the tree generator.
-            yield from self.visitor(tree)
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+        ### These also work...
+            # if 1:
+                # # Traverse the tree.
+                # list(self.visitor(tree))
+            # else:
+                # # Create the tree generator.
+                # yield from self.visitor(tree)
         # Patch the last tokens.
         if 0: ### Should not be necessary.
             self.node = tree
