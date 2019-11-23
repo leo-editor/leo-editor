@@ -4111,7 +4111,7 @@ imp.reload(leoAst) ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-ALL = False # True, ignore @ignore nodes.
+ALL = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, ALL)
 if not tests:
     print(f"no tests in {c.p.h}")

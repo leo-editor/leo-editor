@@ -978,14 +978,9 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
-    level = 0
-        # Python indentation level.
-    node = None
-        # The node being visited.
-        # The parent of the about-to-be visited node.
-    tokens = None
-        # The list of input tokens.
+    
     use_generators = True
+        # True: production code.  False: debugging code.
 
     #@+others
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
@@ -1002,8 +997,6 @@ class TokenOrderGenerator:
         # g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
         # Inject the node_index field.
         assert not hasattr(node, 'node_index'), g.callers()
-        self.node_list.append(node)
-            # For testing.
         node.node_index = self.node_index
         self.node_index += 1
         # begin_visitor and end_visitor must be paired.
@@ -1030,10 +1023,15 @@ class TokenOrderGenerator:
         """
         import time
         t1 = time.process_time()
-        self.tree = tree  # Immutable.
-        self.tokens = tokens  # Immutable.
-        self.node_list = []  # For testing. Set by begin_visitor.
-        self.node = None  # The parent.
+        self.level = 0
+            # Python indentation level.
+        self.node = None
+            # The node being visited.
+            # The parent of the about-to-be visited node.
+        self.tokens = tokens
+            # The immutable list of input tokens.
+        self.tree = tree
+            # The tree of ast.AST nodes.
         # Create "synchronizing" lists/generators
         self.create_generators()
         # Create the tree generator.
