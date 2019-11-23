@@ -1012,11 +1012,14 @@ class TokenOrderGenerator:
         # The list of input tokens.
     token_index = None
         # The index into self.tokens.
+    use_generators = False
 
     #@+others
     #@+node:ekr.20191116160557.1: *3* tog.assign_links
     def assign_links(self):
         """Assign two-way links between tokens and results."""
+        if 1:
+            return True # To be removed.
         try:
             Linker().assign_links(self.results, self.strings, self.tokens, self.tree)
             return True
@@ -1077,14 +1080,9 @@ class TokenOrderGenerator:
         self.results = []
         self.token_index = 0
         self.node = None  # The parent.
-        # Create "synchronizing lists.
-        
-        self.if_list = [z for z in self.tokens
-            if z.kind == 'name' and z.value in ('if', 'elif', 'else')]
-        self.if_list_index = 0
-        self.strings = [z for z in self.tokens if z.kind == 'string']
-        self.string_index = 0
-        # Create the generator
+        # Create "synchronizing" lists/generators
+        self.create_generators()
+        # Create the tree generator.
         yield from self.visitor(tree)
         # Patch the last tokens.
         self.node = tree
@@ -1288,6 +1286,71 @@ class TokenOrderGenerator:
         val = self.end_visitor(node)
         if isinstance(val, types.GeneratorType):
             yield from val
+    #@+node:ekr.20191123095031.1: *3* tog: Generator support
+    #@+node:ekr.20191123101144.1: *4* tog.create_generators
+    def create_generators(self):
+        
+        def is_if(token):
+            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+             
+        def is_string(token):
+            return token.kind == 'string'
+        
+        if self.use_generators:
+            self.if_gen = filter(is_if, self.tokens)
+            self.string_gen = filter(is_string, self.tokens)
+        else:
+            self.if_gen = list(filter(is_if, self.tokens))
+            self.string_gen = list(filter(is_string, self.tokens))
+    #@+node:ekr.20191123100731.1: *4* tog.if_peek & if_advance
+    if use_generators:
+
+        _if_peek = None
+
+        def if_peek(self):
+            if not self._if_peek:
+                self._if_peek = next(self.if_gen)
+            return self._if_peek
+
+        def if_advance(self):
+            # Must handle all if tokens.
+            assert self._if_peek, g.callers()
+            self._if_peek = None
+
+    else:
+
+        _if_index = 0
+
+        def if_peek(self):
+            return self.if_gen[self._if_index]
+           
+        def if_advance(self):
+            self._if_index += 1
+    #@+node:ekr.20191123100820.1: *4* tog:.string_peek & string_advance
+    if use_generators:
+        
+        # This should a plain list.
+        _string_peek = None
+
+        def string_peek(self):
+            if not self._string_peek:
+                self._string_peek = next(self.if_gen)
+            return self._string_peek
+           
+        def string_advance(self):
+            # Must handle all string tokens.
+            assert self._string_peek, g.callers()
+            self._string_peek = None
+        
+    else:
+        
+        _string_index = 0
+
+        def string_peek(self):
+            return self.if_gen[self._string_index]
+           
+        def string_advance(self):
+            self._string_index += 1
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
@@ -1907,8 +1970,10 @@ class TokenOrderGenerator:
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        if_value = self.if_list[self.if_list_index].value
-        self.if_list_index += 1
+        ### if_value = self.if_gen[self.if_list_index].value
+        ### self.if_list_index += 1
+        if_value = self.if_peek().value
+        self.if_advance()
         assert if_value in ('if', 'elif'), if_value
         yield from self.gen_name(if_value)
         yield from self.gen(node.test)
@@ -1921,10 +1986,12 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            if_value = self.if_list[self.if_list_index].value
+            ### if_value = self.if_gen[self.if_list_index].value
+            if_value = self.if_peek().value
             if if_value == 'else':
                 # Consume one if-list entry.
-                self.if_list_index += 1
+                ### self.if_list_index += 1
+                self.if_advance()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
