@@ -4235,6 +4235,10 @@ class TestRunner:
             self.dump_results()
             self.dump_tree()
         raise FailFast('assign_links Failed')
+    #@+node:ekr.20191122200015.1: *3* TestRunner.clear
+    def clear(self):
+        """Clear the screen."""
+        g.cls()
     #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
     def coverage(self):
         if self.x:

@@ -340,12 +340,13 @@
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
 <v t="ekr.20191120162720.1"><vh>ignore: If tests (3 fail)</vh>
+<v t="ekr.20191120064442.1"><vh>fail: test: If w/ elif</vh></v>
+<v t="ekr.20191120171921.1"><vh>fail: test: If, acid test</vh></v>
+<v t="ekr.20191120165433.1"><vh>fail: test: If, elif, else</vh></v>
 <v t="ekr.20191120132531.1"><vh>test: If w/ only else</vh></v>
 <v t="ekr.20191118155611.2"><vh>test: If w/o elif</vh></v>
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
-<v t="ekr.20191120064442.1"><vh>xx test: If w/ elif</vh></v>
-<v t="ekr.20191120171921.1"><vh>xx test: If, acid test</vh></v>
-<v t="ekr.20191120165433.1"><vh>xx test: If, elif, else</vh></v>
+<v t="ekr.20191118155611.3"><vh>fail: ClassDef, FunctionDef &amp; If</vh></v>
 </v>
 <v t="ekr.20191120092048.1"><vh>ignore: f-strings tests</vh>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -371,14 +372,13 @@
 </v>
 <v t="ekr.20191120075559.1"><vh>f-strings</vh></v>
 </v>
-<v t="ekr.20191120074811.1"><vh>ignore: Contexts... (2 fail)</vh>
+<v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
-<v t="ekr.20191118155611.3"><vh>xx test: ClassDef, FunctionDef &amp; If</vh></v>
 <v t="ekr.20191119142414.1"><vh>xx test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
-<v t="ekr.20191120064512.1"><vh>ignore: File tests (2 fail)</vh>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
-<v t="ekr.20191118155609.1"><vh>xx file: core..runLeo.py</vh></v>
+<v t="ekr.20191120064512.1"><vh>fail: File tests (all fail)</vh>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4109,7 +4109,7 @@ imp.reload(leoAst) ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-ALL = False # True, ignore @ignore nodes.
+ALL = True # True, ignore @ignore nodes.
 tests = make_tests(c.p, ALL)
 assert tests, 'No tests!'
 # Run the tests.
@@ -4117,15 +4117,16 @@ if ALL:
     reports = ['assign-links',] # 'coverage'
 else:
     reports = [
+        'clear',
         # 'verbose',
         'assign-links',
         # 'diff',
-        'contents',
+        # 'contents',
         # 'asttokens',
         # 'raw-tree',
         # 'tokens',
         # 'results',
-        'tree',
+        # 'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
 # The test-runner issues a good enough warning.
@@ -4154,6 +4155,12 @@ print(f"\n{status} Ran {len(tests)} tests")</t>
         if 'make_tests' in p.h:
             # skip this node.
             p.moveToNext()
+        elif p.h.startswith(('fail:', 'fails')):
+            # Ignore all fails, regardless of 'all' flag.
+            p.moveToNodeAfterTree()
+        elif not all and p.h.startswith('ignore:'):
+            # Honor 'ignore' only when *not* runnining all tests.
+            p.moveToNodeAfterTree()
         elif p.h.startswith(contents_tag):
             description = p.h
             contents = p.b.strip() + '\n'
@@ -4171,9 +4178,8 @@ print(f"\n{status} Ran {len(tests)} tests")</t>
                 p.moveToThreadNext()
             else:
                 assert False, f"file not found: {path}"
-        elif not all and p.h.startswith('ignore:'):
-            p.moveToNodeAfterTree()
         else:
+            # Ignore organizer nodes.
             p.moveToThreadNext()
     return tests
 </t>
