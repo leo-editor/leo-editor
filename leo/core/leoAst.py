@@ -1034,15 +1034,20 @@ class TokenOrderGenerator:
             # The tree of ast.AST nodes.
         # Create "synchronizing" lists/generators
         self.create_generators()
-        # Create the tree generator.
-        yield from self.visitor(tree)
+        if 1:
+            # Traverse the tree.
+            list(self.visitor(tree))
+        else:
+            # Create the tree generator.
+            yield from self.visitor(tree)
         # Patch the last tokens.
-        self.node = tree
-        yield from self.gen_token('newline', '\n')
-        yield from self.gen_token('endmarker', '')
+        if 0: ### Should not be necessary.
+            self.node = tree
+            yield from self.gen_token('newline', '\n')
+            yield from self.gen_token('endmarker', '')
         t2 = time.process_time()
-        if not g.unitTesting:
-            print(f"create_links: done in {(t2-t1):4.2f} sec.")
+        if t2-t1 > 0.1:
+            print(f"create_links: {(t2-t1):4.2f} sec.")
     #@+node:ekr.20191123101144.1: *4* tog.create_generators
     def create_generators(self):
         
