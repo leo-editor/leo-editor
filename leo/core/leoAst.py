@@ -974,51 +974,26 @@ class AstFormatter:
     #@-others
 #@+node:ekr.20191113063144.1: **  class TokenOrderGenerator
 class TokenOrderGenerator:
-    #@+<< TokenOrderGenerator docstring >>
-    #@+node:ekr.20191113063144.2: *3*  << TokenOrderGenerator docstring >>
-    """
-    Ahas: https://groups.google.com/d/msg/leo-editor/FZYJmbtRBWs/qWPdxKw5AgAJ
-
-    A class that supports (and defines) **token-order traversals**.
-
-    Aha: "Elegant" code can not suffice. Per-node visitors are required.
-    Aha: This code must be isomorphic to the AstFormatter class.
-
-    This class generates results from a tree of ast nodes in *exactly* order in which
-    those nodes contribute tokens.
-    """
-    #@-<< TokenOrderGenerator docstring >>
+    """A class that traverses ast (parse) trees in token order."""
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
-    errors = []
+    ### errors = []
         # A list of error messages, for test runners.
     level = 0
-        # Indentation level.
-    max_level = 0
-        # Max python indentation level.
-    max_stack_level = 0
-        # The max size of the node_stack.
+        # Python indentation level.
     node = None
         # The node being visited.
         # The parent of the about-to-be visited node.
-    node_stack = []
-        # The stack of parent nodes.
-    results = []
-        # The results of the tree traversal *only*.
-        # It should *never* be used except as input to the Linker class.
-        # Important: the linker completely ignores non-significant result tokens.
     tokens = None
         # The list of input tokens.
-    token_index = None
-        # The index into self.tokens.
     use_generators = True
 
     #@+others
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
     begin_end_stack = []
-
-    node_index = 0
+    node_index = 0  # The index into the node_stack.
+    node_stack = []  # The stack of parent nodes.
 
     # These methods support generators.
 
@@ -1031,14 +1006,12 @@ class TokenOrderGenerator:
         assert not hasattr(node, 'node_index'), g.callers()
         self.node_list.append(node)
             # For testing.
-        node.node_index =self.node_index
+        node.node_index = self.node_index
         self.node_index += 1
         # begin_visitor and end_visitor must be paired.
         self.begin_end_stack.append(node.__class__.__name__)
         # Push the previous node.
         self.node_stack.append(self.node)
-        # Update the stat.
-        self.max_stack_level = max(len(self.node_stack), self.max_stack_level)
         # Update self.node *last*.
         self.node = node
 
@@ -1049,8 +1022,6 @@ class TokenOrderGenerator:
         entry_name = self.begin_end_stack.pop()
         assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
         assert self.node == node, (repr(self.node), repr(node))
-        # Update the stat.
-        self.max_level = max(self.level, self.max_level)
         # Restore self.node.
         self.node = self.node_stack.pop()
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry) & helper
@@ -1061,11 +1032,9 @@ class TokenOrderGenerator:
         """
         import time
         t1 = time.process_time()
-        self.tree = tree # Immutable.
-        self.tokens = tokens
+        self.tree = tree  # Immutable.
+        self.tokens = tokens  # Immutable.
         self.node_list = []  # For testing. Set by begin_visitor.
-        self.results = []
-        self.token_index = 0
         self.node = None  # The parent.
         # Create "synchronizing" lists/generators
         self.create_generators()
@@ -1077,72 +1046,37 @@ class TokenOrderGenerator:
         yield from self.gen_token('endmarker', '')
         t2 = time.process_time()
         if not g.unitTesting:
-            print(
-                f"create_links: created {len(self.results)} results "
-                f" in {(t2-t1):4.2f} sec."
-                f"max_level: {self.max_level}, "
-                f"max_stack_level: {self.max_stack_level}")
+            print(f"create_links: done in {(t2-t1):4.2f} sec.")
     #@+node:ekr.20191123101144.1: *4* tog.create_generators
     def create_generators(self):
         
         def is_if(token):
             return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-             
-        def is_string(token):
-            return token.kind == 'string'
-        
+
         if self.use_generators:
+            self.all_tokens_gen = (z for z in self.tokens)
             self.if_gen = filter(is_if, self.tokens)
-            self.string_gen = filter(is_string, self.tokens)
         else:
+            self.all_tokens_gen = [z for z in self.tokens]
             self.if_gen = list(filter(is_if, self.tokens))
-            self.string_gen = list(filter(is_string, self.tokens))
-    #@+node:ekr.20191114161840.1: *3* tog.diff
-    def diff(self):
-        """Produce a diff of self.tokens vs self.results."""
-        import difflib
-        import time
-        ndiff = False
-        if ndiff:
-            # FAILS:
-            #  File "C:\Users\edreamleo\Anaconda3\lib\difflib.py", line 1017, in _fancy_replace
-            #  yield '  ' + aelt
-            #  TypeError: can only concatenate str (not "tuple") to str
-            results = self.results
-            tokens = [(z.kind, z.value) for z in self.tokens]
-            gen = difflib.ndiff(tokens, results)
-        else:
-            # Works.
-            results = [f"{z.kind:>12}:{z.value}" for z in self.results]
-            tokens =  [f"{z.kind:>12}:{z.value}" for z in self.tokens]
-            gen = difflib.Differ().compare(tokens, results)
-        t1 = time.process_time()
-        diffs = list(gen)
-        t2 = time.process_time()
-        print(
-            f"\nDiff: tokens: {len(tokens)}, results: {len(results)}, "
-            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec...")
-        if len(diffs) < 1000:
-            legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
-            heading = f"tx  rx  kind {'diff key kind:value':>15}"
-            line    = f"=== === ==== {'===================':>15}"
-            print(legend)
-            print(heading)
-            print(line)
-            rx = tx = 0
-            for i, z in enumerate(diffs):
-                kind = z[0]
-                if kind != '?': # A mystery.
-                    print(f"{tx:<3} {rx:<3} {kind!r:4} {truncate(z[1:], 80)!s}")
-                if kind == ' ':
-                    rx, tx = rx + 1, tx + 1
-                elif kind == '+':
-                    rx += 1
-                elif kind == '-':
-                    tx += 1
-            # print(line)
-            # print(heading)
-            # print(legend)
+            
+        #### May not be needed.
+            # def is_string(token):
+                # return token.kind == 'string'
+            # if self.use_generators:
+                # self.string_gen = filter(is_string, self.tokens)
+            # else:
+                # self.string_gen = list(filter(is_string, self.tokens))
+                
+        #### May not be needed...
+            # def is_significant(token):
+                # return (
+                    # token.kind in ('name', 'number', 'string') or
+                    # token.kind == 'op' and token.value not in ',;()')
+            # if self.use_generators:
+                # self.significant_tokens_gen = filter(is_significant, self.tokens)
+            # else:
+                # self.significant_tokens_gen = list(filter(is_significant, self.tokens))
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1210,13 +1144,14 @@ class TokenOrderGenerator:
         """Handle a token whose kind & value are given."""
         assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
         assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
-        # Similar to Tokenizer.add_token.
-        val2 = val if isinstance(val, str) else str(val)
-        token = Token(kind, val2)
-        token.node = self.node
-        token.index = self.result_index
-        self.result_index += 1
-        self.results.append(token)
+        ### To do ###
+            # # Similar to Tokenizer.add_token.
+            # val2 = val if isinstance(val, str) else str(val)
+            # token = Token(kind, val2)
+            # token.node = self.node
+            # token.index = self.result_index
+            # self.result_index += 1
+            # self.results.append(token)
 
     def put_blank(self):
         if 0: self.put_token('ws', ' ')
@@ -1258,6 +1193,37 @@ class TokenOrderGenerator:
             print('Missing...\n')
             g.printObj(missing)
             print('')
+    #@+node:ekr.20191123155941.1: *3* tog.sync (TO DO)
+    def sync(self, token):
+        """Sync the token list/generator to the given token."""
+        #@+<< define peek and advance >>
+        #@+node:ekr.20191123160019.1: *4* << define peek and advance >>
+        if self.use_generators:
+            _peek = None
+            
+            def peek():
+                nonlocal _peek
+                if not _peek:
+                    _peek = next(self.all_tokens_gen)
+                return _peek
+
+            def advance():
+                # Must handle all if tokens.
+                nonlocal _peek
+                assert _peek, g.callers()
+                _peek = None
+
+        else:
+            _index = None
+
+            def peek():
+                nonlocal _index
+                return self.all_tokens_gen[_index]
+               
+            def advance():
+                nonlocal _index
+                _index += 1
+        #@-<< define peek and advance >>
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1648,7 +1614,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        pass
+        yield from self.gen_token('string', node.s)
         ### To be done in tog.sync.
             # yield from self.gen_token('string', node.s)
             # token = Token('string', node.s)
@@ -4143,10 +4109,6 @@ class TestRunner:
     def coverage(self):
         if self.x:
             self.x.report_coverage(report_missing=False)
-    #@+node:ekr.20191122025216.1: *3* TestRunner.diff
-    def diff(self):
-        if self.x:
-            self.x.diff()
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
         sources = self.sources
@@ -4165,14 +4127,6 @@ class TestRunner:
     def dump_raw_tree(self):
         print('\nRaw tree...\n')
         print(AstDumper().dump(self.tree))
-    #@+node:ekr.20191122025306.3: *3* TestRunner.dump_results
-    def dump_results(self):
-        x = self.x
-        if not x:
-            return
-        print('\nResults...\n')
-        for z in x.results:
-            print(z.dump())
     #@+node:ekr.20191122025418.1: *3* TestRunner.dump_tokens
     def dump_tokens(self):
         tokens = self.tokens
@@ -4205,24 +4159,12 @@ class TestRunner:
                 tokens_s = ' '.join(
                     repr(z.string) for z in tokens[first:last] if z)
             print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
-    #@+node:ekr.20191122021140.1: *3* TestRunner.summary
-    def summary(self):
-        x = self.x
-        ok = not x.errors if x else True
-        if not ok:
-            print('\nErrors...\n')
-            for z in x.errors:
-                print('  ' + z)
-            print('')
-        print('')
-        print('PASS' if ok else 'FAIL')
     #@+node:ekr.20191122022728.1: *3* TestRunner.test_links (was assign_links)
     def test_links(self):
 
         if self.x:
             self.dump_contents()
             self.dump_tokens()
-            self.dump_results()
             self.dump_tree()
             self.dump_raw_tree()
     #@-others
