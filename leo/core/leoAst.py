@@ -1015,19 +1015,6 @@ class TokenOrderGenerator:
     use_generators = True
 
     #@+others
-    #@+node:ekr.20191116160557.1: *3* tog.assign_links (to be removed)
-    def assign_links(self):
-        """Assign two-way links between tokens and results."""
-        return True # To be removed.
-        ###
-            # try:
-                # Linker().assign_links(self.results, self.strings, self.tokens, self.tree)
-                # return True
-            # except Exception as e:
-                # g.trace(e)
-                # if 0: # Annoying, but good for mysteries.
-                    # g.es_exception()
-                # return False
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
     begin_end_stack = []
 
@@ -1658,24 +1645,15 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str (to do: link to *real* token)
+    #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
-        """
-        This node represents a string constant.
-        
-        There are several special cases relating to strings:
-            
-        1. Strings are non-synchronizing tokens, so this method
-           is free to assign any value to the 'string' token.
-           
-        2. *This* method, not Linker.set_links, sets node.tokens_list.
-        
-        3. Linker.set_links removes strings from all non-Str nodes.
-        """
-        yield from self.gen_token('string', node.s)
-        token = Token('string', node.s)
-        token.node = node
-        node.token_list = [token]
+        """This node represents a string constant."""
+        pass
+        ### To be done in tog.sync.
+            # yield from self.gen_token('string', node.s)
+            # token = Token('string', node.s)
+            # token.node = node
+            # node.token_list = [token]
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4111,8 +4089,6 @@ class TestRunner:
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
         # Set defaults.
-        self.ok = True
-        self.verbose_flag = False
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
         if 'asttokens' in reports:
@@ -4123,8 +4099,9 @@ class TestRunner:
             self.tree = atok.tree
             self.tokens = atok._tokens
         else:
-            if 'assign_links' not in reports:
-                print('\nWARNING: assign-links not in reports')
+            ###
+                # if 'assign_links' not in reports:
+                    # print('\nWARNING: assign-links not in reports')
             x = self.x = TokenOrderInjector()
                 # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources)
@@ -4158,23 +4135,6 @@ class TestRunner:
                 print('bad report option:', repr(report))
         return True
         
-    #@+node:ekr.20191122022728.1: *3* TestRunner.assign_links
-    def assign_links(self):
-
-        x = self.x
-        if not x:
-            return
-        ok = x.assign_links()
-        if ok:
-            return
-        if self.verbose_flag:
-            print('\nFAIL Assign link\n')
-            self.dump_contents()
-            self.dump_tokens()
-            self.dump_results()
-            self.dump_tree()
-            self.dump_raw_tree()
-        raise FailFast('assign_links Failed')
     #@+node:ekr.20191122200015.1: *3* TestRunner.clear
     def clear(self):
         """Clear the screen."""
@@ -4248,18 +4208,23 @@ class TestRunner:
     #@+node:ekr.20191122021140.1: *3* TestRunner.summary
     def summary(self):
         x = self.x
-        ok = self.ok
-        if x and x.errors:
-            ok = False
+        ok = not x.errors if x else True
+        if not ok:
             print('\nErrors...\n')
             for z in x.errors:
                 print('  ' + z)
             print('')
         print('')
         print('PASS' if ok else 'FAIL')
-    #@+node:ekr.20191122151912.1: *3* TestRunner.verbose
-    def verbose(self):
-        self.verbose_flag = True
+    #@+node:ekr.20191122022728.1: *3* TestRunner.test_links (was assign_links)
+    def test_links(self):
+
+        if self.x:
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_results()
+            self.dump_tree()
+            self.dump_raw_tree()
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token
