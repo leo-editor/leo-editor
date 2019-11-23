@@ -1884,6 +1884,26 @@ class TokenOrderGenerator:
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
+        #@+<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
+        #@+node:ekr.20191122222412.1: *6* << How to disambiguate between 'elif' and 'else' followed by 'if' >>
+        """
+        The parse trees for the following are identical!
+
+          if 1:            if 1:
+              pass             pass
+          else:            elif 2:
+              if 2:            pass
+                  pass
+                  
+        Therefore, there is *no* way for the code to disambiguate the above two
+        cases from the parse tree alone.
+
+        Instead, the code uses the if-list to tell what results tokens to generate.
+
+        The Linker can't fix things up later because the number and order of
+        *significant* tokens would differ in the two cases above.
+        """
+        #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
         # If or elif line...
             # if %s:\n
             # elif %s: \n
@@ -1900,24 +1920,6 @@ class TokenOrderGenerator:
         self.level -= 1
         # Else and elif clauses...
         if node.orelse:
-            #@+<< about disambiguating elif and else, if >>
-            #@+node:ekr.20191122222412.1: *6* << about disambiguating elif and else, if >>
-            # The parse trees for the following are identical!
-
-              # if 1:            if 1:
-                  # pass             pass
-              # else:            elif 2:
-                  # if 2:            pass
-                      # pass
-                      
-            # Therefore, there is *no* way for the code to disambiguate the above two
-            # cases from the parse tree alone.
-
-            # Instead, the code uses the if-list to tell what results tokens to generate.
-
-            # The Linker can't fix things up later because the number and order of
-            # *significant* tokens would differ in the two cases above.
-            #@-<< about disambiguating elif and else, if >>
             self.level += 1
             if_value = self.if_list[self.if_list_index].value
             if if_value == 'else':
