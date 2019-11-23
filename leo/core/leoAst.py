@@ -978,8 +978,6 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
-    ### errors = []
-        # A list of error messages, for test runners.
     level = 0
         # Python indentation level.
     node = None
@@ -4109,6 +4107,14 @@ class TestRunner:
     def coverage(self):
         if self.x:
             self.x.report_coverage(report_missing=False)
+    #@+node:ekr.20191122022728.1: *3* TestRunner.dump_all
+    def dump_all(self):
+
+        if self.x:
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_tree()
+            self.dump_raw_tree()
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
         sources = self.sources
@@ -4159,14 +4165,6 @@ class TestRunner:
                 tokens_s = ' '.join(
                     repr(z.string) for z in tokens[first:last] if z)
             print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
-    #@+node:ekr.20191122022728.1: *3* TestRunner.test_links (was assign_links)
-    def test_links(self):
-
-        if self.x:
-            self.dump_contents()
-            self.dump_tokens()
-            self.dump_tree()
-            self.dump_raw_tree()
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token
