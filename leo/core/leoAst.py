@@ -1039,6 +1039,29 @@ class TokenOrderGenerator:
             yield from self.gen_token('newline', '\n')
             yield from self.gen_token('endmarker', '')
        
+    #@+node:ekr.20191121180100.1: *3* tog.gen*
+    # Useful wrappers.
+
+    def gen(self, z):
+        yield from self.visitor(z)
+
+    def gen_blank(self):
+        yield from self.visitor(self.put_blank())
+
+    def gen_comma(self):
+        yield from self.visitor(self.put_comma())
+
+    def gen_name(self, val):
+        yield from self.visitor(self.put_name(val))
+                    
+    def gen_newline(self):
+        yield from self.visitor(self.put_token('newline', '\n'))
+
+    def gen_op(self, val):
+        yield from self.visitor(self.put_op(val))
+        
+    def gen_token(self, kind, val):
+        yield from self.visitor(self.put_token(kind, val))
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1076,36 +1099,20 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191121180100.1: *3* tog.gen*
-    # Useful wrappers.
-
-    def gen(self, z):
-        yield from self.visitor(z)
-
-    def gen_blank(self):
-        yield from self.visitor(self.put_blank())
-
-    def gen_comma(self):
-        yield from self.visitor(self.put_comma())
-
-    def gen_name(self, val):
-        yield from self.visitor(self.put_name(val))
-                    
-    def gen_newline(self):
-        yield from self.visitor(self.put_token('newline', '\n'))
-
-    def gen_op(self, val):
-        yield from self.visitor(self.put_op(val))
-        
-    def gen_token(self, kind, val):
-        yield from self.visitor(self.put_token(kind, val))
     #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
-    result_index = 0
+    sync_index = 0
 
     def put_token(self, kind, val):
-        """Handle a token whose kind & value are given."""
-        assert isinstance(self.node, ast.AST), (self.node.__class__.__name__, g.callers())
-        assert not isinstance(val, (list, tuple)), (val.__class__.__name__, g.callers())
+        """
+        Handle a token whose kind & value are given.
+        
+        Sync all significant tokens to self.node, creating two-way links
+        between the node and the token.
+        """
+        ### g.trace(f"\n{kind:>12} {self.node.__class__.__name__}")
+        assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
+        self.advance_and_sync()
+
         ### To do ###
             # # Similar to Tokenizer.add_token.
             # val2 = val if isinstance(val, str) else str(val)
@@ -1114,6 +1121,49 @@ class TokenOrderGenerator:
             # token.index = self.result_index
             # self.result_index += 1
             # self.results.append(token)
+    #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
+    def advance_and_sync(self):
+        i = self.sync_index
+        j = self.find_next_significant_token(i+1)
+        ### g.trace(f"i: {i:>2} j: {j:>2} node: {self.node.__class__.__name__}\n")
+        if self.node:
+            # Sync all previously unsynched tokens up to and including j.
+            while i <= j:
+                self.sync(self.node, self.tokens[i])
+                i += 1
+        assert j >= len(self.tokens) -1 or j > self.sync_index, (j, self.sync_index)
+        self.sync_index = j+1
+        return j
+    #@+node:ekr.20191124123830.2: *4* tog.find_next_significant_token
+    def find_next_significant_token(self, i):
+        # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            ### g.trace('LOOK', i, token.index, token)
+            if self.is_significant_token(token):
+                ### g.trace('FOUND', i, token.index, token)
+                return i
+            i += 1
+        ### g.trace('STOP', i)
+        return len(self.tokens)-1
+    #@+node:ekr.20191124123830.1: *4* tog.is_significant_token
+    def is_significant_token(self, token):
+        return (
+            token.kind in ('name', 'number', 'string') or
+            token.kind == 'op' and token.value not in ',;()')
+
+    #@+node:ekr.20191123155941.1: *4* tog.sync (New)
+    def sync(self, node, token):
+        """Sync the token to the given parse tree node."""
+        ### g.trace(f"{token.index:>4} {token.kind:<12} {node.__class__.__name__}")
+        # Patch the token.
+        assert token.node is None, repr(token)
+        token.node = node
+        # Add the token to node.token_list.
+        token_list = getattr(node, 'token_list', [])
+        node.token_list = token_list + [token]
+    #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
+    # It's valid for these to return None.
 
     def put_blank(self):
         # self.put_token('ws', ' ')
@@ -1157,35 +1207,6 @@ class TokenOrderGenerator:
             print('Missing...\n')
             g.printObj(missing)
             print('')
-    #@+node:ekr.20191123155941.1: *3* tog.sync (TO DO)
-    def sync(self, token):
-        """Sync the token list/generator to the given token."""
-        #@+<< sync: define peek and advance >>
-        #@+node:ekr.20191123160019.1: *4* << sync: define peek and advance >>
-        def is_significant(token):
-            return (
-                token.kind in ('name', 'number', 'string') or
-                token.kind == 'op' and token.value not in ',;()')
-
-        def find_next_if_token(i):
-            # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
-            while i < len(self.tokens):
-                if is_significant(self.tokens[i]):
-                    break
-                i += 1
-            return i
-
-        _index = find_next_if_token(0)
-
-        def advance():
-            nonlocal _index
-            _index = find_next_if_token(_index+1)
-
-        def peek():
-            nonlocal _index
-            # The possibility of an IndexError is a sanity check.
-            return self.tokens[_index]
-        #@-<< sync: define peek and advance >>
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""

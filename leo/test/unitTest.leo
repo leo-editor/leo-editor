@@ -4100,18 +4100,19 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-all_flag = True # True, ignore @ignore nodes.
+g.cls() ###
+all_flag = False # True, ignore @ignore nodes.
+allow_trace = False
 use_asttokens = False
 
-if all_flag:
-    print('\nRunning *all* unit tests')
+print(f"\nRunning {'*all*' if all_flag else '*selected*'} unit tests")
 if use_asttokens:
     print('\nUsing asttokens, *not* the TOG classes')
 
 import time
 import leo.core.leoAst as leoAst
 import imp
-if 1: ###
+if allow_trace: ###
     t1 = time.process_time()
     imp.reload(leoAst)
     t2 = time.process_time()
@@ -4122,7 +4123,8 @@ root = c.p
 t1 = time.process_time()
 tests = make_tests(c.p, all_flag)
 t2 = time.process_time()
-print(f"make_test time: {(t2-t1):4.2f} sec.")
+if allow_trace:
+    print(f"make_test time: {(t2-t1):4.2f} sec.")
 if not tests:
     print(f"no tests in {c.p.h}")
 # Run the tests.
@@ -4130,14 +4132,13 @@ if all_flag:
     reports = [] # 'coverage'
 else:
     reports = [
-        # 'clear',
         # 'dump-all',
         # 'test-links',
-        # 'contents',
+        'contents',
         # 'asttokens',
         # 'tokens',
         # 'raw-tree',
-        # 'tree',
+        'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
 # The test-runner issues a good enough warning.
@@ -4146,6 +4147,7 @@ ok = True
 for contents, description in tests:
     # Test runner catches all exceptions.
     trace = description.startswith('file:') if all_flag else True
+    trace= trace and allow_trace
     ok = leoAst.TestRunner().run_tests(contents, description, reports, trace=trace)
     if 0:
         assert ok, description
@@ -4153,7 +4155,8 @@ for contents, description in tests:
         print(f"\nFAIL: {description}")
         break
 t2 = time.process_time()
-print(f"Run tests time: {(t2-t1):4.2f} sec.")
+if allow_trace:
+    print(f"Run tests time: {(t2-t1):4.2f} sec.")
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
