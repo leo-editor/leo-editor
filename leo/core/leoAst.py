@@ -978,9 +978,6 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
-    
-    use_generators = False
-        # True: production code.  False: debugging code.
 
     #@+others
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
@@ -1015,7 +1012,38 @@ class TokenOrderGenerator:
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@+node:ekr.20191113063144.4: *3* tog.create_links (entry) & helper
+    #@+node:ekr.20191123101144.1: *3* tog.create_sync_lists
+    def create_sync_lists(self):
+        
+        # It would be cool to turn these into generators,
+        # but looking ahead in a generator is unexpectedly tricky.
+        
+        def is_if(token):
+            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+
+        def is_significant(token):
+            return (
+                token.kind in ('name', 'number', 'string') or
+                token.kind == 'op' and token.value not in ',;()')
+                
+        def is_string(token):
+            return token.kind == 'string'
+
+        self.if_tokens = list(filter(is_if, self.tokens))
+        self.significant_tokens = list(filter(is_significant, self.tokens))
+        if 0:
+            g.trace(
+                f"if_tokens: {len(self.if_tokens):6}, "
+                f"significant_tokens: {len(self.significant_tokens):6}")
+        
+        ### Too tricky for now.
+            # if self.use_generators:
+                # self.all_tokens_gen = (z for z in self.tokens)
+                # self.if_gen = (z for z in filter(is_if, self.tokens))
+                # self.significant_tokens_gen = filter(is_significant, self.tokens)
+                # self.string_gen = filter(is_string, self.tokens)
+                
+    #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
     def create_links(self, tokens, tree):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -1032,8 +1060,8 @@ class TokenOrderGenerator:
             # The immutable list of input tokens.
         self.tree = tree
             # The tree of ast.AST nodes.
-        # Create "synchronizing" lists/generators
-        self.create_generators()
+        # Create "synchronizing" lists
+        self.create_sync_lists()
         # Traverse the tree.
         try:
             while True:
@@ -1055,36 +1083,6 @@ class TokenOrderGenerator:
         t2 = time.process_time()
         if t2-t1 > 0.1:
             print(f"create_links: {(t2-t1):4.2f} sec.")
-    #@+node:ekr.20191123101144.1: *4* tog.create_generators
-    def create_generators(self):
-        
-        def is_if(token):
-            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-
-        if self.use_generators:
-            self.all_tokens_gen = (z for z in self.tokens)
-            self.if_gen = filter(is_if, self.tokens)
-        else:
-            self.all_tokens_gen = [z for z in self.tokens]
-            self.if_gen = list(filter(is_if, self.tokens))
-            
-        #### May not be needed.
-            # def is_string(token):
-                # return token.kind == 'string'
-            # if self.use_generators:
-                # self.string_gen = filter(is_string, self.tokens)
-            # else:
-                # self.string_gen = list(filter(is_string, self.tokens))
-                
-        #### May not be needed...
-            # def is_significant(token):
-                # return (
-                    # token.kind in ('name', 'number', 'string') or
-                    # token.kind == 'op' and token.value not in ',;()')
-            # if self.use_generators:
-                # self.significant_tokens_gen = filter(is_significant, self.tokens)
-            # else:
-                # self.significant_tokens_gen = list(filter(is_significant, self.tokens))
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1868,36 +1866,31 @@ class TokenOrderGenerator:
         #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
         #@+<< define peek and advance >>
         #@+node:ekr.20191123152511.1: *6* << define peek and advance >>
-        if self.use_generators:
-            _peek = None
-            
-            def peek():
-                nonlocal _peek
-                if not _peek:
-                    _peek = next(self.if_gen)
-                return _peek
+        _index = 0
 
-            def advance():
-                # Must handle all if tokens.
-                nonlocal _peek
-                assert _peek, g.callers()
-                _peek = None
+        def advance():
+            nonlocal _index
+            # Should go out of range at the end.
+            _index += 1
 
-        else:
-            _index = 0
-
-            def peek():
-                nonlocal _index
-                return self.if_gen[_index]
-               
-            def advance():
-                nonlocal _index
-                _index += 1
+        def peek():
+            nonlocal _index
+            return self.if_tokens[_index]
+                
+        ### All obvious generator-based code fails in mysterious ways.
+                
+            # def peek():
+                # # https://stackoverflow.com/questions/2425270
+                # token = next(self.if_gen)
+                # self.if_gen = itertools.chain([token], self.if_gen)
+                # return token
+                
+            # def advance():
+                # next(self.if_gen)
         #@-<< define peek and advance >>
-        # Get the proper value from the token list.
+        # Consume the if-item.
         token_value = peek().value
         assert token_value in ('if', 'elif'), token_value
-        # Consume the if-item.
         advance()
         # If or elif line...
             # if %s:\n
@@ -1915,12 +1908,11 @@ class TokenOrderGenerator:
             self.level += 1
             val = peek().value
             if val == 'else':
-                # Consume one if-item.
+                # Consume the 'else' if-item.
                 advance()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
-                ### assert len(node.orelse) == 1, node.orelse
                 yield from self.gen(node.orelse)
             else:
                 assert val in ('if', 'elif'), val
@@ -4098,8 +4090,6 @@ class TestRunner:
                     helper()
                 except Exception as e:
                     g.trace(f"Exception in {report}: {e}")
-                    # This will usually be FailFast.
-                    # g.es_exception()
                     return False
             else:
                 bad_reports.append(report)

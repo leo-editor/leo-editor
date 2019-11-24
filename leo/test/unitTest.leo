@@ -338,6 +338,7 @@
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
+<v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh></v>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
@@ -360,6 +361,7 @@
 </v>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191122210522.1"><vh>If tests</vh>
@@ -4125,6 +4127,7 @@ else:
 # The test-runner issues a good enough warning.
 ok = True
 for contents, description in tests:
+    # Test runner catches all exceptions.
     ok = leoAst.test_runner(contents, reports)
     if 0:
         assert ok, description
@@ -4217,11 +4220,7 @@ class TestClass(base1, base2):
 <t tx="ekr.20191119150253.1">f1(arg, *args, **kwargs)
 </t>
 <t tx="ekr.20191119203945.1"></t>
-<t tx="ekr.20191119210429.1">if not a:
-    pass
-if -(2):
-    pass
-</t>
+<t tx="ekr.20191119210429.1">print(-(2))</t>
 <t tx="ekr.20191119211714.1">if a and not b and c:
     pass
 </t>
@@ -4443,6 +4442,10 @@ else:
     pass
 elif 2:
     pass
+    pass
+</t>
+<t tx="ekr.20191123203957.1"></t>
+<t tx="ekr.20191123210801.1">if -(2):
     pass
 </t>
 </tnodes>
