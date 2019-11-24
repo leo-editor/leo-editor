@@ -1112,15 +1112,6 @@ class TokenOrderGenerator:
         ### g.trace(f"\n{kind:>12} {self.node.__class__.__name__}")
         assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
         self.advance_and_sync()
-
-        ### To do ###
-            # # Similar to Tokenizer.add_token.
-            # val2 = val if isinstance(val, str) else str(val)
-            # token = Token(kind, val2)
-            # token.node = self.node
-            # token.index = self.result_index
-            # self.result_index += 1
-            # self.results.append(token)
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
     def advance_and_sync(self):
         i = self.sync_index
@@ -2158,7 +2149,7 @@ class AstDumper:
             if z.kind in ('indent', 'ws'):
                 result.append(f"{z.kind}({len(z.value)})")
             elif z.kind == 'newline':
-                result.append(f"{z.kind}({z.line_number}:{len(z.line)})")
+                result.append(f"{z.kind.strip()}({z.line_number}:{len(z.line)})")
             elif z.kind in ('name', 'string'):
                 val = truncate(z.value,20) ### Better.
                 result.append(f"{z.kind}({val})")
@@ -2166,9 +2157,14 @@ class AstDumper:
                 result.append(f"{z.kind}({z.value})")
             elif z.kind == 'op':
                 result.append(f"{z.kind}{z.value}")
+            else:
+                # Indent, dedent, encoding, etc.
+                # Don't put a blank.
+                continue 
             result.append(' ')
+        #
         # split the line if it is too long.
-        # return ''.join(result)
+        # g.printObj(result, tag='show_tokens')
         line, lines = [], []
         for r in result:
             line.append(r)

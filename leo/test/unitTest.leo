@@ -4102,21 +4102,24 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 g.cls() ###
 all_flag = False # True, ignore @ignore nodes.
+allow_reload = True ###
 allow_trace = False
 use_asttokens = False
-
-print(f"\nRunning {'*all*' if all_flag else '*selected*'} unit tests")
-if use_asttokens:
-    print('\nUsing asttokens, *not* the TOG classes')
-
+# Imports...
 import time
 import leo.core.leoAst as leoAst
 import imp
-if allow_trace: ###
-    t1 = time.process_time()
+t1 = time.process_time()
+if allow_reload: ###
+    print('Reloading leoAst')
     imp.reload(leoAst)
-    t2 = time.process_time()
+t2 = time.process_time()
+# Status messages...
+if allow_reload and allow_trace:
     print(f"\n   Reload time: {(t2-t1):4.2f} sec.")
+print(f"\nRunning {'*all*' if all_flag else '*selected*'} unit tests")
+if use_asttokens:
+    print('\nUsing asttokens, *not* the TOG classes')
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
