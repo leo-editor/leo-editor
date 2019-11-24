@@ -1895,16 +1895,14 @@ class TokenOrderGenerator:
                 _index += 1
         #@-<< define peek and advance >>
         # Get the proper value from the token list.
-        token = peek()
-        assert token.value in ('if', 'elif'), token.value
-        ### if token.value == 'else':
-        ###     print('LINE', token.index)
+        token_value = peek().value
+        assert token_value in ('if', 'elif'), token_value
         # Consume the if-item.
         advance()
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        yield from self.gen_name(token.value)
+        yield from self.gen_name(token_value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
