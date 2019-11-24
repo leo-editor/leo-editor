@@ -339,7 +339,7 @@
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
-<v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh></v>
+<v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
@@ -349,7 +349,7 @@
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
 <v t="ekr.20191119142414.1"><vh>xx test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
-<v t="ekr.20191120075520.1"><vh>Expression &amp; operators</vh>
+<v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
 <v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
 <v t="ekr.20191119135937.1"><vh>test: FormattedValue: f-string</vh></v>
@@ -364,18 +364,20 @@
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
+<v t="ekr.20191124040736.1"><vh>Statements...</vh></v>
 <v t="ekr.20191122210522.1"><vh>If tests</vh>
-<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
-<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
-<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
-<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
-</v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
+<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
+<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
+<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
+<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -4098,15 +4100,23 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
+import time
 import leo.core.leoAst as leoAst
 import imp
-imp.reload(leoAst) ###
+if 1: ###
+    t1 = time.process_time()
+    imp.reload(leoAst)
+    t2 = time.process_time()
+    print(f"\n   Reload time: {(t2-t1):4.2f} sec.")
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
 ALL = True # True, ignore @ignore nodes.
+t1 = time.process_time()
 tests = make_tests(c.p, ALL)
+t2 = time.process_time()
+print(f"make_test time: {(t2-t1):4.2f} sec.")
 if not tests:
     print(f"no tests in {c.p.h}")
 # Run the tests.
@@ -4119,21 +4129,25 @@ else:
         # 'test-links',
         # 'contents',
         # 'asttokens',
-        # 'tokens',
+        'tokens',
         # 'raw-tree',
-        # 'tree',
+        'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
 # The test-runner issues a good enough warning.
+t1 = time.process_time()
 ok = True
 for contents, description in tests:
     # Test runner catches all exceptions.
-    ok = leoAst.test_runner(contents, reports)
+    trace = True and description.startswith('file:')
+    ok = leoAst.TestRunner().run_tests(contents, description, reports, trace=trace)
     if 0:
         assert ok, description
     if not ok:
         print(f"\nFAIL: {description}")
         break
+t2 = time.process_time()
+print(f"Run tests time: {(t2-t1):4.2f} sec.")
 status = 'PASS' if ok else 'FAIL'
 print(f"\n{status} Ran {len(tests)} tests")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
@@ -4448,5 +4462,6 @@ elif 2:
 <t tx="ekr.20191123210801.1">if -(2):
     pass
 </t>
+<t tx="ekr.20191124040736.1"></t>
 </tnodes>
 </leo_file>

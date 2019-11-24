@@ -238,10 +238,6 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
-#@+node:ekr.20191122021704.1: *3* function: test_runner
-def test_runner(contents, reports=None):
-
-    return TestRunner().run_tests(contents, reports)
 #@+node:ekr.20191113205051.1: *3* function: truncate
 def truncate(s, n):
     if isinstance(s, str):
@@ -1012,47 +1008,12 @@ class TokenOrderGenerator:
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@+node:ekr.20191123101144.1: *3* tog.create_sync_lists
-    def create_sync_lists(self):
-        
-        # It would be cool to turn these into generators,
-        # but looking ahead in a generator is unexpectedly tricky.
-        
-        def is_if(token):
-            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-
-        def is_significant(token):
-            return (
-                token.kind in ('name', 'number', 'string') or
-                token.kind == 'op' and token.value not in ',;()')
-                
-        def is_string(token):
-            return token.kind == 'string'
-
-        self.if_tokens = list(filter(is_if, self.tokens))
-        self.significant_tokens = list(filter(is_significant, self.tokens))
-        self.string_tokens = list(filter(is_string, self.tokens))
-        if 0:
-            g.trace(
-                f"if_tokens: {len(self.if_tokens):6}, "
-                f"significant_tokens: {len(self.significant_tokens):6} "
-                f"string_tokens: {len(self.string_tokens):6}")
-        
-        ### Too tricky for now.
-            # if self.use_generators:
-                # self.all_tokens_gen = (z for z in self.tokens)
-                # self.if_gen = (z for z in filter(is_if, self.tokens))
-                # self.significant_tokens_gen = filter(is_significant, self.tokens)
-                # self.string_gen = filter(is_string, self.tokens)
-                
     #@+node:ekr.20191113063144.4: *3* tog.create_links (entry)
-    def create_links(self, tokens, tree):
+    def create_links(self, tokens, tree, file_name=''):
         """
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
-        import time
-        t1 = time.process_time()
         self.level = 0
             # Python indentation level.
         self.node = None
@@ -1062,16 +1023,16 @@ class TokenOrderGenerator:
             # The immutable list of input tokens.
         self.tree = tree
             # The tree of ast.AST nodes.
-        # Create "synchronizing" lists
-        self.create_sync_lists()
         # Traverse the tree.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
-        ### These also work...
+        self.visitor(tree)
+        ### These are also possible...
             # if 1:
+                # try:
+                    # while True:
+                        # next(self.visitor(tree))
+                # except StopIteration:
+                    # pass
+            # elif 1:
                 # # Traverse the tree.
                 # list(self.visitor(tree))
             # else:
@@ -1082,9 +1043,7 @@ class TokenOrderGenerator:
             self.node = tree
             yield from self.gen_token('newline', '\n')
             yield from self.gen_token('endmarker', '')
-        t2 = time.process_time()
-        if t2-t1 > 0.1:
-            print(f"create_links: {(t2-t1):4.2f} sec.")
+       
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1204,34 +1163,32 @@ class TokenOrderGenerator:
     #@+node:ekr.20191123155941.1: *3* tog.sync (TO DO)
     def sync(self, token):
         """Sync the token list/generator to the given token."""
-        #@+<< define peek and advance >>
-        #@+node:ekr.20191123160019.1: *4* << define peek and advance >>
-        if self.use_generators:
-            _peek = None
-            
-            def peek():
-                nonlocal _peek
-                if not _peek:
-                    _peek = next(self.all_tokens_gen)
-                return _peek
+        #@+<< sync: define peek and advance >>
+        #@+node:ekr.20191123160019.1: *4* << sync: define peek and advance >>
+        def is_significant(token):
+            return (
+                token.kind in ('name', 'number', 'string') or
+                token.kind == 'op' and token.value not in ',;()')
 
-            def advance():
-                # Must handle all if tokens.
-                nonlocal _peek
-                assert _peek, g.callers()
-                _peek = None
+        def find_next_if_token(i):
+            # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
+            while i < len(self.tokens):
+                if is_significant(self.tokens[i]):
+                    break
+                i += 1
+            return i
 
-        else:
-            _index = None
+        _index = find_next_if_token(0)
 
-            def peek():
-                nonlocal _index
-                return self.all_tokens_gen[_index]
-               
-            def advance():
-                nonlocal _index
-                _index += 1
-        #@-<< define peek and advance >>
+        def advance():
+            nonlocal _index
+            _index = find_next_if_token(_index+1)
+
+        def peek():
+            nonlocal _index
+            # The possibility of an IndexError is a sanity check.
+            return self.tokens[_index]
+        #@-<< sync: define peek and advance >>
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1866,30 +1823,30 @@ class TokenOrderGenerator:
         Instead, if-item list/generator tells the 'if' visitor what to do.
         """
         #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
-        #@+<< define peek and advance >>
-        #@+node:ekr.20191123152511.1: *6* << define peek and advance >>
-        _index = 0
+        #@+<< do_If: define peek and advance >>
+        #@+node:ekr.20191123152511.1: *6* << do_If: define peek and advance >>
+        def is_if(token):
+            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+
+        def find_next_if_token(i):
+            # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
+            while i < len(self.tokens):
+                if is_if(self.tokens[i]):
+                    break
+                i += 1
+            return i
+
+        _index = find_next_if_token(0)
 
         def advance():
             nonlocal _index
-            # Should go out of range at the end.
-            _index += 1
+            _index = find_next_if_token(_index+1)
 
         def peek():
             nonlocal _index
-            return self.if_tokens[_index]
-
-        ### All obvious generator-based code fails in mysterious ways.
-                
-            # def peek():
-                # # https://stackoverflow.com/questions/2425270
-                # token = next(self.if_gen)
-                # self.if_gen = itertools.chain([token], self.if_gen)
-                # return token
-                
-            # def advance():
-                # next(self.if_gen)
-        #@-<< define peek and advance >>
+            # The possibility of an IndexError is a sanity check.
+            return self.tokens[_index]
+        #@-<< do_If: define peek and advance >>
         # Consume the if-item.
         token_value = peek().value
         assert token_value in ('if', 'elif'), token_value
@@ -4045,17 +4002,19 @@ class TestRunner:
     """
     #@+others
     #@+node:ekr.20191122021515.1: *3*  TestRunner.run_tests
-    def run_tests(self, sources, reports=None):
+    def run_tests(self, sources, description, reports, trace=False):
         """
         Run all tests given in the reports list.
 
         Reports is a list of reports, in *caller-defined* order.
         """
+        import time
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
         # Set defaults.
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
+        t1 = time.process_time()
         if 'asttokens' in reports:
             import asttokens
             reports.remove('asttokens')
@@ -4063,20 +4022,32 @@ class TestRunner:
             atok = asttokens.ASTTokens(sources, parse=True)
             self.tree = atok.tree
             self.tokens = atok._tokens
+            t2 = time.process_time()
         else:
-            ###
-                # if 'assign_links' not in reports:
-                    # print('\nWARNING: assign-links not in reports')
             x = self.x = TokenOrderInjector()
                 # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources)
             self.tree = parse_ast(sources)
             # Catch exceptions so we can get data late.
             try:
-                list(x.create_links(self.tokens, self.tree))
+                t2 = time.process_time()
+                list(x.create_links(self.tokens, self.tree, file_name=description))
+                if 0: # To make sure I'm not crazy.  create_links is *really* fast.
+                    for i in range(100000):
+                        pass
+                t3 = time.process_time()
             except Exception:
                 g.es_exception()
                 return False
+        if trace:
+            pad = ' '*4
+            print('')
+            print(
+                f"{pad}description: {description}\n"
+                f"{pad} setup time: {(t2-t1):4.2f} sec.")
+            if x:
+                print(f"{pad}  link time: {(t3-t2):4.2f} sec.")
+            print('')
         # Print reports, in the order they appear in the results list.
         bad_reports = []
         for report in reports:
