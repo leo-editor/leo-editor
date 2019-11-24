@@ -1031,10 +1031,12 @@ class TokenOrderGenerator:
 
         self.if_tokens = list(filter(is_if, self.tokens))
         self.significant_tokens = list(filter(is_significant, self.tokens))
+        self.string_tokens = list(filter(is_string, self.tokens))
         if 0:
             g.trace(
                 f"if_tokens: {len(self.if_tokens):6}, "
-                f"significant_tokens: {len(self.significant_tokens):6}")
+                f"significant_tokens: {len(self.significant_tokens):6} "
+                f"string_tokens: {len(self.string_tokens):6}")
         
         ### Too tricky for now.
             # if self.use_generators:
@@ -1120,7 +1122,7 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191121180100.1: *3* tog.gen* (new)
+    #@+node:ekr.20191121180100.1: *3* tog.gen* (REWRITE)
     # Useful wrappers.
 
     def gen(self, z):
@@ -1876,7 +1878,7 @@ class TokenOrderGenerator:
         def peek():
             nonlocal _index
             return self.if_tokens[_index]
-                
+
         ### All obvious generator-based code fails in mysterious ways.
                 
             # def peek():
@@ -1915,8 +1917,6 @@ class TokenOrderGenerator:
                 yield from self.gen_newline()
                 yield from self.gen(node.orelse)
             else:
-                assert val in ('if', 'elif'), val
-                # Call ourselves recursively.
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
