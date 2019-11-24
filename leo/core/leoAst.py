@@ -1153,6 +1153,10 @@ class TokenOrderGenerator:
         # Add the token to node.token_list.
         token_list = getattr(node, 'token_list', [])
         node.token_list = token_list + [token]
+        # Special cases...
+        if isinstance(node, ast.Str) and token.kind == 'string':
+            g.trace(f"node.s: {node.s} token.value: {token.value}")
+            # node.s=token.value
     #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
     # It's valid for these to return None.
 
@@ -1589,6 +1593,7 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This node represents a string constant."""
         yield from self.gen_token('string', node.s)
+        
         ### To be done in tog.sync.
             # yield from self.gen_token('string', node.s)
             # token = Token('string', node.s)
@@ -2146,17 +2151,23 @@ class AstDumper:
             return ','.join([z.kind for z in token_list])
         result = []
         for z in token_list:
-            if z.kind == 'ws':
-                result.append(f"{z.kind}({len(z.value)})")
+            if z.kind == 'comment':
+                val = truncate(z.value,10) # Short is good.
+                result.append(f"{z.kind}({val})")
+            elif z.kind == 'name':
+                val = truncate(z.value,20)
+                result.append(f"{z.kind}({val})")
             elif z.kind == 'newline':
                 result.append(f"{z.kind.strip()}({z.line_number}:{len(z.line)})")
-            elif z.kind in ('name', 'string'):
-                val = truncate(z.value,20) ### Better.
-                result.append(f"{z.kind}({val})")
             elif z.kind == 'number':
                 result.append(f"{z.kind}({z.value})")
             elif z.kind == 'op':
                 result.append(f"{z.kind}{z.value}")
+            elif z.kind == 'string':
+                val = truncate(z.value,20)
+                result.append(f"{z.kind}({val})")
+            elif z.kind == 'ws':
+                result.append(f"{z.kind}({len(z.value)})")
             else:
                 # Indent, dedent, encoding, etc.
                 # Don't put a blank.
