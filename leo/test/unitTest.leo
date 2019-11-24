@@ -4100,6 +4100,14 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
+all_flag = True # True, ignore @ignore nodes.
+use_asttokens = False
+
+if all_flag:
+    print('\nRunning *all* unit tests')
+if use_asttokens:
+    print('\nUsing asttokens, *not* the TOG classes')
+
 import time
 import leo.core.leoAst as leoAst
 import imp
@@ -4111,10 +4119,6 @@ if 1: ###
 # Make the tests.
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
-use_asttokens = False
-
-all_flag = True # True, ignore @ignore nodes.
-
 t1 = time.process_time()
 tests = make_tests(c.p, all_flag)
 t2 = time.process_time()

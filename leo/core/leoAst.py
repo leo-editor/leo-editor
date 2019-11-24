@@ -1076,7 +1076,7 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191121180100.1: *3* tog.gen* (REWRITE)
+    #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
 
     def gen(self, z):
@@ -1116,10 +1116,12 @@ class TokenOrderGenerator:
             # self.results.append(token)
 
     def put_blank(self):
-        if 0: self.put_token('ws', ' ')
+        # self.put_token('ws', ' ')
+        return None
 
     def put_comma(self):
-        if 0: self.put_token('op', ',')
+        # self.put_token('op', ',')
+        return None
 
     def put_name(self, val):
         aList = val.split('.')
