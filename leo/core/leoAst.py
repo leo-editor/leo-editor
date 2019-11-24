@@ -979,7 +979,7 @@ class TokenOrderGenerator:
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
     
-    use_generators = True
+    use_generators = False
         # True: production code.  False: debugging code.
 
     #@+others
@@ -1884,7 +1884,7 @@ class TokenOrderGenerator:
                 _peek = None
 
         else:
-            _index = None
+            _index = 0
 
             def peek():
                 nonlocal _index
@@ -1894,15 +1894,17 @@ class TokenOrderGenerator:
                 nonlocal _index
                 _index += 1
         #@-<< define peek and advance >>
+        # Get the proper value from the token list.
+        token = peek()
+        assert token.value in ('if', 'elif'), token.value
+        ### if token.value == 'else':
+        ###     print('LINE', token.index)
+        # Consume the if-item.
+        advance()
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        # Get the proper value from the token list.
-        val = peek().value
-        assert val in ('if', 'elif', 'else'), val
-        # Consume the if-item.
-        advance()
-        yield from self.gen_name(val)
+        yield from self.gen_name(token.value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
@@ -1920,6 +1922,7 @@ class TokenOrderGenerator:
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
+                ### assert len(node.orelse) == 1, node.orelse
                 yield from self.gen(node.orelse)
             else:
                 assert val in ('if', 'elif'), val
