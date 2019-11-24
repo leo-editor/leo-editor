@@ -2146,7 +2146,7 @@ class AstDumper:
             return ','.join([z.kind for z in token_list])
         result = []
         for z in token_list:
-            if z.kind in ('indent', 'ws'):
+            if z.kind == 'ws':
                 result.append(f"{z.kind}({len(z.value)})")
             elif z.kind == 'newline':
                 result.append(f"{z.kind.strip()}({z.line_number}:{len(z.line)})")
