@@ -4112,7 +4112,9 @@ if 1: ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
+
 all_flag = True # True, ignore @ignore nodes.
+
 t1 = time.process_time()
 tests = make_tests(c.p, all_flag)
 t2 = time.process_time()

@@ -1014,6 +1014,8 @@ class TokenOrderGenerator:
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
+        #
+        # Init all ivars.
         self.level = 0
             # Python indentation level.
         self.node = None
@@ -1023,21 +1025,14 @@ class TokenOrderGenerator:
             # The immutable list of input tokens.
         self.tree = tree
             # The tree of ast.AST nodes.
+        #
         # Traverse the tree.
-        self.visitor(tree)
-        ### These are also possible...
-            # if 1:
-                # try:
-                    # while True:
-                        # next(self.visitor(tree))
-                # except StopIteration:
-                    # pass
-            # elif 1:
-                # # Traverse the tree.
-                # list(self.visitor(tree))
-            # else:
-                # # Create the tree generator.
-                # yield from self.visitor(tree)
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+        #
         # Patch the last tokens.
         if 0: ### Should not be necessary.
             self.node = tree
@@ -1830,6 +1825,7 @@ class TokenOrderGenerator:
 
         def find_next_if_token(i):
             # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
+            ### g.trace(i) # Just to be *sure* this is being called.
             while i < len(self.tokens):
                 if is_if(self.tokens[i]):
                     break
@@ -4031,10 +4027,8 @@ class TestRunner:
             # Catch exceptions so we can get data late.
             try:
                 t2 = time.process_time()
+                # Yes, list *is* required here.
                 list(x.create_links(self.tokens, self.tree, file_name=description))
-                if 0: # To make sure I'm not crazy.  create_links is *really* fast.
-                    for i in range(100000):
-                        pass
                 t3 = time.process_time()
             except Exception:
                 t3 = time.process_time()
