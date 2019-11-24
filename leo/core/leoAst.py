@@ -1899,7 +1899,7 @@ class TokenOrderGenerator:
             # elif %s: \n
         # Get the proper value from the token list.
         val = peek().value
-        assert val in ('if', 'elif'), val
+        assert val in ('if', 'elif', 'else'), val
         # Consume the if-item.
         advance()
         yield from self.gen_name(val)
@@ -1922,9 +1922,7 @@ class TokenOrderGenerator:
                 yield from self.gen_newline()
                 yield from self.gen(node.orelse)
             else:
-                # Sanity checks.
                 assert val in ('if', 'elif'), val
-                assert isinstance(node.orelse[0], ast.If), repr(node.orelse[0])
                 # Call ourselves recursively.
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)

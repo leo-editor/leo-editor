@@ -378,7 +378,7 @@
 </v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 </v>
-<v t="ekr.20191120064512.1"><vh>fail: File tests (all fail)</vh>
+<v t="ekr.20191120064512.1"><vh>ignore: File tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
