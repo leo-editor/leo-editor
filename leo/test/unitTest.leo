@@ -4112,15 +4112,15 @@ if 1: ###
 &lt;&lt; function: make_tests &gt;&gt;
 root = c.p
 use_asttokens = False
-ALL = True # True, ignore @ignore nodes.
+all_flag = True # True, ignore @ignore nodes.
 t1 = time.process_time()
-tests = make_tests(c.p, ALL)
+tests = make_tests(c.p, all_flag)
 t2 = time.process_time()
 print(f"make_test time: {(t2-t1):4.2f} sec.")
 if not tests:
     print(f"no tests in {c.p.h}")
 # Run the tests.
-if ALL:
+if all_flag:
     reports = [] # 'coverage'
 else:
     reports = [
@@ -4129,9 +4129,9 @@ else:
         # 'test-links',
         # 'contents',
         # 'asttokens',
-        'tokens',
+        # 'tokens',
         # 'raw-tree',
-        'tree',
+        # 'tree',
     ]
 # It may be useful for some tests *not* to invoke assign-links.
 # The test-runner issues a good enough warning.
@@ -4139,7 +4139,7 @@ t1 = time.process_time()
 ok = True
 for contents, description in tests:
     # Test runner catches all exceptions.
-    trace = True and description.startswith('file:')
+    trace = description.startswith('file:') if all_flag else True
     ok = leoAst.TestRunner().run_tests(contents, description, reports, trace=trace)
     if 0:
         assert ok, description

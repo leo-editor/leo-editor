@@ -4037,6 +4037,7 @@ class TestRunner:
                         pass
                 t3 = time.process_time()
             except Exception:
+                t3 = time.process_time()
                 g.es_exception()
                 return False
         if trace:
@@ -4044,9 +4045,8 @@ class TestRunner:
             print('')
             print(
                 f"{pad}description: {description}\n"
-                f"{pad} setup time: {(t2-t1):4.2f} sec.")
-            if x:
-                print(f"{pad}  link time: {(t3-t2):4.2f} sec.")
+                f"{pad} setup time: {(t2-t1):4.2f} sec.\n"
+                f"{pad}  link time: {(t3-t2):4.2f} sec.")
             print('')
         # Print reports, in the order they appear in the results list.
         bad_reports = []
