@@ -1114,7 +1114,7 @@ class TokenOrderGenerator:
         assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
         if self.trace_mode:
             print(f"\nput_token: {kind:>12} {self.node.__class__.__name__}")
-            print(AstDumper().brief_dump_one_node(self.node, self.level))
+            # print(AstDumper().brief_dump_one_node(self.node, self.level))
         self.advance_and_sync()
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
     def advance_and_sync(self):
@@ -1854,6 +1854,8 @@ class TokenOrderGenerator:
         #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
         #@+<< do_If: define peek and advance >>
         #@+node:ekr.20191123152511.1: *6* << do_If: define peek and advance >>
+        # These helpers can be local because only do_IF uses them.
+
         def is_if(token):
             return token.kind == 'name' and token.value in ('if', 'elif', 'else')
 
