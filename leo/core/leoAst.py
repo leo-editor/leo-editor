@@ -1173,13 +1173,15 @@ class TokenOrderGenerator:
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
             if self.is_significant_token(token):
+                # Unrecoverable sync failure.
                 g.printObj(tokens[max(0, px-5):px+1], 'TOKENS')
                 raise AssignLinksError(
                     f"\nLooking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
             px += 1
         else:
-            # Scanning mismatch.
+            # Unrecoverable sync failure.
+            g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise AssignLinksError(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -1208,7 +1210,7 @@ class TokenOrderGenerator:
         token.node = self.node
         # Add the token to node's token_list.
         token_list = getattr(node, 'token_list', [])
-        token_list = token_list + [token]
+        node.token_list = token_list + [token]
     #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
     # It's valid for these to return None.
 
