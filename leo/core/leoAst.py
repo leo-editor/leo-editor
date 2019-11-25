@@ -1114,7 +1114,7 @@ class TokenOrderGenerator:
         assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
         if self.trace_mode:
             print(f"\nput_token: {kind:>12} {self.node.__class__.__name__}")
-            # print(AstDumper().brief_dump_one_node(self.node, self.level))
+            print(AstDumper().brief_dump_one_node(self.node, self.level))
         self.advance_and_sync()
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
     def advance_and_sync(self):
@@ -2071,7 +2071,6 @@ class AstDumper:
         result = [self.show_header()]
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
-
     #@+node:ekr.20191125035321.1: *4* dumper.brief_dump_helper
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
@@ -2099,19 +2098,15 @@ class AstDumper:
     def brief_dump_one_node(self, node, level):
         
         indent = ' ' * 2 * level
-        result = [self.show_header()]
+        result = [] # [self.show_header()]
         node_s = self.compute_node_string(node, level)
-        ###
-            # if isinstance(node, (list, tuple)):
-                # for z in node:
-                    # self.brief_dump_helper(z, level, result)
         if isinstance(node, str):
             result.append(f"{indent}{node.__class__.__name__:>8}:{node}\n")
         elif isinstance(node, ast.AST):
             # Node and parent.
             result.append(node_s)
         else:
-            result.append(f"BAD NODE: {node.__class__.__name__}")
+            result.append(f"{indent}OOPS: {node.__class__.__name__}")
         return ''.join(result)
     #@+node:ekr.20191125035600.1: *3* dumper.compute_node_string & helpers
     def compute_node_string(self, node, level):
@@ -4069,6 +4064,7 @@ class TestRunner:
         Reports is a list of reports, in *caller-defined* order.
         """
         import time
+        tag = 'run_tests'
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
         # Set defaults.
@@ -4118,15 +4114,14 @@ class TestRunner:
                 try:
                     helper()
                 except Exception as e:
-                    g.trace(f"Exception in {report}: {e}")
+                    print(f"{tag}: Exception in {report}: {e}")
                     return False
             else:
                 bad_reports.append(report)
         if bad_reports:
             for report in list(set(bad_reports)):
-                print('bad report option:', repr(report))
+                print('{tag}: bad report option:', repr(report))
         return True
-        
     #@+node:ekr.20191122022728.1: *3* TestRunner.dump_all
     def dump_all(self):
 
