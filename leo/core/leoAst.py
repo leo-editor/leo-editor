@@ -1101,13 +1101,25 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191124123830.1: *3* tog.is_significant & is_significant_token
+    #@+node:ekr.20191124123830.1: *3* tog.is_assignable_token & is_significant*
+    def is_assignable_token(self, token):
+        """
+        A global predicate returning True if the token should be assigned to
+        the token_list field of the next significant token.
+        
+        We can assume that that token is not significant.
+        
+        Code should *not* use any similar local predicate.
+        """
+        return token.kind in ('comment', 'newline')
+            # or token.kind == 'op' and token.value in ',()'
+
     def is_significant(self, kind, value):
         """
         A global predicate returning True if kind, value represent a token that
         can be used for syncing generated tokens with the token list.
         
-        Code should *not* use any other local predicate.
+        Code should *not* use any similar local predicate.
         """
         return (
             kind in ('name', 'number', 'string') or
@@ -1117,107 +1129,79 @@ class TokenOrderGenerator:
         """Return True if the given token is a syncronizing token"""
         return self.is_significant(token.kind, token.value)
         
-    #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
-    # set_links:
-    # r         list of significant results.
-    # t         list of significant tokens.
-    # tokens:   list of all tokens.
-    # tx        Index of the last patched token.
 
-    rx = 0
-    tx = 0
+        
+    #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
+    px = -1 # Index of the previous significant token.
+
+    def set_links(self, token):
+        """Make two-way links between token and self.node."""
+        assert token.node is None, repr(token)
+        node = self.node
+        # Link the token to the ast node.
+        token.node = self.node
+        # Add the token to node's token_list.
+        token_list = getattr(node, 'token_list', [])
+        token_list = token_list + [token]
 
     def put_token(self, kind, val):
         """
         Handle a token whose kind & value are given.
         
-        Sync all significant tokens to self.node, creating two-way links
-        between the node and the token.
+        If the token is significant, do the following:
+            
+        1. Create two-way links between all previous *visible* (but not
+           significant) tokens with self.node.
+            
+        2. Create two-way links between the token and self.node.
         """
         node, tokens = self.node, self.tokens
+        old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), repr(node)
+        if not self.is_significant(kind, val):
+            return
         if self.trace_mode:
-            print(f"\nput_token: {kind:>12} {node.__class__.__name__}")
-            # print(AstDumper().brief_dump_one_node(self.node, self.level))
-            
-        if 1:
-            return ### Not ready yet ###
-        
-        ### self.advance_and_sync()
-        
-        ### To do: assign r, t. ###
-        r = g.TracingNullObject(tag='r')
-        t = g.TracingNullObject(tag='t')
-        
-        ### From Linker.set_links ###
-        while self.tx <= t.index:
-            token = tokens[self.tx]
-            # Don't assign "cruft" tokens to the ast node.
-            ### 
-            ###if token.kind in ('encoding', 'endmarker', 'dedent', 'indent', 'ws'):
-            if self.is_significant(kind, val):
-                continue
-            # Patch the token.
-            assert token.node is None, repr(token)
-            token.node = r.node
-            # Add the token to r.node.token_list.
-            token_list = getattr(r.node, 'token_list', [])
-            r.node.token_list = token_list + [token]
-            self.tx += 1
-        assert self.tx == t.index + 1, (self.tx, t.index, repr(t))
-
-    #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
-    sync_index = 0
-
-    def advance_and_sync(self):
-        i = self.sync_index
-        j = self.find_next_significant_token(i+1)
-        if self.trace_mode:
-            print(
-                f"advance_and_sync: "
-                f"i:{i:>2} j:{j:>2} node: {self.node.__class__.__name__}")
-        if self.node:
-            # Sync all previously unsynched tokens up to and including j.
-            while i < j:
-                self.sync(self.node, self.tokens[i])
-                i += 1
-        assert j >= len(self.tokens) -1 or j > self.sync_index, (j, self.sync_index)
-        self.sync_index = j+1
-        return j
-    #@+node:ekr.20191124123830.2: *4* tog.find_next_significant_token
-    def find_next_significant_token(self, i):
-        # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            ### g.trace('LOOK', i, token.index, token)
+            ivar = 'header_has_been_shown'
+            if not getattr(self, ivar, None):
+                setattr(self, ivar, True)
+                print('Significant tokens...\n')
+                print(AstDumper().show_header())
+            print(AstDumper().brief_dump_one_node(self.node, self.level))
+        #
+        # Step one: Scan from *after* the previous significant token,
+        #           looking for a token that matches (kind, val)
+        #           Leave px pointing at the next significant token.
+        px += 1
+        while px < len(self.tokens):
+            token = tokens[px]
+            if (kind, val) == (token.kind, token.value):
+                break  # Success.
             if self.is_significant_token(token):
-                ### g.trace('FOUND', i, token.index, token)
-                return i
-            i += 1
-        ### g.trace('STOP', i)
-        return len(self.tokens)-1
-    #@+node:ekr.20191123155941.1: *4* tog.sync (New)
-    def sync(self, node, token):
-        """Sync the token to the given parse tree node."""
-        # Patch the token.
-        assert token.node is None, repr(token)
-        token.node = node
-        # Add the token to node.token_list.
-        if token.kind in ('dedent', 'encoding', 'endmarker', 'indent', 'newline', 'nl', 'ws'):
-            # Ignore irrelevant tokens.
-            return
-        if token.kind == 'op' and token.value in ',()':
-            # Ignore non-syncing tokens.
-            return
-        if self.trace_mode:
-            print(f"sync: {token.index:>4} {token.kind:<12} {node.__class__.__name__}")
-        token_list = getattr(node, 'token_list', [])
-        node.token_list = token_list + [token]
-        # Special cases..
-        if 0: # Not yet.
-            if isinstance(node, ast.Str) and token.kind == 'string':
-                g.trace(f"node.s: {node.s} token.value: {token.value}")
-                # node.s=token.value
+                raise AssignLinksError(
+                    f"Looking for: {kind}.{val}\n"
+                    f"      found: {token.kind}.{token.value}")
+            px += 1
+        else:
+            # Scanning mismatch.
+            raise AssignLinksError(
+                 f"Looking for: {kind}.{val}\n"
+                 f"      found: end of token list")
+        #
+        # Step two: Associate all previous assignable tokens to the ast node.
+        while old_px < px:
+            token = tokens[old_px]
+            old_px += 1
+            # Don't assign "cruft" tokens to the ast node.
+            if self.is_assignable(token):
+                self.set_links(token)
+        #
+        # Step three: Set links in the significant token.
+        token = tokens[px]
+        assert self.is_significant_token(token)
+        self.set_links(token)
+        #
+        # Step four. Advance.
+        self.px = px
     #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
     # It's valid for these to return None.
 
@@ -1655,8 +1639,7 @@ class TokenOrderGenerator:
         """This node represents a string constant."""
         yield from self.gen_token('string', node.s)
         
-        ### To be done in tog.sync.
-            # yield from self.gen_token('string', node.s)
+        ### Might be done in tog.sync.
             # token = Token('string', node.s)
             # token.node = node
             # node.token_list = [token]
@@ -2115,13 +2098,12 @@ class AstDumper:
     #@+others
     #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helper
     def brief_dump(self, node):
-        
+        """Briefly show a tree, properly indented."""
         result = [self.show_header()]
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
     #@+node:ekr.20191125035321.1: *4* dumper.brief_dump_helper
     def brief_dump_helper(self, node, level, result):
-        """Briefly show a tree, properly indented."""
         if node is None:
             return
         # Let block.
@@ -2147,9 +2129,9 @@ class AstDumper:
         
         indent = ' ' * 2 * level
         result = [] # [self.show_header()]
-        node_s = self.compute_node_string(node, level)
+        node_s = self.compute_node_string(node, level).rstrip()
         if isinstance(node, str):
-            result.append(f"{indent}{node.__class__.__name__:>8}:{node}\n")
+            result.append(f"{indent}{node.__class__.__name__:>8}:{node}")
         elif isinstance(node, ast.AST):
             # Node and parent.
             result.append(node_s)
@@ -2253,7 +2235,7 @@ class AstDumper:
         return pad.join(lines)
     #@+node:ekr.20191110165235.5: *3* dumper.show_header
     def show_header(self):
-        
+        """Return a header string, but only the fist time."""
         return (
             f"{'parent':<16} {'lines':<8} {'node':<39} {'tokens'}\n"
             f"{'======':<16} {'=====':<8} {'====':<39} {'======'}\n")
