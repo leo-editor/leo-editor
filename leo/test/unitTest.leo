@@ -4137,17 +4137,18 @@ reports = [
     'tree',
 ]
 # Reload, make tests, run tests, summarize.
-reload_time = reload_helper(flags)
-show_status1(flags, reports, reload_time)
-tests = make_tests(c.p, flags)
-ok, test_time = run_tests(flags, reports, tests)
-show_status2(flags, ok, test_time)</t>
-<t tx="ekr.20191118154839.1">def make_tests(root, flags):
+reload_time = reload_helper()
+show_status1()
+tests = make_tests()
+ok, test_time = run_tests()
+show_status2()</t>
+<t tx="ekr.20191118154839.1">def make_tests():
     """
     Return a list of tuples (contents, description) found in all children of the
     root, except this node.
     """
     import os
+    root = c.p
     tests = []
     contents_tag = 'test:'
     file_tag = 'file:'
@@ -4458,7 +4459,7 @@ elif 2:
 </t>
 <t tx="ekr.20191124040736.1"></t>
 <t tx="ekr.20191125063105.1">@others</t>
-<t tx="ekr.20191125063255.1">def show_status1(flags, reports, reload_time):
+<t tx="ekr.20191125063255.1">def show_status1():
     if 'show-test-kind' in flags:
         kind = '*all*' if 'all' in flags else '*selected'
         print(f"Running *{kind}*' unit tests...\n")
@@ -4469,23 +4470,22 @@ elif 2:
     if 'show-make-test-time' in flags:
         print(f"make_test time: {(t2-t1):4.2f} sec.")
 </t>
-<t tx="ekr.20191125064147.1">def filter_reports(description, flags, reports):
+<t tx="ekr.20191125064147.1">def filter_reports(description):
 
     if 'all' in flags:
         return [z for z in reports if z == 'asttokens']
-   
     # Set 'trace-times' only for 'file:' tests.
     aList = [z for z in reports if z != 'trace-times']
     if 'trace-times' in reports and description.startswith('file:'):
         reports2.append('trace-times')
     return aList</t>
-<t tx="ekr.20191125064740.1">def show_status2(flags, ok, test_time):
+<t tx="ekr.20191125064740.1">def show_status2():
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
     if 'show-status' in flags:
         status = 'PASS' if ok else 'FAIL'
         print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
-<t tx="ekr.20191125065230.1">def reload_helper(flags):
+<t tx="ekr.20191125065230.1">def reload_helper():
     
     reload_t1 = time.process_time()
     if 'reload' in flags:
@@ -4495,14 +4495,13 @@ elif 2:
     reload_t2 = time.process_time()
     return reload_t2 - reload_t1
 </t>
-<t tx="ekr.20191125065806.1">def run_tests(flags, reports, tests):
+<t tx="ekr.20191125065806.1">def run_tests():
     ok = True
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
-        reports2 = filter_reports(description, flags, reports)
         x = leoAst.TestRunner()
-        ok = x.run_tests(contents, description, reports2)
+        ok = x.run_tests(contents, description, filter_reports(description))
         if 0:
             assert ok, description
         if not ok:
