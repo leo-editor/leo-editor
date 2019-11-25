@@ -343,7 +343,7 @@
 <v t="ekr.20191125065230.1"><vh>reload_helper</vh></v>
 <v t="ekr.20191125065806.1"><vh>run_tests</vh></v>
 <v t="ekr.20191125063255.1"><vh>show_status1</vh></v>
-<v t="ekr.20191125064740.1"><vh>show_status2</vh></v>
+<v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
@@ -4136,12 +4136,12 @@ reports = [
     # 'raw-tree',
     'tree',
 ]
-# Reload, make tests, run tests, summarize.
+# Reload (if enabled), then make tests, run tests, and summarize.
 reload_time = reload_helper()
 show_status1()
 tests = make_tests()
 ok, test_time = run_tests()
-show_status2()</t>
+summarize()</t>
 <t tx="ekr.20191118154839.1">def make_tests():
     """
     Return a list of tuples (contents, description) found in all children of the
@@ -4458,7 +4458,10 @@ elif 2:
     pass
 </t>
 <t tx="ekr.20191124040736.1"></t>
-<t tx="ekr.20191125063105.1">@others</t>
+<t tx="ekr.20191125063105.1"># All helpers have access to symbols defined at the top level,
+# namely flags, reports, reload_time and test_time.
+
+@others</t>
 <t tx="ekr.20191125063255.1">def show_status1():
     if 'show-test-kind' in flags:
         kind = '*all*' if 'all' in flags else '*selected'
@@ -4479,7 +4482,7 @@ elif 2:
     if 'trace-times' in reports and description.startswith('file:'):
         reports2.append('trace-times')
     return aList</t>
-<t tx="ekr.20191125064740.1">def show_status2():
+<t tx="ekr.20191125064740.1">def summarize():
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
     if 'show-status' in flags:
@@ -4496,6 +4499,7 @@ elif 2:
     return reload_t2 - reload_t1
 </t>
 <t tx="ekr.20191125065806.1">def run_tests():
+    
     ok = True
     t1 = time.process_time()
     for contents, description in tests:
@@ -4508,7 +4512,8 @@ elif 2:
             print(f"\nFAIL: {description}")
             break
     t2 = time.process_time()
-    return ok, t2 - t1
+    test_time = t2 - t1
+    return ok, test_time
 </t>
 </tnodes>
 </leo_file>
