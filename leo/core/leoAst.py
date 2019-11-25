@@ -1101,8 +1101,31 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
+    #@+node:ekr.20191124123830.1: *3* tog.is_significant & is_significant_token
+    def is_significant(self, kind, value):
+        """
+        A global predicate returning True if kind, value represent a token that
+        can be used for syncing generated tokens with the token list.
+        
+        Code should *not* use any other local predicate.
+        """
+        return (
+            kind in ('name', 'number', 'string') or
+            kind == 'op' and value not in ',;()')
+
+    def is_significant_token(self, token):
+        """Return True if the given token is a syncronizing token"""
+        return self.is_significant(token.kind, token.value)
+        
     #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
-    sync_index = 0
+    # set_links:
+    # r         list of significant results.
+    # t         list of significant tokens.
+    # tokens:   list of all tokens.
+    # tx        Index of the last patched token.
+
+    rx = 0
+    tx = 0
 
     def put_token(self, kind, val):
         """
@@ -1111,12 +1134,41 @@ class TokenOrderGenerator:
         Sync all significant tokens to self.node, creating two-way links
         between the node and the token.
         """
-        assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
+        node, tokens = self.node, self.tokens
+        assert isinstance(node, ast.AST), repr(node)
         if self.trace_mode:
-            print(f"\nput_token: {kind:>12} {self.node.__class__.__name__}")
+            print(f"\nput_token: {kind:>12} {node.__class__.__name__}")
             # print(AstDumper().brief_dump_one_node(self.node, self.level))
-        self.advance_and_sync()
+            
+        if 1:
+            return ### Not ready yet ###
+        
+        ### self.advance_and_sync()
+        
+        ### To do: assign r, t. ###
+        r = g.TracingNullObject(tag='r')
+        t = g.TracingNullObject(tag='t')
+        
+        ### From Linker.set_links ###
+        while self.tx <= t.index:
+            token = tokens[self.tx]
+            # Don't assign "cruft" tokens to the ast node.
+            ### 
+            ###if token.kind in ('encoding', 'endmarker', 'dedent', 'indent', 'ws'):
+            if self.is_significant(kind, val):
+                continue
+            # Patch the token.
+            assert token.node is None, repr(token)
+            token.node = r.node
+            # Add the token to r.node.token_list.
+            token_list = getattr(r.node, 'token_list', [])
+            r.node.token_list = token_list + [token]
+            self.tx += 1
+        assert self.tx == t.index + 1, (self.tx, t.index, repr(t))
+
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
+    sync_index = 0
+
     def advance_and_sync(self):
         i = self.sync_index
         j = self.find_next_significant_token(i+1)
@@ -1144,12 +1196,6 @@ class TokenOrderGenerator:
             i += 1
         ### g.trace('STOP', i)
         return len(self.tokens)-1
-    #@+node:ekr.20191124123830.1: *4* tog.is_significant_token
-    def is_significant_token(self, token):
-        return (
-            token.kind in ('name', 'number', 'string') or
-            token.kind == 'op' and token.value not in ',;()')
-
     #@+node:ekr.20191123155941.1: *4* tog.sync (New)
     def sync(self, node, token):
         """Sync the token to the given parse tree node."""
