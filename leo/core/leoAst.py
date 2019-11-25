@@ -1111,9 +1111,10 @@ class TokenOrderGenerator:
         Sync all significant tokens to self.node, creating two-way links
         between the node and the token.
         """
+        assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
         if self.trace_mode:
             print(f"\nput_token: {kind:>12} {self.node.__class__.__name__}")
-        assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
+            # print(AstDumper().brief_dump_one_node(self.node, self.level))
         self.advance_and_sync()
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
     def advance_and_sync(self):
