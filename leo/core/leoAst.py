@@ -2064,31 +2064,22 @@ class AstDumper:
     """
 
     #@+others
-    #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helpers
+    #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helper
     def brief_dump(self, node):
         
         result = [self.show_header()]
         self.brief_dump_helper(node, 0, result)
         return ''.join(result)
 
+    #@+node:ekr.20191125035321.1: *4* dumper.brief_dump_helper
     def brief_dump_helper(self, node, level, result):
         """Briefly show a tree, properly indented."""
         if node is None:
             return
         # Let block.
-        index_ivar = 'node_index'
         indent = ' ' * 2 * level
-        parent = getattr(node, 'parent', None)
-        node_id = getattr(node, index_ivar, '??')
-        parent_id = getattr(parent, index_ivar, '??')
-        parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
         children = getattr(node, 'children', [])
-        class_name = node.__class__.__name__
-        descriptor_s = class_name + self.show_fields(class_name, node, 20)
-        tokens_s = self.show_tokens(node, 65, 100)
-        lines = self.show_line_range(node)
-        full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
-        full_s =  f"{full_s1:<65} {tokens_s}\n"
+        node_s = self.compute_node_string(node, level)
         # Dump...
         if isinstance(node, (list, tuple)):
             for z in node:
@@ -2097,13 +2088,46 @@ class AstDumper:
             result.append(f"{indent}{node.__class__.__name__:>8}:{node}\n")
         elif isinstance(node, ast.AST):
             # Node and parent.
-            result.append(full_s)
+            result.append(node_s)
             # Children.
             for z in children:
                 self.brief_dump_helper(z, level+1, result)
         else:
-            result.append(full_s)
-    #@+node:ekr.20191125033805.1: *3* dumper: Helpers
+            result.append(node_s)
+    #@+node:ekr.20191125033744.1: *3* dumper.brief_dump_one_node
+    def brief_dump_one_node(self, node, level):
+        
+        indent = ' ' * 2 * level
+        result = [self.show_header()]
+        node_s = self.compute_node_string(node, level)
+        ###
+            # if isinstance(node, (list, tuple)):
+                # for z in node:
+                    # self.brief_dump_helper(z, level, result)
+        if isinstance(node, str):
+            result.append(f"{indent}{node.__class__.__name__:>8}:{node}\n")
+        elif isinstance(node, ast.AST):
+            # Node and parent.
+            result.append(node_s)
+        else:
+            result.append(f"BAD NODE: {node.__class__.__name__}")
+        return ''.join(result)
+    #@+node:ekr.20191125035600.1: *3* dumper.compute_node_string & helpers
+    def compute_node_string(self, node, level):
+        """Return a string summarizing the node."""
+        index_ivar = 'node_index'
+        indent = ' ' * 2 * level
+        parent = getattr(node, 'parent', None)
+        node_id = getattr(node, index_ivar, '??')
+        parent_id = getattr(parent, index_ivar, '??')
+        parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
+        class_name = node.__class__.__name__
+        descriptor_s = class_name + self.show_fields(class_name, node, 20)
+        tokens_s = self.show_tokens(node, 65, 100)
+        lines = self.show_line_range(node)
+        full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
+        node_s =  f"{full_s1:<65} {tokens_s}\n"
+        return node_s
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields of the node."""
@@ -2128,12 +2152,6 @@ class AstDumper:
             val = f": ops={ops}"
         return truncate(val, truncate_n)
         
-    #@+node:ekr.20191110165235.5: *4* dumper.show_header
-    def show_header(self):
-        
-        return (
-            f"{'parent':<16} {'lines':<8} {'node':<39} {'tokens'}\n"
-            f"{'======':<16} {'=====':<8} {'====':<39} {'======'}\n")
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
     def show_line_range(self, node):
         
@@ -2189,7 +2207,12 @@ class AstDumper:
         lines.append(''.join(line))
         pad = '\n' + ' '*n
         return pad.join(lines)
-    #@+node:ekr.20191125033744.1: *3* dumper.brief_dump_one_node
+    #@+node:ekr.20191110165235.5: *3* dumper.show_header
+    def show_header(self):
+        
+        return (
+            f"{'parent':<16} {'lines':<8} {'node':<39} {'tokens'}\n"
+            f"{'======':<16} {'=====':<8} {'====':<39} {'======'}\n")
     #@+node:ekr.20141012064706.18392: *3* dumper.dump & helper
     annotate_fields=False
     include_attributes = False
