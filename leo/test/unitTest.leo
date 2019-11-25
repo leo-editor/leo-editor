@@ -337,7 +337,14 @@
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
-<v t="ekr.20191118154839.1"><vh>&lt;&lt; function: make_tests &gt;&gt;</vh></v>
+<v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
+<v t="ekr.20191125064147.1"><vh>filter_reports</vh></v>
+<v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
+<v t="ekr.20191125065230.1"><vh>reload_helper</vh></v>
+<v t="ekr.20191125065806.1"><vh>run_tests</vh></v>
+<v t="ekr.20191125063255.1"><vh>show_status1</vh></v>
+<v t="ekr.20191125064740.1"><vh>show_status2</vh></v>
+</v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -4101,8 +4108,9 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-&lt;&lt; function: make_tests &gt;&gt;
-#
+import time
+import leo.core.leoAst as leoAst
+&lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
     # 'all',
@@ -4111,13 +4119,12 @@ flags = [
     'show-test-kind',
     # 'show-reload-time',
     # 'show-make-test-time',
-    # 'show-total-time',
+    # 'show-test-time',
     'show-status',
 ]
 if 'g.cls' in flags:
     g.cls() ###
-#
-# For TestRunner class (only when 'all' is false)
+# Reports for TestRunner class (only when 'all' is false)
 reports = [
     'trace-mode',  # Sets TOG.trace_mode.
     'trace-times',  # Only for'file:' tests.
@@ -4129,65 +4136,13 @@ reports = [
     # 'raw-tree',
     'tree',
 ]
-#
-# First status messages...
-if 'show-test-kind' in flags:
-    kind = '*all*' if 'all' in flags else '*selected'
-    print(f"Running *{kind}*' unit tests...\n")
-if 'asttokens' in reports:
-    print('\nUsing asttokens, *not* the TOG classes')
-#
-# Imports...
-import time
-import leo.core.leoAst as leoAst
-if 'reload' in flags:
-    t1 = time.process_time()
-    print('**Reload**')
-    import imp
-    imp.reload(leoAst)
-    t2 = time.process_time()
-    if 'show-reload-time' in flags:
-        print(f"\n   Reload time: {(t2-t1):4.2f} sec.")
-#
-# Make the tests...
-root = c.p
-t1 = time.process_time()
-tests = make_tests(c.p, 'all' in flags)
-t2 = time.process_time()
-if 'show-make-test-time' in flags:
-    print(f"make_test time: {(t2-t1):4.2f} sec.")
-if not tests:
-    print(f"no tests in {c.p.h}")
-#
-# Run the tests.
-ok = True
-t1 = time.process_time()
-for contents, description in tests:
-    # Filter reports.
-    if 'all' in flags:
-        reports2 = []
-    else:
-        # Set 'trace-times' only for 'file:' tests.
-        reports2 = [z for z in reports if z != 'trace-times']
-        if 'trace-times' in reports and description.startswith('file:'):
-            reports2.append('trace-times')
-    # Test runner catches all exceptions.
-    x = leoAst.TestRunner()
-    ok = x.run_tests(contents, description, reports2)
-    if 0:
-        assert ok, description
-    if not ok:
-        print(f"\nFAIL: {description}")
-        break
-#
-# Final messages.
-t2 = time.process_time()
-if 'show-total-time' in flags:
-    print(f"Run tests time: {(t2-t1):4.2f} sec.")
-if 'show-status' in flags:
-    status = 'PASS' if ok else 'FAIL'
-    print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
-<t tx="ekr.20191118154839.1">def make_tests(root, all):
+# Reload, make tests, run tests, summarize.
+reload_time = reload_helper(flags)
+show_status1(flags, reports, reload_time)
+tests = make_tests(c.p, flags)
+ok, test_time = run_tests(flags, reports, tests)
+show_status2(flags, ok, test_time)</t>
+<t tx="ekr.20191118154839.1">def make_tests(root, flags):
     """
     Return a list of tuples (contents, description) found in all children of the
     root, except this node.
@@ -4200,13 +4155,13 @@ if 'show-status' in flags:
     p = root.copy()
     while p and p != after:
         # g.trace(p.h)
-        if 'make_tests' in p.h:
+        if 'helper functions' in p.h:
             # skip this node.
             p.moveToNext()
         elif p.h.startswith(('fail:', 'fails')):
             # Ignore all fails, regardless of 'all' flag.
             p.moveToNodeAfterTree()
-        elif not all and p.h.startswith('ignore:'):
+        elif 'all' not in flags and p.h.startswith('ignore:'):
             # Honor 'ignore' only when *not* runnining all tests.
             p.moveToNodeAfterTree()
         elif p.h.startswith(contents_tag):
@@ -4229,6 +4184,8 @@ if 'show-status' in flags:
         else:
             # Ignore organizer nodes.
             p.moveToThreadNext()
+    if 'show-status' in flags and not tests:
+        print(f"no tests in {root.h}")
     return tests
 </t>
 <t tx="ekr.20191118155609.1"></t>
@@ -4500,5 +4457,59 @@ elif 2:
     pass
 </t>
 <t tx="ekr.20191124040736.1"></t>
+<t tx="ekr.20191125063105.1">@others</t>
+<t tx="ekr.20191125063255.1">def show_status1(flags, reports, reload_time):
+    if 'show-test-kind' in flags:
+        kind = '*all*' if 'all' in flags else '*selected'
+        print(f"Running *{kind}*' unit tests...\n")
+    if 'asttokens' in reports:
+        print('\nUsing asttokens, *not* the TOG classes')
+    if 'reload' in flags and 'show-reload-time' in flags:
+        print(f"\n   Reload time: {reload_time:4.2f} sec.")
+    if 'show-make-test-time' in flags:
+        print(f"make_test time: {(t2-t1):4.2f} sec.")
+</t>
+<t tx="ekr.20191125064147.1">def filter_reports(description, flags, reports):
+
+    if 'all' in flags:
+        return [z for z in reports if z == 'asttokens']
+   
+    # Set 'trace-times' only for 'file:' tests.
+    aList = [z for z in reports if z != 'trace-times']
+    if 'trace-times' in reports and description.startswith('file:'):
+        reports2.append('trace-times')
+    return aList</t>
+<t tx="ekr.20191125064740.1">def show_status2(flags, ok, test_time):
+    if 'show-test-time' in flags:
+        print(f"Run tests time: {test_time:4.2f} sec.")
+    if 'show-status' in flags:
+        status = 'PASS' if ok else 'FAIL'
+        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
+<t tx="ekr.20191125065230.1">def reload_helper(flags):
+    
+    reload_t1 = time.process_time()
+    if 'reload' in flags:
+        print('**Reloading**')
+        import imp
+        imp.reload(leoAst)
+    reload_t2 = time.process_time()
+    return reload_t2 - reload_t1
+</t>
+<t tx="ekr.20191125065806.1">def run_tests(flags, reports, tests):
+    ok = True
+    t1 = time.process_time()
+    for contents, description in tests:
+        # Test runner catches all exceptions.
+        reports2 = filter_reports(description, flags, reports)
+        x = leoAst.TestRunner()
+        ok = x.run_tests(contents, description, reports2)
+        if 0:
+            assert ok, description
+        if not ok:
+            print(f"\nFAIL: {description}")
+            break
+    t2 = time.process_time()
+    return ok, t2 - t1
+</t>
 </tnodes>
 </leo_file>
