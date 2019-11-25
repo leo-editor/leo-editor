@@ -1159,6 +1159,7 @@ class TokenOrderGenerator:
         if self.trace_mode:
             ivar = 'header_has_been_shown'
             if not getattr(self, ivar, None):
+                g.trace('==========', g.callers())
                 setattr(self, ivar, True)
                 print('Significant tokens...\n')
                 print(AstDumper().show_header())
@@ -1172,11 +1173,17 @@ class TokenOrderGenerator:
             token = tokens[px]
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
+            if kind == token.kind == 'name' and val == 'if-???': ### ('else', 'elif', 'if'):
+                val = token.value
+                break  ### Hack: ssume a match for now.
+            if kind == token.kind and kind in ('number', 'string'):
+                val = token.value
+                break  ### Hack: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
-                g.printObj(tokens[max(0, px-5):px+1], 'TOKENS')
+                g.printObj(tokens[max(0, px-10):px+1], 'TOKENS')
                 raise AssignLinksError(
-                    f"\nLooking for: {kind}.{val}\n"
+                    f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
             px += 1
         else:
@@ -1204,10 +1211,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191125120814.1: *4* tog.set_links
     def set_links(self, token):
         """Make two-way links between token and self.node."""
-        assert token.node is None, repr(token)
         node = self.node
+        assert token.node is None, repr(token)
+        #
         # Link the token to the ast node.
-        token.node = self.node
+        token.node = node
+        #
         # Add the token to node's token_list.
         token_list = getattr(node, 'token_list', [])
         node.token_list = token_list + [token]
@@ -1645,9 +1654,12 @@ class TokenOrderGenerator:
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
-        """This node represents a string constant."""
-        # The corresponding token contains repr(node.s).
-        yield from self.gen_token('string', repr(node.s))
+        """
+        This node represents a string constant.
+        
+        It appears impossible to match spellings here. set_links does that.
+        """
+        yield from self.gen_token('string', node.s)
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -1865,12 +1877,12 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         yield from self.gen(node.names)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.75: *5* tog.If
+    #@+node:ekr.20191113063144.75: *5* tog.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
-        #@+<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
-        #@+node:ekr.20191122222412.1: *6* << How to disambiguate between 'elif' and 'else' followed by 'if' >>
+        #@+<< do_If docstring >>
+        #@+node:ekr.20191122222412.1: *6* << do_If docstring >>
         """
         The parse trees for the following are identical!
 
@@ -1883,36 +1895,10 @@ class TokenOrderGenerator:
         So there is *no* way for the 'if' visitor to disambiguate the above two
         cases from the parse tree alone.
 
-        Instead, if-item list/generator tells the 'if' visitor what to do.
+        Instead, we scan the tokens list for the next 'if', 'else' or 'elif' token.
         """
-        #@-<< How to disambiguate between 'elif' and 'else' followed by 'if' >>
-        #@+<< do_If: define peek and advance >>
-        #@+node:ekr.20191123152511.1: *6* << do_If: define peek and advance >>
-        # These helpers can be local because only do_IF uses them.
-
-        def is_if(token):
-            return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-
-        def find_next_if_token(i):
-            # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
-            ### g.trace(i) # Just to be *sure* this is being called.
-            while i < len(self.tokens):
-                if is_if(self.tokens[i]):
-                    break
-                i += 1
-            return i
-
-        _index = find_next_if_token(0)
-
-        def advance():
-            nonlocal _index
-            _index = find_next_if_token(_index+1)
-
-        def peek():
-            nonlocal _index
-            # The possibility of an IndexError is a sanity check.
-            return self.tokens[_index]
-        #@-<< do_If: define peek and advance >>
+        #@-<< do_If docstring >>
+        advance, peek = self.advance_if, self.peek_if
         # Consume the if-item.
         token_value = peek().value
         assert token_value in ('if', 'elif'), token_value
@@ -1920,7 +1906,7 @@ class TokenOrderGenerator:
         # If or elif line...
             # if %s:\n
             # elif %s: \n
-        yield from self.gen_name(token_value)
+        yield from self.gen_name(token_value) ### 'if-???') ## token_value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
@@ -1943,6 +1929,33 @@ class TokenOrderGenerator:
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
+    #@+node:ekr.20191123152511.1: *6* tog.advance_if & peek_if
+    find_index = None
+
+    def is_if_token(self, token):
+        return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+
+    def find_next_if_token(self, i):
+        # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
+        assert i >= 0, g.callers()
+        if i == 0: g.trace('==========', g.callers())
+        while i < len(self.tokens):
+            g.trace(f"      {i<3} {self.tokens[i]}")
+            if self.is_if_token(self.tokens[i]):
+                g.trace(f"FOUND {i<3} {self.tokens[i]}")
+                break
+            i += 1
+        return i
+
+    def advance_if(self):
+        self.find_index = self.find_next_if_token(self.find_index + 1)
+
+    def peek_if(self):
+        # Init, exactly once per tree traversal.
+        if self.find_index is None:
+            self.find_index = self.find_next_if_token(0)
+        # The possibility of an IndexError is a sanity check.
+        return self.tokens[self.find_index]
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
         
@@ -4128,9 +4141,11 @@ class TestRunner:
                 # Yes, list *is* required here.
                 list(x.create_links(self.tokens, self.tree, file_name=description))
                 t3 = time.process_time()
-            except Exception:
+            except Exception as e:
                 t3 = time.process_time()
-                g.es_exception()
+                g.trace('\nFAIL:\n')
+                print(e)
+                ### g.es_exception()
                 return False
         if 'trace_times' in reports:
             reports.remove('trace_times')

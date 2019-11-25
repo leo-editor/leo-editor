@@ -345,7 +345,14 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
+<v t="ekr.20191125151346.1"><vh>fail:</vh>
+<v t="ekr.20191120064512.1"><vh>File tests</vh>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+</v>
+</v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -361,16 +368,13 @@
 <v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
 <v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
 </v>
-<v t="ekr.20191120064512.1"><vh>File tests</vh>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-</v>
 <v t="ekr.20191124040736.1"><vh>Statements...</vh>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
 <v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
 <v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
+</v>
 </v>
 <v t="ekr.20191122210522.1"><vh>If tests</vh>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
@@ -378,14 +382,12 @@
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
 <v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
 <v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
 <v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
 </v>
-<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
-</v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4115,7 +4117,7 @@ import leo.core.leoAst as leoAst
 # Flags for *this* code.
 flags = [
     # 'all',
-    'g.cls',
+    'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind',
     # 'show-reload-time',
@@ -4123,16 +4125,17 @@ flags = [
     'summarize',
 ]
 if 'g.cls' in flags:
-    g.cls() ###
-# Reports for TestRunner class (only when 'all' is false)
+    g.cls()
+#
+# Reports when 'all' is False
 reports = [
-    # 'trace-mode',  # Sets TOG.trace_mode.
+    'trace-mode',  # Sets TOG.trace_mode.
     'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
     # 'test-links',
     'contents',
-    # 'tokens',
+    'tokens',
     # 'raw-tree',
     'tree',
 ]
@@ -4502,6 +4505,8 @@ elif 2:
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
+        if 'all' not in flags:
+            print(f"Running {description}...\n")
         x = leoAst.TestRunner()
         ok = x.run_tests(contents, description, filter_reports(description))
         if 0:
@@ -4514,5 +4519,6 @@ elif 2:
     return ok, test_time
 </t>
 <t tx="ekr.20191125144727.1">print('hi')</t>
+<t tx="ekr.20191125151346.1"></t>
 </tnodes>
 </leo_file>
