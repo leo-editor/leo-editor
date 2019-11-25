@@ -4119,7 +4119,7 @@ if 'g.cls' in flags:
 #
 # For TestRunner class (only when 'all' is false)
 reports = [
-    'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-mode',  # Sets TOG.trace_mode.
     'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
@@ -4127,7 +4127,7 @@ reports = [
     # 'contents',
     # 'tokens',
     # 'raw-tree',
-    # 'tree',
+    'tree',
 ]
 #
 # First status messages...

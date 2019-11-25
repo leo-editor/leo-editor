@@ -327,8 +327,7 @@ class ConventionChecker:
     #@+node:ekr.20171215080831.1: *3* checker.dump, format
     def dump(self, node, annotate_fields=True, level=0, **kwargs):
         """Dump the node."""
-        d = leoAst.AstDumper(annotate_fields=annotate_fields,**kwargs) 
-        return d.dump(node, level=level)
+        return leoAst.AstDumper().dump(node, level=level)
 
     def format(self, node, *args, **kwargs):
         """Format the node and possibly its descendants, depending on args."""

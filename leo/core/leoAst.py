@@ -2063,17 +2063,6 @@ class AstDumper:
     Adapted from Python's ast.dump.
     """
 
-    def __init__(self,
-        annotate_fields=False,  # True: show names of fields.
-        disabled_fields=None,  # List of names of fields not to show.
-        include_attributes=False,  # True: show line numbers and column offsets.
-        indent_ws='  ',  # Number of spaces for each indent.
-    ):
-        self.annotate_fields = annotate_fields
-        self.disabled_fields = disabled_fields or ['ctx',]
-        self.include_attributes = include_attributes
-        self.indent_ws = indent_ws
-
     #@+others
     #@+node:ekr.20191112033445.1: *3* dumper.brief_dump & helpers
     def brief_dump(self, node):
@@ -2114,6 +2103,7 @@ class AstDumper:
                 self.brief_dump_helper(z, level+1, result)
         else:
             result.append(full_s)
+    #@+node:ekr.20191125033805.1: *3* dumper: Helpers
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields of the node."""
@@ -2199,7 +2189,12 @@ class AstDumper:
         lines.append(''.join(line))
         pad = '\n' + ' '*n
         return pad.join(lines)
-    #@+node:ekr.20141012064706.18392: *3* dumper.dump
+    #@+node:ekr.20191125033744.1: *3* dumper.brief_dump_one_node
+    #@+node:ekr.20141012064706.18392: *3* dumper.dump & helper
+    annotate_fields=False
+    include_attributes = False
+    indent_ws = ' '
+
     def dump(self, node, level=0):
 
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
@@ -2220,12 +2215,14 @@ class AstDumper:
             return f'LIST[%s]' % ''.join(
                 [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
         return repr(node)
-    #@+node:ekr.20141012064706.18393: *3* dumper.get_fields
+    #@+node:ekr.20141012064706.18393: *4* dumper.get_fields
     def get_fields(self, node):
+        
+        
 
         return (
             (a, b) for a, b in ast.iter_fields(node)
-                if a not in self.disabled_fields and b not in (None, [])
+                if a not in ['ctx',] and b not in (None, [])
         )
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
