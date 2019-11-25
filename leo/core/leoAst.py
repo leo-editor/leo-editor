@@ -4057,15 +4057,10 @@ class HTMLReportTraverser:
     #@-others
 #@+node:ekr.20191113133338.1: ** class TestRunner
 class TestRunner:
-    
     """
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
-    #@+node:ekr.20191122200015.1: *3* TestRunner.clear
-    def clear(self):
-        """Clear the screen."""
-        g.cls()
     #@+node:ekr.20191122021515.1: *3*  TestRunner.run_tests
     def run_tests(self, sources, description, reports):
         """
@@ -4076,10 +4071,6 @@ class TestRunner:
         import time
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
-        # traces = traces or []
-        # for z in traces:
-            # if z not in ('trace-mode', 'trace-times'):
-                # print('bad trace option:', repr(z))
         # Set defaults.
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
@@ -4122,11 +4113,7 @@ class TestRunner:
         # Print reports, in the order they appear in the results list.
         bad_reports = []
         for report in reports:
-            helper = (
-                # Look for dumpers first!
-                getattr(self, 'dump_'+report, None) or
-                getattr(self, report, None)
-            )
+            helper = getattr(self, 'dump_'+report, None)
             if helper:
                 try:
                     helper()
@@ -4140,10 +4127,6 @@ class TestRunner:
                 print('bad report option:', repr(report))
         return True
         
-    #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
-    def coverage(self):
-        if self.x:
-            self.x.report_coverage(report_missing=False)
     #@+node:ekr.20191122022728.1: *3* TestRunner.dump_all
     def dump_all(self):
 
@@ -4158,6 +4141,10 @@ class TestRunner:
         print('\nContents...\n')
         for i, z in enumerate(g.splitLines(sources)):
             print(f"{i+1:<3} ", z.rstrip())
+    #@+node:ekr.20191122025155.1: *3* TestRunner.dump_coverage
+    def coverage(self):
+        if self.x:
+            self.x.report_coverage(report_missing=False)
     #@+node:ekr.20191122025306.1: *3* TestRunner.dump_lines
     def dump_lines(self):
         print('\nTOKEN lines...\n')

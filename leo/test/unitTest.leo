@@ -342,7 +342,7 @@
 <v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
 <v t="ekr.20191125065230.1"><vh>reload_helper</vh></v>
 <v t="ekr.20191125065806.1"><vh>run_tests</vh></v>
-<v t="ekr.20191125063255.1"><vh>show_status1</vh></v>
+<v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -4118,15 +4118,14 @@ flags = [
     'reload',
     'show-test-kind',
     # 'show-reload-time',
-    # 'show-make-test-time',
     # 'show-test-time',
-    'show-status',
+    'summarize',
 ]
 if 'g.cls' in flags:
     g.cls() ###
 # Reports for TestRunner class (only when 'all' is false)
 reports = [
-    'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-mode',  # Sets TOG.trace_mode.
     'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
@@ -4138,7 +4137,7 @@ reports = [
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 reload_time = reload_helper()
-show_status1()
+show_status()
 tests = make_tests()
 ok, test_time = run_tests()
 summarize()</t>
@@ -4185,7 +4184,7 @@ summarize()</t>
         else:
             # Ignore organizer nodes.
             p.moveToThreadNext()
-    if 'show-status' in flags and not tests:
+    if not tests:
         print(f"no tests in {root.h}")
     return tests
 </t>
@@ -4462,7 +4461,7 @@ elif 2:
 # namely flags, reports, reload_time and test_time.
 
 @others</t>
-<t tx="ekr.20191125063255.1">def show_status1():
+<t tx="ekr.20191125063255.1">def show_status():
     if 'show-test-kind' in flags:
         kind = '*all*' if 'all' in flags else '*selected'
         print(f"Running *{kind}*' unit tests...\n")
@@ -4470,8 +4469,6 @@ elif 2:
         print('\nUsing asttokens, *not* the TOG classes')
     if 'reload' in flags and 'show-reload-time' in flags:
         print(f"\n   Reload time: {reload_time:4.2f} sec.")
-    if 'show-make-test-time' in flags:
-        print(f"make_test time: {(t2-t1):4.2f} sec.")
 </t>
 <t tx="ekr.20191125064147.1">def filter_reports(description):
 
@@ -4485,7 +4482,7 @@ elif 2:
 <t tx="ekr.20191125064740.1">def summarize():
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
-    if 'show-status' in flags:
+    if 'summarize' in flags:
         status = 'PASS' if ok else 'FAIL'
         print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
 <t tx="ekr.20191125065230.1">def reload_helper():
