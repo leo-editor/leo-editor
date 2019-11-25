@@ -974,6 +974,8 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
+        
+    trace_mode = False
 
     #@+others
     #@+node:ekr.20191113063144.3: *3* tog.begin/end_visitor
@@ -1109,17 +1111,21 @@ class TokenOrderGenerator:
         Sync all significant tokens to self.node, creating two-way links
         between the node and the token.
         """
-        ### g.trace(f"\n{kind:>12} {self.node.__class__.__name__}")
+        if self.trace_mode:
+            print(f"\nput_token: {kind:>12} {self.node.__class__.__name__}")
         assert isinstance(self.node, ast.AST), (repr(self.node), g.callers())
         self.advance_and_sync()
     #@+node:ekr.20191124123831.1: *4* tog.advance_and_sync
     def advance_and_sync(self):
         i = self.sync_index
         j = self.find_next_significant_token(i+1)
-        ### g.trace(f"i: {i:>2} j: {j:>2} node: {self.node.__class__.__name__}\n")
+        if self.trace_mode:
+            print(
+                f"advance_and_sync: "
+                f"i:{i:>2} j:{j:>2} node: {self.node.__class__.__name__}")
         if self.node:
             # Sync all previously unsynched tokens up to and including j.
-            while i <= j:
+            while i < j:
                 self.sync(self.node, self.tokens[i])
                 i += 1
         assert j >= len(self.tokens) -1 or j > self.sync_index, (j, self.sync_index)
@@ -1146,17 +1152,25 @@ class TokenOrderGenerator:
     #@+node:ekr.20191123155941.1: *4* tog.sync (New)
     def sync(self, node, token):
         """Sync the token to the given parse tree node."""
-        ### g.trace(f"{token.index:>4} {token.kind:<12} {node.__class__.__name__}")
         # Patch the token.
         assert token.node is None, repr(token)
         token.node = node
         # Add the token to node.token_list.
+        if token.kind in ('dedent', 'encoding', 'endmarker', 'indent', 'newline', 'nl', 'ws'):
+            # Ignore irrelevant tokens.
+            return
+        if token.kind == 'op' and token.value in ',()':
+            # Ignore non-syncing tokens.
+            return
+        if self.trace_mode:
+            print(f"sync: {token.index:>4} {token.kind:<12} {node.__class__.__name__}")
         token_list = getattr(node, 'token_list', [])
         node.token_list = token_list + [token]
-        # Special cases...
-        if isinstance(node, ast.Str) and token.kind == 'string':
-            g.trace(f"node.s: {node.s} token.value: {token.value}")
-            # node.s=token.value
+        # Special cases..
+        if 0: # Not yet.
+            if isinstance(node, ast.Str) and token.kind == 'string':
+                g.trace(f"node.s: {node.s} token.value: {token.value}")
+                # node.s=token.value
     #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
     # It's valid for these to return None.
 
@@ -4027,8 +4041,12 @@ class TestRunner:
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
+    #@+node:ekr.20191122200015.1: *3* TestRunner.clear
+    def clear(self):
+        """Clear the screen."""
+        g.cls()
     #@+node:ekr.20191122021515.1: *3*  TestRunner.run_tests
-    def run_tests(self, sources, description, reports, trace=False):
+    def run_tests(self, sources, description, reports):
         """
         Run all tests given in the reports list.
 
@@ -4037,6 +4055,10 @@ class TestRunner:
         import time
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
+        # traces = traces or []
+        # for z in traces:
+            # if z not in ('trace-mode', 'trace-times'):
+                # print('bad trace option:', repr(z))
         # Set defaults.
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
@@ -4052,6 +4074,9 @@ class TestRunner:
         else:
             x = self.x = TokenOrderInjector()
                 # The TOI class *also* calls the base begin/end_visitor methods.
+            x.trace_mode = 'trace_mode' in reports
+            if 'trace_mode' in reports:
+                reports.remove('trace_mode')
             self.tokens = x.make_tokens(sources)
             self.tree = parse_ast(sources)
             # Catch exceptions so we can get data late.
@@ -4064,7 +4089,8 @@ class TestRunner:
                 t3 = time.process_time()
                 g.es_exception()
                 return False
-        if trace:
+        if 'trace_times' in reports:
+            reports.remove('trace_times')
             pad = ' '*4
             print('')
             print(
@@ -4093,10 +4119,6 @@ class TestRunner:
                 print('bad report option:', repr(report))
         return True
         
-    #@+node:ekr.20191122200015.1: *3* TestRunner.clear
-    def clear(self):
-        """Clear the screen."""
-        g.cls()
     #@+node:ekr.20191122025155.1: *3* TestRunner.coverage
     def coverage(self):
         if self.x:

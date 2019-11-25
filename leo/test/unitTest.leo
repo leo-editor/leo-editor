@@ -356,8 +356,8 @@
 </v>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 <v t="ekr.20191124040736.1"><vh>Statements...</vh>
 <v t="ekr.20191120162740.1"><vh>Call tests</vh>
@@ -4101,75 +4101,92 @@ for test in table:
 <t tx="ekr.20191118154059.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
-g.cls() ###
+&lt;&lt; function: make_tests &gt;&gt;
 #
-# Master switche.
+# Flags for *this* code.
+flags = [
+    # 'all',
+    'g.cls',
+    'reload',
+    'show-test-kind',
+    # 'show-reload-time',
+    # 'show-make-test-time',
+    # 'show-total-time',
+    'show-status',
+]
+if 'g.cls' in flags:
+    g.cls() ###
 #
-all_flag = False # True, ignore @ignore nodes.
-
+# For TestRunner class (only when 'all' is false)
+reports = [
+    'trace-mode',  # Sets TOG.trace_mode.
+    'trace-times',  # Only for'file:' tests.
+    # 'dump-all',
+    # 'asttokens',
+    # 'test-links',
+    # 'contents',
+    # 'tokens',
+    # 'raw-tree',
+    # 'tree',
+]
 #
-# Other switches.
+# First status messages...
+if 'show-test-kind' in flags:
+    kind = '*all*' if 'all' in flags else '*selected'
+    print(f"Running *{kind}*' unit tests...\n")
+if 'asttokens' in reports:
+    print('\nUsing asttokens, *not* the TOG classes')
 #
-allow_reload = True ###
-allow_trace = True
-use_asttokens = False
 # Imports...
 import time
 import leo.core.leoAst as leoAst
-import imp
-t1 = time.process_time()
-if allow_reload: ###
-    print('Reloading leoAst')
+if 'reload' in flags:
+    t1 = time.process_time()
+    print('**Reload**')
+    import imp
     imp.reload(leoAst)
-t2 = time.process_time()
-# Status messages...
-if allow_reload and allow_trace:
-    print(f"\n   Reload time: {(t2-t1):4.2f} sec.")
-print(f"\nRunning {'*all*' if all_flag else '*selected*'} unit tests")
-if use_asttokens:
-    print('\nUsing asttokens, *not* the TOG classes')
-# Make the tests.
-&lt;&lt; function: make_tests &gt;&gt;
+    t2 = time.process_time()
+    if 'show-reload-time' in flags:
+        print(f"\n   Reload time: {(t2-t1):4.2f} sec.")
+#
+# Make the tests...
 root = c.p
 t1 = time.process_time()
-tests = make_tests(c.p, all_flag)
+tests = make_tests(c.p, 'all' in flags)
 t2 = time.process_time()
-if allow_trace:
+if 'show-make-test-time' in flags:
     print(f"make_test time: {(t2-t1):4.2f} sec.")
 if not tests:
     print(f"no tests in {c.p.h}")
+#
 # Run the tests.
-if all_flag:
-    reports = [] # 'coverage'
-else:
-    reports = [
-        # 'dump-all',
-        # 'test-links',
-        'contents',
-        # 'asttokens',
-        # 'tokens',
-        # 'raw-tree',
-        'tree',
-    ]
-# It may be useful for some tests *not* to invoke assign-links.
-# The test-runner issues a good enough warning.
-t1 = time.process_time()
 ok = True
+t1 = time.process_time()
 for contents, description in tests:
+    # Filter reports.
+    if 'all' in flags:
+        reports2 = []
+    else:
+        # Set 'trace-times' only for 'file:' tests.
+        reports2 = [z for z in reports if z != 'trace-times']
+        if 'trace-times' in reports and description.startswith('file:'):
+            reports2.append('trace-times')
     # Test runner catches all exceptions.
-    trace = description.startswith('file:') if all_flag else True
-    trace= trace and allow_trace
-    ok = leoAst.TestRunner().run_tests(contents, description, reports, trace=trace)
+    x = leoAst.TestRunner()
+    ok = x.run_tests(contents, description, reports2)
     if 0:
         assert ok, description
     if not ok:
         print(f"\nFAIL: {description}")
         break
+#
+# Final messages.
 t2 = time.process_time()
-if allow_trace:
+if 'show-total-time' in flags:
     print(f"Run tests time: {(t2-t1):4.2f} sec.")
-status = 'PASS' if ok else 'FAIL'
-print(f"\n{status} Ran {len(tests)} tests")</t>
+if 'show-status' in flags:
+    status = 'PASS' if ok else 'FAIL'
+    print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
 <t tx="ekr.20191118154839.1">def make_tests(root, all):
     """
     Return a list of tuples (contents, description) found in all children of the
