@@ -1131,18 +1131,8 @@ class TokenOrderGenerator:
         
 
         
-    #@+node:ekr.20191113063144.7: *3* tog.put_token & helpers
+    #@+node:ekr.20191113063144.7: *3* tog.put_token & set_links
     px = -1 # Index of the previous significant token.
-
-    def set_links(self, token):
-        """Make two-way links between token and self.node."""
-        assert token.node is None, repr(token)
-        node = self.node
-        # Link the token to the ast node.
-        token.node = self.node
-        # Add the token to node's token_list.
-        token_list = getattr(node, 'token_list', [])
-        token_list = token_list + [token]
 
     def put_token(self, kind, val):
         """
@@ -1150,10 +1140,16 @@ class TokenOrderGenerator:
         
         If the token is significant, do the following:
             
-        1. Create two-way links between all previous *visible* (but not
-           significant) tokens with self.node.
+        1. Starting the token after px, find the next significant token.
+        
+           Verify that it matches the token described by (kind, val).
             
-        2. Create two-way links between the token and self.node.
+        2. Starting from the token after px, create two-way links between all
+           previous assignable tokens and self.node.
+            
+        3. Create two-way links between the significant token and self.node.
+        
+        4. Advance by updating self.px.
         """
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
@@ -1192,7 +1188,7 @@ class TokenOrderGenerator:
             token = tokens[old_px]
             old_px += 1
             # Don't assign "cruft" tokens to the ast node.
-            if self.is_assignable(token):
+            if self.is_assignable_token(token):
                 self.set_links(token)
         #
         # Step three: Set links in the significant token.
@@ -1202,6 +1198,16 @@ class TokenOrderGenerator:
         #
         # Step four. Advance.
         self.px = px
+    #@+node:ekr.20191125120814.1: *4* tog.set_links
+    def set_links(self, token):
+        """Make two-way links between token and self.node."""
+        assert token.node is None, repr(token)
+        node = self.node
+        # Link the token to the ast node.
+        token.node = self.node
+        # Add the token to node's token_list.
+        token_list = getattr(node, 'token_list', [])
+        token_list = token_list + [token]
     #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
     # It's valid for these to return None.
 
