@@ -1173,8 +1173,9 @@ class TokenOrderGenerator:
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
             if self.is_significant_token(token):
+                g.printObj(tokens[max(0, px-5):px+1], 'TOKENS')
                 raise AssignLinksError(
-                    f"Looking for: {kind}.{val}\n"
+                    f"\nLooking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
             px += 1
         else:
@@ -1643,12 +1644,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        yield from self.gen_token('string', node.s)
-        
-        ### Might be done in tog.sync.
-            # token = Token('string', node.s)
-            # token.node = node
-            # node.token_list = [token]
+        # The corresponding token contains repr(node.s).
+        yield from self.gen_token('string', repr(node.s))
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 

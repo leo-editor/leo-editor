@@ -345,7 +345,7 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -385,6 +385,7 @@
 </v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 </v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4512,5 +4513,6 @@ elif 2:
     test_time = t2 - t1
     return ok, test_time
 </t>
+<t tx="ekr.20191125144727.1">print('hi')</t>
 </tnodes>
 </leo_file>
