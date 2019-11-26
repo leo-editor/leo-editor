@@ -2227,18 +2227,15 @@ class AstDumper:
         parent_id = getattr(parent, index_ivar, '??')
         parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = class_name + self.show_fields(class_name, node, 20)
-        tokens_s = self.show_tokens(node, 65, 100)
+        descriptor_s = class_name + self.show_fields(class_name, node, 24)
+        tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
-        node_s =  f"{full_s1:<65} {tokens_s}\n"
+        node_s =  f"{full_s1:<70} {tokens_s}\n"
         return node_s
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
         """Return a string showing interesting fields of the node."""
-        # suppress = ('ctx', 'annotation', 'target', 'value')
-        # fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
-        # aList = [f"{a}={b}" for a, b in fields]
         val = ''
         if class_name == 'JoinedStr':
             values = node.values
@@ -2330,8 +2327,8 @@ class AstDumper:
     def show_header(self):
         """Return a header string, but only the fist time."""
         return (
-            f"{'parent':<16} {'lines':<8} {'node':<39} {'tokens'}\n"
-            f"{'======':<16} {'=====':<8} {'====':<39} {'======'}\n")
+            f"{'parent':<16} {'lines':<8} {'node':<44} {'tokens'}\n"
+            f"{'======':<16} {'=====':<8} {'====':<44} {'======'}\n")
     #@+node:ekr.20141012064706.18392: *3* dumper.dump & helper
     annotate_fields=False
     include_attributes = False
@@ -4263,7 +4260,7 @@ class TestRunner:
             self.dump_contents()
             self.dump_tokens()
             self.dump_tree()
-            self.dump_raw_tree()
+            # self.dump_raw_tree()
 
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
