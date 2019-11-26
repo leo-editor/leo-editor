@@ -1171,6 +1171,7 @@ class TokenOrderGenerator:
         
         4. Advance by updating self.px.
         """
+        verbose = False
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), (repr(node), g.callers())
@@ -1182,7 +1183,7 @@ class TokenOrderGenerator:
             return
         if not self.is_significant(kind, val):
             return
-        if self.trace_mode:
+        if verbose and self.trace_mode:
             self.dump_one_node(self.node, self.level, tag='put_token: Significant tokens...')
         #
         # Step one: Scan from *after* the previous significant token,
@@ -1718,25 +1719,18 @@ class TokenOrderGenerator:
             i = self.find_next_string_token(i + 1)
             token = self.tokens[i]
             if self.trace_mode:
-                print('    token', token)
+                print(f"    i: {i:<3} j: {j:<2} {token}")
             assert token.kind == 'string', (token.kind, token.value, g.callers())
             assert token.value, (token.value, g.callers())
             results.append(token)
             value = token.value
-            if True: ### is_joined:
-                # Ignore  f and r prefixes and quotes.
-                k = 0
-                while k < len(value) and value[k] in 'fFrR':
-                    k += 1
-                assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
-                s = value[k+1:-1]
-                n = len(s)
-                ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
-            else:
-                # Ignore quotes.
-                assert value[0] in ('"',"'"), (value, value[0], g.callers())
-                s = value[1:-1]
-                n = len(s)
+            # Ignore  f and r prefixes and quotes.
+            k = 0
+            while k < len(value) and value[k] in 'fFrR':
+                k += 1
+            assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
+            s = value[k+1:-1]
+            n = len(s)
             j += n
         self.string_index = i
         return results
