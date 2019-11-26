@@ -355,8 +355,10 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
+</v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 <v t="ekr.20191125151346.1"><vh>fail:</vh>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
@@ -368,6 +370,7 @@
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
@@ -389,7 +392,8 @@
 </v>
 </v>
 <v t="ekr.20191122210522.1"><vh>If tests</vh>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
+<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
@@ -400,8 +404,6 @@
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
 <v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
 </v>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
-<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 </v>
 </v>
@@ -4151,10 +4153,10 @@ reports = [
     # 'dump-all',
     # 'asttokens',
     # 'test-links',
-    'contents',
-    'tokens',
+    # 'contents',
+    # 'tokens',
     # 'raw-tree',
-    'tree',
+    # 'tree',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 reload_time = reload_helper()
@@ -4531,8 +4533,8 @@ elif 2:
             assert ok, description
         if not ok:
             print(f"\nFAIL: {description}\n")
-            if 'dump-after-fail' in reports:
-                x.dump_all()
+            # if 'dump-after-fail' in reports:
+                # x.dump_all()
             break
     t2 = time.process_time()
     test_time = t2 - t1
@@ -4670,5 +4672,6 @@ assert not fails, f"failed {len(fails)} tests"</t>
 </t>
 <t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
 print('c')</t>
+<t tx="ekr.20191126084046.1"></t>
 </tnodes>
 </leo_file>

@@ -1191,7 +1191,7 @@ class TokenOrderGenerator:
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
             if kind == token.kind == 'string':
-                g.trace(f"STRING MISMATCH: val: {val} token.val: {token.value}")
+                g.trace(f"STRING MISMATCH: val: {val} token.val: {token.value} {g.callers(2)}")
                 val = token.value
                 break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
@@ -1609,7 +1609,7 @@ class TokenOrderGenerator:
                 string_tokens = self.advance_joined_str(z.s)
                 for token in string_tokens:
                     yield from self.gen_token('string', token.value)
-            else:
+            elif 0:
                 self.dump_one_node(node, self.level, tag='do_JoinedStr')
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
@@ -1667,7 +1667,7 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str & advance helpers
-    string_index = -1  # Used by advance_str and related methods.
+    string_index = -1  # The index in self.tokens of the previous scanned 'string' token.
 
     def do_Str(self, node):
         """
@@ -1675,8 +1675,12 @@ class TokenOrderGenerator:
         
         It appears impossible to match spellings here. set_links does that.
         """
-        self.advance_str()
-        yield from self.gen_token('string', node.s)
+        string_tokens = self.advance_joined_str(node.s)
+        for token in string_tokens:
+            yield from self.gen_token('string', token.value)
+        ###
+            # self.advance_str()
+            # yield from self.gen_token('string', node.s)
     #@+node:ekr.20191126074503.1: *6* tog.advance_joined_str
     def advance_joined_str(self, joined_string):
         """Called from do_JoinedStr to dvance over two or more 'string' tokens."""
@@ -1697,10 +1701,6 @@ class TokenOrderGenerator:
             j += len(s)
         self.string_index = i
         return results
-    #@+node:ekr.20191126074448.1: *6* tog.advance_str
-    def advance_str(self):
-        """Advance over one 'string' token."""
-        self.string_index = self.find_next_string_token(self.string_index + 1)
     #@+node:ekr.20191126074448.2: *6* tog.find_next_string_token
     def find_next_string_token(self, i):
         while i < len(self.tokens):
@@ -4186,6 +4186,9 @@ class TestRunner:
         verbose_fail = 'verbose_fail' in reports
         if verbose_fail:
             reports.remove('verbose_fail')
+        dump_after_fail = 'dump_after_fail' in reports
+        if dump_after_fail:
+            reports.remove('dump_after_fail')
         # Set defaults.
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
@@ -4218,6 +4221,8 @@ class TestRunner:
                 print(e)
                 if verbose_fail:
                     g.es_exception()
+                if dump_after_fail:
+                    self.dump_all()
                 return False
         if 'trace_times' in reports:
             reports.remove('trace_times')
@@ -4252,6 +4257,7 @@ class TestRunner:
             self.dump_tokens()
             self.dump_tree()
             self.dump_raw_tree()
+
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
         sources = self.sources
