@@ -1178,14 +1178,6 @@ class TokenOrderGenerator:
             return
         if self.trace_mode:
             self.dump_one_node(self.node, self.level, tag='put_token: Significant tokens...')
-            ###
-                # ivar = 'header_has_been_shown'
-                # if not getattr(self, ivar, None):
-                    # ### g.trace('==========', g.callers())
-                    # setattr(self, ivar, True)
-                    # print('Significant tokens...\n')
-                    # print(AstDumper().show_header())
-                # print(AstDumper().brief_dump_one_node(self.node, self.level))
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -1195,9 +1187,6 @@ class TokenOrderGenerator:
             token = tokens[px]
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
-            # if kind == token.kind == 'name' and val == 'if-???': ### ('else', 'elif', 'if'):
-                # val = token.value
-                # break  ### Hack: assume a match for now.
             if kind == token.kind and kind in ('number', 'string'):
                 val = token.value
                 break  ### Hack: assume a match for now.
