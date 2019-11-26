@@ -4147,7 +4147,7 @@ if 'g.cls' in flags:
 # Reports when 'all' is False
 reports = [
     'dump-after-fail',
-    # 'verbose-fail',
+    'verbose-fail',
     # 'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',

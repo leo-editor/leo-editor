@@ -1174,6 +1174,11 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), (repr(node), g.callers())
+        if self.formatted_value_stack:
+            # Within the range of a formatted value.
+            # All such nodes become strings.
+            # g.trace('SKIP', kind, val)
+            return
         if not self.is_significant(kind, val):
             return
         if self.trace_mode:
@@ -1483,7 +1488,11 @@ class TokenOrderGenerator:
         # Do *not* call begin/end visitor!
         assert isinstance(node, int), repr(node)
         # Assign the int to the parent.
-        yield from self.gen_token('num', node)
+        try: ###
+            yield from self.gen_token('num', node)
+        except Exception as e:
+            g.trace(e, g.callers())
+
     #@+node:ekr.20191113063144.29: *5* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -1586,15 +1595,22 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (TO DO)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
+    formatted_value_stack = []  # A flag for advance_str and for put_token.
+
     def do_FormattedValue(self, node):
 
-        g.trace('===== 1', node.value.__class__.__name__)
+        conv = node.conversion
+        spec = node.format_spec
+        self.formatted_value_stack.append(node)
+        ### g.trace('===== 1', node.value.__class__.__name__)
         yield from self.gen(node.value)
-        if node.conversion is not None:
-            g.trace('===== 2', node.conversion.__class__.__name__)
-            yield from self.gen(node.conversion)
-        g.trace('===== 3', node.format_spec.__class__.__name__)
-        yield from self.gen(node.format_spec)
+        if conv is not None:
+            assert isinstance(conv, int), (repr(conv), g.callers())
+            yield from self.gen_token('number', conv)
+        if spec is not None:
+            ### g.trace('===== 3', node.format_spec.__class__.__name__)
+            yield from self.gen(node.format_spec)
+        self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
@@ -1687,6 +1703,7 @@ class TokenOrderGenerator:
             # yield from self.gen_token('string', node.s)
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     def advance_str(self, entire_string, is_joined):
+            ### Replace by str_kind in 'normal', 'joined', 'formatted'
         """
         Called from do_Str and do_JoinedStr to advance over one or more
         'string' tokens that comprise entire_string.
