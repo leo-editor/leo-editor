@@ -4550,14 +4550,7 @@ else:
     '2'
 </t>
 <t tx="ekr.20191125165430.1">f"{' Backward' if not self.isearch_forward else ''}"</t>
-<t tx="ekr.20191125165640.1">k.setLabelBlue(
-    'a'
-    f"{b if not cond1 else ''}"
-    f"{c if cond2 else ''}"
-    f"{d if cond3 else ''}"
-    ":"
-)
-print('after')</t>
+<t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")</t>
 <t tx="ekr.20191125235415.1">print('a' '.' 'b')
 print('c')</t>
 <t tx="ekr.20191125235556.1">"""

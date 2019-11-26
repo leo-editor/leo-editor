@@ -1593,8 +1593,6 @@ class TokenOrderGenerator:
         if node.conversion is not None:
             g.trace('===== 2', node.conversion.__class__.__name__)
             yield from self.gen(node.conversion)
-            ### g.trace('===== 3', node.conversion.__class__.__name__)
-            ### yield from self.gen_token('num', node.conversion)
         g.trace('===== 3', node.format_spec.__class__.__name__)
         yield from self.gen(node.format_spec)
     #@+node:ekr.20191113063144.40: *5* tog.Index
