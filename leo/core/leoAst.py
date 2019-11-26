@@ -1594,18 +1594,6 @@ class TokenOrderGenerator:
             string_tokens = self.advance_joined_str(z.s)
             for token in string_tokens:
                 yield from self.gen_token('string', token.value)
-
-            # assert isinstance(z, (str, ast.Str)), repr(z)
-            # if isinstance(z, str):
-                # # results.append(z)
-                # if 1:
-                    # self.advance_str()
-                    # yield from self.gen_token('string', z)
-            # else:
-                # self.advance_str()
-                # ### results.append(z.s)
-                # yield from self.gen_token('string', z.s)
-        
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1683,11 +1671,10 @@ class TokenOrderGenerator:
             assert token.value, token.value
             results.append(token)
             # Strip off the f prefix and quotes.
-            value = token.value
-            k = 0
+            k, value = 0, token.value
             while k < len(value) and value[k] in 'fFrR':
                 k += 1
-            assert value[k] in ('"',"'"), value
+            assert value[k] in ('"',"'"), (k, value, value[k])
             s = value[k+1:-1]
             ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
             j += len(s)
