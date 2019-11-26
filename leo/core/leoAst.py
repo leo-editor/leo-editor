@@ -1018,6 +1018,8 @@ class TokenOrderGenerator:
         """
         #
         # Init all ivars.
+        self.file_name = file_name
+            # For tests.
         self.level = 0
             # Python indentation level.
         self.node = None
@@ -1041,6 +1043,24 @@ class TokenOrderGenerator:
             yield from self.gen_token('newline', '\n')
             yield from self.gen_token('endmarker', '')
        
+    #@+node:ekr.20191126074902.1: *3* tog.dump_one_node (new)
+    header_has_been_shown = False
+
+    def dump_one_node(self, node, level, tag=None):
+        """
+        Dump one node using AstDumper().brief_dump_one_node.
+        
+        Precede the dump with the header if necessary.
+        """
+        dumper = AstDumper()
+        if self.header_has_been_shown:
+            print('')
+        else:
+            self.header_has_been_shown = True
+            if tag:
+                print(f"\ndump_one_node: {tag} {self.file_name}")
+            print(f"\n{dumper.show_header()}")
+        print(dumper.brief_dump_one_node(node, level))
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
 
@@ -1153,17 +1173,19 @@ class TokenOrderGenerator:
         """
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
-        assert isinstance(node, ast.AST), repr(node)
+        assert isinstance(node, ast.AST), (repr(node), g.callers())
         if not self.is_significant(kind, val):
             return
         if self.trace_mode:
-            ivar = 'header_has_been_shown'
-            if not getattr(self, ivar, None):
-                ### g.trace('==========', g.callers())
-                setattr(self, ivar, True)
-                print('Significant tokens...\n')
-                print(AstDumper().show_header())
-            print(AstDumper().brief_dump_one_node(self.node, self.level))
+            self.dump_one_node(self.node, self.level, tag='put_token: Significant tokens...')
+            ###
+                # ivar = 'header_has_been_shown'
+                # if not getattr(self, ivar, None):
+                    # ### g.trace('==========', g.callers())
+                    # setattr(self, ivar, True)
+                    # print('Significant tokens...\n')
+                    # print(AstDumper().show_header())
+                # print(AstDumper().brief_dump_one_node(self.node, self.level))
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -1208,7 +1230,7 @@ class TokenOrderGenerator:
         #
         # Step three: Set links in the significant token.
         token = tokens[px]
-        assert self.is_significant_token(token)
+        assert self.is_significant_token(token), (token, g.callers())
         self.set_links(token)
         #
         # Step four. Advance.
@@ -1217,7 +1239,7 @@ class TokenOrderGenerator:
     def set_links(self, token):
         """Make two-way links between token and self.node."""
         node = self.node
-        assert token.node is None, repr(token)
+        assert token.node is None, (repr(token), g.callers())
         #
         # Link the token to the ast node.
         token.node = node
@@ -1578,22 +1600,24 @@ class TokenOrderGenerator:
             yield from self.gen(node.conversion)
             yield from self.gen_token('num', node.conversion)
         yield from self.gen(node.format_spec)
-
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (changed)
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
         """Concatenate f-strings"""
-        assert isinstance(node.values, list)
+        assert isinstance(node.values, list), (node.values.__class__.__name__, g.callers())
         for z in node.values:
-            assert isinstance(z, ast.Str), repr(z)
-            string_tokens = self.advance_joined_str(z.s)
-            for token in string_tokens:
-                yield from self.gen_token('string', token.value)
+            assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
+            if isinstance(z, ast.Str):
+                string_tokens = self.advance_joined_str(z.s)
+                for token in string_tokens:
+                    yield from self.gen_token('string', token.value)
+            else:
+                self.dump_one_node(node, self.level, tag='do_JoinedStr')
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1649,7 +1673,9 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str & tog.advance_str
+    #@+node:ekr.20191113063144.50: *5* tog.Str & advance helpers
+    string_index = -1  # Used by advance_str and related methods.
+
     def do_Str(self, node):
         """
         This node represents a string constant.
@@ -1658,33 +1684,31 @@ class TokenOrderGenerator:
         """
         self.advance_str()
         yield from self.gen_token('string', node.s)
-    #@+node:ekr.20191126055944.1: *6* tog.advance_str & advance_joined_str
-    string_index = -1
-
+    #@+node:ekr.20191126074503.1: *6* tog.advance_joined_str
     def advance_joined_str(self, joined_string):
         """Called from do_JoinedStr to dvance over two or more 'string' tokens."""
         i, j, results = self.string_index, 0, []
         while j < len(joined_string):
             i = self.find_next_string_token(i + 1)
             token = self.tokens[i]
-            assert token.kind == 'string', (token.kind, token.value)
-            assert token.value, token.value
+            assert token.kind == 'string', (token.kind, token.value, g.callers())
+            assert token.value, (token.value, g.callers())
             results.append(token)
             # Strip off the f prefix and quotes.
             k, value = 0, token.value
             while k < len(value) and value[k] in 'fFrR':
                 k += 1
-            assert value[k] in ('"',"'"), (k, value, value[k])
+            assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
             s = value[k+1:-1]
             ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
             j += len(s)
         self.string_index = i
         return results
-
+    #@+node:ekr.20191126074448.1: *6* tog.advance_str
     def advance_str(self):
         """Advance over one 'string' token."""
         self.string_index = self.find_next_string_token(self.string_index + 1)
-
+    #@+node:ekr.20191126074448.2: *6* tog.find_next_string_token
     def find_next_string_token(self, i):
         while i < len(self.tokens):
             token = self.tokens[i]
@@ -1938,7 +1962,7 @@ class TokenOrderGenerator:
         advance, peek = self.advance_if, self.peek_if
         # Consume the if-item.
         token_value = peek().value
-        assert token_value in ('if', 'elif'), token_value
+        assert token_value in ('if', 'elif'), (token_value, g.callers())
         advance()
         # If or elif line...
             # if %s:\n
@@ -1991,6 +2015,7 @@ class TokenOrderGenerator:
         if self.find_index is None:
             self.find_index = self.find_next_if_token(0)
         # IndexError is a sanity check.
+        assert self.find_index < len(self.tokens), (self.find_index, g.callers())
         return self.tokens[self.find_index]
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
@@ -2217,15 +2242,16 @@ class AstDumper:
         val = ''
         if class_name == 'JoinedStr':
             values = node.values
-            assert isinstance(values, list), repr(values)
+            assert isinstance(values, list), (repr(values), g.callers())
             results = []
             for z in values:
-                assert isinstance(z, ast.Str), repr(z)
-                results.append(z.s)
-                # if isinstance(z, str):
-                    # results.append('str:'+z)
-                # else:
-                    # results.append('Str:'+z.s)
+                assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
+                if isinstance(z, ast.Str):
+                    results.append(z.s)
+                else:
+                    results.append(z.__class__.__name__)
+            if len(results) > 1:
+                g.printObj(results, tag='JoinedStr')
             result = '::'.join(results)
             val = f": values={result}"
         elif class_name == 'Name':

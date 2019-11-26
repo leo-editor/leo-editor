@@ -355,9 +355,9 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191125235415.1"><vh>fail: string concatentation</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
-<v t="ekr.20191125165640.1"><vh>fail: call + JoinedString</vh></v>
+<v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 <v t="ekr.20191125151346.1"><vh>fail:</vh>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
@@ -4131,7 +4131,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind',
@@ -4144,6 +4144,7 @@ if 'g.cls' in flags:
 #
 # Reports when 'all' is False
 reports = [
+    'dump-after-fail',
     # 'verbose-fail',
     # 'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
@@ -4524,12 +4525,14 @@ elif 2:
         if 'all' not in flags:
             print(f"Running {description}...\n")
         x = leoAst.TestRunner()
-        ok = x.run_tests(contents, description, filter_reports(description))
+        reports = filter_reports(description)
+        ok = x.run_tests(contents, description, reports[:])
         if 0:
             assert ok, description
         if not ok:
-            print(f"\nFAIL: {description}")
-            x.dump_all()
+            print(f"\nFAIL: {description}\n")
+            if 'dump-after-fail' in reports:
+                x.dump_all()
             break
     t2 = time.process_time()
     test_time = t2 - t1
