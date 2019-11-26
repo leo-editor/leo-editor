@@ -364,13 +364,6 @@
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 </v>
-<v t="ekr.20191125151346.1"><vh>fail:</vh>
-<v t="ekr.20191120064512.1"><vh>File tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-</v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-</v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -407,6 +400,11 @@
 <v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
 </v>
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>fail: deferred file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4165,7 +4163,7 @@ reports = [
 reload_time = reload_helper()
 show_status()
 tests = make_tests()
-ok, test_time = run_tests()
+fails, test_time = run_tests()
 summarize()</t>
 <t tx="ekr.20191118154839.1">def make_tests():
     """
@@ -4273,7 +4271,6 @@ else:
     print('c1')
     print('c2')
 </t>
-<t tx="ekr.20191120064512.1"></t>
 <t tx="ekr.20191120074811.1"></t>
 <t tx="ekr.20191120075520.1"></t>
 <t tx="ekr.20191120132531.1">if 1:
@@ -4508,11 +4505,15 @@ elif 2:
         reports2.append('trace-times')
     return aList</t>
 <t tx="ekr.20191125064740.1">def summarize():
+    if 'summarize' in flags:
+        status = 'FAIL' if fails else 'PASS'
+        if fails:
+            print('')
+            g.printObj(fails, tag='Failed tests')
+        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
-    if 'summarize' in flags:
-        status = 'PASS' if ok else 'FAIL'
-        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")</t>
+</t>
 <t tx="ekr.20191125065230.1">def reload_helper():
     
     reload_t1 = time.process_time()
@@ -4525,25 +4526,19 @@ elif 2:
 </t>
 <t tx="ekr.20191125065806.1">def run_tests():
     
-    ok = True
+    fails = []
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
-        if 'all' not in flags:
-            print(f"Running {description}...\n")
+        print(f"Running {description}...\n")
         x = leoAst.TestRunner()
-        reports = filter_reports(description)
-        ok = x.run_tests(contents, description, reports[:])
-        if 0:
-            assert ok, description
+        ok = x.run_tests(contents, description, filter_reports(description))
         if not ok:
-            print(f"\nFAIL: {description}\n")
-            # if 'dump-after-fail' in reports:
-                # x.dump_all()
-            break
+            fails.append(description)
+            ### print(f"\nFAIL: {description}")
     t2 = time.process_time()
     test_time = t2 - t1
-    return ok, test_time
+    return fails, test_time
 </t>
 <t tx="ekr.20191125144727.1">print('hi')</t>
 <t tx="ekr.20191125151346.1"></t>
