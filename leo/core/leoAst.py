@@ -1583,21 +1583,29 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (to do: advance_string) 
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
         """Concatenate f-strings"""
-        results = []
         assert isinstance(node.values, list)
         for z in node.values:
-            assert isinstance(z, (str, ast.Str)), repr(z)
-            if isinstance(z, str):
-                results.append(z)
-            else:
-                results.append(z.s)
-        for z in results:
-            yield from self.gen_token('string', z)
+            assert isinstance(z, ast.Str), repr(z)
+            string_tokens = self.advance_joined_str(z.s)
+            for token in string_tokens:
+                yield from self.gen_token('string', token.value)
+
+            # assert isinstance(z, (str, ast.Str)), repr(z)
+            # if isinstance(z, str):
+                # # results.append(z)
+                # if 1:
+                    # self.advance_str()
+                    # yield from self.gen_token('string', z)
+            # else:
+                # self.advance_str()
+                # ### results.append(z.s)
+                # yield from self.gen_token('string', z.s)
+        
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1653,14 +1661,53 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str
+    #@+node:ekr.20191113063144.50: *5* tog.Str & tog.advance_str
     def do_Str(self, node):
         """
         This node represents a string constant.
         
         It appears impossible to match spellings here. set_links does that.
         """
+        self.advance_str()
         yield from self.gen_token('string', node.s)
+    #@+node:ekr.20191126055944.1: *6* tog.advance_str & advance_joined_str
+    string_index = -1
+
+    def advance_joined_str(self, joined_string):
+        """Called from do_JoinedStr to dvance over two or more 'string' tokens."""
+        i, j, results = self.string_index, 0, []
+        while j < len(joined_string):
+            i = self.find_next_string_token(i + 1)
+            token = self.tokens[i]
+            assert token.kind == 'string', (token.kind, token.value)
+            assert token.value, token.value
+            results.append(token)
+            # Strip off the f prefix and quotes.
+            value = token.value
+            k = 0
+            while k < len(value) and value[k] in 'fFrR':
+                k += 1
+            assert value[k] in ('"',"'"), value
+            s = value[k+1:-1]
+            ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
+            j += len(s)
+        self.string_index = i
+        return results
+
+    def advance_str(self):
+        """Advance over one 'string' token."""
+        self.string_index = self.find_next_string_token(self.string_index + 1)
+
+    def find_next_string_token(self, i):
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            # caller = g.callers(2).split(',')[0]
+            # g.trace(f"{caller:<14}       {i:<3} {self.tokens[i]}")
+            if token.kind == 'string':
+                # g.trace(f"{caller:<14} FOUND {i:<3} {self.tokens[i]}")
+                break
+            i += 1
+        return i
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -2182,9 +2229,18 @@ class AstDumper:
         # aList = [f"{a}={b}" for a, b in fields]
         val = ''
         if class_name == 'JoinedStr':
-            # values = ','.join([z.__class__.__name__ for z in node.values])
-            # values = ','.join([z.s for z in node.values])
-            val = f": values={node.values.__class__.__name__}"
+            values = node.values
+            assert isinstance(values, list), repr(values)
+            results = []
+            for z in values:
+                assert isinstance(z, ast.Str), repr(z)
+                results.append(z.s)
+                # if isinstance(z, str):
+                    # results.append('str:'+z)
+                # else:
+                    # results.append('Str:'+z.s)
+            result = '::'.join(results)
+            val = f": values={result}"
         elif class_name == 'Name':
             val = f": id={node.id!r}"
         elif class_name == 'NameConstant':

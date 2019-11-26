@@ -4145,13 +4145,13 @@ if 'g.cls' in flags:
 # Reports when 'all' is False
 reports = [
     # 'verbose-fail',
-    'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
     # 'test-links',
     'contents',
-    # 'tokens',
+    'tokens',
     # 'raw-tree',
     'tree',
 ]
