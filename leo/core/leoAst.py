@@ -1187,9 +1187,13 @@ class TokenOrderGenerator:
             token = tokens[px]
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
-            if kind == token.kind and kind in ('number', 'string'):
+            if kind == token.kind == 'number':
                 val = token.value
-                break  ### Hack: assume a match for now.
+                break  # Benign: use the token's value, a string, instead of a number.
+            if kind == token.kind == 'string':
+                g.trace(f"STRING MISMATCH: val: {val} token.val: {token.value}")
+                val = token.value
+                break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
                 if self.trace_mode:
