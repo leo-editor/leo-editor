@@ -1606,7 +1606,7 @@ class TokenOrderGenerator:
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
             if isinstance(z, ast.Str):
-                string_tokens = self.advance_joined_str(z.s)
+                string_tokens = self.advance_str(z.s, is_joined=True)
                 for token in string_tokens:
                     yield from self.gen_token('string', token.value)
             elif 0:
@@ -1675,29 +1675,36 @@ class TokenOrderGenerator:
         
         It appears impossible to match spellings here. set_links does that.
         """
-        string_tokens = self.advance_joined_str(node.s)
+        string_tokens = self.advance_str(node.s, is_joined=False)
         for token in string_tokens:
             yield from self.gen_token('string', token.value)
         ###
             # self.advance_str()
             # yield from self.gen_token('string', node.s)
-    #@+node:ekr.20191126074503.1: *6* tog.advance_joined_str
-    def advance_joined_str(self, joined_string):
-        """Called from do_JoinedStr to dvance over two or more 'string' tokens."""
+    #@+node:ekr.20191126074503.1: *6* tog.advance_str
+    def advance_str(self, entire_string, is_joined):
+        """
+        Called from do_Str and do_JoinedStr to advance over one or more
+        'string' tokens that comprise entire_string.
+        """
         i, j, results = self.string_index, 0, []
-        while j < len(joined_string):
+        while j < len(entire_string):
             i = self.find_next_string_token(i + 1)
             token = self.tokens[i]
             assert token.kind == 'string', (token.kind, token.value, g.callers())
             assert token.value, (token.value, g.callers())
             results.append(token)
-            # Strip off the f prefix and quotes.
-            k, value = 0, token.value
-            while k < len(value) and value[k] in 'fFrR':
-                k += 1
-            assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
-            s = value[k+1:-1]
-            ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
+            if is_joined:
+                # Strip off the f prefix and quotes.
+                # k is the index into token.value.
+                k, value = 0, token.value
+                while k < len(value) and value[k] in 'fFrR':
+                    k += 1
+                assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
+                s = value[k+1:-1]
+                ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
+            else:
+                s = value
             j += len(s)
         self.string_index = i
         return results
