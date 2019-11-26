@@ -355,19 +355,18 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
-<v t="ekr.20191126105843.1"><vh>ignore: to be tested again</vh>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
-</v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
+<v t="ekr.20191126105843.1"><vh>fails: to be tested again</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
-<v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
+<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
@@ -4133,7 +4132,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind',
@@ -4148,7 +4147,7 @@ if 'g.cls' in flags:
 reports = [
     'dump-after-fail',
     # 'verbose-fail',
-    'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-mode',  # Sets TOG.trace_mode.
     
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
@@ -4666,6 +4665,10 @@ assert not fails, f"failed {len(fails)} tests"</t>
 <t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
 print('c')</t>
 <t tx="ekr.20191126084046.1"></t>
-<t tx="ekr.20191126105843.1"></t>
+<t tx="ekr.20191126105843.1">Fails:
+'test: ClassDef, FunctionDef',
+'test: Try',
+'test: if, elif',
+'test: if, elif, else'</t>
 </tnodes>
 </leo_file>

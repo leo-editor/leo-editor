@@ -1198,7 +1198,10 @@ class TokenOrderGenerator:
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
             if kind == token.kind == 'string':
-                g.trace(f"STRING MISMATCH: val: {val} token.val: {token.value} {g.callers(2)}")
+                if True: ### self.trace_mode:
+                    g.trace(
+                        f"STRING MISMATCH: "
+                        f"val: {val} token.val: {token.value} {g.callers(2)}")
                 val = token.value
                 break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
@@ -1445,6 +1448,15 @@ class TokenOrderGenerator:
         yield from node
             # *Not* yield from self.gen(node)
     #@+node:ekr.20191113063144.26: *4* tog: Operands
+    #@+node:ekr.20191113063144.28: *5* tog.arg
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(self, node):
+        
+        yield from self.gen_name(node.arg)
+        annotation = getattr(node, 'annotation', None)
+        if annotation is not None:
+            yield from self.gen(node.annotation)
     #@+node:ekr.20191113063144.27: *5* tog.arguments
     def do_arguments(self, node):
 
@@ -1474,27 +1486,6 @@ class TokenOrderGenerator:
         if kwarg is not None:
             yield from self.gen_op('**')
             yield from self.gen(kwarg)
-    #@+node:ekr.20191113063144.28: *5* tog.arg
-    # arg = (identifier arg, expr? annotation)
-
-    def do_arg(self, node):
-        
-        yield from self.gen_name(node.arg)
-        annotation = getattr(node, 'annotation', None)
-        if annotation is not None:
-            yield from self.gen(node.annotation)
-    #@+node:ekr.20191115105821.1: *5* tog.int
-    def do_int(self, node):
-        
-        # node is an int, not an ast node.
-        # Do *not* call begin/end visitor!
-        assert isinstance(node, int), repr(node)
-        # Assign the int to the parent.
-        try: ###
-            yield from self.gen_token('num', node)
-        except Exception as e:
-            g.trace(e, g.callers())
-
     #@+node:ekr.20191113063144.29: *5* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -1594,7 +1585,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (TO DO)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (New)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     formatted_value_stack = []  # A flag for advance_str and for put_token.
@@ -1617,7 +1608,19 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (TO DO)
+    #@+node:ekr.20191115105821.1: *5* tog.int
+    def do_int(self, node):
+        
+        # node is an int, not an ast node.
+        # Do *not* call begin/end visitor!
+        assert isinstance(node, int), repr(node)
+        # Assign the int to the parent.
+        try: ###
+            yield from self.gen_token('num', node)
+        except Exception as e:
+            g.trace(e, g.callers())
+
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (new)
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
@@ -1630,8 +1633,6 @@ class TokenOrderGenerator:
                 for token in string_tokens:
                     yield from self.gen_token('string', token.value)
             else:
-                ###### To do...
-                ### self.dump_one_node(node, self.level, tag='do_JoinedStr')
                 yield from self.gen(z) ### Experimental.
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
@@ -1688,7 +1689,7 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str & advance helpers
+    #@+node:ekr.20191113063144.50: *5* tog.Str
     string_index = -1  # The index in self.tokens of the previous scanned 'string' token.
 
     def do_Str(self, node):
@@ -1700,10 +1701,7 @@ class TokenOrderGenerator:
         string_tokens = self.advance_str(node.s, is_joined=False)
         for token in string_tokens:
             yield from self.gen_token('string', token.value)
-        ###
-            # self.advance_str()
-            # yield from self.gen_token('string', node.s)
-    #@+node:ekr.20191126074503.1: *6* tog.advance_str
+    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper
     def advance_str(self, entire_string, is_joined):
         """
         Called from do_Str and do_JoinedStr to advance over one or more
@@ -1716,7 +1714,11 @@ class TokenOrderGenerator:
                 f"    entire_string: {entire_string} {g.callers()}")
         i, j, results = self.string_index, 0, []
         while j < len(entire_string):
-            i = self.find_next_string_token(i + 1)
+            new_i = self.find_next_string_token(i + 1)
+            if new_i >= len(self.tokens):
+                g.trace('EARLY BREAK')
+                break
+            i = new_i
             token = self.tokens[i]
             if self.trace_mode:
                 print(f"    i: {i:<3} j: {j:<2} {token}")
@@ -4288,7 +4290,7 @@ class TestRunner:
             self.dump_contents()
             self.dump_tokens()
             self.dump_tree()
-            self.dump_raw_tree()
+            # self.dump_raw_tree()
 
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
