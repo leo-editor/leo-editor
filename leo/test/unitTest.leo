@@ -336,6 +336,16 @@
 </v>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
+<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh>
+<v t="ekr.20191125235556.2"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
+<v t="ekr.20191125235556.3"><vh>filter_reports</vh></v>
+<v t="ekr.20191125235556.4"><vh>make_tests</vh></v>
+<v t="ekr.20191125235556.5"><vh>reload_helper</vh></v>
+<v t="ekr.20191125235556.6"><vh>run_tests</vh></v>
+<v t="ekr.20191125235556.7"><vh>show_status</vh></v>
+<v t="ekr.20191125235556.8"><vh>summarize</vh></v>
+</v>
+</v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
 <v t="ekr.20191125064147.1"><vh>filter_reports</vh></v>
@@ -345,13 +355,15 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
+<v t="ekr.20191125235415.1"><vh>fail: string concatentation</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
+<v t="ekr.20191125165640.1"><vh>fail: call + JoinedString</vh></v>
 <v t="ekr.20191125151346.1"><vh>fail:</vh>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -382,11 +394,14 @@
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
 <v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
 <v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
 <v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
+<v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
 </v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
+<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 </v>
 </v>
@@ -4129,13 +4144,14 @@ if 'g.cls' in flags:
 #
 # Reports when 'all' is False
 reports = [
+    # 'verbose-fail',
     'trace-mode',  # Sets TOG.trace_mode.
-    'trace-times',  # Only for'file:' tests.
+    # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
     # 'test-links',
     'contents',
-    'tokens',
+    # 'tokens',
     # 'raw-tree',
     'tree',
 ]
@@ -4513,6 +4529,7 @@ elif 2:
             assert ok, description
         if not ok:
             print(f"\nFAIL: {description}")
+            x.dump_all()
             break
     t2 = time.process_time()
     test_time = t2 - t1
@@ -4520,5 +4537,135 @@ elif 2:
 </t>
 <t tx="ekr.20191125144727.1">print('hi')</t>
 <t tx="ekr.20191125151346.1"></t>
+<t tx="ekr.20191125161333.1">if 1:
+    a = 'class' if cond else 'def'
+    # find_pattern = prefix + ' ' + word
+    '1'
+else:
+    '2'
+</t>
+<t tx="ekr.20191125165430.1">f"{' Backward' if not self.isearch_forward else ''}"</t>
+<t tx="ekr.20191125165640.1">k.setLabelBlue(
+    "Isearch"
+    f"{' Backward' if not self.isearch_forward else ''}"
+    f"{' Regexp' if self.isearch_regexp else ''}"
+    f"{' NoCase' if self.isearch_ignore_case else ''}"
+    ": "
+)
+print('after')</t>
+<t tx="ekr.20191125235415.1">print('a' '.' 'b')
+print('c')</t>
+<t tx="ekr.20191125235556.1">"""
+The master unit test for leoAst.TokenOrderGenerator and related classes.
+"""
+import time
+import leo.core.leoAst as leoAst
+&lt;&lt; helper functions &gt;&gt;
+# Flags for *this* code.
+flags = [
+    'all'
+    'show-test-kind',
+    'show-test-time',
+    'summarize',
+]
+g.cls() ###
+#
+# Reports when 'all' is False
+reports = [
+    # 'verbose-fail',
+    # 'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-times',  # Only for'file:' tests.
+    # 'dump-all',
+    # 'asttokens',
+    # 'test-links',
+    'contents',
+    # 'tokens',
+    # 'raw-tree',
+    'tree',
+]
+# Make tests, run tests, and summarize.
+reload_time = 0.0
+show_status()
+tests = make_tests()
+fails, test_time = run_tests()
+summarize()
+assert not fails, f"failed {len(fails)} tests"</t>
+<t tx="ekr.20191125235556.2"># All helpers have access to symbols defined at the top level,
+# namely flags, reports, reload_time and test_time.
+
+@others</t>
+<t tx="ekr.20191125235556.3">def filter_reports(description):
+
+    if 'all' in flags:
+        return [z for z in reports if z == 'asttokens']
+    # Set 'trace-times' only for 'file:' tests.
+    aList = [z for z in reports if z != 'trace-times']
+    if 'trace-times' in reports and description.startswith('file:'):
+        reports2.append('trace-times')
+    return aList</t>
+<t tx="ekr.20191125235556.4">def make_tests():
+    """
+    Return a list of tuples (contents, description) for all of Leo's core .py files.
+    """
+    import glob
+    import os
+    core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+    assert os.path.exists(core_directory), core_directory
+    paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
+    tests = []
+    for path in paths:
+        assert os.path.exists(path), path
+        with open(path, 'r') as f:
+            contents = f.read()
+        description = path
+        tests.append((contents, description))   
+    return tests
+</t>
+<t tx="ekr.20191125235556.5">def reload_helper():
+    
+    reload_t1 = time.process_time()
+    if 'reload' in flags:
+        print('**Reloading**')
+        import imp
+        imp.reload(leoAst)
+    reload_t2 = time.process_time()
+    return reload_t2 - reload_t1
+</t>
+<t tx="ekr.20191125235556.6">def run_tests():
+    
+    fails = []
+    t1 = time.process_time()
+    for contents, description in tests:
+        # Test runner catches all exceptions.
+        print(f"Running {description}...\n")
+        x = leoAst.TestRunner()
+        ok = x.run_tests(contents, description, filter_reports(description))
+        if not ok:
+            fails.append(description)
+            ### print(f"\nFAIL: {description}")
+    t2 = time.process_time()
+    test_time = t2 - t1
+    return fails, test_time
+</t>
+<t tx="ekr.20191125235556.7">def show_status():
+    if 'show-test-kind' in flags:
+        kind = '*all*' if 'all' in flags else '*selected'
+        print(f"Running *{kind}*' unit tests...\n")
+    if 'asttokens' in reports:
+        print('\nUsing asttokens, *not* the TOG classes')
+    if 'reload' in flags and 'show-reload-time' in flags:
+        print(f"\n   Reload time: {reload_time:4.2f} sec.")
+</t>
+<t tx="ekr.20191125235556.8">def summarize():
+    if 'summarize' in flags:
+        status = 'FAIL' if fails else 'PASS'
+        if fails:
+            g.printObj(fails, tag='Failed tests')
+        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
+    if 'show-test-time' in flags:
+        print(f"Run tests time: {test_time:4.2f} sec.")
+</t>
+<t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
+print('c')</t>
 </tnodes>
 </leo_file>

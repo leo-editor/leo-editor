@@ -1159,7 +1159,7 @@ class TokenOrderGenerator:
         if self.trace_mode:
             ivar = 'header_has_been_shown'
             if not getattr(self, ivar, None):
-                g.trace('==========', g.callers())
+                ### g.trace('==========', g.callers())
                 setattr(self, ivar, True)
                 print('Significant tokens...\n')
                 print(AstDumper().show_header())
@@ -1173,22 +1173,27 @@ class TokenOrderGenerator:
             token = tokens[px]
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
-            if kind == token.kind == 'name' and val == 'if-???': ### ('else', 'elif', 'if'):
-                val = token.value
-                break  ### Hack: ssume a match for now.
+            # if kind == token.kind == 'name' and val == 'if-???': ### ('else', 'elif', 'if'):
+                # val = token.value
+                # break  ### Hack: assume a match for now.
             if kind == token.kind and kind in ('number', 'string'):
                 val = token.value
                 break  ### Hack: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
-                g.printObj(tokens[max(0, px-10):px+1], 'TOKENS')
+                if self.trace_mode:
+                    print('\nput_token: SYNC FAILED...')
+                    g.printObj(tokens[max(0, px-10):px+10], 'TOKENS')
                 raise AssignLinksError(
+                    f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
             px += 1
         else:
             # Unrecoverable sync failure.
-            g.printObj(tokens[max(0, px-5):], 'TOKENS')
+            if self.trace_mode:
+                print('\nput_token: SYNC FAILED...')
+                g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise AssignLinksError(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -1578,25 +1583,21 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (hack to match asttokens) 
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (to do: advance_string) 
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
-        
-        if 0:
-            for z in node.values or []:
-                g.trace(z)
-                
-        if 1:
-            yield from self.gen_token('string', 'STUB')
-            
-        if 0:
-            pass
-        elif 1:
-            # This matches asttokens??
-            yield from self.visitor(None)
-        else:
-            yield from self.gen(node.values)
+        """Concatenate f-strings"""
+        results = []
+        assert isinstance(node.values, list)
+        for z in node.values:
+            assert isinstance(z, (str, ast.Str)), repr(z)
+            if isinstance(z, str):
+                results.append(z)
+            else:
+                results.append(z.s)
+        for z in results:
+            yield from self.gen_token('string', z)
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1731,8 +1732,10 @@ class TokenOrderGenerator:
         
         #'%s if %s else %s'
         yield from self.gen(node.body)
+        self.advance_if()
         yield from self.gen_name('if')
         yield from self.gen(node.test)
+        self.advance_if()
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *4* tog: Statements
@@ -1934,27 +1937,26 @@ class TokenOrderGenerator:
 
     def is_if_token(self, token):
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
+        
+    def advance_if(self):
+        i = 0 if self.find_index is None else self.find_index + 1
+        self.find_index = self.find_next_if_token(i)
 
     def find_next_if_token(self, i):
-        # Careful. there may be no 'if', 'elif' or 'else' tokens in the token list.
-        assert i >= 0, g.callers()
-        if i == 0: g.trace('==========', g.callers())
+        ### if i == 0: g.trace('==========', g.callers())
         while i < len(self.tokens):
-            g.trace(f"      {i<3} {self.tokens[i]}")
+            ### g.trace(f"      {i<3} {self.tokens[i]}")
             if self.is_if_token(self.tokens[i]):
-                g.trace(f"FOUND {i<3} {self.tokens[i]}")
+                ### g.trace(f"FOUND {i<3} {self.tokens[i]}")
                 break
             i += 1
         return i
-
-    def advance_if(self):
-        self.find_index = self.find_next_if_token(self.find_index + 1)
 
     def peek_if(self):
         # Init, exactly once per tree traversal.
         if self.find_index is None:
             self.find_index = self.find_next_if_token(0)
-        # The possibility of an IndexError is a sanity check.
+        # IndexError is a sanity check.
         return self.tokens[self.find_index]
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
@@ -2179,8 +2181,10 @@ class AstDumper:
         # fields = [(a, b) for a, b in ast.iter_fields(node) if a not in suppress]
         # aList = [f"{a}={b}" for a, b in fields]
         val = ''
-        if class_name == 'Str':
-            val = f": s={node.s!r}"
+        if class_name == 'JoinedStr':
+            # values = ','.join([z.__class__.__name__ for z in node.values])
+            # values = ','.join([z.s for z in node.values])
+            val = f": values={node.values.__class__.__name__}"
         elif class_name == 'Name':
             val = f": id={node.id!r}"
         elif class_name == 'NameConstant':
@@ -2188,6 +2192,8 @@ class AstDumper:
         elif class_name == 'Num':
             val = f": n={node.n}"
             # val = ': ' + ','.join(aList)
+        elif class_name == 'Str':
+            val = f": s={node.s!r}"
         elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'UnaryOp'): # IfExp
             name = node.op.__class__.__name__
             val = f": {_op_names.get(name, name)}"
@@ -4115,6 +4121,9 @@ class TestRunner:
         tag = 'run_tests'
         reports = [z.lower().replace('-', '_') for z in reports or []]
         assert isinstance(reports, list), repr(reports)
+        verbose_fail = 'verbose_fail' in reports
+        if verbose_fail:
+            reports.remove('verbose_fail')
         # Set defaults.
         self.sources = sources = sources.strip() + '\n'
         # Create tokens and tree.
@@ -4145,7 +4154,8 @@ class TestRunner:
                 t3 = time.process_time()
                 g.trace('\nFAIL:\n')
                 print(e)
-                ### g.es_exception()
+                if verbose_fail:
+                    g.es_exception()
                 return False
         if 'trace_times' in reports:
             reports.remove('trace_times')
