@@ -1595,13 +1595,11 @@ class TokenOrderGenerator:
         conv = node.conversion
         spec = node.format_spec
         self.formatted_value_stack.append(node)
-        ### g.trace('===== 1', node.value.__class__.__name__)
         yield from self.gen(node.value)
         if conv is not None:
             assert isinstance(conv, int), (repr(conv), g.callers())
             yield from self.gen_token('number', conv)
         if spec is not None:
-            ### g.trace('===== 3', node.format_spec.__class__.__name__)
             yield from self.gen(node.format_spec)
         self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.40: *5* tog.Index
@@ -1629,11 +1627,11 @@ class TokenOrderGenerator:
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
             if isinstance(z, ast.Str):
-                string_tokens = self.advance_str(z.s, is_joined=True)
+                string_tokens = self.advance_str(z.s)
                 for token in string_tokens:
                     yield from self.gen_token('string', token.value)
             else:
-                yield from self.gen(z) ### Experimental.
+                yield from self.gen(z)
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1698,20 +1696,26 @@ class TokenOrderGenerator:
         
         It appears impossible to match spellings here. set_links does that.
         """
-        string_tokens = self.advance_str(node.s, is_joined=False)
+        string_tokens = self.advance_str(node.s)
         for token in string_tokens:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper
-    def advance_str(self, entire_string, is_joined):
+    def advance_str(self, entire_string):
         """
         Called from do_Str and do_JoinedStr to advance over one or more
         'string' tokens that comprise entire_string.
         """
         if self.trace_mode:
             g.trace(
-                f"ENTRY: is_joined: {is_joined} "
-                f"is_formatted: {bool(self.formatted_value_stack)}\n"
-                f"    entire_string: {entire_string} {g.callers()}")
+                f"ENTRY: is_formatted: {bool(self.formatted_value_stack)}\n"
+                f"      entire_string: {entire_string} {g.callers()}")
+        # Special case for empty string.
+        if not entire_string:
+            i = self.string_index
+            i = self.find_next_string_token(i + 1)
+            token = self.tokens[i]
+            self.string_index = i
+            return [token]
         i, j, results = self.string_index, 0, []
         while j < len(entire_string):
             new_i = self.find_next_string_token(i + 1)
@@ -1740,10 +1744,12 @@ class TokenOrderGenerator:
     def find_next_string_token(self, i):
         while i < len(self.tokens):
             token = self.tokens[i]
-            # caller = g.callers(2).split(',')[0]
-            # g.trace(f"{caller:<14}       {i:<3} {self.tokens[i]}")
+            if self.trace_mode:
+                caller = g.callers(2).split(',')[0]
+                g.trace(f"{caller:<14}       {i:<3} {self.tokens[i]}")
             if token.kind == 'string':
-                # g.trace(f"{caller:<14} FOUND {i:<3} {self.tokens[i]}")
+                if self.trace_mode:
+                    g.trace(f"{caller:<14} FOUND {i:<3} {self.tokens[i]}")
                 break
             i += 1
         return i

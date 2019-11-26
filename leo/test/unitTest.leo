@@ -355,9 +355,10 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191126105843.1"><vh>fails: to be tested again</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 <v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -400,10 +401,11 @@
 </v>
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 </v>
-<v t="ekr.20191125151346.1"><vh>fail: deferred file tests</vh>
+<v t="ekr.20191126142855.1"><vh>ignore: passed file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4665,10 +4667,9 @@ assert not fails, f"failed {len(fails)} tests"</t>
 <t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
 print('c')</t>
 <t tx="ekr.20191126084046.1"></t>
-<t tx="ekr.20191126105843.1">Fails:
-'test: ClassDef, FunctionDef',
-'test: Try',
-'test: if, elif',
-'test: if, elif, else'</t>
+<t tx="ekr.20191126142855.1"></t>
+<t tx="ekr.20191126143046.1">self.s = ''
+self.i = 0
+</t>
 </tnodes>
 </leo_file>
