@@ -355,11 +355,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
-</v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+</v>
 <v t="ekr.20191125151346.1"><vh>fail:</vh>
 <v t="ekr.20191120064512.1"><vh>File tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
@@ -392,7 +393,6 @@
 </v>
 </v>
 <v t="ekr.20191122210522.1"><vh>If tests</vh>
-<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
@@ -4144,11 +4144,11 @@ flags = [
 if 'g.cls' in flags:
     g.cls()
 #
-# Reports when 'all' is False
+# Reports flags.
 reports = [
     'dump-after-fail',
     'verbose-fail',
-    # 'trace-mode',  # Sets TOG.trace_mode.
+    'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
@@ -4495,8 +4495,10 @@ elif 2:
 </t>
 <t tx="ekr.20191125064147.1">def filter_reports(description):
 
-    if 'all' in flags:
-        return [z for z in reports if z == 'asttokens']
+    ### Silly.
+        # if 'all' in flags:
+        #     return [z for z in reports if z == 'asttokens']
+
     # Set 'trace-times' only for 'file:' tests.
     aList = [z for z in reports if z != 'trace-times']
     if 'trace-times' in reports and description.startswith('file:'):

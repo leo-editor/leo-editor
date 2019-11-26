@@ -1177,7 +1177,8 @@ class TokenOrderGenerator:
         if self.formatted_value_stack:
             # Within the range of a formatted value.
             # All such nodes become strings.
-            # g.trace('SKIP', kind, val)
+            if self.trace_mode:
+                g.trace('SKIP', kind, val)
             return
         if not self.is_significant(kind, val):
             return
@@ -1703,30 +1704,40 @@ class TokenOrderGenerator:
             # yield from self.gen_token('string', node.s)
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     def advance_str(self, entire_string, is_joined):
-            ### Replace by str_kind in 'normal', 'joined', 'formatted'
         """
         Called from do_Str and do_JoinedStr to advance over one or more
         'string' tokens that comprise entire_string.
         """
+        if self.trace_mode:
+            g.trace(
+                f"ENTRY: is_joined: {is_joined} "
+                f"is_formatted: {bool(self.formatted_value_stack)}\n"
+                f"    entire_string: {entire_string} {g.callers()}")
         i, j, results = self.string_index, 0, []
         while j < len(entire_string):
             i = self.find_next_string_token(i + 1)
             token = self.tokens[i]
+            if self.trace_mode:
+                print('    token', token)
             assert token.kind == 'string', (token.kind, token.value, g.callers())
             assert token.value, (token.value, g.callers())
             results.append(token)
-            if is_joined:
-                # Strip off the f prefix and quotes.
-                # k is the index into token.value.
-                k, value = 0, token.value
+            value = token.value
+            if True: ### is_joined:
+                # Ignore  f and r prefixes and quotes.
+                k = 0
                 while k < len(value) and value[k] in 'fFrR':
                     k += 1
                 assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
                 s = value[k+1:-1]
+                n = len(s)
                 ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
             else:
-                s = token.value
-            j += len(s)
+                # Ignore quotes.
+                assert value[0] in ('"',"'"), (value, value[0], g.callers())
+                s = value[1:-1]
+                n = len(s)
+            j += n
         self.string_index = i
         return results
     #@+node:ekr.20191126074448.2: *6* tog.find_next_string_token
