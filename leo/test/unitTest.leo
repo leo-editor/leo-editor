@@ -4551,11 +4551,11 @@ else:
 </t>
 <t tx="ekr.20191125165430.1">f"{' Backward' if not self.isearch_forward else ''}"</t>
 <t tx="ekr.20191125165640.1">k.setLabelBlue(
-    "Isearch"
-    f"{' Backward' if not self.isearch_forward else ''}"
-    f"{' Regexp' if self.isearch_regexp else ''}"
-    f"{' NoCase' if self.isearch_ignore_case else ''}"
-    ": "
+    'a'
+    f"{b if not cond1 else ''}"
+    f"{c if cond2 else ''}"
+    f"{d if cond3 else ''}"
+    ":"
 )
 print('after')</t>
 <t tx="ekr.20191125235415.1">print('a' '.' 'b')

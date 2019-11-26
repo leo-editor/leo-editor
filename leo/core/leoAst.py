@@ -1583,21 +1583,25 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (changed)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (TO DO)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
 
+        g.trace('===== 1', node.value.__class__.__name__)
         yield from self.gen(node.value)
         if node.conversion is not None:
+            g.trace('===== 2', node.conversion.__class__.__name__)
             yield from self.gen(node.conversion)
-            yield from self.gen_token('num', node.conversion)
+            ### g.trace('===== 3', node.conversion.__class__.__name__)
+            ### yield from self.gen_token('num', node.conversion)
+        g.trace('===== 3', node.format_spec.__class__.__name__)
         yield from self.gen(node.format_spec)
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (changed)
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (TO DO)
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
@@ -1609,8 +1613,10 @@ class TokenOrderGenerator:
                 string_tokens = self.advance_str(z.s, is_joined=True)
                 for token in string_tokens:
                     yield from self.gen_token('string', token.value)
-            elif 0:
-                self.dump_one_node(node, self.level, tag='do_JoinedStr')
+            else:
+                ###### To do...
+                ### self.dump_one_node(node, self.level, tag='do_JoinedStr')
+                yield from self.gen(z) ### Experimental.
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1704,7 +1710,7 @@ class TokenOrderGenerator:
                 s = value[k+1:-1]
                 ### g.trace(f"FOUND' i: {i:<3} j: {j:<2} {token.value:10} ==> {s}")
             else:
-                s = value
+                s = token.value
             j += len(s)
         self.string_index = i
         return results
@@ -1786,6 +1792,8 @@ class TokenOrderGenerator:
             yield from self.gen_op(op_name)
         yield from self.gen(node.operand)
     #@+node:ekr.20191113063144.59: *5* tog.IfExp (ternary operator)
+    # IfExp(expr test, expr body, expr orelse)
+
     def do_IfExp(self, node):
         
         #'%s if %s else %s'
@@ -4260,7 +4268,7 @@ class TestRunner:
             self.dump_contents()
             self.dump_tokens()
             self.dump_tree()
-            # self.dump_raw_tree()
+            self.dump_raw_tree()
 
     #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
     def dump_contents(self):
