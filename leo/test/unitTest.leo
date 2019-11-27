@@ -356,14 +356,16 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127000732.1"><vh>xx test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191127001455.1"><vh>REF: leoFind.py: line 861</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 <v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+<v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -4149,8 +4151,7 @@ if 'g.cls' in flags:
 reports = [
     'dump-after-fail',
     # 'verbose-fail',
-    # 'trace-mode',  # Sets TOG.trace_mode.
-    
+    'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
@@ -4671,5 +4672,19 @@ print('c')</t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
 </t>
+<t tx="ekr.20191127000732.1">k.k1(
+    f"{'A' if self.a else ''}"
+    f"{'B' if self.b else ''}"
+    ": "
+)
+k.k2()</t>
+<t tx="ekr.20191127001455.1">k.setLabelBlue(
+    "Isearch"
+    f"{' Backward' if not self.isearch_forward else ''}"
+    f"{' Regexp' if self.isearch_regexp else ''}"
+    f"{' NoCase' if self.isearch_ignore_case else ''}"
+    ": "
+)
+k.setState('isearch', 1, handler=self.iSearchStateHandler)</t>
 </tnodes>
 </leo_file>

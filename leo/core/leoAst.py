@@ -1068,22 +1068,24 @@ class TokenOrderGenerator:
         yield from self.visitor(z)
 
     def gen_blank(self):
-        yield from self.visitor(self.put_blank())
+        yield from self.visitor(self.sync_blank())
 
-    def gen_comma(self):
-        yield from self.visitor(self.put_comma())
+    ### There is never any need to sync on commas.
+    ###
+    ### def gen_comma(self):
+    ###    yield from self.visitor(self.sync_comma())
 
     def gen_name(self, val):
-        yield from self.visitor(self.put_name(val))
+        yield from self.visitor(self.sync_name(val))
                     
     def gen_newline(self):
-        yield from self.visitor(self.put_token('newline', '\n'))
+        yield from self.visitor(self.sync_token('newline', '\n'))
 
     def gen_op(self, val):
-        yield from self.visitor(self.put_op(val))
+        yield from self.visitor(self.sync_op(val))
         
     def gen_token(self, kind, val):
-        yield from self.visitor(self.put_token(kind, val))
+        yield from self.visitor(self.sync_token(kind, val))
     #@+node:ekr.20191113063144.6: *3* tog.make_tokens
     def make_tokens(self, contents):
         """
@@ -1127,11 +1129,12 @@ class TokenOrderGenerator:
         A global predicate returning True if the token should be assigned to
         the token_list field of the next significant token.
         
-        We can assume that that token is not significant.
-        
         Code should *not* use any similar local predicate.
         """
-        return token.kind in ('comment', 'newline')
+        return (
+            self.is_significant_token(token)
+            or token.kind in ('comment', 'newline')
+        )
             # or token.kind == 'op' and token.value in ',()'
 
     def is_significant(self, kind, value):
@@ -1148,13 +1151,10 @@ class TokenOrderGenerator:
     def is_significant_token(self, token):
         """Return True if the given token is a syncronizing token"""
         return self.is_significant(token.kind, token.value)
-        
-
-        
-    #@+node:ekr.20191113063144.7: *3* tog.put_token & set_links
+    #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links
     px = -1 # Index of the previous significant token.
 
-    def put_token(self, kind, val):
+    def sync_token(self, kind, val):
         """
         Handle a token whose kind & value are given.
         
@@ -1176,15 +1176,28 @@ class TokenOrderGenerator:
         old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), (repr(node), g.callers())
         if self.formatted_value_stack:
-            # Within the range of a formatted value.
-            # All such nodes become strings.
-            if self.trace_mode:
-                g.trace('SKIP', kind, val)
+            # self.node is a descendant of a FormattedValue.
+            # *Always* advance over the token.
+            # If the token is assignable, associate the token with
+            # the FormattedValue node
+            px += 1
+            if px >= len(tokens):
+                if self.trace_mode:
+                    g.trace('EARLY RETURN', g.callers())
+                return
+            self.px = px  # Advance.
+            token = tokens[px]
+            formatted_node = self.formatted_value_stack[-1]
+            assert isinstance(formatted_node, ast.FormattedValue)
+            if self.trace_mode and self.is_assignable_token(token):
+                g.trace('ASSIGN TO FormattedValue', token.kind, token.value)
+            self.set_links(formatted_node, token)
             return
         if not self.is_significant(kind, val):
             return
         if verbose and self.trace_mode:
-            self.dump_one_node(self.node, self.level, tag='put_token: Significant tokens...')
+            self.dump_one_node(self.node, self.level, 
+                tag='sync_token: Significant tokens...')
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -1207,8 +1220,8 @@ class TokenOrderGenerator:
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
                 if self.trace_mode:
-                    print('\nput_token: SYNC FAILED...')
-                    g.printObj(tokens[max(0, px-10):px+10], 'TOKENS')
+                    g.trace('\nSYNC FAILED...')
+                    g.printObj(tokens[max(0, px-10):px+1], 'TOKENS')
                 raise AssignLinksError(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
@@ -1217,7 +1230,7 @@ class TokenOrderGenerator:
         else:
             # Unrecoverable sync failure.
             if self.trace_mode:
-                print('\nput_token: SYNC FAILED...')
+                g.trace('\nSYNC FAILED...')
                 g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise AssignLinksError(
                  f"Looking for: {kind}.{val}\n"
@@ -1227,56 +1240,54 @@ class TokenOrderGenerator:
         while old_px < px:
             token = tokens[old_px]
             old_px += 1
-            # Don't assign "cruft" tokens to the ast node.
-            if self.is_assignable_token(token):
-                self.set_links(token)
+            self.set_links(self.node, token)
         #
         # Step three: Set links in the significant token.
         token = tokens[px]
         assert self.is_significant_token(token), (token, g.callers())
-        self.set_links(token)
+        self.set_links(node, token)
         #
         # Step four. Advance.
         self.px = px
     #@+node:ekr.20191125120814.1: *4* tog.set_links
-    def set_links(self, token):
-        """Make two-way links between token and self.node."""
-        node = self.node
+    def set_links(self, node, token):
+        """Make two-way links between token and the given node."""
         assert token.node is None, (repr(token), g.callers())
-        #
-        # Link the token to the ast node.
-        token.node = node
-        #
-        # Add the token to node's token_list.
-        token_list = getattr(node, 'token_list', [])
-        node.token_list = token_list + [token]
-    #@+node:ekr.20191124083124.1: *3* tog.put_token helpers
+        if self.is_assignable_token(token):
+            #
+            # Link the token to the ast node.
+            token.node = node
+            #
+            # Add the token to node's token_list.
+            token_list = getattr(node, 'token_list', [])
+            node.token_list = token_list + [token]
+    #@+node:ekr.20191124083124.1: *3* tog.sync_token helpers
     # It's valid for these to return None.
 
-    def put_blank(self):
-        # self.put_token('ws', ' ')
+    def sync_blank(self):
+        # self.sync_token('ws', ' ')
         return None
 
-    def put_comma(self):
-        # self.put_token('op', ',')
-        return None
+    # def sync_comma(self):
+        # # self.sync_token('op', ',')
+        # return None
 
-    def put_name(self, val):
+    def sync_name(self, val):
         aList = val.split('.')
         if len(aList) == 1:
-            self.put_token('name', val)
+            self.sync_token('name', val)
         else:
             for i, part in enumerate(aList):
-                self.put_token('name', part)
+                self.sync_token('name', part)
                 if i < len(aList) - 1:
-                    self.put_op('.')
+                    self.sync_op('.')
                     
-    def put_newline(self):
-        self.put_token('newline', '\n')
+    def sync_newline(self):
+        self.sync_token('newline', '\n')
 
-    def put_op(self, val):
+    def sync_op(self, val):
         if val not in ',()':
-            self.put_token('op', val)
+            self.sync_token('op', val)
     #@+node:ekr.20191113063144.11: *3* tog.report_coverage
     def report_coverage(self, report_missing):
         """Report untested visitors."""
@@ -1588,19 +1599,21 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (New)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    formatted_value_stack = []  # A flag for advance_str and for put_token.
+    formatted_value_stack = []  # A flag for advance_str and for sync_token.
 
     def do_FormattedValue(self, node):
 
         conv = node.conversion
         spec = node.format_spec
         self.formatted_value_stack.append(node)
+        g.trace('\n===== START', node.value.__class__.__name__)
         yield from self.gen(node.value)
         if conv is not None:
             assert isinstance(conv, int), (repr(conv), g.callers())
             yield from self.gen_token('number', conv)
         if spec is not None:
             yield from self.gen(node.format_spec)
+        g.trace('===== END\n')
         self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
@@ -1623,9 +1636,9 @@ class TokenOrderGenerator:
 
     def do_JoinedStr(self, node):
         """Concatenate f-strings"""
-        assert isinstance(node.values, list), (node.values.__class__.__name__, g.callers())
+        assert isinstance(node.values, list)
         for z in node.values:
-            assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
+            assert isinstance(z, (ast.FormattedValue, ast.Str))
             if isinstance(z, ast.Str):
                 string_tokens = self.advance_str(z.s)
                 for token in string_tokens:
@@ -1705,17 +1718,29 @@ class TokenOrderGenerator:
         Called from do_Str and do_JoinedStr to advance over one or more
         'string' tokens that comprise entire_string.
         """
+        results = []
         if self.trace_mode:
-            g.trace(
-                f"ENTRY: is_formatted: {bool(self.formatted_value_stack)}\n"
-                f"      entire_string: {entire_string} {g.callers()}")
-        # Special case for empty string.
-        if not entire_string:
+            g.trace(repr(entire_string))
+        if self.formatted_value_stack:
+            g.trace('IN FORMATTED STRING')
+            # Eat the entire string.
             i = self.string_index
             i = self.find_next_string_token(i + 1)
-            token = self.tokens[i]
+            if i < len(self.tokens):
+                token = self.tokens[i]
+                self.string_index = i
+                results.append(token)
             self.string_index = i
-            return [token]
+            return results
+        # Special case for empty string.
+        # if not entire_string:
+            # i = self.string_index
+            # i = self.find_next_string_token(i + 1)
+            # if i < len(self.tokens):
+                # token = self.tokens[i]
+                # self.string_index = i
+                # results.append(token)
+            # return results
         i, j, results = self.string_index, 0, []
         while j < len(entire_string):
             new_i = self.find_next_string_token(i + 1)
@@ -1725,7 +1750,7 @@ class TokenOrderGenerator:
             i = new_i
             token = self.tokens[i]
             if self.trace_mode:
-                print(f"    i: {i:<3} j: {j:<2} {token}")
+                print(f"    i: {i:<3} j: {j:<2} {token.kind}:{token.value}")
             assert token.kind == 'string', (token.kind, token.value, g.callers())
             assert token.value, (token.value, g.callers())
             results.append(token)
@@ -1742,13 +1767,14 @@ class TokenOrderGenerator:
         return results
     #@+node:ekr.20191126074448.2: *6* tog.find_next_string_token
     def find_next_string_token(self, i):
+        trace = False
         while i < len(self.tokens):
             token = self.tokens[i]
-            if self.trace_mode:
+            if trace:
                 caller = g.callers(2).split(',')[0]
                 g.trace(f"{caller:<14}       {i:<3} {self.tokens[i]}")
             if token.kind == 'string':
-                if self.trace_mode:
+                if trace:
                     g.trace(f"{caller:<14} FOUND {i:<3} {self.tokens[i]}")
                 break
             i += 1
@@ -1974,7 +2000,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         yield from self.gen(node.names)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.75: *5* tog.If & helpers
+    #@+node:ekr.20191113063144.75: *5* tog.If
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
@@ -2026,18 +2052,18 @@ class TokenOrderGenerator:
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191123152511.1: *6* tog.advance_if & peek_if
+    #@+node:ekr.20191123152511.1: *5* tog.If: advance_if & peek_if
     find_index = None
 
     def is_if_token(self, token):
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
+        ### if self.formatted_value_stack: g.trace('IN FORMATTED STRING')
         i = 0 if self.find_index is None else self.find_index + 1
         self.find_index = self.find_next_if_token(i)
 
     def find_next_if_token(self, i):
-        ### if i == 0: g.trace('==========', g.callers())
         while i < len(self.tokens):
             ### g.trace(f"      {i<3} {self.tokens[i]}")
             if self.is_if_token(self.tokens[i]):
@@ -4586,7 +4612,7 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
     def end_visitor(self, node):
         pass
 
-    def put_token(self, kind, val):
+    def sync_token(self, kind, val):
         pass
 #@+node:ekr.20160225102931.1: ** class TokenSync (deprecated)
 class TokenSync:
