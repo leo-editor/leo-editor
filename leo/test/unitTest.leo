@@ -354,8 +354,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+<v t="ekr.20191127163030.1"><vh>ignore: recent FAILS</vh>
 <v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
+</v>
 <v t="ekr.20191127134236.1"><vh>ignore:  latest passed tests</vh>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 </v>
@@ -364,7 +368,6 @@
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
 <v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
@@ -4148,20 +4151,23 @@ if 'g.cls' in flags:
     g.cls()
 #
 # Reports, for TestRunner.run_tests.
-reports = [
-    'dump-sources-first',
-    'dump-tokens-first',
-    'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
-    # 'dump-tokens-after-fail',
-    'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    # 'trace-times',  # Only for'file:' tests.
-    # 'use-asttokens',
+if 1: # 
+    reports = []
+else:
+    reports = [
+        'dump-sources-first',
+        'dump-tokens-first',
+        'set-trace-mode',  # Sets TOG.trace_mode.
+        'show-exception-after-fail',
+        # 'dump-tokens-after-fail',
+        'dump-tree-after-fail',
+        # 'dump-all-after-fail',
+        # 'dump-contents',
+        # 'dump-raw-tree',
+        # 'dump-tokens',
+        # 'dump-tree',
+        # 'trace-times',  # Only for'file:' tests.
+        # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 reload_time = reload_helper()
@@ -4552,7 +4558,7 @@ else:
 </t>
 <t tx="ekr.20191125165430.1">f"{' Backward' if not self.isearch_forward else ''}"</t>
 <t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")</t>
-<t tx="ekr.20191125235415.1">print('a' '.' 'b')
+<t tx="ekr.20191125235415.1">print('a''.''b')
 print('c')</t>
 <t tx="ekr.20191125235556.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
@@ -4674,5 +4680,7 @@ self.i = 0
 <t tx="ekr.20191127134236.1"></t>
 <t tx="ekr.20191127134726.1">one(f"{'B'}"": ")
 two()</t>
+<t tx="ekr.20191127163030.1"></t>
+<t tx="ekr.20191127172440.1">print("a\"b")</t>
 </tnodes>
 </leo_file>
