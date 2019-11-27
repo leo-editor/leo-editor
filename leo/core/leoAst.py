@@ -1606,44 +1606,32 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue ***
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue *** (sets flag)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    # This stack is just a flag for tog.sync_token.
-    # Probably the maximum size of this stack will be one, but so what.
+    # This stack is a flag for advance_str and sync_token.
     fstring_stack = [] 
 
     def do_FormattedValue(self, node):
         """Handle the node representing a *single* f-string."""
-        trace = self.trace_mode
+        trace = True and self.trace_mode
         conv = node.conversion
         spec = node.format_spec
-        # Traverse the subtree. set a flag for sync_token.
         if trace:
             g.trace('\n===== START', node.value.__class__.__name__)
+        # Set the flag.
         self.fstring_stack.append(node)
+        # Traverse all the subtrees, as usual.
         yield from self.gen(node.value)
         if conv is not None:
             assert isinstance(conv, int), (repr(conv), g.callers())
             yield from self.gen_token('number', conv)
         if spec is not None:
             yield from self.gen(node.format_spec)
+        # Clear the flag.
+        self.fstring_stack.pop()
         if trace:
             g.trace('===== END\n')
-        self.fstring_stack.pop()
-        
-         ### Wrong.
-            # if self.joined_string_stack:
-                # # This is an f-string that has been joined (concatenated) with other strings.
-                # # A single token represents the *entire* concatenated string, and
-                # # do_JoinedStr has already synced that token, so do nothing more here!
-                # pass
-            # else:
-                # # A non-joined f-string.  Sync its string.
-                # self.advance_str()
-
-        ### self.advance_str()
-
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
@@ -1660,8 +1648,11 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr *** (sets flag)
     # JoinedStr(expr* values)
+
+    # This stack is a flag for advance_str
+    joined_string_stack = [] 
 
     def do_JoinedStr(self, node):
         """
@@ -1670,31 +1661,19 @@ class TokenOrderGenerator:
         No such node exists for concatenated *plain* strings.
         In that case, a *single* token represents all the concatenated strings!
         """
+        ###
+        ### It's still not clear how to sync joined strings.
+        ###
         assert isinstance(node.values, list)
+        # Set the flag.
+        self.joined_string_stack.append(node)
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str))
             if self.trace_mode:
                 g.trace(z.__class__.__name__)
             yield from self.gen(z)
-        
-        ### Wrong. Multiple tokens *are* generated.
-            # #
-            # # Advance over the *single* token that contains all joined substrings.
-            # token = self.advance_str()
-            # if token is None:
-                # if self.trace_mode: g.trace('EARLY EOF')
-            # else:
-                # if self.trace_mode: g.trace('JOINED TOKEN', token.dump(brief=True))
-                # self.sync_token(token.kind, token.value)
-            # #
-            # # Suppress all calls to tog.advance_str in constituent strings.
-            # self.joined_string_stack.append(node)
-            # assert isinstance(node.values, list)
-            # for z in node.values:
-                # if not isinstance(z, (ast.FormattedValue, ast.Str)):
-                    # raise ValueError(f"expected Str or FormattedValue, got {z!r}")
-                # yield from self.gen(z)
-            # self.joined_string_stack.pop()
+        # Clear the flag.
+        self.joined_string_stack.pop()
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1760,7 +1739,7 @@ class TokenOrderGenerator:
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper ***
+    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helpers ***
     # The index in self.tokens of the previously scanned 'string' token
     string_index = -1 
 
