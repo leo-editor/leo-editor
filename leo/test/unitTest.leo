@@ -354,13 +354,13 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-<v t="ekr.20191127163030.1"><vh>ignore: recent FAILS</vh>
 <v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191127163030.1"><vh>ignore: recent FAILS</vh>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore:  latest passed tests</vh>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: redo recent tests</vh>
@@ -4151,14 +4151,14 @@ if 'g.cls' in flags:
     g.cls()
 #
 # Reports, for TestRunner.run_tests.
-if 1: # 
+if 0: # 
     reports = []
 else:
     reports = [
         'dump-sources-first',
         'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
-        'show-exception-after-fail',
+        # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         'dump-tree-after-fail',
         # 'dump-all-after-fail',

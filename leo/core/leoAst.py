@@ -1668,7 +1668,6 @@ class TokenOrderGenerator:
         Node is a list of f-strings and plain strings.
         
         No such node exists for concatenated *plain* strings.
-        
         In that case, a *single* token represents all the concatenated strings!
         """
         assert isinstance(node.values, list)
@@ -1784,7 +1783,10 @@ class TokenOrderGenerator:
             aList = [z.value for z in results]
             result = []
             for z in aList:
-                assert len(z) >= 2 and z[0] == z[-1] and z[0] in quotes, z
+                ok = len(z) >= 2 and z[0] == z[-1] and z[0] in quotes
+                if not ok:
+                    raise AssignLinksError(
+                        f"Unexpected token.value: {z} scanning for: {self.node.s}")
                 quote = z[0]
                 s = z[1:-1]
                 # Unescape escaped quotes.
