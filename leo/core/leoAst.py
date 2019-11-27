@@ -1172,10 +1172,13 @@ class TokenOrderGenerator:
         
         4. Advance by updating self.px.
         """
-        verbose = False
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
-        assert isinstance(node, ast.AST), (repr(node), g.callers())
+        assert isinstance(node, ast.AST), repr(node)
+        
+        if self.trace_mode:
+            g.trace(f"\n{self.node.__class__.__name__:>14} {kind}: s{val!r}")
+        
         if self.formatted_value_stack:
             # self.node is a descendant of a FormattedValue.
             # *Always* advance over the token.
@@ -1191,14 +1194,17 @@ class TokenOrderGenerator:
             formatted_node = self.formatted_value_stack[-1]
             assert isinstance(formatted_node, ast.FormattedValue)
             if self.trace_mode and self.is_assignable_token(token):
-                g.trace('ASSIGN TO FormattedValue', token.kind, token.value)
+                g.trace('ASSIGN TO FormattedValue', token.kind, repr(token.value))
             self.set_links(formatted_node, token)
             return
+
         if not self.is_significant(kind, val):
             return
-        if verbose and self.trace_mode:
-            self.dump_one_node(self.node, self.level, 
-                tag='sync_token: Significant tokens...')
+            
+        ###
+            # if verbose and self.trace_mode:
+                # self.dump_one_node(self.node, self.level, 
+                    # tag='sync_token: Significant tokens...')
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -1608,20 +1614,24 @@ class TokenOrderGenerator:
 
     def do_FormattedValue(self, node):
         """Handle the node representing a *single* f-string."""
-        trace = True or self.trace_mode  ###
+        trace = self.trace_mode
         conv = node.conversion
         spec = node.format_spec
-        if self.joined_string_stack:
-            # This is an f-string that has been joined (concatenated) with other strings.
-            # A single token represents the *entire* concatenated string, and
-            # do_JoinedStr has already synced that token, so do nothing more here!
-            pass
-        else:
-            # A non-joined f-string.  Sync its string.
-            self.advance_str()
+        ### Wrong.
+            # if self.joined_string_stack:
+                # # This is an f-string that has been joined (concatenated) with other strings.
+                # # A single token represents the *entire* concatenated string, and
+                # # do_JoinedStr has already synced that token, so do nothing more here!
+                # pass
+            # else:
+                # # A non-joined f-string.  Sync its string.
+                # self.advance_str()
+
+        ### self.advance_str()
+
         #
         # Traverse the subtree, suppressing generation of any interior strings.
-        self.formatted_value_stack.append(node)
+        ### self.formatted_value_stack.append(node)
         if trace:
             g.trace('\n===== START', node.value.__class__.__name__)
         yield from self.gen(node.value)
@@ -1632,7 +1642,7 @@ class TokenOrderGenerator:
             yield from self.gen(node.format_spec)
         if trace:
             g.trace('===== END\n')
-        self.formatted_value_stack.pop()
+        ### self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
@@ -1652,35 +1662,38 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr ***
     # JoinedStr(expr* values)
 
-    # This stack is just a flag for do_Str and do_FormattedValue.
-    # Probably the maximum size of this stack will be one, but so what.
-    joined_string_stack = []
+    ###
+        # This stack is just a flag for do_Str and do_FormattedValue.
+        # Probably the maximum size of this stack will be one, but so what.
+        # joined_string_stack = []
 
     def do_JoinedStr(self, node):
-        """
-        Handle the node representing concatentated strings.
-        
-        The strings may be any mixture of f-strings and plain strings.
-        
-        A *single* token represents *all* the composite strings.
-        """
-        #
-        # Advance over the *single* token that contains all joined substrings.
-        token = self.advance_str()
-        if token is None:
-            if self.trace_mode: g.trace('EARLY EOF')
-        else:
-            if self.trace_mode: g.trace('JOINED TOKEN', token.dump(brief=True))
-            self.sync_token(token.kind, token.value)
-        #
-        # Suppress all calls to tog.advance_str in constituent strings.
-        self.joined_string_stack.append(node)
+        """Node is a list of f-strings and plain strings."""
         assert isinstance(node.values, list)
         for z in node.values:
-            if not isinstance(z, (ast.FormattedValue, ast.Str)):
-                raise ValueError(f"expected Str or FormattedValue, got {z!r}")
+            ###
+                # if not isinstance(z, (ast.FormattedValue, ast.Str)):
+                    # raise ValueError(f"expected Str or FormattedValue, got {z!r}")
             yield from self.gen(z)
-        self.formatted_value_stack.pop()
+        
+        ### Wrong. Multiple tokens *are* generated.
+            # #
+            # # Advance over the *single* token that contains all joined substrings.
+            # token = self.advance_str()
+            # if token is None:
+                # if self.trace_mode: g.trace('EARLY EOF')
+            # else:
+                # if self.trace_mode: g.trace('JOINED TOKEN', token.dump(brief=True))
+                # self.sync_token(token.kind, token.value)
+            # #
+            # # Suppress all calls to tog.advance_str in constituent strings.
+            # self.joined_string_stack.append(node)
+            # assert isinstance(node.values, list)
+            # for z in node.values:
+                # if not isinstance(z, (ast.FormattedValue, ast.Str)):
+                    # raise ValueError(f"expected Str or FormattedValue, got {z!r}")
+                # yield from self.gen(z)
+            # self.joined_string_stack.pop()
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1739,14 +1752,13 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        if self.joined_string_stack:
-            # Do *nothing* here. The JoinedStr visitor has already consumed the token.
-            return
+        ### Wrong.
+            # if self.joined_string_stack:
+                # # Do *nothing* here. The JoinedStr visitor has already consumed the token.
+                # return
         token = self.advance_str()
         if token is not None:
             yield from self.gen_token('string', token.value)
-       ### for token in string_tokens:
-       ###     yield from self.gen_token('string', token.value)
     #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper ***
     # The index in self.tokens of the previously scanned 'string' token
     string_index = -1 
@@ -1758,12 +1770,12 @@ class TokenOrderGenerator:
 
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
-        g.trace('Entry', i)
+        if self.trace_mode: g.trace('Entry', i)
         while i < len(self.tokens):
             token = self.tokens[i]
-            # g.trace(f"   LOOK {i:<3} {self.tokens[i]}")
+            # if self.trace_mode: g.trace(f"   LOOK {i:<3} {self.tokens[i]}")
             if token.kind == 'string':
-                g.trace(f"  FOUND {i:<3} {self.tokens[i]}")
+                if self.trace_mode: g.trace(f"Found {i:<3} {self.tokens[i]} {g.callers(2)}")
                 break
             i += 1
         return i
@@ -4293,12 +4305,12 @@ class TestRunner:
                 print(e)
                 if 'show-exception-after-fail' in flags:
                     g.es_exception()
-                if 'dump_all_after_fail' in flags:
+                if 'dump-all-after-fail' in flags:
                     self.dump_all()
                 else:
-                    if 'dump_tokens_after-fail' in flags:
+                    if 'dump-tokens-after-fail' in flags:
                         self.dump_tokens()
-                    if 'dump_tree_after_fail' in flags:
+                    if 'dump-tree-after-fail' in flags:
                         self.dump_tree()
                 return False
         if 'trace-times' in flags:

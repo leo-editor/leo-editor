@@ -354,10 +354,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191127000732.1"><vh>xx test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
-<v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
+<v t="ekr.20191127134236.1"><vh>ignore:  latest passed tests</vh>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+</v>
+<v t="ekr.20191126084046.1"><vh>ignore: redo recent tests</vh>
 <v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
@@ -4150,15 +4152,15 @@ reports = [
     'dump-sources-first',
     'dump-tokens-first',
     'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'dump-all-after-fail',
-    'show-exception-after-fail',
-    'dump-tokens-after-fail',
+    # 'show-exception-after-fail',
+    # 'dump-tokens-after-fail',
     'dump-tree-after-fail',
+    # 'dump-all-after-fail',
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-tokens',
     # 'dump-tree',
-    'trace-times',  # Only for'file:' tests.
+    # 'trace-times',  # Only for'file:' tests.
     # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
@@ -4487,8 +4489,9 @@ elif 2:
 
 @others</t>
 <t tx="ekr.20191125063255.1">def show_status():
+    print('')
     if 'show-test-kind' in flags:
-        kind = '*all*' if 'all' in flags else '*selected'
+        kind = 'all' if 'all' in flags else 'selected'
         print(f"Running *{kind}*' unit tests...\n")
     if 'asttokens' in reports:
         print('\nUsing asttokens, *not* the TOG classes')
@@ -4519,7 +4522,7 @@ elif 2:
     """Add trace-times only if we are running a 'file:' test."""
     aList = [z for z in reports if z != 'trace-times']
     if 'trace-times' in reports and description.startswith('file:'):
-        reports2.append('trace-times')
+        aList.append('trace-times')
     return aList
 
 def run_tests():
@@ -4528,7 +4531,7 @@ def run_tests():
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
-        print(f"Running {description}...\n")
+        print(f"Running {description}...")
         x = leoAst.TestRunner()
         ok = x.run_tests(contents, description, filter_reports(description))
         if not ok:
@@ -4668,11 +4671,8 @@ print('c')</t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
 </t>
-<t tx="ekr.20191127000732.1">k.k1(
-    f"{'A' if self.a else ''}"
-    f"{'B' if self.b else ''}"
-    ": "
-)
-k.k2()</t>
+<t tx="ekr.20191127134236.1"></t>
+<t tx="ekr.20191127134726.1">one(f"{'B'}"": ")
+two()</t>
 </tnodes>
 </leo_file>
