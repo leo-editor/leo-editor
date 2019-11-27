@@ -4259,21 +4259,32 @@ class TestRunner:
         """
         import time
         tag = 'run_tests'
-        reports = [z.lower().replace('-', '_') for z in reports or []]
-        assert isinstance(reports, list), repr(reports)
-        verbose_fail = 'verbose_fail' in reports
-        if verbose_fail:
-            reports.remove('verbose_fail')
-        dump_after_fail = 'dump_after_fail' in reports
-        if dump_after_fail:
-            reports.remove('dump_after_fail')
-        # Set defaults.
+        
+        #
+        # Convert reports to flags.
+        valid_flags = (
+            'dump-all-after-fail',
+            'dump-sources-first',
+            'dump-tokens-after-fail',
+            'dump-tokens-first',
+            'dump-tree-after-fail',
+            'set-trace-mode',
+            'use-asttokens',
+            'trace-times',
+            'verbose-fail',
+        )
+        reports = [z.lower() for z in reports or []]
+        flags = [z for z in reports if z in valid_flags]
+        # g.trace('FLAGS', ','.join(sorted(flags)))
+        reports = [z for z in reports if z not in valid_flags]
+        # Dump sources if asked.
         self.sources = sources = sources.strip() + '\n'
+        if 'dump-sources-first' in flags:
+            self.dump_contents()
         # Create tokens and tree.
         t1 = time.process_time()
-        if 'asttokens' in reports:
+        if 'use-asttokens' in flags:
             import asttokens
-            reports.remove('asttokens')
             x = self.x = None
             atok = asttokens.ASTTokens(sources, parse=True)
             self.tree = atok.tree
@@ -4281,29 +4292,34 @@ class TestRunner:
             t2 = time.process_time()
         else:
             x = self.x = TokenOrderInjector()
+            x.trace_mode = 'set-trace-mode' in flags
                 # The TOI class *also* calls the base begin/end_visitor methods.
-            x.trace_mode = 'trace_mode' in reports
-            if 'trace_mode' in reports:
-                reports.remove('trace_mode')
             self.tokens = x.make_tokens(sources)
+            if 'dump-tokens-first' in flags:
+                self.dump_tokens(brief=True)
             self.tree = parse_ast(sources)
             # Catch exceptions so we can get data late.
             try:
                 t2 = time.process_time()
                 # Yes, list *is* required here.
+                
                 list(x.create_links(self.tokens, self.tree, file_name=description))
                 t3 = time.process_time()
             except Exception as e:
                 t3 = time.process_time()
                 g.trace('\nFAIL:\n')
                 print(e)
-                if verbose_fail:
+                if 'show-exception-after-fail' in flags:
                     g.es_exception()
-                if dump_after_fail:
+                if 'dump_all_after_fail' in flags:
                     self.dump_all()
+                else:
+                    if 'dump_tokens_after-fail' in flags:
+                        self.dump_tokens()
+                    if 'dump_tree_after_fail' in flags:
+                        self.dump_tree()
                 return False
-        if 'trace_times' in reports:
-            reports.remove('trace_times')
+        if 'trace-times' in flags:
             pad = ' '*4
             print('')
             print(
@@ -4314,7 +4330,7 @@ class TestRunner:
         # Print reports, in the order they appear in the results list.
         bad_reports = []
         for report in reports:
-            helper = getattr(self, 'dump_'+report, None)
+            helper = getattr(self, report.replace('-', '_'), None)
             if helper:
                 try:
                     helper()
@@ -4359,20 +4375,20 @@ class TestRunner:
         print('\nRaw tree...\n')
         print(AstDumper().dump(self.tree))
     #@+node:ekr.20191122025418.1: *3* TestRunner.dump_tokens
-    def dump_tokens(self):
+    def dump_tokens(self, brief=False):
         tokens = self.tokens
         print('\nTokens...\n')
         # pylint: disable=not-an-iterable
         if self.x:
             for z in tokens:
-                print(z.dump())
+                print(z.dump(brief=brief))
         else:
             import token as tm
             for z in tokens:
                 kind = tm.tok_name[z.type].lower()
                 print(f"{z.index:4} {kind:>12} {z.string!r}")
     #@+node:ekr.20191122025419.1: *3* TestRunner.dump_tree
-    def dump_tree(self):
+    def dump_tree(self, brief=False):
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree
         if self.x:
@@ -4431,23 +4447,23 @@ class Token:
         
     #@+others
     #@+node:ekr.20191113095410.1: *3* token.dump
-    def dump(self):
+    def dump(self, brief=False):
         
         """Dump a token node and related links."""
-        if self.node:
+        if self.node and not brief:
             parent = self.node.parent if getattr(self.node, 'parent', None) else None
             parent_class = parent.__class__.__name__ if parent else ''
             parent_id = obj_id(parent) if parent else '    '
             children = getattr(self.node, 'children', [])
-            return(
+            return (
                 f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
                 f"line: {self.line_number:<2} level: {self.level:<2} "
                 f"{obj_id(self.node)} {self.node.__class__.__name__:16} "
                 f"children: {len(children)} "
                 f"parent: {parent_id} {parent_class}")
-        return(
-            f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
-            f"line: {self.line_number:<2} level: {self.level}")
+        return (
+            f"{self.index:>3} line: {self.line_number:<2} "
+            f"{self.kind:>11} {self.show_val(15):<15}")
     #@+node:ekr.20191116154328.1: *3* token.error_dump
     def error_dump(self):
         """Dump a token or result node for error message."""

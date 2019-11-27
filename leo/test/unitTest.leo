@@ -348,10 +348,9 @@
 </v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
-<v t="ekr.20191125064147.1"><vh>filter_reports</vh></v>
 <v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
 <v t="ekr.20191125065230.1"><vh>reload_helper</vh></v>
-<v t="ekr.20191125065806.1"><vh>run_tests</vh></v>
+<v t="ekr.20191125065806.1"><vh>run_tests &amp; filter reports</vh></v>
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
@@ -4146,20 +4145,21 @@ flags = [
 if 'g.cls' in flags:
     g.cls()
 #
-# Reports flags.
+# Reports, for TestRunner.run_tests.
 reports = [
-    'trace-mode',  # Sets TOG.trace_mode.
-    'dump-after-fail',
-    # 'verbose-fail',
-    
-    # 'trace-times',  # Only for'file:' tests.
-    # 'dump-all',
-    # 'asttokens',
-    # 'test-links',
-    # 'contents',
-    # 'tokens',
-    # 'raw-tree',
-    # 'tree',
+    'dump-sources-first',
+    'dump-tokens-first',
+    'set-trace-mode',  # Sets TOG.trace_mode.
+    # 'dump-all-after-fail',
+    'show-exception-after-fail',
+    'dump-tokens-after-fail',
+    'dump-tree-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    'trace-times',  # Only for'file:' tests.
+    # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 reload_time = reload_helper()
@@ -4495,17 +4495,6 @@ elif 2:
     if 'reload' in flags and 'show-reload-time' in flags:
         print(f"\n   Reload time: {reload_time:4.2f} sec.")
 </t>
-<t tx="ekr.20191125064147.1">def filter_reports(description):
-
-    ### Silly.
-        # if 'all' in flags:
-        #     return [z for z in reports if z == 'asttokens']
-
-    # Set 'trace-times' only for 'file:' tests.
-    aList = [z for z in reports if z != 'trace-times']
-    if 'trace-times' in reports and description.startswith('file:'):
-        reports2.append('trace-times')
-    return aList</t>
 <t tx="ekr.20191125064740.1">def summarize():
     if 'summarize' in flags:
         status = 'FAIL' if fails else 'PASS'
@@ -4526,7 +4515,14 @@ elif 2:
     reload_t2 = time.process_time()
     return reload_t2 - reload_t1
 </t>
-<t tx="ekr.20191125065806.1">def run_tests():
+<t tx="ekr.20191125065806.1">def filter_reports(description):
+    """Add trace-times only if we are running a 'file:' test."""
+    aList = [z for z in reports if z != 'trace-times']
+    if 'trace-times' in reports and description.startswith('file:'):
+        reports2.append('trace-times')
+    return aList
+
+def run_tests():
     
     fails = []
     t1 = time.process_time()
