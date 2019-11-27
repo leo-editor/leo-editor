@@ -2053,15 +2053,15 @@ class TokenOrderGenerator:
                 yield from self.gen(node.orelse)
             self.level -= 1
     #@+node:ekr.20191123152511.1: *5* tog.If: advance_if & peek_if
-    find_index = None
+    if_index = None
 
     def is_if_token(self, token):
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
         ### if self.formatted_value_stack: g.trace('IN FORMATTED STRING')
-        i = 0 if self.find_index is None else self.find_index + 1
-        self.find_index = self.find_next_if_token(i)
+        i = 0 if self.if_index is None else self.if_index + 1
+        self.if_index = self.find_next_if_token(i)
 
     def find_next_if_token(self, i):
         while i < len(self.tokens):
@@ -2074,11 +2074,11 @@ class TokenOrderGenerator:
 
     def peek_if(self):
         # Init, exactly once per tree traversal.
-        if self.find_index is None:
-            self.find_index = self.find_next_if_token(0)
+        if self.if_index is None:
+            self.if_index = self.find_next_if_token(0)
         # IndexError is a sanity check.
-        assert self.find_index < len(self.tokens), (self.find_index, g.callers())
-        return self.tokens[self.find_index]
+        assert self.if_index < len(self.tokens), (self.if_index, g.callers())
+        return self.tokens[self.if_index]
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):
         
