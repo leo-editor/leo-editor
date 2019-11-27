@@ -1067,14 +1067,14 @@ class TokenOrderGenerator:
     def gen(self, z):
         yield from self.visitor(z)
 
-    def gen_blank(self):
-        yield from self.visitor(self.sync_blank())
-
-    ### There is never any need to sync on commas.
+    ### There is never any need to sync on commas or blanks.
     ###
-    ### def gen_comma(self):
-    ###    yield from self.visitor(self.sync_comma())
-
+        # def gen_blank(self):
+        #    yield from self.visitor(self.sync_blank())
+        #
+        # def gen_comma(self):
+        #    yield from self.visitor(self.sync_comma())
+        
     def gen_name(self, val):
         yield from self.visitor(self.sync_name(val))
                     
