@@ -1221,8 +1221,10 @@ class TokenOrderGenerator:
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
                 if self.trace_mode:
-                    g.trace('\nSYNC FAILED...')
-                    g.printObj(tokens[max(0, px-10):px+1], 'TOKENS')
+                    pre_tokens = tokens[max(0, px-10):px+1]
+                    g.trace('\nSync Failed...\n')
+                    for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
+                        print(s)
                 raise AssignLinksError(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"

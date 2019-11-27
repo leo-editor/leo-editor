@@ -4148,9 +4148,9 @@ if 'g.cls' in flags:
 #
 # Reports flags.
 reports = [
-    # 'dump-after-fail',
+    'trace-mode',  # Sets TOG.trace_mode.
+    'dump-after-fail',
     # 'verbose-fail',
-    # 'trace-mode',  # Sets TOG.trace_mode.
     
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
