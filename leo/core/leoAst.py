@@ -1152,7 +1152,7 @@ class TokenOrderGenerator:
     def is_significant_token(self, token):
         """Return True if the given token is a syncronizing token"""
         return self.is_significant(token.kind, token.value)
-    #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links
+    #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links ***
     px = -1 # Index of the previous significant token.
 
     def sync_token(self, kind, val):
@@ -1597,7 +1597,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (New)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue ***
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     formatted_value_stack = []  # A flag for advance_str and for sync_token.
@@ -1635,7 +1635,7 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (new)
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr ***
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
@@ -1716,7 +1716,7 @@ class TokenOrderGenerator:
         string_tokens = self.advance_str(node.s)
         for token in string_tokens:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper
+    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper ***
     def advance_str(self, entire_string):
         """
         Called from do_Str and do_JoinedStr to advance over one or more
@@ -1725,36 +1725,42 @@ class TokenOrderGenerator:
         results = []
         if self.trace_mode:
             g.trace(repr(entire_string))
-        if self.formatted_value_stack:
-            g.trace('IN FORMATTED STRING')
-            # Eat the entire string.
-            i = self.string_index
-            i = self.find_next_string_token(i + 1)
-            if i < len(self.tokens):
-                token = self.tokens[i]
-                self.string_index = i
-                results.append(token)
-            self.string_index = i
-            return results
-        # Special case for empty string.
-        # if not entire_string:
-            # i = self.string_index
-            # i = self.find_next_string_token(i + 1)
-            # if i < len(self.tokens):
-                # token = self.tokens[i]
+            
+        ### Not yet.
+            # if self.formatted_value_stack:
+                # g.trace('IN FORMATTED STRING')
+                # # Eat the entire string.
+                # i = self.string_index
+                # i = self.find_next_string_token(i + 1)
+                # if i < len(self.tokens):
+                    # token = self.tokens[i]
+                    # self.string_index = i
+                    # results.append(token)
                 # self.string_index = i
-                # results.append(token)
-            # return results
+                # return results
+        
+        ### Bad idea.
+            # Special case for empty string.
+            # if not entire_string:
+                # i = self.string_index
+                # i = self.find_next_string_token(i + 1)
+                # if i < len(self.tokens):
+                    # token = self.tokens[i]
+                    # self.string_index = i
+                    # results.append(token)
+                # return results
+
         i, j, results = self.string_index, 0, []
         while j < len(entire_string):
             new_i = self.find_next_string_token(i + 1)
             if new_i >= len(self.tokens):
-                g.trace('EARLY BREAK')
+                if self.trace_mode:
+                    g.trace('EARLY BREAK')
                 break
             i = new_i
             token = self.tokens[i]
             if self.trace_mode:
-                print(f"    i: {i:<3} j: {j:<2} {token.kind}:{token.value}")
+                g.trace(f"    i: {i:<3} j: {j:<2} {token.kind}:{token.value}")
             assert token.kind == 'string', (token.kind, token.value, g.callers())
             assert token.value, (token.value, g.callers())
             results.append(token)
@@ -2056,7 +2062,7 @@ class TokenOrderGenerator:
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191123152511.1: *5* tog.If: advance_if & peek_if
+    #@+node:ekr.20191123152511.1: *5* tog.If: advance_if & peek_if ***
     if_index = None
 
     def is_if_token(self, token):

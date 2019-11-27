@@ -355,9 +355,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191126143046.1"><vh>xx test: empty string</vh></v>
-<v t="ekr.20191127000732.1"><vh>test: leoFind.py: line 861</vh></v>
-<v t="ekr.20191127001455.1"><vh>REF: leoFind.py: line 861</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127000732.1"><vh>xx test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
 <v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
@@ -4136,7 +4135,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind',
@@ -4679,13 +4678,5 @@ self.i = 0
     ": "
 )
 k.k2()</t>
-<t tx="ekr.20191127001455.1">k.setLabelBlue(
-    "Isearch"
-    f"{' Backward' if not self.isearch_forward else ''}"
-    f"{' Regexp' if self.isearch_regexp else ''}"
-    f"{' NoCase' if self.isearch_ignore_case else ''}"
-    ": "
-)
-k.setState('isearch', 1, handler=self.iSearchStateHandler)</t>
 </tnodes>
 </leo_file>
