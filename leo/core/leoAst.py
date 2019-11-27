@@ -1602,24 +1602,25 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue ***
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    formatted_value_stack = []  # A flag for advance_str and for sync_token.
+    # This stack is just a flag for tog.sync_token.
+    # Probably the maximum size of this stack will be one, but so what.
+    formatted_value_stack = [] 
 
     def do_FormattedValue(self, node):
-        """
-        Handle the node representing a *single* f-string.
-        """
+        """Handle the node representing a *single* f-string."""
         trace = True or self.trace_mode  ###
         conv = node.conversion
         spec = node.format_spec
-        #
-        # a *single* token represents an f-string.
         if self.joined_string_stack:
+            # This is an f-string that has been joined (concatenated) with other strings.
+            # A single token represents the *entire* concatenated string, and
+            # do_JoinedStr has already synced that token, so do nothing more here!
             pass
         else:
+            # A non-joined f-string.  Sync its string.
             self.advance_str()
         #
-        # F-strings generate a subtree of nodes.
-        # This stack is a flag to tog.sync_token.
+        # Traverse the subtree, suppressing generation of any interior strings.
         self.formatted_value_stack.append(node)
         if trace:
             g.trace('\n===== START', node.value.__class__.__name__)
@@ -1651,7 +1652,9 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr ***
     # JoinedStr(expr* values)
 
-    joined_string_stack = []  # A flag for do_Str and do_FormattedValue.
+    # This stack is just a flag for do_Str and do_FormattedValue.
+    # Probably the maximum size of this stack will be one, but so what.
+    joined_string_stack = []
 
     def do_JoinedStr(self, node):
         """
