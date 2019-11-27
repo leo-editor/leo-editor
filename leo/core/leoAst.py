@@ -1144,8 +1144,9 @@ class TokenOrderGenerator:
         
         Code should *not* use any similar local predicate.
         """
+        # Making 'endmarker' significant ensures that all tokens are synced.
         return (
-            kind in ('name', 'number', 'string') or
+            kind in ('endmarker', 'name', 'number', 'string') or
             kind == 'op' and value not in ',;()')
 
     def is_significant_token(self, token):
@@ -1603,17 +1604,20 @@ class TokenOrderGenerator:
 
     def do_FormattedValue(self, node):
 
+        trace = True or self.trace_mode  ###
         conv = node.conversion
         spec = node.format_spec
         self.formatted_value_stack.append(node)
-        g.trace('\n===== START', node.value.__class__.__name__)
+        if trace:
+            g.trace('\n===== START', node.value.__class__.__name__)
         yield from self.gen(node.value)
         if conv is not None:
             assert isinstance(conv, int), (repr(conv), g.callers())
             yield from self.gen_token('number', conv)
         if spec is not None:
             yield from self.gen(node.format_spec)
-        g.trace('===== END\n')
+        if trace:
+            g.trace('===== END\n')
         self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):

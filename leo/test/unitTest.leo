@@ -355,8 +355,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191127000732.1"><vh>xx test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191126143046.1"><vh>xx test: empty string</vh></v>
+<v t="ekr.20191127000732.1"><vh>test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191127001455.1"><vh>REF: leoFind.py: line 861</vh></v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: passed recent tests</vh>
@@ -4149,9 +4149,10 @@ if 'g.cls' in flags:
 #
 # Reports flags.
 reports = [
-    'dump-after-fail',
+    # 'dump-after-fail',
     # 'verbose-fail',
-    'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-mode',  # Sets TOG.trace_mode.
+    
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
