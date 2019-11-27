@@ -1605,10 +1605,21 @@ class TokenOrderGenerator:
     formatted_value_stack = []  # A flag for advance_str and for sync_token.
 
     def do_FormattedValue(self, node):
-
+        """
+        Handle the node representing a *single* f-string.
+        """
         trace = True or self.trace_mode  ###
         conv = node.conversion
         spec = node.format_spec
+        #
+        # a *single* token represents an f-string.
+        if self.joined_string_stack:
+            pass
+        else:
+            self.advance_str()
+        #
+        # F-strings generate a subtree of nodes.
+        # This stack is a flag to tog.sync_token.
         self.formatted_value_stack.append(node)
         if trace:
             g.trace('\n===== START', node.value.__class__.__name__)
@@ -1640,17 +1651,33 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr ***
     # JoinedStr(expr* values)
 
+    joined_string_stack = []  # A flag for do_Str and do_FormattedValue.
+
     def do_JoinedStr(self, node):
-        """Concatenate f-strings"""
+        """
+        Handle the node representing concatentated strings.
+        
+        The strings may be any mixture of f-strings and plain strings.
+        
+        A *single* token represents *all* the composite strings.
+        """
+        #
+        # Advance over the *single* token that contains all joined substrings.
+        token = self.advance_str()
+        if token is None:
+            if self.trace_mode: g.trace('EARLY EOF')
+        else:
+            if self.trace_mode: g.trace('JOINED TOKEN', token.dump(brief=True))
+            self.sync_token(token.kind, token.value)
+        #
+        # Suppress all calls to tog.advance_str in constituent strings.
+        self.joined_string_stack.append(node)
         assert isinstance(node.values, list)
         for z in node.values:
-            assert isinstance(z, (ast.FormattedValue, ast.Str))
-            if isinstance(z, ast.Str):
-                string_tokens = self.advance_str(z.s)
-                for token in string_tokens:
-                    yield from self.gen_token('string', token.value)
-            else:
-                yield from self.gen(z)
+            if not isinstance(z, (ast.FormattedValue, ast.Str)):
+                raise ValueError(f"expected Str or FormattedValue, got {z!r}")
+            yield from self.gen(z)
+        self.formatted_value_stack.pop()
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1707,90 +1734,41 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str
-    string_index = -1  # The index in self.tokens of the previous scanned 'string' token.
-
     def do_Str(self, node):
-        """
-        This node represents a string constant.
-        
-        It appears impossible to match spellings here. set_links does that.
-        """
-        string_tokens = self.advance_str(node.s)
-        for token in string_tokens:
+        """This node represents a string constant."""
+        if self.joined_string_stack:
+            # Do *nothing* here. The JoinedStr visitor has already consumed the token.
+            return
+        token = self.advance_str()
+        if token is not None:
             yield from self.gen_token('string', token.value)
+       ### for token in string_tokens:
+       ###     yield from self.gen_token('string', token.value)
     #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helper ***
-    def advance_str(self, entire_string):
-        """
-        Called from do_Str and do_JoinedStr to advance over one or more
-        'string' tokens that comprise entire_string.
-        """
-        results = []
-        if self.trace_mode:
-            g.trace(repr(entire_string))
-            
-        ### Not yet.
-            # if self.formatted_value_stack:
-                # g.trace('IN FORMATTED STRING')
-                # # Eat the entire string.
-                # i = self.string_index
-                # i = self.find_next_string_token(i + 1)
-                # if i < len(self.tokens):
-                    # token = self.tokens[i]
-                    # self.string_index = i
-                    # results.append(token)
-                # self.string_index = i
-                # return results
-        
-        ### Bad idea.
-            # Special case for empty string.
-            # if not entire_string:
-                # i = self.string_index
-                # i = self.find_next_string_token(i + 1)
-                # if i < len(self.tokens):
-                    # token = self.tokens[i]
-                    # self.string_index = i
-                    # results.append(token)
-                # return results
+    # The index in self.tokens of the previously scanned 'string' token
+    string_index = -1 
 
-        i, j, results = self.string_index, 0, []
-        while j < len(entire_string):
-            new_i = self.find_next_string_token(i + 1)
-            if new_i >= len(self.tokens):
-                if self.trace_mode:
-                    g.trace('EARLY BREAK')
-                break
-            i = new_i
-            token = self.tokens[i]
-            if self.trace_mode:
-                g.trace(f"    i: {i:<3} j: {j:<2} {token.kind}:{token.value}")
-            assert token.kind == 'string', (token.kind, token.value, g.callers())
-            assert token.value, (token.value, g.callers())
-            results.append(token)
-            value = token.value
-            # Ignore  f and r prefixes and quotes.
-            k = 0
-            while k < len(value) and value[k] in 'fFrR':
-                k += 1
-            assert value[k] in ('"',"'"), (k, value, value[k], g.callers())
-            s = value[k+1:-1]
-            n = len(s)
-            j += n
-        self.string_index = i
-        return results
-    #@+node:ekr.20191126074448.2: *6* tog.find_next_string_token
-    def find_next_string_token(self, i):
-        trace = False
+    def advance_str(self):
+        """Advance to the next 'string' token, and return it."""
+        self.string_index = i = self.next_str_index(self.string_index + 1)
+        return self.tokens[i] if i < len(self.tokens) else None
+
+    def next_str_index(self, i):
+        """Return the index of the next 'string' token, or None."""
+        g.trace('Entry', i)
         while i < len(self.tokens):
             token = self.tokens[i]
-            if trace:
-                caller = g.callers(2).split(',')[0]
-                g.trace(f"{caller:<14}       {i:<3} {self.tokens[i]}")
+            # g.trace(f"   LOOK {i:<3} {self.tokens[i]}")
             if token.kind == 'string':
-                if trace:
-                    g.trace(f"{caller:<14} FOUND {i:<3} {self.tokens[i]}")
+                g.trace(f"  FOUND {i:<3} {self.tokens[i]}")
                 break
             i += 1
         return i
+        
+    ###
+        # def peek_str(self):
+            # i = self.string_index
+            # return self.tokens[i] if i < len(self.tokens) else None
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4269,6 +4247,7 @@ class TestRunner:
             'dump-tokens-first',
             'dump-tree-after-fail',
             'set-trace-mode',
+            'show-exception-after-fail',
             'use-asttokens',
             'trace-times',
             'verbose-fail',
