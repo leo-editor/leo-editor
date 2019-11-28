@@ -1188,7 +1188,7 @@ class TokenOrderGenerator:
         if self.trace_mode:
             # Don't add needless repr's!
             val_s = val if kind in ('name', 'string') else repr(val)
-            g.trace(f"\n{self.node.__class__.__name__:>14} {kind}.{val_s}")
+            g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
 
         if not self.is_significant(kind, val):
             return
@@ -1599,19 +1599,10 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue & advance_over_formatted_str
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def advance_over_formatted_str(self):
-        """Similar to advace_str, adapted to our special needs"""
-        # Get the *present* 'string' token.
-        token = self.peek_str()
-        i = self.string_index
-        # Advance.
-        self.string_index = self.next_str_index(i + 1)
-        if self.trace_mode:
-            g.trace(f"\nstring_index: {self.string_index} token: {token.kind}.{token.value}")
-        return token.value
-
     def do_FormattedValue(self, node):
-        """Handle the node representing an {expression} within a *single* f-string."""
+        """
+        Handle the node representing an {expression} within a *single* f-string.
+        """
         if self.trace_mode:
             g.trace(f"\n{node.value.__class__.__name__}")
         # Do not visit *any* of the children!
@@ -1619,8 +1610,11 @@ class TokenOrderGenerator:
         #
         # Instead, just sync "manually"
         if 1:
-            s = self.advance_over_formatted_str()
-            yield from self.gen_token('string', s)
+            token = self.peek_str()
+            if self.trace_mode:
+                g.trace(token.value)
+            assert token.kind == 'string', repr(token)
+            yield from self.gen_token('string', token.value)
        
         if 0: # This code has no chance of being useful.
             # Let block.
@@ -1649,18 +1643,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
     # JoinedStr(expr* values)
 
-    def advance_over_joined_str(self):
-        """Similar to advace_str, adapted to our special needs"""
-        # Get the *present* 'string' token.
-        token = self.peek_str()
-        i = self.string_index
-        if True: ### self.trace_mode:
-            g.trace(f"\nbefore: string_index: {self.string_index} token: {token.kind}.{token.value}")
-        # Advance.
-        self.string_index = self.next_str_index(i + 1)
-        if True:
-            g.trace(f" after: string_index: {self.string_index}")
-        return token.value
+    ### join_stack = []  ###
 
     def do_JoinedStr(self, node):
         """
@@ -1676,10 +1659,21 @@ class TokenOrderGenerator:
         # They have no value in syncing!
         #
         # Instead, just sync "manually"
-        for i, z in enumerate(node.values):
-            g.trace(i, z.__class__.__name__)
-            s = self.advance_over_joined_str()
-            yield from self.gen_token('string', s)
+        if 1:
+            token = self.peek_str()
+            if self.trace_mode:
+                g.trace(f"\n{token.value}")
+            assert token.kind == 'string', repr(token)
+            yield from self.gen_token('string', token.value)
+        
+        if 0:
+            for i, z in enumerate(node.values):
+                if i == 0:
+                    token = self.peek_str()
+                    if self.trace_mode:
+                        g.trace(i, z.__class__.__name__, token.value)
+                    assert token.kind == 'string', repr(token)
+                    yield from self.gen_token('string', token.value)
 
         if 0: # This code has no chance of being useful.
             for z in node.values:
@@ -1765,10 +1759,6 @@ class TokenOrderGenerator:
         target_s = self.node.s
         quotes = ("'", '"')
         
-        def show_progress(i, token):
-            if self.trace_mode:
-                g.trace(f"\ni: {i} token.value: {token.value} target: {target_s or repr(target_s)}")
-
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
@@ -1821,7 +1811,6 @@ class TokenOrderGenerator:
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            show_progress(i, token)
             if self.trace_mode:
                 g.trace('\nAppend empty string')
             self.string_index = i
@@ -1837,7 +1826,6 @@ class TokenOrderGenerator:
                 g.trace(message)
                 raise AssignLinksError(message)
             token = self.tokens[i]
-            show_progress(i, token)
             if self.trace_mode:
                 g.trace('Append:', munge_str(token.value))
             results.append(token)
@@ -1846,6 +1834,7 @@ class TokenOrderGenerator:
             message = f"Looking for: {target_s!r}, found: {result_str()!r}"
             g.trace(message)
             raise AssignLinksError(message)
+        # Leave the string index pointing at the last scanned token.
         self.string_index = i
         if self.trace_mode:
             g.trace(f"Return string_index: {self.string_index} results: {results}")
@@ -1853,12 +1842,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
-        # if self.trace_mode: g.trace('Entry', i)
+        i1 = i
         while i < len(self.tokens):
             token = self.tokens[i]
-            # if self.trace_mode: g.trace(f"   LOOK {i:<3} {self.tokens[i]}")
             if token.kind == 'string':
-                # if self.trace_mode: g.trace(f"Found {i:<3} {self.tokens[i]} {g.callers(2)}")
+                if self.trace_mode:
+                    g.trace(f"\n{i1}..{i} {self.tokens[i]}")
                 break
             i += 1
         return i
@@ -1868,10 +1857,17 @@ class TokenOrderGenerator:
         """Return the present 'string' token, initing if necessary"""
         # do_FormattedValue uses this.
         i = self.string_index
+        i1 = i
         if i == -1:
             i = self.next_str_index(i)
             self.string_index = i
-        return self.tokens[i] if i < len(self.tokens) else "<no remaining 'string' token!>"
+        if i >= len(self.tokens):
+            message = f"\nno token! {i1}..{i}"
+            g.trace(message)
+            raise AssignLinksError(message)
+        if self.trace_mode:
+            g.trace(f"\n{i1}..{i} {self.tokens[i]}")
+        return self.tokens[i]
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 

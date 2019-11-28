@@ -355,11 +355,11 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191128014124.1"><vh>xx Summary of failed tests</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: joined 3 f-strings</vh></v>
 <v t="ekr.20191127134726.1"><vh>test: joined f-string + plain string</vh></v>
-<v t="ekr.20191126002258.1"><vh>xx test: joined 3 f-strings</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
-<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
@@ -4136,7 +4136,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4159,7 +4159,7 @@ else:
         'dump-sources-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
+        'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         'dump-tree-after-fail',
@@ -4669,7 +4669,8 @@ assert not fails, f"failed {len(fails)} tests"</t>
         print(f"Run tests time: {test_time:4.2f} sec.")
 </t>
 <t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
-print('c')</t>
+print('c')
+</t>
 <t tx="ekr.20191126084046.1"></t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
