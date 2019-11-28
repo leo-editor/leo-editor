@@ -1181,40 +1181,17 @@ class TokenOrderGenerator:
         assert isinstance(node, ast.AST), repr(node)
         
         if self.trace_mode:
-            g.trace(f"\n{self.node.__class__.__name__:>14} {kind}: s{val!r}")
+            # Don't add needless repr's!
+            val_s = val if kind in ('name', 'string') else repr(val)
+            g.trace(f"\n{self.node.__class__.__name__:>14} {kind}.{val_s}")
 
         if not self.allow_sync:
             if self.trace_mode:
                 g.trace('no-sync: returning')
             return
-        
-        if self.fstring_stack:
-            # Do nothing!
-            if self.trace_mode:
-                g.trace('\n***** Within f-string. Returning')
-            return
-            ###
-                # px += 1
-                # if px >= len(tokens):
-                    # if self.trace_mode:
-                        # g.trace('EARLY RETURN', g.callers())
-                    # return
-                # self.px = px  # Advance.
-                # token = tokens[px]
-                # formatted_node = self.formatted_value_stack[-1]
-                # assert isinstance(formatted_node, ast.FormattedValue)
-                # if self.trace_mode and self.is_assignable_token(token):
-                    # g.trace('ASSIGN TO FormattedValue', token.kind, repr(token.value))
-                # self.set_links(formatted_node, token)
-                # return
 
         if not self.is_significant(kind, val):
             return
-            
-        ###
-            # if verbose and self.trace_mode:
-                # self.dump_one_node(self.node, self.level, 
-                    # tag='sync_token: Significant tokens...')
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -1615,39 +1592,54 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (sets flag)
-    # FormattedValue(expr value, int? conversion, expr? format_spec)
-
-    # This stack is a flag for advance_str and sync_token.
-    fstring_stack = [] 
-
-    def do_FormattedValue(self, node):
-        """Handle the node representing a *single* f-string."""
-        trace = True and self.trace_mode
-        conv = node.conversion
-        spec = node.format_spec
-        if trace:
-            tag = 'do_FormattedValue: ===== START'
-            val = node.value.s if isinstance(node.value, ast.Str) else node.value.__class__.__name__
-            print(f"\n{tag} {val}")
-        # Set the flag.
-        self.fstring_stack.append(node)
-        # Traverse all the subtrees, as usual.
-        yield from self.gen(node.value)
-        if conv is not None:
-            # The default conv appears to be -1.
-            assert isinstance(conv, int), (repr(conv), g.callers())
-            yield from self.gen_token('number', conv)
-        if spec is not None:
-            yield from self.gen(node.format_spec)
-        # Clear the flag.
-        self.fstring_stack.pop()
-        if trace:
-            g.trace('===== END\n')
     #@+node:ekr.20191113063144.40: *5* tog.Index
     def do_Index(self, node):
 
         yield from self.gen(node.value)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (sets flag)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    # This stack is a flag for advance_str.
+    fstring_stack = []
+
+    def advance_over_formatted_str(self):
+        """Similar to advace_str, adapted to our special needs"""
+        # Get the *present* 'string' token.
+        s = self.peek_str().value
+        # Advance.
+        self.string_index = self.next_str_index(self.string_index + 1)
+        return s
+
+    def do_FormattedValue(self, node):
+        """Handle the node representing a *single* f-string."""
+        trace = True and self.trace_mode
+        
+        if trace:
+            g.trace(f"\n{node.value.__class__.__name__}")
+        #
+        # Do not visit *any* of the children!
+        # They have no value in syncing!
+        #
+        # Instead, just sync "manually"
+        s = self.advance_over_formatted_str()
+        yield from self.gen_token('string', s)
+       
+        if 0: # This code has no chance of being useful.
+            # Let block.
+            conv = node.conversion
+            spec = node.format_spec
+            # Set the flag.
+            self.fstring_stack.append(node)
+            # Traverse all the subtrees
+            yield from self.gen(node.value)
+            if conv is not None:
+                # The default conv appears to be -1.
+                assert isinstance(conv, int), (repr(conv), g.callers())
+                yield from self.gen_token('number', conv)
+            if spec is not None:
+                yield from self.gen(node.format_spec)
+            # Clear the flag.
+            self.fstring_stack.pop()
     #@+node:ekr.20191115105821.1: *5* tog.int
     def do_int(self, node):
         
@@ -1684,7 +1676,7 @@ class TokenOrderGenerator:
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str))
             if self.trace_mode:
-                g.trace('\nitem', z.__class__.__name__)
+                g.trace('\nitem:', z.__class__.__name__)
             ###
             ### advance_str should probably do *nothing* here
             ###
@@ -1749,13 +1741,11 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        ### Experimental.
-        if self.joined_string_stack:
-            # Do *nothing* here. The JoinedStr visitor has already consumed the token.
-            return
         if self.trace_mode:
-            print('do_Str: peek_str', self.peek_str())
+            g.trace(f"\npeek_str: {self.peek_str()}\n")
         token_list = self.advance_str()
+        if self.trace_mode:
+            g.printObj(token_list, tag='token_list')
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helpers ***
@@ -1769,6 +1759,7 @@ class TokenOrderGenerator:
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
         trace = self.trace_mode
+        target_s = self.node.s
         quotes = ("'", '"')
         results = []
         #@+<< define result_str >>
@@ -1785,39 +1776,38 @@ class TokenOrderGenerator:
             """
             Adjust s to undo the effect of repr:
 
-            token.value is a repr. self.node.s is a *plain* string.
+            token.value is a repr. target_s is a *plain* string.
             
             Experimental (probably doomed): adjust for f-string format.
             """
             i = 0
-            if self.fstring_stack: 
-                # In an f-string: skip f-string prefixes.
-                while i < len(s) and s[i] in 'fFrR':
-                    i += 1
+            # Always skip f-string prefixes.
+            while i < len(s) and s[i] in 'fFrR':
+                i += 1
             ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
             if not ok:
                 raise AssignLinksError(
-                    f"munge_str: Unexpected token.value: {s} scanning for: {self.node.s}")
+                    f"munge_str: Unexpected token.value: {s} scanning for: {target_s}")
             quote = s[i]
             # Skip the outer quotes, including triple quotes!
             if s.startswith(quote*3) and s.endswith(quote*3):
                 s = s[i+3:-3]
             else:
                 s = s[i+1:-1]
-            ### Experimental.
-            if self.fstring_stack:
-                ###
-                ### This is probably hopeless. The hacks need to be elsewhere.
-                ###
-                # In an f-string: strip {}
-                print('f-string s', s)
-                if len(s) > 1 and s[0] == '{' and s[-1] == '}':
-                    s = s[1:-1]
-                    # Unescape inner quotes.
-                    if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
-                        inner_quote = '"' if s[0] == "'" else "'"
+            if 0: ### Experimental.
+                if self.fstring_stack:
+                    ###
+                    ### This is probably hopeless. The hacks need to be elsewhere.
+                    ###
+                    # In an f-string: strip {}
+                    print('f-string s', s)
+                    if len(s) > 1 and s[0] == '{' and s[-1] == '}':
                         s = s[1:-1]
-                        s = s.replace('\\' + inner_quote, inner_quote)
+                        # Unescape inner quotes.
+                        if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
+                            inner_quote = '"' if s[0] == "'" else "'"
+                            s = s[1:-1]
+                            s = s.replace('\\' + inner_quote, inner_quote)
             else:
                 # Unescape escaped quotes.
                 s = s.replace('\\' + quote, quote)
@@ -1825,23 +1815,25 @@ class TokenOrderGenerator:
             return s
         #@-<< define munge_str >>
         if trace:
-            if self.joined_string_stack:
-                g.trace('SKIP joined string', self.node.s)
-                return results
-            g.trace(' Enter:', self.node.s)
-        # Scan for 'string' tokens until the accumalated strings match self.node.s.
+            g.trace('\n')
+            print(
+                f"         node: {self.node.__class__.__name__}\n"
+                f"target string: {target_s}\n")
+                # f"parent: {self.node.parent.__class__.__name__}\n"
+                # f"callers: {g.callers()}\n"
+        # Scan for 'string' tokens until the accumalated strings match target_s.
         i = self.string_index
-        while len(result_str()) < len(self.node.s):
+        while len(result_str()) < len(target_s):
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
-                raise AssignLinksError(f"advance_str: End of tokens looking for {self.node.s}")
+                raise AssignLinksError(f"advance_str: End of tokens looking for {target_s}")
             token = self.tokens[i]
             if trace:
                 g.trace('Append:', munge_str(token.value))
             results.append(token)
         # The results must match exactly.
-        if result_str() != self.node.s:
-            raise AssignLinksError(f"advance_str: Looking for: {self.node.s}, found: {result_str()}")
+        if result_str() != target_s:
+            raise AssignLinksError(f"advance_str: Looking for: {target_s!r}, found: {result_str()!r}")
         self.string_index = i
         return results
 
@@ -1856,10 +1848,13 @@ class TokenOrderGenerator:
                 break
             i += 1
         return i
-        
-    # For debugging only.
+
+    # do_FormattedValue uses this.
     def peek_str(self):
+        """Return the present 'string' token, initing if necessary"""
         i = self.string_index
+        if i == -1:
+            i = self.next_str_index(i)
         return self.tokens[i] if i < len(self.tokens) else "<no remaining 'string' token!>"
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
