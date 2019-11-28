@@ -4137,7 +4137,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4160,7 +4160,7 @@ else:
         'dump-sources-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         'dump-tree-after-fail',

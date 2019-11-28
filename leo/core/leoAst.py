@@ -1733,27 +1733,19 @@ class TokenOrderGenerator:
 
     def do_Str(self, node):
         """This node represents a string constant."""
-
-        if self.trace_mode:
-            g.trace(f"\npeek_str: {self.peek_str()}\n")
-
         token_list = self.advance_str()
-
-        if self.trace_mode:
-            g.printObj(token_list, tag='do_Str: token_list')
-
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *6* advance_str
+    #@+node:ekr.20191126074503.1: *6* tog.advance_str
     def advance_str(self):
         """
         Advance over one or more 'string' tokens, and return them.
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
+        assert isinstance(self.node, ast.Str), repr(self.node)
         target_s = self.node.s
         quotes = ("'", '"')
-        results = []
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
@@ -1800,12 +1792,19 @@ class TokenOrderGenerator:
             # print('munge_str returns', s)
             return s
         #@-others
+        # Special case for empty target.
         if self.trace_mode:
-            g.trace('\n'
-                f"         node: {self.node.__class__.__name__}\n"
-                f"target string: {target_s}\n")
+            g.trace(f"\nstring_index: {self.string_index} target: {target_s or repr(target_s)}")
+        if not target_s:
+            i = self.string_index
+            i = self.next_str_index(i + 1)
+            token = self.tokens[i]
+            if self.trace_mode:
+                g.trace('\nAppend empty string')
+            self.string_index = i
+            return [token]
         # Scan for 'string' tokens until the accumalated strings match target_s.
-        i = self.string_index
+        i, results = self.string_index, []
         while len(result_str()) < len(target_s):
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
