@@ -355,17 +355,19 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191128014124.1"><vh>xx Summary of failed tests</vh></v>
-<v t="ekr.20191126002258.1"><vh>xx test: f-strings + JoinedStr</vh></v>
-<v t="ekr.20191127134726.1"><vh>test: JoinedStr</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191118155611.1"><vh>xx test: f-strings + equivalent % op</vh></v>
+<v t="ekr.20191119135937.1"><vh>xx test: print + f-string</vh></v>
+<v t="ekr.20191128104415.1"><vh>ignore: passed tests</vh>
+<v t="ekr.20191127134726.1"><vh>test: JoinedStr</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-strings + JoinedStr</vh></v>
+</v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
-<v t="ekr.20191119135937.1"><vh>test: print + f-string</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -4158,7 +4160,7 @@ else:
         'dump-sources-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
+        'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         'dump-tree-after-fail',
@@ -4681,14 +4683,12 @@ one(f"{'B'}" ": ")
 two()</t>
 <t tx="ekr.20191127172440.1">print("a\"b")</t>
 <t tx="ekr.20191128013505.1"></t>
-<t tx="ekr.20191128014124.1"># All fail in result_str
-# Unexpected token.value: f"test {a}={2}" scanning for: test
-
-Failed tests with no-sync:
+<t tx="ekr.20191128014124.1">Failed tests:
 [
-    'test: f-strings + JoinedStr',
-    'test: f-strings + equivalent % op'
-]
-</t>
+    'test: empty string',
+    'test: f-strings + equivalent % op',
+    'test: print + f-string'
+]</t>
+<t tx="ekr.20191128104415.1"></t>
 </tnodes>
 </leo_file>

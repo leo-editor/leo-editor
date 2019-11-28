@@ -1625,8 +1625,6 @@ class TokenOrderGenerator:
             # Let block.
             conv = node.conversion
             spec = node.format_spec
-            # Set the flag.
-            self.fstring_stack.append(node)
             # Traverse all the subtrees
             yield from self.gen(node.value)
             if conv is not None:
@@ -1647,11 +1645,10 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (sets flag)
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
     # JoinedStr(expr* values)
 
-    # This stack is a flag for advance_str
-    joined_string_stack = [] 
+    ### joined_string_stack = [] 
 
     def do_JoinedStr(self, node):
         """
@@ -1667,17 +1664,14 @@ class TokenOrderGenerator:
         """
         assert isinstance(node.values, list)
         # Set the flag.
-        self.joined_string_stack.append(node)
+        ### self.joined_string_stack.append(node)
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str))
             if self.trace_mode:
                 g.trace('\nitem:', z.__class__.__name__)
-            ###
-            ### advance_str should probably do *nothing* here
-            ###
             yield from self.gen(z)
         # Clear the flag.
-        self.joined_string_stack.pop()
+        ### self.joined_string_stack.pop()
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1733,20 +1727,24 @@ class TokenOrderGenerator:
         if step is not None:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *5* tog.Str
-    def do_Str(self, node):
-        """This node represents a string constant."""
-        if self.trace_mode:
-            g.trace(f"\npeek_str: {self.peek_str()}\n")
-        token_list = self.advance_str()
-        if self.trace_mode:
-            g.printObj(token_list, tag='do_Str: token_list')
-        for token in token_list:
-            yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helpers
+    #@+node:ekr.20191113063144.50: *5* tog.Str & helpers
     # The index in self.tokens of the previously scanned 'string' token
     string_index = -1 
 
+    def do_Str(self, node):
+        """This node represents a string constant."""
+
+        if self.trace_mode:
+            g.trace(f"\npeek_str: {self.peek_str()}\n")
+
+        token_list = self.advance_str()
+
+        if self.trace_mode:
+            g.printObj(token_list, tag='do_Str: token_list')
+
+        for token in token_list:
+            yield from self.gen_token('string', token.value)
+    #@+node:ekr.20191126074503.1: *6* advance_str
     def advance_str(self):
         """
         Advance over one or more 'string' tokens, and return them.
@@ -1756,16 +1754,14 @@ class TokenOrderGenerator:
         target_s = self.node.s
         quotes = ("'", '"')
         results = []
-        #@+<< define result_str >>
-        #@+node:ekr.20191128020218.1: *6* << define result_str >>
+        #@+others
+        #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
             """Return the concatenation of all *adjusted* token.values in results."""
             aList = [z.value for z in results]
             result = [munge_str(z) for z in aList]
             return ''.join(result)
-        #@-<< define result_str >>
-        #@+<< define munge_str >>
-        #@+node:ekr.20191128021208.1: *6* << define munge_str >>
+        #@+node:ekr.20191128021208.1: *7* local function: munge_str
         def munge_str(s):
             """
             Adjust s to undo the effect of repr:
@@ -1788,26 +1784,22 @@ class TokenOrderGenerator:
                 s = s[i+3:-3]
             else:
                 s = s[i+1:-1]
-            if 0: ### Experimental.
-                if self.fstring_stack:
-                    ###
-                    ### This is probably hopeless. The hacks need to be elsewhere.
-                    ###
-                    # In an f-string: strip {}
-                    print('f-string s', s)
-                    if len(s) > 1 and s[0] == '{' and s[-1] == '}':
-                        s = s[1:-1]
-                        # Unescape inner quotes.
-                        if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
-                            inner_quote = '"' if s[0] == "'" else "'"
-                            s = s[1:-1]
-                            s = s.replace('\\' + inner_quote, inner_quote)
-            else:
-                # Unescape escaped quotes.
-                s = s.replace('\\' + quote, quote)
+            ### Experimental. Hopeless.
+                # if self.fstring_stack:
+                    # # In an f-string: strip {}
+                    # print('f-string s', s)
+                    # if len(s) > 1 and s[0] == '{' and s[-1] == '}':
+                        # s = s[1:-1]
+                        # # Unescape inner quotes.
+                        # if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
+                            # inner_quote = '"' if s[0] == "'" else "'"
+                            # s = s[1:-1]
+                            # s = s.replace('\\' + inner_quote, inner_quote)
+            # Unescape escaped quotes.
+            s = s.replace('\\' + quote, quote)
             # print('munge_str returns', s)
             return s
-        #@-<< define munge_str >>
+        #@-others
         if self.trace_mode:
             g.trace('\n'
                 f"         node: {self.node.__class__.__name__}\n"
@@ -1828,6 +1820,7 @@ class TokenOrderGenerator:
         self.string_index = i
         return results
 
+    #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
         # if self.trace_mode: g.trace('Entry', i)
@@ -1840,9 +1833,10 @@ class TokenOrderGenerator:
             i += 1
         return i
 
-    # do_FormattedValue uses this.
+    #@+node:ekr.20191128135521.2: *6* tog.peek_str
     def peek_str(self):
         """Return the present 'string' token, initing if necessary"""
+        # do_FormattedValue uses this.
         i = self.string_index
         if i == -1:
             i = self.next_str_index(i)
