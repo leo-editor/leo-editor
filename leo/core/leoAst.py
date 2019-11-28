@@ -1155,6 +1155,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links
     px = -1 # Index of the previous significant token.
 
+    allow_sync = True  # Can be set to false by test runner.
+
     def sync_token(self, kind, val):
         """
         Handle a token whose kind & value are given.
@@ -1178,6 +1180,11 @@ class TokenOrderGenerator:
         
         if self.trace_mode:
             g.trace(f"\n{self.node.__class__.__name__:>14} {kind}: s{val!r}")
+
+        if not self.allow_sync:
+            if self.trace_mode:
+                g.trace('no-sync: returning')
+            return
         
         if self.fstring_stack:
             # Do nothing!
@@ -1618,12 +1625,15 @@ class TokenOrderGenerator:
         conv = node.conversion
         spec = node.format_spec
         if trace:
-            g.trace('\n===== START', node.value.__class__.__name__)
+            tag = 'do_FormattedValue: ===== START'
+            val = node.value.s if isinstance(node.value, ast.Str) else node.value.__class__.__name__
+            print(f"\n{tag} {val}")
         # Set the flag.
         self.fstring_stack.append(node)
         # Traverse all the subtrees, as usual.
         yield from self.gen(node.value)
         if conv is not None:
+            # The default conv appears to be -1.
             assert isinstance(conv, int), (repr(conv), g.callers())
             yield from self.gen_token('number', conv)
         if spec is not None:
@@ -1659,18 +1669,23 @@ class TokenOrderGenerator:
         Node is a list of f-strings and plain strings.
         
         No such node exists for concatenated *plain* strings.
-        In that case, a *single* token represents all the concatenated strings!
+        
+        *Regardless* of whether a JoinedStr exists, a *single* token represents
+        all the concatenated strings!
+        
+        This is the challenge facing us here.
+        
         """
-        ###
-        ### It's still not clear how to sync joined strings.
-        ###
         assert isinstance(node.values, list)
         # Set the flag.
         self.joined_string_stack.append(node)
         for z in node.values:
             assert isinstance(z, (ast.FormattedValue, ast.Str))
             if self.trace_mode:
-                g.trace(z.__class__.__name__)
+                g.trace('\nitem', z.__class__.__name__)
+            ###
+            ### advance_str should probably do *nothing* here
+            ###
             yield from self.gen(z)
         # Clear the flag.
         self.joined_string_stack.pop()
@@ -1732,10 +1747,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        ### Wrong.
-            # if self.joined_string_stack:
-                # # Do *nothing* here. The JoinedStr visitor has already consumed the token.
-                # return
+        ### Experimental.
+        if self.joined_string_stack:
+            # Do *nothing* here. The JoinedStr visitor has already consumed the token.
+            return
+        if self.trace_mode:
+            print('do_Str: peek_str', self.peek_str())
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
@@ -1749,18 +1766,13 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
-        trace = True and self.trace_mode
+        trace = self.trace_mode
         quotes = ("'", '"')
         results = []
-        
         #@+<< define result_str >>
         #@+node:ekr.20191128020218.1: *6* << define result_str >>
         def result_str():
-            """
-            Compute the concatenation of all token.values in results.
-            
-            These must be adjusted! tokens are reprs; self.node.s is a *plain* string.
-            """
+            """Return the concatenation of all *adjusted* token.values in results."""
             aList = [z.value for z in results]
             result = [munge_str(z) for z in aList]
             return ''.join(result)
@@ -1768,6 +1780,13 @@ class TokenOrderGenerator:
         #@+<< define munge_str >>
         #@+node:ekr.20191128021208.1: *6* << define munge_str >>
         def munge_str(s):
+            """
+            Adjust s to undo the effect of repr:
+
+            token.value is a repr. self.node.s is a *plain* string.
+            
+            Experimental (probably doomed): adjust for f-string format.
+            """
             i = 0
             if self.fstring_stack: 
                 # In an f-string: skip f-string prefixes.
@@ -1778,8 +1797,11 @@ class TokenOrderGenerator:
                 raise AssignLinksError(
                     f"munge_str: Unexpected token.value: {s} scanning for: {self.node.s}")
             quote = s[i]
-            # Skip the outer quotes.
-            s = s[i+1:-1]
+            # Skip the outer quotes, including triple quotes!
+            if s.startswith(quote*3) and s.endswith(quote*3):
+                s = s[i+3:-3]
+            else:
+                s = s[i+1:-1]
             ### Experimental.
             if self.fstring_stack:
                 ###
@@ -1797,11 +1819,13 @@ class TokenOrderGenerator:
             else:
                 # Unescape escaped quotes.
                 s = s.replace('\\' + quote, quote)
-            print('munge_str returns', s)
+            # print('munge_str returns', s)
             return s
         #@-<< define munge_str >>
-
         if trace:
+            if self.joined_string_stack:
+                g.trace('SKIP joined string', self.node.s)
+                return results
             g.trace(' Enter:', self.node.s)
         # Scan for 'string' tokens until the accumalated strings match self.node.s.
         i = self.string_index
@@ -1831,10 +1855,10 @@ class TokenOrderGenerator:
             i += 1
         return i
         
-    ###
-        # def peek_str(self):
-            # i = self.string_index
-            # return self.tokens[i] if i < len(self.tokens) else None
+    # For debugging only.
+    def peek_str(self):
+        i = self.string_index
+        return self.tokens[i] if i < len(self.tokens) else "<no remaining 'string' token!>"
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4312,6 +4336,7 @@ class TestRunner:
             'dump-tokens-after-fail',
             'dump-tokens-first',
             'dump-tree-after-fail',
+            'no-sync',
             'set-trace-mode',
             'show-exception-after-fail',
             'use-asttokens',
@@ -4338,6 +4363,8 @@ class TestRunner:
         else:
             x = self.x = TokenOrderInjector()
             x.trace_mode = 'set-trace-mode' in flags
+            if 'no-sync' in flags:
+                x.allow_sync = False
                 # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources)
             if 'dump-tokens-first' in flags:

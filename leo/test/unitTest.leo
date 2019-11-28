@@ -406,7 +406,7 @@
 </v>
 <v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 </v>
@@ -4136,7 +4136,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4150,9 +4150,12 @@ if 'g.cls' in flags:
 #
 # Reports, for TestRunner.run_tests.
 if 'all' in flags:
-    reports = []
+    reports = [
+         # 'no-sync',
+    ]
 else:
     reports = [
+        'no-sync',
         'dump-sources-first',
         'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
