@@ -354,31 +354,29 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
-<v t="ekr.20191127163030.1"><vh>ignore: recent FAILS</vh>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
-</v>
-<v t="ekr.20191127134236.1"><vh>ignore:  latest passed tests</vh>
+<v t="ekr.20191128014124.1"><vh>xx Summary of failed tests</vh></v>
+<v t="ekr.20191127134726.1"><vh>test: JoinedStr</vh></v>
+<v t="ekr.20191127163030.1"><vh>ignore: recent FAILS</vh></v>
+<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 </v>
-<v t="ekr.20191126084046.1"><vh>ignore: redo recent tests</vh>
-<v t="ekr.20191125165430.1"><vh>test: f-string + Ternary</vh></v>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191118155611.1"><vh>test: f-strings</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: simple JoinedStr</vh></v>
-<v t="ekr.20191125165640.1"><vh>test: call + JoinedString</vh></v>
+<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191126002258.1"><vh>test: f-strings + JoinedStr</vh></v>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: f-strings + equivalent % op</vh></v>
+<v t="ekr.20191119135937.1"><vh>test: print + f-string</vh></v>
 </v>
-<v t="ekr.20191122201558.1"><vh>ignore: passed tests</vh>
+<v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
 <v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
 <v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
-<v t="ekr.20191119135937.1"><vh>test: FormattedValue: f-string</vh></v>
 <v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
 <v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
 <v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
@@ -386,14 +384,7 @@
 <v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
 </v>
 <v t="ekr.20191124040736.1"><vh>Statements...</vh>
-<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
-<v t="ekr.20191120162740.1"><vh>Call tests</vh>
-<v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
-<v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
-<v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
-</v>
-</v>
-<v t="ekr.20191122210522.1"><vh>If tests</vh>
+<v t="ekr.20191122210522.1"><vh>If tests...</vh>
 <v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
 <v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
@@ -404,12 +395,18 @@
 <v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
 <v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
 </v>
-<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
+<v t="ekr.20191128013505.1"><vh>Call tests...</vh>
+<v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
+<v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
+<v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 </v>
-<v t="ekr.20191126142855.1"><vh>ignore: passed file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+</v>
 </v>
 <v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 </v>
@@ -4142,7 +4139,8 @@ flags = [
     # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
-    'show-test-kind',
+    'show-test-kind', # all vs selected.
+    # 'show-test-description', 
     # 'show-reload-time',
     # 'show-test-time',
     'summarize',
@@ -4151,7 +4149,7 @@ if 'g.cls' in flags:
     g.cls()
 #
 # Reports, for TestRunner.run_tests.
-if 0: # 
+if 'all' in flags:
     reports = []
 else:
     reports = [
@@ -4223,10 +4221,8 @@ summarize()</t>
     return tests
 </t>
 <t tx="ekr.20191118155609.1"></t>
-<t tx="ekr.20191118155611.1">"""DS."""
+<t tx="ekr.20191118155611.1">print(f"test {a}={2}")
 print('test %s=%s'%(a, 2))
-# Comment.
-print(f"test {a}={2}")
 </t>
 <t tx="ekr.20191118155612.1">open(os.devnull, "w")
 </t>
@@ -4287,7 +4283,6 @@ else:
     print('a')
 else:
     print('b')</t>
-<t tx="ekr.20191120162740.1"></t>
 <t tx="ekr.20191120163559.1">try:
     print('a1')
     print('a2')
@@ -4537,12 +4532,14 @@ def run_tests():
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
-        print(f"Running {description}...")
+        if 'show-test-description' in flags:
+            print(f"Running {description}...")
         x = leoAst.TestRunner()
         ok = x.run_tests(contents, description, filter_reports(description))
         if not ok:
+            # if 'show-test-description' not in flags:
+                # print(f"\nFailed: {description}")
             fails.append(description)
-            ### print(f"\nFAIL: {description}")
     t2 = time.process_time()
     test_time = t2 - t1
     return fails, test_time
@@ -4556,7 +4553,6 @@ def run_tests():
 else:
     '2'
 </t>
-<t tx="ekr.20191125165430.1">f"{' Backward' if not self.isearch_forward else ''}"</t>
 <t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")</t>
 <t tx="ekr.20191125235415.1">print('a''.''b')
 print('c')</t>
@@ -4673,14 +4669,32 @@ assert not fails, f"failed {len(fails)} tests"</t>
 <t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
 print('c')</t>
 <t tx="ekr.20191126084046.1"></t>
-<t tx="ekr.20191126142855.1"></t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
 </t>
 <t tx="ekr.20191127134236.1"></t>
-<t tx="ekr.20191127134726.1">one(f"{'B'}"": ")
+<t tx="ekr.20191127134726.1"># leoFind.py: line 861
+one(f"{'B'}"": ")
 two()</t>
 <t tx="ekr.20191127163030.1"></t>
 <t tx="ekr.20191127172440.1">print("a\"b")</t>
+<t tx="ekr.20191128013505.1"></t>
+<t tx="ekr.20191128014124.1"># All fail in result_str
+# Unexpected token.value: f"test {a}={2}" scanning for: test
+
+Failed tests:
+[
+    'test: JoinedStr',
+    'test: f-strings + equivalent % op',
+    'test: print + f-string',
+    'test: ClassDef, FunctionDef'
+]
+
+Newly passed:
+[
+    'test: f-strings + JoinedStr',
+]
+    
+</t>
 </tnodes>
 </leo_file>

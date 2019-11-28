@@ -1606,7 +1606,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(':')
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue *** (sets flag)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (sets flag)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     # This stack is a flag for advance_str and sync_token.
@@ -1648,7 +1648,7 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr *** (sets flag)
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (sets flag)
     # JoinedStr(expr* values)
 
     # This stack is a flag for advance_str
@@ -1752,7 +1752,9 @@ class TokenOrderGenerator:
         trace = True and self.trace_mode
         quotes = ("'", '"')
         results = []
-
+        
+        #@+<< define result_str >>
+        #@+node:ekr.20191128020218.1: *6* << define result_str >>
         def result_str():
             """
             Compute the concatenation of all token.values in results.
@@ -1760,18 +1762,44 @@ class TokenOrderGenerator:
             These must be adjusted! tokens are reprs; self.node.s is a *plain* string.
             """
             aList = [z.value for z in results]
-            result = []
-            for z in aList:
-                ok = len(z) >= 2 and z[0] == z[-1] and z[0] in quotes
-                if not ok:
-                    raise AssignLinksError(
-                        f"Unexpected token.value: {z} scanning for: {self.node.s}")
-                quote = z[0]
-                s = z[1:-1]
+            result = [munge_str(z) for z in aList]
+            return ''.join(result)
+        #@-<< define result_str >>
+        #@+<< define munge_str >>
+        #@+node:ekr.20191128021208.1: *6* << define munge_str >>
+        def munge_str(s):
+            i = 0
+            if self.fstring_stack: 
+                # In an f-string: skip f-string prefixes.
+                while i < len(s) and s[i] in 'fFrR':
+                    i += 1
+            ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
+            if not ok:
+                raise AssignLinksError(
+                    f"munge_str: Unexpected token.value: {s} scanning for: {self.node.s}")
+            quote = s[i]
+            # Skip the outer quotes.
+            s = s[i+1:-1]
+            ### Experimental.
+            if self.fstring_stack:
+                ###
+                ### This is probably hopeless. The hacks need to be elsewhere.
+                ###
+                # In an f-string: strip {}
+                print('f-string s', s)
+                if len(s) > 1 and s[0] == '{' and s[-1] == '}':
+                    s = s[1:-1]
+                    # Unescape inner quotes.
+                    if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
+                        inner_quote = '"' if s[0] == "'" else "'"
+                        s = s[1:-1]
+                        s = s.replace('\\' + inner_quote, inner_quote)
+            else:
                 # Unescape escaped quotes.
                 s = s.replace('\\' + quote, quote)
-                result.append(s)
-            return ''.join(result)
+            print('munge_str returns', s)
+            return s
+        #@-<< define munge_str >>
 
         if trace:
             g.trace(' Enter:', self.node.s)
@@ -1780,14 +1808,14 @@ class TokenOrderGenerator:
         while len(result_str()) < len(self.node.s):
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
-                raise AssignLinksError(f"End of tokens looking for {self.node.s!r}")
+                raise AssignLinksError(f"advance_str: End of tokens looking for {self.node.s}")
             token = self.tokens[i]
             if trace:
-                g.trace('Append:', token.value) # token.dump(brief=True))
+                g.trace('Append:', munge_str(token.value))
             results.append(token)
         # The results must match exactly.
         if result_str() != self.node.s:
-            raise AssignLinksError(f"Looking for: {self.node.s!r}, found: {result_str()!r}")
+            raise AssignLinksError(f"advance_str: Looking for: {self.node.s}, found: {result_str()}")
         self.string_index = i
         return results
 
@@ -4319,12 +4347,11 @@ class TestRunner:
             try:
                 t2 = time.process_time()
                 # Yes, list *is* required here.
-                
                 list(x.create_links(self.tokens, self.tree, file_name=description))
                 t3 = time.process_time()
             except Exception as e:
                 t3 = time.process_time()
-                g.trace('\nFAIL:\n')
+                g.trace(f"\nFAIL: {description}\n")
                 print(e)
                 if 'show-exception-after-fail' in flags:
                     g.es_exception()
