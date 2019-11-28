@@ -4613,6 +4613,8 @@ class Tokenizer:
         # Return results, as a list.
         return self.results
     #@+node:ekr.20191110165235.4: *3* tokenizer.do_token (the gem)
+    header_has_been_shown = False
+
     def do_token(self, contents, five_tuple):
         """
         Handle the given token, optionally including between-token whitespace.
@@ -4622,38 +4624,62 @@ class Tokenizer:
         # import leo.core.leoGlobals as g
         import token as token_module
 
-        trace = False and not g.unitTesting
+        trace = True ### and not g.unitTesting
+        
+        #@+<< define trace functions >>
+        #@+node:ekr.20191128074051.1: *4* << define trace functions >>
+        def show_header():
+            if self.header_has_been_shown:
+                return
+            self.header_has_been_shown = True
+            print('\nTokenizer...\n')
+            print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
+            print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
 
+        def show_token(kind, val):
+            """
+            Show the given token.
+            Regardless of kind, val is the ground truth, from tok_s.
+            """
+            show_header()
+            val_s = truncate(val, 28)
+            ### tok_s2 = truncate(tok_s, 28)
+            if kind != 'string':
+                val_s = repr(val_s)
+                ### tok_s2 = repr(tok_s2)
+            print(
+                # starting line..ending line
+                f"{show_tuple((s_row, e_row))} "  
+                # starting offset..ending offset.
+                f"{show_tuple((s_offset, e_offset))} "  
+                f"{kind:>10} {val_s:30} {line!r}")
+            
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
             return f"{s:8}"
-            
+        #@-<< define trace functions >>
+
         # Unpack..
         tok_type, val, start, end, line = five_tuple
-        s_row, s_col = start
-        e_row, e_col = end
+        s_row, s_col = start  # row/col offsets of start of token.
+        e_row, e_col = end    # row/col offsets of end of token.
         kind = token_module.tok_name[tok_type].lower()
         # Calculate the token's start/end offsets: character offsets into contents.
         s_offset = self.offsets[max(0, s_row-1)] + s_col
         e_offset = self.offsets[max(0, e_row-1)] + e_col
+        # tok_s is corresponding string in the line.
+        tok_s = contents[s_offset : e_offset]
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset : s_offset]
         if ws:
             # No need for a hook.
             self.add_token('ws', five_tuple, line, s_row, ws)
             if trace:
-                print(
-                    f"{'ws':>10} {ws!r:20} "
-                    f"{show_tuple((self.prev_offset, s_offset)):>26} "
-                    f"{ws!r}")
+                show_token('ws', ws)
         # Always add token, even if it contributes no text!
-        tok_s = contents[s_offset : e_offset]
         self.add_token(kind, five_tuple, line, s_row, tok_s)
         if trace:
-            print(
-                f"{kind:>10} {val!r:20} "
-                f"{show_tuple(start)} {show_tuple(end)} {show_tuple((s_offset, e_offset))} "
-                f"{tok_s!r:15} {line!r}")
+            show_token(kind, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
     #@-others
