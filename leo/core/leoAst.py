@@ -4635,7 +4635,8 @@ class Tokenizer:
             if self.header_has_been_shown:
                 return
             self.header_has_been_shown = True
-            print('\nTokenizer tokens...\n')
+            print("\nTokenizer tokens...\n")
+            print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
             print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
             print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
 
