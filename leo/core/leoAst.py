@@ -1599,9 +1599,6 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (sets flag)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    # This stack is a flag for advance_str.
-    fstring_stack = []
-
     def advance_over_formatted_str(self):
         """Similar to advace_str, adapted to our special needs"""
         # Get the *present* 'string' token.
@@ -1638,8 +1635,6 @@ class TokenOrderGenerator:
                 yield from self.gen_token('number', conv)
             if spec is not None:
                 yield from self.gen(node.format_spec)
-            # Clear the flag.
-            self.fstring_stack.pop()
     #@+node:ekr.20191115105821.1: *5* tog.int
     def do_int(self, node):
         
@@ -1758,7 +1753,6 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
-        trace = self.trace_mode
         target_s = self.node.s
         quotes = ("'", '"')
         results = []
@@ -1814,13 +1808,10 @@ class TokenOrderGenerator:
             # print('munge_str returns', s)
             return s
         #@-<< define munge_str >>
-        if trace:
-            g.trace('\n')
-            print(
+        if self.trace_mode:
+            g.trace('\n'
                 f"         node: {self.node.__class__.__name__}\n"
                 f"target string: {target_s}\n")
-                # f"parent: {self.node.parent.__class__.__name__}\n"
-                # f"callers: {g.callers()}\n"
         # Scan for 'string' tokens until the accumalated strings match target_s.
         i = self.string_index
         while len(result_str()) < len(target_s):
@@ -1828,7 +1819,7 @@ class TokenOrderGenerator:
             if i >= len(self.tokens):
                 raise AssignLinksError(f"advance_str: End of tokens looking for {target_s}")
             token = self.tokens[i]
-            if trace:
+            if self.trace_mode:
                 g.trace('Append:', munge_str(token.value))
             results.append(token)
         # The results must match exactly.
