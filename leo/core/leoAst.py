@@ -1764,6 +1764,11 @@ class TokenOrderGenerator:
         assert isinstance(self.node, ast.Str), repr(self.node)
         target_s = self.node.s
         quotes = ("'", '"')
+        
+        def show_progress(i, token):
+            if self.trace_mode:
+                g.trace(f"\ni: {i} token.value: {token.value} target: {target_s or repr(target_s)}")
+
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
@@ -1816,7 +1821,7 @@ class TokenOrderGenerator:
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            self.show_str_progress(i, target_s, token)
+            show_progress(i, token)
             if self.trace_mode:
                 g.trace('\nAppend empty string')
             self.string_index = i
@@ -1832,7 +1837,7 @@ class TokenOrderGenerator:
                 g.trace(message)
                 raise AssignLinksError(message)
             token = self.tokens[i]
-            self.show_str_progress(i, target_s, token)
+            show_progress(i, token)
             if self.trace_mode:
                 g.trace('Append:', munge_str(token.value))
             results.append(token)
@@ -1867,10 +1872,6 @@ class TokenOrderGenerator:
             i = self.next_str_index(i)
             self.string_index = i
         return self.tokens[i] if i < len(self.tokens) else "<no remaining 'string' token!>"
-    #@+node:ekr.20191128144411.1: *6* tog.show_str_progress
-    def show_str_progress(self, i, target_s, token):
-        if self.trace_mode:
-            g.trace(f"\ni: {i} token.value: {token.value} target: {target_s or repr(target_s)}")
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
