@@ -4452,6 +4452,7 @@ class TestRunner:
     def dump_tokens(self, brief=False):
         tokens = self.tokens
         print('\nTokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
         # pylint: disable=not-an-iterable
         if self.x:
             for z in tokens:
@@ -4555,6 +4556,10 @@ class Token:
         
         if self.kind in ('ws', 'indent'):
             val = len(self.value)
+        elif self.kind == 'string':
+            # Important: don't add a repr for 'string' tokens.
+            # repr just adds another layer of confusion.
+            val = truncate(self.value, truncate_n)
         else:
             val = truncate(repr(self.value), truncate_n)
         return val
