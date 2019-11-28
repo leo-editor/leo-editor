@@ -355,20 +355,19 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191128014124.1"><vh>xx Summary of failed tests</vh></v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191118155611.1"><vh>xx test: f-strings + equivalent % op</vh></v>
-<v t="ekr.20191119135937.1"><vh>xx test: print + f-string</vh></v>
-<v t="ekr.20191128104415.1"><vh>ignore: passed tests</vh>
-<v t="ekr.20191127134726.1"><vh>test: JoinedStr</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: f-strings + JoinedStr</vh></v>
-</v>
-<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-</v>
+<v t="ekr.20191127134726.1"><vh>test: joined f-string + plain string</vh></v>
+<v t="ekr.20191126002258.1"><vh>xx test: joined 3 f-strings</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 </v>
+<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+</v>
+<v t="ekr.20191128104415.1"><vh>ignore: passed tests</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -4137,7 +4136,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4226,8 +4225,8 @@ summarize()</t>
     return tests
 </t>
 <t tx="ekr.20191118155609.1"></t>
-<t tx="ekr.20191118155611.1">print(f"test {a}={2}")
-print('test %s=%s'%(a, 2))
+<t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
+print('done')
 </t>
 <t tx="ekr.20191118155612.1">open(os.devnull, "w")
 </t>
@@ -4252,8 +4251,6 @@ class TestClass2:
 @decorator
 class TestClass(base1, base2):
     pass
-</t>
-<t tx="ekr.20191119135937.1">print(f'profiling binary stats to {xxx}')
 </t>
 <t tx="ekr.20191119142414.1">def run(fileName=None, pymacs=None, *args, **keywords):
     pass
@@ -4690,5 +4687,7 @@ two()</t>
     'test: print + f-string'
 ]</t>
 <t tx="ekr.20191128104415.1"></t>
+<t tx="ekr.20191128141922.1">print(f"test {a}={2}")
+print('done')</t>
 </tnodes>
 </leo_file>
