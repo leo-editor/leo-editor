@@ -1596,7 +1596,7 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (sets flag)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def advance_over_formatted_str(self):
@@ -1740,10 +1740,10 @@ class TokenOrderGenerator:
             g.trace(f"\npeek_str: {self.peek_str()}\n")
         token_list = self.advance_str()
         if self.trace_mode:
-            g.printObj(token_list, tag='token_list')
+            g.printObj(token_list, tag='do_Str: token_list')
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helpers ***
+    #@+node:ekr.20191126074503.1: *5* tog.Str: advance_str & helpers
     # The index in self.tokens of the previously scanned 'string' token
     string_index = -1 
 
