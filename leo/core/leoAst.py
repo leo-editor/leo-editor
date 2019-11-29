@@ -1643,7 +1643,7 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (represents *all* f-strings)(
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (***)
     # JoinedStr(expr* values)
 
     def advance_over_joined_string(self):
@@ -4537,7 +4537,6 @@ class Token:
         return (
             f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
             f"line: {self.line_number:<2} level: {self.level:<2} "
-            # f"{obj_id(self.node)} {self.node.__class__.__name__:16} "
             f"{node_id:4} {node_cn:16} "
             f"children: {len(children)} "
             f"parent: {parent_id:4} {parent_class}")

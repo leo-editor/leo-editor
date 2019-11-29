@@ -2646,6 +2646,7 @@ def listToString(obj, indent='', tag=None):
         return '[]'
     result = ['[']
     indent2 = indent + ' ' * 4
+    # I prefer not to compress lists.
     for i, obj2 in enumerate(obj):
         if True: ### len(obj) > 1:
             result.append('\n'+indent2)
