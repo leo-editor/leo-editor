@@ -1218,8 +1218,8 @@ class TokenOrderGenerator:
                 raise self.error(
                     f"STRING MISMATCH: "
                     f"val: {val} token.val: {token.value}")
-                val = token.value
-                break  # Malignant: assume a match for now.
+                ## val = token.value
+                ## break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
                 if self.trace_mode:
@@ -1646,35 +1646,52 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (***)
     # JoinedStr(expr* values)
 
-    def advance_over_joined_string(self):
-        """advance_str, specialized for a single token."""
-        i = self.string_index
-        i = self.next_str_index(i + 1)
-        self.string_index = i
-        if i >= len(self.tokens):
-            raise self.error('no next token')
-        return self.tokens[i]
-
     def do_JoinedStr(self, node):
         """
-        Fact 1: A JoinedStr node represents exactly one f-string.
+        Fact 1: A JoinedStr node represents one or more f-strings and plain strings.
         
         Fact 2: *All* f-strings appear in a JoinedStr, regardless of whether
-                string concatenation takes place.
+                those f-strings are concatenated with other plain strings or f-strings.
+
+        Fact 3: node.values is a list of Str and FormattedValue nodes.
+        
+        Fact 4: There is a many-to-many relationship between 'string' tokens
+                and the items in the node.values list.
                 
-        Fact 3: node.values is a list of the **components** of a single f-string.
-                
-        Fact 4: A *single* token represents *all* concatenated strings,
-                regardless of whether the strings are f-strings or plain strings.
+                - if isinstance(item, ast.Str):
+                  The item represents *one or more* 'string' tokens.
+          
+                - if isinstance(item, ast.FormattedValue):
+                  The item is a tree of ast.Ast node representing *one* 'string' token.
+                  
+        Fact 5: This code, and *only* this code, must handle these complications.
+                There is *no way* that visiting an FormattedValue tree can be useful.
         """
         assert isinstance(node.values, list)
-        ### tokens = self.advance_str()
-        token = self.advance_over_joined_string()
-        if self.trace_mode:
-            g.trace(f"\n{token.value}")
-        assert token.kind == 'string', repr(token)
-        yield from self.gen_token('string', token.value)
-
+        for item in self.node.values:
+            assert isinstance(item, (ast.Str, ast.FormattedValue)), repr(item)
+            #
+            # Compute the target string.
+            if isinstance(item, ast.Str):
+                # item represents *one or more* 'string' tokens.
+                # Sync all those 'string' tokens to item.s.
+                target_s = item.s
+            else:
+                # item is a tree of ast.Ast nodes.
+                # Sync to the next 'string' token.
+                target_s = self.peek_next_str().value
+            if self.trace_mode:
+                g.trace('item', item.__class__.__name__, repr(target_s))
+            #
+            # Sync all the tokens.
+            tokens = self.advance_str(target_s=target_s)
+            for token in tokens:
+                if token.kind != 'string':
+                    raise self.error(f"not a string token: {token:s}")
+                if self.trace_mode:
+                    g.trace(f"\n{token.value}")
+                yield from self.gen_token('string', token.value)
+        
         if 0: # This code has no chance of being useful.
             for z in node.values:
                 if self.trace_mode:
@@ -1749,7 +1766,7 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
-    def advance_str(self):
+    def advance_str(self, target_s=None):
         """
         Advance over one or more 'string' tokens, and return them.
         
@@ -1757,7 +1774,8 @@ class TokenOrderGenerator:
         """
         if not isinstance(self.node, ast.Str):
             raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
-        target_s = self.node.s
+        if target_s is None:
+            target_s = self.node.s
         quotes = ("'", '"')
         
         # Define result_str and munge_str helper functions.
@@ -1840,15 +1858,14 @@ class TokenOrderGenerator:
             i += 1
         return i
 
-    #@+node:ekr.20191128135521.2: *6* tog.peek_str
-    def peek_str(self):
-        """Return the present 'string' token, initing if necessary"""
-        # do_FormattedValue uses this.
+    #@+node:ekr.20191129102013.1: *6* tog.peek_next_str (new)
+    def peek_next_str(self):
+        """
+        Return the next 'string' token, *without* updating the string index.
+        """
         i = self.string_index
         i1 = i
-        if i == -1:
-            i = self.next_str_index(i)
-            self.string_index = i
+        i = self.next_str_index(i)
         if i >= len(self.tokens):
             raise self.error(f"no token! {i1}..{i}")
         if self.trace_mode:
@@ -2376,7 +2393,8 @@ class AstDumper:
         val = ''
         if class_name == 'JoinedStr':
             values = node.values
-            assert isinstance(values, list), (repr(values), g.callers())
+            assert isinstance(values, list)
+            # Str tokens may represent *concatenated* strings.
             results = []
             fstrings, strings = 0, 0
             for z in values:
@@ -4331,6 +4349,7 @@ class TestRunner:
         # Convert reports to flags.
         valid_flags = (
             'dump-all-after-fail',
+            'dump-raw-tree-first', 
             'dump-sources-first',
             'dump-tokens-after-fail',
             'dump-tokens-first',
@@ -4370,6 +4389,8 @@ class TestRunner:
             if 'dump-tokens-first' in flags:
                 self.dump_tokens(brief=True)
             self.tree = parse_ast(sources)
+            if 'dump-raw-tree-first' in flags:
+                self.dump_raw_tree()
             # Catch exceptions so we can get data late.
             try:
                 t2 = time.process_time()

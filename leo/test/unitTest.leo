@@ -355,13 +355,13 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh></v>
-<v t="ekr.20191129042702.1"><vh>pass test: simple f-string tests</vh></v>
-<v t="ekr.20191126002258.1"><vh>pass test: f-string summary: no joins</vh>
+<v t="ekr.20191129042702.1"><vh>xx pass test: simple f-string tests</vh></v>
+<v t="ekr.20191126002258.1"><vh>xx pass test: f-string summary: no joins</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
 </v>
 <v t="ekr.20191129033245.1"><vh>xx test: f-string summary: joins + 1 f-expr</vh></v>
-<v t="ekr.20191129033359.1"><vh>pass test: f-string summary: joins + 2 f-exprs</vh></v>
-<v t="ekr.20191127134726.1"><vh>pass test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191129033359.1"><vh>xx pass test: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191127134726.1"><vh>xx pass test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
@@ -4159,9 +4159,11 @@ if 'all' in flags:
          # 'no-sync',
     ]
 else:
+    # Use 'no-sync' option to compare parse trees.
     reports = [
-        # 'no-sync',
+        'no-sync',
         'dump-sources-first',
+        'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         # 'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
@@ -4673,9 +4675,7 @@ assert not fails, f"failed {len(fails)} tests"</t>
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
 </t>
-<t tx="ekr.20191126002258.1"># Use 'no-sync' option to compare parse trees.
-
-# Single f-strings.
+<t tx="ekr.20191126002258.1"># Single f-strings.
 'p1' ;
 f'f1' ;
 f'x1{e1}y1' ;
@@ -4699,24 +4699,29 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128104415.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
-<t tx="ekr.20191129033147.1"># Use 'no-sync' option to compare parse trees.
+<t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
+print('p2.1' 'p2.2')
+print(f'f3.1' f'f3.2')
+'---'
+print(f'{7.1}' 'p7.2')
+print(f'{8.1}' f'{8.2}')
+'end'
 
-print('p1', 'p2')
-print(f'f2' 'p3')
-print(f'f3' f'f4')
-print('end')
+# Uninteresting.
+# print(f'f4.1', 'p4.2')
+# print('p5.1', 'p5.2')
+# print(f'f6.1', f'f6.2')
+
+# print(f'{7.1}', 'p7.2')
+# print(f'{8.1}', f'{8.2}')
 </t>
-<t tx="ekr.20191129033245.1"># Use 'no-sync' option to compare parse trees.
-
-print(f'x1{e1}y1', 'p1')
+<t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
 print(f'x2{e2}y2', f'f2')
 print(f'x3{e3}y3', f'x4{e4}y4')
 
 print(f"{'B'}" ":") # leoFind.py: line 861
 print('end')</t>
-<t tx="ekr.20191129033359.1"># Use 'no-sync' option to compare parse trees.
-
-print(f'x1{e1}y1{e2}z1', 'p1')
+<t tx="ekr.20191129033359.1">print(f'x1{e1}y1{e2}z1', 'p1')
 print(f'x2{e3}y2{e3}z2', f'f2')
 print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
 print('end')</t>
