@@ -1668,12 +1668,18 @@ class TokenOrderGenerator:
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
         assert isinstance(node.values, list)
+        #
+        # Capture the generator.
+        items = list(self.node.values)
         if self.trace_mode:
-            # Careful: don't exhaust the node.values generator.
-            g.trace(f"\n===== Entry:")
-        for item in self.node.values:
-            assert isinstance(item, (ast.Str, ast.FormattedValue)), repr(item)
-            #
+            g.trace(f"\n===== Entry: {len(items)} items...\n")
+        #
+        # Look at each item exactly once.
+        i = 0
+        while i < len(items):
+            progress = i
+            item = items[i]
+            assert isinstance(item, (ast.Str, ast.FormattedValue))
             # Compute the target string.
             if isinstance(item, ast.Str):
                 # item represents *one or more* 'string' tokens.
@@ -1683,17 +1689,23 @@ class TokenOrderGenerator:
                 # item is a tree of ast.Ast nodes.
                 # Sync to the next 'string' token.
                 target_s = self.peek_next_str().value
-            #
-            # Careful: don't exhaust the node.values generator with a trace.
+            if self.trace_mode:
+                g.trace(f"\n----- item {i} {item.__class__.__name__:12} target: {target_s!r}\n")
             #
             # Sync all the tokens.
             tokens = self.advance_str(target_s=target_s)
+            if not tokens:
+                raise self.error(f"no tokens from advance_str. target_s: {target_s!r}")
             for token in tokens:
                 if token.kind != 'string':
-                    raise self.error(f"not a string token: {token:s}")
+                    raise self.error(f"not a string token: {token!r}")
                 if self.trace_mode:
-                    g.trace(f"\n{token.value}")
+                    g.trace(f"\ngenerate 'string' {token.value}")
                 yield from self.gen_token('string', token.value)
+                i += 1
+            assert progress < i
+        if i != len(items) + 1:
+            raise self.error(f"{len(items)} items, handled {i} items")
         
         if 0: # This code has no chance of being useful.
             for z in node.values:
