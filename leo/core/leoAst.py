@@ -1063,11 +1063,13 @@ class TokenOrderGenerator:
         print(dumper.brief_dump_one_node(node, level))
     #@+node:ekr.20191129044716.1: *3* tog.error
     def error(self, message):
-        """Raise AssignLinksError and show where it came from."""
+        """
+        Prepend the caller to the message, print it, and return AssignLinksError.
+        """
         caller = g.callers(4).split(',')[-1]
         message = f"{caller}: {message}"
-        print(f"\nError! {message}\n")
-        raise AssignLinksError(message)
+        print(f"\nError! {message}")
+        return AssignLinksError(message)
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
 
@@ -1225,7 +1227,7 @@ class TokenOrderGenerator:
                     g.trace('\nSync Failed...\n')
                     for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
                         print(s)
-                raise AssignLinksError(
+                raise self.error(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
@@ -1235,7 +1237,7 @@ class TokenOrderGenerator:
             if self.trace_mode:
                 g.trace('\nSYNC FAILED...')
                 g.printObj(tokens[max(0, px-5):], 'TOKENS')
-            raise AssignLinksError(
+            raise self.error(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
         #
@@ -1613,9 +1615,9 @@ class TokenOrderGenerator:
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
-        message = f"do_FormattedValue called from {g.callers()}"
-        print(message)
-        raise AssignLinksError(message)
+        raise self.error(f"do_FormattedValue called from {g.callers()}")
+        
+        # pylint: disable=unreachable
        
         if 0: # This code has no chance of being useful.
             # Let block.
@@ -1644,6 +1646,15 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (represents *all* f-strings)(
     # JoinedStr(expr* values)
 
+    def advance_over_joined_string(self):
+        """advance_str, specialized for a single token."""
+        i = self.string_index
+        i = self.next_str_index(i + 1)
+        self.string_index = i
+        if i >= len(self.tokens):
+            raise self.error('no next token')
+        return self.tokens[i]
+
     def do_JoinedStr(self, node):
         """
         Fact 1: A JoinedStr node represents exactly one f-string.
@@ -1657,12 +1668,12 @@ class TokenOrderGenerator:
                 regardless of whether the strings are f-strings or plain strings.
         """
         assert isinstance(node.values, list)
-        tokens = self.advance_str()
-        for token in tokens:
-            if self.trace_mode:
-                g.trace(f"\n{token.value}")
-            assert token.kind == 'string', repr(token)
-            yield from self.gen_token('string', token.value)
+        ### tokens = self.advance_str()
+        token = self.advance_over_joined_string()
+        if self.trace_mode:
+            g.trace(f"\n{token.value}")
+        assert token.kind == 'string', repr(token)
+        yield from self.gen_token('string', token.value)
 
         if 0: # This code has no chance of being useful.
             for z in node.values:
@@ -1745,11 +1756,11 @@ class TokenOrderGenerator:
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
         if not isinstance(self.node, ast.Str):
-            self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
-
+            raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
         target_s = self.node.s
         quotes = ("'", '"')
         
+        # Define result_str and munge_str helper functions.
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
@@ -1772,9 +1783,7 @@ class TokenOrderGenerator:
                 i += 1
             ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
             if not ok:
-                message = f"Unexpected token.value: {s} scanning for: {target_s}"
-                g.trace(message)
-                raise AssignLinksError(message)
+                raise self.error(f"Unexpected token.value: {s} scanning for: {target_s}")
             quote = s[i]
             # Skip the outer quotes, including triple quotes!
             if s.startswith(quote*3) and s.endswith(quote*3):
@@ -1803,18 +1812,14 @@ class TokenOrderGenerator:
         while len(result_str()) < len(target_s):
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
-                message = f"End of tokens looking for {target_s}"
-                g.trace(message)
-                raise AssignLinksError(message)
+                raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
             if self.trace_mode:
                 g.trace('Append:', munge_str(token.value))
             results.append(token)
         # The results must match exactly.
         if result_str() != target_s:
-            message = f"Looking for: {target_s!r}, found: {result_str()!r}"
-            g.trace(message)
-            raise AssignLinksError(message)
+            raise self.error(f"Looking for: {target_s!r}, found: {result_str()!r}")
         # Leave the string index pointing at the last scanned token.
         self.string_index = i
         if self.trace_mode:
@@ -1845,9 +1850,7 @@ class TokenOrderGenerator:
             i = self.next_str_index(i)
             self.string_index = i
         if i >= len(self.tokens):
-            message = f"\nno token! {i1}..{i}"
-            g.trace(message)
-            raise AssignLinksError(message)
+            raise self.error(f"no token! {i1}..{i}")
         if self.trace_mode:
             g.trace(f"\n{i1}..{i} {self.tokens[i]}")
         return self.tokens[i]
