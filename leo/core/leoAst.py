@@ -1067,8 +1067,9 @@ class TokenOrderGenerator:
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
         caller = g.callers(4).split(',')[-1]
-        message = f"{caller}: {message}"
-        print(f"\nError! {message}")
+        print(f"\n{caller}: Error...\n")
+        # Don't change the message. It may contain aligned lines.
+        print(message)
         return AssignLinksError(message)
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
@@ -1227,7 +1228,7 @@ class TokenOrderGenerator:
                     g.trace('\nSync Failed...\n')
                     for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
                         print(s)
-                raise self.error(
+                raise self.error( ### AssignLinksError(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
@@ -4379,7 +4380,8 @@ class TestRunner:
             except Exception as e:
                 t3 = time.process_time()
                 g.trace(f"\nFAIL: {description}\n")
-                g.trace(e)
+                # Don't use g.trace.  It doesn't handle newlines properly.
+                print(e)
                 if 'show-exception-after-fail' in flags:
                     g.es_exception()
                 if 'dump-all-after-fail' in flags:

@@ -355,12 +355,12 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
-<v t="ekr.20191126002258.1"><vh>xxtest: f-string summary: no joins</vh>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
 </v>
-<v t="ekr.20191129033147.1"><vh>xx test: f-string summary: joins, no f-expr</vh></v>
-<v t="ekr.20191129033245.1"><vh>xx test: f-string summary: joins + 1 f-expr</vh></v>
-<v t="ekr.20191129033359.1"><vh>xxtest: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh></v>
+<v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
+<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
 <v t="ekr.20191127134726.1"><vh>xx test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -4141,7 +4141,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
