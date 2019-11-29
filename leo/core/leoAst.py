@@ -1772,10 +1772,14 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
-        if not isinstance(self.node, ast.Str):
-            raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
+        node_cn = self.node.__class__.__name__
         if target_s is None:
+            if not isinstance(self.node, ast.Str):
+                raise self.error(f"expecting ast.Str, got {node_cn}")
             target_s = self.node.s
+        else:
+            if not isinstance(self.node, ast.JoinedStr):
+                raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         quotes = ("'", '"')
         
         # Define result_str and munge_str helper functions.
