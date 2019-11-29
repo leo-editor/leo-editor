@@ -4168,13 +4168,13 @@ else:
         # 'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
-        'dump-tokens-after-fail',
-        'dump-tree-after-fail',
+        # 'dump-tokens-after-fail',
+        # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
         # 'dump-contents',
         # 'dump-raw-tree',
         # 'dump-tokens',
-        'dump-tree',
+        # 'dump-tree',
         # 'trace-times',  # Only for'file:' tests.
         # 'use-asttokens',
 ]

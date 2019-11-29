@@ -1668,6 +1668,9 @@ class TokenOrderGenerator:
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
         assert isinstance(node.values, list)
+        if self.trace_mode:
+            # Careful: don't exhaust the node.values generator.
+            g.trace(f"\n===== Entry:")
         for item in self.node.values:
             assert isinstance(item, (ast.Str, ast.FormattedValue)), repr(item)
             #
@@ -1680,8 +1683,8 @@ class TokenOrderGenerator:
                 # item is a tree of ast.Ast nodes.
                 # Sync to the next 'string' token.
                 target_s = self.peek_next_str().value
-            if self.trace_mode:
-                g.trace('item', item.__class__.__name__, repr(target_s))
+            #
+            # Careful: don't exhaust the node.values generator with a trace.
             #
             # Sync all the tokens.
             tokens = self.advance_str(target_s=target_s)
@@ -1781,7 +1784,7 @@ class TokenOrderGenerator:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         quotes = ("'", '"')
-        
+
         # Define result_str and munge_str helper functions.
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
@@ -1823,13 +1826,11 @@ class TokenOrderGenerator:
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            if self.trace_mode:
-                g.trace('\nAppend empty string')
             self.string_index = i
             if self.trace_mode:
                 g.trace(f"Return string_index: {self.string_index} results: {[token]}")
             return [token]
-        # Scan for 'string' tokens until the accumalated strings match target_s.
+        # Scan 'string' tokens until the result strings are as long as the target.
         i, results = self.string_index, []
         while len(result_str()) < len(target_s):
             i = self.next_str_index(i + 1)
@@ -1837,17 +1838,16 @@ class TokenOrderGenerator:
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
             if self.trace_mode:
-                g.trace('Append:', munge_str(token.value))
+                g.trace(f"append: {token.value} ==> {munge_str(token.value)}")
             results.append(token)
-        # The results must match exactly.
+        # Make sure the results match exactly.
         if result_str() != target_s:
             raise self.error(f"Looking for: {target_s!r}, found: {result_str()!r}")
-        # Leave the string index pointing at the last scanned token.
+        # Point the string index at the last scanned token.
         self.string_index = i
         if self.trace_mode:
             results_s = ','.join([f"{z.kind} {z.value}" for z in results])
-            g.trace(
-                f"Return string_index: {self.string_index} results: [{results_s}]")
+            g.trace(f"Return string_index: {self.string_index} results: [{results_s}]")
         return results
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
