@@ -1215,10 +1215,9 @@ class TokenOrderGenerator:
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
             if kind == token.kind == 'string':
-                if True: ### self.trace_mode:
-                    g.trace(
-                        f"STRING MISMATCH: "
-                        f"val: {val} token.val: {token.value} {g.callers(2)}")
+                raise self.error(
+                    f"STRING MISMATCH: "
+                    f"val: {val} token.val: {token.value}")
                 val = token.value
                 break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
@@ -1228,7 +1227,7 @@ class TokenOrderGenerator:
                     g.trace('\nSync Failed...\n')
                     for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
                         print(s)
-                raise self.error( ### AssignLinksError(
+                raise self.error(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
@@ -4524,20 +4523,24 @@ class Token:
     def dump(self, brief=False):
         
         """Dump a token node and related links."""
-        if self.node and not brief:
-            parent = self.node.parent if getattr(self.node, 'parent', None) else None
-            parent_class = parent.__class__.__name__ if parent else ''
-            parent_id = obj_id(parent) if parent else '    '
-            children = getattr(self.node, 'children', [])
+        if brief:
             return (
-                f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
-                f"line: {self.line_number:<2} level: {self.level:<2} "
-                f"{obj_id(self.node)} {self.node.__class__.__name__:16} "
-                f"children: {len(children)} "
-                f"parent: {parent_id} {parent_class}")
+                f"{self.index:>3} line: {self.line_number:<2} "
+                f"{self.kind:>11} {self.show_val(15):<15}")
+        # Let block.
+        children = getattr(self.node, 'children', [])
+        node_id = obj_id(self.node) if self.node else ''
+        node_cn = self.node.__class__.__name__ if self.node else ''
+        parent = getattr(self.node, 'parent', None)
+        parent_class = parent.__class__.__name__ if parent else ''
+        parent_id = obj_id(parent) if parent else ''
         return (
-            f"{self.index:>3} line: {self.line_number:<2} "
-            f"{self.kind:>11} {self.show_val(15):<15}")
+            f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
+            f"line: {self.line_number:<2} level: {self.level:<2} "
+            # f"{obj_id(self.node)} {self.node.__class__.__name__:16} "
+            f"{node_id:4} {node_cn:16} "
+            f"children: {len(children)} "
+            f"parent: {parent_id:4} {parent_class}")
     #@+node:ekr.20191116154328.1: *3* token.error_dump
     def error_dump(self):
         """Dump a token or result node for error message."""
