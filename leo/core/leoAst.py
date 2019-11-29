@@ -1061,6 +1061,13 @@ class TokenOrderGenerator:
                 print(f"\ndump_one_node: {tag} {self.file_name}")
             print(f"\n{dumper.show_header()}")
         print(dumper.brief_dump_one_node(node, level))
+    #@+node:ekr.20191129044716.1: *3* tog.error
+    def error(self, message):
+        """Raise AssignLinksError and show where it came from."""
+        caller = g.callers(4).split(',')[-1]
+        message = f"{caller}: {message}"
+        print(f"\nError! {message}\n")
+        raise AssignLinksError(message)
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
 
@@ -1596,25 +1603,19 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue & advance_over_formatted_str
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (never called!)
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
         """
-        Handle the node representing an {expression} within a *single* f-string.
+        This node represents the *components* of a *single* f-string.
+        
+        Happily, JoinedStr nodes *also* represent *all* f-strings,
+        so the TOG should *never visit this node!
         """
-        if self.trace_mode:
-            g.trace(f"\n{node.value.__class__.__name__}")
-        # Do not visit *any* of the children!
-        # They have no value in syncing!
-        #
-        # Instead, just sync "manually"
-        if 1:
-            token = self.peek_str()
-            if self.trace_mode:
-                g.trace(token.value)
-            assert token.kind == 'string', repr(token)
-            yield from self.gen_token('string', token.value)
+        message = f"do_FormattedValue called from {g.callers()}"
+        print(message)
+        raise AssignLinksError(message)
        
         if 0: # This code has no chance of being useful.
             # Let block.
@@ -1640,40 +1641,28 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (represents *all* f-strings)(
     # JoinedStr(expr* values)
-
-    ### join_stack = []  ###
 
     def do_JoinedStr(self, node):
         """
-        Node is a list of f-strings and plain strings.
+        Fact 1: A JoinedStr node represents exactly one f-string.
         
-        No such node exists for concatenated *plain* strings.
-        
-        *Regardless* of whether a JoinedStr exists, a *single* token represents
-        all the concatenated strings!
+        Fact 2: *All* f-strings appear in a JoinedStr, regardless of whether
+                string concatenation takes place.
+                
+        Fact 3: node.values is a list of the **components** of a single f-string.
+                
+        Fact 4: A *single* token represents *all* concatenated strings,
+                regardless of whether the strings are f-strings or plain strings.
         """
         assert isinstance(node.values, list)
-        # Do not visit *any* of the children!
-        # They have no value in syncing!
-        #
-        # Instead, just sync "manually"
-        if 1:
-            token = self.peek_str()
+        tokens = self.advance_str()
+        for token in tokens:
             if self.trace_mode:
                 g.trace(f"\n{token.value}")
             assert token.kind == 'string', repr(token)
             yield from self.gen_token('string', token.value)
-        
-        if 0:
-            for i, z in enumerate(node.values):
-                if i == 0:
-                    token = self.peek_str()
-                    if self.trace_mode:
-                        g.trace(i, z.__class__.__name__, token.value)
-                    assert token.kind == 'string', repr(token)
-                    yield from self.gen_token('string', token.value)
 
         if 0: # This code has no chance of being useful.
             for z in node.values:
@@ -1755,7 +1744,9 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
-        assert isinstance(self.node, ast.Str), repr(self.node)
+        if not isinstance(self.node, ast.Str):
+            self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
+
         target_s = self.node.s
         quotes = ("'", '"')
         
@@ -1781,25 +1772,15 @@ class TokenOrderGenerator:
                 i += 1
             ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
             if not ok:
-                raise AssignLinksError(
-                    f"munge_str: Unexpected token.value: {s} scanning for: {target_s}")
+                message = f"Unexpected token.value: {s} scanning for: {target_s}"
+                g.trace(message)
+                raise AssignLinksError(message)
             quote = s[i]
             # Skip the outer quotes, including triple quotes!
             if s.startswith(quote*3) and s.endswith(quote*3):
                 s = s[i+3:-3]
             else:
                 s = s[i+1:-1]
-            ### Experimental. Hopeless.
-                # if self.fstring_stack:
-                    # # In an f-string: strip {}
-                    # print('f-string s', s)
-                    # if len(s) > 1 and s[0] == '{' and s[-1] == '}':
-                        # s = s[1:-1]
-                        # # Unescape inner quotes.
-                        # if len(s) > 1 and s[0] == s[-1] and s[0] in quotes:
-                            # inner_quote = '"' if s[0] == "'" else "'"
-                            # s = s[1:-1]
-                            # s = s.replace('\\' + inner_quote, inner_quote)
             # Unescape escaped quotes.
             s = s.replace('\\' + quote, quote)
             # print('munge_str returns', s)
@@ -1837,7 +1818,9 @@ class TokenOrderGenerator:
         # Leave the string index pointing at the last scanned token.
         self.string_index = i
         if self.trace_mode:
-            g.trace(f"Return string_index: {self.string_index} results: {results}")
+            results_s = ','.join([f"{z.kind} {z.value}" for z in results])
+            g.trace(
+                f"Return string_index: {self.string_index} results: [{results_s}]")
         return results
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
@@ -2392,16 +2375,20 @@ class AstDumper:
             values = node.values
             assert isinstance(values, list), (repr(values), g.callers())
             results = []
+            fstrings, strings = 0, 0
             for z in values:
-                assert isinstance(z, (ast.FormattedValue, ast.Str)), (z.__class__.__name__, g.callers())
+                assert isinstance(z, (ast.FormattedValue, ast.Str))
                 if isinstance(z, ast.Str):
                     results.append(z.s)
+                    strings += 1
                 else:
                     results.append(z.__class__.__name__)
-            if len(results) > 1:
+                    fstrings += 1
+            if True:
                 g.printObj(results, tag='AstDumper.show_fields: JoinedStr')
-            result = '::'.join(results)
-            val = f": values={result}"
+            # result = '::'.join(results)
+            # val = f": values={result}"
+            val = f" {strings} str, {fstrings} f-str"
         elif class_name == 'Name':
             val = f": id={node.id!r}"
         elif class_name == 'NameConstant':
@@ -4389,7 +4376,7 @@ class TestRunner:
             except Exception as e:
                 t3 = time.process_time()
                 g.trace(f"\nFAIL: {description}\n")
-                print(e)
+                g.trace(e)
                 if 'show-exception-after-fail' in flags:
                     g.es_exception()
                 if 'dump-all-after-fail' in flags:

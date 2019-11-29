@@ -354,9 +354,14 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191128014124.1"><vh>xx Summary of failed tests</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: joined 3 f-strings</vh></v>
-<v t="ekr.20191127134726.1"><vh>test: joined f-string + plain string</vh></v>
+<v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
+<v t="ekr.20191126002258.1"><vh>xxtest: f-string summary: no joins</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191129033147.1"><vh>xx test: f-string summary: joins, no f-expr</vh></v>
+<v t="ekr.20191129033245.1"><vh>xx test: f-string summary: joins + 1 f-expr</vh></v>
+<v t="ekr.20191129033359.1"><vh>xxtest: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191127134726.1"><vh>xx test: leoFind.py: line 861</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
@@ -4136,7 +4141,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4158,7 +4163,7 @@ else:
         # 'no-sync',
         'dump-sources-first',
         # 'trace-tokenizer-tokens',
-        'dump-tokens-first',
+        # 'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
@@ -4167,7 +4172,7 @@ else:
         # 'dump-contents',
         # 'dump-raw-tree',
         # 'dump-tokens',
-        # 'dump-tree',
+        'dump-tree',
         # 'trace-times',  # Only for'file:' tests.
         # 'use-asttokens',
 ]
@@ -4668,9 +4673,19 @@ assert not fails, f"failed {len(fails)} tests"</t>
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
 </t>
-<t tx="ekr.20191126002258.1">print(f'a' f'.' f'b')
-print('c')
-</t>
+<t tx="ekr.20191126002258.1"># Use 'no-sync' option to compare parse trees.
+
+# Single f-strings.
+'p1' ;
+f'f1' ;
+f'x1{e1}y1' ;
+f'x2{e2+1}y2{e2+2}z2' ;
+
+# Concatentated strings...
+'p2', 'p3' ;
+f'f2' 'f3' ;
+f'x3{e3+1}y3' f'x4{e4+2}y4' ;
+f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;</t>
 <t tx="ekr.20191126084046.1"></t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
@@ -4678,17 +4693,46 @@ self.i = 0
 <t tx="ekr.20191127134236.1"></t>
 <t tx="ekr.20191127134726.1"># leoFind.py: line 861
 one(f"{'B'}" ": ")
-two()</t>
+</t>
 <t tx="ekr.20191127172440.1">print("a\"b")</t>
 <t tx="ekr.20191128013505.1"></t>
-<t tx="ekr.20191128014124.1">Failed tests:
-[
-    'test: empty string',
-    'test: f-strings + equivalent % op',
-    'test: print + f-string'
-]</t>
 <t tx="ekr.20191128104415.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
+<t tx="ekr.20191129033147.1"># Use 'no-sync' option to compare parse trees.
+
+print('p1', 'p2')
+print(f'f2' 'p3')
+print(f'f3' f'f4')
+print('end')
+</t>
+<t tx="ekr.20191129033245.1"># Use 'no-sync' option to compare parse trees.
+
+print(f'x1{e1}y1', 'p1')
+print(f'x2{e2}y2', f'f2')
+print(f'x3{e3}y3', f'x4{e4}y4')
+
+print(f"{'B'}" ":") # leoFind.py: line 861
+print('end')</t>
+<t tx="ekr.20191129033359.1"># Use 'no-sync' option to compare parse trees.
+
+print(f'x1{e1}y1{e2}z1', 'p1')
+print(f'x2{e3}y2{e3}z2', f'f2')
+print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
+print('end')</t>
+<t tx="ekr.20191129035530.1">a = 'p1'
+b = f'f1')
+c = f'f2{e1}'
+d = f'f3{e2}x{e3}'
+
+print('p1')
+print(f'f1')
+print(f'f2{e1}')
+print(f'f3{e2}x{e3}')
+print('end')
+</t>
+<t tx="ekr.20191129042702.1">'p1' ;
+f'f1' ;
+'done' ;</t>
 </tnodes>
 </leo_file>
