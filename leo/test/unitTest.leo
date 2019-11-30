@@ -354,7 +354,9 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
+<v t="ekr.20191130102636.1"><vh>more</vh></v>
+</v>
 <v t="ekr.20191129042702.1"><vh>xx pass test: simple f-string tests</vh></v>
 <v t="ekr.20191126002258.1"><vh>xx pass test: f-string summary: no joins</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
@@ -4165,7 +4167,7 @@ else:
         'dump-sources-first',
         'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
-        # 'dump-tokens-first',
+        'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
@@ -4700,20 +4702,6 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
 <t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
-# print('p2.1' 'p2.2')
-# print(f'f3.1' f'f3.2')
-# '---'
-# print(f'{7.1}' 'p7.2')
-# print(f'{8.1}' f'{8.2}')
-# 'end'
-
-# Uninteresting.
-# print(f'f4.1', 'p4.2')
-# print('p5.1', 'p5.2')
-# print(f'f6.1', f'f6.2')
-
-# print(f'{7.1}', 'p7.2')
-# print(f'{8.1}', f'{8.2}')
 </t>
 <t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
 print(f'x2{e2}y2', f'f2')
@@ -4739,5 +4727,20 @@ print('end')
 <t tx="ekr.20191129042702.1">'p1' ;
 f'f1' ;
 'done' ;</t>
+<t tx="ekr.20191130102636.1"># print('p2.1' 'p2.2')
+# print(f'f3.1' f'f3.2')
+# '---'
+# print(f'{7.1}' 'p7.2')
+# print(f'{8.1}' f'{8.2}')
+# 'end'
+
+# Uninteresting.
+# print(f'f4.1', 'p4.2')
+# print('p5.1', 'p5.2')
+# print(f'f6.1', f'f6.2')
+
+# print(f'{7.1}', 'p7.2')
+# print(f'{8.1}', f'{8.2}')
+</t>
 </tnodes>
 </leo_file>

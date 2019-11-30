@@ -1773,45 +1773,104 @@ class TokenOrderGenerator:
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
+    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token ***
     def adjust_str_token(self, token):
         """
-        Adjust s (token.value) to undo the effect of repr:
+        This is the heart of the TOG class.
+        
+        The goal is to determine how much of the target string to consume.
+        This is a tricky task for two reasons:
+            
+        1. The target string comes from an ast.Str node, and may be the
+           concatenation of *more than one* strings from the token list.
+           
+        2. The spellings of strings in tokens and tree nodes differ:
+           'string' tokens contain the repr of each of the corresponding
+           parts of the target string.
+        
+        The *only* way to accomplish this goal is by a careful comparison
+        between tv (token.value) and r, the *remainder* of the target string.
+        
+        On exit: Update self.target_index and return the consumed parts of the
+        *target* string.
+        
+        *Note*: For empty strings this method might not consume anything.
+                That's benign because the caller always skips one token.
         """
-        is_plain_string = not isinstance(self.node, ast.JoinedStr)
+        rx = rx0 = self.target_index
+        r = self.target_string[rx:]
+        tv = token.value
         quotes = ("'", '"')
-        i = 0
-        s = s0 = token.value
+        g.trace(f"target_index: {self.target_index} tv: {tv!s} r: {r!s}")
         #
-        # Find the quote.
-        ### prefix = s[0] in 'fFrR'
-        i2 = i
-        while i2 < len(s) and s[i2] in 'fFrR':
-            i2 += 1
+        # Skip the remainder's prefix.
+        rx = 0
+        while rx < len(r) and r[rx] in 'fFrR':
+            rx += 1
+        r_prefix = r[0:rx]
         #
-        # Make sure there is a matching quote
-        ok = i2 + 1 < len(s) and s[i2] == s[-1] and s[i2] in quotes 
+        # Skip the token's prefix.
+        tx = 0
+        while tx < len(tv) and tv[tx] in 'fFrR':
+            tx += 1
+        tv_prefix = tv[0:tx]
+        g.trace(r_prefix, tv_prefix)
+        #
+        # Check the prefixes.
+        if r_prefix and len(r_prefix) != len(tv_prefix):
+            raise self.error(f"Mismatch prefixes' tv: {tv!r} r: {r!r}")
+        #
+        # The token must have a quote.
+        ok = tx + 1 < len(tv) and tv[tx] == tv[-1] and tv[tx] in quotes 
         if not ok:
-            raise self.error(f"No quote at position {i2} in: {s}")
-        quote = s[i2]
+            raise self.error(f"Missing quote in tv: {tv!r}")
+        tv_quote = tv[tx]
+        if tv.startswith(tv_quote*3) and tv.endswith(tv_quote*3):
+            tv_quotes = tv_quote*3
+            inner_s = tv[tx+3:-3]
+        else:
+            # assert tv.startswith(tv_quote)
+            tv_quotes = tv_quote
+            inner_s = tv[tx+1:-1]
         #
-        # Adjust only plain strings.
-        ###if prefix:
-        ###    pass
-        ### else:
-        if is_plain_string:
-            # Skip the outer quotes, including triple quotes!
-            i = i2
-            if s.startswith(quote*3) and s.endswith(quote*3):
-                s = s[i+3:-3]
+        # The remainder *might* have quotes. 
+        # If so, we won't know where the matching quote/quotes are until later!
+        if rx < len(r) and r[rx] in quotes:
+            r_quote = r[rx]
+            if r.startswith(r_quote*3):
+                r_quotes = r_quote*3
             else:
-                s = s[i+1:-1]
-            # Unescape escaped quotes.
-            s = s.replace('\\' + quote, quote)
+                r_quotes = r_quote
+        else:
+            r_quote = ''
+            r_quotes = ''
+        #
+        # Check that quotes, if they exist, roughly match.
+        if r_quotes and len(r_quotes) != len(tv_quotes):
+            raise self.error(f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
+        #
+        # Unescape escaped quotes.
+        if r_quotes:
+            inner_s = inner_s.replace('\\' + r_quote, r_quote)
+            result = r_quotes + inner_s + r_quotes
+        else:
+            result = inner_s.replace('\\' + tv_quote, tv_quote)
+        rx += len(result)
         if self.trace_mode:
-            g.trace(s0, '==>', s)
-        token.value = s
+            g.trace(f"rx: {rx} result: {result}")
+        #
+        # A very strong check.
+        if result != r[rx0:rx]:
+            raise self.error(f"Mismatch error: result: rx: {rx} {result} r: {r[rx0:rx]}")
+        if self.trace_mode:
+            g.trace(token.value, '==>', result)
+        self.string_index = rx
+        return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
+    # For adjust_str_token.
+    target_index = 0
+    target_string = None
+
     def advance_str(self, target_s=None):
         """
         Advance over one or more 'string' tokens, and return them.
@@ -1829,49 +1888,51 @@ class TokenOrderGenerator:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         #
-        # Make sure we make progress
+        # Set the ivars for adjust_str_token.
+        self.target_index = 0
+        self.target_string = target_s
+        #
+        # Make sure we make progress.
+        start_index = self.string_index
         if self.trace_mode:
             g.trace(f"START string_index: {self.string_index} target: {target_s}")
 
-        start_index = self.string_index
-            
         def check_progress():
             if start_index >= self.string_index:
                 raise self.error(f"unchanged string index: {self.string_index}")
         #
-        # Define results and accumulated_results.
-        results = []
-
-        def accumulated_results():
-            """Return the accumulated results."""
-            return ''.join([z.value for z in results])
+        # The accumulated results tells how much of the target string have been consumed.
+        # This is used *only* to stop the scan of actual tokens.
+        accumulated_results = []
         #
-        # Special case for empty target.
-        if target_s.lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
-            i = self.string_index
-            i = self.next_str_index(i + 1)
-            token = self.tokens[i]
-            self.adjust_str_token(token)
-            if self.trace_mode:
-                g.trace(f"Return string_index: {self.string_index} results: {[token]}")
-            self.string_index = i
-            check_progress()
-            return [token]
+        # results is a list of one or more tokens to be consumed.
+        results = []
+        ### Bad idea!
+            # # Special case for empty target.
+            # if target_s.lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
+                # i = self.string_index
+                # i = self.next_str_index(i + 1)
+                # token = self.tokens[i]
+                # if self.trace_mode:
+                    # g.trace(f"Return string_index: {self.string_index} results: {[token]}")
+                # self.string_index = i
+                # check_progress()
+                # return [token]
         #
         # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
-        while len(accumulated_results()) < len(target_s):
+        while len(''.join(accumulated_results)) < len(target_s):
             if self.trace_mode:
-                g.trace('accumulated results', accumulated_results())
+                g.trace('accumulated results', accumulated_results)
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
-            self.adjust_str_token(token)
+            accumulated_results.append(self.adjust_str_token(token))
             results.append(token)
         # Make sure the results match exactly.
-        if accumulated_results() != target_s:
-            raise self.error(f"Looking for: {target_s}, found: {accumulated_results()}")
+        if ''.join(accumulated_results) != target_s:
+            raise self.error(f"Looking for: {target_s}, found: {''.join(accumulated_results)}")
         # Point the string index at the last scanned token.
         self.string_index = i
         check_progress()
