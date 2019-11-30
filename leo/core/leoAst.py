@@ -3,6 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
+import re
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -1774,10 +1775,14 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token ***
+    prefix_pat = re.compile(r"([fFrR])")
+
     def adjust_str_token(self, token):
+        #@+<< adjust_str_token docstring >>
+        #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
         This is the heart of the TOG class.
-        
+
         The goal is to determine how much of the target string to consume.
         This is a tricky task for two reasons:
             
@@ -1787,66 +1792,56 @@ class TokenOrderGenerator:
         2. The spellings of strings in tokens and tree nodes differ:
            'string' tokens contain the repr of each of the corresponding
            parts of the target string.
-        
+
         The *only* way to accomplish this goal is by a careful comparison
         between tv (token.value) and r, the *remainder* of the target string.
-        
+
         On exit: Update self.target_index and return the consumed parts of the
         *target* string.
-        
+
         *Note*: For empty strings this method might not consume anything.
                 That's benign because the caller always skips one token.
         """
-        rx = rx0 = self.target_index
-        r = self.target_string[rx:]
-        tv = token.value
+        #@-<< adjust_str_token docstring >>
         quotes = ("'", '"')
-        g.trace(f"target_index: {self.target_index} tv: {tv!s} r: {r!s}")
+        rx0 = self.target_index
+        r = self.target_string[rx0:]
+        tv = token.value
+        g.trace(f"target_index: {rx0} tv: {tv!s} r: {r!s}")
         #
-        # Skip the remainder's prefix.
-        rx = 0
-        while rx < len(r) and r[rx] in 'fFrR':
-            rx += 1
-        r_prefix = r[0:rx]
-        #
-        # Skip the token's prefix.
-        tx = 0
-        while tx < len(tv) and tv[tx] in 'fFrR':
-            tx += 1
-        tv_prefix = tv[0:tx]
-        g.trace(r_prefix, tv_prefix)
-        #
-        # Check the prefixes.
+        # Compute and check the prefixes.
+        m = self.prefix_pat.match(r)
+        r_prefix = m.group(0) if m else ''
+        m = self.prefix_pat.match(tv)
+        tv_prefix = m.group(0) if m else ''
         if r_prefix and len(r_prefix) != len(tv_prefix):
             raise self.error(f"Mismatch prefixes' tv: {tv!r} r: {r!r}")
         #
         # The token must have a quote.
-        ok = tx + 1 < len(tv) and tv[tx] == tv[-1] and tv[tx] in quotes 
-        if not ok:
+        tx = len(tv_prefix)
+        if tv.startswith(quotes, tx) and tv.endswith(quotes):
+            tv_quote = tv[tx]
+        else:
             raise self.error(f"Missing quote in tv: {tv!r}")
-        tv_quote = tv[tx]
-        if tv.startswith(tv_quote*3) and tv.endswith(tv_quote*3):
+        if tv.startswith(tv_quote*3):
+            assert tv.endswith(tv_quote*3), repr(tv)
             tv_quotes = tv_quote*3
             inner_s = tv[tx+3:-3]
         else:
-            # assert tv.startswith(tv_quote)
             tv_quotes = tv_quote
             inner_s = tv[tx+1:-1]
         #
         # The remainder *might* have quotes. 
         # If so, we won't know where the matching quote/quotes are until later!
-        if rx < len(r) and r[rx] in quotes:
+        rx = rx0 + len(r_prefix)
+        if r.startswith(quotes, rx):
             r_quote = r[rx]
-            if r.startswith(r_quote*3):
-                r_quotes = r_quote*3
-            else:
-                r_quotes = r_quote
+            r_quotes = r_quote*3 if r.startswith(r_quote*3) else r_quote
         else:
-            r_quote = ''
-            r_quotes = ''
+            r_quote = r_quotes = ''
         #
-        # Check that quotes, if they exist, roughly match.
-        if r_quotes and len(r_quotes) != len(tv_quotes):
+        # Quotes must match, if they exist.
+        if r_quotes and r_quotes != tv_quotes: ### len(r_quotes) != len(tv_quotes):
             raise self.error(f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
         #
         # Unescape escaped quotes.
@@ -1855,16 +1850,15 @@ class TokenOrderGenerator:
             result = r_quotes + inner_s + r_quotes
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
-        rx += len(result)
-        if self.trace_mode:
-            g.trace(f"rx: {rx} result: {result}")
         #
         # A very strong check.
-        if result != r[rx0:rx]:
+        if result != r[rx0:len(result)]:
             raise self.error(f"Mismatch error: result: rx: {rx} {result} r: {r[rx0:rx]}")
         if self.trace_mode:
             g.trace(token.value, '==>', result)
-        self.string_index = rx
+        self.string_index = rx0 + len(result)
+        if self.trace_mode:
+            g.trace(f"string_index: {self.string_index} result: {result}")
         return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
