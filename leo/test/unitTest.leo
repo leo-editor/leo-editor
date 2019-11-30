@@ -354,7 +354,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191130165056.1"><vh>summary: failed tests</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191130165112.1"><vh>fail: failed tests</vh></v>
+<v t="ekr.20191130165155.1"><vh>ignore: passed tests</vh>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
+</v>
 <v t="ekr.20191129042702.1"><vh>xx pass test: simple f-string tests</vh></v>
 <v t="ekr.20191126002258.1"><vh>xx pass test: f-string summary: no joins</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
@@ -369,7 +374,6 @@
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
@@ -4168,8 +4172,8 @@ else:
         'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
-        # 'show-exception-after-fail',
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
+        'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
@@ -4748,5 +4752,23 @@ f'f1' ;
 # print(f'{7.1}', 'p7.2')
 # print(f'{8.1}', f'{8.2}')
 </t>
+<t tx="ekr.20191130165056.1">Failed tests:
+[
+    'test: f-string summary: joins, no f-expr',
+    'test: empty string',
+    'test: string with % op',
+    'test: ClassDef, FunctionDef',
+    'test: Operator: semicolon between statements',
+    'test: UnaryOp',
+    'test: if unary op',
+    'test: if, elif',
+    'test: if, elif + 2',
+    'test: if, else',
+    'test: if, else, if',
+    'test: ternary + if',
+    'test: Call, arguments &amp; keyword'
+]</t>
+<t tx="ekr.20191130165112.1"></t>
+<t tx="ekr.20191130165155.1"></t>
 </tnodes>
 </leo_file>

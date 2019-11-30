@@ -1169,7 +1169,7 @@ class TokenOrderGenerator:
         """Return True if the given token is a syncronizing token"""
         return self.is_significant(token.kind, token.value)
     #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links
-    px = -1 # Index of the previous significant token.
+    px = -1 # Index of the previous *significant* token.
 
     allow_sync = True  # Can be set to false by test runner.
 
@@ -1185,9 +1185,9 @@ class TokenOrderGenerator:
         4. Create two-way links between T and self.node.
         5. Advance by updating self.px.
         """
-        trace = False and not g.unitTesting
+        trace = False and self.trace_mode
         node, tokens = self.node, self.tokens
-        old_px, px = self.px + 1, self.px
+        ### old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), repr(node)
         if not self.allow_sync:
             # A trace would be annoying and distracting.
@@ -1195,10 +1195,11 @@ class TokenOrderGenerator:
         if trace:
             # Don't add needless repr's!
             val_s = val if kind in ('name', 'string') else repr(val)
-            g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
+            if trace: g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
         #
         # Leave all non-significant tokens for later.
         if not self.is_significant(kind, val):
+            if trace: g.trace('\nENTRY: insignificant', self.px, kind, val)
             return
         #
         # Step one: Scan from *after* the previous significant token,
@@ -1207,10 +1208,13 @@ class TokenOrderGenerator:
         #
         #           Special case: because of JoinedStr's, syncing a
         #           string may jump over *many* significant tokens.
-        px += 1
+        old_px = px = self.px + 1
+        if trace: g.trace('\nENTRY', px, kind, val)
         while px < len(self.tokens):
             token = tokens[px]
+            if trace: g.trace('TOKEN', px, token)
             if (kind, val) == (token.kind, token.value):
+                if trace: g.trace('   OK', px, token)
                 break  # Success.
             #
             # Special case 'string' token.
@@ -1224,8 +1228,8 @@ class TokenOrderGenerator:
                 px += 1
                 continue
             if kind == token.kind == 'number':
+                if trace: g.trace('   OK', px, token)
                 val = token.value
-                px += 1
                 break  # Benign: use the token's value, a string, instead of a number.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
@@ -1240,12 +1244,12 @@ class TokenOrderGenerator:
                     f"      found: {token.kind}.{token.value}")
             else:
                 # Skip the insignificant token.
+                if trace: g.trace(' SKIP', px, token)
                 px += 1
         else:
             # Unrecoverable sync failure.
-            if 1:
-                g.trace('\nSYNC FAILED...')
-                g.printObj(tokens[max(0, px-5):], 'TOKENS')
+            g.trace('\nSYNC FAILED...')
+            g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise self.error(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -1253,16 +1257,21 @@ class TokenOrderGenerator:
         # Step two: Associate all previous assignable tokens to the ast node.
         while old_px < px:
             token = tokens[old_px]
+            if trace: g.trace('LINK INSIGNIFICANT', old_px, token)
             old_px += 1
             self.set_links(self.node, token)
         #
         # Step three: Set links in the significant token.
         token = tokens[px]
-        assert self.is_significant_token(token), (token, g.callers())
-        self.set_links(node, token)
+        if self.is_significant_token(token):
+            self.set_links(node, token)
+        ### assert self.is_significant_token(token), (token, g.callers())
+        else:
+            if trace: g.trace('NOT SIGNIFICANT', px, token, g.callers())
         #
         # Step four. Advance.
-        self.px = px
+        if self.is_significant_token(token):
+            self.px = px
     #@+node:ekr.20191125120814.1: *4* tog.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
@@ -1654,8 +1663,6 @@ class TokenOrderGenerator:
 
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (***)
     # JoinedStr(expr* values)
-
-    joined_stack = []
 
     def do_JoinedStr(self, node):
         """
