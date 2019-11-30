@@ -1850,13 +1850,13 @@ class TokenOrderGenerator:
         # Unescape escaped quotes.
         if r_quotes:
             inner_s = inner_s.replace('\\' + r_quote, r_quote)
-            result = r_quotes + inner_s + r_quotes
+            result = r_prefix + r_quotes + inner_s + r_quotes
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
         #
         # A very strong check.
         if result != r[:len(result)]:
-            raise self.error(f"Mismatch error: result: {result} r: {r[:len(result)]}")
+            raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
         self.target_index = rx0 + len(result)
         if self.trace_mode:
             g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
