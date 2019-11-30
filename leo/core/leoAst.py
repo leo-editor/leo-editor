@@ -1775,6 +1775,31 @@ class TokenOrderGenerator:
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
+    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
+    def adjust_str_token(self, token):
+        """
+        Adjust s (token.value) to undo the effect of repr:
+        """
+        quotes = ("'", '"')
+        i = 0
+        s = s0 = token.value
+        # Always skip f-string prefixes.
+        while i < len(s) and s[i] in 'fFrR':
+            i += 1
+        ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
+        if not ok:
+            raise self.error(f"Unexpected token.value: {s} scanning: {token.value}")
+        quote = s[i]
+        # Skip the outer quotes, including triple quotes!
+        if s.startswith(quote*3) and s.endswith(quote*3):
+            s = s[i+3:-3]
+        else:
+            s = s[i+1:-1]
+        # Unescape escaped quotes.
+        s = s.replace('\\' + quote, quote)
+        if self.trace_mode:
+            g.trace(s0, '==>', s)
+        token.value = s
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     def advance_str(self, target_s=None):
         """
@@ -1782,6 +1807,8 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
+        #
+        # Sanity checks.
         node_cn = self.node.__class__.__name__
         if target_s is None:
             if not isinstance(self.node, ast.Str):
@@ -1790,69 +1817,43 @@ class TokenOrderGenerator:
         else:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
-        quotes = ("'", '"')
+        #
+        # Define results and accumulated_results.
+        results = []
 
-        # Define result_str and adjust_str helper functions.
-        #@+others
-        #@+node:ekr.20191128020218.1: *7* local function: result_str
-        def result_str():
-            """Return the concatenation of all *adjusted* token.values in results."""
-            aList = [z.value for z in results]
-            result = [adjust_str(z) for z in aList]
-            return ''.join(result)
-        #@+node:ekr.20191128021208.1: *7* local function: adjust_str
-        def adjust_str(s):
-            """
-            Adjust s (token.value) to undo the effect of repr:
-            """
-            i = 0
-            s0 = s
-            # Always skip f-string prefixes.
-            while i < len(s) and s[i] in 'fFrR':
-                i += 1
-            ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
-            if not ok:
-                raise self.error(f"Unexpected token.value: {s} scanning for: {target_s}")
-            quote = s[i]
-            # Skip the outer quotes, including triple quotes!
-            if s.startswith(quote*3) and s.endswith(quote*3):
-                s = s[i+3:-3]
-            else:
-                s = s[i+1:-1]
-            # Unescape escaped quotes.
-            s = s.replace('\\' + quote, quote)
-            if self.trace_mode:
-                g.trace(s0, '==>', s)
-            return s
-        #@-others
-
+        def accumulated_results():
+            """Return the accumulated results."""
+            return ''.join([z.value for z in results])
+        #
         # Special case for empty target.
-        if not target_s:
+        if target_s.lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            self.string_index = i
+            self.adjust_str_token(token)
             if self.trace_mode:
                 g.trace(f"Return string_index: {self.string_index} results: {[token]}")
+            self.string_index = i
             return [token]
-        # Scan 'string' tokens until the result strings are as long as the target.
-        i, results = self.string_index, []
-        while len(result_str()) < len(target_s):
+        #
+        # Scan 'string' tokens while targe_s is longer than the accumulated results.
+        i = self.string_index
+        while len(accumulated_results()) < len(target_s):
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
-            if self.trace_mode:
-                g.trace(f"append: {token.value} ==> {adjust_str(token.value)}")
+            self.adjust_str_token(token)
             results.append(token)
         # Make sure the results match exactly.
-        if result_str() != target_s:
-            raise self.error(f"Looking for: {target_s!r}, found: {result_str()!r}")
+        if accumulated_results() != target_s:
+            raise self.error(f"Looking for: {target_s!r}, found: {accumulated_results()!r}")
         # Point the string index at the last scanned token.
         self.string_index = i
         if self.trace_mode:
-            results_s = ','.join([f"{z.kind} {z.value}" for z in results])
-            g.trace(f"Return string_index: {self.string_index} results: [{results_s}]")
+            g.trace(f"Return string_index: {self.string_index}")
+                # {accumulated_results()}
+            g.printObj(results)
         return results
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
@@ -4445,7 +4446,7 @@ class TestRunner:
                 print('{tag}: bad report option:', repr(report))
         return True
     #@+node:ekr.20191114161840.1: *3* TestRunner.diff
-    def diff(self):
+    def diff(self, results_array):
         """
         Produce a diff of self.tokens vs self.results.
         
@@ -4459,12 +4460,12 @@ class TestRunner:
             #  File "C:\Users\edreamleo\Anaconda3\lib\difflib.py", line 1017, in _fancy_replace
             #  yield '  ' + aelt
             #  TypeError: can only concatenate str (not "tuple") to str
-            results = self.results
+            results = results_array
             tokens = [(z.kind, z.value) for z in self.tokens]
             gen = difflib.ndiff(tokens, results)
         else:
             # Works.
-            results = [f"{z.kind:>12}:{z.value}" for z in self.results]
+            results = [f"{z.kind:>12}:{z.value}" for z in results_array]
             tokens =  [f"{z.kind:>12}:{z.value}" for z in self.tokens]
             gen = difflib.Differ().compare(tokens, results)
         t1 = time.process_time()
