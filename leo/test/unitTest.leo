@@ -4141,7 +4141,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.
@@ -4699,11 +4699,11 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128104415.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
-<t tx="ekr.20191129033147.1"># print(f'f1.1' 'p1.2')
+<t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
 # print('p2.1' 'p2.2')
 # print(f'f3.1' f'f3.2')
-'---'
-print(f'{7.1}' 'p7.2')
+# '---'
+# print(f'{7.1}' 'p7.2')
 # print(f'{8.1}' f'{8.2}')
 # 'end'
 

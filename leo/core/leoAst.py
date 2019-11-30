@@ -1662,14 +1662,14 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
-        # node.values is just a list of ast.Ast nodes (not generators).
+        #
+        # node.values is a list of ast.Ast nodes, *not* a list of generators.
         assert isinstance(node.values, list)
-        for i, item in enumerate(node.values):
-            assert isinstance(item, (ast.Str, ast.FormattedValue))
+        assert all([isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values])
             
         if self.trace_mode:
             g.trace('\n===== START\n')
-            g.printObj(node.values)
+            g.printObj([z.__class__.__name__ for z in node.values])
         #
         # Handle each item.
         for i, item in enumerate(node.values):
@@ -1778,12 +1778,13 @@ class TokenOrderGenerator:
         """
         Adjust s (token.value) to undo the effect of repr:
         """
+        is_plain_string = not isinstance(self.node, ast.JoinedStr)
         quotes = ("'", '"')
         i = 0
         s = s0 = token.value
         #
         # Find the quote.
-        prefix = s[0] in 'fFrR'
+        ### prefix = s[0] in 'fFrR'
         i2 = i
         while i2 < len(s) and s[i2] in 'fFrR':
             i2 += 1
@@ -1794,10 +1795,11 @@ class TokenOrderGenerator:
             raise self.error(f"No quote at position {i2} in: {s}")
         quote = s[i2]
         #
-        # Adjust only if there are no f-string prefixes.
-        if prefix:
-            pass
-        else:
+        # Adjust only plain strings.
+        ###if prefix:
+        ###    pass
+        ### else:
+        if is_plain_string:
             # Skip the outer quotes, including triple quotes!
             i = i2
             if s.startswith(quote*3) and s.endswith(quote*3):
