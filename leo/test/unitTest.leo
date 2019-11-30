@@ -4161,9 +4161,9 @@ if 'all' in flags:
 else:
     # Use 'no-sync' option to compare parse trees.
     reports = [
-        'no-sync',
+        # 'no-sync',
         'dump-sources-first',
-        'dump-raw-tree-first',
+        # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         # 'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
@@ -4699,13 +4699,13 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128104415.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
-<t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
-print('p2.1' 'p2.2')
-print(f'f3.1' f'f3.2')
+<t tx="ekr.20191129033147.1"># print(f'f1.1' 'p1.2')
+# print('p2.1' 'p2.2')
+# print(f'f3.1' f'f3.2')
 '---'
 print(f'{7.1}' 'p7.2')
-print(f'{8.1}' f'{8.2}')
-'end'
+# print(f'{8.1}' f'{8.2}')
+# 'end'
 
 # Uninteresting.
 # print(f'f4.1', 'p4.2')

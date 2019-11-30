@@ -1175,16 +1175,11 @@ class TokenOrderGenerator:
         
         If the token is significant, do the following:
             
-        1. Starting the token after px, find the next significant token.
-        
-           Verify that it matches the token described by (kind, val).
-            
-        2. Starting from the token after px, create two-way links between all
-           previous assignable tokens and self.node.
-            
-        3. Create two-way links between the significant token and self.node.
-        
-        4. Advance by updating self.px.
+        1. Find the next significant token*after* px. Call it T.
+        2. Verify that T matches the token described by (kind, val).
+        3. Create two-way links between all assignable tokens between px and T.
+        4. Create two-way links between T and self.node.
+        5. Advance by updating self.px.
         """
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
@@ -1797,24 +1792,21 @@ class TokenOrderGenerator:
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         quotes = ("'", '"')
 
-        # Define result_str and munge_str helper functions.
+        # Define result_str and adjust_str helper functions.
         #@+others
         #@+node:ekr.20191128020218.1: *7* local function: result_str
         def result_str():
             """Return the concatenation of all *adjusted* token.values in results."""
             aList = [z.value for z in results]
-            result = [munge_str(z) for z in aList]
+            result = [adjust_str(z) for z in aList]
             return ''.join(result)
-        #@+node:ekr.20191128021208.1: *7* local function: munge_str
-        def munge_str(s):
+        #@+node:ekr.20191128021208.1: *7* local function: adjust_str
+        def adjust_str(s):
             """
-            Adjust s to undo the effect of repr:
-
-            token.value is a repr. target_s is a *plain* string.
-            
-            Experimental (probably doomed): adjust for f-string format.
+            Adjust s (token.value) to undo the effect of repr:
             """
             i = 0
+            s0 = s
             # Always skip f-string prefixes.
             while i < len(s) and s[i] in 'fFrR':
                 i += 1
@@ -1829,7 +1821,8 @@ class TokenOrderGenerator:
                 s = s[i+1:-1]
             # Unescape escaped quotes.
             s = s.replace('\\' + quote, quote)
-            # print('munge_str returns', s)
+            if self.trace_mode:
+                g.trace(s0, '==>', s)
             return s
         #@-others
 
@@ -1850,7 +1843,7 @@ class TokenOrderGenerator:
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
             if self.trace_mode:
-                g.trace(f"append: {token.value} ==> {munge_str(token.value)}")
+                g.trace(f"append: {token.value} ==> {adjust_str(token.value)}")
             results.append(token)
         # Make sure the results match exactly.
         if result_str() != target_s:
@@ -1869,11 +1862,10 @@ class TokenOrderGenerator:
             token = self.tokens[i]
             if token.kind == 'string':
                 if self.trace_mode:
-                    g.trace(f"\n{i1}..{i} {self.tokens[i]}")
+                    g.trace(f"\nFound {i1}..{i} {self.tokens[i]}")
                 break
             i += 1
         return i
-
     #@+node:ekr.20191129102013.1: *6* tog.peek_next_str (new)
     def peek_next_str(self):
         """
@@ -4452,6 +4444,56 @@ class TestRunner:
             for report in list(set(bad_reports)):
                 print('{tag}: bad report option:', repr(report))
         return True
+    #@+node:ekr.20191114161840.1: *3* TestRunner.diff
+    def diff(self):
+        """
+        Produce a diff of self.tokens vs self.results.
+        
+        The results array no longer exists, so this is a vestigial method.
+        """
+        import difflib
+        import time
+        ndiff = False
+        if ndiff:
+            # FAILS:
+            #  File "C:\Users\edreamleo\Anaconda3\lib\difflib.py", line 1017, in _fancy_replace
+            #  yield '  ' + aelt
+            #  TypeError: can only concatenate str (not "tuple") to str
+            results = self.results
+            tokens = [(z.kind, z.value) for z in self.tokens]
+            gen = difflib.ndiff(tokens, results)
+        else:
+            # Works.
+            results = [f"{z.kind:>12}:{z.value}" for z in self.results]
+            tokens =  [f"{z.kind:>12}:{z.value}" for z in self.tokens]
+            gen = difflib.Differ().compare(tokens, results)
+        t1 = time.process_time()
+        diffs = list(gen)
+        t2 = time.process_time()
+        print(
+            f"\nDiff: tokens: {len(tokens)}, results: {len(results)}, "
+            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec...")
+        if len(diffs) < 1000:
+            legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
+            heading = f"tx  rx  kind {'diff key kind:value':>15}"
+            line    = f"=== === ==== {'===================':>15}"
+            print(legend)
+            print(heading)
+            print(line)
+            rx = tx = 0
+            for i, z in enumerate(diffs):
+                kind = z[0]
+                if kind != '?': # A mystery.
+                    print(f"{tx:<3} {rx:<3} {kind!r:4} {truncate(z[1:], 80)!s}")
+                if kind == ' ':
+                    rx, tx = rx + 1, tx + 1
+                elif kind == '+':
+                    rx += 1
+                elif kind == '-':
+                    tx += 1
+            # print(line)
+            # print(heading)
+            # print(legend)
     #@+node:ekr.20191122022728.1: *3* TestRunner.dump_all
     def dump_all(self):
 
