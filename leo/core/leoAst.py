@@ -1182,16 +1182,17 @@ class TokenOrderGenerator:
         4. Create two-way links between T and self.node.
         5. Advance by updating self.px.
         """
+        trace = False and not g.unitTesting
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), repr(node)
         
         if not self.allow_sync:
             # The trace is annoying and distracting.
-            # if self.trace_mode: g.trace('no-sync: returning')
+            # if trace: g.trace('no-sync: returning')
             return
         
-        if self.trace_mode:
+        if trace:
             # Don't add needless repr's!
             val_s = val if kind in ('name', 'string') else repr(val)
             g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
@@ -1218,7 +1219,7 @@ class TokenOrderGenerator:
                 ## break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
-                if self.trace_mode:
+                if 1:
                     pre_tokens = tokens[max(0, px-10):px+1]
                     g.trace('\nSync Failed...\n')
                     for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
@@ -1230,7 +1231,7 @@ class TokenOrderGenerator:
             px += 1
         else:
             # Unrecoverable sync failure.
-            if self.trace_mode:
+            if 1:
                 g.trace('\nSYNC FAILED...')
                 g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise self.error(
@@ -1663,18 +1664,15 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
-        #
         # node.values is a list of ast.Ast nodes, *not* a list of generators.
+        trace = False and self.trace_mode
         assert isinstance(node.values, list)
         assert all([isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values])
-            
-        if self.trace_mode:
+        if trace:
             g.trace('\n===== START\n')
             g.printObj([z.__class__.__name__ for z in node.values])
-        #
         # Handle each item.
         for i, item in enumerate(node.values):
-            #
             # Compute the target string.
             if isinstance(item, ast.Str):
                 # item represents *one or more* 'string' tokens.
@@ -1684,9 +1682,8 @@ class TokenOrderGenerator:
                 # item is a tree of ast.Ast nodes.
                 # Sync to the next 'string' token.
                 target_s = self.peek_next_str().value
-            #
             # Yield all the tokens.
-            if self.trace_mode:
+            if trace:
                 g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
             tokens = self.advance_str(target_s=target_s)
             if not tokens:
@@ -1694,11 +1691,11 @@ class TokenOrderGenerator:
             for token in tokens:
                 if token.kind != 'string':
                     raise self.error(f"not a string token: {token!r}")
-                if self.trace_mode:
+                if trace:
                     g.trace(f"\ngenerate 'string' {token.value}")
                 yield from self.gen_token('string', token.value)
-        if self.trace_mode:
-            g.trace('\nEND -----')
+        if trace:
+            g.trace('\nEND -----\n')
         
         if 0: # This code has no chance of being useful.
             for z in node.values:
@@ -1910,11 +1907,11 @@ class TokenOrderGenerator:
 
         # Special case for empty target.
         if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
-            g.trace('***** empty target *****')
+            ### g.trace('***** empty target *****')
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            if True: ### self.trace_mode:
+            if self.trace_mode and verbose:
                 g.trace(f"Return string_index: {self.string_index} results: {[token]}")
             self.string_index = i
             check_progress()
@@ -1923,7 +1920,7 @@ class TokenOrderGenerator:
         # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
-            if self.trace_mode:
+            if self.trace_mode and verbose:
                 g.trace(f"accumulated results: {accumulated_results!s}")
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
@@ -1945,11 +1942,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
+        trace = False and self.trace_mode
         i1 = i
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind == 'string':
-                if self.trace_mode:
+                if trace:
                     g.trace(f"{i1:>2}-->{i:<2} {self.tokens[i]}")
                 break
             i += 1
@@ -1959,12 +1957,13 @@ class TokenOrderGenerator:
         """
         Return the next 'string' token, *without* updating the string index.
         """
+        trace = False and self.trace_mode
         i = self.string_index
         i1 = i
         i = self.next_str_index(i+1)
         if i >= len(self.tokens):
             raise self.error(f"no token! {i1}..{i}")
-        if self.trace_mode:
+        if trace:
             g.trace(f" {i1:>2}-->{i:<2} {self.tokens[i]}")
         return self.tokens[i]
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
