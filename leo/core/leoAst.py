@@ -1777,7 +1777,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token ***
     prefix_pat = re.compile(r"([fFrR])")
 
-    def adjust_str_token(self, token):
+    def adjust_str_token(self, token, verbose=False):
         #@+<< adjust_str_token docstring >>
         #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
@@ -1803,11 +1803,13 @@ class TokenOrderGenerator:
                 That's benign because the caller always skips one token.
         """
         #@-<< adjust_str_token docstring >>
+        trace = self.trace_mode and verbose
         quotes = ("'", '"')
         rx0 = self.target_index
         r = self.target_string[rx0:]
         tv = token.value
-        g.trace(f"\ntarget_index: {rx0} tv: {tv!s} r: {r!s}")
+        if trace:
+            g.trace(f"\ntarget_index: {rx0} tv: {tv!s} r: {r!s}")
         #
         # Compute and check the prefixes.
         m = self.prefix_pat.match(r)
@@ -1858,7 +1860,7 @@ class TokenOrderGenerator:
         if result != r[:len(result)]:
             raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
         self.target_index = rx0 + len(result)
-        if self.trace_mode:
+        if trace:
             g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
@@ -1872,6 +1874,7 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
+        verbose = False
         #
         # Sanity checks.
         node_cn = self.node.__class__.__name__
@@ -1887,6 +1890,13 @@ class TokenOrderGenerator:
         self.target_index = 0
         self.target_string = target_s
         #
+        # The accumulated results tells how much of the target string have been consumed.
+        # This is used *only* to stop the scan of actual tokens.
+        accumulated_results = []
+        #
+        # results is a list of one or more tokens to be consumed.
+        results = []
+        #
         # Make sure we make progress.
         start_index = self.string_index
         if self.trace_mode:
@@ -1894,25 +1904,21 @@ class TokenOrderGenerator:
 
         def check_progress():
             if start_index >= self.string_index:
-                raise self.error(f"unchanged string index: {self.string_index}")
-        #
-        # The accumulated results tells how much of the target string have been consumed.
-        # This is used *only* to stop the scan of actual tokens.
-        accumulated_results = []
-        #
-        # results is a list of one or more tokens to be consumed.
-        results = []
-        ### Bad idea!
-            # # Special case for empty target.
-            # if target_s.lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
-                # i = self.string_index
-                # i = self.next_str_index(i + 1)
-                # token = self.tokens[i]
-                # if self.trace_mode:
-                    # g.trace(f"Return string_index: {self.string_index} results: {[token]}")
-                # self.string_index = i
-                # check_progress()
-                # return [token]
+                raise self.error(
+                    f"unchanged string index: {self.string_index} "
+                    f"results: {results!r} target: {target_s!r}")
+
+        # Special case for empty target.
+        if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
+            g.trace('***** empty target *****')
+            i = self.string_index
+            i = self.next_str_index(i + 1)
+            token = self.tokens[i]
+            if True: ### self.trace_mode:
+                g.trace(f"Return string_index: {self.string_index} results: {[token]}")
+            self.string_index = i
+            check_progress()
+            return [token]
         #
         # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
@@ -1923,7 +1929,7 @@ class TokenOrderGenerator:
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
-            accumulated_results.append(self.adjust_str_token(token))
+            accumulated_results.append(self.adjust_str_token(token, verbose=verbose))
             results.append(token)
         # Make sure the results match exactly.
         if ''.join(accumulated_results) != target_s:
