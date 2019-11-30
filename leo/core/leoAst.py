@@ -1663,18 +1663,13 @@ class TokenOrderGenerator:
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
         assert isinstance(node.values, list)
-        #
-        # Capture the generator.
-        items = list(self.node.values)
         if self.trace_mode:
-            g.trace(f"\n===== Entry: {len(items)} items...\n")
+            g.trace('\n===== START')
         #
-        # Look at each item exactly once.
-        i = 0
-        while i < len(items):
-            progress = i
-            item = items[i]
+        # Careful! Do not exhaust an item by mistake.
+        for item in node.values:
             assert isinstance(item, (ast.Str, ast.FormattedValue))
+            #
             # Compute the target string.
             if isinstance(item, ast.Str):
                 # item represents *one or more* 'string' tokens.
@@ -1684,10 +1679,12 @@ class TokenOrderGenerator:
                 # item is a tree of ast.Ast nodes.
                 # Sync to the next 'string' token.
                 target_s = self.peek_next_str().value
-            if self.trace_mode:
-                g.trace(f"\n----- item {i} {item.__class__.__name__:12} target: {target_s!r}\n")
             #
-            # Sync all the tokens.
+            # Trace.
+            if self.trace_mode:
+                g.trace(f"\n----- item {item.__class__.__name__:12} target: {target_s!r}\n")
+            #
+            # Yield all the tokens.
             tokens = self.advance_str(target_s=target_s)
             if not tokens:
                 raise self.error(f"no tokens from advance_str. target_s: {target_s!r}")
@@ -1697,10 +1694,8 @@ class TokenOrderGenerator:
                 if self.trace_mode:
                     g.trace(f"\ngenerate 'string' {token.value}")
                 yield from self.gen_token('string', token.value)
-                i += 1
-            assert progress < i
-        if i != len(items) + 1:
-            raise self.error(f"{len(items)} items, handled {i} items")
+        if self.trace_mode:
+            g.trace('\nEND -----')
         
         if 0: # This code has no chance of being useful.
             for z in node.values:
@@ -1772,6 +1767,7 @@ class TokenOrderGenerator:
 
     def do_Str(self, node):
         """This node represents a string constant."""
+        g.trace('===========', g.callers())
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
@@ -1818,6 +1814,16 @@ class TokenOrderGenerator:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         #
+        # Make sure we make progress
+        if self.trace_mode:
+            g.trace(f"START string_index: {self.string_index}")
+
+        start_index = self.string_index
+            
+        def check_progress():
+            if start_index >= self.string_index:
+                raise self.error(f"unchanged string index: {self.string_index}")
+        #
         # Define results and accumulated_results.
         results = []
 
@@ -1834,6 +1840,7 @@ class TokenOrderGenerator:
             if self.trace_mode:
                 g.trace(f"Return string_index: {self.string_index} results: {[token]}")
             self.string_index = i
+            check_progress()
             return [token]
         #
         # Scan 'string' tokens accumulated results are shorter than target_s.
@@ -1850,8 +1857,9 @@ class TokenOrderGenerator:
             raise self.error(f"Looking for: {target_s!r}, found: {accumulated_results()!r}")
         # Point the string index at the last scanned token.
         self.string_index = i
+        check_progress()
         if self.trace_mode:
-            g.trace(f"Return string_index: {self.string_index}")
+            g.trace(f"END string_index: {self.string_index}")
                 # {accumulated_results()}
             g.printObj(results)
         return results
@@ -1863,7 +1871,7 @@ class TokenOrderGenerator:
             token = self.tokens[i]
             if token.kind == 'string':
                 if self.trace_mode:
-                    g.trace(f"\nFound {i1}..{i} {self.tokens[i]}")
+                    g.trace(f"{i1}-->{i} {self.tokens[i]}")
                 break
             i += 1
         return i
@@ -1874,7 +1882,7 @@ class TokenOrderGenerator:
         """
         i = self.string_index
         i1 = i
-        i = self.next_str_index(i)
+        i = self.next_str_index(i+1)
         if i >= len(self.tokens):
             raise self.error(f"no token! {i1}..{i}")
         if self.trace_mode:

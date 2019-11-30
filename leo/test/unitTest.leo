@@ -4163,7 +4163,7 @@ else:
     reports = [
         # 'no-sync',
         'dump-sources-first',
-        # 'dump-raw-tree-first',
+        'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         # 'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
