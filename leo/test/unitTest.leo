@@ -4141,7 +4141,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'reload',
     'show-test-kind', # all vs selected.

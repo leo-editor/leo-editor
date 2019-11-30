@@ -1662,13 +1662,17 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
+        # node.values is just a list of ast.Ast nodes (not generators).
         assert isinstance(node.values, list)
+        for i, item in enumerate(node.values):
+            assert isinstance(item, (ast.Str, ast.FormattedValue))
+            
         if self.trace_mode:
             g.trace('\n===== START\n')
+            g.printObj(node.values)
         #
-        # Careful! Do not exhaust an item by mistake.
-        for item in node.values:
-            assert isinstance(item, (ast.Str, ast.FormattedValue))
+        # Handle each item.
+        for i, item in enumerate(node.values):
             #
             # Compute the target string.
             if isinstance(item, ast.Str):
@@ -1680,11 +1684,9 @@ class TokenOrderGenerator:
                 # Sync to the next 'string' token.
                 target_s = self.peek_next_str().value
             #
-            # Trace.
-            if self.trace_mode:
-                g.trace(f"\n----- item: {item.__class__.__name__} target: {target_s}\n")
-            #
             # Yield all the tokens.
+            if self.trace_mode:
+                g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
             tokens = self.advance_str(target_s=target_s)
             if not tokens:
                 raise self.error(f"no tokens from advance_str. target_s: {target_s}")
@@ -1767,7 +1769,7 @@ class TokenOrderGenerator:
 
     def do_Str(self, node):
         """This node represents a string constant."""
-        g.trace('===========', g.callers())
+        ### g.trace('===========', g.callers())
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
@@ -1776,7 +1778,6 @@ class TokenOrderGenerator:
         """
         Adjust s (token.value) to undo the effect of repr:
         """
-        ### f_string = isinstance(self.node, ast.JoinedStr)
         quotes = ("'", '"')
         i = 0
         s = s0 = token.value
@@ -1792,12 +1793,13 @@ class TokenOrderGenerator:
         if not ok:
             raise self.error(f"No quote at position {i2} in: {s}")
         quote = s[i2]
+        #
         # Adjust only if there are no f-string prefixes.
         if prefix:
             pass
         else:
-            i = i2
             # Skip the outer quotes, including triple quotes!
+            i = i2
             if s.startswith(quote*3) and s.endswith(quote*3):
                 s = s[i+3:-3]
             else:
@@ -1857,7 +1859,8 @@ class TokenOrderGenerator:
         # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
         while len(accumulated_results()) < len(target_s):
-            g.trace('accumulated results', accumulated_results())
+            if self.trace_mode:
+                g.trace('accumulated results', accumulated_results())
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
