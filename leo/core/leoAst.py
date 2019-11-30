@@ -1233,19 +1233,17 @@ class TokenOrderGenerator:
                 break  # Benign: use the token's value, a string, instead of a number.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
-                if 1:
-                    pre_tokens = tokens[max(0, px-10):px+1]
-                    g.trace('\nSync Failed...\n')
-                    for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
-                        print(s)
+                pre_tokens = tokens[max(0, px-10):px+1]
+                g.trace('\nSync Failed...\n')
+                for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
+                    print(s)
                 raise self.error(
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
-            else:
-                # Skip the insignificant token.
-                if trace: g.trace(' SKIP', px, token)
-                px += 1
+            # Skip the insignificant token.
+            if trace: g.trace(' SKIP', px, token)
+            px += 1
         else:
             # Unrecoverable sync failure.
             g.trace('\nSYNC FAILED...')
