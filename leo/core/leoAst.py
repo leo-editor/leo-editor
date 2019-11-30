@@ -1788,7 +1788,7 @@ class TokenOrderGenerator:
             i += 1
         ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
         if not ok:
-            raise self.error(f"Unexpected token.value: {s} scanning: {token.value}")
+            raise self.error(f"Unexpected char at position {i} while scanning: {s0}")
         quote = s[i]
         # Skip the outer quotes, including triple quotes!
         if s.startswith(quote*3) and s.endswith(quote*3):
