@@ -1807,15 +1807,18 @@ class TokenOrderGenerator:
         rx0 = self.target_index
         r = self.target_string[rx0:]
         tv = token.value
-        g.trace(f"target_index: {rx0} tv: {tv!s} r: {r!s}")
+        g.trace(f"\ntarget_index: {rx0} tv: {tv!s} r: {r!s}")
         #
         # Compute and check the prefixes.
         m = self.prefix_pat.match(r)
         r_prefix = m.group(0) if m else ''
         m = self.prefix_pat.match(tv)
         tv_prefix = m.group(0) if m else ''
-        if r_prefix and len(r_prefix) != len(tv_prefix):
-            raise self.error(f"Mismatch prefixes' tv: {tv!r} r: {r!r}")
+        
+        ### Not sure this matters.
+            # if r_prefix and len(r_prefix) != len(tv_prefix):
+                # g.trace(f"tv_prefix: {tv_prefix!s} r_prefix: {r_prefix!s}")
+                # raise self.error(f"Mismatch prefixes' tv: {tv!s} r: {r!s}")
         #
         # The token must have a quote.
         tx = len(tv_prefix)
@@ -1840,7 +1843,7 @@ class TokenOrderGenerator:
         else:
             r_quote = r_quotes = ''
         #
-        # Quotes must match, if they exist.
+        # Quotes must match, if they exist in the remaining string.
         if r_quotes and r_quotes != tv_quotes: ### len(r_quotes) != len(tv_quotes):
             raise self.error(f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
         #
@@ -1852,13 +1855,11 @@ class TokenOrderGenerator:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
         #
         # A very strong check.
-        if result != r[rx0:len(result)]:
-            raise self.error(f"Mismatch error: result: rx: {rx} {result} r: {r[rx0:rx]}")
+        if result != r[:len(result)]:
+            raise self.error(f"Mismatch error: result: {result} r: {r[:len(result)]}")
+        self.target_index = rx0 + len(result)
         if self.trace_mode:
-            g.trace(token.value, '==>', result)
-        self.string_index = rx0 + len(result)
-        if self.trace_mode:
-            g.trace(f"string_index: {self.string_index} result: {result}")
+            g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
@@ -1917,7 +1918,7 @@ class TokenOrderGenerator:
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
             if self.trace_mode:
-                g.trace('accumulated results', accumulated_results)
+                g.trace(f"accumulated results: {accumulated_results!s}")
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
