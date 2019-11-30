@@ -990,7 +990,9 @@ class TokenOrderGenerator:
 
     def begin_visitor(self, node):
         """Enter a visitor."""
-        # g.trace(node.__class__.__name__, [z.__class__.__name__ for z in self.node_stack])
+        if 0:
+            g.trace(node.__class__.__name__)
+            g.printObj([z.__class__.__name__ for z in self.node_stack])
         # Inject the node_index field.
         assert not hasattr(node, 'node_index'), g.callers()
         node.node_index = self.node_index
@@ -1004,7 +1006,8 @@ class TokenOrderGenerator:
 
     def end_visitor(self, node):
         """Leave a visitor."""
-        # g.trace(node.__class__.__name__)
+        if 0:
+            g.trace(node.__class__.__name__)
         # begin_visitor and end_visitor must be paired.
         entry_name = self.begin_end_stack.pop()
         assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
@@ -1186,37 +1189,44 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), repr(node)
-        
         if not self.allow_sync:
-            # The trace is annoying and distracting.
-            # if trace: g.trace('no-sync: returning')
+            # A trace would be annoying and distracting.
             return
-        
         if trace:
             # Don't add needless repr's!
             val_s = val if kind in ('name', 'string') else repr(val)
             g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
-
+        #
+        # Leave all non-significant tokens for later.
         if not self.is_significant(kind, val):
             return
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
         #           Leave px pointing at the next significant token.
+        #
+        #           Special case: because of JoinedStr's, syncing a
+        #           string may jump over *many* significant tokens.
         px += 1
         while px < len(self.tokens):
             token = tokens[px]
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
+            #
+            # Special case 'string' token.
+            if kind == 'string':
+                if token.kind == 'string':
+                    raise self.error(
+                        f"STRING MISMATCH: "
+                        f"val: {val} token.val: {token.value}")
+                # Assume we are in in a JoinedStr.
+                # Continue searching.
+                px += 1
+                continue
             if kind == token.kind == 'number':
                 val = token.value
+                px += 1
                 break  # Benign: use the token's value, a string, instead of a number.
-            if kind == token.kind == 'string':
-                raise self.error(
-                    f"STRING MISMATCH: "
-                    f"val: {val} token.val: {token.value}")
-                ## val = token.value
-                ## break  # Malignant: assume a match for now.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
                 if 1:
@@ -1228,7 +1238,9 @@ class TokenOrderGenerator:
                     f"       line: {token.line_number}: {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
-            px += 1
+            else:
+                # Skip the insignificant token.
+                px += 1
         else:
             # Unrecoverable sync failure.
             if 1:
@@ -1643,6 +1655,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (***)
     # JoinedStr(expr* values)
 
+    joined_stack = []
+
     def do_JoinedStr(self, node):
         """
         Fact 1: A JoinedStr node represents one or more f-strings and plain strings.
@@ -1665,13 +1679,15 @@ class TokenOrderGenerator:
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
         # node.values is a list of ast.Ast nodes, *not* a list of generators.
-        trace = False and self.trace_mode
+        trace = True and self.trace_mode
         assert isinstance(node.values, list)
         assert all([isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values])
         if trace:
             g.trace('\n===== START\n')
             g.printObj([z.__class__.__name__ for z in node.values])
-        # Handle each item.
+        #
+        # Handle each item, but...
+        # The first item will be a string representing the *entire* f-string!
         for i, item in enumerate(node.values):
             # Compute the target string.
             if isinstance(item, ast.Str):
@@ -1680,8 +1696,10 @@ class TokenOrderGenerator:
                 target_s = item.s
             else:
                 # item is a tree of ast.Ast nodes.
-                # Sync to the next 'string' token.
-                target_s = self.peek_next_str().value
+                # Ignore this node completely.
+                    ### Sync to the next 'string' token.
+                    ### target_s = self.peek_next_str().value
+                continue ###
             # Yield all the tokens.
             if trace:
                 g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
@@ -1694,6 +1712,7 @@ class TokenOrderGenerator:
                 if trace:
                     g.trace(f"\ngenerate 'string' {token.value}")
                 yield from self.gen_token('string', token.value)
+            break ### Experimental.
         if trace:
             g.trace('\nEND -----\n')
         
@@ -1774,7 +1793,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token ***
     prefix_pat = re.compile(r"([fFrR])")
 
-    def adjust_str_token(self, token, verbose=False):
+    def adjust_str_token(self, token):
         #@+<< adjust_str_token docstring >>
         #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
@@ -1800,7 +1819,7 @@ class TokenOrderGenerator:
                 That's benign because the caller always skips one token.
         """
         #@-<< adjust_str_token docstring >>
-        trace = self.trace_mode and verbose
+        trace = False and self.trace_mode
         quotes = ("'", '"')
         rx0 = self.target_index
         r = self.target_string[rx0:]
@@ -1874,6 +1893,7 @@ class TokenOrderGenerator:
     # For adjust_str_token.
     target_index = 0
     target_string = None
+    ### continued_token = False
 
     def advance_str(self, target_s=None):
         """
@@ -1882,7 +1902,6 @@ class TokenOrderGenerator:
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
         trace = self.trace_mode
-        verbose = True
         #
         # Sanity checks.
         node_cn = self.node.__class__.__name__
@@ -1895,6 +1914,7 @@ class TokenOrderGenerator:
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         #
         # Set the ivars for adjust_str_token.
+        self.target_index = 0
         self.target_string = target_s
         #
         # The accumulated results tells how much of the target string have been consumed.
@@ -1929,38 +1949,33 @@ class TokenOrderGenerator:
         # Scan 'string' tokens while the accumulated results are shorter than target_s.
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
-            if trace and verbose:
+            if True and trace:
                 g.trace(f"accumulated results: {accumulated_results!s}")
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
-            ###
-            ### Extend the target string if it is a prefix of token.value.
-            ###
-            accumulated_results.append(self.adjust_str_token(token, verbose=verbose))
+            s = self.adjust_str_token(token)
             results.append(token)
+            accumulated_results.append(s)
         results_s = ''.join(accumulated_results)
-        #### Done above.
-            # It's valid for a token to contain more thant the target string.
-            # In that case, we **continue** the token.
-            # if results_s != target_s and results_s.startswith(target_s):
-                # g.trace(f"CONTINUED TOKEN: token: {results_s!r} target: {target_s!r}")
-                # self.continue_token = True
-                # self.target_index += len(results_s)
-                # self.string_index = i
-                # return results
+        #
+        # The last token may extend the target string.
+        # In that case, we just return.
+        if results_s != target_s and results_s.startswith(target_s):
+            self.string_index = i
+            g.trace(f"EXTEND: i: {i} return {results_s!r}\n")
+            return results
         #
         # Now we can make the stronger check.
         if results_s!= target_s:
             raise self.error(f"Looking for: {target_s!r}, found: {results_s!r}")
         #
         # Point the string index at the last scanned token.
-        self.continued_token = False
         self.string_index = i
         check_progress()
         if trace:
-            g.trace(f"END string_index: {self.string_index}")
+            g.trace(f"END i: {i} return: {results_s!r}\n")
                 # {accumulated_results()}
             g.printObj(results)
         return results
