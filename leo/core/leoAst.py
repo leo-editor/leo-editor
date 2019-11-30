@@ -1836,7 +1836,7 @@ class TokenOrderGenerator:
             self.string_index = i
             return [token]
         #
-        # Scan 'string' tokens while targe_s is longer than the accumulated results.
+        # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
         while len(accumulated_results()) < len(target_s):
             i = self.next_str_index(i + 1)
