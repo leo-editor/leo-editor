@@ -1664,7 +1664,7 @@ class TokenOrderGenerator:
         """
         assert isinstance(node.values, list)
         if self.trace_mode:
-            g.trace('\n===== START')
+            g.trace('\n===== START\n')
         #
         # Careful! Do not exhaust an item by mistake.
         for item in node.values:
@@ -1682,12 +1682,12 @@ class TokenOrderGenerator:
             #
             # Trace.
             if self.trace_mode:
-                g.trace(f"\n----- item {item.__class__.__name__:12} target: {target_s!r}\n")
+                g.trace(f"\n----- item: {item.__class__.__name__} target: {target_s}\n")
             #
             # Yield all the tokens.
             tokens = self.advance_str(target_s=target_s)
             if not tokens:
-                raise self.error(f"no tokens from advance_str. target_s: {target_s!r}")
+                raise self.error(f"no tokens from advance_str. target_s: {target_s}")
             for token in tokens:
                 if token.kind != 'string':
                     raise self.error(f"not a string token: {token!r}")
@@ -1776,23 +1776,34 @@ class TokenOrderGenerator:
         """
         Adjust s (token.value) to undo the effect of repr:
         """
+        ### f_string = isinstance(self.node, ast.JoinedStr)
         quotes = ("'", '"')
         i = 0
         s = s0 = token.value
-        # Always skip f-string prefixes.
-        while i < len(s) and s[i] in 'fFrR':
-            i += 1
-        ok = i + 1 < len(s) and s[i] == s[-1] and s[i] in quotes 
+        #
+        # Find the quote.
+        prefix = s[0] in 'fFrR'
+        i2 = i
+        while i2 < len(s) and s[i2] in 'fFrR':
+            i2 += 1
+        #
+        # Make sure there is a matching quote
+        ok = i2 + 1 < len(s) and s[i2] == s[-1] and s[i2] in quotes 
         if not ok:
-            raise self.error(f"Unexpected char at position {i} while scanning: {s0}")
-        quote = s[i]
-        # Skip the outer quotes, including triple quotes!
-        if s.startswith(quote*3) and s.endswith(quote*3):
-            s = s[i+3:-3]
+            raise self.error(f"No quote at position {i2} in: {s}")
+        quote = s[i2]
+        # Adjust only if there are no f-string prefixes.
+        if prefix:
+            pass
         else:
-            s = s[i+1:-1]
-        # Unescape escaped quotes.
-        s = s.replace('\\' + quote, quote)
+            i = i2
+            # Skip the outer quotes, including triple quotes!
+            if s.startswith(quote*3) and s.endswith(quote*3):
+                s = s[i+3:-3]
+            else:
+                s = s[i+1:-1]
+            # Unescape escaped quotes.
+            s = s.replace('\\' + quote, quote)
         if self.trace_mode:
             g.trace(s0, '==>', s)
         token.value = s
@@ -1816,7 +1827,7 @@ class TokenOrderGenerator:
         #
         # Make sure we make progress
         if self.trace_mode:
-            g.trace(f"START string_index: {self.string_index}")
+            g.trace(f"START string_index: {self.string_index} target: {target_s}")
 
         start_index = self.string_index
             
@@ -1846,6 +1857,7 @@ class TokenOrderGenerator:
         # Scan 'string' tokens accumulated results are shorter than target_s.
         i = self.string_index
         while len(accumulated_results()) < len(target_s):
+            g.trace('accumulated results', accumulated_results())
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
@@ -1854,7 +1866,7 @@ class TokenOrderGenerator:
             results.append(token)
         # Make sure the results match exactly.
         if accumulated_results() != target_s:
-            raise self.error(f"Looking for: {target_s!r}, found: {accumulated_results()!r}")
+            raise self.error(f"Looking for: {target_s}, found: {accumulated_results()}")
         # Point the string index at the last scanned token.
         self.string_index = i
         check_progress()
@@ -1871,7 +1883,7 @@ class TokenOrderGenerator:
             token = self.tokens[i]
             if token.kind == 'string':
                 if self.trace_mode:
-                    g.trace(f"{i1}-->{i} {self.tokens[i]}")
+                    g.trace(f"{i1:>2}-->{i:<2} {self.tokens[i]}")
                 break
             i += 1
         return i
@@ -1886,7 +1898,7 @@ class TokenOrderGenerator:
         if i >= len(self.tokens):
             raise self.error(f"no token! {i1}..{i}")
         if self.trace_mode:
-            g.trace(f"\n{i1}..{i} {self.tokens[i]}")
+            g.trace(f" {i1:>2}-->{i:<2} {self.tokens[i]}")
         return self.tokens[i]
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
