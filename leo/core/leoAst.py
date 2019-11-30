@@ -1853,13 +1853,23 @@ class TokenOrderGenerator:
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
         #
-        # A very strong check.
-        if result != r[:len(result)]:
+        # For joined strings it's possible to exhaust the
+        # target string *without* exhausting the present token!
+        #
+        # We should only check that the remainder is a *prefix* of the result.
+        remainder = r[:len(result)]
+        if not result.startswith(remainder):
             raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
-        self.target_index = rx0 + len(result)
+        #
+        # Now advance by the length of the remainder.
+        self.target_index = rx0 + len(remainder) ### len(result)
         if trace:
             g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result
+
+        # This check is *too* strong.
+            # if result != r[:len(result)]:
+                # raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
     target_index = 0
@@ -1871,7 +1881,8 @@ class TokenOrderGenerator:
         
         A *single* Str node represents the concatenation of multiple *plain* strings.
         """
-        verbose = False
+        trace = self.trace_mode
+        verbose = True
         #
         # Sanity checks.
         node_cn = self.node.__class__.__name__
@@ -1884,7 +1895,6 @@ class TokenOrderGenerator:
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         #
         # Set the ivars for adjust_str_token.
-        self.target_index = 0
         self.target_string = target_s
         #
         # The accumulated results tells how much of the target string have been consumed.
@@ -1896,7 +1906,7 @@ class TokenOrderGenerator:
         #
         # Make sure we make progress.
         start_index = self.string_index
-        if self.trace_mode:
+        if trace:
             g.trace(f"START string_index: {self.string_index} target: {target_s}")
 
         def check_progress():
@@ -1904,37 +1914,52 @@ class TokenOrderGenerator:
                 raise self.error(
                     f"unchanged string index: {self.string_index} "
                     f"results: {results!r} target: {target_s!r}")
-
+        #
         # Special case for empty target.
         if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
-            ### g.trace('***** empty target *****')
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
-            if self.trace_mode and verbose:
-                g.trace(f"Return string_index: {self.string_index} results: {[token]}")
+            if trace:
+                g.trace(f"Empty target: return string_index: {self.string_index} results: {[token]}")
             self.string_index = i
             check_progress()
             return [token]
         #
-        # Scan 'string' tokens accumulated results are shorter than target_s.
+        # Scan 'string' tokens while the accumulated results are shorter than target_s.
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
-            if self.trace_mode and verbose:
+            if trace and verbose:
                 g.trace(f"accumulated results: {accumulated_results!s}")
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
+            ###
+            ### Extend the target string if it is a prefix of token.value.
+            ###
             accumulated_results.append(self.adjust_str_token(token, verbose=verbose))
             results.append(token)
-        # Make sure the results match exactly.
-        if ''.join(accumulated_results) != target_s:
-            raise self.error(f"Looking for: {target_s}, found: {''.join(accumulated_results)}")
+        results_s = ''.join(accumulated_results)
+        #### Done above.
+            # It's valid for a token to contain more thant the target string.
+            # In that case, we **continue** the token.
+            # if results_s != target_s and results_s.startswith(target_s):
+                # g.trace(f"CONTINUED TOKEN: token: {results_s!r} target: {target_s!r}")
+                # self.continue_token = True
+                # self.target_index += len(results_s)
+                # self.string_index = i
+                # return results
+        #
+        # Now we can make the stronger check.
+        if results_s!= target_s:
+            raise self.error(f"Looking for: {target_s!r}, found: {results_s!r}")
+        #
         # Point the string index at the last scanned token.
+        self.continued_token = False
         self.string_index = i
         check_progress()
-        if self.trace_mode:
+        if trace:
             g.trace(f"END string_index: {self.string_index}")
                 # {accumulated_results()}
             g.printObj(results)
