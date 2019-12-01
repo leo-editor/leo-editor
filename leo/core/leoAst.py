@@ -1878,6 +1878,7 @@ class TokenOrderGenerator:
         ###
         ### To do: Don't do these for raw constants.
         ###
+        result = result.replace('\\'+'\n', '')
         result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
         result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #

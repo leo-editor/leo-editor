@@ -357,7 +357,7 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191201064443.1"><vh>test: strings in ternary</vh></v>
+<v t="ekr.20191201064443.1"><vh>xx test: strings in ternary</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
@@ -376,6 +376,7 @@
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
@@ -4164,7 +4165,7 @@ if 'all' in flags:
         'no-trace-after-fail',
          # 'no-sync',
     ]
-if 1:
+if 0:
     # For large tests.
     reports = [
         # 'show-exception-after-fail',
@@ -4178,7 +4179,7 @@ else:
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
         # 'set-trace-mode',  # Sets TOG.trace_mode.
-        'show-exception-after-fail',
+        # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
@@ -4771,5 +4772,7 @@ r3(bs=r'\\')</t>
 a = {'a' if x else 'b'}
 f()
 </t>
+<t tx="ekr.20191201065409.1">print('hello\
+world')</t>
 </tnodes>
 </leo_file>
