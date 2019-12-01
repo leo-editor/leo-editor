@@ -356,6 +356,8 @@
 </v>
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
+<v t="ekr.20191201064443.1"><vh>test: strings in ternary</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
@@ -376,7 +378,7 @@
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191201062631.1"><vh>test: line 751: leoFind.py</vh></v>
+<v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
 </v>
@@ -4143,7 +4145,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     'fail-fast',
     'reload',
@@ -4275,7 +4277,7 @@ class TestClass(base1, base2):
 </t>
 <t tx="ekr.20191119150253.1">f1(arg, *args, **kwargs)
 </t>
-<t tx="ekr.20191119203945.1"></t>
+<t tx="ekr.20191119203945.1"># line 856 </t>
 <t tx="ekr.20191119210429.1">print(-(2))</t>
 <t tx="ekr.20191119211714.1">if a and not b and c:
     pass
@@ -4757,6 +4759,17 @@ f'f1' ;
 # print(f'{7.1}', 'p7.2')
 # print(f'{8.1}', f'{8.2}')
 </t>
-<t tx="ekr.20191201062631.1">func(char='\b')</t>
+<t tx="ekr.20191201062631.1">f1(a='\b', b='\n', t='\t')
+f2(f='\f', r='\r', v='\v')
+f3(bs='\\')
+</t>
+<t tx="ekr.20191201064058.1">r1(a=r'\b', b=r'\n', t=r'\t')
+r2(f=r'\f', r=r'\r', v=r'\v')
+r3(bs=r'\\')</t>
+<t tx="ekr.20191201064443.1"># leoFind.py line 856
+
+a = {'a' if x else 'b'}
+f()
+</t>
 </tnodes>
 </leo_file>

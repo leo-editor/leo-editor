@@ -1875,7 +1875,11 @@ class TokenOrderGenerator:
             result = r_prefix + r_quotes + inner_s + r_quotes
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
-        result = result.replace(r'\b', '\b').replace(r'\n', '\n')
+        ###
+        ### To do: Don't do these for raw constants.
+        ###
+        result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
+        result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #
         # For joined strings it's possible to exhaust the
         # target string *without* exhausting the present token!
