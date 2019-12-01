@@ -1969,7 +1969,8 @@ class TokenOrderGenerator:
         # In that case, we just return.
         if results_s != target_s and results_s.startswith(target_s):
             self.string_index = i
-            g.trace(f"EXTEND: i: {i} return {results_s!r}\n")
+            if trace:
+                g.trace(f"EXTEND: i: {i} return {results_s!r}\n")
             return results
         #
         # Now we can make the stronger check.
@@ -4495,6 +4496,7 @@ class TestRunner:
             'dump-tokens-first',
             'dump-tree-after-fail',
             'no-sync',
+            'no-trace-after-fail',
             'set-trace-mode',
             'show-exception-after-fail',
             'use-asttokens',
@@ -4551,6 +4553,8 @@ class TestRunner:
                         self.dump_tokens()
                     if 'dump-tree-after-fail' in flags:
                         self.dump_tree()
+                if 'no-trace-after-fail':
+                    x.trace_mode = False
                 return False
         if 'trace-times' in flags:
             pad = ' '*4

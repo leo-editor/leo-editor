@@ -354,31 +354,26 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191130165056.1"><vh>summary: failed tests</vh></v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191130165112.1"><vh>fail: failed tests</vh></v>
-<v t="ekr.20191130165155.1"><vh>ignore: passed tests</vh>
+<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
-</v>
-<v t="ekr.20191129042702.1"><vh>xx pass test: simple f-string tests</vh></v>
-<v t="ekr.20191126002258.1"><vh>xx pass test: f-string summary: no joins</vh>
+<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
 </v>
-<v t="ekr.20191129033245.1"><vh>xx test: f-string summary: joins + 1 f-expr</vh></v>
-<v t="ekr.20191129033359.1"><vh>xx pass test: f-string summary: joins + 2 f-exprs</vh></v>
-<v t="ekr.20191127134726.1"><vh>xx pass test: leoFind.py: line 861</vh></v>
-<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
 <v t="ekr.20191130102636.1"><vh>more</vh></v>
 </v>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
 </v>
-<v t="ekr.20191128104415.1"><vh>ignore: passed tests</vh></v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -4149,6 +4144,7 @@ import leo.core.leoAst as leoAst
 flags = [
     'all',
     'g.cls',  ### Don't use in production.
+    'fail-fast',
     'reload',
     'show-test-kind', # all vs selected.
     # 'show-test-description', 
@@ -4162,6 +4158,7 @@ if 'g.cls' in flags:
 # Reports, for TestRunner.run_tests.
 if 'all' in flags:
     reports = [
+        'no-trace-after-fail',
          # 'no-sync',
     ]
 else:
@@ -4503,7 +4500,8 @@ elif 2:
 <t tx="ekr.20191125063105.1"># All helpers have access to symbols defined at the top level,
 # namely flags, reports, reload_time and test_time.
 
-@others</t>
+@others
+</t>
 <t tx="ekr.20191125063255.1">def show_status():
     print('')
     if 'show-test-kind' in flags:
@@ -4555,6 +4553,8 @@ def run_tests():
             # if 'show-test-description' not in flags:
                 # print(f"\nFailed: {description}")
             fails.append(description)
+        if 'fail-fast' in flags:
+            break
     t2 = time.process_time()
     test_time = t2 - t1
     return fails, test_time
@@ -4702,7 +4702,6 @@ one(f"{'B'}" ": ")
 </t>
 <t tx="ekr.20191127172440.1">print("a\"b")</t>
 <t tx="ekr.20191128013505.1"></t>
-<t tx="ekr.20191128104415.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
 <t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
@@ -4752,23 +4751,5 @@ f'f1' ;
 # print(f'{7.1}', 'p7.2')
 # print(f'{8.1}', f'{8.2}')
 </t>
-<t tx="ekr.20191130165056.1">Failed tests:
-[
-    'test: f-string summary: joins, no f-expr',
-    'test: empty string',
-    'test: string with % op',
-    'test: ClassDef, FunctionDef',
-    'test: Operator: semicolon between statements',
-    'test: UnaryOp',
-    'test: if unary op',
-    'test: if, elif',
-    'test: if, elif + 2',
-    'test: if, else',
-    'test: if, else, if',
-    'test: ternary + if',
-    'test: Call, arguments &amp; keyword'
-]</t>
-<t tx="ekr.20191130165112.1"></t>
-<t tx="ekr.20191130165155.1"></t>
 </tnodes>
 </leo_file>
