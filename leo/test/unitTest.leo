@@ -357,7 +357,7 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191201064443.1"><vh>xx test: strings in ternary</vh></v>
+<v t="ekr.20191201064443.1"><vh>test: strings in ternary</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>

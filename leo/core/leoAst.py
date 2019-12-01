@@ -4958,16 +4958,29 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
 
     def generate_nodes(self, tree):
         """Entry: yield a stream of nodes."""
+        
+        self.file_name = '<no file name>'
+        self.level = 0
+        self.node = None
+        self.tokens = []
+        self.tree = tree
         yield from self.visitor(tree)
-
-    # Overrides...
-    
+        
+    # Override node visitors...
     def begin_visitor(self, node):
         if node:
             yield node
         
     def end_visitor(self, node):
         pass
+
+    # Other overrides...
+
+    # def advance_str(self, target_s=None):
+        # return []
+    
+    # def peek_if(self):
+        # return Token('string', 'if')
 
     def sync_token(self, kind, val):
         pass
