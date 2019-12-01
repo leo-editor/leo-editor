@@ -1071,9 +1071,10 @@ class TokenOrderGenerator:
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
         caller = g.callers(4).split(',')[-1]
-        print(f"\n{caller}: Error...\n")
-        # Don't change the message. It may contain aligned lines.
-        print(message)
+        if 0:
+            print(f"\n{caller}: Error...\n")
+            # Don't change the message. It may contain aligned lines.
+            print(message)
         return AssignLinksError(message)
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
@@ -1232,12 +1233,14 @@ class TokenOrderGenerator:
                 break  # Benign: use the token's value, a string, instead of a number.
             if self.is_significant_token(token):
                 # Unrecoverable sync failure.
-                pre_tokens = tokens[max(0, px-10):px+1]
-                g.trace('\nSync Failed...\n')
-                for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
-                    print(s)
+                if 0:
+                    pre_tokens = tokens[max(0, px-10):px+1]
+                    g.trace('\nSync Failed...\n')
+                    for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
+                        print(s)
+                line_s = f"line {token.line_number}:"
                 raise self.error(
-                    f"       line: {token.line_number}: {token.line.strip()}\n"
+                    f"{line_s:>12} {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{token.value}")
             # Skip the insignificant token.
@@ -1245,8 +1248,9 @@ class TokenOrderGenerator:
             px += 1
         else:
             # Unrecoverable sync failure.
-            g.trace('\nSYNC FAILED...')
-            g.printObj(tokens[max(0, px-5):], 'TOKENS')
+            if 0:
+                g.trace('\nSYNC FAILED...')
+                g.printObj(tokens[max(0, px-5):], 'TOKENS')
             raise self.error(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -1262,7 +1266,6 @@ class TokenOrderGenerator:
         token = tokens[px]
         if self.is_significant_token(token):
             self.set_links(node, token)
-        ### assert self.is_significant_token(token), (token, g.callers())
         else:
             if trace: g.trace('NOT SIGNIFICANT', px, token, g.callers())
         #

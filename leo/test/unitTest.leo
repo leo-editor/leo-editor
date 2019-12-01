@@ -357,7 +357,7 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191201064443.1"><vh>test: strings in ternary</vh></v>
+<v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
@@ -392,6 +392,7 @@
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
 <v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
+<v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
 <v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
 <v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
 <v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
@@ -4178,7 +4179,7 @@ else:
         'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
+        'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
@@ -4769,10 +4770,15 @@ r2(f=r'\f', r=r'\r', v=r'\v')
 r3(bs=r'\\')</t>
 <t tx="ekr.20191201064443.1"># leoFind.py line 856
 
-a = {'a' if x else 'b'}
+a = f"{'a' if x else 'b'}"
 f()
 </t>
 <t tx="ekr.20191201065409.1">print('hello\
 world')</t>
+<t tx="ekr.20191201072043.1">d = {
+    'a' if x else 'b': True,
+    }
+f()
+</t>
 </tnodes>
 </leo_file>
