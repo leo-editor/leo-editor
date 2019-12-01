@@ -357,22 +357,23 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
+<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
-<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
-<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
-<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
 <v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
-<v t="ekr.20191129035530.1"><vh>more</vh></v>
-</v>
+<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
 <v t="ekr.20191130102636.1"><vh>more</vh></v>
 </v>
-<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
@@ -4147,7 +4148,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     'fail-fast',
     'reload',
@@ -4169,7 +4170,7 @@ if 'all' in flags:
 if 0:
     # For large tests.
     reports = [
-        # 'show-exception-after-fail',
+        'show-exception-after-fail',
     ]
 else:
     # Use 'no-sync' option to compare parse trees.
@@ -4782,5 +4783,10 @@ world')</t>
     }
 f()
 </t>
+<t tx="ekr.20191201083823.1">func(
+    "Isearch"
+    f"{' Backward' if True else ''}"
+)
+print('done')</t>
 </tnodes>
 </leo_file>

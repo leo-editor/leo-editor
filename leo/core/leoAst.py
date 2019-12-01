@@ -1685,45 +1685,67 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
-        # node.values is a list of ast.Ast nodes, *not* a list of generators.
         trace = True and self.trace_mode
+        # node.values is a list of ast.Ast nodes, *not* a list of generators.
         assert isinstance(node.values, list)
         assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
         has_str = any((isinstance(z, ast.Str) for z in node.values))
         if trace:
             g.trace(f"\n===== START has_str: {has_str}\n")
             g.printObj([z.__class__.__name__ for z in node.values])
-        #
-        # Handle each item, but...
-        # The first item will be a string representing the *entire* f-string!
-        for i, item in enumerate(node.values):
-            # Compute the target string.
+        # Compute the target.
+        for item in node.values:
             if isinstance(item, ast.Str):
-                # item represents *one or more* 'string' tokens.
-                # Sync all those 'string' tokens to item.s.
                 target_s = item.s
-            else:
-                # item is a tree of ast.Ast nodes.
-                # Ignore this node completely.
-                    ### Sync to the next 'string' token.
-                    ### target_s = self.peek_next_str().value
-                continue ###
-            # Yield all the tokens.
+                break
+        else:
+            # Get the target from the *next* str.
+            token = self.peek_next_str()
+            target_s = token.value
+        if trace:
+            g.trace(f"\ntarget_s: {target_s}\n")
+        tokens = self.advance_str(target_s=target_s)
+        if not tokens:
+            raise self.error(f"no tokens from advance_str. target_s: {target_s}")
+        for token in tokens:
+            if token.kind != 'string':
+                raise self.error(f"not a string token: {token!r}")
             if trace:
-                g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
-            tokens = self.advance_str(target_s=target_s)
-            if not tokens:
-                raise self.error(f"no tokens from advance_str. target_s: {target_s}")
-            for token in tokens:
-                if token.kind != 'string':
-                    raise self.error(f"not a string token: {token!r}")
-                if trace:
-                    g.trace(f"\ngenerate 'string' {token.value}")
-                yield from self.gen_token('string', token.value)
-            break ### Experimental.
+                g.trace(f"\ngenerate 'string' {token.value}")
+            yield from self.gen_token('string', token.value)
         if trace:
             g.trace('\nEND -----\n')
-        
+            
+        if 0: ### Old code.
+            #
+            # Handle each item, but...
+            # The first item will be a string representing the *entire* f-string!
+            for i, item in enumerate(node.values):
+                # Compute the target string.
+                if isinstance(item, ast.Str):
+                    # item represents *one or more* 'string' tokens.
+                    # Sync all those 'string' tokens to item.s.
+                    target_s = item.s
+                else:
+                    # item is a tree of ast.Ast nodes.
+                    # Ignore this node completely.
+                        ### Sync to the next 'string' token.
+                        ### target_s = self.peek_next_str().value
+                    continue ###
+                # Yield all the tokens.
+                if trace:
+                    g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
+                tokens = self.advance_str(target_s=target_s)
+                if not tokens:
+                    raise self.error(f"no tokens from advance_str. target_s: {target_s}")
+                for token in tokens:
+                    if token.kind != 'string':
+                        raise self.error(f"not a string token: {token!r}")
+                    if trace:
+                        g.trace(f"\ngenerate 'string' {token.value}")
+                    yield from self.gen_token('string', token.value)
+                break ### Experimental.
+
         if 0: # This code has no chance of being useful.
             for z in node.values:
                 if self.trace_mode:
@@ -2014,7 +2036,7 @@ class TokenOrderGenerator:
         """
         Return the next 'string' token, *without* updating the string index.
         """
-        trace = False and self.trace_mode
+        trace = True and self.trace_mode
         i = self.string_index
         i1 = i
         i = self.next_str_index(i+1)
