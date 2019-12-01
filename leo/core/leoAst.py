@@ -1187,7 +1187,6 @@ class TokenOrderGenerator:
         """
         trace = False and self.trace_mode
         node, tokens = self.node, self.tokens
-        ### old_px, px = self.px + 1, self.px
         assert isinstance(node, ast.AST), repr(node)
         if not self.allow_sync:
             # A trace would be annoying and distracting.
@@ -1786,12 +1785,11 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str & helpers
-    # The index in self.tokens of the previously scanned 'string' token
+    # The index in self.tokens of the previously scanned 'string' token.
     string_index = -1 
 
     def do_Str(self, node):
         """This node represents a string constant."""
-        ### g.trace('===========', g.callers())
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
@@ -1825,6 +1823,7 @@ class TokenOrderGenerator:
         """
         #@-<< adjust_str_token docstring >>
         trace = False and self.trace_mode
+        tag = 'adjust_str_token'
         quotes = ("'", '"')
         rx0 = self.target_index
         r = self.target_string[rx0:]
@@ -1867,8 +1866,8 @@ class TokenOrderGenerator:
             r_quote = r_quotes = ''
         #
         # Quotes must match, if they exist in the remaining string.
-        if r_quotes and r_quotes != tv_quotes: ### len(r_quotes) != len(tv_quotes):
-            raise self.error(f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
+        if r_quotes and r_quotes != tv_quotes:
+            raise self.error(f"{tag}: Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
         #
         # Unescape escaped quotes.
         if r_quotes:
@@ -1876,6 +1875,7 @@ class TokenOrderGenerator:
             result = r_prefix + r_quotes + inner_s + r_quotes
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
+        result = result.replace(r'\b', '\b').replace(r'\n', '\n')
         #
         # For joined strings it's possible to exhaust the
         # target string *without* exhausting the present token!
@@ -1883,10 +1883,12 @@ class TokenOrderGenerator:
         # We should only check that the remainder is a *prefix* of the result.
         remainder = r[:len(result)]
         if not result.startswith(remainder):
-            raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
+            raise self.error(
+                f"{tag}: Mismatch: line: {token.line_number} "
+                f"result: {result!r} remainder: {remainder!r}")
         #
         # Now advance by the length of the remainder.
-        self.target_index = rx0 + len(remainder) ### len(result)
+        self.target_index = rx0 + len(remainder)
         if trace:
             g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result

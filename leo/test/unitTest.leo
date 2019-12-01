@@ -354,6 +354,11 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+</v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
@@ -371,6 +376,7 @@
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191201062631.1"><vh>test: line 751: leoFind.py</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
 </v>
@@ -409,11 +415,6 @@
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 </v>
-</v>
-<v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4161,6 +4162,11 @@ if 'all' in flags:
         'no-trace-after-fail',
          # 'no-sync',
     ]
+if 1:
+    # For large tests.
+    reports = [
+        # 'show-exception-after-fail',
+    ]
 else:
     # Use 'no-sync' option to compare parse trees.
     reports = [
@@ -4751,5 +4757,6 @@ f'f1' ;
 # print(f'{7.1}', 'p7.2')
 # print(f'{8.1}', f'{8.2}')
 </t>
+<t tx="ekr.20191201062631.1">func(char='\b')</t>
 </tnodes>
 </leo_file>
