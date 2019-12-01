@@ -1661,18 +1661,20 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr (***)
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
+        #@+<< do_JoinedStr docstring >>
+        #@+node:ekr.20191201090436.1: *6* << do_JoinedStr docstring >>
         """
         Fact 1: A JoinedStr node represents one or more f-strings and plain strings.
-        
+
         Fact 2: *All* f-strings appear in a JoinedStr, regardless of whether
                 those f-strings are concatenated with other plain strings or f-strings.
 
         Fact 3: node.values is a list of Str and FormattedValue nodes.
-        
+
         Fact 4: There is a many-to-many relationship between 'string' tokens
                 and the items in the node.values list.
                 
@@ -1685,14 +1687,23 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
-        trace = True and self.trace_mode
+        #@-<< do_JoinedStr docstring >>
+        trace = True ### and self.trace_mode
         # node.values is a list of ast.Ast nodes, *not* a list of generators.
         assert isinstance(node.values, list)
         assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
         has_str = any((isinstance(z, ast.Str) for z in node.values))
         if trace:
-            g.trace(f"\n===== START has_str: {has_str}\n")
-            g.printObj([z.__class__.__name__ for z in node.values])
+            indent = ' ' * 4
+            g.trace(f"\n===== START has_str: {has_str}")
+            for i, z in enumerate(node.values):
+                if isinstance(z, ast.Str):
+                    print(f"{indent}{i}: {z.s}")
+                    continue
+                if isinstance(z.value, ast.Str):
+                    print(f"{indent}{i}: {z.__class__.__name__} value.s: {z.value.s}")
+                else:
+                    print(f"{indent}{i}: {z.__class__.__name__} value: {z.value.__class__.__name__}")
         # Compute the target.
         for item in node.values:
             if isinstance(item, ast.Str):
@@ -1702,8 +1713,17 @@ class TokenOrderGenerator:
             # Get the target from the *next* str.
             token = self.peek_next_str()
             target_s = token.value
+            
+        yield from self.joined_str_helper(target_s)
         if trace:
-            g.trace(f"\ntarget_s: {target_s}\n")
+            g.trace('END -----\n')
+            
+    #@+node:ekr.20191201091623.1: *6* tog.joined_str_helper
+    def joined_str_helper(self, target_s):
+        """Sync tokens from item in ast.JoinedStr.values."""
+        trace = True ### and self.trace_mode
+        if trace:
+            g.trace(f"\ntarget_s: {target_s}")
         tokens = self.advance_str(target_s=target_s)
         if not tokens:
             raise self.error(f"no tokens from advance_str. target_s: {target_s}")
@@ -1711,50 +1731,8 @@ class TokenOrderGenerator:
             if token.kind != 'string':
                 raise self.error(f"not a string token: {token!r}")
             if trace:
-                g.trace(f"\ngenerate 'string' {token.value}")
+                g.trace(f"generate 'string' {token.value}")
             yield from self.gen_token('string', token.value)
-        if trace:
-            g.trace('\nEND -----\n')
-            
-        if 0: ### Old code.
-            #
-            # Handle each item, but...
-            # The first item will be a string representing the *entire* f-string!
-            for i, item in enumerate(node.values):
-                # Compute the target string.
-                if isinstance(item, ast.Str):
-                    # item represents *one or more* 'string' tokens.
-                    # Sync all those 'string' tokens to item.s.
-                    target_s = item.s
-                else:
-                    # item is a tree of ast.Ast nodes.
-                    # Ignore this node completely.
-                        ### Sync to the next 'string' token.
-                        ### target_s = self.peek_next_str().value
-                    continue ###
-                # Yield all the tokens.
-                if trace:
-                    g.trace(f"\n----- item: {i} {item.__class__.__name__} target: {target_s}\n")
-                tokens = self.advance_str(target_s=target_s)
-                if not tokens:
-                    raise self.error(f"no tokens from advance_str. target_s: {target_s}")
-                for token in tokens:
-                    if token.kind != 'string':
-                        raise self.error(f"not a string token: {token!r}")
-                    if trace:
-                        g.trace(f"\ngenerate 'string' {token.value}")
-                    yield from self.gen_token('string', token.value)
-                break ### Experimental.
-
-        if 0: # This code has no chance of being useful.
-            for z in node.values:
-                if self.trace_mode:
-                    g.trace('\nitem:', z.__class__.__name__)
-                if isinstance(z, ast.FormattedValue):
-                   yield from self.gen(z)
-                else:
-                    assert isinstance(z, ast.Str), repr(z)
-                    yield from self.gen(z)
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -2579,7 +2557,7 @@ class AstDumper:
                 else:
                     results.append(z.__class__.__name__)
                     fstrings += 1
-            if True:
+            if False:
                 g.printObj(results, tag='AstDumper.show_fields: JoinedStr')
             # result = '::'.join(results)
             # val = f": values={result}"
@@ -4774,7 +4752,7 @@ class Token:
         if brief:
             return (
                 f"{self.index:>3} line: {self.line_number:<2} "
-                f"{self.kind:>11} {self.show_val(15):<15}")
+                f"{self.kind:>11} {self.show_val(80)}")
         # Let block.
         children = getattr(self.node, 'children', [])
         node_id = obj_id(self.node) if self.node else ''

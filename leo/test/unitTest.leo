@@ -357,22 +357,26 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
+<v t="ekr.20191130102636.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191201090917.1"><vh>ignore: Failures</vh>
 <v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
-<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191129033147.1"></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
+<v t="ekr.20191201083823.1"></v>
 <v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
 <v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
-<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
-<v t="ekr.20191130102636.1"><vh>more</vh></v>
-</v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
-<v t="ekr.20191129035530.1"><vh>more</vh></v>
-</v>
-<v t="ekr.20191127134726.1"><vh>test: leoFind.py: line 861</vh></v>
+<v t="ekr.20191129033147.1"></v>
+<v t="ekr.20191126002258.1"></v>
+<v t="ekr.20191127134726.1"></v>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
@@ -383,6 +387,9 @@
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -4148,9 +4155,9 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
-    'fail-fast',
+    # 'fail-fast',
     'reload',
     'show-test-kind', # all vs selected.
     # 'show-test-description', 
@@ -4177,13 +4184,13 @@ else:
     reports = [
         # 'no-sync',
         'dump-sources-first',
-        'dump-raw-tree-first',
+        # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
-        # 'dump-tree-after-fail',
+        'dump-tree-after-fail',
         # 'dump-all-after-fail',
         # 'dump-contents',
         # 'dump-raw-tree',
@@ -4715,19 +4722,20 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128013505.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
-<t tx="ekr.20191129033147.1">print(f'f1.1' 'p1.2')
-print('p2.1' 'p2.2')
-print(f'f3.1' f'f3.2')
-'---'
-print(f'{7.1}' 'p7.2')
-print(f'{8.1}' f'{8.2}')
+<t tx="ekr.20191129033147.1">print(f'{7.1}' 'p7.2')
 'end'
+
+# print(f'f1.1' 'p1.2')
+# print('p2.1' 'p2.2')
+# print(f'f3.1' f'f3.2')
+# '---'
+# print(f'{7.1}' 'p7.2')
+# print(f'{8.1}' f'{8.2}')
+# 'end'
 </t>
 <t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
 print(f'x2{e2}y2', f'f2')
 print(f'x3{e3}y3', f'x4{e4}y4')
-
-print(f"{'B'}" ":") # leoFind.py: line 861
 print('end')</t>
 <t tx="ekr.20191129033359.1">print(f'x1{e1}y1{e2}z1', 'p1')
 print(f'x2{e3}y2{e3}z2', f'f2')
@@ -4788,5 +4796,13 @@ f()
     f"{' Backward' if True else ''}"
 )
 print('done')</t>
+<t tx="ekr.20191201090917.1">Failed tests:
+[
+    'test: f-string leoFind.py line 856',
+    'test: f-string summary: joins + 1 f-expr',
+    'test: f-string summary: joins, no f-expr',
+    'test: f-string summary: no joins',
+    'test: leoFind.py: line 861'
+]</t>
 </tnodes>
 </leo_file>
