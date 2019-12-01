@@ -1071,11 +1071,12 @@ class TokenOrderGenerator:
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
         caller = g.callers(4).split(',')[-1]
+        header = f"{caller}:...\n"
         if 0:
             print(f"\n{caller}: Error...\n")
             # Don't change the message. It may contain aligned lines.
             print(message)
-        return AssignLinksError(message)
+        return AssignLinksError(header+message)
     #@+node:ekr.20191121180100.1: *3* tog.gen*
     # Useful wrappers.
 
@@ -1661,20 +1662,18 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(e, g.callers())
 
-    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr & helper
+    #@+node:ekr.20191113063144.41: *5* tog.JoinedStr & helpers
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
-        #@+<< do_JoinedStr docstring >>
-        #@+node:ekr.20191201090436.1: *6* << do_JoinedStr docstring >>
         """
         Fact 1: A JoinedStr node represents one or more f-strings and plain strings.
 
         Fact 2: *All* f-strings appear in a JoinedStr, regardless of whether
                 those f-strings are concatenated with other plain strings or f-strings.
-
+        
         Fact 3: node.values is a list of Str and FormattedValue nodes.
-
+        
         Fact 4: There is a many-to-many relationship between 'string' tokens
                 and the items in the node.values list.
                 
@@ -1687,41 +1686,50 @@ class TokenOrderGenerator:
         Fact 5: This code, and *only* this code, must handle these complications.
                 There is *no way* that visiting an FormattedValue tree can be useful.
         """
-        #@-<< do_JoinedStr docstring >>
-        trace = True ### and self.trace_mode
-        # node.values is a list of ast.Ast nodes, *not* a list of generators.
+        if self.trace_mode:
+            self.trace_joined_str(node)
+        for target_s in self.compute_joined_targets(node):
+            yield from self.yield_joined_tokens(target_s)
+    #@+node:ekr.20191201124454.1: *6* tog.compute_joined_targets ***
+    def compute_joined_targets(self, node):
+        """Compute the target strings that must be synced."""
+        trace = self.trace_mode
         assert isinstance(node.values, list)
-        assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
-        has_str = any((isinstance(z, ast.Str) for z in node.values))
-        if trace:
-            indent = ' ' * 4
-            g.trace(f"\n===== START has_str: {has_str}")
-            for i, z in enumerate(node.values):
-                if isinstance(z, ast.Str):
-                    print(f"{indent}{i}: {z.s}")
-                    continue
-                if isinstance(z.value, ast.Str):
-                    print(f"{indent}{i}: {z.__class__.__name__} value.s: {z.value.s}")
-                else:
-                    print(f"{indent}{i}: {z.__class__.__name__} value: {z.value.__class__.__name__}")
-        # Compute the target.
+        targets = []
+        # i is a *local* copy of the string index.
+        i = self.string_index
         for item in node.values:
-            if isinstance(item, ast.Str):
-                target_s = item.s
-                break
-        else:
+            assert isinstance(item, (ast.Str, ast.FormattedValue))
             # Get the target from the *next* str.
-            token = self.peek_next_str()
-            target_s = token.value
-            
-        yield from self.joined_str_helper(target_s)
+            i = self.next_str_index(i+1) 
+            if i >= len(self.tokens):
+                raise self.error(f"{item.__class__.__name__}: End of tokens")
+            token = self.tokens[i]
+            # g.trace(f"{cn:>14} i: {i:<2} {token!s}")
+            targets.append(token.value)
         if trace:
-            g.trace('END -----\n')
-            
-    #@+node:ekr.20191201091623.1: *6* tog.joined_str_helper
-    def joined_str_helper(self, target_s):
+            g.trace('\nTargets...')
+            for target in targets:
+                print(f"  {target:s}")
+        return targets
+    #@+node:ekr.20191201095147.1: *6* tog.trace_joined_str
+    def trace_joined_str(self, node):
+        """Show the components of the JoinedStr node."""
+        ### has_str = any((isinstance(z, ast.Str) for z in node.values))
+        indent = ' ' * 4
+        print('\nJoinedStr.values...')
+        for i, z in enumerate(node.values):
+            cn = z.__class__.__name__
+            if isinstance(z, ast.Str):
+                print(f"{indent}{i}: Str: {z.s}")
+            elif isinstance(z.value, ast.Str):
+                print(f"{indent}{i}: {cn} value.Str: {z.value.s}")
+            else:
+                print(f"{indent}{i}: {cn} value: {z.value.__class__.__name__}")
+    #@+node:ekr.20191201091623.1: *6* tog.yield_joined_tokens
+    def yield_joined_tokens(self, target_s):
         """Sync tokens from item in ast.JoinedStr.values."""
-        trace = True ### and self.trace_mode
+        trace = self.trace_mode
         if trace:
             g.trace(f"\ntarget_s: {target_s}")
         tokens = self.advance_str(target_s=target_s)
@@ -1797,7 +1805,7 @@ class TokenOrderGenerator:
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token ***
+    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
     prefix_pat = re.compile(r"([fFrR])")
 
     def adjust_str_token(self, token):

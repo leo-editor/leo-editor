@@ -357,8 +357,12 @@
 <v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191129033147.1"><vh>test: f-string summary: joins, no f-expr</vh>
-<v t="ekr.20191130102636.1"><vh>more</vh></v>
+<v t="ekr.20191201130338.1"><vh>RUN: passed f-string cases</vh>
+<v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
+<v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
+<v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
+<v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
 </v>
 <v t="ekr.20191201090917.1"><vh>ignore: Failures</vh>
 <v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
@@ -4174,8 +4178,8 @@ if 'all' in flags:
         'no-trace-after-fail',
          # 'no-sync',
     ]
-if 0:
-    # For large tests.
+elif 1:
+    # Summary only.
     reports = [
         'show-exception-after-fail',
     ]
@@ -4755,21 +4759,6 @@ print('end')
 <t tx="ekr.20191129042702.1">'p1' ;
 f'f1' ;
 'done' ;</t>
-<t tx="ekr.20191130102636.1"># print('p2.1' 'p2.2')
-# print(f'f3.1' f'f3.2')
-# '---'
-# print(f'{7.1}' 'p7.2')
-# print(f'{8.1}' f'{8.2}')
-# 'end'
-
-# Uninteresting.
-# print(f'f4.1', 'p4.2')
-# print('p5.1', 'p5.2')
-# print(f'f6.1', f'f6.2')
-
-# print(f'{7.1}', 'p7.2')
-# print(f'{8.1}', f'{8.2}')
-</t>
 <t tx="ekr.20191201062631.1">f1(a='\b', b='\n', t='\t')
 f2(f='\f', r='\r', v='\v')
 f3(bs='\\')
@@ -4804,5 +4793,17 @@ print('done')</t>
     'test: f-string summary: no joins',
     'test: leoFind.py: line 861'
 ]</t>
+<t tx="ekr.20191201124815.1">print(f'{7.1}')
+print('end')
+</t>
+<t tx="ekr.20191201130338.1"></t>
+<t tx="ekr.20191201131734.1">print('p1' f'{f2}')
+'end'</t>
+<t tx="ekr.20191201134842.1">print(f'{f1}' f'{f2}')
+'end'
+</t>
+<t tx="ekr.20191201135548.1">print('s1', f'{f2}' f'f3' f'{f4}' 's5')
+'end'
+</t>
 </tnodes>
 </leo_file>
