@@ -4772,7 +4772,9 @@ r3(bs=r'\\')</t>
 
 a = f"{'a' if x else 'b'}"
 f()
-</t>
+
+# Pass
+# print(f"{'a' if x else 'b'}")</t>
 <t tx="ekr.20191201065409.1">print('hello\
 world')</t>
 <t tx="ekr.20191201072043.1">d = {

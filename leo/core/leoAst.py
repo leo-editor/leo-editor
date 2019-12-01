@@ -1688,9 +1688,10 @@ class TokenOrderGenerator:
         # node.values is a list of ast.Ast nodes, *not* a list of generators.
         trace = True and self.trace_mode
         assert isinstance(node.values, list)
-        assert all([isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values])
+        assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
+        has_str = any((isinstance(z, ast.Str) for z in node.values))
         if trace:
-            g.trace('\n===== START\n')
+            g.trace(f"\n===== START has_str: {has_str}\n")
             g.printObj([z.__class__.__name__ for z in node.values])
         #
         # Handle each item, but...
