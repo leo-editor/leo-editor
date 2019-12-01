@@ -1623,7 +1623,7 @@ class TokenOrderGenerator:
     def do_Index(self, node):
 
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue (never called!)
+    #@+node:ekr.20191113063144.39: *5* tog.FormattedValue: not called!
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):
