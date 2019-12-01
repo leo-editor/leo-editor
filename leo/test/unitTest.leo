@@ -354,10 +354,13 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191119203945.1"><vh>xx file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>xx line 363 file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191201130338.1"><vh>RUN: passed f-string cases</vh>
+<v t="ekr.20191125151346.1"><vh>RUN: file tests</vh>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+</v>
+<v t="ekr.20191201130338.1"><vh>ignore: passed f-string cases</vh>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
 <v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
@@ -391,9 +394,6 @@
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
-</v>
-<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -4176,12 +4176,14 @@ if 'g.cls' in flags:
 if 'all' in flags:
     reports = [
         'no-trace-after-fail',
-         # 'no-sync',
+        # 'no-sync', # To test speed.
     ]
 elif 1:
-    # Summary only.
+    # Summary/files tests
     reports = [
+        'set-test-mode',
         'show-exception-after-fail',
+        'trace-times',
     ]
 else:
     # Use 'no-sync' option to compare parse trees.
@@ -4514,7 +4516,7 @@ elif 2:
     pass
     pass
 </t>
-<t tx="ekr.20191123203957.1"></t>
+<t tx="ekr.20191123203957.1"># line 363 </t>
 <t tx="ekr.20191123210801.1">if -(2):
     pass
 </t>

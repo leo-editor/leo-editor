@@ -976,6 +976,7 @@ class TokenOrderGenerator:
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
         
+    test_mode = False
     trace_mode = False
 
     #@+others
@@ -1173,8 +1174,6 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.7: *3* tog.sync_token & set_links
     px = -1 # Index of the previous *significant* token.
 
-    allow_sync = True  # Can be set to false by test runner.
-
     def sync_token(self, kind, val):
         """
         Handle a token whose kind & value are given.
@@ -1190,7 +1189,7 @@ class TokenOrderGenerator:
         trace = False and self.trace_mode
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if not self.allow_sync:
+        if self.test_mode:
             # A trace would be annoying and distracting.
             return
         if trace:
@@ -1936,6 +1935,8 @@ class TokenOrderGenerator:
         else:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
+        if self.test_mode:
+            return [Token('string', 'xxx')]
         #
         # Set the ivars for adjust_str_token.
         self.target_index = 0
@@ -2276,7 +2277,8 @@ class TokenOrderGenerator:
         advance, peek = self.advance_if, self.peek_if
         # Consume the if-item.
         token_value = peek().value
-        assert token_value in ('if', 'elif'), (token_value, g.callers())
+        if not self.test_mode:
+            assert token_value in ('if', 'elif'), (token_value, g.callers())
         advance()
         # If or elif line...
             # if %s:\n
@@ -4514,8 +4516,8 @@ class TestRunner:
             'dump-tokens-after-fail',
             'dump-tokens-first',
             'dump-tree-after-fail',
-            'no-sync',
             'no-trace-after-fail',
+            'set-test-mode', # Suppress almost all tests.
             'set-trace-mode',
             'show-exception-after-fail',
             'use-asttokens',
@@ -4543,8 +4545,7 @@ class TestRunner:
         else:
             x = self.x = TokenOrderInjector()
             x.trace_mode = 'set-trace-mode' in flags
-            if 'no-sync' in flags:
-                x.allow_sync = False
+            x.test_mode = 'set-test-mode' in flags
                 # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources, trace_mode='trace-tokenizer-tokens' in flags)
             if 'dump-tokens-first' in flags:
