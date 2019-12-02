@@ -1072,7 +1072,7 @@ class TokenOrderGenerator:
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
         caller = g.callers(4).split(',')[-1]
-        header = f"{caller}:...\n"
+        header = f"AssignLinkError: caller: {caller}\n"
         if 0:
             print(f"\n{caller}: Error...\n")
             # Don't change the message. It may contain aligned lines.
@@ -1680,41 +1680,30 @@ class TokenOrderGenerator:
                   The item represents *one or more* 'string' tokens.
           
                 - if isinstance(item, ast.FormattedValue):
-                  The item is a tree of ast.Ast node representing *one* 'string' token.
-                  
-        Fact 5: This code, and *only* this code, must handle these complications.
-                There is *no way* that visiting an FormattedValue tree can be useful.
+                  The item is a tree of ast.Ast nodes representing *one* {expression}.
         """
         if self.trace_mode:
             self.trace_joined_str(node)
-        for target_s in self.compute_joined_targets(node):
-            yield from self.yield_joined_tokens(target_s)
-    #@+node:ekr.20191201124454.1: *6* tog.compute_joined_targets ***
-    def compute_joined_targets(self, node):
-        """Compute the target strings that must be synced."""
-        trace = self.trace_mode
+        if 0: # Old, partly works.
+            for target_s in self.compute_joined_targets(node):
+                yield from self.yield_joined_tokens(target_s)
+            return
         assert isinstance(node.values, list)
-        targets = []
-        # i is a *local* copy of the string index.
-        i = self.string_index
+        tokens = []
         for item in node.values:
             assert isinstance(item, (ast.Str, ast.FormattedValue))
-            # Get the target from the *next* str.
-            i = self.next_str_index(i+1) 
-            if i >= len(self.tokens):
-                raise self.error(f"{item.__class__.__name__}: End of tokens")
+            # advance_str may return more than one token.
+            i = self.next_str_index(self.string_index+1)
             token = self.tokens[i]
-            # g.trace(f"{cn:>14} i: {i:<2} {token!s}")
-            targets.append(token.value)
-        if trace:
-            g.trace('\nTargets...')
-            for target in targets:
-                print(f"  {target:s}")
-        return targets
+            token_list = self.advance_str(target_s=token.value)
+            tokens.extend(token_list)
+            if len(tokens) >= len(node.values):
+                break
+        for token in tokens:
+            yield from self.gen_token('string', token.value)
     #@+node:ekr.20191201095147.1: *6* tog.trace_joined_str
     def trace_joined_str(self, node):
         """Show the components of the JoinedStr node."""
-        ### has_str = any((isinstance(z, ast.Str) for z in node.values))
         indent = ' ' * 4
         print('\nJoinedStr.values...')
         for i, z in enumerate(node.values):
@@ -1723,9 +1712,36 @@ class TokenOrderGenerator:
                 print(f"{indent}{i}: Str: {z.s}")
             elif isinstance(z.value, ast.Str):
                 print(f"{indent}{i}: {cn} value.Str: {z.value.s}")
+            elif isinstance(z.value, ast.Name):
+                 print(f"{indent}{i}: {cn} value.Name: {z.value.id}")
             else:
                 print(f"{indent}{i}: {cn} value: {z.value.__class__.__name__}")
-    #@+node:ekr.20191201091623.1: *6* tog.yield_joined_tokens
+    #@+node:ekr.20191201124454.1: *6* tog.compute_joined_targets (old)
+    def compute_joined_targets(self, node):
+        """Compute the target strings that must be synced."""
+        trace = self.trace_mode
+        assert isinstance(node.values, list)
+        targets = []
+        # i is a *local* copy of the string index.
+        i = self.string_index
+        if trace:
+            g.trace('Enter', i, self.tokens[i])
+        for item in node.values:
+            assert isinstance(item, (ast.Str, ast.FormattedValue))
+            # Get the target from the *next* str.
+            i = self.next_str_index(i+1) 
+            if i >= len(self.tokens):
+                raise self.error(f"{item.__class__.__name__}: End of tokens")
+            token = self.tokens[i]
+            if trace:
+                g.trace(f"{item.__class__.__name__:>14} i: {i:<2} {token!s}")
+            targets.append(token.value)
+        if trace:
+            g.trace('\nTargets...')
+            for target in targets:
+                print(f"  {target:s}")
+        return targets
+    #@+node:ekr.20191201091623.1: *6* tog.yield_joined_tokens (old)
     def yield_joined_tokens(self, target_s):
         """Sync tokens from item in ast.JoinedStr.values."""
         trace = self.trace_mode
@@ -1916,7 +1932,6 @@ class TokenOrderGenerator:
     # For adjust_str_token.
     target_index = 0
     target_string = None
-    ### continued_token = False
 
     def advance_str(self, target_s=None):
         """
@@ -2001,9 +2016,12 @@ class TokenOrderGenerator:
         self.string_index = i
         check_progress()
         if trace:
-            g.trace(f"END i: {i} return: {results_s!r}\n")
-                # {accumulated_results()}
-            g.printObj(results)
+            g.trace(f"END i: {i} return: {results_s!s}\n[")
+                # len(accumulated): {len(accumulated_results)}
+            if 0:
+                for i, z in enumerate(results):
+                    print(f"  {i:>3} {z!s}")
+                print(']')
         return results
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
@@ -4744,10 +4762,10 @@ class Token:
         self.node = None
 
     def __repr__(self):
-        return f"{self.kind:>11} {self.show_val()}"
+        return f"{self.kind:>11} {self.show_val(80)}"
 
     def __str__(self):
-        return f"{self.kind} {self.show_val()}"
+        return f"{self.kind} {self.show_val(80)}"
 
     def to_string(self):
         """Return the contribution of the token to the source file."""

@@ -354,26 +354,27 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191201064058.1"><vh>xx fail test: raw escaped strings</vh></v>
-<v t="ekr.20191125151346.1"><vh>RUN: file tests</vh>
+<v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
+<v t="ekr.20191201182845.1"><vh>xx test: f-strings: complex</vh></v>
+<v t="ekr.20191201090917.1"><vh>ignore: Failures</vh>
+<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
+<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
-<v t="ekr.20191201130338.1"><vh>ignore: passed f-string cases</vh>
+<v t="ekr.20191201130338.1"><vh>ignore: f-string cases</vh>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
 <v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
 <v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
 <v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
-</v>
-<v t="ekr.20191201090917.1"><vh>ignore: Failures</vh>
-<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
-<v t="ekr.20191129033147.1"></v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
-<v t="ekr.20191129035530.1"><vh>more</vh></v>
-</v>
-<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -433,6 +434,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20191201201239.1"><vh>f-string tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4178,25 +4180,25 @@ if 'all' in flags:
         'no-trace-after-fail',
         # 'no-sync', # To test speed.
     ]
-elif 1:
+elif 0:
     # Summary/files tests
     reports = [
-        'set-test-mode',
-        'show-exception-after-fail',
-        'trace-times',
+        # 'set-test-mode',
+        # 'show-exception-after-fail',
+        # 'trace-times',
     ]
 else:
     # Use 'no-sync' option to compare parse trees.
-    reports = [
+    reports = [ 
         # 'no-sync',
         'dump-sources-first',
-        # 'dump-raw-tree-first',
+        'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
-        # 'show-exception-after-fail',
+        'set-trace-mode',  # Sets TOG.trace_mode.
+        'show-exception-after-fail',
         # 'dump-tokens-after-fail',
-        'dump-tree-after-fail',
+        # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
         # 'dump-contents',
         # 'dump-raw-tree',
@@ -4787,14 +4789,12 @@ f()
     f"{' Backward' if True else ''}"
 )
 print('done')</t>
-<t tx="ekr.20191201090917.1">Failed tests:
-[
-    'test: f-string leoFind.py line 856',
-    'test: f-string summary: joins + 1 f-expr',
-    'test: f-string summary: joins, no f-expr',
-    'test: f-string summary: no joins',
-    'test: leoFind.py: line 861'
-]</t>
+<t tx="ekr.20191201090917.1">'test: f-string summary: no joins',
+'test: f-string summary: joins + 1 f-expr',
+'test: f-string summary: joins + 2 f-exprs',
+'test: f-string summary: no joins',
+'test: print one f-string',
+</t>
 <t tx="ekr.20191201124815.1">print(f'{7.1}')
 print('end')
 </t>
@@ -4807,5 +4807,10 @@ print('end')
 <t tx="ekr.20191201135548.1">print('s1', f'{f2}' f'f3' f'{f4}' 's5')
 'end'
 </t>
+<t tx="ekr.20191201182845.1">f'x1{e1}y1' ;
+'done'
+</t>
+<t tx="ekr.20191201201239.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
+<t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
 </tnodes>
 </leo_file>
