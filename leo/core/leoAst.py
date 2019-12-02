@@ -1690,23 +1690,18 @@ class TokenOrderGenerator:
         """
         if self.trace_mode:
             self.trace_joined_str(node)
-        if 0: # Old, partly works.
+        if 0: # Old, partly works. For testing.
             for target_s in self.compute_joined_targets(node):
                 yield from self.yield_joined_tokens(target_s)
             return
-        assert isinstance(node.values, list)
-        tokens = []
-        for item in node.values:
-            assert isinstance(item, (ast.Str, ast.FormattedValue))
-            # advance_str may return more than one token.
-            i = self.next_str_index(self.string_index+1)
-            token = self.tokens[i]
-            token_list = self.advance_str(target_s=token.value)
-            tokens.extend(token_list)
-            if len(tokens) >= len(node.values):
-                break
-        for token in tokens:
-            yield from self.gen_token('string', token.value)
+        # Handle all the complications.
+        tokens = self.get_joined_tokens(node)
+        if self.trace_mode:
+            g.trace('tokens...')
+            for z in tokens:
+                print(f"  {z!s}")
+        for z in tokens:
+            yield from self.gen_token(z.kind, z.value)
     #@+node:ekr.20191201095147.1: *6* tog.trace_joined_str
     def trace_joined_str(self, node):
         """Show the components of the JoinedStr node."""
@@ -1762,6 +1757,73 @@ class TokenOrderGenerator:
             if trace:
                 g.trace(f"generate 'string' {token.value}")
             yield from self.gen_token('string', token.value)
+    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens (new)
+    def get_joined_tokens(self, node):
+        """
+        Return one or more 'string' tokens corresponding to the items in node.values.
+        
+        The docstring for do_JoinedStr, describes the complex (many-to-many)
+        relationship between 'string' tokens and node.values.
+        
+        **Strategy**
+        
+        There is no easy way to compute the string corresponding to the tree
+        of ast nodes whose root is FormattedValue.value.
+        
+        Instead, for each 'string' token, tog.count_string_parts returns:
+        
+        - The number of f-expressions in the 'string' token.
+        - The number of **string parts** of the 'string token.
+        
+        At last we can unravel the many-to-many relationship:
+        
+        - Consume one Str item for each string part.
+        - Consume one FormattedStr node for each f-expression.
+        """
+        assert isinstance(node.values, list)
+        assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
+        count, results = 0, []
+        while count < len(node.values):
+            count_progress = count
+            i = self.next_str_index(self.string_index+1) 
+            if i >= len(self.tokens):
+                raise self.error(f"End of tokens")
+            look_ahead_token = self.tokens[i]
+            # Tell advance_str to completely consume the next 'string' token.
+            # That is, don't have advance_str check that self.node is an ast.Str.
+            tokens = self.advance_str(target_s=look_ahead_token.value)
+            assert tokens and len(tokens) == 1
+            ###for token in tokens: ###
+            token = tokens[0]
+            assert isinstance(token, Token)
+            results.append(token)
+            fstrings, strings = self.count_string_parts(token)
+            # Consume items.
+            while fstrings or strings:
+                string_progress = fstrings + strings
+                if count >= len(node.values):
+                    raise self.error(f"{count} not enough items")
+                item = node.values[count]
+                count += 1
+                if isinstance(item, ast.Str):
+                    if strings == 0:
+                        raise self.error('No Str items remain')
+                    strings -= 1
+                else:
+                    if fstrings == 0:
+                        raise self.error('No FormattedValue items remain')
+                    fstrings -= 1
+                assert fstrings + strings < string_progress 
+            assert count_progress < count
+        return results
+    #@+node:ekr.20191202051238.1: *6* tog.count_string_parts (new)
+    def count_string_parts(self, token):
+        """
+        Calculate the number of string parts and f-string parts in the given 'string' token.
+        
+        Return (n_fstrings, n_strings).
+        """
+        return 1, 0 # For the particular unit test.
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
