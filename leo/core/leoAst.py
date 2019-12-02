@@ -976,7 +976,6 @@ class TokenOrderGenerator:
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
         
-    test_mode = False
     trace_mode = False
 
     #@+others
@@ -1189,9 +1188,6 @@ class TokenOrderGenerator:
         trace = False and self.trace_mode
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if self.test_mode:
-            # A trace would be annoying and distracting.
-            return
         if trace:
             # Don't add needless repr's!
             val_s = val if kind in ('name', 'string') else repr(val)
@@ -1690,10 +1686,10 @@ class TokenOrderGenerator:
         """
         if self.trace_mode:
             self.trace_joined_str(node)
-        if 0: # Old, partly works. For testing.
-            for target_s in self.compute_joined_targets(node):
-                yield from self.yield_joined_tokens(target_s)
-            return
+        ### Old, partly works. For testing.
+            # for target_s in self.compute_joined_targets(node):
+                # yield from self.yield_joined_tokens(target_s)
+            # return
         # Handle all the complications.
         tokens = self.get_joined_tokens(node)
         if self.trace_mode:
@@ -1717,47 +1713,7 @@ class TokenOrderGenerator:
                  print(f"{indent}{i}: {cn} value.Name: {z.value.id}")
             else:
                 print(f"{indent}{i}: {cn} value: {z.value.__class__.__name__}")
-    #@+node:ekr.20191201124454.1: *6* tog.compute_joined_targets (old)
-    def compute_joined_targets(self, node):
-        """Compute the target strings that must be synced."""
-        trace = self.trace_mode
-        assert isinstance(node.values, list)
-        targets = []
-        # i is a *local* copy of the string index.
-        i = self.string_index
-        if trace:
-            g.trace('Enter', i, self.tokens[i])
-        for item in node.values:
-            assert isinstance(item, (ast.Str, ast.FormattedValue))
-            # Get the target from the *next* str.
-            i = self.next_str_index(i+1) 
-            if i >= len(self.tokens):
-                raise self.error(f"{item.__class__.__name__}: End of tokens")
-            token = self.tokens[i]
-            if trace:
-                g.trace(f"{item.__class__.__name__:>14} i: {i:<2} {token!s}")
-            targets.append(token.value)
-        if trace:
-            g.trace('\nTargets...')
-            for target in targets:
-                print(f"  {target:s}")
-        return targets
-    #@+node:ekr.20191201091623.1: *6* tog.yield_joined_tokens (old)
-    def yield_joined_tokens(self, target_s):
-        """Sync tokens from item in ast.JoinedStr.values."""
-        trace = self.trace_mode
-        if trace:
-            g.trace(f"\ntarget_s: {target_s}")
-        tokens = self.advance_str(target_s=target_s)
-        if not tokens:
-            raise self.error(f"no tokens from advance_str. target_s: {target_s}")
-        for token in tokens:
-            if token.kind != 'string':
-                raise self.error(f"not a string token: {token!r}")
-            if trace:
-                g.trace(f"generate 'string' {token.value}")
-            yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens (new)
+    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens
     def get_joined_tokens(self, node):
         """
         Return one or more 'string' tokens corresponding to the items in node.values.
@@ -1817,20 +1773,19 @@ class TokenOrderGenerator:
                 assert fstrings + strings < string_progress 
             assert count_progress < count
         return results
-    #@+node:ekr.20191202051238.1: *6* tog.count_string_parts (new) & helpers
+    #@+node:ekr.20191202051238.1: *6* tog.count_string_parts & helpers
     def count_string_parts(self, token):
         """
         Calculate the number of string parts and f-expressions in the given 'string' token.
         
         Return (f_expressions, string_parts).
         """
-        g.trace(f"{token!s}")
+        # g.trace(f"{token!s}")
         s = token.value
         i, f_expressions, string_parts = 0, 0, 0
         try:
             while i < len(s):
                 progress = i
-                g.trace(i, repr(s[i]))
                 if s[i] in 'fFrR':
                     i, fexprs, strings = self.scan_fstring(s, i)
                     f_expressions += fexprs
@@ -1858,24 +1813,26 @@ class TokenOrderGenerator:
         """
         def starts_fexpr(s, i):
             return s[i] == '{' and s[i:i+2] != '{{'
-            
+
         def ends_fexpr(s, i):
             return s[i] == '}' and s[i:i+2] != '}}'
-
-        assert s[i] in 'fFrR'
+        #
+        # Ensure the f-string starts properly.
+        if s[i] not in 'fFrR':
+            raise SyntaxError('f-string does not start properly')
         while s[i] in 'fFrR':
             i += 1
         delim = s[i]
         i += 1
         if delim not in ('"', "'"):
-            raise SyntaxError('f-string does not start with a quote')
+            raise SyntaxError('missing quote in f-string')
+        #
         # scan for the closing delim, updating the counts.
         fexprs, parts = 0, 0
         in_fexpr = False
         might_start_part = True
         while s[i] != delim:
             progress = i
-            # g.trace(i, s[i], might_start_part)
             if s[i] == '\\':
                 if in_fexpr:
                     raise SyntaxError('backslash inside f-expression')
@@ -1910,7 +1867,6 @@ class TokenOrderGenerator:
             raise SyntaxError('string does not start with a quote')
         i += 1
         while s[i] != delim:
-            # g.trace(i, repr(s[i]))
             if s[i] == '\\':
                 i += 1 # Skip one extra. 
             i += 1
@@ -2111,8 +2067,6 @@ class TokenOrderGenerator:
         else:
             if not isinstance(self.node, ast.JoinedStr):
                 raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
-        if self.test_mode:
-            return [Token('string', 'xxx')]
         #
         # Set the ivars for adjust_str_token.
         self.target_index = 0
@@ -2456,8 +2410,7 @@ class TokenOrderGenerator:
         advance, peek = self.advance_if, self.peek_if
         # Consume the if-item.
         token_value = peek().value
-        if not self.test_mode:
-            assert token_value in ('if', 'elif'), (token_value, g.callers())
+        assert token_value in ('if', 'elif'), (token_value, g.callers())
         advance()
         # If or elif line...
             # if %s:\n
@@ -4696,7 +4649,6 @@ class TestRunner:
             'dump-tokens-first',
             'dump-tree-after-fail',
             'no-trace-after-fail',
-            'set-test-mode', # Suppress almost all tests.
             'set-trace-mode',
             'show-exception-after-fail',
             'use-asttokens',
@@ -4724,7 +4676,6 @@ class TestRunner:
         else:
             x = self.x = TokenOrderInjector()
             x.trace_mode = 'set-trace-mode' in flags
-            x.test_mode = 'set-test-mode' in flags
                 # The TOI class *also* calls the base begin/end_visitor methods.
             self.tokens = x.make_tokens(sources, trace_mode='trace-tokenizer-tokens' in flags)
             if 'dump-tokens-first' in flags:

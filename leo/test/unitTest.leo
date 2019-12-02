@@ -346,6 +346,9 @@
 <v t="ekr.20191125235556.8"><vh>summarize</vh></v>
 </v>
 </v>
+<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
+<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
+<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
 <v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
@@ -434,10 +437,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191201201239.1"><vh>f-string tests</vh></v>
-<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
-<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
-<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4164,7 +4163,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -4198,7 +4197,7 @@ else:
         # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         # 'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
@@ -4813,7 +4812,6 @@ print('end')
 <t tx="ekr.20191201182845.1">f'x1{e1}y1' ;
 'done'
 </t>
-<t tx="ekr.20191201201239.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
 <t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
 <t tx="ekr.20191202081944.1">import leo.core.leoAst as leoAst
 if 1:
