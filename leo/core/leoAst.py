@@ -1666,21 +1666,27 @@ class TokenOrderGenerator:
 
     def do_JoinedStr(self, node):
         """
-        Fact 1: A JoinedStr node represents one or more f-strings and plain strings.
-
-        Fact 2: *All* f-strings appear in a JoinedStr, regardless of whether
-                those f-strings are concatenated with other plain strings or f-strings.
+        This visitor must correctly associate one or more 'string' tokens with
+        the list of **items** in JoinedStr.values.
         
-        Fact 3: node.values is a list of Str and FormattedValue nodes.
+        This is tricky, because there is a many-to-many mapping between items
+        and 'string' tokens...
         
-        Fact 4: There is a many-to-many relationship between 'string' tokens
-                and the items in the node.values list.
-                
-                - if isinstance(item, ast.Str):
-                  The item represents *one or more* 'string' tokens.
+        1. *All* f-strings appear in a JoinedStr. Those f-strings may be joined
+           (concatenated) with other strings, both plain strings and f-strings.
+        
+        2. When an f-string is joined with other strings, JoinedStr.values
+           represents the concatenation of *all* of those strings.
+        
+        3. Each item in JoinedStr.values is either a Str node or a
+           FormattedValue node:
+        
+        - FormattedValue.value is the root of a tree of ast nodes. The entire
+          tree represents an **f-expression**, the expression between {} in an
+          f-string.
           
-                - if isinstance(item, ast.FormattedValue):
-                  The item is a tree of ast.Ast nodes representing *one* {expression}.
+        - Str.s is a string corresponding *either* to a plain (concatentaed)
+          string or a part of an f-string outside of an f-expression.
         """
         if self.trace_mode:
             self.trace_joined_str(node)
