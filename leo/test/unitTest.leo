@@ -436,6 +436,7 @@
 </v>
 <v t="ekr.20191201201239.1"><vh>f-string tests</vh></v>
 <v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
+<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4834,6 +4835,39 @@ for test_i, data in enumerate(table):
     i2 = x.scan_string(s, start_i)
     expected = len(s)+offset
     assert i2 == expected, f"test {test_i}: expected {expected} got {i2}"
+</t>
+<t tx="ekr.20191202095002.1">import leo.core.leoAst as leoAst
+if 1:
+    g.cls()
+    import imp
+    imp.reload(leoAst)
+empty_fexprs = 0 ### ?
+empty_parts = 0 ### ?
+table = (
+    # (start_i, offset, fstrings, strings, s)
+    # Empty f-strings
+    (0, 0, empty_fexprs, empty_parts, r'f""'),
+    (0, 0, empty_fexprs, empty_parts, r'fr""'),
+    (0, 0, empty_fexprs, empty_parts, r"rf''"),
+    (0, 0, empty_fexprs, empty_parts, r"f''"),
+    (0, 0, empty_fexprs, empty_parts, r"fr''"),
+    (0, 0, empty_fexprs, empty_parts, r'rf""'),
+    # f-strings without f-expressions
+    (0, 0, empty_fexprs, 1, r'f"test \" after"'),
+    (0, 0, empty_fexprs, 1, r'f"test \' after"'),
+    # f-strings with f-expressions.
+    (0, 0, 1, 2, r'f"test {a} after"'),
+    # Embedded strings.
+    ###(2, -2, r'aaf"test"bb'),
+)
+for test_i, data in enumerate(table):
+    start_i, offset, e_fexprs, e_parts, s = data
+    x = leoAst.TokenOrderGenerator()
+    i, fexprs, parts = x.scan_fstring(s, start_i)
+    e_i = len(s)+offset
+    assert i == e_i, f"test {test_i}: expected i: {e_i} got {i}"
+    assert fexprs == e_fexprs, f"test {test_i}: expected {e_fexprs} f-exprs, got {fexprs}"
+    assert parts == e_parts, f"test {test_i}: expected {e_parts} strings, got {parts}"
 </t>
 </tnodes>
 </leo_file>

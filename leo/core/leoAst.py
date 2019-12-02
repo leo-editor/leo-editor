@@ -1824,15 +1824,14 @@ class TokenOrderGenerator:
         
         Return (f_expressions, string_parts).
         """
-        ###return 1, 0 # For the particular unit test.
         g.trace(f"{token!s}")
         s = token.value
         i, f_expressions, string_parts = 0, 0, 0
         try:
             while i < len(s):
                 progress = i
-                ch = s[i]
-                if ch in 'fFrR':
+                g.trace(i, repr(s[i]))
+                if s[i] in 'fFrR':
                     i, fexprs, strings = self.scan_fstring(s, i)
                     f_expressions += fexprs
                     string_parts += strings
