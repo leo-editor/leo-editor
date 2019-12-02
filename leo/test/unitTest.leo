@@ -436,6 +436,7 @@
 </v>
 <v t="ekr.20191201201239.1"><vh>f-string tests</vh></v>
 <v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
+<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
 <v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </vnodes>
 <tnodes>
@@ -4841,33 +4842,54 @@ if 1:
     g.cls()
     import imp
     imp.reload(leoAst)
-empty_fexprs = 0 ### ?
-empty_parts = 0 ### ?
+null_fexprs = 0 ### ?
+null_parts = 0 ### ?
 table = (
     # (start_i, offset, fstrings, strings, s)
-    # Empty f-strings
-    (0, 0, empty_fexprs, empty_parts, r'f""'),
-    (0, 0, empty_fexprs, empty_parts, r'fr""'),
-    (0, 0, empty_fexprs, empty_parts, r"rf''"),
-    (0, 0, empty_fexprs, empty_parts, r"f''"),
-    (0, 0, empty_fexprs, empty_parts, r"fr''"),
-    (0, 0, empty_fexprs, empty_parts, r'rf""'),
+    # empty f-strings
+        (0, 0, null_fexprs, null_parts, r'f""'),
+        (0, 0, null_fexprs, null_parts, r'fr""'),
+        (0, 0, null_fexprs, null_parts, r"rf''"),
+        (0, 0, null_fexprs, null_parts, r"f''"),
+        (0, 0, null_fexprs, null_parts, r"fr''"),
+        (0, 0, null_fexprs, null_parts, r'rf""'),
     # f-strings without f-expressions
-    (0, 0, empty_fexprs, 1, r'f"test \" after"'),
-    (0, 0, empty_fexprs, 1, r'f"test \' after"'),
+        (0, 0, null_fexprs, 1, r'f"test \" after"'),
+        (0, 0, null_fexprs, 1, r'f"test \' after"'),
     # f-strings with f-expressions.
-    (0, 0, 1, 2, r'f"test {a} after"'),
-    # Embedded strings.
-    ###(2, -2, r'aaf"test"bb'),
+        (0, 0, 1, 2, r'f"x{a}y"'),
+        (0, 0, 2, 3, r'f"x{a}y{b}z"'),
+        (0, 0, 2, 2, r'f"x{a}y{b}"'),
+        (0, 0, 2, 2, r'f"{a}y{b}z"'),
+        (0, 0, 2, 1, r'f"{a}{b}z"'),
+        (0, 0, 2, 1, r'f"{a}y{b}"'),
+        (0, 0, 2, 0, r'f"{a}{b}"'),
 )
 for test_i, data in enumerate(table):
     start_i, offset, e_fexprs, e_parts, s = data
     x = leoAst.TokenOrderGenerator()
     i, fexprs, parts = x.scan_fstring(s, start_i)
     e_i = len(s)+offset
+    # print(f"test {test_i} source: {s!s}")
     assert i == e_i, f"test {test_i}: expected i: {e_i} got {i}"
     assert fexprs == e_fexprs, f"test {test_i}: expected {e_fexprs} f-exprs, got {fexprs}"
-    assert parts == e_parts, f"test {test_i}: expected {e_parts} strings, got {parts}"
+    assert parts == e_parts, f"test {test_i}: expected {e_parts} plain parts, got {parts}"
 </t>
+<t tx="ekr.20191202101340.1">import leo.core.leoAst as leoAst
+if 1:
+    g.cls()
+    import imp
+    imp.reload(leoAst)
+table = (
+
+)
+for test_i, data in enumerate(table):
+    ### start_i, offset, e_fexprs, e_parts, s = data
+    x = leoAst.TokenOrderGenerator()
+    #
+    # Create tokens &amp; parse tree from source.
+    
+    # Test.
+    tokens = x.get_joined_tokens(node)</t>
 </tnodes>
 </leo_file>

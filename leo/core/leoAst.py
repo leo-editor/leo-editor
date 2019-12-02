@@ -1857,10 +1857,10 @@ class TokenOrderGenerator:
         Remember: backslashes may appear in string parts but not f-expressions.
         """
         def starts_fexpr(s, i):
-            return s[i:i+2] == '{{'
+            return s[i] == '{' and s[i:i+2] != '{{'
             
         def ends_fexpr(s, i):
-            return s[i:i+2] == '}}'
+            return s[i] == '}' and s[i:i+2] != '}}'
 
         assert s[i] in 'fFrR'
         while s[i] in 'fFrR':
@@ -1875,6 +1875,7 @@ class TokenOrderGenerator:
         might_start_part = True
         while s[i] != delim:
             progress = i
+            # g.trace(i, s[i], might_start_part)
             if s[i] == '\\':
                 if in_fexpr:
                     raise SyntaxError('backslash inside f-expression')
@@ -1885,7 +1886,7 @@ class TokenOrderGenerator:
                     might_start_part = True
             elif starts_fexpr(s, i):
                 fexprs += 1
-                might_start_part = False
+                in_fexpr = might_start_part = True
             elif might_start_part:
                 parts += 1
                 might_start_part = False
