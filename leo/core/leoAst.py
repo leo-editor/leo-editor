@@ -1785,20 +1785,21 @@ class TokenOrderGenerator:
         count, results = 0, []
         while count < len(node.values):
             count_progress = count
+            # Look ahead to find the next 'string' token.
             i = self.next_str_index(self.string_index+1) 
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens")
             look_ahead_token = self.tokens[i]
             # Tell advance_str to completely consume the next 'string' token.
-            # That is, don't have advance_str check that self.node is an ast.Str.
             tokens = self.advance_str(target_s=look_ahead_token.value)
+            # target_s should ensure that only one token is returned.
             assert tokens and len(tokens) == 1
-            ###for token in tokens: ###
+            # Add the token to the results.
             token = tokens[0]
             assert isinstance(token, Token)
             results.append(token)
+            # Consume all items corresponding to the token.
             fstrings, strings = self.count_string_parts(token)
-            # Consume items.
             while fstrings or strings:
                 string_progress = fstrings + strings
                 if count >= len(node.values):
@@ -1816,14 +1817,106 @@ class TokenOrderGenerator:
                 assert fstrings + strings < string_progress 
             assert count_progress < count
         return results
-    #@+node:ekr.20191202051238.1: *6* tog.count_string_parts (new)
+    #@+node:ekr.20191202051238.1: *6* tog.count_string_parts (new) & helpers
     def count_string_parts(self, token):
         """
-        Calculate the number of string parts and f-string parts in the given 'string' token.
+        Calculate the number of string parts and f-expressions in the given 'string' token.
         
-        Return (n_fstrings, n_strings).
+        Return (f_expressions, string_parts).
         """
-        return 1, 0 # For the particular unit test.
+        ###return 1, 0 # For the particular unit test.
+        g.trace(f"{token!s}")
+        s = token.value
+        i, f_expressions, string_parts = 0, 0, 0
+        try:
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                if ch in 'fFrR':
+                    i, fexprs, strings = self.scan_fstring(s, i)
+                    f_expressions += fexprs
+                    string_parts += strings
+                else:
+                    i = self.scan_string(s,i)
+                    string_parts += 1
+                assert i > progress
+            return f_expressions, string_parts
+        except (IndexError, SyntaxError):
+            raise self.error(f"mal-formed 'string' token: {token!s}")
+    #@+node:ekr.20191202060440.1: *7* tog.scan_fstring
+    def scan_fstring(self, s, i):
+        """
+        Scan the f-string starting at s[i].
+        
+        Return (fexprs, parts) where:
+            
+        - fexprs is the number of f-expressions (with curly brackets).
+        
+        - parts is the number of string parts, strings outside of
+          f-expressions.
+        
+        Remember: backslashes may appear in string parts but not f-expressions.
+        """
+        def starts_fexpr(s, i):
+            return s[i:i+2] == '{{'
+            
+        def ends_fexpr(s, i):
+            return s[i:i+2] == '}}'
+
+        assert s[i] in 'fFrR'
+        while s[i] in 'fFrR':
+            i += 1
+        delim = s[i]
+        i += 1
+        if delim not in ('"', "'"):
+            raise SyntaxError('f-string does not start with a quote')
+        # scan for the closing delim, updating the counts.
+        fexprs, parts = 0, 0
+        in_fexpr = False
+        might_start_part = True
+        while s[i] != delim:
+            progress = i
+            if s[i] == '\\':
+                if in_fexpr:
+                    raise SyntaxError('backslash inside f-expression')
+                i += 1 # Skip one extra. 
+            elif in_fexpr:
+                if ends_fexpr(s,i):
+                    in_fexpr = False
+                    might_start_part = True
+            elif starts_fexpr(s, i):
+                fexprs += 1
+                might_start_part = False
+            elif might_start_part:
+                parts += 1
+                might_start_part = False
+            i += 1
+            assert progress < i
+        if s[i] != delim:
+            raise SyntaxError('unterminated f-string')
+        if in_fexpr:
+            raise SyntaxError('unterminated f-expression')
+        assert s[i] == delim
+        return i + 1, fexprs, parts
+    #@+node:ekr.20191202060423.1: *7* tog.scan_string
+    def scan_string(self, s, i):
+        """
+        Scan the plain string starting at s[i].
+        
+        Return i, the index *after* the matching string delim.
+        """
+        delim = s[i]
+        if delim not in ('"', "'"):
+            raise SyntaxError('string does not start with a quote')
+        i += 1
+        while s[i] != delim:
+            # g.trace(i, repr(s[i]))
+            if s[i] == '\\':
+                i += 1 # Skip one extra. 
+            i += 1
+        if s[i] != delim:
+            raise SyntaxError('unterminated plain string')
+        return i + 1
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 

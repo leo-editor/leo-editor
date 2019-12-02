@@ -435,6 +435,7 @@
 </v>
 </v>
 <v t="ekr.20191201201239.1"><vh>f-string tests</vh></v>
+<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4812,5 +4813,27 @@ print('end')
 </t>
 <t tx="ekr.20191201201239.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
 <t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
+<t tx="ekr.20191202081944.1">import leo.core.leoAst as leoAst
+if 1:
+    g.cls()
+    import imp
+    imp.reload(leoAst)
+table = (
+    # Stand-alone strings.
+    (0, 0, r'""'),
+    (0, 0, r"''"),
+    (0, 0, r'"test \" after"'),
+    (0, 0, r'"test \' after"'),
+    (0, 0, r'"test {a} after"'),
+    # Embedded strings.
+    (2, -2, r'aa"test"bb'),
+)
+for test_i, data in enumerate(table):
+    start_i, offset, s = data
+    x = leoAst.TokenOrderGenerator()
+    i2 = x.scan_string(s, start_i)
+    expected = len(s)+offset
+    assert i2 == expected, f"test {test_i}: expected {expected} got {i2}"
+</t>
 </tnodes>
 </leo_file>
