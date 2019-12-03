@@ -1235,10 +1235,11 @@ class TokenOrderGenerator:
                     for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
                         print(s)
                 line_s = f"line {token.line_number}:"
+                val = g.truncate(val, 40)
                 raise self.error(
                     f"{line_s:>12} {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
-                    f"      found: {token.kind}.{token.value}")
+                    f"      found: {token.kind}.{g.truncate(token.value, 80)}")
             # Skip the insignificant token.
             if trace: g.trace(' SKIP', px, token)
             px += 1
@@ -1247,6 +1248,7 @@ class TokenOrderGenerator:
             if 0:
                 g.trace('\nSYNC FAILED...')
                 g.printObj(tokens[max(0, px-5):], 'TOKENS')
+            val = g.truncate(val, 40)
             raise self.error(
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -2034,6 +2036,7 @@ class TokenOrderGenerator:
         if not m:
             raise self.error(f"line {line_n} Missing quote: {tv!r}")
         tv_quotes = m.group(1)
+        ### g.trace('tv_quotes', tv_quotes)
         #
         # tv *must* have matching quotes. Find them, ignoring escaped quotes.
         i = prefix_i = len(tv_prefix)+len(tv_quotes)
@@ -2056,11 +2059,14 @@ class TokenOrderGenerator:
             result = result.replace('\\'+'\n', '')
             result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
+            result = result.replace('\\\\', '\\') ###
         #
         # Advance.
         self.target_index += len(result)
         if trace:
-            g.trace(f"\ntoken.value {token.value} ==> result: {result}\n")
+            print('')
+            g.trace(f"inner_s {inner_s}\n")
+            g.trace(f"token.value {token.value} ==> result: {result}\n")
         return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
@@ -2131,7 +2137,13 @@ class TokenOrderGenerator:
         #
         # Now we can make the stronger check.
         if results_s!= target_s:
-            raise self.error(f"Looking for: {target_s!r}, found: {results_s!r}")
+            g.printObj(target_s.split('\n'), tag='target_s')
+            g.printObj(results_s.split('\n'), tag='results_s')
+            target_s = g.truncate(target_s, 40)
+            results_s = g.truncate(results_s, 40)
+            raise self.error(
+                f" target: {target_s}\n"
+                f"results: {results_s}")
         #
         # Point the string index at the last scanned token.
         self.string_index = i
@@ -2392,10 +2404,13 @@ class TokenOrderGenerator:
             yield from self.gen(node.orelse)
         self.level -= 1
     #@+node:ekr.20191113063144.74: *5* tog.Global
+    # Global(identifier* names)
+
     def do_Global(self, node):
 
         yield from self.gen_name('global')
-        yield from self.gen(node.names)
+        for z in node.names:
+            yield from self.gen_name(z)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.75: *5* tog.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
