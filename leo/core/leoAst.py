@@ -2479,7 +2479,11 @@ class TokenOrderGenerator:
         i = self.if_index
         i = self.find_next_if_token(i + 1)
         self.if_index = i
-        # g.trace(f"line {self.tokens[i].line_number:>4} tx: {i:>5} {self.tokens[i]}")
+        # This is a good debugging trace.
+        if 1:
+            token = self.tokens[i] if i < len(self.tokens) else None
+            line_n = token.line_number if token else ' '
+            g.trace(f"line {line_n:>4} tx: {i:>5} {token or 'No more tokens'}")
 
     def find_next_if_token(self, i):
         while i < len(self.tokens):

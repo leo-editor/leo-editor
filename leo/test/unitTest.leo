@@ -174,13 +174,17 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
+<v t="ekr.20191203120008.1"><vh>other tog tests</vh>
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </v>
-<v t="ekr.20191203120008.1"><vh>other tog tests</vh>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
+<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
+<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
+<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
+</v>
 <v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh>
 <v t="ekr.20191125235556.2"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
 <v t="ekr.20191125235556.3"><vh>filter_reports</vh></v>
@@ -191,10 +195,6 @@
 <v t="ekr.20191125235556.8"><vh>summarize</vh></v>
 </v>
 </v>
-<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
-<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
-<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
-</v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
 <v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
@@ -203,10 +203,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
+<v t="ekr.20191203160056.1"><vh>xx test: if problem </vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -1686,7 +1688,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -2130,16 +2132,18 @@ g.cls() ###
 #
 # Reports when 'all' is False
 reports = [
+    # 'show-exception-after-fail',
+    'trace-times',    # Only for'file:' tests.
     # 'verbose-fail',
     # 'trace-mode',  # Sets TOG.trace_mode.
     # 'trace-times',  # Only for'file:' tests.
     # 'dump-all',
     # 'asttokens',
     # 'test-links',
-    'contents',
+    # 'contents',
     # 'tokens',
     # 'raw-tree',
-    'tree',
+    # 'tree',
 ]
 # Make tests, run tests, and summarize.
 reload_time = 0.0
@@ -2195,7 +2199,7 @@ assert not fails, f"failed {len(fails)} tests"</t>
     t1 = time.process_time()
     for contents, description in tests:
         # Test runner catches all exceptions.
-        print(f"Running {description}...\n")
+        ### print(f"Running {description}...\n")
         x = leoAst.TestRunner()
         ok = x.run_tests(contents, description, filter_reports(description))
         if not ok:
@@ -2413,5 +2417,15 @@ with open(fn) as f:
 <t tx="ekr.20191203125635.1"># leoGlobals.py, line 3028.
 
 d2 = {val: key for key, val in d.iteritems()}</t>
+<t tx="ekr.20191203155845.1"># line 93.</t>
+<t tx="ekr.20191203160056.1"># line 93, leoTips.py
+
+for issue in data:
+    for i, s in enumerate(lines):
+        if 1:
+            break
+    else:
+        tags = []
+</t>
 </tnodes>
 </leo_file>
