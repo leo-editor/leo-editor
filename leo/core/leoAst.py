@@ -1331,6 +1331,7 @@ class TokenOrderGenerator:
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
+        ### g.trace(node.__class__.__name__)
         if node is None:
             return
         # More general, more convenient.
@@ -1601,14 +1602,17 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.36: *5* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
+    # d2 = {val: key for key, val in d.iteritems()}
+
     def do_DictComp(self, node):
 
+        yield from self.gen_token('op', '{')
         yield from self.gen(node.key)
         yield from self.gen_op(':')
+        yield from self.gen(node.value)
         yield from self.gen_name('for')
-        # No need to put commas.
-        for z in node.generators:
-            yield from self.gen(z)
+        yield from self.gen(node.generators)
+        yield from self.gen_token('op', '}')
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
         
@@ -2194,11 +2198,11 @@ class TokenOrderGenerator:
 
     def do_Tuple(self, node):
 
-        # no need to put commas or parens.
-
-        ### yield from self.gen_op('(')
+        # no need to put commas.
+        # The parens are also optional, but they help a tiny bit.
+        yield from self.gen_op('(')
         yield from self.gen(node.elts)
-        ### yield from self.gen_op(')')
+        yield from self.gen_op(')')
     #@+node:ekr.20191113063144.53: *4* tog: Operators
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):

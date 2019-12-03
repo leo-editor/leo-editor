@@ -203,8 +203,7 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191123203957.1"><vh>xx file: core..leoGlobals.py</vh></v>
-<v t="ekr.20191203125635.1"><vh>test: dict comprehension</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
@@ -251,6 +250,7 @@
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
 <v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
 <v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
+<v t="ekr.20191203125635.1"><vh>test: DictComp</vh></v>
 <v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
 <v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
 <v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
@@ -1686,7 +1686,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
