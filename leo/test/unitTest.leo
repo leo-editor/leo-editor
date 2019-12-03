@@ -206,8 +206,8 @@
 <v t="ekr.20191123203957.1"><vh>xx file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191203125635.1"><vh>test: dict comprehension</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -1702,15 +1702,15 @@ if 'g.cls' in flags:
 # Reports, for TestRunner.run_tests.
 if 'all' in flags:
     reports = [
-        'no-trace-after-fail',
+        # 'no-trace-after-fail',
+        'trace-times',    # Only for'file:' tests.
     ]
 else:
-    # Use 'no-sync' option to compare parse trees.
     reports = [ 
         # 'dump-sources-first',
-        'dump-raw-tree-first',
-        'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'dump-raw-tree-first',
+        # 'dump-tokens-first',
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
@@ -1719,7 +1719,7 @@ else:
         # 'dump-raw-tree',
         # 'dump-tokens',
         # 'dump-tree',
-        # 'trace-times',    # Only for'file:' tests.
+        'trace-times',    # Only for'file:' tests.
         # 'trace-tokenizer-tokens',
         # 'use-asttokens',
 ]

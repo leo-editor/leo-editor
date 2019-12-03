@@ -1852,17 +1852,10 @@ class TokenOrderGenerator:
             if trace:
                 g.trace(f"Look-ahead token: count: {count} token: {look_ahead_token!s}\n")
             #
-            # Why bother????  Just use the token and update the string index!!!
-            #                 There is no need to call adjust_str_token!!!
+            # There is no need to call adjust_str_token!
+            # Just use the look-ahead token and update the string index.
             token = look_ahead_token
             self.string_index = i
-            ###
-                # # Tell advance_str to completely consume the next 'string' token.
-                # # Giving target_s ensures that only one token is returned.
-                # tokens = self.advance_str(target_s=look_ahead_token.value)
-                # assert tokens and len(tokens) == 1
-                # token = tokens[0]
-
             # Add the token to the results.
             results.append(token)
             # Get an ordered list of all components of the token.
