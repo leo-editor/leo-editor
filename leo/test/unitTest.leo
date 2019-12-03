@@ -357,10 +357,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary</vh>
-<v t="ekr.20191129035530.1"><vh>more</vh></v>
-</v>
-<v t="ekr.20191202180046.1"><vh>summary fails:</vh></v>
+<v t="ekr.20191202203022.1"><vh>Recent fails</vh></v>
+<v t="ekr.20191202195507.1"><vh>xx test: raw docstring</vh></v>
 <v t="ekr.20191202143832.1"><vh>fail: not ready yet</vh>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 </v>
@@ -380,6 +378,9 @@
 <v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
 <v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
 <v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
 <v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
 <v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
 <v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
@@ -4177,7 +4178,7 @@ if 'all' in flags:
         'no-trace-after-fail',
         # 'no-sync', # To test speed.
     ]
-elif 0:
+elif 1:
     # Summary/files tests
     reports = [
         # 'set-test-mode',
@@ -4870,10 +4871,31 @@ for test_i, data in enumerate(table):
     # Test.
     tokens = x.get_joined_tokens(node)</t>
 <t tx="ekr.20191202143832.1"></t>
-<t tx="ekr.20191202180046.1">run_tests FAIL: file: core..leoFind.py
+<t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
+print(r"""DS""")
+</t>
+<t tx="ekr.20191202203022.1">Running *all*' unit tests...
+
+adjust_str_token Mismatch at line 1619 file file: core..leoFind.py
+Results:
+[
+    '""',
+    '        Carefully substitute group[i-1] for \\i strings in s.',
+    '        The group strings may contain \\i strings: they are *not* substituted.',
+    '        ""'
+]
+Remainder:
+[
+    '',
+    '        Carefully substitute group[i-1] for \\i strings in s.',
+    '        The group strings may contain \\i strings: they are *not* substituted.',
+    '        '
+]
+
+run_tests FAIL: file: core..leoFind.py
 
 AssignLinkError: caller: adjust_str_token
-adjust_str_token: Mismatch: line: 1619 result: '""\n        Carefully substitute group[i-1] for \\i strings in s.\n        The group strings may contain \\i strings: they are *not* substituted.\n        ""' remainder: '\n        Carefully substitute group[i-1] for \\i strings in s.\n        The group strings may contain \\i strings: they are *not* substituted.\n        '
+line 1619 Mismatch: line: 1619
 
 run_tests FAIL: file: core..leoGlobals.py
 

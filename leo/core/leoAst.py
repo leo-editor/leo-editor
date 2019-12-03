@@ -1565,6 +1565,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
         if node.ifs:
+            self.advance_if()
             yield from self.gen_name('if')
             yield from self.gen(node.ifs)
     #@+node:ekr.20191113063144.34: *5* tog.Constant
@@ -1830,7 +1831,7 @@ class TokenOrderGenerator:
         A Str item may contain the *tail* of the previous FormattedValue
         concatenated with the *head* of the next FormattedValue.
         """
-        trace = self.trace_mode
+        trace = False and self.trace_mode
         assert isinstance(node.values, list)
         assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
         count, last_item, results = 0, None, []
@@ -1974,7 +1975,7 @@ class TokenOrderGenerator:
         #@+<< adjust_str_token docstring >>
         #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
-        This is the heart of the TOG class.
+        This is an important part of the TOG class.
 
         The goal is to determine how much of the target string to consume.
         This is a tricky task for two reasons:
@@ -1996,8 +1997,7 @@ class TokenOrderGenerator:
                 That's benign because the caller always skips one token.
         """
         #@-<< adjust_str_token docstring >>
-        trace = False and self.trace_mode
-        tag = 'adjust_str_token'
+        trace = self.trace_mode
         quotes = ("'", '"')
         rx0 = self.target_index
         r = self.target_string[rx0:]
@@ -2010,6 +2010,8 @@ class TokenOrderGenerator:
         r_prefix = m.group(0) if m else ''
         m = self.prefix_pat.match(tv)
         tv_prefix = m.group(0) if m else ''
+        if trace:
+            g.trace('r_prefix', repr(r_prefix), 'tv_prefix', repr(tv_prefix))
         
         ### Not sure this matters.
             # if r_prefix and len(r_prefix) != len(tv_prefix):
@@ -2038,10 +2040,14 @@ class TokenOrderGenerator:
             r_quotes = r_quote*3 if r.startswith(r_quote*3) else r_quote
         else:
             r_quote = r_quotes = ''
+        if trace:
+            g.trace('r_quotes', repr(r_quotes), 'tv_quotes', repr(tv_quotes))
         #
         # Quotes must match, if they exist in the remaining string.
         if r_quotes and r_quotes != tv_quotes:
-            raise self.error(f"{tag}: Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
+            raise self.error(
+                f"line {token.line_number} "
+                f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
         #
         # Unescape escaped quotes.
         if r_quotes:
@@ -2049,6 +2055,7 @@ class TokenOrderGenerator:
             result = r_prefix + r_quotes + inner_s + r_quotes
         else:
             result = inner_s.replace('\\' + tv_quote, tv_quote)
+            ### r = tv_quotes + r + tv_quotes ### Experimental.
         ###
         ### To do: Don't do these for raw constants.
         ###
@@ -2062,9 +2069,14 @@ class TokenOrderGenerator:
         # We should only check that the remainder is a *prefix* of the result.
         remainder = r[:len(result)]
         if not result.startswith(remainder):
+            g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
+            g.printObj(result.split('\n'), tag='Results')
+            g.printObj(remainder.split('\n'), tag='Remainder')
             raise self.error(
-                f"{tag}: Mismatch: line: {token.line_number} "
-                f"result: {result!r} remainder: {remainder!r}")
+                f"line {token.line_number} "
+                f"Mismatch: line: {token.line_number} ")
+                # f"result: {result!r}\n"
+                # f"remainder: {remainder!r}")
         #
         # Now advance by the length of the remainder.
         self.target_index = rx0 + len(remainder)
@@ -2442,7 +2454,9 @@ class TokenOrderGenerator:
         # Consume the if-item.
         token = peek()
         if token.value not in ('if', 'elif'):
-            raise self.error(f"line {token.line_number}: expected 'if' or 'elif' (name) token, got '{token!s}")
+            raise self.error(
+                f"line {token.line_number}: "
+                f"expected 'if' or 'elif' (name) token, got '{token!s}")
         advance()
         # If or elif line...
             # if %s:\n
@@ -2470,29 +2484,32 @@ class TokenOrderGenerator:
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191123152511.1: *5* tog.If: advance_if & peek_if ***
-    if_index = None
+    #@+node:ekr.20191123152511.1: *6* tog.If: advance_if & peek_if
+    if_index = -1
 
     def is_if_token(self, token):
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
-        ### if self.formatted_value_stack: g.trace('IN FORMATTED STRING')
-        i = 0 if self.if_index is None else self.if_index + 1
-        self.if_index = self.find_next_if_token(i)
+        ### i = 0 if self.if_index is None else self.if_index + 1
+        i = self.if_index
+        i = self.find_next_if_token(i + 1)
+        self.if_index = i
+        # g.trace(f"line {self.tokens[i].line_number:>4} tx: {i:>5} {self.tokens[i]}")
 
     def find_next_if_token(self, i):
         while i < len(self.tokens):
             ### g.trace(f"      {i<3} {self.tokens[i]}")
             if self.is_if_token(self.tokens[i]):
-                ### g.trace(f"FOUND {i<3} {self.tokens[i]}")
+                ### g.trace(f" {i:>3} {self.tokens[i]}")
                 break
             i += 1
         return i
 
     def peek_if(self):
-        # Init, exactly once per tree traversal.
-        if self.if_index is None:
+        """Return the current 'if' token."""
+        # Init, if necessary.
+        if self.if_index == -1:
             self.if_index = self.find_next_if_token(0)
         # IndexError is a sanity check.
         assert self.if_index < len(self.tokens), (self.if_index, g.callers())
