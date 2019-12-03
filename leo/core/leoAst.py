@@ -1560,6 +1560,8 @@ class TokenOrderGenerator:
             yield from self.gen_op('**') 
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
+    # comprehension = (expr target, expr iter, expr* ifs, int is_async)
+
     def do_comprehension(self, node):
 
         # No need to put parentheses.
@@ -1605,7 +1607,8 @@ class TokenOrderGenerator:
         yield from self.gen_op(':')
         yield from self.gen_name('for')
         # No need to put commas.
-        yield from self.gen(node.generators)
+        for z in node.generators:
+            yield from self.gen(z)
     #@+node:ekr.20191113063144.37: *5* tog.Ellipsis
     def do_Ellipsis(self, node):
         
@@ -2194,12 +2197,15 @@ class TokenOrderGenerator:
         yield from self.gen(node.slice)
         yield from self.gen_op(']')
     #@+node:ekr.20191113063144.52: *5* tog.Tuple
+    # Tuple(expr* elts, expr_context ctx)
+
     def do_Tuple(self, node):
 
-        # no need to put commas.
-        yield from self.gen_op('(')
+        # no need to put commas or parens.
+
+        ### yield from self.gen_op('(')
         yield from self.gen(node.elts)
-        yield from self.gen_op(')')
+        ### yield from self.gen_op(')')
     #@+node:ekr.20191113063144.53: *4* tog: Operators
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):
@@ -2617,6 +2623,7 @@ class TokenOrderGenerator:
             yield from self.gen(item.context_expr)
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
+                yield from self.gen_name('as')
                 try:
                     for z in item.optional_vars:
                         yield from self.gen(z)

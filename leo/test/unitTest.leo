@@ -203,7 +203,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>xx file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203125635.1"><vh>test: dict comprehension</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
@@ -276,6 +277,7 @@
 <v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
 <v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+<v t="ekr.20191203125053.1"><vh>test: With</vh></v>
 </v>
 </v>
 </v>
@@ -1684,7 +1686,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -2402,5 +2404,14 @@ def spam():
 class SherlockTracer:
     """before\\after"""
 </t>
+<t tx="ekr.20191203125053.1"># leoGlobals.py, line 1785.
+
+with open(fn) as f:
+    pass
+
+</t>
+<t tx="ekr.20191203125635.1"># leoGlobals.py, line 3028.
+
+d2 = {val: key for key, val in d.iteritems()}</t>
 </tnodes>
 </leo_file>
