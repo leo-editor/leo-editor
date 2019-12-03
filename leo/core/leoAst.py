@@ -1803,7 +1803,7 @@ class TokenOrderGenerator:
         result = s[s0:i+1]
         ### g.trace(i + 1, result)
         return i + 1, result
-    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens
+    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens (sets target_s)
     def get_joined_tokens(self, node):
         """
         Return one or more 'string' tokens corresponding to the items in node.values.
@@ -1846,12 +1846,19 @@ class TokenOrderGenerator:
             look_ahead_token = self.tokens[i]
             if trace:
                 g.trace(f"Look-ahead token: count: {count} token: {look_ahead_token!s}\n")
-            # Tell advance_str to completely consume the next 'string' token.
-            # Giving target_s ensures that only one token is returned.
-            tokens = self.advance_str(target_s=look_ahead_token.value)
-            assert tokens and len(tokens) == 1
+            #
+            # Why bother????  Just use the token and update the string index!!!
+            #                 There is no need to call adjust_str_token!!!
+            token = look_ahead_token
+            self.string_index = i
+            ###
+                # # Tell advance_str to completely consume the next 'string' token.
+                # # Giving target_s ensures that only one token is returned.
+                # tokens = self.advance_str(target_s=look_ahead_token.value)
+                # assert tokens and len(tokens) == 1
+                # token = tokens[0]
+
             # Add the token to the results.
-            token = tokens[0]
             results.append(token)
             # Get an ordered list of all components of the token.
             components = self.get_string_parts(token)
@@ -1975,7 +1982,18 @@ class TokenOrderGenerator:
         #@+<< adjust_str_token docstring >>
         #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
-        This method carefully compares tv (token.value) and r, the *remainder* of
+        Given:
+            
+            rx0 = self.target_index
+            r = self.target_string[rx0:]
+            
+        r is the **remainder** of a **target string**.
+
+        Initially, the target string is simply the token.value for the token being
+        processed. However, sometimes not all the target string is consumed.
+            
+            
+        This method carefully compares tv (token.value) and the remainder r
         the target string to determine how much more of the target string to
         consume.
 
@@ -2001,6 +2019,7 @@ class TokenOrderGenerator:
         # r has neither an f or r prefix, nor any quotes.
         rx0 = self.target_index
         r = self.target_string[rx0:]
+        g.trace(f"\nEntry: rx0: {rx0} r: {r!s}")
         # 
         # tv is the token.value.
         # tv *might* have a prefix; it *must* have matching quotes.
@@ -2031,47 +2050,61 @@ class TokenOrderGenerator:
         # target string *without* exhausting the present token!
         #
         # We should only check that the remainder is a *prefix* of the result.
-        remainder = r[:len(result)]
-        if not result.startswith(remainder):
-            g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
-            g.trace('\nresult should start with remainder\n')
-            g.printObj(result.split('\n'), tag='result')
-            g.printObj(remainder.split('\n'), tag='remainder r')
-            raise self.error(
-                f"line {token.line_number} "
-                f"Mismatch: line: {token.line_number} ")
-                # f"result: {result!r}\n"
-                # f"remainder: {remainder!r}")
-        #
-        # Now advance by the length of the remainder.
-        self.target_index = rx0 + len(remainder)
-        if trace:
-            g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
+        ### remainder = r[:len(result)]
+        result = tv_prefix + result
+        self.target_index = rx0 + len(result) ### len(remainder)
+        g.trace(f"END string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result
+        
+        ###
+            # if not result.startswith(remainder):
+                # g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
+                # g.trace('\nresult should start with remainder\n')
+                # g.printObj(result.split('\n'), tag='result')
+                # g.printObj(remainder.split('\n'), tag='remainder r')
+                # raise self.error(
+                    # f"line {token.line_number} "
+                    # f"Mismatch: line: {token.line_number} ")
+                    # # f"result: {result!r}\n"
+                    # # f"remainder: {remainder!r}")
+            # #
+            # # Now advance by the length of the remainder.
+            # self.target_index = rx0 + len(remainder)
+            # if trace:
+                # g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
+            # return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
     target_index = 0
     target_string = None
 
-    def advance_str(self, target_s=None):
+    def advance_str(self): ### , target_s=None):
         """
-        Advance over one or more 'string' tokens, and return them.
+        Called only from do_Str.
         
-        A *single* Str node represents the concatenation of multiple *plain* strings.
+        Advance over *one or more* 'string tokens, and return them.
+        
+        This method is necessary because a *single* ast.Str node may represent
+        the concatenation of multiple strings.
         """
         trace = self.trace_mode
-        #
-        # Sanity checks.
-        node_cn = self.node.__class__.__name__
-        if target_s is None:
-            if not isinstance(self.node, ast.Str):
-                raise self.error(f"expecting ast.Str, got {node_cn}")
-            target_s = self.node.s
-        else:
-            if not isinstance(self.node, ast.JoinedStr):
-                raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
+        # Sanity check
+        if not isinstance(self.node, ast.Str):
+            raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
+                
+        ###
+            # Sanity checks...
+            # node_cn = self.node.__class__.__name__
+            # if target_s is None:
+                # if not isinstance(self.node, ast.Str):
+                    # raise self.error(f"expecting ast.Str, got {node_cn}")
+                # target_s = self.node.s
+            # else:
+                # if not isinstance(self.node, ast.JoinedStr):
+                    # raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
         #
         # Set the ivars for adjust_str_token.
+        target_s = self.node.s
         self.target_index = 0
         self.target_string = target_s
         #
@@ -2107,7 +2140,7 @@ class TokenOrderGenerator:
         # Scan 'string' tokens while the accumulated results are shorter than target_s.
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
-            if True and trace:
+            if trace:
                 g.trace(f"accumulated results: {accumulated_results!s}")
             i = self.next_str_index(i + 1)
             if i >= len(self.tokens):
@@ -5127,7 +5160,7 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
 
     # Other overrides...
 
-    # def advance_str(self, target_s=None):
+    # def advance_str(self):
         # return []
     
     # def peek_if(self):
