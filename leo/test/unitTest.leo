@@ -346,8 +346,8 @@
 <v t="ekr.20191125235556.8"><vh>summarize</vh></v>
 </v>
 </v>
-<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 <v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
+<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 <v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
@@ -357,14 +357,11 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
-<v t="ekr.20191201182845.1"><vh>xx test: f-strings: complex</vh></v>
-<v t="ekr.20191201090917.1"><vh>ignore: Failures</vh>
-<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
-<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary: no joins</vh>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary</vh>
 <v t="ekr.20191129035530.1"><vh>more</vh></v>
 </v>
+<v t="ekr.20191202180046.1"><vh>summary fails:</vh></v>
+<v t="ekr.20191202143832.1"><vh>fail: not ready yet</vh>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 </v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
@@ -372,22 +369,20 @@
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
-<v t="ekr.20191201130338.1"><vh>ignore: f-string cases</vh>
+<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
+<v t="ekr.20191129033147.1"></v>
 <v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
 <v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
 <v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
-</v>
-<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
-<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
-<v t="ekr.20191201083823.1"></v>
+<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
+<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
 <v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
 <v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
-<v t="ekr.20191129033147.1"></v>
-<v t="ekr.20191126002258.1"></v>
-<v t="ekr.20191127134726.1"></v>
+<v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
@@ -4197,8 +4192,8 @@ else:
         # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         # 'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
-        'show-exception-after-fail',
+        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
@@ -4709,17 +4704,8 @@ assert not fails, f"failed {len(fails)} tests"</t>
     if 'show-test-time' in flags:
         print(f"Run tests time: {test_time:4.2f} sec.")
 </t>
-<t tx="ekr.20191126002258.1"># Single f-strings.
-'p1' ;
-f'f1' ;
-f'x1{e1}y1' ;
-f'x2{e2+1}y2{e2+2}z2' ;
-
-# Concatentated strings...
-'p2', 'p3' ;
-f'f2' 'f3' ;
-f'x3{e3+1}y3' f'x4{e4+2}y4' ;
-f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;</t>
+<t tx="ekr.20191126002258.1">print(f'x3{e3+1}y3' f'x4{e4+2}y4')
+print('done')</t>
 <t tx="ekr.20191126084046.1"></t>
 <t tx="ekr.20191126143046.1">self.s = ''
 self.i = 0
@@ -4751,17 +4737,17 @@ print('end')</t>
 print(f'x2{e3}y2{e3}z2', f'f2')
 print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
 print('end')</t>
-<t tx="ekr.20191129035530.1">a = 'p1'
-b = f'f1')
-c = f'f2{e1}'
-d = f'f3{e2}x{e3}'
+<t tx="ekr.20191129035530.1"># Single f-strings.
+# 'p1' ;
+# f'f1' ;
+# f'x1{e1}y1' ;
+# f'x2{e2+1}y2{e2+2}z2' ;
 
-print('p1')
-print(f'f1')
-print(f'f2{e1}')
-print(f'f3{e2}x{e3}')
-print('end')
-</t>
+# Concatentated strings...
+# 'p2', 'p3' ;
+# f'f2' 'f3' ;
+
+# f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;</t>
 <t tx="ekr.20191129042702.1">'p1' ;
 f'f1' ;
 'done' ;</t>
@@ -4791,16 +4777,9 @@ f()
     f"{' Backward' if True else ''}"
 )
 print('done')</t>
-<t tx="ekr.20191201090917.1">'test: f-string summary: no joins',
-'test: f-string summary: joins + 1 f-expr',
-'test: f-string summary: joins + 2 f-exprs',
-'test: f-string summary: no joins',
-'test: print one f-string',
-</t>
 <t tx="ekr.20191201124815.1">print(f'{7.1}')
 print('end')
 </t>
-<t tx="ekr.20191201130338.1"></t>
 <t tx="ekr.20191201131734.1">print('p1' f'{f2}')
 'end'</t>
 <t tx="ekr.20191201134842.1">print(f'{f1}' f'{f2}')
@@ -4809,9 +4788,6 @@ print('end')
 <t tx="ekr.20191201135548.1">print('s1', f'{f2}' f'f3' f'{f4}' 's5')
 'end'
 </t>
-<t tx="ekr.20191201182845.1">f'x1{e1}y1' ;
-'done'
-</t>
 <t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
 <t tx="ekr.20191202081944.1">import leo.core.leoAst as leoAst
 if 1:
@@ -4819,21 +4795,25 @@ if 1:
     import imp
     imp.reload(leoAst)
 table = (
+    # start_i, offset
     # Stand-alone strings.
-    (0, 0, r'""'),
-    (0, 0, r"''"),
-    (0, 0, r'"test \" after"'),
-    (0, 0, r'"test \' after"'),
-    (0, 0, r'"test {a} after"'),
+        (0, 0, r'""'),
+        (0, 0, r"''"),
+        (0, 0, r'"test \" after"'),
+        (0, 0, r'"test \' after"'),
+        (0, 0, r'"test {a} after"'),
     # Embedded strings.
-    (2, -2, r'aa"test"bb'),
+        (2, -2, r'aa"test"bb'),
 )
 for test_i, data in enumerate(table):
     start_i, offset, s = data
     x = leoAst.TokenOrderGenerator()
-    i2 = x.scan_string(s, start_i)
-    expected = len(s)+offset
-    assert i2 == expected, f"test {test_i}: expected {expected} got {i2}"
+    data = x.scan_string(s, start_i)
+    i, s2 = data
+    e_i = len(s)+offset
+    assert i == e_i, f"test {test_i}: expected {e_i} got {i}"
+    e_s = s[start_i:e_i]
+    assert e_s == s2, f"test {test_i}: expected {e_s} got {s2}"
 </t>
 <t tx="ekr.20191202095002.1">import leo.core.leoAst as leoAst
 if 1:
@@ -4889,5 +4869,21 @@ for test_i, data in enumerate(table):
     
     # Test.
     tokens = x.get_joined_tokens(node)</t>
+<t tx="ekr.20191202143832.1"></t>
+<t tx="ekr.20191202180046.1">run_tests FAIL: file: core..leoFind.py
+
+AssignLinkError: caller: adjust_str_token
+adjust_str_token: Mismatch: line: 1619 result: '""\n        Carefully substitute group[i-1] for \\i strings in s.\n        The group strings may contain \\i strings: they are *not* substituted.\n        ""' remainder: '\n        Carefully substitute group[i-1] for \\i strings in s.\n        The group strings may contain \\i strings: they are *not* substituted.\n        '
+
+run_tests FAIL: file: core..leoGlobals.py
+
+AssignLinkError: caller: do_If
+line 477: expected 'if' or 'elif' (name) token, got 'name 'else'
+
+Failed tests:
+[
+    'file: core..leoFind.py',
+    'file: core..leoGlobals.py'
+]</t>
 </tnodes>
 </leo_file>
