@@ -2019,15 +2019,7 @@ class TokenOrderGenerator:
         """
         #@-<< adjust_str_token docstring >>
         trace = self.trace_mode
-        #
-        # r[rx0:] is the remaining string from Str.s, the target.
-        # r has no prefix or quotes.
-        # # tv *might* have a prefix. It *must* have matching quotes.
-        #
-        # Let block
         line_n = token.line_number
-        ### rx0 = self.target_index
-        ### r = self.target_string[rx0:]
         tv = token.value
         #
         # tv *might* have a prefix.
@@ -2048,7 +2040,7 @@ class TokenOrderGenerator:
         else:
             raise self.error(f"line {line_n} No matching quotes: {tv!r}")
         #
-        # Compute the inner string and reconcile it.
+        # Compute the inner string and reconcile the results.
         inner_s = tv[prefix_i:i]
         result = inner_s
         if 'r' not in tv_prefix.lower():
@@ -2058,12 +2050,9 @@ class TokenOrderGenerator:
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #
         # Advance.
-        ### self.target_index = self.target_index + len(result)
         self.target_index += len(result)
         if trace:
             g.trace(f"\ntoken.value {token.value} ==> result: {result}\n")
-                # f"END string_index: {self.target_index} "
-                # f"inner_s: {inner_s!r}\n"
         return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
