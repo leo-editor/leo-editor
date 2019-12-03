@@ -1976,7 +1976,8 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
-    tv_pat = re.compile(r"([fFrR]*)([\"']+)")
+    fr_pat = re.compile(r"([fFrR]{0,2})")
+    quotes_pat = re.compile(r"('''|'|\"\"\"|\")")
 
     def adjust_str_token(self, token):
         #@+<< adjust_str_token docstring >>
@@ -2023,10 +2024,16 @@ class TokenOrderGenerator:
         tv = token.value
         #
         # tv *might* have a prefix.
-        m = self.tv_pat.match(tv)
+        m = self.fr_pat.match(tv)
         if not m:
-            raise self.error(f"line {line_n} Bad string token value: {tv!r}")
-        tv_prefix, tv_quotes = m.group(1), m.group(2)
+            raise self.error(f"line {line_n} Bad prefix: {tv!r}")
+        tv_prefix = m.group(1)
+        #
+        # tv *must* have opening quotes.
+        m = self.quotes_pat.match(tv[len(tv_prefix):])
+        if not m:
+            raise self.error(f"line {line_n} Missing quote: {tv!r}")
+        tv_quotes = m.group(1)
         #
         # tv *must* have matching quotes. Find them, ignoring escaped quotes.
         i = prefix_i = len(tv_prefix)+len(tv_quotes)
@@ -2038,7 +2045,8 @@ class TokenOrderGenerator:
             else:
                 i += 1
         else:
-            raise self.error(f"line {line_n} No matching quotes: {tv!r}")
+            g.trace('len(tv)', len(tv))
+            raise self.error(f"line {line_n} No matching quotes: {tv}")
         #
         # Compute the inner string and reconcile the results.
         inner_s = tv[prefix_i:i]

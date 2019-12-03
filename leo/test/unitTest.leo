@@ -357,15 +357,11 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191203032839.1"><vh>ignore: passed recent tests</vh>
-<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 <v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
-</v>
-<v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -390,7 +386,10 @@
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
+<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
+<v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
 </v>
@@ -4158,7 +4157,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -4177,19 +4176,12 @@ if 'all' in flags:
         'no-trace-after-fail',
         # 'no-sync', # To test speed.
     ]
-elif 0:
-    # Summary/files tests
-    reports = [
-        # 'set-test-mode',
-        # 'show-exception-after-fail',
-        # 'trace-times',
-    ]
 else:
     # Use 'no-sync' option to compare parse trees.
     reports = [ 
         # 'no-sync',
         'dump-sources-first',
-        'dump-raw-tree-first',
+        # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
         'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
@@ -4872,6 +4864,7 @@ for test_i, data in enumerate(table):
 <t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
 print(r"""DS""")
 </t>
-<t tx="ekr.20191203032839.1"></t>
+<t tx="ekr.20191203111346.1"># leoGlobals.py line 806.
+print('"')</t>
 </tnodes>
 </leo_file>
