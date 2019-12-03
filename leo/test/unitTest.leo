@@ -357,19 +357,18 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191202203022.1"><vh>Recent fails</vh></v>
-<v t="ekr.20191203032750.1"><vh>failures</vh></v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191203032839.1"><vh>ignore: passed recent tests</vh>
-<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
+<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
 </v>
-<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
 <v t="ekr.20191129033147.1"></v>
@@ -391,7 +390,6 @@
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
@@ -4191,13 +4189,13 @@ else:
     reports = [ 
         # 'no-sync',
         'dump-sources-first',
-        # 'dump-raw-tree-first',
+        'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
-        # 'dump-tokens-first',
+        'dump-tokens-first',
         'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
-        'dump-tokens-after-fail',
-        'dump-tree-after-fail',
+        # 'dump-tokens-after-fail',
+        # 'dump-tree-after-fail',
         # 'dump-all-after-fail',
         # 'dump-contents',
         # 'dump-raw-tree',
@@ -4874,59 +4872,6 @@ for test_i, data in enumerate(table):
 <t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
 print(r"""DS""")
 </t>
-<t tx="ekr.20191202203022.1">Running *all*' unit tests...
-
-adjust_str_token Mismatch at line 1619 file file: core..leoFind.py
-Results:
-[
-    '""',
-    '        Carefully substitute group[i-1] for \\i strings in s.',
-    '        The group strings may contain \\i strings: they are *not* substituted.',
-    '        ""'
-]
-Remainder:
-[
-    '',
-    '        Carefully substitute group[i-1] for \\i strings in s.',
-    '        The group strings may contain \\i strings: they are *not* substituted.',
-    '        '
-]
-
-run_tests FAIL: file: core..leoFind.py
-
-AssignLinkError: caller: adjust_str_token
-line 1619 Mismatch: line: 1619
-
-run_tests FAIL: file: core..leoGlobals.py
-
-AssignLinkError: caller: do_If
-line 477: expected 'if' or 'elif' (name) token, got 'name 'else'
-
-Failed tests:
-[
-    'file: core..leoFind.py',
-    'file: core..leoGlobals.py'
-]</t>
-<t tx="ekr.20191203032750.1">Failed tests:
-[
-    'test: f-string + Ternary',
-    'test: f-string case 1: single f-string',
-    'test: f-string case 2: f-string + plain',
-    'test: f-string case 2: f-string + plain',
-    'test: f-string case 3: plain + f-string',
-    'test: f-string case 4: f-string + fstring',
-    'test: f-string case 5: many',
-    'test: f-string containing ternary op',
-    'test: f-string leoFind.py line 856',
-    'test: f-string leoFind.py: line 861',
-    'test: f-string summary',
-    'test: f-string summary: joins + 1 f-expr',
-    'test: f-string summary: joins + 2 f-exprs',
-    'test: f-string: complex, with commas',
-    'test: print one f-string',
-    'test: simple f-string tests',
-    'test: escaped string delims'
-]</t>
 <t tx="ekr.20191203032839.1"></t>
 </tnodes>
 </leo_file>

@@ -1980,82 +1980,102 @@ class TokenOrderGenerator:
 
     def adjust_str_token(self, token):
         #@+<< adjust_str_token docstring >>
-        #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
+        #@+node:ekr.20191203093059.1: *7* << adjust_str_token docstring >>
         """
-        Given:
-            
-            rx0 = self.target_index
-            r = self.target_string[rx0:]
-            
-        r is the **remainder** of a **target string**.
+        Return a string containing those parts of token.value that correspond
+        to the *remaining* parts of the **target string**, in self.node.s.
 
-        Initially, the target string is simply the token.value for the token being
-        processed. However, sometimes not all the target string is consumed.
-            
-            
-        This method carefully compares tv (token.value) and the remainder r
-        the target string to determine how much more of the target string to
-        consume.
+        **Background**
 
-        This is a tricky task for two reasons:
+        self.node is an ast.Str node. To emphasize this, I'll use Str.s to denote
+        the target string in self.node.s.
+
+        Fact 1: Str.s may represent *one or more* tokens. This wretched fact is why
+                this method is required.
+
+        Fact 2: Str.s is a *plain* string. Each token.value contains the repr of
+                all or *part* of Str.s. Each token.value may contain an f/r prefix
+                and *must* contain quotes.
+
+        **Return value**
+
+        The return value helps step through Str.s. Therefore, it must match the
+        characters of Str.s exactly.
+                
+        This method computes the return value as follows:
             
-        1. The target string comes from an ast.Str node, and may be the
-           concatenation of *more than one* strings from the token list.
+        1. Start with the **inner part** of token.value, that part of
+           token.value inside the prefix and quotes.
            
-        2. The spellings of strings in tokens and tree nodes differ:
-           'string' tokens contain the repr of each of the corresponding
-           parts of the target string.
+        2. **Reconcile** the inner part to account for escaped characters in
+           token.value. Such escapes the do not occure in Str.s.
 
-        On exit: Update self.target_index and return the consumed parts of the
-        *target* string.
+        **Advancing the target index**
 
-        *Note*: For empty strings this method might not consume anything.
-                That's benign because the caller always skips one token.
+        The .target_index ivar tells how much of Str.s remains. Because the result
+        is reconciled, advancing the target pointer is easy:
+
+            self.target_index += len(result)
         """
         #@-<< adjust_str_token docstring >>
         trace = self.trace_mode
+        line_n = token.line_number
         #
-        # r is the *remainder* of the target string.
-        # r has neither an f or r prefix, nor any quotes.
+        # r[rx0:] is the remaining string from Str.s, the target.
+        # r has no prefix or quotes.
         rx0 = self.target_index
         r = self.target_string[rx0:]
-        g.trace(f"\nEntry: rx0: {rx0} r: {r!s}")
+        if trace:
+            g.trace(f"\nEntry: rx0: {rx0} r: {r!s}")
         # 
         # tv is the token.value.
         # tv *might* have a prefix; it *must* have matching quotes.
         tv = token.value
         m = self.tv_pat.match(tv)
         if not m:
-            raise self.error(
-                f"line {token.line_number} string token value: {tv!r}")
+            raise self.error(f"line {line_n} Bad string token value: {tv!r}")
         tv_prefix, tv_quotes = m.group(1), m.group(2)
-        tv_rest = tv[len(tv_prefix)+len(tv_quotes):]
-        if trace:
-            g.trace(f"tv_prefix {tv_prefix!r} tv_quotes {tv_quotes!r} tv_rest {tv_rest!r}")
         #
-        # Find the matching quotes.
-        i = tv_rest.find(tv_quotes)
-        if i == -1:
-            raise self.error(
-                f"line {token.line_number} unmatched quotes: {tv!r}")
+        # Find the matching quote, ignoring escaped quotes.
+        i = prefix_i = len(tv_prefix)+len(tv_quotes)
+        while i < len(tv):
+            if tv[i] == '\\':
+                i += 2
+            elif tv[i:i+len(tv_quotes)] == tv_quotes:
+                break
+            else:
+                i += 1
+        else:
+            raise self.error(f"line {line_n} No matching quotes: {tv!r}")
+        
+        ###
+            # i = tv.find(tv_quotes, len(tv_prefix)+len(tv_quotes))
+            # if i == -1:
+                # raise self.error(f"line {line_n} unmatched quotes: {tv!r}")
         #
-        # The result is everything between the tv quotes.
-        result = tv_rest
-        if 'r' not in tv_prefix:
+        # Compute the inner string.
+        ### inner_s = tv[len(tv_prefix)+len(tv_quotes):i]
+        inner_s = tv[prefix_i:i]
+        #
+        # Reconcile the inner string.
+        result = inner_s
+        if 'r' not in tv_prefix.lower():
+            ### result = result.replace('\\','')
+            result = result.replace('\\"', '"')
+            result = result.replace("\\'", "'")
             result = result.replace('\\'+'\n', '')
             result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #
         # For joined strings it's possible to exhaust the
         # target string *without* exhausting the present token!
-        #
-        # We should only check that the remainder is a *prefix* of the result.
-        ### remainder = r[:len(result)]
-        result = tv_prefix + result
-        self.target_index = rx0 + len(result) ### len(remainder)
-        g.trace(f"END string_index: {self.target_index} {token.value} ==> result: {result}\n")
+        self.target_index = rx0 + len(result)
+        if trace:
+            g.trace(
+                f"END string_index: {self.target_index} "
+                f"inner_s: {inner_s!r}\n"
+                f"{token.value} ==> result: {result}\n")
         return result
-        
         ###
             # if not result.startswith(remainder):
                 # g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
@@ -2091,34 +2111,12 @@ class TokenOrderGenerator:
         # Sanity check
         if not isinstance(self.node, ast.Str):
             raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
-                
-        ###
-            # Sanity checks...
-            # node_cn = self.node.__class__.__name__
-            # if target_s is None:
-                # if not isinstance(self.node, ast.Str):
-                    # raise self.error(f"expecting ast.Str, got {node_cn}")
-                # target_s = self.node.s
-            # else:
-                # if not isinstance(self.node, ast.JoinedStr):
-                    # raise self.error(f"expecting ast.JoinedStr, got {node_cn}")
-        #
-        # Set the ivars for adjust_str_token.
-        target_s = self.node.s
-        self.target_index = 0
-        self.target_string = target_s
-        #
-        # The accumulated results tells how much of the target string have been consumed.
-        # This is used *only* to stop the scan of actual tokens.
-        accumulated_results = []
-        #
-        # results is a list of one or more tokens to be consumed.
-        results = []
         #
         # Make sure we make progress.
         start_index = self.string_index
+        target_s = self.node.s
         if trace:
-            g.trace(f"START string_index: {self.string_index} target: {target_s}")
+            g.trace(f"START string_index: {self.string_index} target_s: {target_s}")
 
         def check_progress():
             if start_index >= self.string_index:
@@ -2138,6 +2136,9 @@ class TokenOrderGenerator:
             return [token]
         #
         # Scan 'string' tokens while the accumulated results are shorter than target_s.
+        accumulated_results, results = [], []
+        self.target_index = 0
+        self.target_string = target_s
         i = self.string_index
         while len(''.join(accumulated_results)) < len(target_s):
             if trace:
@@ -2146,8 +2147,8 @@ class TokenOrderGenerator:
             if i >= len(self.tokens):
                 raise self.error(f"End of tokens looking for {target_s}")
             token = self.tokens[i]
-            s = self.adjust_str_token(token)
             results.append(token)
+            s = self.adjust_str_token(token)
             accumulated_results.append(s)
         results_s = ''.join(accumulated_results)
         #
