@@ -357,10 +357,9 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
@@ -388,6 +387,7 @@
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
+<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 <v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
@@ -4157,7 +4157,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -4174,17 +4174,15 @@ if 'g.cls' in flags:
 if 'all' in flags:
     reports = [
         'no-trace-after-fail',
-        # 'no-sync', # To test speed.
     ]
 else:
     # Use 'no-sync' option to compare parse trees.
     reports = [ 
-        # 'no-sync',
-        'dump-sources-first',
+        # 'dump-sources-first',
         # 'dump-raw-tree-first',
         # 'trace-tokenizer-tokens',
-        'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'dump-tokens-first',
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
         # 'dump-tokens-after-fail',
         # 'dump-tree-after-fail',
@@ -4193,7 +4191,7 @@ else:
         # 'dump-raw-tree',
         # 'dump-tokens',
         # 'dump-tree',
-        # 'trace-times',  # Only for'file:' tests.
+        # 'trace-times',    # Only for'file:' tests.
         # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
@@ -4507,7 +4505,7 @@ elif 2:
     pass
     pass
 </t>
-<t tx="ekr.20191123203957.1"># line 363 </t>
+<t tx="ekr.20191123203957.1"># line 1604.</t>
 <t tx="ekr.20191123210801.1">if -(2):
     pass
 </t>

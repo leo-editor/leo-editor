@@ -2302,6 +2302,8 @@ class TokenOrderGenerator:
         # Else clause...
         if node.orelse:
             # 'else:\n'
+            # Consume the 'else' if-item.
+            self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -2383,6 +2385,8 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         # 'else:\n'
         if node.orelse:
+            # Consume the 'else' if-item.
+            self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -2414,14 +2418,13 @@ class TokenOrderGenerator:
         Instead, we scan the tokens list for the next 'if', 'else' or 'elif' token.
         """
         #@-<< do_If docstring >>
-        advance, peek = self.advance_if, self.peek_if
         # Consume the if-item.
-        token = peek()
+        token = self.peek_if()
         if token.value not in ('if', 'elif'):
             raise self.error(
                 f"line {token.line_number}: "
                 f"expected 'if' or 'elif' (name) token, got '{token!s}")
-        advance()
+        self.advance_if()
         # If or elif line...
             # if %s:\n
             # elif %s: \n
@@ -2436,10 +2439,10 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            val = peek().value
+            val = self.peek_if().value
             if val == 'else':
                 # Consume the 'else' if-item.
-                advance()
+                self.advance_if()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
@@ -2576,6 +2579,8 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         # Else clause...
         if node.orelse:
+            # Consume the 'else' if-item.
+            self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen_newline()
