@@ -2019,24 +2019,24 @@ class TokenOrderGenerator:
         """
         #@-<< adjust_str_token docstring >>
         trace = self.trace_mode
-        line_n = token.line_number
         #
         # r[rx0:] is the remaining string from Str.s, the target.
         # r has no prefix or quotes.
-        rx0 = self.target_index
-        r = self.target_string[rx0:]
-        if trace:
-            g.trace(f"\nEntry: rx0: {rx0} r: {r!s}")
-        # 
-        # tv is the token.value.
-        # tv *might* have a prefix; it *must* have matching quotes.
+        # # tv *might* have a prefix. It *must* have matching quotes.
+        #
+        # Let block
+        line_n = token.line_number
+        ### rx0 = self.target_index
+        ### r = self.target_string[rx0:]
         tv = token.value
+        #
+        # tv *might* have a prefix.
         m = self.tv_pat.match(tv)
         if not m:
             raise self.error(f"line {line_n} Bad string token value: {tv!r}")
         tv_prefix, tv_quotes = m.group(1), m.group(2)
         #
-        # Find the matching quote, ignoring escaped quotes.
+        # tv *must* have matching quotes. Find them, ignoring escaped quotes.
         i = prefix_i = len(tv_prefix)+len(tv_quotes)
         while i < len(tv):
             if tv[i] == '\\':
@@ -2047,52 +2047,24 @@ class TokenOrderGenerator:
                 i += 1
         else:
             raise self.error(f"line {line_n} No matching quotes: {tv!r}")
-        
-        ###
-            # i = tv.find(tv_quotes, len(tv_prefix)+len(tv_quotes))
-            # if i == -1:
-                # raise self.error(f"line {line_n} unmatched quotes: {tv!r}")
         #
-        # Compute the inner string.
-        ### inner_s = tv[len(tv_prefix)+len(tv_quotes):i]
+        # Compute the inner string and reconcile it.
         inner_s = tv[prefix_i:i]
-        #
-        # Reconcile the inner string.
         result = inner_s
         if 'r' not in tv_prefix.lower():
-            ### result = result.replace('\\','')
-            result = result.replace('\\"', '"')
-            result = result.replace("\\'", "'")
+            result = result.replace('\\"', '"').replace("\\'", "'")
             result = result.replace('\\'+'\n', '')
             result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #
-        # For joined strings it's possible to exhaust the
-        # target string *without* exhausting the present token!
-        self.target_index = rx0 + len(result)
+        # Advance.
+        ### self.target_index = self.target_index + len(result)
+        self.target_index += len(result)
         if trace:
-            g.trace(
-                f"END string_index: {self.target_index} "
-                f"inner_s: {inner_s!r}\n"
-                f"{token.value} ==> result: {result}\n")
+            g.trace(f"\ntoken.value {token.value} ==> result: {result}\n")
+                # f"END string_index: {self.target_index} "
+                # f"inner_s: {inner_s!r}\n"
         return result
-        ###
-            # if not result.startswith(remainder):
-                # g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
-                # g.trace('\nresult should start with remainder\n')
-                # g.printObj(result.split('\n'), tag='result')
-                # g.printObj(remainder.split('\n'), tag='remainder r')
-                # raise self.error(
-                    # f"line {token.line_number} "
-                    # f"Mismatch: line: {token.line_number} ")
-                    # # f"result: {result!r}\n"
-                    # # f"remainder: {remainder!r}")
-            # #
-            # # Now advance by the length of the remainder.
-            # self.target_index = rx0 + len(remainder)
-            # if trace:
-                # g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
-            # return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
     target_index = 0
