@@ -358,17 +358,18 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191202203022.1"><vh>Recent fails</vh></v>
-<v t="ekr.20191202195507.1"><vh>xx test: raw docstring</vh></v>
-<v t="ekr.20191202143832.1"><vh>fail: not ready yet</vh>
+<v t="ekr.20191203032750.1"><vh>failures</vh></v>
+<v t="ekr.20191203032839.1"><vh>ignore: passed recent tests</vh>
+<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 </v>
-<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191125151346.1"><vh>fail: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
-<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
 <v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
 <v t="ekr.20191129033147.1"></v>
@@ -4159,7 +4160,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -4178,7 +4179,7 @@ if 'all' in flags:
         'no-trace-after-fail',
         # 'no-sync', # To test speed.
     ]
-elif 1:
+elif 0:
     # Summary/files tests
     reports = [
         # 'set-test-mode',
@@ -4870,7 +4871,6 @@ for test_i, data in enumerate(table):
     
     # Test.
     tokens = x.get_joined_tokens(node)</t>
-<t tx="ekr.20191202143832.1"></t>
 <t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
 print(r"""DS""")
 </t>
@@ -4907,5 +4907,26 @@ Failed tests:
     'file: core..leoFind.py',
     'file: core..leoGlobals.py'
 ]</t>
+<t tx="ekr.20191203032750.1">Failed tests:
+[
+    'test: f-string + Ternary',
+    'test: f-string case 1: single f-string',
+    'test: f-string case 2: f-string + plain',
+    'test: f-string case 2: f-string + plain',
+    'test: f-string case 3: plain + f-string',
+    'test: f-string case 4: f-string + fstring',
+    'test: f-string case 5: many',
+    'test: f-string containing ternary op',
+    'test: f-string leoFind.py line 856',
+    'test: f-string leoFind.py: line 861',
+    'test: f-string summary',
+    'test: f-string summary: joins + 1 f-expr',
+    'test: f-string summary: joins + 2 f-exprs',
+    'test: f-string: complex, with commas',
+    'test: print one f-string',
+    'test: simple f-string tests',
+    'test: escaped string delims'
+]</t>
+<t tx="ekr.20191203032839.1"></t>
 </tnodes>
 </leo_file>

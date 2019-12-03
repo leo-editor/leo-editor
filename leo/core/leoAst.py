@@ -1969,15 +1969,16 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
-    prefix_pat = re.compile(r"([fFrR])")
+    tv_pat = re.compile(r"([fFrR]*)([\"']+)")
 
     def adjust_str_token(self, token):
         #@+<< adjust_str_token docstring >>
         #@+node:ekr.20191130111223.1: *7* << adjust_str_token docstring >>
         """
-        This is an important part of the TOG class.
+        This method carefully compares tv (token.value) and r, the *remainder* of
+        the target string to determine how much more of the target string to
+        consume.
 
-        The goal is to determine how much of the target string to consume.
         This is a tricky task for two reasons:
             
         1. The target string comes from an ast.Str node, and may be the
@@ -1987,9 +1988,6 @@ class TokenOrderGenerator:
            'string' tokens contain the repr of each of the corresponding
            parts of the target string.
 
-        The *only* way to accomplish this goal is by a careful comparison
-        between tv (token.value) and r, the *remainder* of the target string.
-
         On exit: Update self.target_index and return the consumed parts of the
         *target* string.
 
@@ -1998,70 +1996,36 @@ class TokenOrderGenerator:
         """
         #@-<< adjust_str_token docstring >>
         trace = self.trace_mode
-        quotes = ("'", '"')
+        #
+        # r is the *remainder* of the target string.
+        # r has neither an f or r prefix, nor any quotes.
         rx0 = self.target_index
         r = self.target_string[rx0:]
+        # 
+        # tv is the token.value.
+        # tv *might* have a prefix; it *must* have matching quotes.
         tv = token.value
-        if trace:
-            g.trace(f"\ntarget_index: {rx0} tv: {tv!s} r: {r!s}")
-        #
-        # Compute and check the prefixes.
-        m = self.prefix_pat.match(r)
-        r_prefix = m.group(0) if m else ''
-        m = self.prefix_pat.match(tv)
-        tv_prefix = m.group(0) if m else ''
-        if trace:
-            g.trace('r_prefix', repr(r_prefix), 'tv_prefix', repr(tv_prefix))
-        
-        ### Not sure this matters.
-            # if r_prefix and len(r_prefix) != len(tv_prefix):
-                # g.trace(f"tv_prefix: {tv_prefix!s} r_prefix: {r_prefix!s}")
-                # raise self.error(f"Mismatch prefixes' tv: {tv!s} r: {r!s}")
-        #
-        # The token must have a quote.
-        tx = len(tv_prefix)
-        if tv.startswith(quotes, tx) and tv.endswith(quotes):
-            tv_quote = tv[tx]
-        else:
-            raise self.error(f"Missing quote in tv: {tv!r}")
-        if tv.startswith(tv_quote*3):
-            assert tv.endswith(tv_quote*3), repr(tv)
-            tv_quotes = tv_quote*3
-            inner_s = tv[tx+3:-3]
-        else:
-            tv_quotes = tv_quote
-            inner_s = tv[tx+1:-1]
-        #
-        # The remainder *might* have quotes. 
-        # If so, we won't know where the matching quote/quotes are until later!
-        rx = rx0 + len(r_prefix)
-        if r.startswith(quotes, rx):
-            r_quote = r[rx]
-            r_quotes = r_quote*3 if r.startswith(r_quote*3) else r_quote
-        else:
-            r_quote = r_quotes = ''
-        if trace:
-            g.trace('r_quotes', repr(r_quotes), 'tv_quotes', repr(tv_quotes))
-        #
-        # Quotes must match, if they exist in the remaining string.
-        if r_quotes and r_quotes != tv_quotes:
+        m = self.tv_pat.match(tv)
+        if not m:
             raise self.error(
-                f"line {token.line_number} "
-                f"Unmatched quotes: tv_quotes: {tv_quotes!r} r_quotes {r_quotes!r}")
+                f"line {token.line_number} string token value: {tv!r}")
+        tv_prefix, tv_quotes = m.group(1), m.group(2)
+        tv_rest = tv[len(tv_prefix)+len(tv_quotes):]
+        if trace:
+            g.trace(f"tv_prefix {tv_prefix!r} tv_quotes {tv_quotes!r} tv_rest {tv_rest!r}")
         #
-        # Unescape escaped quotes.
-        if r_quotes:
-            inner_s = inner_s.replace('\\' + r_quote, r_quote)
-            result = r_prefix + r_quotes + inner_s + r_quotes
-        else:
-            result = inner_s.replace('\\' + tv_quote, tv_quote)
-            ### r = tv_quotes + r + tv_quotes ### Experimental.
-        ###
-        ### To do: Don't do these for raw constants.
-        ###
-        result = result.replace('\\'+'\n', '')
-        result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
-        result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
+        # Find the matching quotes.
+        i = tv_rest.find(tv_quotes)
+        if i == -1:
+            raise self.error(
+                f"line {token.line_number} unmatched quotes: {tv!r}")
+        #
+        # The result is everything between the tv quotes.
+        result = tv_rest
+        if 'r' not in tv_prefix:
+            result = result.replace('\\'+'\n', '')
+            result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
+            result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
         #
         # For joined strings it's possible to exhaust the
         # target string *without* exhausting the present token!
@@ -2070,8 +2034,9 @@ class TokenOrderGenerator:
         remainder = r[:len(result)]
         if not result.startswith(remainder):
             g.trace(f"Mismatch at line {token.line_number} file {self.file_name}")
-            g.printObj(result.split('\n'), tag='Results')
-            g.printObj(remainder.split('\n'), tag='Remainder')
+            g.trace('\nresult should start with remainder\n')
+            g.printObj(result.split('\n'), tag='result')
+            g.printObj(remainder.split('\n'), tag='remainder r')
             raise self.error(
                 f"line {token.line_number} "
                 f"Mismatch: line: {token.line_number} ")
@@ -2083,10 +2048,6 @@ class TokenOrderGenerator:
         if trace:
             g.trace(f"string_index: {self.target_index} {token.value} ==> result: {result}\n")
         return result
-
-        # This check is *too* strong.
-            # if result != r[:len(result)]:
-                # raise self.error(f"Mismatch error: result: {result!r} r: {r[:len(result)]!r}")
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # For adjust_str_token.
     target_index = 0
