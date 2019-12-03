@@ -2429,7 +2429,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         yield from self.gen(node.names)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.75: *5* tog.If
+    #@+node:ekr.20191113063144.75: *5* tog.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
@@ -2491,7 +2491,6 @@ class TokenOrderGenerator:
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
-        ### i = 0 if self.if_index is None else self.if_index + 1
         i = self.if_index
         i = self.find_next_if_token(i + 1)
         self.if_index = i
@@ -2499,9 +2498,8 @@ class TokenOrderGenerator:
 
     def find_next_if_token(self, i):
         while i < len(self.tokens):
-            ### g.trace(f"      {i<3} {self.tokens[i]}")
             if self.is_if_token(self.tokens[i]):
-                ### g.trace(f" {i:>3} {self.tokens[i]}")
+                # g.trace(f" {i:>3} {self.tokens[i]}")
                 break
             i += 1
         return i
