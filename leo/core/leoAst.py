@@ -1540,6 +1540,7 @@ class TokenOrderGenerator:
         yield from self.gen_token('bytes', str(node.s))
     #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword
     # Call(expr func, expr* args, keyword* keywords)
+
     # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
 
     def do_Call(self, node):
@@ -1552,17 +1553,17 @@ class TokenOrderGenerator:
             
             def show_fields(node):
                 class_name = 'None' if node is None else node.__class__.__name__
-                return ': ' + dumper.show_fields(class_name, node, 80)
+                return dumper.show_fields(class_name, node, 80)
                 
             def dump(node):
                 class_name = node.__class__.__name__
                 if node is None:
                     class_name, fields = 'None', ''
                 elif isinstance(node, (list, tuple)):
-                    fields = ','.join([show_fields(z) for z in node])
+                    fields = ', '.join([show_fields(z) for z in node])
                 else:
                     fields = show_fields(node)
-                return f"{class_name:>12}{fields}"
+                return f"{class_name:>12}: {fields}"
 
             print(
                 f"\ndo_Call...\n"
@@ -1576,17 +1577,18 @@ class TokenOrderGenerator:
         yield from self.gen(node.keywords)
         yield from self.gen_op(')')
     #@+node:ekr.20191113063144.32: *6* tog.keyword
-    # keyword = (identifier arg, expr value)
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_keyword(self, node):
 
         if node.arg:
             yield from self.gen_name(node.arg)
             yield from self.gen_op('=')
+            yield from self.gen(node.value)
         else:
-            # weird, but correct.
             yield from self.gen_op('**') 
-        yield from self.gen(node.value)
+            yield from self.gen(node.value)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
@@ -2637,7 +2639,11 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.83: *5* tog.Starred
     # Starred(expr value, expr_context ctx)
 
+    # In assignment contexts.
+
     def do_Starred(self, node):
+        
+        ### g.trace(f"\n{node.value}\n") ###
 
         yield from self.gen_op('*')
         yield from self.gen(node.value)
@@ -2813,17 +2819,27 @@ class AstDumper:
                 else:
                     results.append(z.__class__.__name__)
                     fstrings += 1
-            if False:
-                g.printObj(results, tag='AstDumper.show_fields: JoinedStr')
-            # result = '::'.join(results)
-            # val = f"values={result}"
-            val = f" {strings} str, {fstrings} f-str"
+            val = f"{strings} str, {fstrings} f-str"
+        elif class_name == 'keyword':
+            if isinstance(node.value, ast.Str):
+                val = f"arg={node.arg}..Str.value.s={node.value.s}"
+            elif isinstance(node.value, ast.Name):
+                val = f"arg={node.arg}..Name.value.id={node.value.id}"
+            else:
+                val = f"arg={node.arg}..value={node.value.__class__.__name__}"
         elif class_name == 'Name':
             val = f"id={node.id!r}"
         elif class_name == 'NameConstant':
             val = f"value={node.value!r}"
         elif class_name == 'Num':
             val = f"n={node.n}"
+        elif class_name == 'Starred':
+            if isinstance(node.value, ast.Str):
+                val = f"s={node.value.s}"
+            elif isinstance(node.value, ast.Name):
+                val = f"id={node.value.id}"
+            else:
+                val = f"s={node.value.__class__.__name__}"
         elif class_name == 'Str':
             val = f"s={node.s!r}"
         elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'UnaryOp'): # IfExp
@@ -2832,20 +2848,11 @@ class AstDumper:
         elif class_name == 'Compare':
             ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
             val = f"ops={ops}"
-        elif class_name == 'keyword':
-            if isinstance(node.value, ast.Str):
-                val = f"arg={node.arg}:{node.value.s}"
-            else:
-                val = f"arg={node.arg}:{node.value.__class__.__name__}"
-        elif class_name == 'Starred':
-            if isinstance(node.value, ast.Str):
-                val = f"value={node.value.s}"
-            else:
-                val = f"value={node.value.__class__.__name__}"
         else:
-            val = f"{class_name}"
+            val = '' ## f"{class_name}"
+        val = f"{class_name}.{val}"
         return truncate(val, truncate_n)
-        
+
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
     def show_line_range(self, node):
         
