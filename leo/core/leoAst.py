@@ -1185,7 +1185,7 @@ class TokenOrderGenerator:
         4. Create two-way links between T and self.node.
         5. Advance by updating self.px.
         """
-        trace = False ###  and self.trace_mode
+        trace = False and self.trace_mode
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace:
@@ -2179,9 +2179,6 @@ class TokenOrderGenerator:
         # Compute the inner string and reconcile the results.
         inner_s = tv[prefix_i:i]
         result = inner_s
-        ###
-            # if 'b' in tv_prefix.lower():
-            # result = 'b' + tv_quotes + result + tv_quotes
         if 'r' not in tv_prefix.lower():
             result = result.replace('\\"', '"').replace("\\'", "'")
             result = result.replace('\\'+'\n', '')
