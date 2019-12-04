@@ -1539,13 +1539,15 @@ class TokenOrderGenerator:
 
         yield from self.gen_token('bytes', str(node.s))
     #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword
-    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+    # Call(expr func, expr* args, keyword* keywords)
 
     def do_Call(self, node):
         
         trace = True
         starargs = getattr(node, 'starargs', None)
         kwargs = getattr(node, 'kwargs', None)
+        #
+        # Leave this trace, for now.
         if trace:
             dumper = AstDumper()
             

@@ -1709,7 +1709,7 @@ if 'all' in flags:
 else:
     reports = [ 
         'dump-sources-first',
-        # 'dump-raw-tree-first',
+        'dump-raw-tree-first',
         # 'dump-tokens-first',
         # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
