@@ -1491,6 +1491,8 @@ class TokenOrderGenerator:
 
     def do_arg(self, node):
         
+        g.trace(f"\n{node.arg}\n") ###
+
         yield from self.gen_name(node.arg)
         annotation = getattr(node, 'annotation', None)
         if annotation is not None:
@@ -1540,16 +1542,46 @@ class TokenOrderGenerator:
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self, node):
+        
+        starargs = getattr(node, 'starargs', None)
+        kwargs = getattr(node, 'kwargs', None)
+        
+        if 1:
+            dumper = AstDumper()
+            
+            def show_fields(node):
+                class_name = 'None' if node is None else node.__class__.__name__
+                return dumper.show_fields(class_name, node, 80)
+                
+            def dump(node):
+                class_name = node.__class__.__name__
+                if node is None:
+                    class_name = 'None'
+                    fields = ''
+                elif isinstance(node, (list, tuple)):
+                    fields = ','.join([show_fields(z) for z in node])
+                else:
+                    fields = show_fields(node)
+                return f"{class_name:>12}{fields}"
+
+            print(
+                f"\ndo_Call...\n"
+                f"    func: {dump(node.func)}\n"
+                f"    args: {dump(node.args)}\n"
+                f"keywords: {dump(node.keywords)}\n"
+                f"starargs: {dump(starargs)}\n"
+                f"  kwargs: {dump(kwargs)}\n"
+            )
 
         yield from self.gen(node.func)
         yield from self.gen_op('(')
         yield from self.gen(node.args)
         yield from self.gen(node.keywords)
             # The visitors puts the '**' if there is no name field.
-        if hasattr(node, 'starargs'):
+        if starargs: ### hasattr(node, 'starargs'):
             # The visitor puts the '*'.
             yield from self.gen(node.starargs)
-        if hasattr(node, 'kwargs'):
+        if kwargs:  ### hasattr(node, 'kwargs'):
             # The visitor puts the '**'.
             yield from self.gen(node.kwargs)
         yield from self.gen_op(')')
@@ -2744,7 +2776,7 @@ class AstDumper:
         else:
             result.append(node_s)
     #@+node:ekr.20191125033744.1: *3* dumper.brief_dump_one_node
-    def brief_dump_one_node(self, node, level):
+    def brief_dump_one_node(self, node, level=0):
         
         indent = ' ' * 2 * level
         result = [] # [self.show_header()]
@@ -2811,6 +2843,18 @@ class AstDumper:
         elif class_name == 'Compare':
             ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
             val = f": ops={ops}"
+        elif class_name == 'keyword':
+            if isinstance(node.value, ast.Str):
+                val = f": arg={node.arg}:{node.value.s}"
+            else:
+                val = f": arg={node.arg}:{node.value.__class__.__name__}"
+        elif class_name == 'Starred':
+            if isinstance(node.value, ast.Str):
+                val = f": value={node.value.s}"
+            else:
+                val = f": value={node.value.__class__.__name__}"
+        else:
+            val = f": {class_name}"
         return truncate(val, truncate_n)
         
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
@@ -4887,6 +4931,7 @@ class TestRunner:
         print('\nContents...\n')
         for i, z in enumerate(g.splitLines(sources)):
             print(f"{i+1:<3} ", z.rstrip())
+        print('')
     #@+node:ekr.20191122025155.1: *3* TestRunner.dump_coverage
     def coverage(self):
         if self.x:
@@ -4899,6 +4944,7 @@ class TestRunner:
                 print(z.line.rstrip())
             else:
                 print(repr(z.line))
+        print('')
     #@+node:ekr.20191122025306.2: *3* TestRunner.dump_raw_tree
     def dump_raw_tree(self):
         print('\nRaw tree...\n')
@@ -4935,7 +4981,7 @@ class TestRunner:
             else:
                 tokens_s = ' '.join(
                     repr(z.string) for z in tokens[first:last] if z)
-            print(f"{class_name:>12} {token_range:<10} {tokens_s}")    
+            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token

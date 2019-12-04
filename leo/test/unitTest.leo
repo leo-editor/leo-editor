@@ -204,8 +204,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
-<v t="ekr.20191204065719.1"><vh>xx test: Call test</vh></v>
+<v t="ekr.20191119142414.1"><vh>ok test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20191204065719.1"><vh>test: Call test</vh></v>
 <v t="ekr.20191204025303.1"><vh>xx test: all Call tests</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
@@ -1708,8 +1708,8 @@ if 'all' in flags:
     ]
 else:
     reports = [ 
-        # 'dump-sources-first',
-        'dump-raw-tree-first',
+        'dump-sources-first',
+        # 'dump-raw-tree-first',
         # 'dump-tokens-first',
         # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
@@ -2446,7 +2446,7 @@ f4(a='a', *args, **kwargs)
     'C:/leo.repo/leo-editor/leo/core\\leoPymacs.py',
     'C:/leo.repo/leo-editor/leo/core\\leoRst.py'
 ]</t>
-<t tx="ekr.20191204065719.1">f4(a='a', *args, **kwargs)
+<t tx="ekr.20191204065719.1">f4(a='one', *args, **kwargs)
 </t>
 </tnodes>
 </leo_file>
