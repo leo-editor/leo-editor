@@ -1543,8 +1543,16 @@ class TokenOrderGenerator:
         yield from self.gen_name(node.attr) # A string.
     #@+node:ekr.20191113063144.30: *5* tog.Bytes
     def do_Bytes(self, node):
-
-        yield from self.gen_token('bytes', str(node.s))
+        
+        """
+        It's invalid to mix bytes and non-bytes literals, so just
+        advancing over the next 'string' token suffices.
+        """
+        token = self.peek_next_str()
+        i = self.string_index
+        i = self.next_str_index(i + 1)
+        self.string_index = i
+        yield from self.gen_token('string', token.value)
     #@+node:ekr.20191113063144.31: *5* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
 
@@ -1605,6 +1613,10 @@ class TokenOrderGenerator:
         See https://docs.python.org/3/reference/expressions.html#calls.
         
         This is similar to tog.do_arguments.
+        
+        At present, this code assumes the standard order:
+        
+        positional args, then keyword args, then * arg the ** kwargs.
         """
         trace = False
         #
@@ -1793,124 +1805,17 @@ class TokenOrderGenerator:
         - Str.s is a string corresponding *either* to a plain (concatentaed)
           string or a part of an f-string outside of an f-expression.
         """
-        if self.trace_mode:
+        trace = False and self.trace_mode
+        if trace:
             self.trace_joined_str(node)
         # Handle all the complications.
         tokens = self.get_joined_tokens(node)
-        if self.trace_mode:
+        if trace:
             g.trace('tokens...')
             for z in tokens:
                 print(f"  {z!s}")
         for z in tokens:
             yield from self.gen_token(z.kind, z.value)
-    #@+node:ekr.20191202051238.1: *6* tog.get_string_parts & helpers
-    def get_string_parts(self, token):
-        """
-        Return an ordered list of the components of the given 'string' token.
-        """
-        components, s = [], token.value
-        try:
-            i = 0
-            while i < len(s):
-                progress = i
-                if s[i] in 'fFrR':
-                    i, aList = self.scan_fstring(s, i)
-                    components.extend(aList)
-                else:
-                    i, s2 = self.scan_string(s, i)
-                    components.append(('string', s2))
-                assert i > progress
-            return components
-        except (IndexError, SyntaxError):
-            raise self.error(f"mal-formed 'string' token: {token!s}")
-    #@+node:ekr.20191202060440.1: *7* tog.scan_fstring
-    def scan_fstring(self, s, i):
-        """
-        Scan the f-string starting at s[i].
-        
-        Return a list of components (kind, val) where kind is in
-        ('f-expression', 'string').
-        """
-        def starts_fexpr(s, i):
-            return s[i] == '{' and s[i:i+2] != '{{'
-
-        def ends_fexpr(s, i):
-            return s[i] == '}' and s[i:i+2] != '}}'
-
-        # Ensure the f-string starts properly.
-        if s[i] not in 'fFrR':
-            raise SyntaxError('f-string does not start properly')
-        while s[i] in 'fFrR':
-            i += 1
-        delim = s[i]
-        if delim not in ('"', "'"):
-            raise SyntaxError('missing quote in f-string')
-        #
-        # scan for the closing delim, updating the components.
-        i += 1
-        start_i = i # The start of the next component.
-        in_fexpr = False
-        components = []
-        while s[i] != delim:
-            progress = i
-            if s[i] == '\\':
-                if in_fexpr:
-                    raise SyntaxError('backslash inside f-expression')
-                i += 1 # Skip one extra. 
-            elif in_fexpr:
-                if ends_fexpr(s,i):
-                    # End the f-string component
-                    val = s[start_i:i]
-                    components.append(('f-expression', val))
-                    # Start the next component, whatever it may be.
-                    in_fexpr = False
-                    start_i = i + 1
-            elif starts_fexpr(s, i):
-                if in_fexpr:
-                    raise SyntaxError('nested f-expressions')
-                # End any previous string component.
-                if start_i < i:
-                    val = s[start_i:i]
-                    components.append(('string', val))
-                # Start the f-string component.
-                in_fexpr = True
-                start_i = i + 1
-            i += 1
-            assert progress < i
-        # Add any trailing component.
-        if start_i < i:
-            kind = 'f-expression' if in_fexpr else 'string'
-            val = s[start_i:i]
-            components.append((kind, val))
-        if s[i] != delim:
-            raise SyntaxError('unterminated f-string')
-        if in_fexpr:
-            raise SyntaxError('unterminated f-expression')
-        assert s[i] == delim
-        ### g.trace(i + 1, components)
-        return i + 1, components
-    #@+node:ekr.20191202060423.1: *7* tog.scan_string
-    def scan_string(self, s, i):
-        """
-        Scan the plain string starting at s[i].
-        
-        Return (i, s[s0:i+1]) where
-        i is the index *after* the matching string delim.
-        """
-        delim = s[i]
-        if delim not in ('"', "'"):
-            raise SyntaxError('string does not start with a quote')
-        s0 = i
-        i += 1
-        while s[i] != delim:
-            if s[i] == '\\':
-                i += 1 # Skip one extra. 
-            i += 1
-        if s[i] != delim:
-            raise SyntaxError('unterminated plain string')
-        result = s[s0:i+1]
-        ### g.trace(i + 1, result)
-        return i + 1, result
     #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens (sets target_s)
     def get_joined_tokens(self, node):
         """
@@ -1996,6 +1901,124 @@ class TokenOrderGenerator:
             g.trace('\nExit')
             g.printObj(results, tag='Results')
         return results
+    #@+node:ekr.20191202051238.1: *6* tog.get_string_parts
+    def get_string_parts(self, token):
+        """
+        Return an ordered list of the components of the given 'string' token.
+        """
+        components, s = [], token.value
+        try:
+            i = 0
+            while i < len(s):
+                progress = i
+                if s[i] in 'fFrR':
+                    i, aList = self.scan_fstring(s, i, token)
+                    components.extend(aList)
+                else:
+                    i, s2 = self.scan_string(s, i, token)
+                    components.append(('string', s2))
+                assert i > progress
+            return components
+        except (IndexError, SyntaxError):
+            line = token.line_number
+            raise self.error(f"line {line}: mal-formed 'string' token: {token!s}")
+    #@+node:ekr.20191202060440.1: *6* tog.scan_fstring
+    def scan_fstring(self, s, i, token):
+        """
+        Scan the f-string starting at s[i].
+        
+        Return a list of components (kind, val) where kind is in
+        ('f-expression', 'string').
+        """
+        trace = False and self.trace_mode
+
+        def starts_fexpr(s, i):
+            return s[i] == '{' and s[i:i+2] != '{{'
+
+        def ends_fexpr(s, i):
+            return s[i] == '}' and s[i:i+2] != '}}'
+
+        # Ensure the f-string starts properly.
+        if s[i] not in 'fFrR':
+            raise SyntaxError('f-string does not start properly')
+        while s[i] in 'fFrR':
+            i += 1
+            
+        m = self.quotes_pat.match(s[i:])
+        if not m:
+            raise self.error(f"line {token.line_number} Missing quote: {s!r}")
+        quotes = m.group(1)
+        i += len(quotes)
+        if trace:
+            g.trace(f"\nEnter: quotes: {quotes} i: {i} s: {s[i:]}")
+        #
+        # scan for the closing delim, updating the components.
+        start_i = i # The start of the next component.
+        in_fexpr = False
+        components = []
+        while not s.startswith(quotes, i):
+            progress = i
+            # g.trace(in_fexpr, i, s[i:])
+            if s[i] == '\\':
+                if in_fexpr:
+                    raise SyntaxError('backslash inside f-expression')
+                i += 1 # Skip one extra. 
+            elif in_fexpr:
+                if ends_fexpr(s,i):
+                    # End the f-string component
+                    val = s[start_i:i]
+                    components.append(('f-expression', val))
+                    # Start the next component, whatever it may be.
+                    in_fexpr = False
+                    start_i = i + 1
+            elif starts_fexpr(s, i):
+                if in_fexpr:
+                    raise SyntaxError('nested f-expressions')
+                # End any previous string component.
+                if start_i < i:
+                    val = s[start_i:i]
+                    components.append(('string', val))
+                # Start the f-string component.
+                in_fexpr = True
+                ### start_i = i + 1
+                start_i = i
+            i += 1
+            assert progress < i
+        # Add any trailing component.
+        if start_i < i:
+            kind = 'f-expression' if in_fexpr else 'string'
+            val = s[start_i:i]
+            components.append((kind, val))
+        if not s.startswith(quotes, i):
+            raise SyntaxError('unterminated f-string')
+        if in_fexpr:
+            raise SyntaxError('unterminated f-expression')
+        if trace:
+            g.trace('END', i + 1, components)
+        return i + 1, components
+    #@+node:ekr.20191202060423.1: *6* tog.scan_string
+    def scan_string(self, s, i, token):
+        """
+        Scan the plain string starting at s[i].
+        
+        Return (i, s[s0:i+1]) where
+        i is the index *after* the matching string delim.
+        """
+        # g.trace('ENTER', s[i:])
+        delim = s[i]
+        if delim not in ('"', "'"):
+            raise SyntaxError('string does not start with a quote')
+        s0 = i
+        i += 1
+        while s[i] != delim:
+            if s[i] == '\\':
+                i += 1 # Skip one extra. 
+            i += 1
+        if s[i] != delim:
+            raise SyntaxError('unterminated plain string')
+        result = s[s0:i+1]
+        # g.trace('EXIT', i + 1, result)
+        return i + 1, result
     #@+node:ekr.20191201095147.1: *6* tog.trace_joined_str
     def trace_joined_str(self, node):
         """Show the components of the JoinedStr node."""
@@ -2077,8 +2100,8 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
-    # Prefix patterns...
-    fr_pat = re.compile(r"([fFrR]{0,2})")
+    # Shared patterns.
+    prefix_pat = re.compile(r"([fFrR]{0,2})")
     quotes_pat = re.compile(r"('''|'|\"\"\"|\")")
     # Character patterns...
     hex_pat = re.compile(r"\\x([0-9a-fA-f]{2})")
@@ -2124,12 +2147,12 @@ class TokenOrderGenerator:
             self.target_index += len(result)
         """
         #@-<< adjust_str_token docstring >>
-        trace = self.trace_mode
+        trace = False and self.trace_mode
         line_n = token.line_number
         tv = token.value
         #
         # tv *might* have a prefix.
-        m = self.fr_pat.match(tv)
+        m = self.prefix_pat.match(tv)
         if not m:
             raise self.error(f"line {line_n} Bad prefix: {tv!r}")
         tv_prefix = m.group(1)
@@ -2137,9 +2160,8 @@ class TokenOrderGenerator:
         # tv *must* have opening quotes.
         m = self.quotes_pat.match(tv[len(tv_prefix):])
         if not m:
-            raise self.error(f"line {line_n} Missing quote: {tv!r}")
+            raise self.error(f"line {line_n} Missing quote: {tv}")
         tv_quotes = m.group(1)
-        ### g.trace('tv_quotes', tv_quotes)
         #
         # tv *must* have matching quotes. Find them, ignoring escaped quotes.
         i = prefix_i = len(tv_prefix)+len(tv_quotes)
@@ -2157,6 +2179,9 @@ class TokenOrderGenerator:
         # Compute the inner string and reconcile the results.
         inner_s = tv[prefix_i:i]
         result = inner_s
+        ###
+            # if 'b' in tv_prefix.lower():
+            # result = 'b' + tv_quotes + result + tv_quotes
         if 'r' not in tv_prefix.lower():
             result = result.replace('\\"', '"').replace("\\'", "'")
             result = result.replace('\\'+'\n', '')
@@ -2191,7 +2216,7 @@ class TokenOrderGenerator:
     target_index = 0
     target_string = None
 
-    def advance_str(self): ### , target_s=None):
+    def advance_str(self):
         """
         Called only from do_Str.
         
@@ -2200,7 +2225,7 @@ class TokenOrderGenerator:
         This method is necessary because a *single* ast.Str node may represent
         the concatenation of multiple strings.
         """
-        trace = self.trace_mode
+        trace = False and self.trace_mode
         # Sanity check
         if not isinstance(self.node, ast.Str):
             raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
@@ -2218,7 +2243,7 @@ class TokenOrderGenerator:
                     f"results: {results!r} target: {target_s!r}")
         #
         # Special case for empty target.
-        if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
+        if repr(target_s).lower().replace('"', "'") in ("''", "b''", 'b""', "f''", "r''", "fr''", "rf''"):
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
@@ -2292,7 +2317,7 @@ class TokenOrderGenerator:
                 break
             i += 1
         return i
-    #@+node:ekr.20191129102013.1: *6* tog.peek_next_str (new)
+    #@+node:ekr.20191129102013.1: *6* tog.peek_next_str
     def peek_next_str(self):
         """
         Return the next 'string' token, *without* updating the string index.

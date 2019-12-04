@@ -204,7 +204,9 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191204154344.1"><vh>test: bytes bs-x</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
+<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
@@ -228,6 +230,7 @@
 <v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
 <v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
+<v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
@@ -1686,7 +1689,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -1720,7 +1723,7 @@ else:
         # 'dump-raw-tree',
         # 'dump-tokens',
         # 'dump-tree',
-        # 'trace-times',    # Only for'file:' tests.
+        'trace-times',    # Only for'file:' tests.
         # 'trace-tokenizer-tokens',
         # 'use-asttokens',
 ]
@@ -2447,5 +2450,15 @@ func(a, b, one='one', two='two', *args, **kwargs)
     'C:/leo.repo/leo-editor/leo/core\\leoPymacs.py',
     'C:/leo.repo/leo-editor/leo/core\\leoRst.py'
 ]</t>
+<t tx="ekr.20191204150947.1"># Line 7709, leoGlobals.py
+
+fr"""{kinds}://[^\s'"]+[\w=/]"""
+</t>
+<t tx="ekr.20191204154152.1"></t>
+<t tx="ekr.20191204154344.1"># Line 201, leoApp.py
+
+print(b'\xfe')
+print('done')
+</t>
 </tnodes>
 </leo_file>
