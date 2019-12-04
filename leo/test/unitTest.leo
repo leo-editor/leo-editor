@@ -194,6 +194,7 @@
 <v t="ekr.20191125235556.7"><vh>show_status</vh></v>
 <v t="ekr.20191125235556.8"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191204063108.1"><vh>Summary of fails</vh></v>
 </v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
@@ -203,7 +204,9 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191204025303.1"><vh>test: from leoGlobals.py</vh></v>
+<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20191204065719.1"><vh>xx test: Call test</vh></v>
+<v t="ekr.20191204025303.1"><vh>xx test: all Call tests</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
@@ -247,7 +250,6 @@
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -261,11 +263,6 @@
 <v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
 </v>
 <v t="ekr.20191124040736.1"><vh>Statements...</vh>
-<v t="ekr.20191128013505.1"><vh>Call tests...</vh>
-<v t="ekr.20191119143517.1"><vh>test: Call, arguments &amp; keyword</vh></v>
-<v t="ekr.20191119150253.1"><vh>test: Call, arguments &amp; Starred</vh></v>
-<v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
-</v>
 <v t="ekr.20191122210522.1"><vh>If tests...</vh>
 <v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
 <v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
@@ -1712,7 +1709,7 @@ if 'all' in flags:
 else:
     reports = [ 
         # 'dump-sources-first',
-        # 'dump-raw-tree-first',
+        'dump-raw-tree-first',
         # 'dump-tokens-first',
         # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
@@ -1792,8 +1789,6 @@ print('a') ; print('b')
 <t tx="ekr.20191118160305.1">print('c');
 print('d')
 </t>
-<t tx="ekr.20191119101124.1">name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
-</t>
 <t tx="ekr.20191119133927.1">class TestClass1:
     pass
     
@@ -1810,10 +1805,6 @@ class TestClass(base1, base2):
 </t>
 <t tx="ekr.20191119142414.1">def run(fileName=None, pymacs=None, *args, **keywords):
     pass
-</t>
-<t tx="ekr.20191119143517.1">f2(a,b=2)
-</t>
-<t tx="ekr.20191119150253.1">f1(arg, *args, **kwargs)
 </t>
 <t tx="ekr.20191119203945.1"># line 856 </t>
 <t tx="ekr.20191119210429.1">print(-(2))</t>
@@ -2240,7 +2231,6 @@ self.i = 0
 one(f"{'B'}" ": ")
 </t>
 <t tx="ekr.20191127172440.1">print("a\"b")</t>
-<t tx="ekr.20191128013505.1"></t>
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
 <t tx="ekr.20191129033147.1">print(f'{7.1}' 'p7.2')
@@ -2434,10 +2424,29 @@ if b:
 print("\x7e" "\o777") # tilde.
 print('done')
 </t>
-<t tx="ekr.20191204025303.1"># line 6288, leoGlobals.py
-
-def blue(*args, **keys):
-    g.es_print(color='blue', *args, **keys)
+<t tx="ekr.20191204025303.1">f1(a,b=2)
+f2(1 + 2)
+f3(arg, *args, **kwargs)
+f4(a='a', *args, **kwargs)
+</t>
+<t tx="ekr.20191204063108.1">[
+    'C:/leo.repo/leo-editor/leo/core\\leoApp.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoAst.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoAtFile.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoBeautify.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoCheck.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoColorizer.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoCommands.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoCompare.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoConfig.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoDebugger.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoFileCommands.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoGlobals.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoNodes.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoPymacs.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoRst.py'
+]</t>
+<t tx="ekr.20191204065719.1">f4(a='a', *args, **kwargs)
 </t>
 </tnodes>
 </leo_file>

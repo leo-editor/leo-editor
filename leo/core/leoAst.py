@@ -1331,9 +1331,14 @@ class TokenOrderGenerator:
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
-        # g.trace(node.__class__.__name__)
+        trace = True
         if node is None:
             return
+        if trace:
+            # Keep this trace. It's useful.
+            cn = node.__class__.__name__ if node else ' '
+            caller1, caller2 = g.callers(2).split(',')
+            g.trace(f"{caller1:>15} {caller2:<14} {cn}")
         # More general, more convenient.
         if isinstance(node, (list, tuple)):
             for z in node or []:
