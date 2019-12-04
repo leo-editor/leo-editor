@@ -2446,16 +2446,16 @@ class TokenOrderGenerator:
         Instead, we scan the tokens list for the next 'if', 'else' or 'elif' token.
         """
         #@-<< do_If docstring >>
+        #
         # Consume the if-item.
-        
-        ### token = self.peek_if()
         token = self.advance_if()
+        #
+        # This sanity check is important. It has failed in the past.
         if token.value not in ('if', 'elif'):
             raise self.error(
                 f"line {token.line_number}: "
                 f"expected 'if' or 'elif' (name) token, got '{token!s}")
-        ### self.advance_if()
-
+        #
         # If or elif line...
             # if %s:\n
             # elif %s: \n
@@ -2463,10 +2463,12 @@ class TokenOrderGenerator:
         yield from self.gen(node.test)
         yield from self.gen_op(':')
         yield from self.gen_newline()
+        #
         # Body...
         self.level += 1
         yield from self.gen(node.body)
         self.level -= 1
+        #
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
