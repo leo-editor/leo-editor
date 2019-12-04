@@ -1551,8 +1551,8 @@ class TokenOrderGenerator:
     def do_Call(self, node):
         
         trace = True
-        args_n = len(node.args or [])
-        keywords_n = len(node.keywords or [])
+        # args_n = len(node.args or [])
+        # keywords_n = len(node.keywords or [])
         #
         # Leave this trace, for now.
         if trace:
@@ -1572,8 +1572,7 @@ class TokenOrderGenerator:
                     fields = show_fields(node)
                 return f"{class_name:>12}: {fields}"
 
-            g.trace(f"\nnode.args: {args_n}, node.keywords: {keywords_n}...\n")
-            print(
+            print('\ndo_Call...\n\n'
                 f"    func: {dump(node.func)}\n"
                 f"    args: {dump(node.args)}\n"
                 f"keywords: {dump(node.keywords)}\n")
