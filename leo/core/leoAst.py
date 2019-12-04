@@ -2059,7 +2059,13 @@ class TokenOrderGenerator:
             result = result.replace('\\'+'\n', '')
             result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
-            result = result.replace('\\\\', '\\') ###
+            result = result.replace('\\\\', '\\')
+            # Handle \x values.
+            if 0:
+                for z in result:
+                    print(repr(z))
+                    # if repr(z).startswith('\\x'):
+                        # print('escape x value', repr(z))
         #
         # Advance.
         self.target_index += len(result)
@@ -2137,11 +2143,15 @@ class TokenOrderGenerator:
         #
         # Now we can make the stronger check.
         if results_s!= target_s:
+            i = self.string_index
+            token = self.tokens[i]
+            line = token.line_number
             g.printObj(target_s.split('\n'), tag='target_s')
             g.printObj(results_s.split('\n'), tag='results_s')
             target_s = g.truncate(target_s, 40)
             results_s = g.truncate(results_s, 40)
             raise self.error(
+                f"   line: {line} token: {token!s}\n"
                 f" target: {target_s}\n"
                 f"results: {results_s}")
         #
@@ -2437,14 +2447,15 @@ class TokenOrderGenerator:
         """
         #@-<< do_If docstring >>
         # Consume the if-item.
-        #
-        # This *almost* always works, but it seems wrong.
-        token = self.peek_if()
+        
+        ### token = self.peek_if()
+        token = self.advance_if()
         if token.value not in ('if', 'elif'):
             raise self.error(
                 f"line {token.line_number}: "
                 f"expected 'if' or 'elif' (name) token, got '{token!s}")
-        self.advance_if()
+        ### self.advance_if()
+
         # If or elif line...
             # if %s:\n
             # elif %s: \n
@@ -2471,39 +2482,57 @@ class TokenOrderGenerator:
                 # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191123152511.1: *6* tog.If: advance_if & peek_if
+    #@+node:ekr.20191123152511.1: *6* tog.advance_if
     if_index = -1
 
     def is_if_token(self, token):
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
+        """
+        Set token to the the *present* if-related token,
+        initiing .if_index if necessary.
+        
+        Advance .if_index to the *next* if-related token, if any.
+        
+        Return the token.
+        """
         trace = False # An excellent trace
+        #
+        # Don't even *think* of omitting this check.
+        # Doing so would create time bombs.
         i = self.if_index
-        i = self.find_next_if_token(i + 1)
-        self.if_index = i
+        if i == -1:
+            i = self.find_next_if_token(i)
+        #
+        # Set token to the *present* if-related token.
         token = self.tokens[i] if i < len(self.tokens) else None
         if trace:
             line = token.line_number if token else ' '
             token_s = token or 'No more tokens'
             g.trace(f"line {line:>4} next i: {i:>5} {token_s!s:<12} {g.callers(1)}")
-        return token ### New, experimental.
-
+        #
+        # Advance to the *next* if-related token.
+        i = self.find_next_if_token(i + 1)
+        self.if_index = i
+        return token
+    #@+node:ekr.20191204014042.1: *6* tog.find_next_if_token
     def find_next_if_token(self, i):
+        """Advance i to the if-related token *after* self.tokens[i]."""
         while i < len(self.tokens):
             if self.is_if_token(self.tokens[i]):
                 # g.trace(f" {i:>3} {self.tokens[i]}")
                 break
             i += 1
         return i
-
+    #@+node:ekr.20191204012319.1: *6* tog.peek_if
     def peek_if(self):
-        """Return the current 'if' token."""
+        """Return the current if-related token."""
         # Init, if necessary.
         if self.if_index == -1:
             self.if_index = self.find_next_if_token(0)
         # IndexError is a sanity check.
-        assert self.if_index < len(self.tokens), (self.if_index, g.callers())
+        assert self.if_index < len(self.tokens)
         return self.tokens[self.if_index]
     #@+node:ekr.20191113063144.76: *5* tog.Import & helper
     def do_Import(self, node):

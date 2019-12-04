@@ -204,6 +204,7 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191203155845.1"><vh>xx file: core..leoTips.py</vh></v>
+<v t="ekr.20191203185327.1"><vh>xx test: \x</vh></v>
 <v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
@@ -283,7 +284,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191203160056.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2428,5 +2428,9 @@ for issue in data:
 if b:
     print('c')
 </t>
+<t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
+# m = re.match("\&lt;\&lt;\&lt;([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
+
+s = "\x7f"</t>
 </tnodes>
 </leo_file>
