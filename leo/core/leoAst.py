@@ -1540,12 +1540,11 @@ class TokenOrderGenerator:
         yield from self.gen_token('bytes', str(node.s))
     #@+node:ekr.20191113063144.31: *5* tog.Call & tog.keyword
     # Call(expr func, expr* args, keyword* keywords)
+    # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
 
     def do_Call(self, node):
         
         trace = True
-        starargs = getattr(node, 'starargs', None)
-        kwargs = getattr(node, 'kwargs', None)
         #
         # Leave this trace, for now.
         if trace:
@@ -1570,22 +1569,12 @@ class TokenOrderGenerator:
                 f"\ndo_Call...\n"
                 f"    func: {dump(node.func)}\n"
                 f"    args: {dump(node.args)}\n"
-                f"keywords: {dump(node.keywords)}\n"
-                f"starargs: {dump(starargs)}\n"
-                f"  kwargs: {dump(kwargs)}\n"
-            )
+                f"keywords: {dump(node.keywords)}\n")
 
         yield from self.gen(node.func)
         yield from self.gen_op('(')
         yield from self.gen(node.args)
         yield from self.gen(node.keywords)
-            # The visitors puts the '**' if there is no name field.
-        if starargs: ### hasattr(node, 'starargs'):
-            # The visitor puts the '*'.
-            yield from self.gen(node.starargs)
-        if kwargs:  ### hasattr(node, 'kwargs'):
-            # The visitor puts the '**'.
-            yield from self.gen(node.kwargs)
         yield from self.gen_op(')')
     #@+node:ekr.20191113063144.32: *6* tog.keyword
     # keyword = (identifier arg, expr value)
