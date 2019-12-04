@@ -1545,7 +1545,7 @@ class TokenOrderGenerator:
     def do_Bytes(self, node):
 
         yield from self.gen_token('bytes', str(node.s))
-    #@+node:ekr.20191113063144.31: *5* tog.Call & helper
+    #@+node:ekr.20191113063144.31: *5* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
 
     # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
@@ -1581,6 +1581,22 @@ class TokenOrderGenerator:
         # No need to generate any commas.
         yield from self.handle_call_arguments(node)
         yield from self.gen_op(')')
+    #@+node:ekr.20191204114930.1: *6* tog.arg_helper
+    def arg_helper(self, node):
+        """
+        Yield the node, with a special case for strings.
+        """
+        if 0:
+            def show_fields(node):
+                class_name = 'None' if node is None else node.__class__.__name__
+                return AstDumper().show_fields(class_name, node, 40)
+        
+            g.trace(show_fields(node))
+
+        if isinstance(node, str):
+            yield from self.gen_token('name', node)
+        else:
+            yield from self.gen(node)
     #@+node:ekr.20191204105506.1: *6* tog.handle_call_arguments
     def handle_call_arguments(self, node):
         """
@@ -1643,22 +1659,6 @@ class TokenOrderGenerator:
             kwarg = kwarg_arg[0]
             assert isinstance(kwarg, ast.keyword)
             yield from self.arg_helper(kwarg)
-    #@+node:ekr.20191204114930.1: *7* tog.arg_helper
-    def arg_helper(self, node):
-        """
-        Yield the node, with a special case for strings.
-        """
-        if 0:
-            def show_fields(node):
-                class_name = 'None' if node is None else node.__class__.__name__
-                return AstDumper().show_fields(class_name, node, 40)
-        
-            g.trace(show_fields(node))
-
-        if isinstance(node, str):
-            yield from self.gen_token('name', node)
-        else:
-            yield from self.gen(node)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 

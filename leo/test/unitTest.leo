@@ -204,9 +204,6 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191119142414.1"><vh>ok test: FunctionDef &amp; NamedConstant</vh></v>
-<v t="ekr.20191204065719.1"><vh>test: Call test</vh></v>
-<v t="ekr.20191204025303.1"><vh>xx test: all Call tests</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
@@ -250,6 +247,7 @@
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
+<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
 </v>
 <v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
 <v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
@@ -280,6 +278,7 @@
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
 <v t="ekr.20191203125053.1"><vh>test: With</vh></v>
 </v>
+<v t="ekr.20191204025303.1"><vh>test: all Call tests</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2428,7 +2427,8 @@ print('done')
 <t tx="ekr.20191204025303.1">f1(a,b=2)
 f2(1 + 2)
 f3(arg, *args, **kwargs)
-f4(a='a', *args, **kwargs) # Fails
+f4(a='a', *args, **kwargs)
+func(a, b, one='one', two='two', *args, **kwargs)
 </t>
 <t tx="ekr.20191204063108.1">[
     'C:/leo.repo/leo-editor/leo/core\\leoApp.py',
@@ -2447,7 +2447,5 @@ f4(a='a', *args, **kwargs) # Fails
     'C:/leo.repo/leo-editor/leo/core\\leoPymacs.py',
     'C:/leo.repo/leo-editor/leo/core\\leoRst.py'
 ]</t>
-<t tx="ekr.20191204065719.1">func(a, b, one='one', two='two', *args, **kwargs)
-</t>
 </tnodes>
 </leo_file>
