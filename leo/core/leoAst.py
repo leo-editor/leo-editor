@@ -1543,15 +1543,15 @@ class TokenOrderGenerator:
 
     def do_Call(self, node):
         
+        trace = True
         starargs = getattr(node, 'starargs', None)
         kwargs = getattr(node, 'kwargs', None)
-        
-        if 1:
+        if trace:
             dumper = AstDumper()
             
             def show_fields(node):
                 class_name = 'None' if node is None else node.__class__.__name__
-                return dumper.show_fields(class_name, node, 80)
+                return ': ' + dumper.show_fields(class_name, node, 80)
                 
             def dump(node):
                 class_name = node.__class__.__name__
@@ -2799,7 +2799,7 @@ class AstDumper:
         parent_id = getattr(parent, index_ivar, '??')
         parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = class_name + self.show_fields(class_name, node, 24)
+        descriptor_s = class_name + ': ' + self.show_fields(class_name, node, 22)
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
@@ -2826,35 +2826,34 @@ class AstDumper:
             if False:
                 g.printObj(results, tag='AstDumper.show_fields: JoinedStr')
             # result = '::'.join(results)
-            # val = f": values={result}"
+            # val = f"values={result}"
             val = f" {strings} str, {fstrings} f-str"
         elif class_name == 'Name':
-            val = f": id={node.id!r}"
+            val = f"id={node.id!r}"
         elif class_name == 'NameConstant':
-            val = f": value={node.value!r}"
+            val = f"value={node.value!r}"
         elif class_name == 'Num':
-            val = f": n={node.n}"
-            # val = ': ' + ','.join(aList)
+            val = f"n={node.n}"
         elif class_name == 'Str':
-            val = f": s={node.s!r}"
+            val = f"s={node.s!r}"
         elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'UnaryOp'): # IfExp
             name = node.op.__class__.__name__
-            val = f": {_op_names.get(name, name)}"
+            val = f"{_op_names.get(name, name)}"
         elif class_name == 'Compare':
             ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
-            val = f": ops={ops}"
+            val = f"ops={ops}"
         elif class_name == 'keyword':
             if isinstance(node.value, ast.Str):
-                val = f": arg={node.arg}:{node.value.s}"
+                val = f"arg={node.arg}:{node.value.s}"
             else:
-                val = f": arg={node.arg}:{node.value.__class__.__name__}"
+                val = f"arg={node.arg}:{node.value.__class__.__name__}"
         elif class_name == 'Starred':
             if isinstance(node.value, ast.Str):
-                val = f": value={node.value.s}"
+                val = f"value={node.value.s}"
             else:
-                val = f": value={node.value.__class__.__name__}"
+                val = f"value={node.value.__class__.__name__}"
         else:
-            val = f": {class_name}"
+            val = f"{class_name}"
         return truncate(val, truncate_n)
         
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
