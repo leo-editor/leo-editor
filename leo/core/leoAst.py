@@ -1185,7 +1185,7 @@ class TokenOrderGenerator:
         4. Create two-way links between T and self.node.
         5. Advance by updating self.px.
         """
-        trace = False and self.trace_mode
+        trace = False ###  and self.trace_mode
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace:
@@ -1365,6 +1365,53 @@ class TokenOrderGenerator:
             yield from val
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.14: *4* tog: Contexts
+    #@+node:ekr.20191113063144.28: *5*  tog.arg
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(self, node):
+        
+        """This is one argument of a list of ast.Function or ast.Lambda arguments."""
+
+        yield from self.gen_name(node.arg)
+        annotation = getattr(node, 'annotation', None)
+        if annotation is not None:
+            yield from self.gen(node.annotation)
+    #@+node:ekr.20191113063144.27: *5*  tog.arguments
+    #arguments = (
+    #       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
+    #       expr* kw_defaults, arg? kwarg, expr* defaults
+    #   )
+
+    def do_arguments(self, node):
+        
+        """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
+
+        # No need to generate commas anywhere below.
+        n_plain = len(node.args) - len(node.defaults)
+        # Add the plain arguments.
+        i = 0
+        while i < n_plain:
+            yield from self.gen(node.args[i])
+            i += 1
+        # Add the arguments with defaults.
+        j = 0
+        while i < len(node.args) and j < len(node.defaults):
+            yield from (self.gen(node.args[i]))
+            yield from self.gen_op('=')
+            yield from self.gen(node.defaults[j])
+            i += 1
+            j += 1
+        assert i == len(node.args)
+        assert j == len(node.defaults)
+        # Add the vararg and kwarg expressions.
+        vararg = getattr(node, 'vararg', None)
+        if vararg is not None:
+            yield from self.gen_op('*')
+            yield from self.gen(vararg)
+        kwarg = getattr(node, 'kwarg', None)
+        if kwarg is not None:
+            yield from self.gen_op('**')
+            yield from self.gen(kwarg)
     #@+node:ekr.20191113063144.15: *5* tog.AsyncFunctionDef
     # 2: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
@@ -1498,21 +1545,18 @@ class TokenOrderGenerator:
     def do_Bytes(self, node):
 
         yield from self.gen_token('bytes', str(node.s))
-    #@+node:ekr.20191113063144.31: *5* tog.Call
+    #@+node:ekr.20191113063144.31: *5* tog.Call & helper
     # Call(expr func, expr* args, keyword* keywords)
 
     # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
 
     def do_Call(self, node):
         
-        trace = True
-        # args_n = len(node.args or [])
-        # keywords_n = len(node.keywords or [])
-        #
-        # Leave this trace, for now.
-        if trace:
+        if 0:
+            #@+<< trace the ast.Call >>
+            #@+node:ekr.20191204105344.1: *6* << trace the ast.Call >>
             dumper = AstDumper()
-            
+
             def show_fields(node):
                 class_name = 'None' if node is None else node.__class__.__name__
                 return dumper.show_fields(class_name, node, 80)
@@ -1526,18 +1570,95 @@ class TokenOrderGenerator:
                 else:
                     fields = show_fields(node)
                 return f"{class_name:>12}: {fields}"
-
+                
             print('\ndo_Call...\n\n'
                 f"    func: {dump(node.func)}\n"
                 f"    args: {dump(node.args)}\n"
                 f"keywords: {dump(node.keywords)}\n")
-
+            #@-<< trace the ast.Call >>
         yield from self.gen(node.func)
         yield from self.gen_op('(')
-        ### Must special-case Starred nodes.
-        yield from self.gen(node.args)
-        yield from self.gen(node.keywords)
+        # No need to generate any commas.
+        yield from self.handle_call_arguments(node)
         yield from self.gen_op(')')
+    #@+node:ekr.20191204105506.1: *6* tog.handle_call_arguments
+    def handle_call_arguments(self, node):
+        """
+        Generate arguments in the correct order.
+        
+        See https://docs.python.org/3/reference/expressions.html#calls.
+        
+        This is similar to tog.do_arguments.
+        """
+        trace = False
+        #
+        # Filter the * arg from args.
+        args = [z for z in node.args or [] if not isinstance(z, ast.Starred)]
+        star_arg = [z for z in node.args or [] if isinstance(z, ast.Starred)]
+        #
+        # Filter the ** kwarg arg from keywords.
+        keywords = [z for z in node.keywords or [] if z.arg]
+        kwarg_arg = [z for z in node.keywords or [] if not z.arg]
+        if trace:
+            #@+<< trace the ast.Call arguments >>
+            #@+node:ekr.20191204113843.1: *7* << trace the ast.Call arguments >>
+                
+            def show_fields(node):
+                class_name = 'None' if node is None else node.__class__.__name__
+                return AstDumper().show_fields(class_name, node, 40)
+                
+            # Let block.
+            arg_fields = ', '.join([show_fields(z) for z in args])
+            keyword_fields = ', '.join([show_fields(z) for z in keywords])
+            star_field = show_fields(star_arg[0]) if star_arg else 'None'
+            kwarg_field = show_fields(kwarg_arg[0]) if kwarg_arg else 'None'
+            # Print.
+            print(
+                f"\nhandle_call_args...\n\n"
+                f"    args: {arg_fields!s}\n"
+                f"keywords: {keyword_fields!s}\n"
+                f"    star: {star_field!s}\n"
+                f"   kwarg: {kwarg_field!s}")
+            #@-<< trace the ast.Call arguments >>
+            print('')
+        #
+        # Add the plain arguments.
+        for z in args:
+            yield from self.arg_helper(z)
+        #
+        # Add the keyword args.
+        for z in keywords:
+            yield from self.arg_helper(z.arg)
+            yield from self.gen_op('=')
+            yield from self.arg_helper(z.value)
+        # Add the * arg.
+        if star_arg:
+            assert len(star_arg) == 1
+            star = star_arg[0]
+            assert isinstance(star, ast.Starred)
+            yield from self.arg_helper(star)
+        # Add the kwarg.
+        if kwarg_arg:
+            assert len(kwarg_arg) == 1
+            kwarg = kwarg_arg[0]
+            assert isinstance(kwarg, ast.keyword)
+            yield from self.arg_helper(kwarg)
+    #@+node:ekr.20191204114930.1: *7* tog.arg_helper
+    def arg_helper(self, node):
+        """
+        Yield the node, with a special case for strings.
+        """
+        if 0:
+            def show_fields(node):
+                class_name = 'None' if node is None else node.__class__.__name__
+                return AstDumper().show_fields(class_name, node, 40)
+        
+            g.trace(show_fields(node))
+
+        if isinstance(node, str):
+            yield from self.gen_token('name', node)
+        else:
+            yield from self.gen(node)
     #@+node:ekr.20191113063144.33: *5* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
@@ -2268,55 +2389,9 @@ class TokenOrderGenerator:
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *4* tog: Statements
-    #@+node:ekr.20191113063144.28: *5*  tog.arg
-    # arg = (identifier arg, expr? annotation)
-
-    def do_arg(self, node):
-        
-        """This is one argument of a list of ast.Function or ast.Lambda arguments."""
-
-        yield from self.gen_name(node.arg)
-        annotation = getattr(node, 'annotation', None)
-        if annotation is not None:
-            yield from self.gen(node.annotation)
-    #@+node:ekr.20191113063144.27: *5*  tog.arguments
-    #arguments = (
-    #       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
-    #       expr* kw_defaults, arg? kwarg, expr* defaults
-    #   )
-
-    def do_arguments(self, node):
-        
-        """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
-
-        # No need to generate commas anywhere below.
-        n_plain = len(node.args) - len(node.defaults)
-        # Add the plain arguments.
-        i = 0
-        while i < n_plain:
-            yield from self.gen(node.args[i])
-            i += 1
-        # Add the arguments with defaults.
-        j = 0
-        while i < len(node.args) and j < len(node.defaults):
-            yield from (self.gen(node.args[i]))
-            yield from self.gen_op('=')
-            yield from self.gen(node.defaults[j])
-            i += 1
-            j += 1
-        assert i == len(node.args)
-        assert j == len(node.defaults)
-        # Add the vararg and kwarg expressions.
-        vararg = getattr(node, 'vararg', None)
-        if vararg is not None:
-            yield from self.gen_op('*')
-            yield from self.gen(vararg)
-        kwarg = getattr(node, 'kwarg', None)
-        if kwarg is not None:
-            yield from self.gen_op('**')
-            yield from self.gen(kwarg)
     #@+node:ekr.20191113063144.32: *5*  tog.keyword
     # keyword arguments supplied to call (NULL identifier for **kwargs)
+
     # keyword = (identifier? arg, expr value)
 
     def do_keyword(self, node):
@@ -2333,14 +2408,11 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.83: *5*  tog.Starred
     # Starred(expr value, expr_context ctx)
 
-    # In assignment contexts.
-
     def do_Starred(self, node):
         
         """A starred argument to an ast.Call"""
         
-        g.trace(f"\n{node.value.__class__.__name__}", g.callers()) ###
-
+        # g.trace(f"\n{node.value.__class__.__name__}")
         yield from self.gen_op('*')
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.61: *5* tog.AnnAssign
