@@ -1498,6 +1498,11 @@ class TokenOrderGenerator:
         if annotation is not None:
             yield from self.gen(node.annotation)
     #@+node:ekr.20191113063144.27: *5* tog.arguments
+    #arguments = (
+    #       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
+    #       expr* kw_defaults, arg? kwarg, expr* defaults
+    #   )
+
     def do_arguments(self, node):
 
         # No need to generate commas anywhere below.
@@ -1546,6 +1551,8 @@ class TokenOrderGenerator:
     def do_Call(self, node):
         
         trace = True
+        args_n = len(node.args or [])
+        keywords_n = len(node.keywords or [])
         #
         # Leave this trace, for now.
         if trace:
@@ -1565,8 +1572,8 @@ class TokenOrderGenerator:
                     fields = show_fields(node)
                 return f"{class_name:>12}: {fields}"
 
+            g.trace(f"\nnode.args: {args_n}, node.keywords: {keywords_n}...\n")
             print(
-                f"\ndo_Call...\n"
                 f"    func: {dump(node.func)}\n"
                 f"    args: {dump(node.args)}\n"
                 f"keywords: {dump(node.keywords)}\n")
@@ -2643,7 +2650,7 @@ class TokenOrderGenerator:
 
     def do_Starred(self, node):
         
-        ### g.trace(f"\n{node.value}\n") ###
+        g.trace(f"\n{node.value.__class__.__name__}\n") ###
 
         yield from self.gen_op('*')
         yield from self.gen(node.value)
