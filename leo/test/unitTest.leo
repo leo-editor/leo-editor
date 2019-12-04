@@ -205,8 +205,8 @@
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
 <v t="ekr.20191119142414.1"><vh>ok test: FunctionDef &amp; NamedConstant</vh></v>
-<v t="ekr.20191204065719.1"><vh>test: Call test</vh></v>
-<v t="ekr.20191204025303.1"><vh>xx test: all Call tests</vh></v>
+<v t="ekr.20191204065719.1"><vh>xx test: Call test</vh></v>
+<v t="ekr.20191204025303.1"><vh>test: all Call tests</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
@@ -2427,7 +2427,7 @@ print('done')
 <t tx="ekr.20191204025303.1">f1(a,b=2)
 f2(1 + 2)
 f3(arg, *args, **kwargs)
-f4(a='a', *args, **kwargs)
+f4(a='a', *args, **kwargs) # Fails
 </t>
 <t tx="ekr.20191204063108.1">[
     'C:/leo.repo/leo-editor/leo/core\\leoApp.py',
