@@ -1331,7 +1331,7 @@ class TokenOrderGenerator:
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
-        ### g.trace(node.__class__.__name__)
+        # g.trace(node.__class__.__name__)
         if node is None:
             return
         # More general, more convenient.
@@ -2437,6 +2437,8 @@ class TokenOrderGenerator:
         """
         #@-<< do_If docstring >>
         # Consume the if-item.
+        #
+        # This *almost* always works, but it seems wrong.
         token = self.peek_if()
         if token.value not in ('if', 'elif'):
             raise self.error(
@@ -2476,14 +2478,16 @@ class TokenOrderGenerator:
         return token.kind == 'name' and token.value in ('if', 'elif', 'else')
         
     def advance_if(self):
+        trace = False # An excellent trace
         i = self.if_index
         i = self.find_next_if_token(i + 1)
         self.if_index = i
-        # This is a good debugging trace.
-        if 1:
-            token = self.tokens[i] if i < len(self.tokens) else None
-            line_n = token.line_number if token else ' '
-            g.trace(f"line {line_n:>4} tx: {i:>5} {token or 'No more tokens'}")
+        token = self.tokens[i] if i < len(self.tokens) else None
+        if trace:
+            line = token.line_number if token else ' '
+            token_s = token or 'No more tokens'
+            g.trace(f"line {line:>4} next i: {i:>5} {token_s!s:<12} {g.callers(1)}")
+        return token ### New, experimental.
 
     def find_next_if_token(self, i):
         while i < len(self.tokens):

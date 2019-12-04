@@ -203,8 +203,8 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
-<v t="ekr.20191203160056.1"><vh>xx test: if problem </vh></v>
+<v t="ekr.20191203155845.1"><vh>xx file: core..leoTips.py</vh></v>
+<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
@@ -283,6 +283,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20191203160056.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1688,7 +1689,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -1721,7 +1722,7 @@ else:
         # 'dump-raw-tree',
         # 'dump-tokens',
         # 'dump-tree',
-        'trace-times',    # Only for'file:' tests.
+        # 'trace-times',    # Only for'file:' tests.
         # 'trace-tokenizer-tokens',
         # 'use-asttokens',
 ]
@@ -2418,14 +2419,14 @@ with open(fn) as f:
 
 d2 = {val: key for key, val in d.iteritems()}</t>
 <t tx="ekr.20191203155845.1"># line 93.</t>
-<t tx="ekr.20191203160056.1"># line 93, leoTips.py
-
+<t tx="ekr.20191203160056.1">unseen = [i for i in range(5) if i not in seen]
 for issue in data:
-    for i, s in enumerate(lines):
-        if 1:
-            break
+    for a in aList:
+        print('a')
     else:
-        tags = []
+        print('b')
+if b:
+    print('c')
 </t>
 </tnodes>
 </leo_file>
