@@ -203,7 +203,6 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191203185327.1"><vh>test: \x</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
@@ -231,6 +230,7 @@
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
 <v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
 <v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
@@ -1689,7 +1689,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -2430,8 +2430,8 @@ if b:
     print('c')
 </t>
 <t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
-# m = re.match("\&lt;\&lt;\&lt;([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
-
-s = "\x7f"</t>
+print("\x7e" "\o777") # tilde.
+print('done')
+</t>
 </tnodes>
 </leo_file>

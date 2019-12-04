@@ -1978,8 +1978,12 @@ class TokenOrderGenerator:
         for token in token_list:
             yield from self.gen_token('string', token.value)
     #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
+    # Prefix patterns...
     fr_pat = re.compile(r"([fFrR]{0,2})")
     quotes_pat = re.compile(r"('''|'|\"\"\"|\")")
+    # Character patterns...
+    hex_pat = re.compile(r"\\x([0-9a-fA-f]{2})")
+    octal_pat = re.compile(r"\\o[0-7]{1,3}")
 
     def adjust_str_token(self, token):
         #@+<< adjust_str_token docstring >>
@@ -2060,12 +2064,21 @@ class TokenOrderGenerator:
             result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
             result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
             result = result.replace('\\\\', '\\')
-            # Handle \x values.
-            if 0:
-                for z in result:
-                    print(repr(z))
-                    # if repr(z).startswith('\\x'):
-                        # print('escape x value', repr(z))
+            # Adjust characters with hex values.
+            
+            ### Use re.sub(pattern, repl, string, count=0, flags=0)
+            while True:
+                m = re.search(self.hex_pat, result)
+                if m: 
+                    char = chr(int(m.group(1),16))
+                    # print('HEX', m.group(1), char)
+                    result = result.replace(m.group(0), char)
+                else:
+                    break
+            # Adjust characters with octal values.
+            if 0: # This doesn't seem necessary.
+                for m in re.finditer(self.octal_pat, result):
+                    g.trace('OCTAL', m.group(0))
         #
         # Advance.
         self.target_index += len(result)
