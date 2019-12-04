@@ -1557,8 +1557,7 @@ class TokenOrderGenerator:
             def dump(node):
                 class_name = node.__class__.__name__
                 if node is None:
-                    class_name = 'None'
-                    fields = ''
+                    class_name, fields = 'None', ''
                 elif isinstance(node, (list, tuple)):
                     fields = ','.join([show_fields(z) for z in node])
                 else:
@@ -4939,6 +4938,7 @@ class TestRunner:
     def dump_raw_tree(self):
         print('\nRaw tree...\n')
         print(AstDumper().dump(self.tree))
+        print('')
     #@+node:ekr.20191122025418.1: *3* TestRunner.dump_tokens
     def dump_tokens(self, brief=False):
         tokens = self.tokens
@@ -4948,6 +4948,7 @@ class TestRunner:
         if self.x:
             for z in tokens:
                 print(z.dump(brief=brief))
+            print('')
         else:
             import token as tm
             for z in tokens:
