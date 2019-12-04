@@ -2243,7 +2243,7 @@ class TokenOrderGenerator:
                     f"results: {results!r} target: {target_s!r}")
         #
         # Special case for empty target.
-        if repr(target_s).lower().replace('"', "'") in ("''", "b''", 'b""', "f''", "r''", "fr''", "rf''"):
+        if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
             i = self.string_index
             i = self.next_str_index(i + 1)
             token = self.tokens[i]
