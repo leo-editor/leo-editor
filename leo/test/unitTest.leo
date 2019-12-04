@@ -203,6 +203,7 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
+<v t="ekr.20191204025303.1"><vh>test: from leoGlobals.py</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
@@ -1689,7 +1690,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -2432,6 +2433,11 @@ if b:
 <t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
 print("\x7e" "\o777") # tilde.
 print('done')
+</t>
+<t tx="ekr.20191204025303.1"># line 6288, leoGlobals.py
+
+def blue(*args, **keys):
+    g.es_print(color='blue', *args, **keys)
 </t>
 </tnodes>
 </leo_file>
