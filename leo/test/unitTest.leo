@@ -203,13 +203,12 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191203155845.1"><vh>xx file: core..leoTips.py</vh></v>
-<v t="ekr.20191203185327.1"><vh>xx test: \x</vh></v>
-<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
+<v t="ekr.20191203185327.1"><vh>test: \x</vh></v>
 <v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -267,8 +266,9 @@
 <v t="ekr.20191119101124.1"><vh>test: Call, Str</vh></v>
 </v>
 <v t="ekr.20191122210522.1"><vh>If tests...</vh>
-<v t="ekr.20191119213126.1"><vh>test: For, Tuple</vh></v>
-<v t="ekr.20191123210801.1"><vh>test: if unary op</vh></v>
+<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
+<v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
+<v t="ekr.20191123210801.1"><vh>test: if + unary op</vh></v>
 <v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
 <v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
 <v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
@@ -1689,7 +1689,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    'all',
+    # 'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
@@ -2419,7 +2419,8 @@ with open(fn) as f:
 
 d2 = {val: key for key, val in d.iteritems()}</t>
 <t tx="ekr.20191203155845.1"># line 93.</t>
-<t tx="ekr.20191203160056.1">unseen = [i for i in range(5) if i not in seen]
+<t tx="ekr.20191203160056.1"># Line 93, leoTips.py
+unseen = [i for i in range(5) if i not in seen]
 for issue in data:
     for a in aList:
         print('a')
