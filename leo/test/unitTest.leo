@@ -185,8 +185,7 @@
 <v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 <v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </v>
-<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh>
-<v t="ekr.20191125235556.2"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
+<v t="ekr.20191125235556.2"><vh>&lt;&lt; helper functions &gt;&gt; (no longer used)</vh>
 <v t="ekr.20191125235556.3"><vh>filter_reports</vh></v>
 <v t="ekr.20191125235556.4"><vh>make_tests</vh></v>
 <v t="ekr.20191125235556.5"><vh>reload_helper</vh></v>
@@ -194,9 +193,7 @@
 <v t="ekr.20191125235556.7"><vh>show_status</vh></v>
 <v t="ekr.20191125235556.8"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191204063108.1"><vh>Summary of fails</vh></v>
-</v>
-<v t="ekr.20191205163216.1"><vh>old code from @test TokenOrder classes</vh></v>
+<v t="ekr.20191205172553.1"><vh>old code from </vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
@@ -282,6 +279,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1985,42 +1983,44 @@ else:
 <t tx="ekr.20191125235415.1">print('a' 'b')
 print('c')</t>
 <t tx="ekr.20191125235556.1">"""
-The master unit test for leoAst.TokenOrderGenerator and related classes.
+A unit test that tests TOG on all of Leo's sources.
 """
 import time
 import leo.core.leoAst as leoAst
-&lt;&lt; helper functions &gt;&gt;
-# Flags for *this* code.
-flags = [
-    'all'
-    'show-test-kind',
-    'show-test-time',
-    'summarize',
-]
-g.cls() ###
+if 1: # Not for production.
+    import imp
+    imp.reload(leoAst)
+if 1: # Not for production.
+    g.cls()
 #
-# Reports when 'all' is False
-reports = [
+# Flags for TR.run_tests.
+flags = [
+    # New flags.
+    'all-leo-files',
+    ### 'all',
+    'show-test-kind', # all vs selected.
+    # 'dump-sources-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
     # 'show-exception-after-fail',
-    'trace-times',    # Only for'file:' tests.
-    # 'verbose-fail',
-    # 'trace-mode',  # Sets TOG.trace_mode.
-    # 'trace-times',  # Only for'file:' tests.
-    # 'dump-all',
-    # 'asttokens',
-    # 'test-links',
-    # 'contents',
-    # 'tokens',
-    # 'raw-tree',
-    # 'tree',
+
+    # 'dump-tokens-after-fail',
+    # 'dump-tree-after-fail',
+    # 'dump-all-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    'summarize',
+    # 'trace-times',    # Only for'file:' tests.
+    # 'trace-tokenizer-tokens',
+    # 'use-asttokens',
 ]
-# Make tests, run tests, and summarize.
-reload_time = 0.0
-show_status()
-tests = make_tests()
-fails, test_time = run_tests()
-summarize()
-assert not fails, f"failed {len(fails)} tests"</t>
+# Reload (if enabled), then make tests, run tests, and summarize.
+leoAst.TestRunner().run_tests(flags, root=c.p)
+
+</t>
 <t tx="ekr.20191125235556.2"># All helpers have access to symbols defined at the top level,
 # namely flags, reports, reload_time and test_time.
 
@@ -2298,23 +2298,6 @@ f3(arg, *args, **kwargs)
 f4(a='a', *args, **kwargs)
 func(a, b, one='one', two='two', *args, **kwargs)
 </t>
-<t tx="ekr.20191204063108.1">[
-    'C:/leo.repo/leo-editor/leo/core\\leoApp.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoAst.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoAtFile.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoBeautify.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoCheck.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoColorizer.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoCommands.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoCompare.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoConfig.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoDebugger.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoFileCommands.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoGlobals.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoNodes.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoPymacs.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoRst.py'
-]</t>
 <t tx="ekr.20191204150947.1"># Line 7709, leoGlobals.py
 
 fr"""{kinds}://[^\s'"]+[\w=/]"""
@@ -2356,30 +2339,39 @@ except ValueError:
 else:
     print('c')
 </t>
-<t tx="ekr.20191205163216.1"># Flags for *this* code.
-# flags = [
-    # 'all',
-    # 'fail-fast',
-    # 'show-test-description', 
-    # 'show-reload-time',
-    # 'show-test-time',
-    ##'summarize',
-# ]
-#
-# Reports, for TestRunner.run_tests.
+<t tx="ekr.20191205172553.1">import time
+import leo.core.leoAst as leoAst
 
- # reports = [
-        # # 'no-trace-after-fail',
-        # 'trace-times',    # Only for'file:' tests.
-    # ]
-# else:
-    # reports = [
-    
-# reload_time = tr.reload_helper()
-# tr.show_status()
-# tests = tr.make_tests()
-# fails, test_time = tr.run_tests()
-# tr.summarize()
-</t>
+# Flags for *this* code.
+flags = [
+    'all'
+    'show-test-kind',
+    'show-test-time',
+    'summarize',
+]
+g.cls() ###
+#
+# Reports when 'all' is False
+reports = [
+    # 'show-exception-after-fail',
+    'trace-times',    # Only for'file:' tests.
+    # 'verbose-fail',
+    # 'trace-mode',  # Sets TOG.trace_mode.
+    # 'trace-times',  # Only for'file:' tests.
+    # 'dump-all',
+    # 'asttokens',
+    # 'test-links',
+    # 'contents',
+    # 'tokens',
+    # 'raw-tree',
+    # 'tree',
+]
+# Make tests, run tests, and summarize.
+reload_time = 0.0
+show_status()
+tests = make_tests()
+fails, test_time = run_tests()
+summarize()
+assert not fails, f"failed {len(fails)} tests"</t>
 </tnodes>
 </leo_file>

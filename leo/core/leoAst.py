@@ -4441,7 +4441,11 @@ class TestRunner:
         self.fails = []
         self.make_flags_and_reports(flags)
         self.show_status()
-        self.tests = tests = self.make_tests(root)
+        if 'all-leo-files' in self.flags:
+            tests = self.make_leo_tests()
+        else:
+            tests = self.make_tests(root)
+        self.tests = tests
         #
         # The main test runner loop.
         t1 = time.process_time()
@@ -4463,6 +4467,7 @@ class TestRunner:
         """
         valid_flags = (
             'all',
+            'all-leo-files',
             'dump-all-after-fail',
             'dump-raw-tree-first', 
             'dump-sources-first',
@@ -4482,6 +4487,25 @@ class TestRunner:
         aList = [z.lower() for z in user_flags or []]
         self.flags = [z for z in aList if z in valid_flags]
         self.reports = [z for z in aList if z not in valid_flags]
+    #@+node:ekr.20191205172431.1: *4* TR.make_leo_tests
+    def make_leo_tests(self):
+        """
+        Return a list of tuples (contents, description) for all of Leo's core .py files.
+        """
+        import glob
+        import os
+        core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+        assert os.path.exists(core_directory), core_directory
+        paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
+        tests = []
+        for path in paths:
+            assert os.path.exists(path), path
+            with open(path, 'r') as f:
+                contents = f.read()
+            description = path
+            tests.append((contents, description))   
+        return tests
+
     #@+node:ekr.20191205160754.2: *4* TR.make_tests
     def make_tests(self, root):
         """
@@ -4607,10 +4631,16 @@ class TestRunner:
     #@+node:ekr.20191205160754.5: *4* TR.show_status
     def show_status(self):
         """Show the preliminary status."""
+        flags = self.flags
         print('')
-        if 'show-test-kind' in self.flags:
-            kind = 'all' if 'all' in self.flags else 'selected'
-            print(f"Running *{kind}*' unit tests...\n")
+        if 'show-test-kind' in flags:
+            if 'all-leo-files' in flags:
+                kind = 'Testing all Leo files'
+            elif 'all' in flags:
+                kind = 'Running *all* unit tests'
+            else:
+                kind = 'Running *selected* unit tests'
+            print(f"{kind}...\n")
         if 'asttokens' in self.reports:
             print('\nUsing asttokens, *not* the TOG classes')
     #@+node:ekr.20191205160754.6: *4* TR.summarize
