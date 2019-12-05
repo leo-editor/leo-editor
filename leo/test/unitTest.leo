@@ -204,12 +204,13 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
-<v t="ekr.20191204164129.1"><vh>passed test: complex Call</vh></v>
-<v t="ekr.20191129033147.1"><vh>passed test: f-string case 2: f-string + plain</vh></v>
+<v t="ekr.20191205071555.1"><vh>Summary</vh></v>
+<v t="ekr.20191205071827.1"><vh>test: yield from</vh></v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191204164129.1"><vh>test: complex Call</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
 <v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
 <v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
 <v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
 <v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
@@ -226,13 +227,6 @@
 <v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
-<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-</v>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
 <v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
 <v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
@@ -241,11 +235,20 @@
 <v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
 <v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
 <v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
+<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
 <v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
 <v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
 <v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
 <v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
 <v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
+<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
+<v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
 </v>
 <v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
 <v t="ekr.20191120074811.1"><vh>Contexts...</vh>
@@ -1711,10 +1714,10 @@ if 'all' in flags:
     ]
 else:
     reports = [ 
-        'dump-sources-first',
+        # 'dump-sources-first',
         # 'dump-raw-tree-first',
-        'dump-tokens-first',
-        'set-trace-mode',  # Sets TOG.trace_mode.
+        # 'dump-tokens-first',
+        # 'set-trace-mode',  # Sets TOG.trace_mode.
         # 'show-exception-after-fail',
 
         # 'dump-tokens-after-fail',
@@ -1724,7 +1727,7 @@ else:
         # 'dump-raw-tree',
         # 'dump-tokens',
         # 'dump-tree',
-        'trace-times',    # Only for'file:' tests.
+        # 'trace-times',    # Only for'file:' tests.
         # 'trace-tokenizer-tokens',
         # 'use-asttokens',
 ]
@@ -2105,12 +2108,12 @@ def run_tests():
 <t tx="ekr.20191125161333.1">if 1:
     a = 'class' if cond else 'def'
     # find_pattern = prefix + ' ' + word
-    '1'
+    print('1')
 else:
-    '2'
+    print('2')
 </t>
 <t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")</t>
-<t tx="ekr.20191125235415.1">print('a''.''b')
+<t tx="ekr.20191125235415.1">print('a' 'b')
 print('c')</t>
 <t tx="ekr.20191125235556.1">"""
 The master unit test for leoAst.TokenOrderGenerator and related classes.
@@ -2238,15 +2241,7 @@ one(f"{'B'}" ": ")
 <t tx="ekr.20191128141922.1">print(f"test {a}={2}")
 print('done')</t>
 <t tx="ekr.20191129033147.1">print(f'{7.1}' 'p7.2')
-'end'
-
-# print(f'f1.1' 'p1.2')
-# print('p2.1' 'p2.2')
-# print(f'f3.1' f'f3.2')
-# '---'
-# print(f'{7.1}' 'p7.2')
-# print(f'{8.1}' f'{8.2}')
-# 'end'
+print('end')
 </t>
 <t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
 print(f'x2{e2}y2', f'f2')
@@ -2470,6 +2465,22 @@ print('done')
 </t>
 <t tx="ekr.20191205014742.1"># The first newline causes the fail.
 print(f"a {old_id!r}\n" "b\n")
+print('done')
+</t>
+<t tx="ekr.20191205071555.1">Failed tests:
+[
+    'C:/leo.repo/leo-editor/leo/core\\leoAst.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoCommands.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoDebugger.py',
+    'C:/leo.repo/leo-editor/leo/core\\leoNodes.py'
+]</t>
+<t tx="ekr.20191205071617.1"># line 1046, leoAst.py.
+
+</t>
+<t tx="ekr.20191205071827.1"># Line 1046, leoAst.py
+
+self.node = tree
+yield from self.gen_token('newline', '\n')
 print('done')
 </t>
 </tnodes>

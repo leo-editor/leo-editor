@@ -1081,14 +1081,6 @@ class TokenOrderGenerator:
 
     def gen(self, z):
         yield from self.visitor(z)
-
-    ### There is never any need to sync on commas or blanks.
-    ###
-        # def gen_blank(self):
-        #    yield from self.visitor(self.sync_blank())
-        #
-        # def gen_comma(self):
-        #    yield from self.visitor(self.sync_comma())
         
     def gen_name(self, val):
         yield from self.visitor(self.sync_name(val))
@@ -1211,17 +1203,6 @@ class TokenOrderGenerator:
             if (kind, val) == (token.kind, token.value):
                 if trace: g.trace('   OK', px, token)
                 break  # Success.
-            #
-            # Special case 'string' token.
-            if kind == 'string':
-                if token.kind == 'string':
-                    raise self.error(
-                        f"STRING MISMATCH: "
-                        f"val: {val} token.val: {token.value}")
-                # Assume we are in in a JoinedStr.
-                # Continue searching.
-                px += 1
-                continue
             if kind == token.kind == 'number':
                 if trace: g.trace('   OK', px, token)
                 val = token.value
@@ -1683,7 +1664,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.34: *5* tog.Constant
     def do_Constant(self, node):
         
-        g.trace(node.s) ###
+        g.trace(node.s)
         yield from self.gen_token('number', str(node.s))
     #@+node:ekr.20191113063144.35: *5* tog.Dict
     # Dict(expr* keys, expr* values)
@@ -1769,7 +1750,7 @@ class TokenOrderGenerator:
         # Do *not* call begin/end visitor!
         assert isinstance(node, int), repr(node)
         # Assign the int to the parent.
-        try: ###
+        try:
             yield from self.gen_token('num', node)
         except Exception as e:
             g.trace(e, g.callers())
@@ -1790,24 +1771,22 @@ class TokenOrderGenerator:
         for z in self.get_concatenated_string_tokens():
             self.advance_str()
             yield from self.gen_token(z.kind, z.value)
-            
     #@+node:ekr.20191205053536.1: *6* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self):
         """
-        Return the present 'string' token and all 'string' tokens concatentaed to it.
+        Return the next 'string' token and all 'string' tokens concatentaed to it.
         
         Do *not* update self.string_index here.
         """
-        trace = True
+        trace = self.trace_mode
         i, results = self.string_index, []
-        if i == -1:
-            i = self.next_str_index(i + 1)
+        i = self.next_str_index(i + 1)
         while i < len(self.tokens):
             token = self.tokens[i]
-            g.trace(f"{i} {token!s}")
+            # g.trace(f"{i} {token!s}")
             if token.kind == 'string':
                 results.append(token)
-                g.trace(f"add {i}: {token}")
+                # g.trace(f"add {i}: {token}")
             elif token.kind in ('endmarker', 'name', 'number', 'op'):
                 # The 'endmarker' token ensures we will have a token.
                 if not results:
@@ -1818,11 +1797,13 @@ class TokenOrderGenerator:
             else:
                 pass # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
             i += 1
-        assert i < len(self.tokens), "Can not happen: no 'endmarker' token"
+        if i >= len(self.tokens):
+            raise self.error("Can not happen: no 'endmarker' token")
         if trace:
-            g.trace('results...')
+            g.trace('\nresults...')
             for z in results:
                 print(f"  {z!s}")
+            print('')
         return results
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
@@ -1882,17 +1863,16 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *5* tog.Str & helpers
     def do_Str(self, node):
         """This node represents a string constant."""
-        token = self.advance_str()
-        yield from self.gen_token('string', token.value)
+        for z in self.get_concatenated_string_tokens():
+            self.advance_str()
+            yield from self.gen_token(z.kind, z.value)
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # The index in self.tokens of the previously scanned 'string' token.
     string_index = -1 
 
     def advance_str(self):
         """
-        Called only from do_Str.
-        
-        Advance over *exactly one* 'string' token, and return it.
+        Advance over exactly one 'string' token, and return it.
         """
         i = self.string_index
         i = self.next_str_index(i + 1)
@@ -1941,11 +1921,6 @@ class TokenOrderGenerator:
         op_name = self.op_name(node.op)
         yield from self.gen_op(op_name)
         yield from self.gen(node.right)
-        ###
-            # if op_name.startswith(' '):
-                # yield from self.gen_op(op_name.strip())
-            # else:
-                # yield from self.gen_op(op_name)
     #@+node:ekr.20191113063144.56: *5* tog.BoolOp
     # boolop = And | Or
 
@@ -4850,10 +4825,8 @@ class Tokenizer:
                 return
             show_header()
             val_s = truncate(val, 28)
-            ### tok_s2 = truncate(tok_s, 28)
             if kind != 'string':
                 val_s = repr(val_s)
-                ### tok_s2 = repr(tok_s2)
             print(
                 # starting line..ending line
                 f"{show_tuple((s_row, e_row))} "  
