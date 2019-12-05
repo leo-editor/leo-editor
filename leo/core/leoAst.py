@@ -2326,7 +2326,10 @@ class TokenOrderGenerator:
         self.level += 1
         yield from self.gen(node.body)
         yield from self.gen(node.handlers)
-        yield from self.gen(node.orelse)
+        if node.orelse:
+            yield from self.gen_name('else')
+            yield from self.gen_op(':')
+            yield from self.gen(node.orelse)
         # Finally...
         if node.finalbody:
             yield from self.gen_name('finally')

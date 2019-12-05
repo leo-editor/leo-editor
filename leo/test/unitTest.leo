@@ -204,8 +204,67 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191205071555.1"><vh>Summary</vh></v>
-<v t="ekr.20191205071827.1"><vh>test: yield from</vh></v>
+<v t="ekr.20191205090519.1"><vh>xx file: core..leoDebugger.py</vh></v>
+<v t="ekr.20191205090659.1"><vh>test: TryExceptElse</vh></v>
+<v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
+<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
+<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
+</v>
+<v t="ekr.20191120075520.1"><vh>ignore: Expressions &amp; operators...</vh>
+<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
+<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
+<v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
+<v t="ekr.20191203125635.1"><vh>test: DictComp</vh></v>
+<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
+<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
+<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
+<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
+<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>ignore: Files...</vh>
+<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
+<v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+</v>
+<v t="ekr.20191122210522.1"><vh>ignore: If...</vh>
+<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
+<v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
+<v t="ekr.20191123210801.1"><vh>test: if + unary op</vh></v>
+<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
+<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
+<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
+<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
+<v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
+</v>
+<v t="ekr.20191124040736.1"><vh>ignore: Statements...</vh>
+<v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+<v t="ekr.20191203125053.1"><vh>test: With</vh></v>
+<v t="ekr.20191205071827.1"><vh>test: YieldFrom</vh></v>
+<v t="ekr.20191204025303.1"><vh>test: Call</vh></v>
+</v>
+<v t="ekr.20191205090312.1"><vh>ignore: Strings...</vh>
+<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
+<v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
+<v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
+<v t="ekr.20191204154344.1"><vh>test: bytes bs-x</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
+<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
+<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
+<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
+<v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+</v>
 <v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
 <v t="ekr.20191204164129.1"><vh>test: complex Call</vh></v>
 <v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
@@ -227,65 +286,6 @@
 <v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
 </v>
-<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
-<v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
-<v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
-<v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
-<v t="ekr.20191204154344.1"><vh>test: bytes bs-x</vh></v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
-<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
-<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
-<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
-<v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-<v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
-</v>
-<v t="ekr.20191125151346.1"><vh>ignore: file tests</vh>
-<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
-<v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
-</v>
-<v t="ekr.20191122201558.1"><vh>ignore: Categories</vh>
-<v t="ekr.20191120074811.1"><vh>Contexts...</vh>
-<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
-</v>
-<v t="ekr.20191120075520.1"><vh>Expressions &amp; operators...</vh>
-<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
-<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
-<v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
-<v t="ekr.20191203125635.1"><vh>test: DictComp</vh></v>
-<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
-<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
-<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
-<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
-<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
-</v>
-<v t="ekr.20191124040736.1"><vh>Statements...</vh>
-<v t="ekr.20191122210522.1"><vh>If tests...</vh>
-<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
-<v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
-<v t="ekr.20191123210801.1"><vh>test: if + unary op</vh></v>
-<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
-<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
-<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
-<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
-<v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
-</v>
-<v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
-<v t="ekr.20191125144727.1"><vh>test: simple print</vh></v>
-<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
-<v t="ekr.20191203125053.1"><vh>test: With</vh></v>
-</v>
-<v t="ekr.20191204025303.1"><vh>test: all Call tests</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2015,7 +2015,6 @@ for file_name in file_names[:1]:
             f"compare nodes: {t4-t3:4.2f}")
     assert ok</t>
 <t tx="ekr.20191122153258.1">run(a=None, b=str)</t>
-<t tx="ekr.20191122201558.1"></t>
 <t tx="ekr.20191122203522.1">"""ds 1"""
 class TestClass:
     """ds 2"""
@@ -2103,7 +2102,6 @@ def run_tests():
     test_time = t2 - t1
     return fails, test_time
 </t>
-<t tx="ekr.20191125144727.1">print('hi')</t>
 <t tx="ekr.20191125151346.1"></t>
 <t tx="ekr.20191125161333.1">if 1:
     a = 'class' if cond else 'def'
@@ -2467,13 +2465,6 @@ print('done')
 print(f"a {old_id!r}\n" "b\n")
 print('done')
 </t>
-<t tx="ekr.20191205071555.1">Failed tests:
-[
-    'C:/leo.repo/leo-editor/leo/core\\leoAst.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoCommands.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoDebugger.py',
-    'C:/leo.repo/leo-editor/leo/core\\leoNodes.py'
-]</t>
 <t tx="ekr.20191205071617.1"># line 1046, leoAst.py.
 
 </t>
@@ -2482,6 +2473,17 @@ print('done')
 self.node = tree
 yield from self.gen_token('newline', '\n')
 print('done')
+</t>
+<t tx="ekr.20191205090312.1"></t>
+<t tx="ekr.20191205090519.1"></t>
+<t tx="ekr.20191205090659.1"># Line 240: leoDebugger.py
+
+try:
+    print('a')
+except ValueError:
+    print('b')
+else:
+    print('c')
 </t>
 </tnodes>
 </leo_file>
