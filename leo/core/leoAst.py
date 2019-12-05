@@ -3,6 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
+import time
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -4432,19 +4433,48 @@ class TestRunner:
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
-    #@+node:ekr.20191122021515.1: *3*  TestRunner.run_tests
-    def run_tests(self, sources, description, reports):
-        """
-        Run all tests given in the reports list.
-
-        Reports is a list of reports, in *caller-defined* order.
-        """
-        import time
-        tag = 'run_tests'
-        
+    #@+node:ekr.20191205160754.4: *3* TR.run_tests
+    def run_tests(self, flags, root):
+        """The outer test runner."""
         #
-        # Convert reports to flags.
+        # Startup.
+        self.fails = []
+        self.make_flags_and_reports(flags)
+        self.show_status()
+        self.tests = tests = self.make_tests(root)
+        #
+        # The main test runner loop.
+        t1 = time.process_time()
+        for contents, description in tests:
+            # Test runner catches all exceptions.
+            if 'show-test-description' in self.flags:
+                print(f"Running {description}...")
+            ### x = leoAst.TestRunner()
+            ok = self.run_one_test(contents, description, self.filter_reports(description))
+            if not ok:
+                # if 'show-test-description' not in self.flags:
+                    # print(f"\nFailed: {description}")
+                self.fails.append(description)
+            if 'fail-fast' in self.flags:
+                break
+        t2 = time.process_time()
+        self.summarize(test_time = t2 - t1)
+        # return fails, test_time
+    #@+node:ekr.20191205161201.1: *4* TR.filter_reports
+    def filter_reports(self, description):
+        """Add trace-times only if we are running a 'file:' test."""
+        reports = self.reports
+        aList = [z for z in reports if z != 'trace-times']
+        if 'trace-times' in reports and description.startswith('file:'):
+            aList.append('trace-times')
+        return aList
+    #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
+    def make_flags_and_reports(self, user_flags):
+        """
+        Create self.flags and self.reports from flags.
+        """
         valid_flags = (
+            'all',
             'dump-all-after-fail',
             'dump-raw-tree-first', 
             'dump-sources-first',
@@ -4454,15 +4484,68 @@ class TestRunner:
             'no-trace-after-fail',
             'set-trace-mode',
             'show-exception-after-fail',
+            'show-test-kind',
             'use-asttokens',
             'trace-times',
             'trace-tokenizer-tokens',
             'verbose-fail',
         )
-        reports = [z.lower() for z in reports or []]
-        flags = [z for z in reports if z in valid_flags]
-        # g.trace('FLAGS', ','.join(sorted(flags)))
-        reports = [z for z in reports if z not in valid_flags]
+        aList = [z.lower() for z in user_flags or []]
+        self.flags = [z for z in aList if z in valid_flags]
+        self.reports = [z for z in aList if z not in valid_flags]
+    #@+node:ekr.20191205160754.2: *4* TR.make_tests
+    def make_tests(self, root):
+        """
+        Return a list of tuples (contents, description) found in all children of the
+        root, except this node.
+        """
+        import os
+        g.trace(root and root.h)
+        tests = []
+        contents_tag = 'test:'
+        file_tag = 'file:'
+        after = root.nodeAfterTree()
+        p = root.copy()
+        while p and p != after:
+            if p.h.startswith(('fail:', 'fails')):
+                # Ignore all fails, regardless of 'all' flag.
+                p.moveToNodeAfterTree()
+            elif 'all' not in self.flags and p.h.startswith('ignore:'):
+                # Honor 'ignore' only when *not* runnining all tests.
+                p.moveToNodeAfterTree()
+            elif p.h.startswith(contents_tag):
+                description = p.h
+                contents = p.b.strip() + '\n'
+                tests.append((contents, description))
+                p.moveToThreadNext()
+            elif p.h.startswith(file_tag):
+                description = p.h
+                s = p.h[len(file_tag):].strip()
+                parts = [g.app.loadDir, '..'] + s.split('..')
+                path = os.path.sep.join(parts)
+                if os.path.exists(path):
+                    with open(path, 'r') as f:
+                        contents = f.read()
+                    tests.append((contents, description))
+                    p.moveToThreadNext()
+                else:
+                    assert False, f"file not found: {path}"
+            else:
+                # Ignore organizer nodes.
+                p.moveToThreadNext()
+        if not tests:
+            print(f"no tests in {root.h}")
+        return tests
+    #@+node:ekr.20191122021515.1: *4* TR.run_one_test
+    def run_one_test(self, sources, description, reports):
+        """
+        Run all tests given in the reports list.
+
+        Reports is a list of reports, in *caller-defined* order.
+        """
+        import time
+        tag = 'run_tests'
+        flags = self.flags
         # Dump sources if asked.
         self.sources = sources = sources.strip() + '\n'
         if 'dump-sources-first' in flags:
@@ -4534,57 +4617,30 @@ class TestRunner:
             for report in list(set(bad_reports)):
                 print('{tag}: bad report option:', repr(report))
         return True
-    #@+node:ekr.20191114161840.1: *3* TestRunner.diff
-    def diff(self, results_array):
-        """
-        Produce a diff of self.tokens vs self.results.
-        
-        The results array no longer exists, so this is a vestigial method.
-        """
-        import difflib
-        import time
-        ndiff = False
-        if ndiff:
-            # FAILS:
-            #  File "C:\Users\edreamleo\Anaconda3\lib\difflib.py", line 1017, in _fancy_replace
-            #  yield '  ' + aelt
-            #  TypeError: can only concatenate str (not "tuple") to str
-            results = results_array
-            tokens = [(z.kind, z.value) for z in self.tokens]
-            gen = difflib.ndiff(tokens, results)
-        else:
-            # Works.
-            results = [f"{z.kind:>12}:{z.value}" for z in results_array]
-            tokens =  [f"{z.kind:>12}:{z.value}" for z in self.tokens]
-            gen = difflib.Differ().compare(tokens, results)
-        t1 = time.process_time()
-        diffs = list(gen)
-        t2 = time.process_time()
-        print(
-            f"\nDiff: tokens: {len(tokens)}, results: {len(results)}, "
-            f"{len(diffs)} diffs in {(t2-t1):4.2f} sec...")
-        if len(diffs) < 1000:
-            legend = '\n-: only in tokens, +: only in results, ?: not in either sequence!\n'
-            heading = f"tx  rx  kind {'diff key kind:value':>15}"
-            line    = f"=== === ==== {'===================':>15}"
-            print(legend)
-            print(heading)
-            print(line)
-            rx = tx = 0
-            for i, z in enumerate(diffs):
-                kind = z[0]
-                if kind != '?': # A mystery.
-                    print(f"{tx:<3} {rx:<3} {kind!r:4} {truncate(z[1:], 80)!s}")
-                if kind == ' ':
-                    rx, tx = rx + 1, tx + 1
-                elif kind == '+':
-                    rx += 1
-                elif kind == '-':
-                    tx += 1
-            # print(line)
-            # print(heading)
-            # print(legend)
-    #@+node:ekr.20191122022728.1: *3* TestRunner.dump_all
+    #@+node:ekr.20191205160754.5: *4* TR.show_status
+    def show_status(self):
+        """Show the preliminary status."""
+        print('')
+        if 'show-test-kind' in self.flags:
+            kind = 'all' if 'all' in self.flags else 'selected'
+            print(f"Running *{kind}*' unit tests...\n")
+        if 'asttokens' in self.reports:
+            print('\nUsing asttokens, *not* the TOG classes')
+        ### if 'reload' in flags and 'show-reload-time' in flags:
+        ###    print(f"\n   Reload time: {self.reload_time:4.2f} sec.")
+    #@+node:ekr.20191205160754.6: *4* TR.summarize
+    def summarize(self, test_time):
+        if 'summarize' in self.flags:
+            fails, tests = self.fails, self.tests
+            status = 'FAIL' if fails else 'PASS'
+            if fails:
+                print('')
+                g.printObj(fails, tag='Failed tests')
+            print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
+        if 'show-test-time' in self.flags:
+            print(f"Run tests time: {test_time:4.2f} sec.")
+    #@+node:ekr.20191205160624.1: *3* TR.dump*
+    #@+node:ekr.20191122022728.1: *4* TR.dump_all
     def dump_all(self):
 
         if self.x:
@@ -4593,18 +4649,18 @@ class TestRunner:
             self.dump_tree()
             # self.dump_raw_tree()
 
-    #@+node:ekr.20191122025303.1: *3* TestRunner.dump_contents
+    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
     def dump_contents(self):
         sources = self.sources
         print('\nContents...\n')
         for i, z in enumerate(g.splitLines(sources)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
-    #@+node:ekr.20191122025155.1: *3* TestRunner.dump_coverage
+    #@+node:ekr.20191122025155.1: *4* TR.dump_coverage
     def coverage(self):
         if self.x:
             self.x.report_coverage(report_missing=False)
-    #@+node:ekr.20191122025306.1: *3* TestRunner.dump_lines
+    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
     def dump_lines(self):
         print('\nTOKEN lines...\n')
         for z in self.tokens:
@@ -4613,12 +4669,12 @@ class TestRunner:
             else:
                 print(repr(z.line))
         print('')
-    #@+node:ekr.20191122025306.2: *3* TestRunner.dump_raw_tree
+    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
     def dump_raw_tree(self):
         print('\nRaw tree...\n')
         print(AstDumper().dump(self.tree))
         print('')
-    #@+node:ekr.20191122025418.1: *3* TestRunner.dump_tokens
+    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
     def dump_tokens(self, brief=False):
         tokens = self.tokens
         print('\nTokens...\n')
@@ -4633,7 +4689,7 @@ class TestRunner:
             for z in tokens:
                 kind = tm.tok_name[z.type].lower()
                 print(f"{z.index:4} {kind:>12} {z.string!r}")
-    #@+node:ekr.20191122025419.1: *3* TestRunner.dump_tree
+    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
     def dump_tree(self, brief=False):
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree

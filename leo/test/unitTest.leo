@@ -196,14 +196,8 @@
 </v>
 <v t="ekr.20191204063108.1"><vh>Summary of fails</vh></v>
 </v>
+<v t="ekr.20191205163216.1"><vh>old code from @test TokenOrder classes</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
-<v t="ekr.20191125063105.1"><vh>&lt;&lt; helper functions &gt;&gt;</vh>
-<v t="ekr.20191118154839.1"><vh>make_tests</vh></v>
-<v t="ekr.20191125065230.1"><vh>reload_helper</vh></v>
-<v t="ekr.20191125065806.1"><vh>run_tests &amp; filter reports</vh></v>
-<v t="ekr.20191125063255.1"><vh>show_status</vh></v>
-<v t="ekr.20191125064740.1"><vh>summarize</vh></v>
-</v>
 <v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -1690,99 +1684,37 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-&lt;&lt; helper functions &gt;&gt;
-# Flags for *this* code.
-flags = [
-    'all',
-    'g.cls',  ### Don't use in production.
-    # 'fail-fast',
-    'reload',
-    'show-test-kind', # all vs selected.
-    # 'show-test-description', 
-    # 'show-reload-time',
-    # 'show-test-time',
-    'summarize',
-]
-if 'g.cls' in flags:
+if 1: # Not for production.
+    import imp
+    imp.reload(leoAst)
+if 1: # Not for production.
     g.cls()
 #
-# Reports, for TestRunner.run_tests.
-if 'all' in flags:
-    reports = [
-        # 'no-trace-after-fail',
-        'trace-times',    # Only for'file:' tests.
-    ]
-else:
-    reports = [ 
-        # 'dump-sources-first',
-        # 'dump-raw-tree-first',
-        # 'dump-tokens-first',
-        # 'set-trace-mode',  # Sets TOG.trace_mode.
-        # 'show-exception-after-fail',
+# Flags for TR.run_tests.
+flags = [
+    # New flags.
+    'all',
+    'show-test-kind', # all vs selected.
+    # 'dump-sources-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    # 'show-exception-after-fail',
 
-        # 'dump-tokens-after-fail',
-        # 'dump-tree-after-fail',
-        # 'dump-all-after-fail',
-        # 'dump-contents',
-        # 'dump-raw-tree',
-        # 'dump-tokens',
-        # 'dump-tree',
-        # 'trace-times',    # Only for'file:' tests.
-        # 'trace-tokenizer-tokens',
-        # 'use-asttokens',
+    # 'dump-tokens-after-fail',
+    # 'dump-tree-after-fail',
+    # 'dump-all-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    'trace-times',    # Only for'file:' tests.
+    # 'trace-tokenizer-tokens',
+    # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
-reload_time = reload_helper()
-show_status()
-tests = make_tests()
-fails, test_time = run_tests()
-summarize()</t>
-<t tx="ekr.20191118154839.1">def make_tests():
-    """
-    Return a list of tuples (contents, description) found in all children of the
-    root, except this node.
-    """
-    import os
-    root = c.p
-    tests = []
-    contents_tag = 'test:'
-    file_tag = 'file:'
-    after = root.nodeAfterTree()
-    p = root.copy()
-    while p and p != after:
-        # g.trace(p.h)
-        if 'helper functions' in p.h:
-            # skip this node.
-            p.moveToNext()
-        elif p.h.startswith(('fail:', 'fails')):
-            # Ignore all fails, regardless of 'all' flag.
-            p.moveToNodeAfterTree()
-        elif 'all' not in flags and p.h.startswith('ignore:'):
-            # Honor 'ignore' only when *not* runnining all tests.
-            p.moveToNodeAfterTree()
-        elif p.h.startswith(contents_tag):
-            description = p.h
-            contents = p.b.strip() + '\n'
-            tests.append((contents, description))
-            p.moveToThreadNext()
-        elif p.h.startswith(file_tag):
-            description = p.h
-            s = p.h[len(file_tag):].strip()
-            parts = [g.app.loadDir, '..'] + s.split('..')
-            path = os.path.sep.join(parts)
-            if os.path.exists(path):
-                with open(path, 'r') as f:
-                    contents = f.read()
-                tests.append((contents, description))
-                p.moveToThreadNext()
-            else:
-                assert False, f"file not found: {path}"
-        else:
-            # Ignore organizer nodes.
-            p.moveToThreadNext()
-    if not tests:
-        print(f"no tests in {root.h}")
-    return tests
+leoAst.TestRunner().run_tests(flags, root=c.p)
+
 </t>
 <t tx="ekr.20191118155609.1"></t>
 <t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
@@ -2040,68 +1972,6 @@ elif 2:
     pass
 </t>
 <t tx="ekr.20191124040736.1"></t>
-<t tx="ekr.20191125063105.1"># All helpers have access to symbols defined at the top level,
-# namely flags, reports, reload_time and test_time.
-
-@others
-</t>
-<t tx="ekr.20191125063255.1">def show_status():
-    print('')
-    if 'show-test-kind' in flags:
-        kind = 'all' if 'all' in flags else 'selected'
-        print(f"Running *{kind}*' unit tests...\n")
-    if 'asttokens' in reports:
-        print('\nUsing asttokens, *not* the TOG classes')
-    if 'reload' in flags and 'show-reload-time' in flags:
-        print(f"\n   Reload time: {reload_time:4.2f} sec.")
-</t>
-<t tx="ekr.20191125064740.1">def summarize():
-    if 'summarize' in flags:
-        status = 'FAIL' if fails else 'PASS'
-        if fails:
-            print('')
-            g.printObj(fails, tag='Failed tests')
-        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
-    if 'show-test-time' in flags:
-        print(f"Run tests time: {test_time:4.2f} sec.")
-</t>
-<t tx="ekr.20191125065230.1">def reload_helper():
-    
-    reload_t1 = time.process_time()
-    if 'reload' in flags:
-        print('**Reloading**')
-        import imp
-        imp.reload(leoAst)
-    reload_t2 = time.process_time()
-    return reload_t2 - reload_t1
-</t>
-<t tx="ekr.20191125065806.1">def filter_reports(description):
-    """Add trace-times only if we are running a 'file:' test."""
-    aList = [z for z in reports if z != 'trace-times']
-    if 'trace-times' in reports and description.startswith('file:'):
-        aList.append('trace-times')
-    return aList
-
-def run_tests():
-    
-    fails = []
-    t1 = time.process_time()
-    for contents, description in tests:
-        # Test runner catches all exceptions.
-        if 'show-test-description' in flags:
-            print(f"Running {description}...")
-        x = leoAst.TestRunner()
-        ok = x.run_tests(contents, description, filter_reports(description))
-        if not ok:
-            # if 'show-test-description' not in flags:
-                # print(f"\nFailed: {description}")
-            fails.append(description)
-        if 'fail-fast' in flags:
-            break
-    t2 = time.process_time()
-    test_time = t2 - t1
-    return fails, test_time
-</t>
 <t tx="ekr.20191125151346.1"></t>
 <t tx="ekr.20191125161333.1">if 1:
     a = 'class' if cond else 'def'
@@ -2484,6 +2354,31 @@ except ValueError:
     print('b')
 else:
     print('c')
+</t>
+<t tx="ekr.20191205163216.1"># Flags for *this* code.
+# flags = [
+    # 'all',
+    # 'fail-fast',
+    # 'show-test-description', 
+    # 'show-reload-time',
+    # 'show-test-time',
+    ##'summarize',
+# ]
+#
+# Reports, for TestRunner.run_tests.
+
+ # reports = [
+        # # 'no-trace-after-fail',
+        # 'trace-times',    # Only for'file:' tests.
+    # ]
+# else:
+    # reports = [
+    
+# reload_time = tr.reload_helper()
+# tr.show_status()
+# tests = tr.make_tests()
+# fails, test_time = tr.run_tests()
+# tr.summarize()
 </t>
 </tnodes>
 </leo_file>
