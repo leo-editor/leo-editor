@@ -1708,7 +1708,8 @@ flags = [
     # 'dump-raw-tree',
     # 'dump-tokens',
     # 'dump-tree',
-    'trace-times',    # Only for'file:' tests.
+    'summarize',
+    # 'trace-times',    # Only for'file:' tests.
     # 'trace-tokenizer-tokens',
     # 'use-asttokens',
 ]

@@ -4449,16 +4449,13 @@ class TestRunner:
             # run_one_test catches all exceptions.
             if 'show-test-description' in self.flags:
                 print(f"Running {description}...")
-            ok = self.run_one_test(contents, description) ###, self.filter_reports(description))
+            ok = self.run_one_test(contents, description)
             if not ok:
-                # if 'show-test-description' not in self.flags:
-                    # print(f"\nFailed: {description}")
                 self.fails.append(description)
             if 'fail-fast' in self.flags:
                 break
         t2 = time.process_time()
         self.summarize(test_time = t2 - t1)
-        # return fails, test_time
     #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
     def make_flags_and_reports(self, user_flags):
         """
@@ -4476,6 +4473,7 @@ class TestRunner:
             'set-trace-mode',
             'show-exception-after-fail',
             'show-test-kind',
+            'summarize',
             'use-asttokens',
             'trace-times',
             'trace-tokenizer-tokens',
@@ -4491,7 +4489,6 @@ class TestRunner:
         root, except this node.
         """
         import os
-        g.trace(root and root.h)
         tests = []
         contents_tag = 'test:'
         file_tag = 'file:'
@@ -4590,6 +4587,7 @@ class TestRunner:
                 f"{pad}  setup time: {(t2-t1):4.2f} sec.\n"
                 f"{pad}   link time: {(t3-t2):4.2f} sec.")
             print('')
+        #
         # Print reports, in the user-defined order.
         bad_reports = []
         for report in self.reports:
@@ -4615,8 +4613,6 @@ class TestRunner:
             print(f"Running *{kind}*' unit tests...\n")
         if 'asttokens' in self.reports:
             print('\nUsing asttokens, *not* the TOG classes')
-        ### if 'reload' in flags and 'show-reload-time' in flags:
-        ###    print(f"\n   Reload time: {self.reload_time:4.2f} sec.")
     #@+node:ekr.20191205160754.6: *4* TR.summarize
     def summarize(self, test_time):
         if 'summarize' in self.flags:
@@ -4625,9 +4621,9 @@ class TestRunner:
             if fails:
                 print('')
                 g.printObj(fails, tag='Failed tests')
-            print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
-        if 'show-test-time' in self.flags:
-            print(f"Run tests time: {test_time:4.2f} sec.")
+            print(
+                f"\n{status} Ran {len(tests)} test{g.plural(len(tests))} "
+                f"in {test_time:4.2f} sec.")
     #@+node:ekr.20191205160624.1: *3* TR.dump*
     #@+node:ekr.20191122022728.1: *4* TR.dump_all
     def dump_all(self):
