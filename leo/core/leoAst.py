@@ -3,7 +3,6 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
-import re
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -1548,10 +1547,12 @@ class TokenOrderGenerator:
         It's invalid to mix bytes and non-bytes literals, so just
         advancing over the next 'string' token suffices.
         """
-        token = self.peek_next_str()
-        i = self.string_index
-        i = self.next_str_index(i + 1)
-        self.string_index = i
+        ###
+            # token = self.peek_next_str()
+            # i = self.string_index
+            # i = self.next_str_index(i + 1)
+            # self.string_index = i
+        token = self.advance_str()
         yield from self.gen_token('string', token.value)
     #@+node:ekr.20191113063144.31: *5* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
@@ -1560,7 +1561,7 @@ class TokenOrderGenerator:
 
     def do_Call(self, node):
         
-        if 0:
+        if False and self.trace_mode:
             #@+<< trace the ast.Call >>
             #@+node:ekr.20191204105344.1: *6* << trace the ast.Call >>
             dumper = AstDumper()
@@ -1783,258 +1784,31 @@ class TokenOrderGenerator:
 
     def do_JoinedStr(self, node):
         """
-        This visitor must correctly associate one or more 'string' tokens with
-        the list of **items** in JoinedStr.values.
+        JoinedStr nodes represent at least one f-string and all other strings
+        concatentated to it.
         
-        This is tricky, because there is a many-to-many mapping between items
-        and 'string' tokens...
+        Analyzing JoinedStr.values would be extremely tricky, for reasons that
+        need not be explained in detail here.
         
-        1. *All* f-strings appear in a JoinedStr. Those f-strings may be joined
-           (concatenated) with other strings, both plain strings and f-strings.
-        
-        2. When an f-string is joined with other strings, JoinedStr.values
-           represents the concatenation of *all* of those strings.
-        
-        3. Each item in JoinedStr.values is either a Str node or a
-           FormattedValue node:
-        
-        - FormattedValue.value is the root of a tree of ast nodes. The entire
-          tree represents an **f-expression**, the expression between {} in an
-          f-string.
-          
-        - Str.s is a string corresponding *either* to a plain (concatentaed)
-          string or a part of an f-string outside of an f-expression.
+        Instead, it is much easier to determine *from the token list* which
+        tokens are concatentated to the f-string!
         """
-        trace = False and self.trace_mode
-        if trace:
-            self.trace_joined_str(node)
+        trace = True ### self.trace_mode
         # Handle all the complications.
-        tokens = self.get_joined_tokens(node)
+        tokens = self.get_concatenated_tokens()
         if trace:
             g.trace('tokens...')
             for z in tokens:
                 print(f"  {z!s}")
         for z in tokens:
             yield from self.gen_token(z.kind, z.value)
-    #@+node:ekr.20191202041925.1: *6* tog.get_joined_tokens (sets target_s)
-    def get_joined_tokens(self, node):
+    #@+node:ekr.20191205053536.1: *6* tog.get_concatenated_tokens
+    def get_concatenated_tokens(self):
         """
-        Return one or more 'string' tokens corresponding to the items in node.values.
-        
-        The docstring for do_JoinedStr, describes the complex (many-to-many)
-        relationship between 'string' tokens and node.values.
-        
-        **Strategy**
-        
-        There is no easy way to compute the string corresponding to the tree
-        of ast nodes whose root is FormattedValue.value.
-        
-        Instead, for each 'string' token, tog.count_string_parts returns:
-        
-        - The number of f-expressions in the 'string' token.
-        - The number of **string parts** of the 'string token.
-        
-        At last we can unravel the many-to-many relationship:
-        
-        - Consume one Str item for each string part.
-        - Consume one FormattedStr node for each f-expression.
-        
-        One last complication:
-            
-        A Str item may contain the *tail* of the previous FormattedValue
-        concatenated with the *head* of the next FormattedValue.
+        Return the list of 'string' tokens concatenated to the present 'string' token.
         """
-        trace = False and self.trace_mode
-        assert isinstance(node.values, list)
-        assert all((isinstance(z, (ast.Str, ast.FormattedValue)) for z in node.values))
-        count, last_item, results = 0, None, []
-        if trace:
-            g.trace('\nEntry\n')
-        while count < len(node.values):
-            count_progress = count
-            # Look ahead to find the next 'string' token.
-            i = self.next_str_index(self.string_index+1) 
-            if i >= len(self.tokens):
-                raise self.error(f"End of tokens")
-            look_ahead_token = self.tokens[i]
-            if trace:
-                g.trace(f"Look-ahead token: count: {count} token: {look_ahead_token!s}\n")
-            #
-            # There is no need to call adjust_str_token!
-            # Just use the look-ahead token and update the string index.
-            token = look_ahead_token
-            self.string_index = i
-            # Add the token to the results.
-            results.append(token)
-            # Get an ordered list of all components of the token.
-            components = self.get_string_parts(token)
-            if trace:
-                g.trace(f"\ngot {len(components)} components")
-                g.printObj(components)
-            # Consume all items corresponding to the components.
-            for i, component in enumerate(components):
-                kind, val = component
-                look_ahead_item = node.values[count] if count < len(node.values) else 'None'
-                if trace:
-                    g.trace(
-                        f"Item {count}: {look_ahead_item.__class__.__name__:14} "
-                        f"Component {i} {kind:>12} {val}\n")
-                assert kind in ('string', 'f-expression'), kind
-                if isinstance(last_item, ast.Str) and kind == 'string':
-                    # The component was joined to the Str node.
-                    if trace:
-                        g.trace('Skipped joined str', val)
-                    last_item = None
-                    continue
-                # Now we know there should *be* a next item. Get it.
-                if count >= len(node.values):
-                    raise self.error(f"{count} not enough items")
-                item = last_item = node.values[count]
-                # Finally, check that the component matches the item.
-                if isinstance(item, ast.Str) and kind != 'string':
-                    raise self.error(f"expected 'string', got '{kind}'")
-                if isinstance(item, ast.FormattedValue) and kind != 'f-expression':
-                    raise self.error(f"expected 'f-expression'', got '{kind}'")
-                count += 1
-            assert count_progress < count
-        if trace:
-            g.trace('\nExit')
-            g.printObj(results, tag='Results')
-        return results
-    #@+node:ekr.20191202051238.1: *6* tog.get_string_parts
-    def get_string_parts(self, token):
-        """
-        Return an ordered list of the components of the given 'string' token.
-        """
-        components, s = [], token.value
-        try:
-            i = 0
-            while i < len(s):
-                progress = i
-                if s[i] in 'fFrR':
-                    i, aList = self.scan_fstring(s, i, token)
-                    components.extend(aList)
-                else:
-                    i, s2 = self.scan_string(s, i, token)
-                    components.append(('string', s2))
-                assert i > progress
-            return components
-        except (IndexError, SyntaxError):
-            line = token.line_number
-            raise self.error(f"line {line}: mal-formed 'string' token: {token!s}")
-    #@+node:ekr.20191202060440.1: *6* tog.scan_fstring
-    def scan_fstring(self, s, i, token):
-        """
-        Scan the f-string starting at s[i].
-        
-        Return a list of components (kind, val) where kind is in
-        ('f-expression', 'string').
-        """
-        trace = False and self.trace_mode
-
-        def starts_fexpr(s, i):
-            return s[i] == '{' and s[i:i+2] != '{{'
-
-        def ends_fexpr(s, i):
-            return s[i] == '}' and s[i:i+2] != '}}'
-
-        # Ensure the f-string starts properly.
-        if s[i] not in 'fFrR':
-            raise SyntaxError('f-string does not start properly')
-        while s[i] in 'fFrR':
-            i += 1
-            
-        m = self.quotes_pat.match(s[i:])
-        if not m:
-            raise self.error(f"line {token.line_number} Missing quote: {s!r}")
-        quotes = m.group(1)
-        i += len(quotes)
-        if trace:
-            g.trace(f"\nEnter: quotes: {quotes} i: {i} s: {s[i:]}")
-        #
-        # scan for the closing delim, updating the components.
-        start_i = i # The start of the next component.
-        in_fexpr = False
-        components = []
-        while not s.startswith(quotes, i):
-            progress = i
-            # g.trace(in_fexpr, i, s[i:])
-            if s[i] == '\\':
-                if in_fexpr:
-                    raise SyntaxError('backslash inside f-expression')
-                i += 1 # Skip one extra. 
-            elif in_fexpr:
-                if ends_fexpr(s,i):
-                    # End the f-string component
-                    val = s[start_i:i]
-                    components.append(('f-expression', val))
-                    # Start the next component, whatever it may be.
-                    in_fexpr = False
-                    start_i = i + 1
-            elif starts_fexpr(s, i):
-                if in_fexpr:
-                    raise SyntaxError('nested f-expressions')
-                # End any previous string component.
-                if start_i < i:
-                    val = s[start_i:i]
-                    components.append(('string', val))
-                # Start the f-string component.
-                in_fexpr = True
-                ### start_i = i + 1
-                start_i = i
-            i += 1
-            assert progress < i
-        # Add any trailing component.
-        if start_i < i:
-            kind = 'f-expression' if in_fexpr else 'string'
-            val = s[start_i:i]
-            components.append((kind, val))
-        if not s.startswith(quotes, i):
-            raise SyntaxError('unterminated f-string')
-        if in_fexpr:
-            raise SyntaxError('unterminated f-expression')
-        if trace:
-            g.trace('END', i + 1, components)
-        return i + 1, components
-    #@+node:ekr.20191202060423.1: *6* tog.scan_string
-    def scan_string(self, s, i, token):
-        """
-        Scan the plain string starting at s[i].
-        
-        Return (i, s[s0:i+1]) where
-        i is the index *after* the matching string delim.
-        """
-        # g.trace('ENTER', s[i:])
-        delim = s[i]
-        if delim not in ('"', "'"):
-            raise SyntaxError('string does not start with a quote')
-        s0 = i
-        i += 1
-        while s[i] != delim:
-            if s[i] == '\\':
-                i += 1 # Skip one extra. 
-            i += 1
-        if s[i] != delim:
-            raise SyntaxError('unterminated plain string')
-        result = s[s0:i+1]
-        # g.trace('EXIT', i + 1, result)
-        return i + 1, result
-    #@+node:ekr.20191201095147.1: *6* tog.trace_joined_str
-    def trace_joined_str(self, node):
-        """Show the components of the JoinedStr node."""
-        indent = ' ' * 4
-        print('\nJoinedStr.values...')
-        for i, z in enumerate(node.values):
-            cn = z.__class__.__name__
-            if isinstance(z, ast.Str):
-                print(f"{indent}{i}: Str: {z.s}")
-            elif isinstance(z.value, ast.Str):
-                print(f"{indent}{i}: {cn} value.Str: {z.value.s}")
-            elif isinstance(z.value, ast.Name):
-                 print(f"{indent}{i}: {cn} value.Name: {z.value.id}")
-            else:
-                print(f"{indent}{i}: {cn} value: {z.value.__class__.__name__}")
-        print('')
+        result = []
+        return result
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -2099,208 +1873,20 @@ class TokenOrderGenerator:
         token_list = self.advance_str()
         for token in token_list:
             yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191128021208.1: *6* tog.adjust_str_token
-    # Shared patterns.
-    prefix_pat = re.compile(r"([fFrR]{0,2})")
-    quotes_pat = re.compile(r"('''|'|\"\"\"|\")")
-    # Character patterns...
-    hex_pat = re.compile(r"\\x([0-9a-fA-f]{2})")
-    octal_pat = re.compile(r"\\o[0-7]{1,3}")
-
-    def adjust_str_token(self, token):
-        #@+<< adjust_str_token docstring >>
-        #@+node:ekr.20191203093059.1: *7* << adjust_str_token docstring >>
-        """
-        Return a string containing those parts of token.value that correspond
-        to the *remaining* parts of the **target string**, in self.node.s.
-
-        **Background**
-
-        self.node is an ast.Str node. To emphasize this, I'll use Str.s to denote
-        the target string in self.node.s.
-
-        Fact 1: Str.s may represent *one or more* tokens. This wretched fact is why
-                this method is required.
-
-        Fact 2: Str.s is a *plain* string. Each token.value contains the repr of
-                all or *part* of Str.s. Each token.value may contain an f/r prefix
-                and *must* contain quotes.
-
-        **Return value**
-
-        The return value helps step through Str.s. Therefore, it must match the
-        characters of Str.s exactly.
-                
-        This method computes the return value as follows:
-            
-        1. Start with the **inner part** of token.value, that part of
-           token.value inside the prefix and quotes.
-           
-        2. **Reconcile** the inner part to account for escaped characters in
-           token.value. Such escapes the do not occure in Str.s.
-
-        **Advancing the target index**
-
-        The .target_index ivar tells how much of Str.s remains. Because the result
-        is reconciled, advancing the target pointer is easy:
-
-            self.target_index += len(result)
-        """
-        #@-<< adjust_str_token docstring >>
-        trace = False and self.trace_mode
-        line_n = token.line_number
-        tv = token.value
-        #
-        # tv *might* have a prefix.
-        m = self.prefix_pat.match(tv)
-        if not m:
-            raise self.error(f"line {line_n} Bad prefix: {tv!r}")
-        tv_prefix = m.group(1)
-        #
-        # tv *must* have opening quotes.
-        m = self.quotes_pat.match(tv[len(tv_prefix):])
-        if not m:
-            raise self.error(f"line {line_n} Missing quote: {tv}")
-        tv_quotes = m.group(1)
-        #
-        # tv *must* have matching quotes. Find them, ignoring escaped quotes.
-        i = prefix_i = len(tv_prefix)+len(tv_quotes)
-        while i < len(tv):
-            if tv[i] == '\\':
-                i += 2
-            elif tv[i:i+len(tv_quotes)] == tv_quotes:
-                break
-            else:
-                i += 1
-        else:
-            g.trace('len(tv)', len(tv))
-            raise self.error(f"line {line_n} No matching quotes: {tv}")
-        #
-        # Compute the inner string and reconcile the results.
-        inner_s = tv[prefix_i:i]
-        result = inner_s
-        if 'r' not in tv_prefix.lower():
-            result = result.replace('\\"', '"').replace("\\'", "'")
-            result = result.replace('\\'+'\n', '')
-            result = result.replace(r'\b', '\b').replace(r'\n', '\n').replace(r'\t', '\t')
-            result = result.replace(r'\f', '\f').replace(r'\r', '\r').replace(r'\v', '\v')
-            result = result.replace('\\\\', '\\')
-            # Adjust characters with hex values.
-            
-            ### Use re.sub(pattern, repl, string, count=0, flags=0)
-            while True:
-                m = re.search(self.hex_pat, result)
-                if m: 
-                    char = chr(int(m.group(1),16))
-                    # print('HEX', m.group(1), char)
-                    result = result.replace(m.group(0), char)
-                else:
-                    break
-            # Adjust characters with octal values.
-            if 0: # This doesn't seem necessary.
-                for m in re.finditer(self.octal_pat, result):
-                    g.trace('OCTAL', m.group(0))
-        #
-        # Advance.
-        self.target_index += len(result)
-        if trace:
-            print('')
-            g.trace(f"inner_s {inner_s}\n")
-            g.trace(f"token.value {token.value} ==> result: {result}\n")
-        return result
     #@+node:ekr.20191126074503.1: *6* tog.advance_str
-    # For adjust_str_token.
-    target_index = 0
-    target_string = None
-
     def advance_str(self):
         """
         Called only from do_Str.
         
-        Advance over *one or more* 'string tokens, and return them.
-        
-        This method is necessary because a *single* ast.Str node may represent
-        the concatenation of multiple strings.
+        Advance over *exactly one* 'string' token, and return it.
         """
-        trace = False and self.trace_mode
-        # Sanity check
-        if not isinstance(self.node, ast.Str):
-            raise self.error(f"expecting ast.Str, got {self.node.__class__.__name__}")
-        #
-        # Make sure we make progress.
-        start_index = self.string_index
-        target_s = self.node.s
-        if trace:
-            g.trace(f"START string_index: {self.string_index} target_s: {target_s}")
-
-        def check_progress():
-            if start_index >= self.string_index:
-                raise self.error(
-                    f"unchanged string index: {self.string_index} "
-                    f"results: {results!r} target: {target_s!r}")
-        #
-        # Special case for empty target.
-        if repr(target_s).lower().replace('"', "'") in ("''", "f''", "r''", "fr''", "rf''"):
-            i = self.string_index
-            i = self.next_str_index(i + 1)
-            token = self.tokens[i]
-            if trace:
-                g.trace(f"Empty target: return string_index: {self.string_index} results: {[token]}")
-            self.string_index = i
-            check_progress()
-            return [token]
-        #
-        # Scan 'string' tokens while the accumulated results are shorter than target_s.
-        accumulated_results, results = [], []
-        self.target_index = 0
-        self.target_string = target_s
         i = self.string_index
-        while len(''.join(accumulated_results)) < len(target_s):
-            if trace:
-                g.trace(f"accumulated results: {accumulated_results!s}")
-            i = self.next_str_index(i + 1)
-            if i >= len(self.tokens):
-                raise self.error(f"End of tokens looking for {target_s}")
-            token = self.tokens[i]
-            results.append(token)
-            s = self.adjust_str_token(token)
-            accumulated_results.append(s)
-        results_s = ''.join(accumulated_results)
-        #
-        # The last token may extend the target string.
-        # In that case, we just return.
-        if results_s != target_s and results_s.startswith(target_s):
-            self.string_index = i
-            if trace:
-                g.trace(f"EXTEND: i: {i} return {results_s!r}\n")
-            return results
-        #
-        # Now we can make the stronger check.
-        if results_s!= target_s:
-            i = self.string_index
-            token = self.tokens[i]
-            line = token.line_number
-            g.printObj(target_s.split('\n'), tag='target_s')
-            g.printObj(results_s.split('\n'), tag='results_s')
-            target_s = g.truncate(target_s, 40)
-            results_s = g.truncate(results_s, 40)
-            raise self.error(
-                f"   line: {line} token: {token!s}\n"
-                f" target: {target_s}\n"
-                f"results: {results_s}")
-        #
-        # Point the string index at the last scanned token.
+        i = self.next_str_index(i + 1)
+        if i >= len(self.tokens):
+            raise self.error(f"End of tokens")
+        token = self.tokens[i]
         self.string_index = i
-        check_progress()
-        if trace:
-            g.trace(f"END i: {i} return: {results_s!s}\n")
-                # len(accumulated): {len(accumulated_results)}
-            if 0:
-                print('[')
-                for i, z in enumerate(results):
-                    print(f"{i:>5} {z!s}")
-                print(']')
-        return results
+        return token
     #@+node:ekr.20191128135521.1: *6* tog.next_str_index
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
@@ -2314,20 +1900,6 @@ class TokenOrderGenerator:
                 break
             i += 1
         return i
-    #@+node:ekr.20191129102013.1: *6* tog.peek_next_str
-    def peek_next_str(self):
-        """
-        Return the next 'string' token, *without* updating the string index.
-        """
-        trace = True and self.trace_mode
-        i = self.string_index
-        i1 = i
-        i = self.next_str_index(i+1)
-        if i >= len(self.tokens):
-            raise self.error(f"no token! {i1}..{i}")
-        if trace:
-            g.trace(f" {i1:>2}-->{i:<2} {self.tokens[i]}")
-        return self.tokens[i]
     #@+node:ekr.20191113063144.51: *5* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4949,9 +4521,10 @@ class TestRunner:
             pad = ' '*4
             print('')
             print(
-                f"{pad}description: {description}\n"
-                f"{pad} setup time: {(t2-t1):4.2f} sec.\n"
-                f"{pad}  link time: {(t3-t2):4.2f} sec.")
+                f"{pad} description: {description}\n"
+                f"{pad}len(sources): {len(sources)}\n"
+                f"{pad}  setup time: {(t2-t1):4.2f} sec.\n"
+                f"{pad}   link time: {(t3-t2):4.2f} sec.")
             print('')
         # Print reports, in the order they appear in the results list.
         bad_reports = []
