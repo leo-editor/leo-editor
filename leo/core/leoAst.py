@@ -4433,7 +4433,7 @@ class TestRunner:
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
-    #@+node:ekr.20191205160754.4: *3* TR.run_tests
+    #@+node:ekr.20191205160754.4: *3* TR.run_tests & helpers
     def run_tests(self, flags, root):
         """The outer test runner."""
         #
@@ -4446,11 +4446,10 @@ class TestRunner:
         # The main test runner loop.
         t1 = time.process_time()
         for contents, description in tests:
-            # Test runner catches all exceptions.
+            # run_one_test catches all exceptions.
             if 'show-test-description' in self.flags:
                 print(f"Running {description}...")
-            ### x = leoAst.TestRunner()
-            ok = self.run_one_test(contents, description, self.filter_reports(description))
+            ok = self.run_one_test(contents, description) ###, self.filter_reports(description))
             if not ok:
                 # if 'show-test-description' not in self.flags:
                     # print(f"\nFailed: {description}")
@@ -4460,14 +4459,6 @@ class TestRunner:
         t2 = time.process_time()
         self.summarize(test_time = t2 - t1)
         # return fails, test_time
-    #@+node:ekr.20191205161201.1: *4* TR.filter_reports
-    def filter_reports(self, description):
-        """Add trace-times only if we are running a 'file:' test."""
-        reports = self.reports
-        aList = [z for z in reports if z != 'trace-times']
-        if 'trace-times' in reports and description.startswith('file:'):
-            aList.append('trace-times')
-        return aList
     #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
     def make_flags_and_reports(self, user_flags):
         """
@@ -4537,11 +4528,9 @@ class TestRunner:
             print(f"no tests in {root.h}")
         return tests
     #@+node:ekr.20191122021515.1: *4* TR.run_one_test
-    def run_one_test(self, sources, description, reports):
+    def run_one_test(self, sources, description):
         """
-        Run all tests given in the reports list.
-
-        Reports is a list of reports, in *caller-defined* order.
+        Run the test given by the sources and description.
         """
         import time
         tag = 'run_tests'
@@ -4592,7 +4581,7 @@ class TestRunner:
                 if 'no-trace-after-fail':
                     x.trace_mode = False
                 return False
-        if 'trace-times' in flags:
+        if 'trace-times' in flags and description.startswith('file:'):
             pad = ' '*4
             print('')
             print(
@@ -4601,9 +4590,9 @@ class TestRunner:
                 f"{pad}  setup time: {(t2-t1):4.2f} sec.\n"
                 f"{pad}   link time: {(t3-t2):4.2f} sec.")
             print('')
-        # Print reports, in the order they appear in the results list.
+        # Print reports, in the user-defined order.
         bad_reports = []
-        for report in reports:
+        for report in self.reports:
             helper = getattr(self, report.replace('-', '_'), None)
             if helper:
                 try:
@@ -4615,7 +4604,7 @@ class TestRunner:
                 bad_reports.append(report)
         if bad_reports:
             for report in list(set(bad_reports)):
-                print('{tag}: bad report option:', repr(report))
+                print(f"{tag}: bad report option: {report!r}")
         return True
     #@+node:ekr.20191205160754.5: *4* TR.show_status
     def show_status(self):
