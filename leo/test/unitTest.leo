@@ -185,15 +185,6 @@
 <v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 <v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </v>
-<v t="ekr.20191125235556.2"><vh>&lt;&lt; helper functions &gt;&gt; (no longer used)</vh>
-<v t="ekr.20191125235556.3"><vh>filter_reports</vh></v>
-<v t="ekr.20191125235556.4"><vh>make_tests</vh></v>
-<v t="ekr.20191125235556.5"><vh>reload_helper</vh></v>
-<v t="ekr.20191125235556.6"><vh>run_tests</vh></v>
-<v t="ekr.20191125235556.7"><vh>show_status</vh></v>
-<v t="ekr.20191125235556.8"><vh>summarize</vh></v>
-</v>
-<v t="ekr.20191205172553.1"><vh>old code from </vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
@@ -2021,81 +2012,6 @@ flags = [
 leoAst.TestRunner().run_tests(flags, root=c.p)
 
 </t>
-<t tx="ekr.20191125235556.2"># All helpers have access to symbols defined at the top level,
-# namely flags, reports, reload_time and test_time.
-
-@others</t>
-<t tx="ekr.20191125235556.3">def filter_reports(description):
-
-    if 'all' in flags:
-        return [z for z in reports if z == 'asttokens']
-    # Set 'trace-times' only for 'file:' tests.
-    aList = [z for z in reports if z != 'trace-times']
-    if 'trace-times' in reports and description.startswith('file:'):
-        reports2.append('trace-times')
-    return aList</t>
-<t tx="ekr.20191125235556.4">def make_tests():
-    """
-    Return a list of tuples (contents, description) for all of Leo's core .py files.
-    """
-    import glob
-    import os
-    core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
-    assert os.path.exists(core_directory), core_directory
-    paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
-    tests = []
-    for path in paths:
-        assert os.path.exists(path), path
-        with open(path, 'r') as f:
-            contents = f.read()
-        description = path
-        tests.append((contents, description))   
-    return tests
-</t>
-<t tx="ekr.20191125235556.5">def reload_helper():
-    
-    reload_t1 = time.process_time()
-    if 'reload' in flags:
-        print('**Reloading**')
-        import imp
-        imp.reload(leoAst)
-    reload_t2 = time.process_time()
-    return reload_t2 - reload_t1
-</t>
-<t tx="ekr.20191125235556.6">def run_tests():
-    
-    fails = []
-    t1 = time.process_time()
-    for contents, description in tests:
-        # Test runner catches all exceptions.
-        ### print(f"Running {description}...\n")
-        x = leoAst.TestRunner()
-        ok = x.run_tests(contents, description, filter_reports(description))
-        if not ok:
-            fails.append(description)
-            ### print(f"\nFAIL: {description}")
-    t2 = time.process_time()
-    test_time = t2 - t1
-    return fails, test_time
-</t>
-<t tx="ekr.20191125235556.7">def show_status():
-    if 'show-test-kind' in flags:
-        kind = '*all*' if 'all' in flags else '*selected'
-        print(f"Running *{kind}*' unit tests...\n")
-    if 'asttokens' in reports:
-        print('\nUsing asttokens, *not* the TOG classes')
-    if 'reload' in flags and 'show-reload-time' in flags:
-        print(f"\n   Reload time: {reload_time:4.2f} sec.")
-</t>
-<t tx="ekr.20191125235556.8">def summarize():
-    if 'summarize' in flags:
-        status = 'FAIL' if fails else 'PASS'
-        if fails:
-            g.printObj(fails, tag='Failed tests')
-        print(f"\n{status} Ran {len(tests)} test{g.plural(len(tests))}")
-    if 'show-test-time' in flags:
-        print(f"Run tests time: {test_time:4.2f} sec.")
-</t>
 <t tx="ekr.20191126002258.1">print(f'x3{e3+1}y3' f'x4{e4+2}y4')
 print('done')</t>
 <t tx="ekr.20191126084046.1"></t>
@@ -2339,39 +2255,5 @@ except ValueError:
 else:
     print('c')
 </t>
-<t tx="ekr.20191205172553.1">import time
-import leo.core.leoAst as leoAst
-
-# Flags for *this* code.
-flags = [
-    'all'
-    'show-test-kind',
-    'show-test-time',
-    'summarize',
-]
-g.cls() ###
-#
-# Reports when 'all' is False
-reports = [
-    # 'show-exception-after-fail',
-    'trace-times',    # Only for'file:' tests.
-    # 'verbose-fail',
-    # 'trace-mode',  # Sets TOG.trace_mode.
-    # 'trace-times',  # Only for'file:' tests.
-    # 'dump-all',
-    # 'asttokens',
-    # 'test-links',
-    # 'contents',
-    # 'tokens',
-    # 'raw-tree',
-    # 'tree',
-]
-# Make tests, run tests, and summarize.
-reload_time = 0.0
-show_status()
-tests = make_tests()
-fails, test_time = run_tests()
-summarize()
-assert not fails, f"failed {len(fails)} tests"</t>
 </tnodes>
 </leo_file>
