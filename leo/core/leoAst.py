@@ -2397,6 +2397,7 @@ class TokenOrderGenerator:
     def do_YieldFrom(self, node):
 
         yield from self.gen_name('yield')
+        yield from self.gen_name('from')
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
