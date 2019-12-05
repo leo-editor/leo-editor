@@ -1783,10 +1783,8 @@ class TokenOrderGenerator:
         i = self.next_str_index(i + 1)
         while i < len(self.tokens):
             token = self.tokens[i]
-            # g.trace(f"{i} {token!s}")
             if token.kind == 'string':
                 results.append(token)
-                # g.trace(f"add {i}: {token}")
             elif token.kind in ('endmarker', 'name', 'number', 'op'):
                 # The 'endmarker' token ensures we will have a token.
                 if not results:
