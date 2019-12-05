@@ -2327,6 +2327,7 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         yield from self.gen(node.handlers)
         if node.orelse:
+            self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)

@@ -204,8 +204,7 @@
 <v t="ekr.20191125063255.1"><vh>show_status</vh></v>
 <v t="ekr.20191125064740.1"><vh>summarize</vh></v>
 </v>
-<v t="ekr.20191205090519.1"><vh>xx file: core..leoDebugger.py</vh></v>
-<v t="ekr.20191205090659.1"><vh>test: TryExceptElse</vh></v>
+<v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
@@ -243,11 +242,12 @@
 <v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
 </v>
 <v t="ekr.20191124040736.1"><vh>ignore: Statements...</vh>
+<v t="ekr.20191204025303.1"><vh>test: Call</vh></v>
 <v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
 <v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+<v t="ekr.20191205090659.1"><vh>test: TryExceptElse</vh></v>
 <v t="ekr.20191203125053.1"><vh>test: With</vh></v>
 <v t="ekr.20191205071827.1"><vh>test: YieldFrom</vh></v>
-<v t="ekr.20191204025303.1"><vh>test: Call</vh></v>
 </v>
 <v t="ekr.20191205090312.1"><vh>ignore: Strings...</vh>
 <v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
@@ -1693,7 +1693,7 @@ import leo.core.leoAst as leoAst
 &lt;&lt; helper functions &gt;&gt;
 # Flags for *this* code.
 flags = [
-    # 'all',
+    'all',
     'g.cls',  ### Don't use in production.
     # 'fail-fast',
     'reload',
