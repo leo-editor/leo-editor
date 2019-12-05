@@ -1788,7 +1788,9 @@ class TokenOrderGenerator:
         Instead, we get the tokens *from the token list itself*!
         """
         for z in self.get_concatenated_string_tokens():
+            self.advance_str()
             yield from self.gen_token(z.kind, z.value)
+            
     #@+node:ekr.20191205053536.1: *6* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self):
         """
@@ -1798,8 +1800,11 @@ class TokenOrderGenerator:
         """
         trace = True
         i, results = self.string_index, []
+        if i == -1:
+            i = self.next_str_index(i + 1)
         while i < len(self.tokens):
             token = self.tokens[i]
+            g.trace(f"{i} {token!s}")
             if token.kind == 'string':
                 results.append(token)
                 g.trace(f"add {i}: {token}")
@@ -1810,6 +1815,8 @@ class TokenOrderGenerator:
                         f"line {token.line_number} string_index: {i} "
                         f"expected 'string' token, got {token!s}")
                 break
+            else:
+                pass # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
             i += 1
         assert i < len(self.tokens), "Can not happen: no 'endmarker' token"
         if trace:
