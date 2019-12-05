@@ -1547,11 +1547,6 @@ class TokenOrderGenerator:
         It's invalid to mix bytes and non-bytes literals, so just
         advancing over the next 'string' token suffices.
         """
-        ###
-            # token = self.peek_next_str()
-            # i = self.string_index
-            # i = self.next_str_index(i + 1)
-            # self.string_index = i
         token = self.advance_str()
         yield from self.gen_token('string', token.value)
     #@+node:ekr.20191113063144.31: *5* tog.Call & helpers
@@ -1788,27 +1783,40 @@ class TokenOrderGenerator:
         concatentated to it.
         
         Analyzing JoinedStr.values would be extremely tricky, for reasons that
-        need not be explained in detail here.
+        need not be explained here.
         
-        Instead, it is much easier to determine *from the token list* which
-        tokens are concatentated to the f-string!
+        Instead, we get the tokens *from the token list itself*!
         """
-        trace = True ### self.trace_mode
-        # Handle all the complications.
-        tokens = self.get_concatenated_tokens()
-        if trace:
-            g.trace('tokens...')
-            for z in tokens:
-                print(f"  {z!s}")
-        for z in tokens:
+        for z in self.get_concatenated_string_tokens():
             yield from self.gen_token(z.kind, z.value)
     #@+node:ekr.20191205053536.1: *6* tog.get_concatenated_tokens
-    def get_concatenated_tokens(self):
+    def get_concatenated_string_tokens(self):
         """
-        Return the list of 'string' tokens concatenated to the present 'string' token.
+        Return the present 'string' token and all 'string' tokens concatentaed to it.
+        
+        Do *not* update self.string_index here.
         """
-        result = []
-        return result
+        trace = True
+        i, results = self.string_index, []
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if token.kind == 'string':
+                results.append(token)
+                g.trace(f"add {i}: {token}")
+            elif token.kind in ('endmarker', 'name', 'number', 'op'):
+                # The 'endmarker' token ensures we will have a token.
+                if not results:
+                    raise self.error(
+                        f"line {token.line_number} string_index: {i} "
+                        f"expected 'string' token, got {token!s}")
+                break
+            i += 1
+        assert i < len(self.tokens), "Can not happen: no 'endmarker' token"
+        if trace:
+            g.trace('results...')
+            for z in results:
+                print(f"  {z!s}")
+        return results
     #@+node:ekr.20191113063144.42: *5* tog.List
     def do_List(self, node):
 
@@ -1865,15 +1873,14 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *5* tog.Str & helpers
+    def do_Str(self, node):
+        """This node represents a string constant."""
+        token = self.advance_str()
+        yield from self.gen_token('string', token.value)
+    #@+node:ekr.20191126074503.1: *6* tog.advance_str
     # The index in self.tokens of the previously scanned 'string' token.
     string_index = -1 
 
-    def do_Str(self, node):
-        """This node represents a string constant."""
-        token_list = self.advance_str()
-        for token in token_list:
-            yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191126074503.1: *6* tog.advance_str
     def advance_str(self):
         """
         Called only from do_Str.
@@ -4934,12 +4941,6 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
         pass
 
     # Other overrides...
-
-    # def advance_str(self):
-        # return []
-    
-    # def peek_if(self):
-        # return Token('string', 'if')
 
     def sync_token(self, kind, val):
         pass
