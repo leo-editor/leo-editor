@@ -4428,6 +4428,71 @@ class TestRunner:
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
+    #@+node:ekr.20191205160624.1: *3* TR.dump*
+    #@+node:ekr.20191122022728.1: *4* TR.dump_all
+    def dump_all(self):
+
+        if self.x:
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_tree()
+            # self.dump_raw_tree()
+
+    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
+    def dump_contents(self):
+        sources = self.sources
+        print('\nContents...\n')
+        for i, z in enumerate(g.splitLines(sources)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
+    def dump_lines(self):
+        print('\nTOKEN lines...\n')
+        for z in self.tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
+    def dump_raw_tree(self):
+        print('\nRaw tree...\n')
+        print(AstDumper().dump(self.tree))
+        print('')
+    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
+    def dump_tokens(self, brief=False):
+        tokens = self.tokens
+        print('\nTokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+        # pylint: disable=not-an-iterable
+        if self.x:
+            for z in tokens:
+                print(z.dump(brief=brief))
+            print('')
+        else:
+            import token as tm
+            for z in tokens:
+                kind = tm.tok_name[z.type].lower()
+                print(f"{z.index:4} {kind:>12} {z.string!r}")
+    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
+    def dump_tree(self, brief=False):
+        print('\nPatched tree...\n')
+        tokens, tree = self.tokens, self.tree
+        if self.x:
+            print(AstDumper().brief_dump(tree))
+            return
+        from asttokens.util import walk
+        # print(dumper.dump(tree))
+        for z in walk(tree):
+            class_name = z.__class__.__name__
+            first, last = z.first_token.index, z.last_token.index
+            token_range = f"{first:>4}..{last:<4}"
+            if isinstance(z, ast.Module):
+                tokens_s = ''
+            else:
+                tokens_s = ' '.join(
+                    repr(z.string) for z in tokens[first:last] if z)
+            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
     #@+node:ekr.20191205160754.4: *3* TR.run_tests & helpers
     def run_tests(self, flags, root):
         """The outer test runner."""
@@ -4621,11 +4686,14 @@ class TestRunner:
         if 'trace-times' in flags and description.startswith('file:'):
             pad = ' '*4
             print('')
+            n_nodes = x.n_nodes if x else '<unknown>'
             print(
-                f"{pad} description: {description}\n"
-                f"{pad}len(sources): {len(sources)}\n"
-                f"{pad}  setup time: {(t2-t1):4.2f} sec.\n"
-                f"{pad}   link time: {(t3-t2):4.2f} sec.")
+                f"{pad}         {description}\n"
+                f"{pad} len(sources): {len(sources)}\n"
+                f"{pad}visited nodes: {n_nodes}\n"
+                f"{pad}       tokens: {len(self.tokens)}\n"
+                f"{pad}   setup time: {(t2-t1):4.2f} sec.\n"
+                f"{pad}    link time: {(t3-t2):4.2f} sec.")
             print('')
         #
         # Print reports, in the user-defined order.
@@ -4674,71 +4742,6 @@ class TestRunner:
             print(
                 f"\n{status} Ran {len(tests)} test{g.plural(len(tests))} "
                 f"in {test_time:4.2f} sec.")
-    #@+node:ekr.20191205160624.1: *3* TR.dump*
-    #@+node:ekr.20191122022728.1: *4* TR.dump_all
-    def dump_all(self):
-
-        if self.x:
-            self.dump_contents()
-            self.dump_tokens()
-            self.dump_tree()
-            # self.dump_raw_tree()
-
-    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
-    def dump_contents(self):
-        sources = self.sources
-        print('\nContents...\n')
-        for i, z in enumerate(g.splitLines(sources)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
-    def dump_lines(self):
-        print('\nTOKEN lines...\n')
-        for z in self.tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
-    def dump_raw_tree(self):
-        print('\nRaw tree...\n')
-        print(AstDumper().dump(self.tree))
-        print('')
-    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
-    def dump_tokens(self, brief=False):
-        tokens = self.tokens
-        print('\nTokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        # pylint: disable=not-an-iterable
-        if self.x:
-            for z in tokens:
-                print(z.dump(brief=brief))
-            print('')
-        else:
-            import token as tm
-            for z in tokens:
-                kind = tm.tok_name[z.type].lower()
-                print(f"{z.index:4} {kind:>12} {z.string!r}")
-    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
-    def dump_tree(self, brief=False):
-        print('\nPatched tree...\n')
-        tokens, tree = self.tokens, self.tree
-        if self.x:
-            print(AstDumper().brief_dump(tree))
-            return
-        from asttokens.util import walk
-        # print(dumper.dump(tree))
-        for z in walk(tree):
-            class_name = z.__class__.__name__
-            first, last = z.first_token.index, z.last_token.index
-            token_range = f"{first:>4}..{last:<4}"
-            if isinstance(z, ast.Module):
-                tokens_s = ''
-            else:
-                tokens_s = ' '.join(
-                    repr(z.string) for z in tokens[first:last] if z)
-            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token

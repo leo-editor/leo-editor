@@ -1683,7 +1683,7 @@ if 1: # Not for production.
 flags = [
     # New flags.
     # 'all',
-    'coverage',
+    # 'coverage',
     'show-test-kind', # all vs selected.
     # 'dump-sources-first',
     # 'dump-raw-tree-first',
@@ -1699,7 +1699,7 @@ flags = [
     # 'dump-tokens',
     # 'dump-tree',
     'summarize',
-    # 'trace-times',    # Only for'file:' tests.
+    'trace-times',    # Only for'file:' tests.
     # 'trace-tokenizer-tokens',
     # 'use-asttokens',
 ]
