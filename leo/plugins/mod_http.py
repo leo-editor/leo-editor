@@ -224,8 +224,8 @@ SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
+import urllib
 import urllib.parse as urlparse
-from urllib.parse import parse_qs
 import os
 import select
 import shutil
@@ -1072,7 +1072,7 @@ class RequestHandler(
             query = urlparse_multipart(self.rfile, pdict)
         elif ctype == 'application/x-www-form-urlencoded':
             qs = self.rfile.read(length)
-            query = urllib.parse_qs(qs, keep_blank_values=1)
+            query = urllib.parse.parse_qs(qs, keep_blank_values=1)
         else:
             query = '' # Unknown content-type
         # some browsers send 2 more bytes...
