@@ -5,11 +5,11 @@
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
 import leo.core.leoGlobals as g
 import fnmatch
-import pickle
 import os
+import pickle
+import sqlite3
 import stat
 import zlib
-import sqlite3
 #@-<< imports >>
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
@@ -598,7 +598,7 @@ class SqlitePickleShare:
         # It would be more thorough to delete everything
         # below the root directory, but it's not necessary.
         self.conn.execute('delete from cachevalues;')
-    #@+node:vitalije.20170716201700.16: *3* get
+    #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key, default=None):
 
         if not self.has_key(key):
@@ -606,7 +606,7 @@ class SqlitePickleShare:
         try:
             val = self[key]
             return val
-        except KeyError:
+        except Exception:  # #1444: Was KeyError.
             return default
     #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
     def has_key(self, key):
