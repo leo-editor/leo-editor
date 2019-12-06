@@ -174,18 +174,14 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20191203120008.1"><vh>other tog tests</vh>
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-</v>
+<v t="ekr.20191203120008.1"><vh>Tog tests</vh>
 <v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
-<v t="ekr.20191121163350.1"><vh>@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191202101340.1"><vh>@test tog.get_joined_tokens</vh></v>
-<v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
-<v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
+<v t="ekr.20191121163350.1"><vh>@@test nodes: tog vs asttokens (fails)</vh></v>
+<v t="ekr.20191125235556.1"><vh>@@test TOG: Leo's core files (long)</vh></v>
 </v>
-<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191206053245.1"><vh>test: test end-of-file handling</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
@@ -269,6 +265,7 @@
 <v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
 <v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
 <v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1674,10 +1671,10 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import imp
     imp.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 #
 # Flags for TR.run_tests.
@@ -1869,7 +1866,7 @@ for file_name in file_names[:1]:
     assert ok
             </t>
 <t tx="ekr.20191121163350.1">import leo.core.leoAst as leoAst
-if 1: ###
+if 0:
     import imp
     imp.reload(leoAst)
 import ast
@@ -1980,10 +1977,10 @@ A unit test that tests TOG on all of Leo's sources.
 """
 import time
 import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import imp
     imp.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 #
 # Flags for TR.run_tests.
@@ -2090,86 +2087,6 @@ print('end')
 'end'
 </t>
 <t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
-<t tx="ekr.20191202081944.1">import leo.core.leoAst as leoAst
-if 1:
-    g.cls()
-    import imp
-    imp.reload(leoAst)
-table = (
-    # start_i, offset
-    # Stand-alone strings.
-        (0, 0, r'""'),
-        (0, 0, r"''"),
-        (0, 0, r'"test \" after"'),
-        (0, 0, r'"test \' after"'),
-        (0, 0, r'"test {a} after"'),
-    # Embedded strings.
-        (2, -2, r'aa"test"bb'),
-)
-for test_i, data in enumerate(table):
-    start_i, offset, s = data
-    x = leoAst.TokenOrderGenerator()
-    data = x.scan_string(s, start_i)
-    i, s2 = data
-    e_i = len(s)+offset
-    assert i == e_i, f"test {test_i}: expected {e_i} got {i}"
-    e_s = s[start_i:e_i]
-    assert e_s == s2, f"test {test_i}: expected {e_s} got {s2}"
-</t>
-<t tx="ekr.20191202095002.1">import leo.core.leoAst as leoAst
-if 1:
-    g.cls()
-    import imp
-    imp.reload(leoAst)
-null_fexprs = 0 ### ?
-null_parts = 0 ### ?
-table = (
-    # (start_i, offset, fstrings, strings, s)
-    # empty f-strings
-        (0, 0, null_fexprs, null_parts, r'f""'),
-        (0, 0, null_fexprs, null_parts, r'fr""'),
-        (0, 0, null_fexprs, null_parts, r"rf''"),
-        (0, 0, null_fexprs, null_parts, r"f''"),
-        (0, 0, null_fexprs, null_parts, r"fr''"),
-        (0, 0, null_fexprs, null_parts, r'rf""'),
-    # f-strings without f-expressions
-        (0, 0, null_fexprs, 1, r'f"test \" after"'),
-        (0, 0, null_fexprs, 1, r'f"test \' after"'),
-    # f-strings with f-expressions.
-        (0, 0, 1, 2, r'f"x{a}y"'),
-        (0, 0, 2, 3, r'f"x{a}y{b}z"'),
-        (0, 0, 2, 2, r'f"x{a}y{b}"'),
-        (0, 0, 2, 2, r'f"{a}y{b}z"'),
-        (0, 0, 2, 1, r'f"{a}{b}z"'),
-        (0, 0, 2, 1, r'f"{a}y{b}"'),
-        (0, 0, 2, 0, r'f"{a}{b}"'),
-)
-for test_i, data in enumerate(table):
-    start_i, offset, e_fexprs, e_parts, s = data
-    x = leoAst.TokenOrderGenerator()
-    i, fexprs, parts = x.scan_fstring(s, start_i)
-    e_i = len(s)+offset
-    # print(f"test {test_i} source: {s!s}")
-    assert i == e_i, f"test {test_i}: expected i: {e_i} got {i}"
-    assert fexprs == e_fexprs, f"test {test_i}: expected {e_fexprs} f-exprs, got {fexprs}"
-    assert parts == e_parts, f"test {test_i}: expected {e_parts} plain parts, got {parts}"
-</t>
-<t tx="ekr.20191202101340.1">import leo.core.leoAst as leoAst
-if 1:
-    g.cls()
-    import imp
-    imp.reload(leoAst)
-table = (
-
-)
-for test_i, data in enumerate(table):
-    ### start_i, offset, e_fexprs, e_parts, s = data
-    x = leoAst.TokenOrderGenerator()
-    #
-    # Create tokens &amp; parse tree from source.
-    
-    # Test.
-    tokens = x.get_joined_tokens(node)</t>
 <t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
 print(r"""DS""")
 </t>
