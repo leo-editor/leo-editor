@@ -1046,11 +1046,10 @@ class TokenOrderGenerator:
             pass
         #
         # Patch the last tokens.
-        if 0: ### Should not be necessary.
-            self.node = tree
-            yield from self.gen_token('newline', '\n')
-            yield from self.gen_token('endmarker', '')
-       
+        # Thise ensures that all tokens are patched.
+        self.node = tree
+        yield from self.gen_token('newline', '\n')
+        yield from self.gen_token('endmarker', '')
     #@+node:ekr.20191126074902.1: *3* tog.dump_one_node (new)
     header_has_been_shown = False
 
@@ -1201,10 +1200,10 @@ class TokenOrderGenerator:
         #           Special case: because of JoinedStr's, syncing a
         #           string may jump over *many* significant tokens.
         old_px = px = self.px + 1
-        if trace: g.trace('\nENTRY', px, kind, val)
+        if trace: g.trace('\nEntry', px, kind, val)
         while px < len(self.tokens):
             token = tokens[px]
-            if trace: g.trace('TOKEN', px, token)
+            if trace: g.trace('Token', px, token)
             if (kind, val) == (token.kind, token.value):
                 if trace: g.trace('   OK', px, token)
                 break  # Success.
@@ -1231,8 +1230,8 @@ class TokenOrderGenerator:
         else:
             # Unrecoverable sync failure.
             if 0:
-                g.trace('\nSYNC FAILED...')
-                g.printObj(tokens[max(0, px-5):], 'TOKENS')
+                g.trace('\nSync failed...')
+                g.printObj(tokens[max(0, px-5):], 'Tokens')
             val = g.truncate(val, 40)
             raise self.error(
                  f"Looking for: {kind}.{val}\n"
@@ -1241,7 +1240,7 @@ class TokenOrderGenerator:
         # Step two: Associate all previous assignable tokens to the ast node.
         while old_px < px:
             token = tokens[old_px]
-            if trace: g.trace('LINK INSIGNIFICANT', old_px, token)
+            if trace: g.trace('Link insignificant', old_px, token)
             old_px += 1
             self.set_links(self.node, token)
         #
@@ -1250,7 +1249,7 @@ class TokenOrderGenerator:
         if self.is_significant_token(token):
             self.set_links(node, token)
         else:
-            if trace: g.trace('NOT SIGNIFICANT', px, token, g.callers())
+            if trace: g.trace('Skip insignificant', px, token, g.callers())
         #
         # Step four. Advance.
         if self.is_significant_token(token):
@@ -1259,7 +1258,12 @@ class TokenOrderGenerator:
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         assert token.node is None, (repr(token), g.callers())
+        trace = True and self.trace_mode
         if self.is_assignable_token(token):
+            if trace:
+                g.trace(
+                    f"node: {node.__class__.__name__!s:16}"
+                    f"token: {token.dump(brief=True)}")
             #
             # Link the token to the ast node.
             token.node = node
@@ -4552,15 +4556,15 @@ class TestRunner:
             'verbose-fail',
         ]
         valid_reports = [
-            'dump_all',
-            'dump_contents',
-            'dump_lines',
-            'dump_raw_tree',
-            'dump_tokens',
-            'dump_tree'
+            'dump-all',
+            'dump-contents',
+            'dump-lines',
+            'dump-raw_tree',
+            'dump-tokens',
+            'dump-tree'
         ]
         for z in valid_reports:
-            assert hasattr(self, z), repr(z)
+            assert hasattr(self, z.replace('-','_')), repr(z)
         aList = [z.lower() for z in user_flags or []]
         self.flags = [z for z in aList if z in valid_flags]
         self.reports = [z for z in aList if z in valid_reports]

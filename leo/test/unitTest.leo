@@ -187,7 +187,7 @@
 </v>
 <v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
-<v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
+<v t="ekr.20191206053245.1"><vh>test: test end-of-file handling</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
 <v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
@@ -207,6 +207,7 @@
 <v t="ekr.20191125151346.1"><vh>ignore: Files...</vh>
 <v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
 <v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
+<v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
 <v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
 <v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
@@ -1682,7 +1683,7 @@ if 1: # Not for production.
 # Flags for TR.run_tests.
 flags = [
     # New flags.
-    # 'all',
+    'all',
     # 'coverage',
     'show-test-kind', # all vs selected.
     # 'dump-sources-first',
@@ -1698,8 +1699,8 @@ flags = [
     # 'dump-raw-tree',
     # 'dump-tokens',
     # 'dump-tree',
-    'summarize',
-    'trace-times',    # Only for'file:' tests.
+    # 'summarize',
+    # 'trace-times',    # Only for'file:' tests.
     # 'trace-tokenizer-tokens',
     # 'use-asttokens',
 ]
@@ -2256,5 +2257,6 @@ except ValueError:
 else:
     print('c')
 </t>
+<t tx="ekr.20191206053245.1"># Only a comment.</t>
 </tnodes>
 </leo_file>
