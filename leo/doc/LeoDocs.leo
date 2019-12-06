@@ -31054,6 +31054,9 @@ In that case a post-pass can easily adjust the links.
 </t>
 <t tx="ekr.20191206062108.1">The notion of token-order tree traversals got this project started.
 
+I am proud of this work. One only needs to compare it with other parse-tree
+tools, including my own, to see how clever and simple this code is.
+
 I want to emphasize the following:
 
 1. The TOG class is a general proof of concept that can be applied to other
@@ -31133,6 +31136,7 @@ tog.advance_if updates tog.if_index.
 
 In effect, the traversal just does the following:
 
+- Uses 'yield from' to traverse the tree, non-recursively.
 - Updates tog.px, tog.string_index and tog.if_index.
 - Insert links between tokens and nodes.
 
@@ -31140,10 +31144,10 @@ That's *all*!  The traversal is spectacularly simple and fast.
 
 The TOG class makes no demands on either python's call stack or python's heap:
 
-- Generators *look like* recursive calls, but aren't.
+- Generators add nothing to python's call stack.
 
-- The TOG generates *no* variable length data, except for tog.node_stack, which
-  is typically quite small.</t>
+- The *only* variable-length data is tog.node_stack. In the worst case it
+  would have only a few tens of thousands of entries</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
