@@ -975,6 +975,7 @@ class TokenOrderGenerator:
 
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
+    n_nodes = 0
         
     trace_mode = False
 
@@ -993,6 +994,9 @@ class TokenOrderGenerator:
         if 0:
             g.trace(node.__class__.__name__)
             g.printObj([z.__class__.__name__ for z in self.node_stack])
+        # Update the stats.
+        self.coverage_set.add(node.__class__.__name__)
+        self.n_nodes += 1
         # Inject the node_index field.
         assert not hasattr(node, 'node_index'), g.callers()
         node.node_index = self.node_index
@@ -1291,7 +1295,7 @@ class TokenOrderGenerator:
         if val not in ',()':
             self.sync_token('op', val)
     #@+node:ekr.20191113063144.11: *3* tog.report_coverage
-    def report_coverage(self, report_missing):
+    def report_coverage(self):
         """Report untested visitors."""
         # import leo.core.leoGlobals as g
 
@@ -1301,13 +1305,22 @@ class TokenOrderGenerator:
         covered = sorted(list(self.coverage_set), key=key)
         visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
         missing = sorted([z for z in visitors if z not in covered], key=key)
-        print('Covered...\n')
-        g.printObj(covered)
-        print('')
-        if report_missing:
+        #
+        # These are not likely ever to be covered.
+        not_covered = ['Interactive', 'Expression', 'FormattedValue']
+        for z in missing:
+            if z in not_covered:
+                missing.remove(z)
+        if 0:
+            print('Covered...\n')
+            g.printObj(covered)
+        if missing:
             print('Missing...\n')
             g.printObj(missing)
-            print('')
+        else:
+            print('All visitors covered')
+        print('')
+            
     #@+node:ekr.20191113081443.1: *3* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -1507,12 +1520,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.elt)
         yield from self.gen_name('for')
         yield from self.gen(node.generators)
-    #@+node:ekr.20191115104619.1: *5* tog.generator
-    def do_generator(self, node):
-
-        # No need to put commas or parentheses.
-        yield from node
-            # *Not* yield from self.gen(node)
     #@+node:ekr.20191113063144.26: *4* tog: Operands
     #@+node:ekr.20191113063144.29: *5* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
@@ -1744,18 +1751,6 @@ class TokenOrderGenerator:
                 yield from self.gen_token('number', conv)
             if spec is not None:
                 yield from self.gen(node.format_spec)
-    #@+node:ekr.20191115105821.1: *5* tog.int
-    def do_int(self, node):
-        
-        # node is an int, not an ast node.
-        # Do *not* call begin/end visitor!
-        assert isinstance(node, int), repr(node)
-        # Assign the int to the parent.
-        try:
-            yield from self.gen_token('num', node)
-        except Exception as e:
-            g.trace(e, g.callers())
-
     #@+node:ekr.20191113063144.41: *5* tog.JoinedStr & helpers
     # JoinedStr(expr* values)
 
@@ -4439,9 +4434,13 @@ class TestRunner:
         #
         # Startup.
         self.fails = []
-        self.make_flags_and_reports(flags)
+        ok = self.make_flags_and_reports(flags)
+        if not ok:
+            print('Aborting...')
+            return
+        flags = self.flags
         self.show_status()
-        if 'all-leo-files' in self.flags:
+        if 'all-leo-files' in flags:
             tests = self.make_leo_tests()
         else:
             tests = self.make_tests(root)
@@ -4451,23 +4450,26 @@ class TestRunner:
         t1 = time.process_time()
         for contents, description in tests:
             # run_one_test catches all exceptions.
-            if 'show-test-description' in self.flags:
+            if 'show-test-description' in flags:
                 print(f"Running {description}...")
             ok = self.run_one_test(contents, description)
             if not ok:
                 self.fails.append(description)
-            if 'fail-fast' in self.flags:
+            if 'fail-fast' in flags:
                 break
         t2 = time.process_time()
+        if 'coverage' in flags:
+            self.show_coverage()
         self.summarize(test_time = t2 - t1)
     #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
     def make_flags_and_reports(self, user_flags):
         """
         Create self.flags and self.reports from flags.
         """
-        valid_flags = (
+        valid_flags = [
             'all',
             'all-leo-files',
+            'coverage',
             'dump-all-after-fail',
             'dump-raw-tree-first', 
             'dump-sources-first',
@@ -4483,10 +4485,24 @@ class TestRunner:
             'trace-times',
             'trace-tokenizer-tokens',
             'verbose-fail',
-        )
+        ]
+        valid_reports = [
+            'dump_all',
+            'dump_contents',
+            'dump_lines',
+            'dump_raw_tree',
+            'dump_tokens',
+            'dump_tree'
+        ]
+        for z in valid_reports:
+            assert hasattr(self, z), repr(z)
         aList = [z.lower() for z in user_flags or []]
         self.flags = [z for z in aList if z in valid_flags]
-        self.reports = [z for z in aList if z not in valid_flags]
+        self.reports = [z for z in aList if z in valid_reports]
+        bad = [z for z in aList if z not in valid_flags + valid_reports]
+        for z in bad:
+            print('Unknown option:', z)
+        return not bad
     #@+node:ekr.20191205172431.1: *4* TR.make_leo_tests
     def make_leo_tests(self):
         """
@@ -4628,6 +4644,10 @@ class TestRunner:
             for report in list(set(bad_reports)):
                 print(f"{tag}: bad report option: {report!r}")
         return True
+    #@+node:ekr.20191122025155.1: *4* TR.show_coverage
+    def show_coverage(self):
+        if self.x:
+            self.x.report_coverage()
     #@+node:ekr.20191205160754.5: *4* TR.show_status
     def show_status(self):
         """Show the preliminary status."""
@@ -4671,10 +4691,6 @@ class TestRunner:
         for i, z in enumerate(g.splitLines(sources)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
-    #@+node:ekr.20191122025155.1: *4* TR.dump_coverage
-    def coverage(self):
-        if self.x:
-            self.x.report_coverage(report_missing=False)
     #@+node:ekr.20191122025306.1: *4* TR.dump_lines
     def dump_lines(self):
         print('\nTOKEN lines...\n')

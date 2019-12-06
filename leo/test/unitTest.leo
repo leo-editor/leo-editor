@@ -185,6 +185,7 @@
 <v t="ekr.20191202081944.1"><vh>@test tog.scan_string</vh></v>
 <v t="ekr.20191202095002.1"><vh>@test tog.scan_fstring</vh></v>
 </v>
+<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh></v>
 <v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
 <v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
@@ -270,7 +271,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191125235556.1"><vh>@test TOG: Leo's core files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1682,7 +1682,8 @@ if 1: # Not for production.
 # Flags for TR.run_tests.
 flags = [
     # New flags.
-    'all',
+    # 'all',
+    'coverage',
     'show-test-kind', # all vs selected.
     # 'dump-sources-first',
     # 'dump-raw-tree-first',
@@ -1988,7 +1989,7 @@ if 1: # Not for production.
 flags = [
     # New flags.
     'all-leo-files',
-    ### 'all',
+    'coverage',
     'show-test-kind', # all vs selected.
     # 'dump-sources-first',
     # 'dump-raw-tree-first',
