@@ -204,7 +204,8 @@
 <v t="ekr.20100801125533.5791"><vh>Output</vh></v>
 </v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20191207060127.1"><vh>@test @clean &amp; shouldPrompt...</vh></v>
+<v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
+<v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
 <v t="ekr.20090225102051.2"><vh>@test @edit</vh>
 <v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
 <v t="ekr.20090225102051.4"><vh>Output</vh></v>
@@ -257,6 +258,7 @@
 <v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
 </v>
 <v t="ekr.20191207060127.1"></v>
+<v t="ekr.20191207064106.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2354,6 +2356,29 @@ assert val is False
 </t>
 <t tx="ekr.20191207060251.3">def eggs():
     pass
+</t>
+<t tx="ekr.20191207064106.1">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+h = '@clean unittest/at-clean-write-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p, h
+#
+# Enable --trace=save
+at = c.atFileCommands
+g.app.debug.append('save')
+# Get the correct file name.
+fn = p.anyAtFileNodeName()
+path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+assert g.os_path_exists(path), path
+#
+# Run the test.
+if 1:
+    g.cls() ###
+    print(f"Running {c.p.h}...\n")
+val = at.precheck(path, p)
+assert val is True
 </t>
 </tnodes>
 </leo_file>
