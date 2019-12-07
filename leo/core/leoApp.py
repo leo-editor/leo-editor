@@ -2938,7 +2938,7 @@ class LoadManager:
             '--session-save',
         )
         trace_m = '''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
-          ipython,keys,plugins,select,shutdown,size,startup,themes'''
+          ipython,keys,plugins,save,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)

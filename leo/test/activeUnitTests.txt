@@ -1402,6 +1402,29 @@ assert not p.isDirty(), p.h # Do not ignore this failure!
 for p2, h2 in table:
     assert p2 and p2.h == h2, (p2 and p2.h, h2)
     assert len(p2.b) > 10
+#@+node:ekr.20191207060127.1: *4* @test @clean & shouldPrompt...
+if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @<file> node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+h = '@clean unittest/at-clean-write-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p, h
+#
+# Enable --trace=save
+at = c.atFileCommands
+g.app.debug.append('save')
+# Get the correct file name.
+fn = p.anyAtFileNodeName()
+path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+assert g.os_path_exists(path), path
+#
+# Run the test.
+if 0:
+    g.cls() ###
+    print(f"Running {c.p.h}...\n")
+val = at.shouldPromptForDangerousWrite(path, p)
+assert val is False
 #@+node:ekr.20090225102051.2: *4* @test @edit
 c.testManager.runAtFileTest(p)
 #@+node:ekr.20090225102051.3: *5* #@edit

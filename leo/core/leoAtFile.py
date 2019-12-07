@@ -1107,6 +1107,8 @@ class AtFile:
                 p.moveToThreadNext()
         if not force:
             files = [z for z in files if z.isDirty()]
+        if 'save' in g.app.debug:
+            g.printObj([z.h for z in files], tag='Files to be saved')
         return files, root
     #@+node:ekr.20190108053115.1: *6* at.internalWriteError
     def internalWriteError(self, p):
@@ -1296,6 +1298,7 @@ class AtFile:
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
+        sentinels will be False for @clean and @nosent nodes.
         """
         at, c = self, self.c
         try:
@@ -1303,6 +1306,7 @@ class AtFile:
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
             if not at.precheck(fileName, root):
                 at.addToOrphanList(root)
+                g.es("not written:", g.shortFileName(fileName)) # #1451.
                 return
             at.openOutputStream()
             at.putFile(root, sentinels=sentinels)
@@ -3030,10 +3034,13 @@ class AtFile:
         Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
+        trace = 'save' in g.app.debug
+        sfn = g.shortFileName(fn)
         c = self.c
         efc = g.app.externalFilesController
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
+            if trace: g.trace('Return False: does not exist:', sfn)
             return False
         # #1347: Prompt if the external file is newer.
         if efc:
@@ -3043,6 +3050,7 @@ class AtFile:
                 # so do *not* check its timestamp.
                 pass
             elif efc.has_changed(c, fn):
+                if trace: g.trace('Return True: changed:', sfn)
                 return True
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
@@ -3050,9 +3058,12 @@ class AtFile:
             for k in d:
                 if os.path.samefile(k, fn) and p.h in d.get(k, set()):
                     d[fn] = d[k]
+                    if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
             aSet = d.get(fn, set())
+            if trace: g.trace(f"Return {p.h not in aSet()}: p.h not in aSet(): {sfn}")
             return p.h not in aSet
+        if trace: g.trace('Return True: never read:', sfn)
         return True
             # The file was never read.
     #@+node:ekr.20041005105605.20: *4* at.warnOnReadOnlyFile

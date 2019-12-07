@@ -147,6 +147,10 @@
 <v t="ekr.20190113123853.2"><vh>spam</vh></v>
 <v t="ekr.20190113123853.3"><vh>eggs</vh></v>
 </v>
+<v t="ekr.20191207060251.1"><vh>@clean unittest/at-clean-write-test.py</vh>
+<v t="ekr.20191207060251.2"><vh>spam</vh></v>
+<v t="ekr.20191207060251.3"><vh>eggs</vh></v>
+</v>
 <v t="ekr.20160403123754.1"><vh>@file unittest/at-file-line-number-test.c</vh></v>
 <v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file unittest/tex-error.tex</vh></v>
@@ -174,101 +178,85 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20160318094003.1"><vh>leoAst</vh>
-<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
-<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-<v t="ekr.20191203120008.1"><vh>Tog tests</vh>
-<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
-<v t="ekr.20191121163350.1"><vh>@@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191125235556.1"><vh>@@test TOG: Leo's core files (long)</vh></v>
+<v t="ekr.20191207060251.1"></v>
+<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
+<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
+<v t="ekr.20041021065844"><vh>@test @asis</vh>
+<v t="ekr.20041021065903"><vh>#@asis</vh>
+<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
 </v>
-<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
-<v t="ekr.20191206053245.1"><vh>test: test end-of-file handling</vh></v>
-<v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
-<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
-<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
-<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
+<v t="ekr.20041021065844.1"><vh>Output</vh></v>
 </v>
-<v t="ekr.20191120075520.1"><vh>ignore: Expressions &amp; operators...</vh>
-<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
-<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
-<v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
-<v t="ekr.20191203125635.1"><vh>test: DictComp</vh></v>
-<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
-<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
-<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
-<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
-<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
+<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
+<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
+<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
+<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
+<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
 </v>
-<v t="ekr.20191125151346.1"><vh>ignore: Files...</vh>
-<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
-<v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
-<v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
-<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
-<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
-<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
-<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
 </v>
-<v t="ekr.20191122210522.1"><vh>ignore: If...</vh>
-<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
-<v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
-<v t="ekr.20191123210801.1"><vh>test: if + unary op</vh></v>
-<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
-<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
-<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
-<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
-<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
-<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
-<v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
+<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
+<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
+<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
+<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
 </v>
-<v t="ekr.20191124040736.1"><vh>ignore: Statements...</vh>
-<v t="ekr.20191204025303.1"><vh>test: Call</vh></v>
-<v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
-<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
-<v t="ekr.20191205090659.1"><vh>test: TryExceptElse</vh></v>
-<v t="ekr.20191203125053.1"><vh>test: With</vh></v>
-<v t="ekr.20191205071827.1"><vh>test: YieldFrom</vh></v>
+<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
 </v>
-<v t="ekr.20191205090312.1"><vh>ignore: Strings...</vh>
-<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
-<v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
-<v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
-<v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
-<v t="ekr.20191204154344.1"><vh>test: bytes bs-x</vh></v>
-<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
-<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
-<v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
-<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
-<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
-<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
-<v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
-<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
-<v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
+<v t="ekr.20191207060127.1"><vh>@test @clean &amp; shouldPrompt...</vh></v>
+<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
+<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
+<v t="ekr.20090225102051.4"><vh>Output</vh></v>
 </v>
-<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
-<v t="ekr.20191204164129.1"><vh>test: complex Call</vh></v>
-<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
-<v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
-<v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
-<v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
-<v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
-<v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
-<v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
-<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
-<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
-<v t="ekr.20191126002258.1"><vh>test: f-string summary</vh>
-<v t="ekr.20191129035530.1"><vh>more</vh></v>
+<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
+<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
+<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
+<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
+<v t="ekr.20170410084645.1"><vh>Old-Output</vh></v>
 </v>
-<v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
-<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
-<v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
-<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
-<v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
-<v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
+<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
+<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
+<v t="ekr.20040707141957.14"><vh>Output</vh></v>
+</v>
+<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
+<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
+<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
+<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
+<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
+<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
+<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
+<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
+<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
+<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
+<v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
+<v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
+<v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
+<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
+<v t="ekr.20060602195313.2"><vh>root</vh>
+<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
+<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
+<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
+<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
+<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
+<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
+<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
+<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
 </v>
+<v t="ekr.20191207060127.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -292,8 +280,180 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040707141957.12"># Doesn't work when run externally because the copy operation changes the gnx.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20040707141957.13">Line 1
+
+@last last line 1: no newline
+</t>
+<t tx="ekr.20040707141957.14">#@+leo-ver=5-thin
+#@+node:ekr.20040707141957.13: * #@thin
+Line 1
+
+#@@last
+#@-leo
+last line 1: no newline
+</t>
+<t tx="ekr.20041021065844">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20041021065844.1"># Test that @nosent generates no sentinels
+
+&lt;&lt; section &gt;&gt;
+
+@others
+
+last line
+section line 1
+unnamed node line 1
+</t>
+<t tx="ekr.20041021065903"># Test that @nosent generates no sentinels
+
+&lt;&lt; section &gt;&gt;
+
+@others
+
+last line
+</t>
+<t tx="ekr.20041021065903.1">section line 1
+</t>
+<t tx="ekr.20041021065903.2">unnamed node line 1
+</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
+<t tx="ekr.20050105093136">import os
+
+at = c.atFileCommands
+exists = g.os_path_exists
+
+path = g.os_path_join(g.app.testDir,'xyzzy')
+if exists(path):
+    os.remove(path)
+
+assert not exists(path)
+assert not at.remove(path,verbose=False)
+
+f = open(path,'w')
+f.write('test')
+f.close()
+
+assert exists(path)
+assert at.remove(path)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105094311">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+encoding = 'utf-8'
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+try:
+    # Create both paths (different contents)
+    table = (at.targetFileName,)
+    at.outputContents = contents = g.toUnicode('test contents')
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        s = 'test %s' % fn
+        f.write(s)
+        f.close()
+        assert exists(fn),fn
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceFile(contents, encoding, fn, at.root)
+    assert val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName), 'oops, output file exists'
+    assert exists(at.targetFileName), 'oops, target file does not exist'
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,s
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105095743">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+encoding = 'utf-8'
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+# Create both paths (identical contents)
+contents = g.toUnicode('test contents')
+try:
+    table = (at.targetFileName,)
+    at.outputContents = contents
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        f.write(contents)
+        f.close()
+        assert exists(fn)
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    assert not at.replaceFile(contents, encoding, fn, at.root)
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName)
+    assert exists(at.targetFileName)
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,contents
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105100227">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+encoding = 'utf-8'
+exists = g.os_path_exists
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
+# Remove both files.
+for fn in (at.outputFileName,at.targetFileName):
+    if fn and exists(fn):
+        os.remove(fn)
+try:
+    # Create the output file or contents.
+    at.outputContents = contents = g.toUnicode('test output')
+    at.shortFileName = at.targetFileName
+    val = at.replaceFile(contents, encoding, fn, at.root)
+    assert not val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName),at.outputFileName
+    assert exists(at.targetFileName),at.targetFileName
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,'%s len(%s)' % (fn,len(s))
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050112095306.1"># Node 1 should be the first node.
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -698,6 +858,64 @@ elif sys.platform== 'darwin':
     assert(darwin)
 
 </t>
+<t tx="ekr.20060602195313">import re
+at = c.atFileCommands
+expected = '''\
+/*@+leo-ver=5-thin*/
+/*@+node:GNX: * root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
+/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+&lt; &lt; Start LRR &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
+/*@-&lt; &lt; Start LRR &gt; &gt;*/
+/*@-leo*/
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
+child = p.firstChild()
+result = at.atFileToString(child)
+result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+if result != expected: # Show unexpected mismatches.
+    g.printObj(result, tag='result')
+    g.printObj(expected, tag='expected')
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+elif 0:
+    g.printObj(result, tag='result')
+
+assert result == expected
+</t>
+<t tx="ekr.20060602195313.2">@language c
+#ifdef COMMENT
+@comment /* */ 
+#endif
+@tabwidth 4
+@lineending crlf
+
+@others
+
+&lt;&lt; Get LRR Task &gt;&gt;
+&lt;&lt; Start LRR &gt;&gt;
+</t>
+<t tx="ekr.20060602195313.3"></t>
+<t tx="ekr.20060602195313.4"></t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -852,6 +1070,19 @@ else:
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
+<t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -877,9 +1108,193 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113145804.7">at=c.atFileCommands # self is a dummy argument.
+table = (
+    # start, end, new_df, isThin, encoding
+    # pre 4.2 formats...
+    ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
+    ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
+    # 4.2 formats...
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
+    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
+    ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
+)
+try:
+    for start, end, new_df, isThin, encoding, s in table:
+        valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
+        # g.trace('start',start,'end',repr(end),'len(s)',len(s))
+        assert valid, s
+        assert new_df == new_df2, s
+        assert isThin == isThin2, s
+        assert end == end2, (end, end2, s)
+        assert at.encoding == encoding, s
+finally:
+    at.encoding = 'utf-8'
+</t>
+<t tx="ekr.20071113145804.8">at=c.atFileCommands
+table = [
+    ('@=',0,at.noDirective),
+    ('@',0,at.atDirective),
+    ('@ ',0,at.atDirective),
+    ('@\t',0,at.atDirective),
+    ('@\n',0,at.atDirective),
+    ('@all',0,at.allDirective),
+    ('    @all',4,at.allDirective),
+    ("@c",0,at.cDirective),
+    ("@code",0,at.codeDirective),
+    ("@doc",0,at.docDirective),
+    ("@end_raw",0,at.endRawDirective),
+    ('@others',0,at.othersDirective),
+    ('    @others',4,at.othersDirective),
+    ("@raw",0,at.rawDirective),
+]
+for name in g.globalDirectiveList:
+    # Note: entries in g.globalDirectiveList do not start with '@'
+    if name not in ('all','c','code','doc','end_raw','others','raw',):
+        table.append(('@' + name,0,at.miscDirective),)
+
+for s,i,expected in table:
+    result = at.directiveKind4(s,i)
+    assert result == expected, '%d %s result: %s expected: %s' % (
+        i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+</t>
+<t tx="ekr.20071113201736"># Print does not work: it is redirected.
+g.pr('\nEnd of leoAtFile tests')
+</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20090225102051.2">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20090225102051.3">Line 1
+
+Last line: no newline
+</t>
+<t tx="ekr.20090225102051.4">Line 1
+
+Last line: no newline
+</t>
+<t tx="ekr.20090529115704.4564">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+try:
+    fn = 'unittest/read_test.py'
+    child.setHeadString('@shadow %s' % fn)
+    at.writeOneAtShadowNode(child, testing=True)
+    at.readOneAtShadowNode(fn,child)
+finally:
+    child.setHeadString('@@shadow %s' % fn)
+    c.setChanged(changed)
+</t>
+<t tx="ekr.20090529115704.4565">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20090529115704.4567">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    child.setHeadString('@shadow unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
+    at.writeOneAtShadowNode(child, testing=True)
+    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+        repr(at.startSentinelComment))
+    assert at.endSentinelComment == '','endSentinelComment: %s' % (
+        repr(at.endSentinelComment))
+    if 0:
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child, testing=False)
+    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
+finally:
+
+    child.setHeadString('@@shadow unittest/test_1.py')
+    c.setChanged(changed)
+    # c.redraw_now()
+</t>
+<t tx="ekr.20090529115704.4568"># body of @shadow test node
+# The last line.
+</t>
+<t tx="ekr.20090627070131.4971">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20090627070131.4975">@language python
+@tabwidth -4
+@others
+#end
+</t>
+<t tx="ekr.20090627070131.4976">def spam(cheese):
+
+    print(cheese)
+</t>
+<t tx="ekr.20090627070131.4977">def cheese():
+
+    pass
+</t>
+<t tx="ekr.20090627070131.4978">def spam(cheese):
+
+    print(cheese)
+def cheese():
+
+    pass
+#end
+</t>
+<t tx="ekr.20090704085350.5044">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+h = '@asis unittest/at-asis-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p, h
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+assert not p.isDirty(),p.h # Do not ignore this failure!
+for p2,h2 in table:
+    assert p2.h == h2
+    assert len(p2.b) &gt; 10
+</t>
+<t tx="ekr.20090704085350.5046">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+h = '@thin unittest/at-thin-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+assert not p.isDirty(),p.h # Do not ignore this failure!
+for p2,h2 in table:
+    assert p2.h == h2
+    assert len(p2.b) &gt; 10
+</t>
+<t tx="ekr.20090704085350.5052">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+h = '@auto unittest/at-auto-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p, h
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+assert not p.isDirty(), p.h # Do not ignore this failure!
+for p2, h2 in table:
+    assert p2 and p2.h == h2, (p2 and p2.h, h2)
+    assert len(p2.b) &gt; 10
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1088,6 +1503,33 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131180007.5454">at = c.atFileCommands
+
+at.setPathUa(p,'abc')
+d = p.v.tempAttributes
+d2 = d.get('read-path')
+val1 = d2.get('path')
+val2 = at.getPathUa(p)
+
+table = (
+    ('d2.get',val1),
+    ('at.getPathUa',val2),
+)
+for kind,val in table:
+    assert val == 'abc','kind %s expected %s got %s' % (
+        kind,'abc',val)
+</t>
+<t tx="ekr.20100131180007.5458">at = c.atFileCommands
+d = at.scanAllDirectives(p)
+</t>
+<t tx="ekr.20100131180007.5462"># Here is something that should generate a verbtim sentinel::
+
+#@+leo-encoding=iso-8859-1.
+
+# The length of this node should remain constant.
+
+assert len(p.b) == 175,len(p.b)
+</t>
 <t tx="ekr.20100204165850.5373">if g.app.inBridge:
     self.skipTest('in bridge')
 k = c.k
@@ -1130,6 +1572,63 @@ if not result:
     self.skipTest('no settings')
 assert result.strip().lower()=='f1', repr(result)
 </t>
+<t tx="ekr.20100225094004.5385">s1 = '''
+#@+leo-ver=4
+#@+node:#@file
+Line 1
+#@-node:#@file
+#@-leo
+'''
+
+s2 = '''
+#@+leo-ver=4-thin
+#@+node:ekr.20040707141957.13:#@thin
+#@-node:ekr.20040707141957.13:#@thin
+#@-leo
+'''
+
+at = c.atFileCommands
+assert at.isFileLike(s1),'fail1'
+assert not at.isFileLike(s2),'fail2'
+</t>
+<t tx="ekr.20100731163237.5778">@language python
+
+if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+#
+# html uses block comments.  This is an important test.
+h = '@thin unittest/at-thin-html-test.html'
+p = g.findNodeAnywhere(c,h)
+assert p
+s = (
+    '@language html\n\n&lt;&lt; ' +
+    'a section reference &gt;&gt;\n\n' +
+    'after.\n')
+assert p.b == s,'body failure'
+</t>
+<t tx="ekr.20100801125533.5787">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20100801125533.5788">@language python
+@tabwidth -4
+@others
+#end
+</t>
+<t tx="ekr.20100801125533.5789">def spam(cheese):
+
+    print(cheese)
+</t>
+<t tx="ekr.20100801125533.5790">def cheese():
+
+    pass
+</t>
+<t tx="ekr.20100801125533.5791">def spam(cheese):
+
+    print(cheese)
+def cheese():
+
+    pass
+#end
+</t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
 
@@ -1140,6 +1639,49 @@ assert result.strip().lower()=='f1', repr(result)
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
+</t>
+<t tx="ekr.20110524120515.3489">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20110524120515.3490"># before
+
+@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+@end_raw
+
+#after
+</t>
+<t tx="ekr.20110524120515.3491">#@+leo-ver=5-thin
+#@+node:ekr.20110524120515.3490: * #@file
+# before
+
+#@@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+#@@end_raw
+
+#after
+#@-leo
+</t>
+<t tx="ekr.20111021115306.3696">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
+assert(p)
+s1 = r"""\begin{document}
+&lt;&lt; Document """
+s2 = r"""&gt;&gt;
+% hidden comment
+\end{document}
+"""
+s = s1 + s2
+s = g.adjustTripleString(s,c.tab_width)
+assert p.b == s, (repr(p.b), repr(s))
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
@@ -1245,6 +1787,20 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
+<t tx="ekr.20120228174052.3929"># node 1 text A.
+</t>
+<t tx="ekr.20130912092638.4151">import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('external test')
+h = '@file unittest/utf-16-test.txt'
+p = g.findNodeAnywhere(c,h)
+s = 'Test of utf-16.'
+assert p,h
+# It's hard to test the utf-16 text directly.
+assert p.b
+assert p.b.find(s) &gt; -1
+assert len(p.b)==66,len(p.b)
+</t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
 
@@ -1548,42 +2104,6 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20160318094003.1"></t>
-<t tx="ekr.20160318094009.1">import leo.core.leoAst as leoAst
-import leo.external.make_stub_files as msf
-import leo.external.py2cs as py2cs
-import ast, tokenize
-path = g.os_path_finalize_join(g.app.loadDir,
-    '..', 'test', 'unittest', 'python3_test.py')
-assert g.os_path_exists(path), path
-fn = g.shortFileName(path)
-source = open(path, 'r').read()
-node = ast.parse(source, filename=fn, mode='exec')
-src = open(path, 'r').read()
-readlines = g.ReadLinesClass(src).next
-tokens = list(tokenize.generate_tokens(readlines))
-leoAst.AstFullTraverser().visit(node)
-s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-assert s
-s = leoAst.AstFormatter().format(node,level=0)
-assert s
-s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
-assert s
-controller = msf.StandAloneMakeStubFile()
-msf.StubTraverser(controller).visit(node)
-</t>
-<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
-
-import leo.core.leoAst as leoAst
-leoAst.unit_test(raise_on_fail=True)
-
-import leo.external.make_stub_files as msf
-msf.unit_test(raise_on_fail=True)
-
-import leo.external.py2cs as py2cs
-py2cs.unit_test(raise_on_fail=True)
-
-</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -1606,6 +2126,142 @@ if p.parent() and p.parent().h.startswith('@test'):
 else:
     print('select a child of an @test node node')</t>
 <t tx="ekr.20161129030232.1"></t>
+<t tx="ekr.20170123035753.1">at = c.atFileCommands
+table = (
+    (at.othersDirective, '@others'),
+    (at.othersDirective, '@others\n'),
+    (at.othersDirective, '    @others'),
+    (at.miscDirective,   '@tabwidth -4'),
+    (at.miscDirective,   '@tabwidth -4\n'),
+    (at.miscDirective,   '@encoding'),
+    (at.noDirective,     '@encoding.setter'),
+    (at.noDirective,     '@encoding("abc")'),
+    (at.noDirective,     'encoding = "abc"'),
+    (at.noDirective,     '@directive'), # A crucial new test.
+)
+for expected, s in table:
+    result = at.directiveKind4(s, 0)
+    assert expected == result, (expected, result, repr(s))
+</t>
+<t tx="ekr.20170408233251.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (
+    %s and 
+    %s &gt; 3
+):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 1
+if (
+    AT+&lt; &lt;a&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+    a
+    AT-&lt; &lt;a&gt; &gt;
+    ATafterref
+ and 
+    AT+&lt; &lt;b&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+    b
+    AT-&lt; &lt;b&gt; &gt;
+    ATafterref
+ &gt; 3
+):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
+result = at.stringToString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170408234524.1">a
+</t>
+<t tx="ekr.20170408234531.1">b
+</t>
+<t tx="ekr.20170409003052.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (%s and %s &gt; 3):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 2
+if (
+AT+&lt; &lt;a&gt; &gt;
+AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+a
+AT-&lt; &lt;a&gt; &gt;
+ATafterref
+ and 
+AT+&lt; &lt;b&gt; &gt;
+AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+b
+AT-&lt; &lt;b&gt; &gt;
+ATafterref
+ &gt; 3):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+    # Recreate expected string.
+result = at.stringToString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    # assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170409003052.2">a
+</t>
+<t tx="ekr.20170409003052.3">b
+</t>
+<t tx="ekr.20170410084645.1">#@+leo-ver=5
+#@+node:#@file
+# before
+
+#@@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+#@@end_raw
+
+#after
+#@-leo
+</t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
 html
@@ -1666,514 +2322,38 @@ nodeB
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
 <t tx="ekr.20190923014948.1"></t>
-<t tx="ekr.20191118154059.1">"""
-The master unit test for leoAst.TokenOrderGenerator and related classes.
-"""
-import time
-import leo.core.leoAst as leoAst
-if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
-if 0: # Not for production.
-    g.cls()
+<t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+h = '@clean unittest/at-clean-write-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p, h
 #
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    'all',
-    # 'coverage',
-    'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
-
-    # 'dump-tokens-after-fail',
-    # 'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    # 'summarize',
-    # 'trace-times',    # Only for'file:' tests.
-    # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
-]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
-</t>
-<t tx="ekr.20191118155609.1"></t>
-<t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
-print('done')
-</t>
-<t tx="ekr.20191118155612.1">open(os.devnull, "w")
-</t>
-<t tx="ekr.20191118155612.2">a = 1 ; b = 2
-print('a') ; print('b')
-</t>
-<t tx="ekr.20191118160305.1">print('c');
-print('d')
-</t>
-<t tx="ekr.20191119133927.1">class TestClass1:
-    pass
-    
-def decorator():
-    pass
-    
-@decorator
-class TestClass2:
-    pass
-    
-@decorator
-class TestClass(base1, base2):
-    pass
-</t>
-<t tx="ekr.20191119142414.1">def run(fileName=None, pymacs=None, *args, **keywords):
-    pass
-</t>
-<t tx="ekr.20191119203945.1"># line 856 </t>
-<t tx="ekr.20191119210429.1">print(-(2))</t>
-<t tx="ekr.20191119211714.1">if a and not b and c:
-    pass
-</t>
-<t tx="ekr.20191119213126.1">for i, j in b:
-    pass
-</t>
-<t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])
-</t>
-<t tx="ekr.20191120064442.1">if (a):
-    print('a1')
-    print('a2')
-elif b:
-    print('b1')
-    print('b2')
-else:
-    print('c1')
-    print('c2')
-</t>
-<t tx="ekr.20191120074811.1"></t>
-<t tx="ekr.20191120075520.1"></t>
-<t tx="ekr.20191120132531.1">if 1:
-    print('a')
-else:
-    print('b')</t>
-<t tx="ekr.20191120163559.1">try:
-    print('a1')
-    print('a2')
-except ImportError:
-    print('b1')
-    print('b2')
-except SyntaxError:
-    print('c1')
-    print('c2')
-finally:
-    print('d1')
-    print('d2')
-</t>
-<t tx="ekr.20191120164539.1">if a:
-    if b:
-        print('b')
-else:
-    if d:
-        print('d')
-</t>
-<t tx="ekr.20191120171921.1">if 1:
-    print('a')
-elif 2:
-    print('b')
-elif 3:
-    print('c')
-    print('d')
-print('-')
-if 1:
-    print('e')
-elif 2:
-    print('f')
-    print('g')
-
-
-</t>
-<t tx="ekr.20191121063148.1">import leo.core.leoAst as leoAst
-if 1: ###
-    import imp
-    imp.reload(leoAst)
-import asttokens
-import glob
-import os
-import time
-import token as tm
-# Calculate files
-core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
-assert os.path.exists(core_directory), core_directory
-file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-for file_name in file_names[:1]:
-    path = g.os_path_finalize_join(core_directory, file_name)
-    assert os.path.exists(path), path
-    with open(path, 'r') as f:
-        contents = f.read()
-    # Setup asttokens data.
-    t1 = time.process_time()
-    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
-    ast_tree = atok.tree
-    ast_tokens = atok._tokens
-    # Setup TOG data.
-    t2 = time.process_time()
-    x = leoAst.TokenOrderGenerator() # Use the base class.
-    tog_tokens = x.make_tokens(contents)
-    tog_tree = leoAst.parse_ast(contents)
-    # Compare tokens
-    t3 = time.process_time()
-    def ast_key(t):
-        kind = tm.tok_name[t.type].lower()
-        return f"{kind}:{t.string}"
-
-    def token_filter(t):
-        return t.kind not in ('encoding', 'ws')
-    
-    ast_list = [ast_key(z) for z in ast_tokens]
-    tog_compare_list = list(filter(token_filter, tog_tokens))
-    tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
-    # Compare.
-    i = leoAst.compare_lists(ast_list, tog_list)
-    t4 = time.process_time()
-    ok = i is None
-    if not ok:
-        print('Token mismatch at', i)
-        print('ast', repr(ast_list[i]))
-        print('tog', repr(tog_compare_list[i]))
-    # Print tokens.
-    if 0:
-        import token as tm
-        print('asttokens.tokens...')
-        for z in ast_tokens[:10]:
-            kind = tm.tok_name[z.type].lower()
-            print(f"{z.index:4} {kind:&gt;12} {z.string!r}")
-        print('tog.tokens...')
-        for z in tog_tokens[:10]:
-            print(f"{z.index:4} {z.kind:&gt;12} {z.value!r}")
-    # Print summary.
-    if not ok:
-        print(
-            f"{g.shortFileName(file_name)}:\n"
-            f"ast_tokens: {len(ast_tokens):&gt;5} "
-            f"{t2-t1:4.2f} sec.\n"
-            f"tog.tokens: {len(tog_tokens):&gt;5} "
-            f"{t3-t2:4.2f} sec.\n"
-            f"compare tokens: {t4-t3:4.2f}")
-    assert ok
-            </t>
-<t tx="ekr.20191121163350.1">import leo.core.leoAst as leoAst
-if 0:
-    import imp
-    imp.reload(leoAst)
-import ast
-import asttokens
-import glob
-import os
-import time
-if 0:
-    file_names = ['contents']
-    contents = '''
-g.es_print(f"removing callback: {callback}")
-'''
-else:
-    core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
-    assert os.path.exists(core_directory), core_directory
-    file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-
-for file_name in file_names[:1]:
-    if file_name == 'contents':
-        pass
-    else:
-        path = g.os_path_finalize_join(core_directory, file_name)
-        assert os.path.exists(path), path
-        with open(path, 'r') as f:
-            contents = f.read()
-    # Setup asttokens data.
-    t1 = time.process_time()
-    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
-    ast_tree = atok.tree
-    ast_nodes = list(asttokens.util.walk(ast_tree))
-    # Compute tog nodes.
-    t2 = time.process_time()
-    x = leoAst.TokenOrderNodeGenerator()
-    tog_tree = leoAst.parse_ast(contents)
-    tog_nodes = list(x.generate_nodes(tog_tree))
-    # Filter the nodes.
-    t3 = time.process_time()
-    ast_nodes2 = [z.__class__.__name__ for z in ast_nodes
-        if not isinstance(z, (ast.alias, int, bool, str))]
-    tog_nodes2 = [z.__class__.__name__ for z in tog_nodes]
-    t4 = time.process_time()
-    print('Comparing trees in', g.shortFileName(file_name), '...')
-    print('len(ast):', len(ast_nodes2), 'len(tog)', len(tog_nodes2))
-    ### g.printObj([z.__class__.__name__ for z in tog_nodes[:10]])
-    i = leoAst.compare_lists(ast_nodes2, tog_nodes2)
-    ok = i is None
-    if ok:
-        print('Tree match!', file_name)
-    else:
-        print('Tree mismatch at', i)
-        # limit = min(len(ast_nodes2), len(tog_nodes2))
-        for j in range(i-5, i+5):
-            if j &gt;= 0:
-                print('ast', j, ast_nodes2[j-1:j][0])
-                print('tog', j, tog_nodes2[j-1:j][0])
-                print('')
-        print('Tree mismatch at', i)
-    # Print tokens.
-    if 1:
-        print('')
-        print(
-            f"file: {g.shortFileName(file_name)}:\n"
-            f"ast_nodes: {len(ast_nodes):&gt;5} "
-            f"{t2-t1:5.2f} sec.\n"
-            f"tog.nodes: {len(tog_nodes):&gt;5} "
-            f"{t3-t2:5.2f} sec.\n"
-            f"compare nodes: {t4-t3:4.2f}")
-    assert ok</t>
-<t tx="ekr.20191122153258.1">run(a=None, b=str)</t>
-<t tx="ekr.20191122203522.1">"""ds 1"""
-class TestClass:
-    """ds 2"""
-    def long_name(a, b=2):
-        """ds 3"""
-        print('done')
-</t>
-<t tx="ekr.20191122210035.1">if 1:
-    print('a')
-else:
-    if 2:
-        print('b')
-</t>
-<t tx="ekr.20191122210522.1"></t>
-<t tx="ekr.20191122213610.1">if 1:
-    pass
-elif 2:
-    pass
-    pass
-</t>
-<t tx="ekr.20191123203957.1"># line 1604.</t>
-<t tx="ekr.20191123210801.1">if -(2):
-    pass
-</t>
-<t tx="ekr.20191124040736.1"></t>
-<t tx="ekr.20191125151346.1"></t>
-<t tx="ekr.20191125161333.1">if 1:
-    a = 'class' if cond else 'def'
-    # find_pattern = prefix + ' ' + word
-    print('1')
-else:
-    print('2')
-</t>
-<t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")</t>
-<t tx="ekr.20191125235415.1">print('a' 'b')
-print('c')</t>
-<t tx="ekr.20191125235556.1">"""
-A unit test that tests TOG on all of Leo's sources.
-"""
-import time
-import leo.core.leoAst as leoAst
-if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
-if 0: # Not for production.
-    g.cls()
+# Enable --trace=save
+at = c.atFileCommands
+g.app.debug.append('save')
+# Get the correct file name.
+fn = p.anyAtFileNodeName()
+path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+assert g.os_path_exists(path), path
 #
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    'all-leo-files',
-    'coverage',
-    'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
-
-    # 'dump-tokens-after-fail',
-    # 'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    'summarize',
-    # 'trace-times',    # Only for'file:' tests.
-    # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
-]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
+# Run the test.
+if 0:
+    g.cls() ###
+    print(f"Running {c.p.h}...\n")
+val = at.shouldPromptForDangerousWrite(path, p)
+assert val is False
 </t>
-<t tx="ekr.20191126002258.1">print(f'x3{e3+1}y3' f'x4{e4+2}y4')
-print('done')</t>
-<t tx="ekr.20191126084046.1"></t>
-<t tx="ekr.20191126143046.1">self.s = ''
-self.i = 0
+<t tx="ekr.20191207060251.1">@language python
+@tabwidth -4
+@others
 </t>
-<t tx="ekr.20191127134236.1"></t>
-<t tx="ekr.20191127134726.1"># leoFind.py: line 861
-one(f"{'B'}" ": ")
-</t>
-<t tx="ekr.20191127172440.1">print("a\"b")</t>
-<t tx="ekr.20191128141922.1">print(f"test {a}={2}")
-print('done')</t>
-<t tx="ekr.20191129033147.1">print(f'{7.1}' 'p7.2')
-print('end')
-</t>
-<t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
-print(f'x2{e2}y2', f'f2')
-print(f'x3{e3}y3', f'x4{e4}y4')
-print('end')</t>
-<t tx="ekr.20191129033359.1">print(f'x1{e1}y1{e2}z1', 'p1')
-print(f'x2{e3}y2{e3}z2', f'f2')
-print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
-print('end')</t>
-<t tx="ekr.20191129035530.1"># Single f-strings.
-# 'p1' ;
-# f'f1' ;
-# f'x1{e1}y1' ;
-# f'x2{e2+1}y2{e2+2}z2' ;
-
-# Concatentated strings...
-# 'p2', 'p3' ;
-# f'f2' 'f3' ;
-
-# f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;</t>
-<t tx="ekr.20191129042702.1">'p1' ;
-f'f1' ;
-'done' ;</t>
-<t tx="ekr.20191201062631.1">f1(a='\b', b='\n', t='\t')
-f2(f='\f', r='\r', v='\v')
-f3(bs='\\')
-</t>
-<t tx="ekr.20191201064058.1">r1(a=r'\b', b=r'\n', t=r'\t')
-r2(f=r'\f', r=r'\r', v=r'\v')
-r3(bs=r'\\')</t>
-<t tx="ekr.20191201064443.1"># leoFind.py line 856
-
-a = f"{'a' if x else 'b'}"
-f()
-
-# Pass
-# print(f"{'a' if x else 'b'}")</t>
-<t tx="ekr.20191201065409.1">print('hello\
-world')</t>
-<t tx="ekr.20191201072043.1">d = {
-    'a' if x else 'b': True,
-    }
-f()
-</t>
-<t tx="ekr.20191201083823.1">func(
-    "Isearch"
-    f"{' Backward' if True else ''}"
-)
-print('done')</t>
-<t tx="ekr.20191201124815.1">print(f'{7.1}')
-print('end')
-</t>
-<t tx="ekr.20191201131734.1">print('p1' f'{f2}')
-'end'</t>
-<t tx="ekr.20191201134842.1">print(f'{f1}' f'{f2}')
-'end'
-</t>
-<t tx="ekr.20191201135548.1">print('s1', f'{f2}' f'f3' f'{f4}' 's5')
-'end'
-</t>
-<t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")</t>
-<t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
-print(r"""DS""")
-</t>
-<t tx="ekr.20191203111346.1"># leoGlobals.py line 806.
-print('"')</t>
-<t tx="ekr.20191203120008.1"></t>
-<t tx="ekr.20191203120043.1"># Line 1604, leoGlobals.py
-def spam():
-    global gg
-    print('')
-</t>
-<t tx="ekr.20191203121918.1"># leoGlobals.py.
-
-class SherlockTracer:
-    """before\\after"""
-</t>
-<t tx="ekr.20191203125053.1"># leoGlobals.py, line 1785.
-
-with open(fn) as f:
+<t tx="ekr.20191207060251.2">def spam():
     pass
-
 </t>
-<t tx="ekr.20191203125635.1"># leoGlobals.py, line 3028.
-
-d2 = {val: key for key, val in d.iteritems()}</t>
-<t tx="ekr.20191203155845.1"># line 93.</t>
-<t tx="ekr.20191203160056.1"># Line 93, leoTips.py
-unseen = [i for i in range(5) if i not in seen]
-for issue in data:
-    for a in aList:
-        print('a')
-    else:
-        print('b')
-if b:
-    print('c')
+<t tx="ekr.20191207060251.3">def eggs():
+    pass
 </t>
-<t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
-print("\x7e" "\o777") # tilde.
-print('done')
-</t>
-<t tx="ekr.20191204025303.1">f1(a,b=2)
-f2(1 + 2)
-f3(arg, *args, **kwargs)
-f4(a='a', *args, **kwargs)
-func(a, b, one='one', two='two', *args, **kwargs)
-</t>
-<t tx="ekr.20191204150947.1"># Line 7709, leoGlobals.py
-
-fr"""{kinds}://[^\s'"]+[\w=/]"""
-</t>
-<t tx="ekr.20191204154152.1"></t>
-<t tx="ekr.20191204154344.1"># Line 201, leoApp.py
-
-print(b'\xfe')
-print('done')
-</t>
-<t tx="ekr.20191204164129.1"># Line 1177, leoApp.py
-
-print(
-    message = f"line 1: {old_id!r}\n" "line 2\n"
-)
-print('done')
-</t>
-<t tx="ekr.20191205014742.1"># The first newline causes the fail.
-print(f"a {old_id!r}\n" "b\n")
-print('done')
-</t>
-<t tx="ekr.20191205071617.1"># line 1046, leoAst.py.
-
-</t>
-<t tx="ekr.20191205071827.1"># Line 1046, leoAst.py
-
-self.node = tree
-yield from self.gen_token('newline', '\n')
-print('done')
-</t>
-<t tx="ekr.20191205090312.1"></t>
-<t tx="ekr.20191205090519.1"></t>
-<t tx="ekr.20191205090659.1"># Line 240: leoDebugger.py
-
-try:
-    print('a')
-except ValueError:
-    print('b')
-else:
-    print('c')
-</t>
-<t tx="ekr.20191206053245.1"># Only a comment.</t>
 </tnodes>
 </leo_file>
