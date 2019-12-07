@@ -1077,6 +1077,8 @@ class AtFile:
         We must do this in a prepass, so as to avoid errors later.
         """
         trace = 'save' in g.app.debug and not g.unitTesting
+        if trace:
+            g.trace(f"writing {'selected' if force else 'all'} files")
         c = self.c
         if force:
             # The Write @<file> Nodes command.
@@ -1100,7 +1102,7 @@ class AtFile:
             elif p.isAnyAtFileNode():
                 data = p.v, g.fullPath(c, p)
                 if data in seen:
-                    if trace:
+                    if trace and force:
                         g.trace('Already seen', p.h)
                 else:
                     seen.add(data)
@@ -1110,9 +1112,9 @@ class AtFile:
             else:
                 p.moveToThreadNext()
         if not force:
-            not_written = [z for z in files if not z.isDirty()]
-            if trace and not_written:
-                g.printObj([z.h for z in not_written], tag='Not dirty, not written')
+            # not_written = [z for z in files if not z.isDirty()]
+            # if trace and not_written:
+                # g.printObj([z.h for z in not_written], tag='Not dirty, not written')
             files = [z for z in files if z.isDirty()]
         if trace:
             g.printObj([z.h for z in files], tag='Files to be saved')
