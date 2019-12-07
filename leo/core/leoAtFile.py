@@ -1076,6 +1076,7 @@ class AtFile:
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
         """
+        trace = 'save' in g.app.debug and not g.unitTesting
         c = self.c
         if force:
             # The Write @<file> Nodes command.
@@ -1098,7 +1099,10 @@ class AtFile:
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
                 data = p.v, g.fullPath(c, p)
-                if data not in seen:
+                if data in seen:
+                    if trace:
+                        g.trace('Already seen', p.h)
+                else:
                     seen.add(data)
                     files.append(p.copy())
                 p.moveToNodeAfterTree()
@@ -1106,8 +1110,11 @@ class AtFile:
             else:
                 p.moveToThreadNext()
         if not force:
+            not_written = [z for z in files if not z.isDirty()]
+            if trace and not_written:
+                g.printObj([z.h for z in not_written], tag='Not dirty, not written')
             files = [z for z in files if z.isDirty()]
-        if 'save' in g.app.debug:
+        if trace:
             g.printObj([z.h for z in files], tag='Files to be saved')
         return files, root
     #@+node:ekr.20190108053115.1: *6* at.internalWriteError

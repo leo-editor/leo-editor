@@ -1,2 +1,2 @@
 def spam():
-    pass
+    pass # change 2.
