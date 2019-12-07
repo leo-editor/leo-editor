@@ -2334,7 +2334,6 @@ assert p, h
 #
 # Enable --trace=save
 at = c.atFileCommands
-g.app.debug.append('save')
 # Get the correct file name.
 fn = p.anyAtFileNodeName()
 path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
@@ -2342,6 +2341,7 @@ assert g.os_path_exists(path), path
 #
 # Run the test.
 if 0:
+    g.app.debug.append('save')
     g.cls() ###
     print(f"Running {c.p.h}...\n")
 val = at.shouldPromptForDangerousWrite(path, p)
@@ -2367,14 +2367,14 @@ assert p, h
 #
 # Enable --trace=save
 at = c.atFileCommands
-g.app.debug.append('save')
 # Get the correct file name.
 fn = p.anyAtFileNodeName()
 path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
 assert g.os_path_exists(path), path
 #
 # Run the test.
-if 1:
+if 0:
+    g.app.debug.append('save')
     g.cls() ###
     print(f"Running {c.p.h}...\n")
 val = at.precheck(path, p)

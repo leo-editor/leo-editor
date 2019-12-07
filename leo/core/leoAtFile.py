@@ -1078,7 +1078,7 @@ class AtFile:
         """
         trace = 'save' in g.app.debug and not g.unitTesting
         if trace:
-            g.trace(f"writing {'selected' if force else 'all'} files")
+            g.trace(f"writing *{'selected' if force else 'all'}* files")
         c = self.c
         if force:
             # The Write @<file> Nodes command.
