@@ -1306,7 +1306,6 @@ class AtFile:
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
             if not at.precheck(fileName, root):
                 at.addToOrphanList(root)
-                g.es("not written:", g.shortFileName(fileName)) # #1451.
                 return
             at.openOutputStream()
             at.putFile(root, sentinels=sentinels)
