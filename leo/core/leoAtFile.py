@@ -197,7 +197,8 @@ class AtFile:
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
-        at.sameFiles = 0
+        # Do not change this here.
+            # at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.outputList = []
             # For stream output.
@@ -1134,20 +1135,20 @@ class AtFile:
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
     def reportEndOfWrite(self, files, all, dirty):
         
-        at, c = self, self.c
         if g.unitTesting:
             return
         if files:
-            report = c.config.getBool('report-unchanged-files', default=True)
-            if report:
-                g.es("finished")
-            elif at.sameFiles:
-                g.es(f"finished. {at.sameFiles} unchanged files")
+            if self.sameFiles:
+                g.es(f"finished. {self.sameFiles} unchanged file{g.plural(self.sameFiles)}")
+            else:
+                g.es('finished')
         elif all:
             g.warning("no @<file> nodes in the selected tree")
-            # g.es("to write an unchanged @auto node,\nselect it directly.")
         elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
+        #
+        # Re-init sameFiles here.
+        self.sameFiles = 0
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
@@ -1164,8 +1165,10 @@ class AtFile:
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root):
         '''
-        Write one file for the at.writeAll.
+        Write one file for at.writeAll.
+        
         Do *not* write @auto files unless p == root.
+        
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
@@ -1215,30 +1218,32 @@ class AtFile:
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''
-        Return True if the path has changed and the user allows it.
-        raise IOError if the user forbids the write.
-        Return False if the path has not changed.
+        raise IOError if p's path has changed *and* user forbids the write.
         '''
         at, c = self, self.c
-        if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
-            return False
+        #
+        # Suppress this message during save-as and save-to commands.
+        if c.ignoreChangedPaths:
+            return
+        ### if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+        ###    return
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
         try: # #1367: samefile can throw IOError!
-            pathChanged = oldPath and not os.path.samefile(oldPath, newPath)
+            changed = oldPath and not os.path.samefile(oldPath, newPath)
         except IOError:
-            pathChanged = True
-        # Suppress this message during save-as and save-to commands.
-        if pathChanged and not c.ignoreChangedPaths:
-            ok = at.promptForDangerousWrite(
-                fileName=None,
-                message='%s\n%s' % (
-                    g.tr('path changed for %s' % (p.h)),
-                    g.tr('write this file anyway?')))
-            if not ok:
-                raise IOError
-            at.setPathUa(p, newPath) # Remember that we have changed paths.
-        return pathChanged
+            changed = True
+        if not changed:
+            return
+        ok = at.promptForDangerousWrite(
+            fileName=None,
+            message='%s\n%s' % (
+                g.tr('path changed for %s' % (p.h)),
+                g.tr('write this file anyway?')))
+        if not ok:
+            raise IOError
+        at.setPathUa(p, newPath) # Remember that we have changed paths.
+
     #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
     def writeAtAutoContents(self, fileName, root):
         '''Common helper for atAutoToString and writeOneAtAutoNode.'''
@@ -2504,7 +2509,7 @@ class AtFile:
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20190111045822.1: *5* at.precheck
+    #@+node:ekr.20190111045822.1: *5* at.precheck (calls shouldPrompt...)
     def precheck(self, fileName, root):
         """
         Check whether a dirty, potentially dangerous, file should be written.
