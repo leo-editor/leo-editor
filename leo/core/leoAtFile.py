@@ -1047,7 +1047,6 @@ class AtFile:
     def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
-        ### at.sameFiles = 0
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
         at.canCancelFlag = True
@@ -1134,18 +1133,10 @@ class AtFile:
             return
         if files:
             g.es('finished')
-            ### Imo, the entire sameFiles logic is useless.
-                # if self.sameFiles:
-                    # g.es(f"finished: {self.sameFiles} unchanged file{g.plural(self.sameFiles)}")
-                # else:
-                    # g.es('finished')
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
-        ###
-            # Re-init sameFiles here.
-            # self.sameFiles = 0
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
@@ -1171,6 +1162,10 @@ class AtFile:
         '''
         at = self
         at.root = root
+        if p.isAtIgnoreNode():
+            # Should have been handled in findFilesToWrite.
+            g.trace(f"Can not happen: {p.h} is an @ignore node")
+            return
         try:
             at.writePathChanged(p)
         except IOError:
@@ -1180,10 +1175,6 @@ class AtFile:
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
             at.asisWrite(p)
-        elif p.isAtIgnoreNode():
-            # Should have been handled in findFilesToWrite.
-            g.trace(f"Can not happen: {p.h} is an @ignore node")
-            return
         elif p.isAtAutoNode():
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
@@ -1224,8 +1215,6 @@ class AtFile:
         # Suppress this message during save-as and save-to commands.
         if c.ignoreChangedPaths:
             return
-        ### if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
-        ###    return
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
         try: # #1367: samefile can throw IOError!
@@ -2714,7 +2703,6 @@ class AtFile:
             (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
-            ### at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")
             # Leo 5.6: Check unchanged files.
