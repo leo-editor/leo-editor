@@ -2095,11 +2095,14 @@ class VNode:
     isAtAsisFileNode = isAtSilentFileNode
     #@+node:ekr.20031218072017.3351: *4* v.isAtIgnoreNode
     def isAtIgnoreNode(self):
-        """Returns True if the receiver contains @ignore in its body at the start of a line.
+        """
+        Returns True if:
+            
+        - the vnode' body contains @ignore at the start of a line or
 
-        or if the headline starts with @ignore."""
+        - the vnode's headline starts with @ignore.
+        """
         # v = self
-        # 2011/10/08: honor @ignore in headlines.  Sheesh.
         if g.match_word(self._headString, 0, '@ignore'):
             return True
         flag, i = g.is_special(self._bodyString, "@ignore")

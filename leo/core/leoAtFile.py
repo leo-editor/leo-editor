@@ -1093,10 +1093,10 @@ class AtFile:
         files = []
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                # Honor @ignore in *body* text, but *not* in @asis nodes.
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
-                # Note: @ignore not honored in @asis nodes.
-                p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
+                p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
                 data = p.v, g.fullPath(c, p)
                 if data in seen:
@@ -1105,14 +1105,12 @@ class AtFile:
                 else:
                     seen.add(data)
                     files.append(p.copy())
+                # Don't scan nested trees???
                 p.moveToNodeAfterTree()
-                    # #1134.
             else:
                 p.moveToThreadNext()
+        # When scanning *all* nodes, we only actually write dirty nodes.
         if not force:
-            # not_written = [z for z in files if not z.isDirty()]
-            # if trace and not_written:
-                # g.printObj([z.h for z in not_written], tag='Not dirty, not written')
             files = [z for z in files if z.isDirty()]
         if trace:
             g.printObj([z.h for z in files], tag='Files to be saved')
@@ -1136,7 +1134,7 @@ class AtFile:
             return
         if files:
             g.es('finished')
-            # Imo, the entire sameFiles logic is useless.
+            ### Imo, the entire sameFiles logic is useless.
                 # if self.sameFiles:
                     # g.es(f"finished: {self.sameFiles} unchanged file{g.plural(self.sameFiles)}")
                 # else:
@@ -1145,9 +1143,9 @@ class AtFile:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
-        #
-        # Re-init sameFiles here.
-        # self.sameFiles = 0
+        ###
+            # Re-init sameFiles here.
+            # self.sameFiles = 0
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
@@ -1183,7 +1181,9 @@ class AtFile:
         if p.isAtAsisFileNode():
             at.asisWrite(p)
         elif p.isAtIgnoreNode():
-            return # Handled in caller.
+            # Should have been handled in findFilesToWrite.
+            g.trace(f"Can not happen: {p.h} is an @ignore node")
+            return
         elif p.isAtAutoNode():
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
