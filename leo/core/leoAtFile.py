@@ -2507,8 +2507,9 @@ class AtFile:
     #@+node:ekr.20190111045822.1: *5* at.precheck
     def precheck(self, fileName, root):
         """
-        Check for dangerous writes.
-        Return False if the user declines to do the write.
+        Check whether a dirty, potentially dangerous, file should be written.
+        
+        Return True if so.  Return False *and* issue a warning otherwise.
         """
         at = self
         if not at.shouldPromptForDangerousWrite(fileName, root):
@@ -3039,8 +3040,10 @@ class AtFile:
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite (#1361)
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
-        Return True if a prompt should be issued
-        when writing p (an @<file> node) to fn.
+        Return True if Leo should warn the user that p is an @<file> node that
+        was not read during startup. Writing that file might cause data loss.
+        
+        See #50: https://github.com/leo-editor/leo-editor/issues/50
         '''
         trace = 'save' in g.app.debug
         sfn = g.shortFileName(fn)
