@@ -197,9 +197,6 @@ class AtFile:
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
-        # Do not change this here.
-            # at.sameFiles = 0
-            # For communication between replaceFile and reportEndOfWrite.
         at.outputList = []
             # For stream output.
         at.targetFileName = targetFileName
@@ -1050,7 +1047,7 @@ class AtFile:
     def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
-        at.sameFiles = 0
+        ### at.sameFiles = 0
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
         at.canCancelFlag = True
@@ -1138,17 +1135,19 @@ class AtFile:
         if g.unitTesting:
             return
         if files:
-            if self.sameFiles:
-                g.es(f"finished. {self.sameFiles} unchanged file{g.plural(self.sameFiles)}")
-            else:
-                g.es('finished')
+            g.es('finished')
+            # Imo, the entire sameFiles logic is useless.
+                # if self.sameFiles:
+                    # g.es(f"finished: {self.sameFiles} unchanged file{g.plural(self.sameFiles)}")
+                # else:
+                    # g.es('finished')
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
         #
         # Re-init sameFiles here.
-        self.sameFiles = 0
+        # self.sameFiles = 0
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
@@ -2715,7 +2714,7 @@ class AtFile:
             (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
-            at.sameFiles += 1
+            ### at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")
             # Leo 5.6: Check unchanged files.

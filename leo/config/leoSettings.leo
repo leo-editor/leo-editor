@@ -101,9 +101,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20191208053454.1"><vh>Retired settings</vh>
-<v t="ekr.20170706103545.1"><vh>@@bool report-unchanged-files = True</vh></v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -11101,7 +11098,6 @@ if 0: # The base class
       function/method into the headline of the imported node.
       
 **Note**: The importer will copy only the first line of a multiline decorator.</t>
-<t tx="ekr.20170706103545.1">True: Report unchanged written files.</t>
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
@@ -11813,7 +11809,6 @@ sphinx-build {input_dir} {output_dir} {i_path}</t>
 The output_dir directory specified in the command:
 
 sphinx-build {input_dir} {output_dir} {i_path}</t>
-<t tx="ekr.20191208053454.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
