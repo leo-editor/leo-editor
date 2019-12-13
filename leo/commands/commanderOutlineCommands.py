@@ -1239,7 +1239,7 @@ def moveOutlineDown(self, event=None):
         if c.hoistStack: cantMoveMessage(c)
         c.treeFocusHelper()
         return
-    inAtIgnoreRange = p.inAtIgnoreRange()
+    ### inAtIgnoreRange = p.inAtIgnoreRange()
     parent = p.parent()
     next = p.visNext(c)
     while next and p.isAncestorOf(next):
@@ -1256,13 +1256,15 @@ def moveOutlineDown(self, event=None):
         # Attempt to move p to the first child of next.
         moved = c.checkMoveWithParentWithWarning(p, next, True)
         if moved:
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            p.v.setAllAncestorAtFileNodesDirty()
             p.moveToNthChildOf(next, 0)
     else:
         # Attempt to move p after next.
         moved = c.checkMoveWithParentWithWarning(p, next.parent(), True)
         if moved:
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            p.v.setAllAncestorAtFileNodesDirty()
             p.moveAfter(next)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
@@ -1270,20 +1272,23 @@ def moveOutlineDown(self, event=None):
         parent.contract()
     #@-<< Move p down & set moved if successful >>
     if moved:
-        if 1: # #1392.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
-            if dirtyVnodeList:
-                p.v.setDirty()
-        else: # old code
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                p.setDirty() # Mark descendent @thin nodes dirty.
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
+        ###
+            # if 1: # #1392.
+                # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                # dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
+                # if dirtyVnodeList:
+                    # p.v.setDirty()
+            # else: # old code
+                # if inAtIgnoreRange and not p.inAtIgnoreRange():
+                    # # The moved nodes have just become newly unignored.
+                    # p.setDirty() # Mark descendent @thin nodes dirty.
+                # else: # No need to mark descendents dirty.
+                    # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                    # dirtyVnodeList.extend(dirtyVnodeList2)
+        p.v.setAllAncestorAtFileNodesDirty()
+        p.v.setDirty()
         c.setChanged(True)
-        u.afterMoveNode(p, 'Move Down', undoData, dirtyVnodeList)
+        u.afterMoveNode(p, 'Move Down', undoData) ###, dirtyVnodeList)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft (changed)
@@ -1299,26 +1304,30 @@ def moveOutlineLeft(self, event=None):
     if not p.hasParent():
         c.treeFocusHelper()
         return
-    inAtIgnoreRange = p.inAtIgnoreRange()
+    ### inAtIgnoreRange = p.inAtIgnoreRange()
     parent = p.parent()
     c.endEditing()
     undoData = u.beforeMoveNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.v.setAllAncestorAtFileNodesDirty()
     p.moveAfter(parent)
-    if 1: # #1392.
-        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-        dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
-        if dirtyVnodeList:
-            p.v.setDirty()
-    else: # old code
-        if inAtIgnoreRange and not p.inAtIgnoreRange():
-            # The moved nodes have just become newly unignored.
-            p.setDirty() # Mark descendent @thin nodes dirty.
-        else: # No need to mark descendents dirty.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
+    p.v.setAllAncestorAtFileNodesDirty()
+    p.v.setDirty()
+    ###
+        # if 1: # #1392.
+            # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            # dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
+            # if dirtyVnodeList:
+                # p.v.setDirty()
+        # else: # old code
+            # if inAtIgnoreRange and not p.inAtIgnoreRange():
+                # # The moved nodes have just become newly unignored.
+                # p.setDirty() # Mark descendent @thin nodes dirty.
+            # else: # No need to mark descendents dirty.
+                # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                # dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
-    u.afterMoveNode(p, 'Move Left', undoData, dirtyVnodeList)
+    u.afterMoveNode(p, 'Move Left', undoData) ###, dirtyVnodeList)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
         parent.contract()
@@ -1343,16 +1352,19 @@ def moveOutlineRight(self, event=None):
         return
     c.endEditing()
     undoData = u.beforeMoveNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.v.setAllAncestorAtFileNodesDirty()
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
-    # #1392.
-    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-    dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
-    if dirtyVnodeList:
-        p.v.setDirty()
-    c.setChanged(True)
-    u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
+    p.v.setAllAncestorAtFileNodesDirty()
+    p.v.setDirty()
+    ### #1392.
+        # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        # dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
+        # if dirtyVnodeList:
+            # p.v.setDirty()
+        # c.setChanged(True)
+    u.afterMoveNode(p, 'Move Right', undoData) ###, dirtyVnodeList)
     c.redraw(p)
     c.recolor()
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp (changed)
@@ -1368,11 +1380,11 @@ def moveOutlineUp(self, event=None):
     back = p.visBack(c)
     if not back:
         return
-    inAtIgnoreRange = p.inAtIgnoreRange()
+    ### inAtIgnoreRange = p.inAtIgnoreRange()
     back2 = back.visBack(c)
     c.endEditing()
     undoData = u.beforeMoveNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     moved = False
     #@+<< Move p up >>
     #@+node:ekr.20031218072017.1773: *4* << Move p up >>
@@ -1386,18 +1398,22 @@ def moveOutlineUp(self, event=None):
                 g.trace('can not happen. In hoist')
             else:
                 moved = True
+                p.v.setAllAncestorAtFileNodesDirty()
                 p.moveToFirstChildOf(limit)
         else:
             # p will be the new root node
+            p.v.setAllAncestorAtFileNodesDirty()
             p.moveToRoot(oldRoot=c.rootPosition())
             moved = True
     elif back2.hasChildren() and back2.isExpanded():
         if c.checkMoveWithParentWithWarning(p, back2, True):
             moved = True
+            p.v.setAllAncestorAtFileNodesDirty() 
             p.moveToNthChildOf(back2, 0)
     else:
         if c.checkMoveWithParentWithWarning(p, back2.parent(), True):
             moved = True
+            p.v.setAllAncestorAtFileNodesDirty()
             p.moveAfter(back2)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
@@ -1405,20 +1421,23 @@ def moveOutlineUp(self, event=None):
         parent.contract()
     #@-<< Move p up >>
     if moved:
-        if 1: # #1392.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
-            if dirtyVnodeList:
-                p.v.setDirty()
-        else: # old code
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
+        ###
+            # if 1: # #1392.
+                # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                # dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
+                # if dirtyVnodeList:
+                    # p.v.setDirty()
+            # else: # old code
+                # if inAtIgnoreRange and not p.inAtIgnoreRange():
+                    # # The moved nodes have just become newly unignored.
+                    # dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+                # else: # No need to mark descendents dirty.
+                    # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                # dirtyVnodeList.extend(dirtyVnodeList2)
+        p.v.setAllAncestorAtFileNodesDirty()
+        p.v.setDirty()
         c.setChanged(True)
-        u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
+        u.afterMoveNode(p, 'Move Right', undoData) ###, dirtyVnodeList)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote (changed)

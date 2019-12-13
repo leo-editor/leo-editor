@@ -4104,16 +4104,18 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c.checkMoveWithParentWithWarning(p1, p2, True))
         if ok:
             undoData = u.beforeMoveNode(p1)
-            dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+            ### dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+            p1.v.setAllAncestorAtFileNodesDirty()
+            p1.v.setDirty() ###
             p1 = move(p1, p2)
             if cloneDrag:
                 # Set dirty bits for ancestors of *all* cloned nodes.
                 # Note: the setDescendentsDirty flag does not do what we want.
                 for z in p1.self_and_subtree():
-                    z.setAllAncestorAtFileNodesDirty(
-                        setDescendentsDirty=False)
+                    ### z.setAllAncestorAtFileNodesDirty(setDescendentsDirty=False)
+                    z.v.setAllAncestorAtFileNodesDirty() ###
             c.setChanged(True)
-            u.afterMoveNode(p1, 'Drag', undoData, dirtyVnodeList)
+            u.afterMoveNode(p1, 'Drag', undoData) ###, dirtyVnodeList)
             if (not as_child or
                 p2.isExpanded() or
                 c.config.getBool("drag-alt-drag-expands") is not False

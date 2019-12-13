@@ -694,7 +694,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050410110343: *5* u.afterMoveNode  (to do: remove dirtyVnodeList kwarg)
-    def afterMoveNode(self, p, command, bunch, dirtyVnodeList=None):
+    def afterMoveNode(self, p, command, bunch): ###, dirtyVnodeList=None):
         u = self
         if u.redoing or u.undoing: return
         ### if dirtyVnodeList is None: dirtyVnodeList = []
@@ -1312,13 +1312,17 @@ class Undoer:
         assert(v)
         if cc:
             cc.selectChapterByName('main')
-        # Adjust the children arrays.
+        # Adjust the children arrays of the old parent.
         assert u.oldParent_v.children[u.oldN] == v
         del u.oldParent_v.children[u.oldN]
+        u.undo_nodes.add(u.oldParent_v)
+        # Adjust the children array of the new parent.
         parent_v = u.newParent_v
         parent_v.children.insert(u.newN, v)
         v.parents.append(u.newParent_v)
         v.parents.remove(u.oldParent_v)
+        u.undo_nodes.add(u.newParent_v)
+        #
         u.updateMarks('new')
         ### for v in u.dirtyVnodeList:
         ###    v.setDirty()
