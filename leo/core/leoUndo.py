@@ -54,16 +54,11 @@ class Undoer:
     # So that ivars can be inited to None rather thatn [].
     #@+others
     #@+node:ekr.20150509193307.1: *3* u.Birth
-    #@+node:ekr.20031218072017.3606: *4* u.__init__ & reloadSettings
+    #@+node:ekr.20031218072017.3606: *4* u.__init__ (changed)
     def __init__(self, c):
         self.c = c
-        self.debug_Undoer = False # True: enable debugging code in new undo scheme.
-        self.debug_print = False # True: enable print statements in debug code.
         self.granularity = None # Set in reloadSettings.
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
-        # Statistics comparing old and new ways (only if self.debug_Undoer is on).
-        self.new_mem = 0
-        self.old_mem = 0
         # State ivars...
         self.beads = [] # List of undo nodes.
         self.bead = -1 # Index of the present bead: -1:len(beads)
@@ -83,7 +78,7 @@ class Undoer:
         self.beforeTree = None
         self.children = None
         self.deleteMarkedNodesData = None
-        self.dirtyVnodeList = None
+        ### self.dirtyVnodeList = None
         self.followingSibs = None
         self.inHead = None
         self.kind = None
@@ -117,9 +112,10 @@ class Undoer:
         self.pasteAsClone = None
         self.prevSel = None
         self.sortChildren = None
+        self.undo_nodes = [] # #1451.
         self.verboseUndoGroup = None
         self.reloadSettings()
-        
+    #@+node:ekr.20191213085126.1: *4* u.reloadSettings
     def reloadSettings(self):
         """Undoer.reloadSettings."""
         c = self.c
@@ -128,12 +124,6 @@ class Undoer:
             self.granularity = self.granularity.lower()
         if self.granularity not in ('node', 'line', 'word', 'char'):
             self.granularity = 'line'
-
-    def redoHelper(self):
-        pass
-
-    def undoHelper(self):
-        pass
     #@+node:ekr.20150509193222.1: *4* u.cmd (decorator)
     def cmd(name):
         """Command decorator for the Undoer class."""
@@ -996,28 +986,8 @@ class Undoer:
         #@-<< compute leading, middle & trailing  lines >>
         #@+<< save undo text info >>
         #@+node:ekr.20031218072017.1492: *5* << save undo text info >>
-        #@+at This is the start of the incremental undo algorithm.
-        # 
-        # We must save enough info to do _both_ of the following:
-        # 
-        # Undo: Given newText, recreate oldText.
-        # Redo: Given oldText, recreate oldText.
-        # 
-        # The "given" texts for the undo and redo routines are simply p.b.
-        #@@c
-        if u.debug_Undoer:
-            # Remember the complete text for comparisons...
-            u.oldText = oldText
-            u.newText = newText
-            # Compute statistics comparing old and new ways...
-            # The old doesn't often store the old text, so don't count it here.
-            u.old_mem += len(newText)
-            s1 = '\n'.join(old_middle_lines)
-            s2 = '\n'.join(new_middle_lines)
-            u.new_mem += len(s1) + len(s2)
-        else:
-            u.oldText = None
-            u.newText = None
+        u.oldText = None
+        u.newText = None
         u.leading = leading
         u.trailing = trailing
         u.oldMiddleLines = old_middle_lines
@@ -1158,11 +1128,11 @@ class Undoer:
         if u.per_node_undo:
             u.putIvarsToVnode(p)
         return bunch # Never used.
-    #@+node:ekr.20031218072017.2030: *3* u.redo
+    #@+node:ekr.20031218072017.2030: *3* u.redo (changed)
     @cmd('redo')
     def redo(self, event=None):
         """Redo the operation undone by the last undo."""
-        u = self; c = u.c
+        c, u = self.c, self
         w = c.frame.body.wrapper
         if not c.p:
             return
@@ -1173,6 +1143,7 @@ class Undoer:
         if not u.getBead(u.bead + 1):
             return
         u.redoing = True
+        u.undo_nodes = []
         u.groupCount = 0
         if u.redoHelper:
             u.redoHelper()
@@ -1187,6 +1158,8 @@ class Undoer:
         else:
             c.setCurrentPosition(c.p)
         if u.newChanged is None: u.newChanged = True
+        #
+        # # 1451. *Always* set the changed bit.
         c.setChanged(u.newChanged)
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()
@@ -1204,6 +1177,10 @@ class Undoer:
         u.bead += 1
         u.setUndoTypes()
     #@+node:ekr.20110519074734.6092: *3* u.redo helpers
+    #@+node:ekr.20191213085226.1: *4*  u.reloadHelper (do nothing)
+    def redoHelper(self):
+        """The default do-nothing redo helper."""
+        pass
     #@+node:ekr.20050424170219: *4* u.redoClearRecentFiles
     def redoClearRecentFiles(self):
         u = self; c = u.c
@@ -1487,6 +1464,10 @@ class Undoer:
         u.bead -= 1
         u.setUndoTypes()
     #@+node:ekr.20110519074734.6093: *3* u.undo helpers
+    #@+node:ekr.20191213085246.1: *4*  u.undoHeoper (do-nothing)
+    def undoHelper(self):
+        """The default do-nothing undo helper."""
+        pass
     #@+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
     def undoClearRecentFiles(self):
         u = self; c = u.c
