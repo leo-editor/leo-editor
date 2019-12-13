@@ -7546,7 +7546,8 @@ The command name follows @item. If the body text of an @item node exists, this b
 - **machineDir**, the HOME/.leo/MACHINE directory. MACHINE is given by Python's HOSTNAME environment variable, or by Python's COMPUTERNAME environment variable if there is no HOSTNAME variable, or by the value returned by socket.gethostname() if neither environment variable exists.
 
 - **localDir**, the directory containing the .leo file being loaded.
-</t>
+
+Leo reports in the Log pane window on startup and when opening .leo files what HOME dir is used and which settings files are read.</t>
 <t tx="ekr.20090126063121.3">def createWxGui(self, fileName='', verbose=False):
     # Do NOT omit fileName param: it is used in plugin code.
     """A convenience routines for plugins to create the wx gui class."""
@@ -14933,7 +14934,7 @@ Leo uses outlines for just about *everything*, including configuring Leo:
 
 - **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
-- **~/myLeoSettings.leo** contains your **personal settings**. Leo will not create this file automatically: you should create it yourself. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
+- **~/myLeoSettings.leo** contains your **personal settings**. Leo will create this file automatically if it doesn't exist when using *Settings &gt;&gt; Open myLeoSettings* menu item. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
    
 - Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings.
 
