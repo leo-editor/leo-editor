@@ -36,11 +36,6 @@
 # the operation. See the code for the various u.before/afterX methods for
 # guidance.
 # 
-# New in Leo 4.3: p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
-# 'dirtyVnodeList' that all vnodes that became dirty as the result of an
-# operation. More than one list may be generated: client code is responsible for
-# merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
-# 
 # I first saw this model of unlimited undo in the documentation for Apple's Yellow Box classes.
 #@-<< How Leo implements unlimited undo >>
 import leo.core.leoGlobals as g
@@ -650,8 +645,8 @@ class Undoer:
         bunch.undoHelper = u.undoHoistNode
         bunch.redoHelper = u.redoHoistNode
         u.pushBead(bunch)
-    #@+node:ekr.20050411193627.9: *5* u.afterInsertNode  (to do: remove dirtyVnodeList kwarg)
-    def afterInsertNode(self, p, command, bunch, dirtyVnodeList=None):
+    #@+node:ekr.20050411193627.9: *5* u.afterInsertNode
+    def afterInsertNode(self, p, command, bunch): ###, dirtyVnodeList=None):
         u = self
         if u.redoing or u.undoing:
             return

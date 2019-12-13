@@ -892,10 +892,12 @@ def insertHeadlineHelper(c,
     else:
         p = current.insertAfter()
     g.doHook('create-node', c=c, p=p)
-    p.setDirty() # setDescendentsDirty=False
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### p.setDirty() # setDescendentsDirty=False
+    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.v.setAllAncestorAtFileNodesDirty()
+    p.v.setDirty()
     c.setChanged(True)
-    u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
+    u.afterInsertNode(p, op_name, undoData) ### , dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
     return p
 #@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
@@ -914,10 +916,12 @@ def insertHeadlineBefore(self, event=None):
     undoData = u.beforeInsertNode(current)
     p = current.insertBefore()
     g.doHook('create-node', c=c, p=p)
-    p.setDirty() # setDescendentsDirty=False
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    ### p.setDirty() # setDescendentsDirty=False
+    ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.v.setAllAncestorAtFileNodesDirty()
+    p.v.setDirty()
     c.setChanged(True)
-    u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
+    u.afterInsertNode(p, op_name, undoData) ### , dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
     return p
 #@+node:ekr.20031218072017.2922: ** c_oc.Mark commands

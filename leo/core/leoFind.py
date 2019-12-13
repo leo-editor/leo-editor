@@ -1659,7 +1659,7 @@ class LeoFind:
             undoType = 'Clone Find Tag'
             undoData = u.beforeInsertNode(c.p)
             found = self.createCloneTagNodes(clones)
-            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            u.afterInsertNode(found, undoType, undoData) ###, dirtyVnodeList=[])
             assert c.positionExists(found, trace=True), found
             c.setChanged(True)
             c.selectPosition(found)
@@ -1749,7 +1749,7 @@ class LeoFind:
         if clones:
             undoData = u.beforeInsertNode(c.p)
             found = self.createCloneFindAllNodes(clones, flatten)
-            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            u.afterInsertNode(found, undoType, undoData) ###, dirtyVnodeList=[])
             assert c.positionExists(found, trace=True), found
             c.setChanged(True)
             c.selectPosition(found)
@@ -1839,7 +1839,7 @@ class LeoFind:
                 count = len(list(self.unique_matches))
             else:
                 found = self.createFindAllNode(result)
-            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            u.afterInsertNode(found, undoType, undoData) ###, dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
         else:
