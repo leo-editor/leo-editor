@@ -2422,6 +2422,30 @@ class VNode:
         v = self
         v.selectionStart = start
         v.selectionLength = length
+    #@+node:ekr.20191213161023.1: *3* v.setAllAncestorAtFileNodesDirty (new)
+    def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
+        """
+        Rewritten by Виталије Милошевић (Vitalije Milosevic).
+        """
+        v = self
+        hiddenRootVnode = v.context.hiddenRootNode
+
+        def v_and_parents(v):
+            if v != hiddenRootVnode:
+                yield v
+                for parent_v in v.parents:
+                    yield from v_and_parents(parent_v)
+                
+        dirtyVnodeList = list(set(
+            [v for v in v_and_parents(v)
+                if v.isAnyAtFileNode() and not v.isDirty()]
+        ))
+        if 'save' in g.app.debug and dirtyVnodeList:
+            g.trace(v.h, g.callers())
+            g.printObj(dirtyVnodeList)
+        for v in dirtyVnodeList:
+            v.setDirty()
+        ### return dirtyVnodeList
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!

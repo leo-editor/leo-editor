@@ -178,7 +178,11 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
+<v t="ekr.20191213161917.1"><vh>Recent</vh>
 <v t="ekr.20191207060251.1"></v>
+<v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
+<v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
+</v>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
 <v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -204,8 +208,8 @@
 <v t="ekr.20100801125533.5791"><vh>Output</vh></v>
 </v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
-<v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
+<v t="ekr.20191207060127.1"></v>
+<v t="ekr.20191207064106.1"></v>
 <v t="ekr.20090225102051.2"><vh>@test @edit</vh>
 <v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
 <v t="ekr.20090225102051.4"><vh>Output</vh></v>
@@ -257,10 +261,137 @@
 <v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
 <v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
 </v>
-<v t="ekr.20191207060127.1"></v>
-<v t="ekr.20191207064106.1"></v>
+<v t="ekr.20071113193729"><vh>leoUndo</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>tempNode</vh></v>
+<v t="ekr.20050417202713"><vh>addComments</vh>
+<v t="ekr.20050417202713.1"><vh>before</vh></v>
+<v t="ekr.20050417202713.2"><vh>after</vh></v>
+<v t="ekr.20050417202713.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417204940"><vh>convertAllBlanks</vh>
+<v t="ekr.20050417204940.1"><vh>before</vh></v>
+<v t="ekr.20050417204940.2"><vh>after</vh></v>
+<v t="ekr.20050417204940.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417205012"><vh>convertAllTabs</vh>
+<v t="ekr.20050417205012.1"><vh>before</vh></v>
+<v t="ekr.20050417205012.2"><vh>after</vh></v>
+<v t="ekr.20050417205012.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114"><vh>convertBlanks</vh>
+<v t="ekr.20050417203310"><vh>before</vh></v>
+<v t="ekr.20050417203310.1"><vh>after</vh></v>
+<v t="ekr.20050417203336"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114.1"><vh>convertTabs</vh>
+<v t="ekr.20050417204834"><vh>before</vh></v>
+<v t="ekr.20050417204830"><vh>after</vh></v>
+<v t="ekr.20050417204901"><vh>selection</vh></v>
+</v>
+<v t="ekr.20040712101754.49"><vh>dedentBody</vh>
+<v t="ekr.20040712101754.50"><vh>before</vh></v>
+<v t="ekr.20040712101754.51"><vh>after</vh></v>
+<v t="ekr.20040712101754.52"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417202817"><vh>deleteComments</vh>
+<v t="ekr.20050417202817.1"><vh>before</vh></v>
+<v t="ekr.20050417202817.2"><vh>after</vh></v>
+<v t="ekr.20050417202817.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20111112211307.3910"><vh>deleteComments</vh>
+<v t="ekr.20111112211307.3911"><vh>before</vh></v>
+<v t="ekr.20111112211307.3912"><vh>after</vh></v>
+<v t="ekr.20111112211307.3913"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417201845"><vh>extract test1</vh>
+<v t="ekr.20050417201845.1"><vh>before</vh></v>
+<v t="ekr.20050417201845.2"><vh>after</vh>
+<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
+</v>
+<v t="ekr.20050417201845.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070540"><vh>extract test2</vh>
+<v t="ekr.20050518070540.1"><vh>before</vh></v>
+<v t="ekr.20050518070545"><vh>after</vh></v>
+<v t="ekr.20050518070540.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070927"><vh>extract test3</vh>
+<v t="ekr.20050518070927.1"><vh>before</vh></v>
+<v t="ekr.20050518070927.2"><vh>after</vh>
+<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
+</v>
+<v t="ekr.20050518070927.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518071251"><vh>extract test4</vh>
+<v t="ekr.20050518071251.1"><vh>before</vh></v>
+<v t="ekr.20050518071258"><vh>after</vh></v>
+<v t="ekr.20050518071251.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20190210103111.1"><vh>line_to_headline test1</vh>
+<v t="ekr.20190210103111.2"><vh>before</vh></v>
+<v t="ekr.20190210103111.3"><vh>after</vh>
+<v t="ekr.20190210103111.4"><vh>headline</vh></v>
+</v>
+<v t="ekr.20190210103111.5"><vh>selection</vh></v>
+</v>
+</v>
+</v>
+<v t="bpt.20190825074247.1"><vh>@test undo/redoGroup</vh>
+<v t="bpt.20190825074316.1"><vh>original</vh></v>
+<v t="ekr.20191106202329.2"><vh>do and undo</vh></v>
+<v t="ekr.20191106202329.3"><vh>do</vh></v>
+<v t="ekr.20191106202329.4"><vh>do, undo, redo</vh></v>
+</v>
+<v t="ekr.20190923170025.1"><vh>@test undo editHeadline</vh>
+<v t="ekr.20190923170025.2"><vh>node 1</vh></v>
+<v t="ekr.20190923170025.3"><vh>node 2</vh></v>
+<v t="ekr.20190923170025.4"><vh>node 3</vh></v>
+</v>
+<v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
+<t tx="bpt.20190825074247.1"># This test exposed a bug with redoGroup c.undoer.bead index off-by-one
+# The first c.pasteOutline() is there to setup the test cases, but it also serves
+# an important hidden purpose of adding undo state to the undo stack. Due
+# to the wrap-around nature of python index = -1, the original redoGroup code
+# worked fine when the undo group is the first one on the undo stack.
+# There are several commands which use undoGroup. The convertAllBlanks
+# was arbitrarily chosen to expose the bug.
+c.undoer.clearUndoState()
+original = p.copy().moveToFirstChild()
+c.selectPosition(original)
+c.copyOutline()
+# Do and undo
+c.pasteOutline()
+do_and_undo = original.copy().moveToNext()
+do_and_undo.h = "do and undo"
+c.convertAllBlanks()
+c.undoer.undo()
+assert original.b == do_and_undo.b, "Undo should restore to original"
+# Do
+c.pasteOutline()
+do = do_and_undo.copy().moveToNext()
+do.h = "do"
+c.convertAllBlanks()
+# Do, undo, redo
+c.pasteOutline()
+do_undo_redo = do.copy().moveToNext()
+do_undo_redo.h = "do, undo, redo"
+c.convertAllBlanks()
+c.undoer.undo()
+c.undoer.redo()
+assert do.b == do_undo_redo.b, "Redo should do the operation again"
+</t>
+<t tx="bpt.20190825074316.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
 <t tx="bwmulder.20050108100437.1">@killcolor
 
 Running unit tests from test.leo is easy, provided you have enabled the
@@ -298,6 +429,38 @@ Line 1
 #@@last
 #@-leo
 last line 1: no newline
+</t>
+<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
+
+suite = c.testManager.makeEditBodySuite(p)
+
+# g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20040712101754.38">@language plain
+@
+
+The names of child nodes are the names of commander methods to be called to do the test.
+
+Each child node will in turn have two or more children:
+
+- a "before" node
+- an "after" node
+- an optional selection node containing two lines giving the selection range in Tk coordinates.
+- An optional insert node containing one line giving the insert point in Tk coordinates.
+</t>
+<t tx="ekr.20040712101754.49"></t>
+<t tx="ekr.20040712101754.50">line 1
+    line 2
+    line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.51">line 1
+line 2
+line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.52">2.0
+3.5
 </t>
 <t tx="ekr.20041021065844">c.testManager.runAtFileTest(p)
 </t>
@@ -460,6 +623,201 @@ finally:
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
+<t tx="ekr.20050417201845"></t>
+<t tx="ekr.20050417201845.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050417201845.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050417201845.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050417201845.4">2.0
+5.10
+</t>
+<t tx="ekr.20050417202713"></t>
+<t tx="ekr.20050417202713.1">@language python
+
+def addCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.2">@language python
+
+def addCommentTest():
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417202817"># created by new add-comments
+</t>
+<t tx="ekr.20050417202817.1">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.2">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417203114"></t>
+<t tx="ekr.20050417203114.1"></t>
+<t tx="ekr.20050417203310">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417203310.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417203336">1.0
+6.5
+</t>
+<t tx="ekr.20050417204830">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204834">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204901">1.0
+6.5
+</t>
+<t tx="ekr.20050417204940"></t>
+<t tx="ekr.20050417204940.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204940.2">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204940.3">1.0
+6.5
+</t>
+<t tx="ekr.20050417205012"></t>
+<t tx="ekr.20050417205012.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417205012.2">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417205012.3">1.0
+6.5
+</t>
+<t tx="ekr.20050518070540"></t>
+<t tx="ekr.20050518070540.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070540.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518070545">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927"></t>
+<t tx="ekr.20050518070927.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050518070927.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050518070927.4">2.0
+5.10
+</t>
+<t tx="ekr.20050518071251"></t>
+<t tx="ekr.20050518071251.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518071251.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518071258">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -843,6 +1201,7 @@ else:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
 </t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060325071703.1">import sys
 
 win32  = c.config.getBool('test_win32_setting')
@@ -1161,8 +1520,29 @@ for s,i,expected in table:
     assert result == expected, '%d %s result: %s expected: %s' % (
         i,repr(s),at.sentinelName(result),at.sentinelName(expected))
 </t>
+<t tx="ekr.20071113193729">@
+
+9 failures with Alt-5.
+
+Any unit test that changes the structure of the outline should do the
+following:
+
+- The setUp method should do
+    self.undoMark = c.undoer.getMark()
+before altering the outline.
+
+- The tearDown method should do
+    c.undoer.rollBackToMark(self.undoMark)
+after restoring the outline.
+
+u.rollBackToMark deletes all entries in the undo stack following the saved mark.
+This eliminates references to nodes that no longer exist in the present outline.
+</t>
 <t tx="ekr.20071113201736"># Print does not work: it is redirected.
 g.pr('\nEnd of leoAtFile tests')
+</t>
+<t tx="ekr.20071113202510"># Print does not work: it is redirected.
+g.pr('\nEnd of leoUndo tests.')
 </t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -1705,6 +2085,39 @@ run-marked-unit-tests-locally       = Alt-5
 run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
+</t>
+<t tx="ekr.20111112211307.3910"># created by old and new add-comments.
+</t>
+<t tx="ekr.20111112211307.3911">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3912">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3913">5.0
+12.8
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
@@ -2323,7 +2736,66 @@ nodeB
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20190210103111.1"></t>
+<t tx="ekr.20190210103111.2">before
+headline
+after
+</t>
+<t tx="ekr.20190210103111.3">before
+after
+</t>
+<t tx="ekr.20190210103111.4"></t>
+<t tx="ekr.20190210103111.5">2.0
+2.0
+</t>
 <t tx="ekr.20190923014948.1"></t>
+<t tx="ekr.20190923170025.1"># Brian Theado.
+c.undoer.clearUndoState()
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# Select 'node 1' and modify the headline as if a user did it
+node1 = p.copy().moveToFirstChild()
+c.selectPosition(node1)
+c.editHeadline()
+w = c.frame.tree.edit_widget(node1)
+w.insert('1.0', 'changed - ')
+c.endEditing()
+assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+
+# Move the selection and undo the headline change
+c.selectPosition(node1.copy().moveToNext())
+c.undoer.undo()
+
+# The undo should restore the 'node 1' headline string
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# The undo should select the edited headline.
+assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
+</t>
+<t tx="ekr.20190923170025.2"></t>
+<t tx="ekr.20190923170025.3"></t>
+<t tx="ekr.20190923170025.4"></t>
+<t tx="ekr.20191106202329.2">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20191106202329.3">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20191106202329.4">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
 <t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
 if g.in_bridge:
@@ -2380,5 +2852,6 @@ if 0:
 val = at.precheck(path, p)
 assert val is True
 </t>
+<t tx="ekr.20191213161917.1"></t>
 </tnodes>
 </leo_file>
