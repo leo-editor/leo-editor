@@ -766,10 +766,13 @@ py2cs.unit_test(raise_on_fail=True)
 #@+node:ekr.20191203120008.1: *4* Tog tests
 #@+node:ekr.20191121063148.1: *5* @test tokens: tog vs asttokens
 import leo.core.leoAst as leoAst
-if 1: ###
+if 0: ###
     import imp
     imp.reload(leoAst)
-import asttokens
+try:
+    import asttokens
+except Exception:
+    self.skipTest('requires asttokens')
 import glob
 import os
 import time
@@ -840,7 +843,10 @@ if 0:
     import imp
     imp.reload(leoAst)
 import ast
-import asttokens
+try:
+    import asttokens
+except Exception:
+    self.skipTest('requires asttokens')
 import glob
 import os
 import time
@@ -29574,7 +29580,7 @@ self.assertEqual(cm.exception.args[0],
     'start (1,3) precedes previous end (2,2)')
 # raise if previous column in row
 self.assertRaises(ValueError, u.add_whitespace, (2,1))
-#@+node:ekr.20191101152519.4: *4* @test backslash continuation
+#@+node:ekr.20191101152519.4: *4* @@@test backslash continuation
 from tokenize import Untokenizer
 import test.test_tokenize as tt
 u = Untokenizer()
