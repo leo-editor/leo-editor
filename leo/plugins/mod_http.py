@@ -1064,9 +1064,12 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
-        """Begins serving a POST request. The request data must be readable
-         on a file-like object called self.rfile"""
-        ### urlparse_header and urlparse_multipart appear to be undefined.
+        """
+        Begins serving a POST request. The request data must be readable
+        on a file-like object called self.rfile
+        """
+        # pylint: disable=undefined-variable
+            # urlparse_header and urlparse_multipart appear to be undefined.
         ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
