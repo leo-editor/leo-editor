@@ -1323,7 +1323,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 print(p.h)
                 bunch = u.beforeChangeNodeContents(p)
                 p.b = s2
-                p.setDirty() # Was p.v.setDirty.
+                p.setDirty()
                 n += 1
                 u.afterChangeNodeContents(p, tag, bunch)
         u.afterChangeGroup(c.p, tag)
@@ -3592,7 +3592,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if p and p.v.u:
             p.v.u = {}
             # #1276.
-            p.setDirty() # was p.v.setDirty.
+            p.setDirty()
             c.setChanged()
             c.redraw()
             
@@ -3605,7 +3605,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for p in self.c.all_unique_positions():
             if p.v.u:
                 p.v.u = {}
-                p.setDirty() # was p.v.setDirty.
+                p.setDirty()
                 changed = True
         if changed:
             c.setChanged()

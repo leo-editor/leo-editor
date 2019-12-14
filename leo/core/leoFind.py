@@ -543,7 +543,7 @@ class LeoFind:
                 p.anyAtFileNodeName() and not p.v.isDirty()
                 and any([p2.v.isDirty() for p2 in p.subtree()])
             ):
-                p.v.setDirty()
+                p.setDirty()
         c.redraw()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):

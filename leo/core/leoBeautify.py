@@ -786,7 +786,7 @@ class BlackCommand:
         p.v.contentModified()
         c.undoer.setUndoTypingParams(p, 'blacken-node', oldText=body, newText=result)
         if not p.v.isDirty():
-            p.setDirty()  # Was p.v.setDirty.
+            p.setDirty()
         return True
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter

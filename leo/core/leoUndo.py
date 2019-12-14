@@ -104,7 +104,6 @@ class Undoer:
         self.pasteAsClone = None
         self.prevSel = None
         self.sortChildren = None
-        ### self.undo_nodes = [] # #1451.
         self.verboseUndoGroup = None
         self.reloadSettings()
     #@+node:ekr.20191213085126.1: *4* u.reloadSettings
@@ -1072,8 +1071,6 @@ class Undoer:
             u.pushBead(bunch)
         else:
             bunch = old_d
-            
-        ### u.undo_nodes = [p.v]
         bunch.leading = u.leading
         bunch.trailing = u.trailing
         bunch.newNewlines = u.newNewlines
@@ -1101,7 +1098,6 @@ class Undoer:
         #
         # Init status.
         u.redoing = True
-        ### u.undo_nodes = set()  # The vnodes that should be marked changed.
         u.groupCount = 0
         if u.redoHelper:
             u.redoHelper()
@@ -1155,7 +1151,6 @@ class Undoer:
     def redoDeleteMarkedNodes(self):
         u = self; c = u.c
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.newP.v)
         c.deleteMarked()
         c.selectPosition(u.newP)
     #@+node:EKR.20040526072519.2: *4* u.redoDeleteNode
@@ -1164,7 +1159,6 @@ class Undoer:
         c.selectPosition(u.p)
         c.deleteOutline()
         c.selectPosition(u.newP)
-        ### u.undo_nodes.add(u.newP.v)
     #@+node:ekr.20080425060424.9: *4* u.redoDemote
     def redoDemote(self):
         u = self; c = u.c
@@ -1180,7 +1174,6 @@ class Undoer:
             v.parents.append(u.p.v)
         u.p.setDirty()
         c.setCurrentPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
     #@+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self):
         """Process beads until the matching 'afterGroup' bead is seen."""
@@ -1215,14 +1208,12 @@ class Undoer:
         c, u = self.c, self
         u.p.setDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
         c.hoist()
 
     def redoDehoistNode(self):
         c, u = self.c, self
         u.p.setDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
         c.dehoist()
     #@+node:ekr.20050412084532: *4* u.redoInsertNode
     def redoInsertNode(self):
@@ -1247,7 +1238,6 @@ class Undoer:
                     v.setHeadString(bunch.head)
         u.newP.setDirty()
         c.selectPosition(u.newP)
-        ### u.undo_nodes.add(u.newP.v)
     #@+node:ekr.20050526125801: *4* u.redoMark
     def redoMark(self):
         u = self; c = u.c
@@ -1268,14 +1258,12 @@ class Undoer:
         assert u.oldParent_v.children[u.oldN] == v
         del u.oldParent_v.children[u.oldN]
         u.oldParent_v.setDirty()
-        ### u.undo_nodes.add(u.oldParent_v)
         # Adjust the children array of the new parent.
         parent_v = u.newParent_v
         parent_v.children.insert(u.newN, v)
         v.parents.append(u.newParent_v)
         v.parents.remove(u.oldParent_v)
         u.newParent_v.setDirty()
-        ### u.undo_nodes.add(u.newParent_v)
         #
         u.updateMarks('new')
         u.newP.setDirty()
@@ -1288,7 +1276,6 @@ class Undoer:
         if c.p != u.p: # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
-        ### u.undo_nodes.add(u.p.v)
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
@@ -1303,7 +1290,7 @@ class Undoer:
         if u.groupCount == 0 and u.newYScroll is not None:
             w.setYScrollPosition(u.newYScroll)
         u.updateMarks('new')
-        u.p.v.setDirty()
+        u.p.setDirty()
     #@+node:ekr.20080425060424.13: *4* u.redoPromote
     def redoPromote(self):
         u = self; c = u.c
@@ -1326,17 +1313,15 @@ class Undoer:
             child.parents.append(parent_v)
         u.p.setDirty()
         c.setCurrentPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
     #@+node:ekr.20080425060424.4: *4* u.redoSort
     def redoSort(self):
         u = self; c = u.c
         parent_v = u.p._parentVnode()
         parent_v.children = u.newChildren
         p = c.setPositionAfterSort(u.sortChildren)
-        if parent_v:
-            parent_v.setDirty()
+        p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-        ### u.undo_nodes.add(parent_v)
+
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self):
         """Redo replacement of an entire tree."""
@@ -1344,7 +1329,6 @@ class Undoer:
         u.p = self.undoRedoTree(u.p, u.oldTree, u.newTree)
         u.p.setDirty()
         c.selectPosition(u.p) # Does full recolor.
-        ### u.undo_nodes.add(u.p.v)
         if u.newSel:
             i, j = u.newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1388,7 +1372,6 @@ class Undoer:
         #
         # Init status.
         u.undoing = True
-        ### u.undo_nodes = set()  # The vnodes that should be marked changed.
         u.groupCount = 0
         #
         # Dispatch.
@@ -1422,7 +1405,6 @@ class Undoer:
         next.doDelete()
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
     #@+node:ekr.20160502175653.1: *4* u.undoCopyMarkedNodes
     def undoCopyMarkedNodes(self):
         u = self
@@ -1431,7 +1413,7 @@ class Undoer:
         next.doDelete()
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
+
     #@+node:ekr.20050412083057.1: *4* u.undoCloneNode
     def undoCloneNode(self):
         u = self; c = u.c; cc = c.chapterController
@@ -1455,7 +1437,6 @@ class Undoer:
             p.v._addLink(p._childIndex, parent_v)
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
     #@+node:ekr.20050412084055: *4* u.undoDeleteNode
     def undoDeleteNode(self):
         u = self; c = u.c
@@ -1468,7 +1449,7 @@ class Undoer:
             u.p._linkAsRoot(oldRoot)
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
+
     #@+node:ekr.20080425060424.10: *4* u.undoDemote
     def undoDemote(self):
         u = self; c = u.c
@@ -1485,7 +1466,7 @@ class Undoer:
             sib.parents.remove(u.p.v)
             sib.parents.append(parent_v)
         c.setCurrentPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
+
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
         """Process beads until the matching 'beforeGroup' bead is seen."""
@@ -1523,14 +1504,12 @@ class Undoer:
         u = self; c = u.c
         u.p.setDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
         c.dehoist()
 
     def undoDehoistNode(self):
         u = self; c = u.c
         u.p.setDirty()
         c.selectPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
         c.hoist()
     #@+node:ekr.20050412085112: *4* u.undoInsertNode
     def undoInsertNode(self):
@@ -1538,7 +1517,6 @@ class Undoer:
         if cc: cc.selectChapterByName('main')
         u.newP.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.newP)
-        ### u.undo_nodes.add(u.newP.v)
         c.deleteOutline()
             # Bug fix: 2016/03/30.
             # This always selects the proper new position.
@@ -1625,7 +1603,6 @@ class Undoer:
             child.parents.remove(parent_v)
             child.parents.append(u.p.v)
         c.setCurrentPosition(u.p)
-        ### u.undo_nodes.add(u.p.v)
     #@+node:ekr.20031218072017.1493: *4* u.undoRedoText (changed)
     def undoRedoText(self, p,
         leading, trailing, # Number of matching leading & trailing lines.
@@ -1692,7 +1669,7 @@ class Undoer:
         p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-        ### u.undo_nodes.add(p.v)
+
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self):
         """Redo replacement of an entire tree."""
@@ -1732,11 +1709,6 @@ class Undoer:
         """
         c, u = self.c, self
         w = c.frame.body.wrapper
-        ###
-            # # #1451: set the dirty bits.
-            # for v in list(u.undo_nodes):
-                # v.setAllAncestorAtFileNodesDirty()
-                # v.setDirty()
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         #

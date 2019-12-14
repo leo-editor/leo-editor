@@ -1170,7 +1170,7 @@ def unmarkAll(self, event=None):
             bunch = u.beforeMark(p, undoType)
             # c.clearMarked(p) # Very slow: calls a hook.
             p.v.clearMarked()
-            p.v.setDirty()
+            p.setDirty()
             u.afterMark(p, undoType, bunch)
             changed = True
     if changed:
@@ -1284,7 +1284,7 @@ def moveOutlineLeft(self, event=None):
     undoData = u.beforeMoveNode(p)
     p.setDirty()
     p.moveAfter(parent)
-    p.v.setDirty()
+    p.setDirty()
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Left', undoData)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
