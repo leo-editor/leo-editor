@@ -2410,14 +2410,14 @@ class VNode:
                 for parent_v in v.parents:
                     yield from v_and_parents(parent_v)
                 
-        dirtyVnodeList = list(set(
+        aList = list(set(
             [v for v in v_and_parents(v)
                 if v.isAnyAtFileNode() and not v.isDirty()]
         ))
-        if 'save' in g.app.debug and dirtyVnodeList:
+        if 'save' in g.app.debug and aList:
             g.trace(v.h, g.callers())
-            g.printObj(dirtyVnodeList)
-        for v in dirtyVnodeList:
+            g.printObj(aList)
+        for v in aList:
             v.setDirty()
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):

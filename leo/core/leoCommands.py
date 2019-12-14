@@ -3604,11 +3604,8 @@ class Commands:
         # This handles the undo.
         body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
         # Update the changed mark and icon.
+        p.setDirty()
         c.setChanged(True)
-        if p.isDirty():
-            dirtyVnodeList = []
-        else:
-            dirtyVnodeList = p.setDirty()
         c.redraw_after_icons_changed()
         # Scroll as necessary.
         if oldYview:
@@ -3617,7 +3614,6 @@ class Commands:
             body.wrapper.seeInsertPoint()
         body.wrapper.setFocus()
         c.recolor()
-        return dirtyVnodeList
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
         add_path=True,

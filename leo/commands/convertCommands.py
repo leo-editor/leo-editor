@@ -36,7 +36,7 @@ class To_Python:
         u, undoType = c.undoer, 'typescript-to-python'
         pp = leoBeautify.CPrettyPrinter(c)
         u.beforeChangeGroup(c.p, undoType)
-        changed, dirtyVnodeList = False, []
+        changed = False
         n_files, n_nodes = 0, 0
         special = ('class ', 'module ', '@file ', '@@file ')
         files = ('@file ', '@@file ')
@@ -59,8 +59,7 @@ class To_Python:
                     changed = True
         # Call this only once, at end.
         if changed:
-            u.afterChangeGroup(c.p, undoType,
-                reportFlag=False, dirtyVnodeList=dirtyVnodeList)
+            u.afterChangeGroup(c.p, undoType, reportFlag=False)
         t2 = time.time()
         g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files, n_nodes, t2 - t1))
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList

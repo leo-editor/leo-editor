@@ -1176,7 +1176,7 @@ def unmarkAll(self, event=None):
     if changed:
         g.doHook("clear-all-marks", c=c, p=p)
         c.setChanged(True)
-    u.afterChangeGroup(current, undoType) #, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType)
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
 #@+node:ekr.20031218072017.1767: *3* c_oc.demote (changed)
