@@ -836,8 +836,7 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     if not newNode: return
     undoData = u.beforeDeleteNode(p)
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
-    p.v.setDirty()
+    p.setDirty()
     p.doDelete(newNode)
     c.setChanged(True)
     u.afterDeleteNode(newNode, op_name, undoData) ###, dirtyVnodeList=dirtyVnodeList)
@@ -901,8 +900,7 @@ def insertHeadlineHelper(c,
     g.doHook('create-node', c=c, p=p)
     ### p.setDirty() # setDescendentsDirty=False
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
-    p.v.setDirty()
+    p.setDirty()
     c.setChanged(True)
     u.afterInsertNode(p, op_name, undoData) ### , dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
@@ -925,8 +923,7 @@ def insertHeadlineBefore(self, event=None):
     g.doHook('create-node', c=c, p=p)
     ### p.setDirty() # setDescendentsDirty=False
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
-    p.v.setDirty()
+    p.setDirty()
     c.setChanged(True)
     u.afterInsertNode(p, op_name, undoData) ### , dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
@@ -1231,8 +1228,7 @@ def demote(self, event=None):
         # dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         # if dirtyVnodeList:
             # p.v.setDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
-    p.v.setDirty
+    p.setDirty()
     c.setChanged(True)
     u.afterDemote(p, followingSibs) ###, dirtyVnodeList)
     c.redraw(p)
@@ -1271,14 +1267,14 @@ def moveOutlineDown(self, event=None):
         moved = c.checkMoveWithParentWithWarning(p, next, True)
         if moved:
             ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.v.setAllAncestorAtFileNodesDirty()
+            p.setDirty()
             p.moveToNthChildOf(next, 0)
     else:
         # Attempt to move p after next.
         moved = c.checkMoveWithParentWithWarning(p, next.parent(), True)
         if moved:
             ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.v.setAllAncestorAtFileNodesDirty()
+            p.setDirty()
             p.moveAfter(next)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
@@ -1299,8 +1295,7 @@ def moveOutlineDown(self, event=None):
                 # else: # No need to mark descendents dirty.
                     # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
                     # dirtyVnodeList.extend(dirtyVnodeList2)
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        p.setDirty()
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Down', undoData) ###, dirtyVnodeList)
     c.redraw(p)
@@ -1323,9 +1318,8 @@ def moveOutlineLeft(self, event=None):
     c.endEditing()
     undoData = u.beforeMoveNode(p)
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
+    p.setDirty()
     p.moveAfter(parent)
-    p.v.setAllAncestorAtFileNodesDirty()
     p.v.setDirty()
     ###
         # if 1: # #1392.
@@ -1367,11 +1361,10 @@ def moveOutlineRight(self, event=None):
     c.endEditing()
     undoData = u.beforeMoveNode(p)
     ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.v.setAllAncestorAtFileNodesDirty()
+    p.setDirty()
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
-    p.v.setAllAncestorAtFileNodesDirty()
-    p.v.setDirty()
+    p.setDirty()
     ### #1392.
         # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
         # dirtyVnodeList = list(set(dirtyVnodeList + dirtyVnodeList2))
@@ -1412,22 +1405,22 @@ def moveOutlineUp(self, event=None):
                 g.trace('can not happen. In hoist')
             else:
                 moved = True
-                p.v.setAllAncestorAtFileNodesDirty()
+                p.setDirty()
                 p.moveToFirstChildOf(limit)
         else:
             # p will be the new root node
-            p.v.setAllAncestorAtFileNodesDirty()
+            p.setDirty()
             p.moveToRoot(oldRoot=c.rootPosition())
             moved = True
     elif back2.hasChildren() and back2.isExpanded():
         if c.checkMoveWithParentWithWarning(p, back2, True):
             moved = True
-            p.v.setAllAncestorAtFileNodesDirty() 
+            p.setDirty() 
             p.moveToNthChildOf(back2, 0)
     else:
         if c.checkMoveWithParentWithWarning(p, back2.parent(), True):
             moved = True
-            p.v.setAllAncestorAtFileNodesDirty()
+            p.setDirty()
             p.moveAfter(back2)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and moved and c.sparse_move and parent and not parent.isAncestorOf(p):
@@ -1448,8 +1441,7 @@ def moveOutlineUp(self, event=None):
                 # else: # No need to mark descendents dirty.
                     # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
                 # dirtyVnodeList.extend(dirtyVnodeList2)
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        p.setDirty()
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData) ###, dirtyVnodeList)
     c.redraw(p)
@@ -1469,8 +1461,7 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     p.promote()
     c.setChanged(True)
     if undoFlag:
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        p.setDirty()
         ###
             # if 1: ### Experimental.
                 # dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()

@@ -2708,10 +2708,9 @@ class Commands:
         c.endEditing()
         undoData = u.beforeMoveNode(current)
         ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.v.setAllAncestorAtFileNodesDirty()
+        p.setDirty()
         p.moveToNthChildOf(parent, n)
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        p.setDirty()
         ###
             # if inAtIgnoreRange and not p.inAtIgnoreRange():
                 # # The moved nodes have just become newly unignored.
@@ -2736,10 +2735,9 @@ class Commands:
         c.endEditing()
         undoData = u.beforeMoveNode(current)
         ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.v.setAllAncestorAtFileNodesDirty() ###
-        p.v.setDirty() ###
+        p.setDirty() ###
         p.moveAfter(after)
-        p.v.setAllAncestorAtFileNodesDirty() ###
+        p.setDirty() ###
         ###
         # if inAtIgnoreRange and not p.inAtIgnoreRange():
             # # The moved nodes have just become newly unignored.

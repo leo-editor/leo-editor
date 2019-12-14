@@ -531,8 +531,7 @@ class NullTokenBeautifier:
         undoData = u.beforeChangeNodeContents(p)
         c.setBodyString(p, s)
         ### dirtyVnodeList2 = p.setDirty()
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        p.setDirty()
         ### self.dirtyVnodeList.extend(dirtyVnodeList2)
         u.afterChangeNodeContents(p, undoType, undoData) ###, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
@@ -828,8 +827,7 @@ class CPrettyPrinter:
                     p.b = s
                     ### dirtyVnodeList2 = p.setDirty()
                     ###dirtyVnodeList.extend(dirtyVnodeList2)
-                    p.v.setAllAncestorAtFileNodesDirty() ###
-                    p.v.setDirty()
+                    p.setDirty() ###
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         if changed:

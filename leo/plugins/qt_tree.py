@@ -781,8 +781,8 @@ class LeoQtTree(leoFrame.LeoTree):
             # the headline may contain directives.
             c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
+            u.afterChangeNodeContents(p, undoType, undoData, inHead=True) 
+                ### dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
         g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
         # This is a crucial shortcut.
         if g.unitTesting: return

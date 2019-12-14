@@ -100,8 +100,7 @@ def convertAllBlanks(self, event=None):
                 result.append(s)
             if changed:
                 count += 1
-                p.v.setAllAncestorAtFileNodesDirty()
-                p.v.setDirty()
+                p.setDirty()
                 ### dirtyVnodeList2 = p.setDirty()
                 ### dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)
@@ -146,8 +145,7 @@ def convertAllTabs(self, event=None):
                 result.append(s)
             if changed:
                 count += 1
-                p.v.setAllAncestorAtFileNodesDirty()
-                p.v.setdirty()
+                p.setDirty()
                 ### dirtyVnodeList2 = p.setDirty()
                 ###dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)

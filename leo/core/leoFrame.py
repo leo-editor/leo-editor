@@ -1303,8 +1303,7 @@ class LeoTree:
             c.frame.scanForTabWidth(p)
             c.frame.body.recolor(p)
             ###dirtyVnodeList = p.setDirty()
-            p.v.setAllAncestorAtFileNodesDirty()
-            p.v.setDirty()
+            p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
                 ### dirtyVnodeList=dirtyVnodeList, 
         if changed:

@@ -1767,48 +1767,53 @@ class Position:
                 return True
         return False
     #@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
+    def setAllAncestorAtFileNodesDirty(self):
         """
-        Rewritten by Виталије Милошевић (Vitalije Milosevic).
+        Set all ancestor @<file> nodes dirty, including ancestors of all clones of p.
         """
         p = self
-        c = p.v.context
-
-        def v_and_parents(v):
-            if v != c.hiddenRootNode:
-                yield v
-            for parent_v in v.parents:
-                yield from v_and_parents(parent_v)
-                
-        dirtyVnodeList = list(set(
-            [v for v in v_and_parents(p.v)
-                if v.isAnyAtFileNode() and not v.isDirty()]
-        ))
-        if 'dirty' in g.app.debug and dirtyVnodeList:
-            g.trace(p.h, g.callers())
-            g.printObj(dirtyVnodeList)
-        for v in dirtyVnodeList:
-            v.setDirty()
-        return dirtyVnodeList
-      
+        p.v.setAllAncestorAtFileNodesDirty()
+        ###
+            # c = p.v.context
+        
+            # def v_and_parents(v):
+                # if v != c.hiddenRootNode:
+                    # yield v
+                # for parent_v in v.parents:
+                    # yield from v_and_parents(parent_v)
+                    
+            # dirtyVnodeList = list(set(
+                # [v for v in v_and_parents(p.v)
+                    # if v.isAnyAtFileNode() and not v.isDirty()]
+            # ))
+            # if 'dirty' in g.app.debug and dirtyVnodeList:
+                # g.trace(p.h, g.callers())
+                # g.printObj(dirtyVnodeList)
+            # for v in dirtyVnodeList:
+                # v.setDirty()
+            # return dirtyVnodeList
+          
     #@+node:ekr.20040303163330: *5* p.setDirty
-    def setDirty(self): # setDescendentsDirty=True
+    def setDirty(self): ### setDescendentsDirty=True
         """
         Mark a node and all ancestor @file nodes dirty.
 
         p.setDirty() is no longer expensive.
         """
         p = self
-        dirtyVnodeList = []
-        if not p.v.isDirty():
-            p.v.setDirty()
-            dirtyVnodeList.append(p.v)
-        #
-        # Important: this must be called even if p.v is already dirty.
-        # Typing can change the @ignore state!
-        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty
-        dirtyVnodeList.extend(dirtyVnodeList2)
-        return dirtyVnodeList
+        p.v.setAllAncestorAtFileNodesDirty()
+        p.v.setDirty()
+        ###
+            # dirtyVnodeList = []
+            # if not p.v.isDirty():
+                # p.v.setDirty()
+                # dirtyVnodeList.append(p.v)
+            # #
+            # # Important: this must be called even if p.v is already dirty.
+            # # Typing can change the @ignore state!
+            # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty
+            # dirtyVnodeList.extend(dirtyVnodeList2)
+            # return dirtyVnodeList
     #@+node:ekr.20160225153333.1: *3* p.Predicates
     #@+node:ekr.20160225153414.1: *4* p.is_at_all & is_at_all_tree
     def is_at_all(self):

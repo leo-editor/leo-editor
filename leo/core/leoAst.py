@@ -4485,7 +4485,11 @@ class TestRunner:
         if self.x:
             print(AstDumper().brief_dump(tree))
             return
-        from asttokens.util import walk
+        try:
+            # pylint: disable=import-error
+            from asttokens.util import walk
+        except Exception:
+            return
         # print(dumper.dump(tree))
         for z in walk(tree):
             class_name = z.__class__.__name__
@@ -4648,6 +4652,8 @@ class TestRunner:
         # Create tokens and tree.
         t1 = time.process_time()
         if 'use-asttokens' in flags:
+            # pylint: disable=import-error
+            # It's ok to raise ImportError here.
             import asttokens
             x = self.x = None
             atok = asttokens.ASTTokens(sources, parse=True)
