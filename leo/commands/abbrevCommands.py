@@ -594,7 +594,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             prefixes.append('')
         return s, i, j, prefixes
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
-    #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
+    #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/ (changed)
     @cmd('dabbrev-completion')
     def dynamicCompletion(self, event=None):
         """
@@ -624,7 +624,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(prefix))
             w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-completion', bunch=b, dirtyVnodeList=[])
+                command='dabbrev-completion', bunch=b) ###, dirtyVnodeList=[])
             c.recolor()
     #@+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -653,7 +653,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prefix = functools.reduce(g.longestCommonPrefix, aList)
         prefix = prefix.strip()
         self.dynamicExpandHelper(event, prefix, aList, w)
-    #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
+    #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper (changed)
     def dynamicExpandHelper(self, event, prefix=None, aList=None, w=None):
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
@@ -688,7 +688,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(k.arg))
             w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-expand', bunch=b, dirtyVnodeList=[])
+                command='dabbrev-expand', bunch=b) ###, dirtyVnodeList=[])
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
     def getDynamicList(self, w, s):

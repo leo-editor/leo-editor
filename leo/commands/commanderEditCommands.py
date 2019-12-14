@@ -67,7 +67,7 @@ def colorPanel(self, event=None):
     if not frame.colorPanel:
         frame.colorPanel = g.app.gui.createColorPanel(c)
     frame.colorPanel.bringToFront()
-#@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
+#@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks (changed)
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self, event=None):
     """Convert all blanks to tabs in the selected outline."""
@@ -78,15 +78,17 @@ def convertAllBlanks(self, event=None):
         return
     d = c.scanAllDirectives()
     tabWidth = d.get("tabwidth")
-    count = 0; dirtyVnodeList = []
+    count = 0
+    ###; dirtyVnodeList = []
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed, dirtyVnodeList2 = c.convertBlanks(event)
+            ### changed, dirtyVnodeList2 = c.convertBlanks(event)
+            changed = c.convertBlanks(event)
             if changed:
                 count += 1
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                ### dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             changed = False; result = []
             text = p.v.b
@@ -98,18 +100,20 @@ def convertAllBlanks(self, event=None):
                 result.append(s)
             if changed:
                 count += 1
-                dirtyVnodeList2 = p.setDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                p.v.setAllAncestorAtFileNodesDirty()
+                p.v.setDirty()
+                ### dirtyVnodeList2 = p.setDirty()
+                ### dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
-    u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType) ###, dirtyVnodeList=dirtyVnodeList)
     if not g.unitTesting:
         g.es("blanks converted to tabs in", count, "nodes")
             # Must come before c.redraw().
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
+#@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs (changed)
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self, event=None):
     """Convert all tabs to blanks in the selected outline."""
@@ -120,15 +124,17 @@ def convertAllTabs(self, event=None):
         return
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
-    count = 0; dirtyVnodeList = []
+    count = 0
+    ###; dirtyVnodeList = []
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         undoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed, dirtyVnodeList2 = self.convertTabs(event)
+            ### changed, dirtyVnodeList2 = self.convertTabs(event)
+            changed = self.convertTabs(event)
             if changed:
                 count += 1
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                ### dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             result = []; changed = False
             text = p.v.b
@@ -140,21 +146,24 @@ def convertAllTabs(self, event=None):
                 result.append(s)
             if changed:
                 count += 1
-                dirtyVnodeList2 = p.setDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                p.v.setAllAncestorAtFileNodesDirty()
+                p.v.setdirty()
+                ### dirtyVnodeList2 = p.setDirty()
+                ###dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, undoData)
-    u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType) ###, dirtyVnodeList=dirtyVnodeList)
     if not g.unitTesting:
         g.es("tabs converted to blanks in", count, "nodes")
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
+#@+node:ekr.20171123135625.18: ** c_ec.convertBlanks (changed)
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
     """Convert all blanks to tabs in the selected node."""
-    c = self; changed = False; dirtyVnodeList = []
+    c = self; changed = False
+    ### ; dirtyVnodeList = []
     head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -169,13 +178,16 @@ def convertBlanks(self, event=None):
             undoType = 'Convert Blanks'
             result = ''.join(result)
             oldSel = None
-            dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-    return changed, dirtyVnodeList
-#@+node:ekr.20171123135625.19: ** c_ec.convertTabs
+            ####dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+    return changed
+#@+node:ekr.20171123135625.19: ** c_ec.convertTabs (changed)
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""
-    c = self; changed = False; dirtyVnodeList = []
+    c = self; changed = False
+    
+    ###; dirtyVnodeList = []
     head, lines, tail, oldSel, oldYview = self.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -191,8 +203,9 @@ def convertTabs(self, event=None):
             undoType = 'Convert Tabs'
             result = ''.join(result)
             oldSel = None
-            dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-    return changed, dirtyVnodeList
+            ### dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+    return changed
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):

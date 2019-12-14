@@ -4136,7 +4136,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 fn = s[: i]
                 s = s[i + 1:]
         return fn, s
-    #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers
+    #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers (changed)
     def urlDrop(self, md, p):
         """Handle a drop when md.urls()."""
         c, u, undoType = self.c, self.c.undoer, 'Drag Urls'
@@ -4154,7 +4154,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 changed |= self.doHttpUrl(p, url)
         if changed:
             c.setChanged(True)
-            u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
+            u.afterChangeGroup(c.p, undoType, reportFlag=False)
+                ###, dirtyVnodeList=[])
             c.redraw()
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p, url):

@@ -1302,9 +1302,11 @@ class LeoTree:
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
             c.frame.body.recolor(p)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True)
+            ###dirtyVnodeList = p.setDirty()
+            p.v.setAllAncestorAtFileNodesDirty()
+            p.v.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+                ### dirtyVnodeList=dirtyVnodeList, 
         if changed:
             c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper

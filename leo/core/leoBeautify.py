@@ -469,13 +469,13 @@ class NullTokenBeautifier:
         """
         pass
     #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
-    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
+    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo (changed)
     def end_undo(self):
         """Complete undo processing."""
         c, u = self.c, self.c.undoer
         if self.changed:
             # Tag the end of the command.
-            u.afterChangeGroup(c.p, self.undo_type, dirtyVnodeList=self.dirtyVnodeList)
+            u.afterChangeGroup(c.p, self.undo_type) ###, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20191029014023.11: *4* null_tok_b.find_root
     def find_root(self):
         """
@@ -515,7 +515,7 @@ class NullTokenBeautifier:
             f"check          {self.check_time:4.2f}\n"
             f"total          {self.total_time:4.2f}"
         )
-    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body
+    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body (changed)
     def replace_body(self, p, s):
         """Undoably replace the body."""
         c, u = self.c, self.c.undoer
@@ -527,12 +527,14 @@ class NullTokenBeautifier:
             # Start the group.
             u.beforeChangeGroup(p, undoType)
             self.changed = True
-            self.dirtyVnodeList = []
+            ### self.dirtyVnodeList = []
         undoData = u.beforeChangeNodeContents(p)
         c.setBodyString(p, s)
-        dirtyVnodeList2 = p.setDirty()
-        self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p, undoType, undoData, dirtyVnodeList=self.dirtyVnodeList)
+        ### dirtyVnodeList2 = p.setDirty()
+        p.v.setAllAncestorAtFileNodesDirty()
+        p.v.setDirty()
+        ### self.dirtyVnodeList.extend(dirtyVnodeList2)
+        u.afterChangeNodeContents(p, undoType, undoData) ###, dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
     def token_description(self, token):
         """Return a summary of token's kind & value"""
@@ -816,7 +818,7 @@ class CPrettyPrinter:
             return
         u, undoType = c.undoer, 'beautify-c'
         u.beforeChangeGroup(c.p, undoType)
-        dirtyVnodeList = []
+        ### dirtyVnodeList = []
         changed = False
         for p in c.p.self_and_subtree():
             if g.scanForAtLanguage(c, p) == "c":
@@ -824,14 +826,15 @@ class CPrettyPrinter:
                 s = self.indent(p)
                 if p.b != s:
                     p.b = s
-                    dirtyVnodeList2 = p.setDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
+                    ### dirtyVnodeList2 = p.setDirty()
+                    ###dirtyVnodeList.extend(dirtyVnodeList2)
+                    p.v.setAllAncestorAtFileNodesDirty() ###
+                    p.v.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         if changed:
-            u.afterChangeGroup(
-                c.p, undoType, reportFlag=False, dirtyVnodeList=dirtyVnodeList
-            )
+            u.afterChangeGroup(c.p, undoType, reportFlag=False)
+                    ###, dirtyVnodeList=dirtyVnodeList
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
@@ -1713,7 +1716,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         #
         # Undo vars...
         self.changed = False
-        self.dirtyVnodeList = []
+        ### self.dirtyVnodeList = []
         #
         # Complete the init.
         self.sanitizer = None  # For pylint.
