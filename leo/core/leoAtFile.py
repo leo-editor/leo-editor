@@ -706,7 +706,10 @@ class AtFile:
 
         at = self; c = at.c; x = c.shadowController
         if not fn == p.atShadowFileNodeName():
-            return at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
+            at.error(
+                f"can not happen: fn: {fn} != atShadowNodeName: "
+                f"{p.atShadowFileNodeName()}")
+            return
         # Fix bug 889175: Remember the full fileName.
         fn = c.expand_path_expression(fn) # #1341.
         at.rememberReadPath(fn, p)
