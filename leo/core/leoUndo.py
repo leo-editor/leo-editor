@@ -1125,7 +1125,6 @@ class Undoer:
     def redoCloneMarkedNodes(self):
         u = self; c = u.c
         c.selectPosition(u.p)
-        # This can't affect any @<file> nodes.
         c.cloneMarked()
         u.newP = c.p
     #@+node:ekr.20160502175557.1: *4* u.redoCopyMarkedNodes
@@ -1535,7 +1534,6 @@ class Undoer:
         u = self; c = u.c
         u.updateMarks('old')
         if u.groupCount == 0:
-            # u.p.setDirty()
             c.selectPosition(u.p)
 
     #@+node:ekr.20050411112033: *4* u.undoMove

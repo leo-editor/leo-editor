@@ -2399,7 +2399,9 @@ class VNode:
     #@+node:ekr.20191213161023.1: *3* v.setAllAncestorAtFileNodesDirty (new)
     def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
         """
-        Rewritten by Виталије Милошевић (Vitalije Milosevic).
+        Original idea by Виталије Милошевић (Vitalije Milosevic).
+        
+        Modified by EKR.
         """
         v = self
         hiddenRootVnode = v.context.hiddenRootNode
@@ -2409,16 +2411,22 @@ class VNode:
                 yield v
                 for parent_v in v.parents:
                     yield from v_and_parents(parent_v)
+                    
+        # There is no harm in calling v2.setDirty redundantly.
+        for v2 in v_and_parents(v):
+            if v2.isAnyAtFileNode():
+                v2.setDirty()
                 
-        aList = list(set(
-            [v for v in v_and_parents(v)
-                if v.isAnyAtFileNode() and not v.isDirty()]
-        ))
-        if 'save' in g.app.debug and aList:
-            g.trace(v.h, g.callers())
-            g.printObj(aList)
-        for v in aList:
-            v.setDirty()
+        ###
+            # aList = list(set(
+                # [v for v in v_and_parents(v)
+                    # if v.isAnyAtFileNode() and not v.isDirty()]
+            # ))
+            # if 'save' in g.app.debug and aList:
+                # g.trace(v.h, g.callers())
+                # g.printObj(aList)
+            # for v in aList:
+                # v.setDirty()
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!
