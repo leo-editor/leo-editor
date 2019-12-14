@@ -2700,61 +2700,40 @@ class Commands:
     def dragToNthChildOf(self, p, parent, n):
         c = self; u = c.undoer; undoType = 'Drag'
         current = c.p
-        ###inAtIgnoreRange = p.inAtIgnoreRange()
         if not c.checkDrag(p, parent):
             return
         if not c.checkMoveWithParentWithWarning(p, parent, True):
             return
         c.endEditing()
         undoData = u.beforeMoveNode(current)
-        ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         p.setDirty()
         p.moveToNthChildOf(parent, n)
         p.setDirty()
-        ###
-            # if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # # The moved nodes have just become newly unignored.
-                # dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                # dirtyVnodeList.extend(dirtyVnodeList2)
-            # else: # No need to mark descendents dirty.
-                # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                # dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
-        u.afterMoveNode(p, undoType, undoData) ###, dirtyVnodeList=dirtyVnodeList)
+        u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2353: *5* c.dragAfter (changed)
     def dragAfter(self, p, after):
         c = self; u = self.undoer; undoType = 'Drag'
         current = c.p
-        ### inAtIgnoreRange = p.inAtIgnoreRange()
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
             return
         c.endEditing()
         undoData = u.beforeMoveNode(current)
-        ### dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.setDirty() ###
+        p.setDirty()
         p.moveAfter(after)
-        p.setDirty() ###
-        ###
-        # if inAtIgnoreRange and not p.inAtIgnoreRange():
-            # # The moved nodes have just become newly unignored.
-            # dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-            # dirtyVnodeList.extend(dirtyVnodeList2)
-        # else: # No need to mark descendents dirty.
-            # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            # dirtyVnodeList.extend(dirtyVnodeList2)
+        p.setDirty()
         c.setChanged(True)
-        u.afterMoveNode(p, undoType, undoData) ###, dirtyVnodeList=dirtyVnodeList)
+        u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf (changed)
     def dragCloneToNthChildOf(self, p, parent, n):
         c = self; u = c.undoer; undoType = 'Clone Drag'
         current = c.p
-        ### inAtIgnoreRange = p.inAtIgnoreRange()
         clone = p.clone() # Creates clone & dependents, does not set undo.
         if (
             not c.checkDrag(p, parent) or
@@ -2765,19 +2744,11 @@ class Commands:
             return
         c.endEditing()
         undoData = u.beforeInsertNode(current)
-        #### dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-        clone.v.setAllAncestorAtFileNodesDirty()
+        clone.setDirty()
         clone.moveToNthChildOf(parent, n)
-        ###
-            # if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # # The moved nodes have just become newly unignored.
-                # dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                # dirtyVnodeList.extend(dirtyVnodeList2)
-            # else: # No need to mark descendents dirty.
-                # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                # dirtyVnodeList.extend(dirtyVnodeList2)
+        clone.setDirty()
         c.setChanged(True)
-        u.afterInsertNode(clone, undoType, undoData) ###, dirtyVnodeList=dirtyVnodeList)
+        u.afterInsertNode(clone, undoType, undoData)
         c.redraw(clone)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2948: *5* c.dragCloneAfter (changed)
@@ -2786,23 +2757,13 @@ class Commands:
         current = c.p
         clone = p.clone() # Creates clone.  Does not set undo.
         if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
-            ### inAtIgnoreRange = clone.inAtIgnoreRange()
             c.endEditing()
             undoData = u.beforeInsertNode(current)
-            ### dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-            clone.v.setAllAncestorAtFileNodesDirty()
+            clone.setDirty()
             clone.moveAfter(after)
             clone.v.setDirty()
-            ###
-                # if inAtIgnoreRange and not clone.inAtIgnoreRange():
-                    # # The moved node have just become newly unignored.
-                    # dirtyVnodeList2 = clone.setDirty() # Mark descendent @thin nodes dirty.
-                    # dirtyVnodeList.extend(dirtyVnodeList2)
-                # else: # No need to mark descendents dirty.
-                    # dirtyVnodeList2 = clone.setAllAncestorAtFileNodesDirty()
-                    # dirtyVnodeList.extend(dirtyVnodeList2)
             c.setChanged(True)
-            u.afterInsertNode(clone, undoType, undoData) ###, dirtyVnodeList=dirtyVnodeList)
+            u.afterInsertNode(clone, undoType, undoData)
             p = clone
         else:
             clone.doDelete(newNode=p)
@@ -3751,7 +3712,7 @@ class Commands:
             for p in clones:
                 clone = p.clone()
                 clone.moveToLastChildOf(root)
-            u.afterInsertNode(root, undoType, undoData)###, dirtyVnodeList=[])
+            u.afterInsertNode(root, undoType, undoData)
             if redraw:
                 c.selectPosition(root)
                 c.setChanged(True)

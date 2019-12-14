@@ -79,16 +79,13 @@ def convertAllBlanks(self, event=None):
     d = c.scanAllDirectives()
     tabWidth = d.get("tabwidth")
     count = 0
-    ###; dirtyVnodeList = []
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
-            ### changed, dirtyVnodeList2 = c.convertBlanks(event)
             changed = c.convertBlanks(event)
             if changed:
                 count += 1
-                ### dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             changed = False; result = []
             text = p.v.b
@@ -101,12 +98,10 @@ def convertAllBlanks(self, event=None):
             if changed:
                 count += 1
                 p.setDirty()
-                ### dirtyVnodeList2 = p.setDirty()
-                ### dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
-    u.afterChangeGroup(current, undoType) ###, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.es("blanks converted to tabs in", count, "nodes")
             # Must come before c.redraw().
@@ -124,16 +119,13 @@ def convertAllTabs(self, event=None):
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
     count = 0
-    ###; dirtyVnodeList = []
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         undoData = u.beforeChangeNodeContents(p)
         if p == current:
-            ### changed, dirtyVnodeList2 = self.convertTabs(event)
             changed = self.convertTabs(event)
             if changed:
                 count += 1
-                ### dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             result = []; changed = False
             text = p.v.b
@@ -146,12 +138,10 @@ def convertAllTabs(self, event=None):
             if changed:
                 count += 1
                 p.setDirty()
-                ### dirtyVnodeList2 = p.setDirty()
-                ###dirtyVnodeList.extend(dirtyVnodeList2)
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, undoData)
-    u.afterChangeGroup(current, undoType) ###, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.es("tabs converted to blanks in", count, "nodes")
     if count > 0:
@@ -161,7 +151,6 @@ def convertAllTabs(self, event=None):
 def convertBlanks(self, event=None):
     """Convert all blanks to tabs in the selected node."""
     c = self; changed = False
-    ### ; dirtyVnodeList = []
     head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -169,23 +158,22 @@ def convertBlanks(self, event=None):
     if tabWidth:
         result = []
         for line in lines:
-            s = g.optimizeLeadingWhitespace(line, abs(tabWidth)) # Use positive width.
+            s = g.optimizeLeadingWhitespace(line, abs(tabWidth))
+                # Use positive width.
             if s != line: changed = True
             result.append(s)
         if changed:
             undoType = 'Convert Blanks'
             result = ''.join(result)
             oldSel = None
-            ####dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+                # Handles undo
     return changed
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs (changed)
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""
     c = self; changed = False
-    
-    ###; dirtyVnodeList = []
     head, lines, tail, oldSel, oldYview = self.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -194,15 +182,16 @@ def convertTabs(self, event=None):
         result = []
         for line in lines:
             i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-            s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:] # use negative width.
+            s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]
+                # use negative width.
             if s != line: changed = True
             result.append(s)
         if changed:
             undoType = 'Convert Tabs'
             result = ''.join(result)
             oldSel = None
-            ### dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+                # Handles undo
     return changed
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')

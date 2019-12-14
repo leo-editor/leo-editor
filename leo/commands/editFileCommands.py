@@ -156,7 +156,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         undoData = u.beforeInsertNode(c.p)
         parent = c.p.insertAfter()
         parent.setHeadString(undoType)
-        u.afterInsertNode(parent, undoType, undoData) ###, dirtyVnodeList=[])
+        u.afterInsertNode(parent, undoType, undoData)
         # Use the wrapped file name if possible.
         fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
         fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()

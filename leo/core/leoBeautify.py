@@ -475,7 +475,7 @@ class NullTokenBeautifier:
         c, u = self.c, self.c.undoer
         if self.changed:
             # Tag the end of the command.
-            u.afterChangeGroup(c.p, self.undo_type) ###, dirtyVnodeList=self.dirtyVnodeList)
+            u.afterChangeGroup(c.p, self.undo_type)
     #@+node:ekr.20191029014023.11: *4* null_tok_b.find_root
     def find_root(self):
         """
@@ -527,13 +527,10 @@ class NullTokenBeautifier:
             # Start the group.
             u.beforeChangeGroup(p, undoType)
             self.changed = True
-            ### self.dirtyVnodeList = []
         undoData = u.beforeChangeNodeContents(p)
         c.setBodyString(p, s)
-        ### dirtyVnodeList2 = p.setDirty()
         p.setDirty()
-        ### self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p, undoType, undoData) ###, dirtyVnodeList=self.dirtyVnodeList)
+        u.afterChangeNodeContents(p, undoType, undoData)
     #@+node:ekr.20191029014023.14: *4* null_tok_b.token_description
     def token_description(self, token):
         """Return a summary of token's kind & value"""
@@ -817,7 +814,6 @@ class CPrettyPrinter:
             return
         u, undoType = c.undoer, 'beautify-c'
         u.beforeChangeGroup(c.p, undoType)
-        ### dirtyVnodeList = []
         changed = False
         for p in c.p.self_and_subtree():
             if g.scanForAtLanguage(c, p) == "c":
@@ -825,14 +821,11 @@ class CPrettyPrinter:
                 s = self.indent(p)
                 if p.b != s:
                     p.b = s
-                    ### dirtyVnodeList2 = p.setDirty()
-                    ###dirtyVnodeList.extend(dirtyVnodeList2)
-                    p.setDirty() ###
+                    p.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         if changed:
             u.afterChangeGroup(c.p, undoType, reportFlag=False)
-                    ###, dirtyVnodeList=dirtyVnodeList
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
@@ -1001,6 +994,7 @@ class CPrettyPrinter:
                 i -= 1
             else:
                 return False
+        return False
     #@+node:ekr.20110918184425.6916: *5* reformat_block_comment
     def reformat_block_comment(self, s):
         return s
@@ -1714,7 +1708,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         #
         # Undo vars...
         self.changed = False
-        ### self.dirtyVnodeList = []
         #
         # Complete the init.
         self.sanitizer = None  # For pylint.

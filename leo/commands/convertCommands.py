@@ -54,10 +54,7 @@ class To_Python:
                 s = ''.join(aList)
                 if s != p.b:
                     p.b = s
-                    dirtyVnodeList2 = p.setDirty() # Was p.v.setDirty.
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    ### p.v.setDirty()
-                    ### dirtyVnodeList.append(p.v)
+                    p.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.

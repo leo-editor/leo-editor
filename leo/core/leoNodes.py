@@ -1773,28 +1773,8 @@ class Position:
         """
         p = self
         p.v.setAllAncestorAtFileNodesDirty()
-        ###
-            # c = p.v.context
-        
-            # def v_and_parents(v):
-                # if v != c.hiddenRootNode:
-                    # yield v
-                # for parent_v in v.parents:
-                    # yield from v_and_parents(parent_v)
-                    
-            # dirtyVnodeList = list(set(
-                # [v for v in v_and_parents(p.v)
-                    # if v.isAnyAtFileNode() and not v.isDirty()]
-            # ))
-            # if 'dirty' in g.app.debug and dirtyVnodeList:
-                # g.trace(p.h, g.callers())
-                # g.printObj(dirtyVnodeList)
-            # for v in dirtyVnodeList:
-                # v.setDirty()
-            # return dirtyVnodeList
-          
     #@+node:ekr.20040303163330: *5* p.setDirty
-    def setDirty(self): ### setDescendentsDirty=True
+    def setDirty(self):
         """
         Mark a node and all ancestor @file nodes dirty.
 
@@ -1803,17 +1783,6 @@ class Position:
         p = self
         p.v.setAllAncestorAtFileNodesDirty()
         p.v.setDirty()
-        ###
-            # dirtyVnodeList = []
-            # if not p.v.isDirty():
-                # p.v.setDirty()
-                # dirtyVnodeList.append(p.v)
-            # #
-            # # Important: this must be called even if p.v is already dirty.
-            # # Typing can change the @ignore state!
-            # dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty
-            # dirtyVnodeList.extend(dirtyVnodeList2)
-            # return dirtyVnodeList
     #@+node:ekr.20160225153333.1: *3* p.Predicates
     #@+node:ekr.20160225153414.1: *4* p.is_at_all & is_at_all_tree
     def is_at_all(self):
@@ -2450,7 +2419,6 @@ class VNode:
             g.printObj(dirtyVnodeList)
         for v in dirtyVnodeList:
             v.setDirty()
-        ### return dirtyVnodeList
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!

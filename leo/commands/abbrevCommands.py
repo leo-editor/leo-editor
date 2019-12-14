@@ -624,7 +624,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(prefix))
             w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-completion', bunch=b) ###, dirtyVnodeList=[])
+                command='dabbrev-completion', bunch=b)
             c.recolor()
     #@+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -688,7 +688,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(k.arg))
             w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-expand', bunch=b) ###, dirtyVnodeList=[])
+                command='dabbrev-expand', bunch=b)
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
     def getDynamicList(self, w, s):
