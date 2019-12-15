@@ -1263,8 +1263,8 @@ class Commands:
             return # don't update while loading.
         # Clear all dirty bits _before_ setting the caption.
         for v in c.all_unique_nodes():
-            if v.isDirty():
-                v.clearDirty()
+            v.clearDirty()
+        c.changed = False
         # Do nothing for null frames.
         assert c.gui
         if c.gui.guiName() == 'nullGui':
@@ -1310,7 +1310,7 @@ class Commands:
                 c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged (changed)
-    def setChanged(self, changedFlag=True, redrawFlag=True):
+    def setChanged(self, redrawFlag=True):
         """Set the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
@@ -1353,6 +1353,7 @@ class Commands:
         else: # 2011/02/25:
             c._currentPosition = c.rootPosition()
             g.trace(f"Invalid position: {repr(p and p.h)}")
+            g.trace(g.callers())
             # Don't kill unit tests for this kind of problem.
 
     # For compatibiility with old scripts.

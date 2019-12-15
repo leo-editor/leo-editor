@@ -80,6 +80,16 @@
 </v>
 </v>
 </v>
+<v t="ekr.20191215093835.9"><vh>data</vh>
+<v t="ekr.20191215093835.15"><vh>a</vh>
+<v t="ekr.20191215093835.16"><vh>b</vh></v>
+</v>
+<v t="ekr.20191215093835.12"><vh>c</vh></v>
+<v t="ekr.20191215093835.13"><vh>d</vh></v>
+<v t="ekr.20191215093835.14"><vh>e</vh>
+<v t="ekr.20191215093835.15"></v>
+</v>
+</v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -272,6 +282,101 @@
 <v t="ekr.20190923170025.4"><vh>node 3</vh></v>
 </v>
 <v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
+</v>
+<v t="ekr.20191215094949.1"><vh>Found:setChanged</vh>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
+</v>
+<v t="ekr.20150610064911.1"><vh>@test beautifier (small) </vh>
+<v t="ekr.20150610064930.1"><vh>before</vh></v>
+<v t="ekr.20150610065241.1"><vh>after</vh></v>
+</v>
+<v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
+<v t="ekr.20190914132845.2"><vh>peeve: ws in slices</vh>
+<v t="ekr.20190914132845.3"><vh>test</vh></v>
+<v t="ekr.20190914132845.4"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.5"><vh>peeve: ws after unary minus</vh>
+<v t="ekr.20190914132845.6"><vh>test</vh></v>
+<v t="ekr.20190914132845.7"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.8"><vh>peeve: ws between trailing comma &amp; close paren</vh>
+<v t="ekr.20190914132845.9"><vh>test</vh></v>
+<v t="ekr.20190914132845.10"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.11"><vh>peeve: ws inside parentheses, brackets or braces.</vh>
+<v t="ekr.20190914132845.12"><vh>test</vh></v>
+<v t="ekr.20190914132845.13"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.14"><vh>peeve: ws before comma, semicolon, colon</vh>
+<v t="ekr.20190914132845.15"><vh>test</vh></v>
+<v t="ekr.20190914132845.16"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914132845.17"><vh>peeve:  ws before parens</vh>
+<v t="ekr.20190914132845.18"><vh>test</vh></v>
+<v t="ekr.20190914132845.19"><vh>expected</vh></v>
+</v>
+</v>
+<v t="ekr.20190914111357.1"><vh>@test ptb (pet peeves) </vh>
+<v t="ekr.20190915083933.1"><vh>peeve: two spaces before a trailing comment</vh>
+<v t="ekr.20190915083945.1"><vh>test</vh></v>
+<v t="ekr.20190915084039.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914112029.1"><vh>peeve: ws after unary minus</vh>
+<v t="ekr.20190914111357.2"><vh>test</vh></v>
+<v t="ekr.20190914111357.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190915074109.1"><vh>peeve: ws around arithmetic ops in argument lists</vh>
+<v t="ekr.20190915074201.1"><vh>test</vh></v>
+<v t="ekr.20190915074205.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190915083243.1"><vh>peeve: ws around word ops</vh>
+<v t="ekr.20190915083412.1"><vh>test</vh></v>
+<v t="ekr.20190915083418.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914120318.1"><vh>peeve: ws before comma, semicolon, colon</vh>
+<v t="ekr.20190914120402.1"><vh>test</vh></v>
+<v t="ekr.20190914120406.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914123001.1"><vh>peeve: ws before parens</vh>
+<v t="ekr.20190914123101.1"><vh>test</vh></v>
+<v t="ekr.20190914123104.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914115821.1"><vh>peeve: ws between trailing comma &amp; close paren</vh>
+<v t="ekr.20190914120010.1"><vh>test</vh></v>
+<v t="ekr.20190914120016.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914181159.1"><vh>peeve: ws in slices: arithmetic ops</vh>
+<v t="ekr.20190914181159.2"><vh>test</vh></v>
+<v t="ekr.20190914181159.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914181344.1"><vh>peeve: ws in slices: function calls</vh>
+<v t="ekr.20190914181344.2"><vh>test</vh></v>
+<v t="ekr.20190914181344.3"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914122333.1"><vh>peeve: ws in slices: numbers &amp; words</vh>
+<v t="ekr.20190914122356.1"><vh>test</vh></v>
+<v t="ekr.20190914122359.1"><vh>expected</vh></v>
+</v>
+<v t="ekr.20190914115215.1"><vh>peeve: ws inside parentheses, brackets or braces.</vh>
+<v t="ekr.20190914115300.1"><vh>test</vh></v>
+<v t="ekr.20190914115304.1"><vh>expected</vh></v>
+</v>
+</v>
+<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
+<v t="ekr.20100123172713.5116"></v>
+<v t="ekr.20091206090247.5061"></v>
+</v>
+<v t="ekr.20191215095258.1"><vh>Found:clearChanged</vh>
+<v t="ekr.20090529115704.4564"></v>
+<v t="ekr.20090529115704.4567"></v>
+<v t="ekr.20150610064911.1"></v>
+<v t="ekr.20190914132845.1"></v>
+<v t="ekr.20190914111357.1"></v>
+<v t="ekr.20051107115231.9"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -951,6 +1056,21 @@ else:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
 </t>
+<t tx="ekr.20051107115231.9">c.redraw(p) # To make node visible
+
+c2 = c.new()
+p2 = c2.p
+
+try:
+    # This fails, but it is possible to edit the headline.
+    # assert c2.edit_widget(p2),'c2.edit_widget(p2) failed: %s' % repr(p2)
+    assert p2,'p2 failed: %s' % repr(p2)
+    # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
+finally:
+    ### c2.setChanged(False)
+    c2.clearChanged()
+    c2.close()
+</t>
 <t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060325071703.1">import sys
 
@@ -1119,7 +1239,19 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935">@nosearch</t>
+<t tx="ekr.20070417092935"># TARGETWORD
+
+w = c.frame.body.wrapper
+
+for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
+    w.setInsertPoint(5)
+    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
+    s = w.getAllText()
+    word = s[2:12]
+    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+    i = w.getInsertPoint()
+    assert i == 5, 'Expected 5, got: %d' % i
+</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1173,6 +1305,61 @@ g.pr('\nEnd of leoUndo tests.')
 
 Important: this may cause crashes on some platforms.
 </t>
+<t tx="ekr.20090529115704.4564">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+try:
+    fn = 'unittest/read_test.py'
+    child.setHeadString('@shadow %s' % fn)
+    at.writeOneAtShadowNode(child, testing=True)
+    at.readOneAtShadowNode(fn,child)
+finally:
+    child.setHeadString('@@shadow %s' % fn)
+    ### c.setChanged(changed)
+    c.clearChanged()
+</t>
+<t tx="ekr.20090529115704.4565">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20090529115704.4567">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    child.setHeadString('@shadow unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
+    at.writeOneAtShadowNode(child, testing=True)
+    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+        repr(at.startSentinelComment))
+    assert at.endSentinelComment == '','endSentinelComment: %s' % (
+        repr(at.endSentinelComment))
+    if 0:
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child, testing=False)
+    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
+finally:
+
+    child.setHeadString('@@shadow unittest/test_1.py')
+    ### c.setChanged(changed)
+    c.clearChanged()
+    # c.redraw_now()
+</t>
+<t tx="ekr.20090529115704.4568"># body of @shadow test node
+# The last line.
+</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
 for p in c.all_unique_positions():
@@ -1182,7 +1369,8 @@ for p in c.all_unique_positions():
     if hasattr(v,"tnodeList") and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
         g.es("deleting tnodeList for " + `v`,color="blue")
         delattr(v,"tnodeList")
-        c.setChanged(True)
+        ### c.setChanged(True)
+        c.setChanged()
 
 s = "%d nodes" % count
 print(s) ; g.es(s)</t>
@@ -1223,7 +1411,8 @@ for p in c.all_unique_positions():
     if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
         g.es("deleting tnodeList for " + `v`,color="blue")
         delattr(v,"tnodeList")
-        c.setChanged(True)
+        ### c.setChanged(True)
+        c.setChanged()
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
@@ -1873,6 +2062,29 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150610064911.1"># This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b, (
+        f"{g.objToString(p1.b, tag='BEFORE')}\n"
+        f"{g.objToString(p2.b, tag='AFTER')}")
+finally:
+    p1.b = s
+    ### c.setChanged(False)
+    c.clearChanged()
+</t>
+<t tx="ekr.20150610064930.1">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20150610065241.1">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -1965,6 +2177,335 @@ after
 <t tx="ekr.20190210103111.4"></t>
 <t tx="ekr.20190210103111.5">2.0
 2.0
+</t>
+<t tx="ekr.20190914111357.1">from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+errors, fails, tests = [], [], []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        tests.append(peeve.h)
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test) or test.b.strip() == expected.b.strip()
+            if not ok:
+                errors.append(peeve.h)
+                print(
+                    f"ERROR: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n")
+            elif test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                # self.assertEqual(test_s, test.b, f"Beautify-node FAIL: {peeve.h}\n")
+                print(
+                    f"Beautify-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s,     tag='    TEST')}\n"
+                    f"{g.objToString(test.b,     tag='     GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}\n")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    ### c.setChanged(False)
+    c.clearChanged()
+if 0:
+    g.printObj(tests, tag='TESTS')
+if fails or errors:
+    self.fail("\n"
+        f"{g.objToString(fails,  tag='Failures')}\n"
+        f"{g.objToString(errors, tag='  Errors')}")
+</t>
+<t tx="ekr.20190914111357.2">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914111357.3">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914112029.1"></t>
+<t tx="ekr.20190914115215.1"></t>
+<t tx="ekr.20190914115300.1">spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914115304.1">spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914115821.1"></t>
+<t tx="ekr.20190914120010.1">foo = (0,)
+bar = (0, )
+</t>
+<t tx="ekr.20190914120016.1">foo = (0,)
+bar = (0,)
+</t>
+<t tx="ekr.20190914120318.1"></t>
+<t tx="ekr.20190914120402.1">if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+</t>
+<t tx="ekr.20190914120406.1">if x == 4: pass
+if x == 4: pass
+print(x, y); x, y = y, x
+print(x, y); x, y = y, x
+x, y = y, x
+x, y = y, x
+</t>
+<t tx="ekr.20190914122333.1"></t>
+<t tx="ekr.20190914122356.1">ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
+ham[: upper]
+</t>
+<t tx="ekr.20190914122359.1">ham[1 : 9], ham[1 : 9 : 3], ham[:9 : 3], ham[1 :: 3], ham[1 : 9:]
+ham[lower : upper], ham[lower : upper:], ham[lower :: step]
+ham[: upper]
+</t>
+<t tx="ekr.20190914123001.1"></t>
+<t tx="ekr.20190914123101.1">spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914123104.1">spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.1">from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
+fails = []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            c.selectPosition(test)
+            BlackCommand(c).blacken_node(test, diff_flag=False, check_flag=False)
+            if test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"blacken-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    c.selectPosition(p)
+    ### c.setChanged(False)
+    c.clearChanged()
+assert not fails, g.objToString(fails, tag='FAILED tests')
+</t>
+<t tx="ekr.20190914132845.10">foo = (0,)
+bar = (0,)
+</t>
+<t tx="ekr.20190914132845.11"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914132845.12">spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+</t>
+<t tx="ekr.20190914132845.13">spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914132845.14"># Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+</t>
+<t tx="ekr.20190914132845.15">if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+</t>
+<t tx="ekr.20190914132845.16">if x == 4:
+    pass
+if x == 4:
+    pass
+print(x, y)
+x, y = y, x
+print(x, y)
+x, y = y, x
+x, y = y, x
+x, y = y, x
+</t>
+<t tx="ekr.20190914132845.17"># Avoid extraneous whitespace in the following situations:
+    
+# Immediately before the open parenthesis that starts the argument list of a function call:
+
+# Yes: spam(1)
+spam(1)
+
+# Immediately before the open parenthesis that starts an indexing or slicing:
+
+# Yes: dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.18">spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.19">spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+</t>
+<t tx="ekr.20190914132845.2"># Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+</t>
+<t tx="ekr.20190914132845.3"># FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914132845.4"># FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset : upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper]
+ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset : upper + offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914132845.5"># Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+</t>
+<t tx="ekr.20190914132845.6">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914132845.7">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20190914132845.8"># Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)
+</t>
+<t tx="ekr.20190914132845.9">foo = (0,)
+bar = (0, )
+</t>
+<t tx="ekr.20190914181159.1"></t>
+<t tx="ekr.20190914181159.2">ham[lower + offset: upper + offset]
+ham[lower+offset : upper+offset]
+</t>
+<t tx="ekr.20190914181159.3">ham[lower + offset : upper + offset]
+ham[lower + offset : upper + offset]
+</t>
+<t tx="ekr.20190914181344.1"></t>
+<t tx="ekr.20190914181344.2">ham[ : upper_fn(x) : step_fn(x)]
+ham[ : : step_fn(x)]
+</t>
+<t tx="ekr.20190914181344.3">ham[: upper_fn(x) : step_fn(x)]
+ham[:: step_fn(x)]
+</t>
+<t tx="ekr.20190915074109.1"></t>
+<t tx="ekr.20190915074201.1">def foo(a, b):
+    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+    bar(2 + baz)
+</t>
+<t tx="ekr.20190915074205.1">def foo(a, b):
+    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+    bar(2+baz)
+</t>
+<t tx="ekr.20190915083243.1"></t>
+<t tx="ekr.20190915083412.1">b =    ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+</t>
+<t tx="ekr.20190915083418.1">b = ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+</t>
+<t tx="ekr.20190915083933.1"></t>
+<t tx="ekr.20190915083945.1">a = b # comment
+c = d# comment
+e - f   # comment
+# Single-line comment.
+</t>
+<t tx="ekr.20190915084039.1">a = b  # comment
+c = d  # comment
+e - f  # comment
+# Single-line comment.
 </t>
 <t tx="ekr.20190923014948.1"></t>
 <t tx="ekr.20190923170025.1"># Brian Theado.
@@ -2071,5 +2612,21 @@ val = at.precheck(path, p)
 assert val is True
 </t>
 <t tx="ekr.20191213161917.1"></t>
+<t tx="ekr.20191215093835.12"></t>
+<t tx="ekr.20191215093835.13"></t>
+<t tx="ekr.20191215093835.14"></t>
+<t tx="ekr.20191215093835.15"></t>
+<t tx="ekr.20191215093835.16"></t>
+<t tx="ekr.20191215093835.9"></t>
+<t tx="ekr.20191215094949.1">@nosearch
+
+# flattened, word, ignore-case, head, body
+
+# found 8 nodes</t>
+<t tx="ekr.20191215095258.1">@nosearch
+
+# flattened, word, ignore-case, head, body
+
+# found 6 nodes</t>
 </tnodes>
 </leo_file>

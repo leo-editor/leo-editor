@@ -35,7 +35,7 @@ def reloadSettingsHelper(c, all):
     lm.readGlobalSettingsFiles()
         # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
     for c in commanders:
-        changed = c.isChanged()
+        ### changed = c.isChanged()
         previousSettings = lm.getPreviousSettings(fn=c.mFileName)
             # Read the local file, using a null gui.
         c.initSettings(previousSettings)
@@ -44,7 +44,7 @@ def reloadSettingsHelper(c, all):
             # Init the commander config ivars.
         c.reloadConfigurableSettings()
             # Reload settings in all configurable classes
-        c.setChanged(changed) ### Huh ???
+        ### c.setChanged(changed) ### Huh ???
             # Restore the changed bit.
         # c.redraw()
             # Redraw so a pasted temp node isn't visible

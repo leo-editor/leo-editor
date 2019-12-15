@@ -1286,7 +1286,7 @@ class LeoImportCommands:
         old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
-        oldChanged = c.changed
+        ### oldChanged = c.changed
         # A hack.  Let unit tests set the kill-check flag first.
         d = g.app.unitTestDict
         if d.get('kill-check'):
@@ -1323,7 +1323,7 @@ class LeoImportCommands:
         else:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
-            c.setChanged(oldChanged)  ###
+            ### c.setChanged(oldChanged)  ###
         c.redraw(old_root)
         if g.app.unitTesting:
             d['kill-check'] = False

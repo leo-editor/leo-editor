@@ -546,7 +546,7 @@ class AtFile:
     def readOneAtAutoNode(self, fileName, p):
         '''Read an @auto file into p. Return the *new* position.'''
         at, c, ic = self, self.c, self.c.importCommands
-        oldChanged = c.isChanged()
+        ### oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
@@ -584,7 +584,7 @@ class AtFile:
         # Finish.
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
-            c.setChanged(oldChanged) ### Valid ???
+            ### c.setChanged(oldChanged) ### Valid ???
         else:
             g.doHook('after-auto', c=c, p=p)
         return p
@@ -732,7 +732,7 @@ class AtFile:
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode (changed)
     def importAtShadowNode(self, fn, p):
         at = self; c = at.c; ic = c.importCommands
-        oldChanged = c.isChanged()
+        ### oldChanged = c.isChanged()
         # Delete all the child nodes.
         while p.hasChildren():
             p.firstChild().doDelete()
@@ -742,7 +742,7 @@ class AtFile:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
             p.clearDirty()
-            c.setChanged(oldChanged) ### Valid???
+            ### c.setChanged(oldChanged) ### Valid???
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root

@@ -1794,7 +1794,8 @@ try:
     at.readOneAtShadowNode(fn,child)
 finally:
     child.setHeadString('@@shadow %s' % fn)
-    c.setChanged(changed)
+    ### c.setChanged(changed)
+    c.clearChanged()
 #@+node:ekr.20090529115704.4565: *5* @@shadow unittest/read_test.py
 @language python
 @tabwidth -4
@@ -2016,7 +2017,8 @@ try:
 finally:
 
     child.setHeadString('@@shadow unittest/test_1.py')
-    c.setChanged(changed)
+    ### c.setChanged(changed)
+    c.clearChanged()
     # c.redraw_now()
 #@+node:ekr.20090529115704.4568: *5* @@shadow unittest/test_1.py
 # body of @shadow test node
@@ -2838,7 +2840,8 @@ try:
         f"{g.objToString(p2.b, tag='AFTER')}")
 finally:
     p1.b = s
-    c.setChanged(False)
+    ### c.setChanged(False)
+    c.clearChanged()
 #@+node:ekr.20150610064930.1: *5* before
 def spam():
     if - 1 < 2:
@@ -3863,7 +3866,8 @@ try:
             test.b = test_s
             expected.b = expected_s
 finally:
-    c.setChanged(False)
+    ### c.setChanged(False)
+    c.clearChanged()
 if 0:
     g.printObj(tests, tag='TESTS')
 if fails or errors:
@@ -4009,7 +4013,8 @@ try:
             expected.b = expected_s
 finally:
     c.selectPosition(p)
-    c.setChanged(False)
+    ### c.setChanged(False)
+    c.clearChanged()
 assert not fails, g.objToString(fails, tag='FAILED tests')
 #@+node:ekr.20190914132845.2: *5* peeve: ws in slices
 # Avoid extraneous whitespace in the following situations:
@@ -6854,6 +6859,24 @@ else:
         c.redraw(p)
 #@+node:ekr.20111212142649.3972: *5* child
 # child text.
+#@+node:ekr.20191215093834.2: *4* @test c.pasteOutline does not clone top node
+import sys
+if sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux')
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
+#@+node:ekr.20191215093834.3: *5* child
+# child text.
 #@+node:ekr.20080917151620.9: *4* @test c.scanAllDirectives
 @language python
 @comment a b c
@@ -8375,6 +8398,14 @@ else:
         test(p)
     finally:
         tear_down(p,'Clones of marked nodes')
+#@+node:ekr.20191215093835.1: *5* data
+#@+node:ekr.20191215093835.7: *6* a
+#@+node:ekr.20191215093835.8: *7* b
+#@+node:ekr.20191215093835.4: *6* c
+#@+node:ekr.20191215093835.5: *6* d
+#@+node:ekr.20191215093835.6: *6* e
+#@+node:ekr.20191215093835.7: *7* a
+#@+node:ekr.20191215093835.8: *8* b
 #@+node:ekr.20061101121602.162: *5* @test count-region
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.163: *6* work
@@ -12435,7 +12466,8 @@ try:
     assert p2,'p2 failed: %s' % repr(p2)
     # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
 finally:
-    c2.setChanged(False)
+    ### c2.setChanged(False)
+    c2.clearChanged()
     c2.close()
 #@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
 if g.app.isExternalUnitTest:
@@ -15046,6 +15078,22 @@ try:
     p.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20191215093842.16: *7* @@file @test html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.17: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20191215093842.18: *9* <head>
+<head>
+    <title>Bodystring</title>
+</head>
+#@+node:ekr.20191215093842.19: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
 @language python
 # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
@@ -15114,6 +15162,68 @@ try:
         p.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20191215093842.20: *7* @@file @test html: multiple tags on a line
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.21: *8* <html>
+<html>
+    @others
+#@+node:ekr.20191215093842.22: *9* <body>
+<body>
+    @others
+</html>
+#@+node:ekr.20191215093842.23: *10* <table id="0">
+    <table id="0">
+        <tr valign="top">
+        <td width="619">
+    @others
+</body>
+#@+node:ekr.20191215093842.24: *11* <table id="2">
+        <table id="2"> <tr valign="top"> <td width="377">
+    @others
+        <!-- View Second part --> </td> </tr></table>
+#@+node:ekr.20191215093842.25: *12* <table id="3">
+            <table id="3">
+            <tr>
+            <td width="368">
+    @others
+        </table>
+        <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
+#@+node:ekr.20191215093842.26: *13* <table id="4">
+            <table id="4">
+                <tbody id="5">
+                <tr valign="top">
+                <td width="550">
+    @others
+            </table>	
+            </td>
+            </tr>
+#@+node:ekr.20191215093842.27: *14* <table id="6">
+                <table id="6">
+                    <tbody id="6">
+                    <tr>
+                    <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </td>
+                </tr><tr>
+                <td width="100%" colspan="2">
+                <br />
+                </td>
+                </tr>
+                </tbody>
+#@+node:ekr.20191215093842.28: *11* <DIV class="webonly">
+    <DIV class="webonly">
+        <script src="/scripts/footer.js"></script>
+    </DIV>
+    </td>
+    </tr>
+    <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+    <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+    <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
 #@+node:ekr.20140218122321.4349: *6* @test html: multple node completed on a line
 @language html
 s = '''
@@ -15159,6 +15269,16 @@ try:
 finally:
     c.redraw()
 
+#@+node:ekr.20191215093842.30: *7* @@file @test html: multple node starts on a line
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.31: *8* <html>
+<html>
+<head>headline</head>
+<body>body</body>
+</html>
 #@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
 s = r'''
 <td width="550">
@@ -15194,6 +15314,33 @@ try:
     p.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20191215093842.32: *7* @@file @test html: underindented comment
+
+<td width="550">
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.33: *8* <table cellspacing="0" cellpadding="0" width="600" border="0">
+<table cellspacing="0" cellpadding="0" width="600" border="0">
+    <td class="blutopgrabot" height="28"></td>
+
+    <!-- The indentation of this element causes the problem. -->
+    @others
+</table>
+
+<p>Paragraph</p>
+</td>
+
+#@+node:ekr.20191215093842.34: *9* <table>
+    <table>
+
+<!--
+<div align="center">
+<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+</div>
+-->
+
+</table>
 #@+node:ekr.20111029120441.3982: *6* @test html: uppercase tags
 s = '''\
 <HTML>
@@ -15240,6 +15387,27 @@ try:
 finally:
     c.redraw()
 
+#@+node:ekr.20191215093842.39: *7* @@file @test html: improperly nested tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.40: *8* <body>
+<body>
+
+<!-- OOPS: the div and p elements not properly nested.-->
+<!-- OOPS: this table got generated twice. -->
+
+<p id="P1">
+    @others
+</body>
+#@+node:ekr.20191215093842.41: *9* <div id="D666">
+<div id="D666">Paragraph</p> <!-- P1 -->
+<p id="P2">
+
+<TABLE id="T666"></TABLE></p> <!-- P2 -->
+</div>
+</p> <!-- orphan -->
+
 #@+node:ekr.20111112103320.3887: *6* @test html: improperly terminated tags
 s = r'''
 <html>
@@ -15269,6 +15437,26 @@ try:
         p.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20191215093842.42: *7* @@file @test html: improperly terminated tags
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.43: *8* <html>
+<html>
+
+    @others
+#@+node:ekr.20191215093842.44: *9* <head>
+<head>
+    <!-- oops: link elements terminated two different ways -->
+    <link id="L1">
+    <link id="L2">
+    <link id="L3" />
+    <link id='L4' />
+
+    <title>TITLE</title>
+
+<!-- oops: missing tags. -->
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
 s = '''
 <html>
@@ -15295,6 +15483,26 @@ try:
         p.deleteAllChildren()
 finally:
         c.redraw()
+#@+node:ekr.20191215093842.45: *7* @@file @test html: improperly terminated tags2
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.46: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20191215093842.47: *9* <head>
+<head>
+    <!-- oops: link elements terminated two different ways -->
+    <link id="L1">
+    <link id="L2">
+    <link id="L3" />
+    <link id='L4' />
+
+    <title>TITLE</title>
+
+</head>
 #@+node:ekr.20170617111001.1: *6* @test html: brython
 # https://github.com/leo-editor/leo-editor/issues/479
 @nocolor
@@ -15452,6 +15660,150 @@ try:
         p.deleteAllChildren()
 finally:
         c.redraw()
+#@+node:ekr.20191215093842.48: *7* @@file @test html: brython
+
+<!DOCTYPE html>
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20191215093842.49: *8* <html>
+<html>
+    @others
+#@+node:ekr.20191215093842.50: *9* <head>
+<head>
+<script type="text/python3">
+"""Code for the header menu"""
+from browser import document as doc
+from browser import html
+import header
+
+qs_lang,language = header.show()
+
+doc["content"].html = doc["content_%s" %language].html
+
+if qs_lang:
+    doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
+
+def ch_lang(ev):
+    sel = ev.target
+    new_lang = sel.options[sel.selectedIndex].value
+    doc.location.href = 'index.html?lang=%s' %new_lang
+
+for elt in doc[html.SELECT]:
+    if elt.id.startswith('change_lang_'):
+        doc[elt.id].bind('change',ch_lang)
+</script>
+
+<script type="text/python3">
+"""Code for the clock"""
+
+import time
+import math
+import datetime
+
+from browser import document as doc
+import browser.timer
+
+sin,cos = math.sin,math.cos
+width,height = 250,250 # canvas dimensions
+ray = 100 # clock ray
+
+def needle(angle,r1,r2,color="#000000"):
+    # draw a needle at specified angle in specified color
+    # r1 and r2 are percentages of clock ray
+    x1 = width/2-ray*cos(angle)*r1
+    y1 = height/2-ray*sin(angle)*r1
+    x2 = width/2+ray*cos(angle)*r2
+    y2 = height/2+ray*sin(angle)*r2
+    ctx.beginPath()
+    ctx.strokeStyle = color
+    ctx.moveTo(x1,y1)
+    ctx.lineTo(x2,y2)
+    ctx.stroke()
+
+def set_clock():
+    # erase clock
+    ctx.beginPath()
+    ctx.fillStyle = "#FFF"
+    ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
+    ctx.fill()
+
+    # redraw hours
+    show_hours()
+
+    # print day
+    now = datetime.datetime.now()
+    day = now.day
+    ctx.font = "bold 14px Arial"
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
+    ctx.fillStyle="#FFF"
+    ctx.fillText(day,width*0.7,height*0.5)
+
+    # draw needles for hour, minute, seconds    
+    ctx.lineWidth = 3
+    hour = now.hour%12 + now.minute/60
+    angle = hour*2*math.pi/12 - math.pi/2
+    needle(angle,0.05,0.5)
+    minute = now.minute
+    angle = minute*2*math.pi/60 - math.pi/2
+    needle(angle,0.05,0.85)
+    ctx.lineWidth = 1
+    second = now.second+now.microsecond/1000000
+    angle = second*2*math.pi/60 - math.pi/2
+    needle(angle,0.05,0.85,"#FF0000") # in red
+
+def show_hours():
+    ctx.beginPath()
+    ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
+    ctx.fillStyle = "#000"
+    ctx.fill()
+    for i in range(1,13):
+        angle = i*math.pi/6-math.pi/2
+        x3 = width/2+ray*cos(angle)*0.75
+        y3 = height/2+ray*sin(angle)*0.75
+        ctx.font = "20px Arial"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+        ctx.fillText(i,x3,y3)
+    # cell for day
+    ctx.fillStyle = "#000"
+    ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
+
+canvas = doc["clock"]
+# draw clock border
+if hasattr(canvas,'getContext'):
+    ctx = canvas.getContext("2d")
+    ctx.beginPath()
+    ctx.lineWidth = 10
+    ctx.arc(width/2,height/2,ray,0,2*math.pi)
+    ctx.stroke()
+
+    for i in range(60):
+        ctx.lineWidth = 1
+        if i%5 == 0:
+            ctx.lineWidth = 3
+        angle = i*2*math.pi/60 - math.pi/3
+        x1 = width/2+ray*cos(angle)
+        y1 = height/2+ray*sin(angle)
+        x2 = width/2+ray*cos(angle)*0.9
+        y2 = height/2+ray*sin(angle)*0.9
+        ctx.beginPath()
+        ctx.moveTo(x1,y1)
+        ctx.lineTo(x2,y2)
+        ctx.stroke()
+    browser.timer.set_interval(set_clock,100)
+    show_hours()
+else:
+    doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
+</script>
+
+<title>Brython</title>
+<link rel="stylesheet" href="Brython_files/doc_brython.css">
+</head>
+#@+node:ekr.20191215093842.51: *9* <body onload="brython({debug:1, cache:'none'})">
+<body onload="brython({debug:1, cache:'none'})">
+</body></html>
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = r'''; last modified 1 April 2001 by John Doe
@@ -18219,7 +18571,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20191215091817.61: *7* @@file @test python top-level later decl
+#@+node:ekr.20191215093847.34: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18227,21 +18579,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20191215091817.62: *8* Declarations
+#@+node:ekr.20191215093847.35: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20191215091817.63: *8* merge_value
+#@+node:ekr.20191215093847.36: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20191215091817.64: *8* class MainDisplay(object)
+#@+node:ekr.20191215093847.37: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20191215091817.65: *9* save_file
+#@+node:ekr.20191215093847.38: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18249,7 +18601,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20191215091817.66: *8* retab
+#@+node:ekr.20191215093847.39: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 

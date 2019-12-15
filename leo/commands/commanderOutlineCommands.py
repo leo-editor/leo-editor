@@ -63,7 +63,7 @@ def pasteOutline(self,
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(True, redrawFlag=redrawFlag)
+    c.setChanged(redrawFlag=redrawFlag)
         # Prevent flash when fixing #387.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
