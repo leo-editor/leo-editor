@@ -2397,7 +2397,7 @@ class VNode:
         v.selectionStart = start
         v.selectionLength = length
     #@+node:ekr.20191213161023.1: *3* v.setAllAncestorAtFileNodesDirty (new)
-    def setAllAncestorAtFileNodesDirty(self): # setDescendentsDirty=False
+    def setAllAncestorAtFileNodesDirty(self):
         """
         Original idea by Виталије Милошевић (Vitalije Milosevic).
         

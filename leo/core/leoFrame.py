@@ -628,7 +628,9 @@ class LeoBody:
         redraw_flag = False
         # Update dirty bits.
         # p.setDirty() sets all cloned and @file dirty bits.
-        if not p.isDirty() and p.setDirty():
+        ### if not p.isDirty() and p.setDirty():   ### p.setDirty no longer returns a list.
+        if not p.isDirty():
+            p.setDirty()
             redraw_flag = True
         # Update icons. p.v.iconVal may not exist during unit tests.
         val = p.computeIcon()

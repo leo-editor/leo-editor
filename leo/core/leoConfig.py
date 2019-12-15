@@ -995,7 +995,7 @@ class ActiveSettingsOutline:
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
         c.setLog()
-        c.setChanged(False)
+        c.setChanged(False) # Clears all dirty bits.
         g.app.disable_redraw = False
         return c
     #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper

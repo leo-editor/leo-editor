@@ -408,12 +408,13 @@ class Undoer:
             return
         isOld = oldOrNew == 'old'
         marked = u.oldMarked if isOld else u.newMarked
+        # Note: c.set/clearMarked call a hook.
         if marked:
             c.setMarked(u.p)
         else:
             c.clearMarked(u.p)
         # Undo/redo always set changed/dirty bits because the file may have been saved.
-        u.p.setDirty() # setDescendentsDirty=False
+        u.p.setDirty()
         u.c.setChanged(True)
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...

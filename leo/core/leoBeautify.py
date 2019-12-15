@@ -750,7 +750,8 @@ class BlackCommand:
             g.printObj(body2, tag='Sanitized syntax')
             if g.unitTesting:
                 raise
-            p.v.setMarked()
+            p.setMarked()
+            p.setDirty()
             return False
         except(SyntaxError, black.InvalidInput):
             g.warning(f"SyntaxError: Can't blacken {p.h}")
@@ -758,7 +759,8 @@ class BlackCommand:
             g.printObj(body2, tag='Sanitized syntax')
             if g.unitTesting:
                 raise
-            p.v.setMarked()
+            p.setMarked()
+            p.setDirty()
             return False
         except Exception:
             g.warning(f"Unexpected exception: {p.h}")
@@ -767,7 +769,8 @@ class BlackCommand:
             g.es_exception()
             if g.unitTesting:
                 raise
-            p.v.setMarked()
+            p.setMarked()
+            p.setDirty()
             return False
         if trace:
             g.printObj(body2, tag='Sanitized syntax')
@@ -785,8 +788,7 @@ class BlackCommand:
         c.frame.body.updateEditors()
         p.v.contentModified()
         c.undoer.setUndoTypingParams(p, 'blacken-node', oldText=body, newText=result)
-        if not p.v.isDirty():
-            p.setDirty()
+        p.setDirty()
         return True
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
@@ -1854,7 +1856,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                 else:
                     print(s0)
                 raise AssertionError(tag)
-            p.v.setMarked()
+            p.setMarked()
             g.es_print(f"{p.h} will not be changed")
             return False
         t2 = time.process_time()
@@ -1878,7 +1880,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                         print(tag, '\n')
                         print(s2)
                     raise AssertionError(tag)
-                p.v.setMarked()
+                p.setMarked()
+                p.setDirty()
                 g.es_print(f"{p.h} will not be changed")
                 return False
             # Compare the two parse trees.
@@ -1890,7 +1893,8 @@ class PythonTokenBeautifier(NullTokenBeautifier):
                 else:
                     print(s2)
                 self.errors += 1
-                p.v.setMarked()
+                p.setMarked()
+                p.setDirty()
                 return False
         if 'beauty' in g.app.debug:
             g.printObj(self.code_list, tag="Code List")

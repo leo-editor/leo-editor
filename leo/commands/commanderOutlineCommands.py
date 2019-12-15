@@ -121,7 +121,7 @@ def pasteOutlineRetainingClones(self,
         pasted.moveToNthChildOf(back, 0)
     # Set dirty bits for ancestors of *all* pasted nodes.
     for p in pasted.self_and_subtree():
-        p.setAllAncestorAtFileNodesDirty() # setDescendentsDirty=False
+        p.setAllAncestorAtFileNodesDirty()
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
@@ -740,8 +740,7 @@ def clone(self, event=None):
     undoData = c.undoer.beforeCloneNode(p)
     c.endEditing() # Capture any changes to the headline.
     clone = p.clone()
-    clone.v.setAllAncestorAtFileNodesDirty()
-    clone.v.setDirty()
+    clone.setDirty()
     c.setChanged(True)
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
@@ -778,7 +777,6 @@ def cloneToAtSpot(self, event=None):
     clone = p.copy()
     clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     clone.setDirty()
-    clone.v.setChanged()
     c.setChanged(True)
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
@@ -806,7 +804,6 @@ def cloneToLastNode(self, event=None):
         last.moveToNext()
     clone.moveAfter(last)
     clone.setDirty()
-    clone.v.setDirty()
     c.setChanged(True)
     u.afterCloneNode(clone, 'Clone Node To Last', undoData)
     c.redraw(prev)
@@ -1093,7 +1090,9 @@ def markChangedHeadlines(self, event=None):
     for p in c.all_unique_positions():
         if p.isDirty() and not p.isMarked():
             bunch = u.beforeMark(p, undoType)
+            # c.setMarked calls a hook.
             c.setMarked(p)
+            p.setDirty()
             c.setChanged(True)
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
@@ -1113,7 +1112,8 @@ def markChangedRoots(self, event=None):
             flag, i = g.is_special(s, "@root")
             if flag:
                 bunch = u.beforeMark(p, undoType)
-                c.setMarked(p)
+                c.setMarked(p)  # Calls a hook.
+                p.setDirty()
                 c.setChanged(True)
                 u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
@@ -1129,6 +1129,7 @@ def markHeadline(self, event=None):
     c.endEditing()
     undoType = 'Unmark' if p.isMarked() else 'Mark'
     bunch = u.beforeMark(p, undoType)
+    # c.set/clearMarked call a hook.
     if p.isMarked():
         c.clearMarked(p)
     else:
@@ -1149,7 +1150,8 @@ def markSubheads(self, event=None):
     for p in current.children():
         if not p.isMarked():
             bunch = u.beforeMark(p, undoType)
-            c.setMarked(p)
+            c.setMarked(p) # Calls a hook.
+            p.setDirty()
             c.setChanged(True)
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)

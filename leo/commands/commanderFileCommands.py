@@ -44,7 +44,7 @@ def reloadSettingsHelper(c, all):
             # Init the commander config ivars.
         c.reloadConfigurableSettings()
             # Reload settings in all configurable classes
-        c.setChanged(changed)
+        c.setChanged(changed) ### Huh ???
             # Restore the changed bit.
         # c.redraw()
             # Redraw so a pasted temp node isn't visible
@@ -186,7 +186,7 @@ def new(self, event=None, gui=None):
     g.app.writeWaitingLog(c)
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
-    c.setChanged(False) # Fix #387
+    c.setChanged(False) # Fix #387: Clear all dirty bits.
     g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
@@ -366,7 +366,7 @@ def save(self, event=None, fileName=None):
             # Write the @edit node if needed.
             if root.isDirty():
                 c.atFileCommands.writeOneAtEditNode(root) 
-            c.setChanged(False)
+            c.setChanged(False)  # Clears all dirty bits.
         else:
             fileName = ''.join(c.k.givenArgs)
             if not fileName:

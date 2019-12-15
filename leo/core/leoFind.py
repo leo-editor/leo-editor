@@ -1608,6 +1608,7 @@ class LeoFind:
         # No redraws here: they would destroy the headline selection.
         if self.mark_changes:
             p.setMarked()
+            p.setDirty()
         if self.in_headline:
             c.frame.tree.onHeadChanged(p, 'Change')
         else:
@@ -1952,6 +1953,7 @@ class LeoFind:
                 # Success.
                 if self.mark_finds:
                     p.setMarked()
+                    p.setDirty()
                     if not self.changeAllFlag:
                         c.frame.tree.drawIcon(p) # redraw only the icon.
                 return pos, newpos

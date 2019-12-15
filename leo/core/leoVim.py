@@ -2229,7 +2229,7 @@ class VimCommands:
                 self.stroke = 'Escape'
                 self.end_insert_mode()
                 if not self.j_changed:
-                    c.setChanged(False)
+                    c.setChanged(False)   ### Clears all dirty bits.
                 return True
             # Remember the changed state when we saw the first 'j'.
             self.j_changed = c.isChanged()

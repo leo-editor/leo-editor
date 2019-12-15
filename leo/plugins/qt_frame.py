@@ -4108,7 +4108,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p1 = move(p1, p2)
             if cloneDrag:
                 # Set dirty bits for ancestors of *all* cloned nodes.
-                # Note: the setDescendentsDirty flag does not do what we want.
                 for z in p1.self_and_subtree():
                     z.setDirty()
             c.setChanged(True)

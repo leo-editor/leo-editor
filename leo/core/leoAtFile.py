@@ -584,7 +584,7 @@ class AtFile:
         # Finish.
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
-            c.setChanged(oldChanged)
+            c.setChanged(oldChanged) ### Valid ???
         else:
             g.doHook('after-auto', c=c, p=p)
         return p
@@ -618,7 +618,7 @@ class AtFile:
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
-        if not changed: c.setChanged(False)
+        if not changed: c.setChanged(False) ### Clears all dirty bits.
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, fn, p):
@@ -729,7 +729,7 @@ class AtFile:
             if ok:
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
-    #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
+    #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode (changed)
     def importAtShadowNode(self, fn, p):
         at = self; c = at.c; ic = c.importCommands
         oldChanged = c.isChanged()
@@ -742,7 +742,7 @@ class AtFile:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
             p.clearDirty()
-            c.setChanged(oldChanged)
+            c.setChanged(oldChanged) ### Valid???
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
@@ -1151,7 +1151,7 @@ class AtFile:
                 if not at_persistence.isAncestorOf(p)]
         if not changed_positions:
             # g.warning('auto-saving @persistence tree.')
-            c.setChanged(False)
+            c.setChanged(False)  ### Clears all dirty bits.
             c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root):

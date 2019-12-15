@@ -1283,7 +1283,7 @@ class Commands:
             if not c.isChanged():
                 c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2989: *5* c.setChanged (no longer changed)
+    #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, changedFlag=True, redrawFlag=True):
         """Set or clear the marker that indicates that the .leo file has been changed."""
         c = self
@@ -1363,10 +1363,11 @@ class Commands:
                 g.app.setLog(c.frame.log)
             except AttributeError:
                 pass
-    #@+node:ekr.20060906211138.1: *5* c.setMarked
+    #@+node:ekr.20060906211138.1: *5* c.setMarked (calls hook)
     def setMarked(self, p):
         c = self
-        p.v.setMarked()
+        p.setMarked()
+        p.setDirty()  # Defensive programming.
         g.doHook("set-mark", c=c, p=p)
     #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
     def setRootPosition(self, unused_p=None):
@@ -2478,10 +2479,11 @@ class Commands:
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event=None):
         """Mark all @file nodes as changed."""
-        c = self; p = c.rootPosition()
+        c = self
         c.endEditing()
+        p = c.rootPosition()
         while p:
-            if p.isAtFileNode() and not p.isDirty():
+            if p.isAtFileNode(): ### and not p.isDirty():
                 p.setDirty()
                 c.setChanged(True)
                 p.moveToNodeAfterTree()
@@ -2493,11 +2495,12 @@ class Commands:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
-        if not p: return
+        if not p:
+            return
         c.endEditing()
         after = p.nodeAfterTree()
         while p and p != after:
-            if p.isAtFileNode() and not p.isDirty():
+            if p.isAtFileNode():
                 p.setDirty()
                 c.setChanged(True)
                 p.moveToNodeAfterTree()

@@ -110,8 +110,8 @@ def mark_first_parents(event):
         return changed
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
-            parent.v.setMarked()
-            parent.setAllAncestorAtFileNodesDirty()
+            parent.setMarked()
+            parent.setDirty()
             changed.append(parent.copy())
     if changed:
         # g.es("marked: " + ', '.join([z.h for z in changed]))

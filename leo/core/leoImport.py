@@ -731,7 +731,7 @@ class LeoImportCommands:
         for p in p.self_and_subtree():
             p.clearDirty()
         if not changed:
-            c.setChanged(False)
+            c.setChanged(False)  ### Clears all dirty bits.
         g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
@@ -1323,7 +1323,7 @@ class LeoImportCommands:
         else:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
-            c.setChanged(oldChanged)
+            c.setChanged(oldChanged)  ###
         c.redraw(old_root)
         if g.app.unitTesting:
             d['kill-check'] = False
@@ -1967,7 +1967,7 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
-        c.setChanged(False)
+        c.setChanged(False)  ### Clears *all* dirty bits.
         for p in p.self_and_subtree(copy=False):
             p.clearDirty()
     #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
