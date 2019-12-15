@@ -4059,7 +4059,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
-        pasted.setAllAncestorAtFileNodesDirty()
             # 2011/02/27: Fix bug 690467.
         c.setChanged(True)
         back = pasted.back()

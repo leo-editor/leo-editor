@@ -119,6 +119,7 @@ def pasteOutlineRetainingClones(self,
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
+        pasted.setDirty()
     # Set dirty bits for ancestors of *all* pasted nodes.
     for p in pasted.self_and_subtree():
         p.setAllAncestorAtFileNodesDirty()

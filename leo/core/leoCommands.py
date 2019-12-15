@@ -3559,21 +3559,23 @@ class Commands:
     selectVnode = selectPosition
     #@+node:ekr.20080503055349.1: *5* c.setPositionAfterSort
     def setPositionAfterSort(self, sortChildren):
+        """
+        Return the position to be selected after a sort.
+        """
         c = self
         p = c.p
         p_v = p.v
         parent = p.parent()
         parent_v = p._parentVnode()
         if sortChildren:
-            p = parent or c.rootPosition()
+            return parent or c.rootPosition()
+        if parent:
+            p = parent.firstChild()
         else:
-            if parent:
-                p = parent.firstChild()
-            else:
-                p = leoNodes.Position(parent_v.children[0])
-            while p and p.v != p_v:
-                p.moveToNext()
-            p = p or parent
+            p = leoNodes.Position(parent_v.children[0])
+        while p and p.v != p_v:
+            p.moveToNext()
+        p = p or parent
         return p
     #@+node:ekr.20070226113916: *5* c.treeSelectHelper
     def treeSelectHelper(self, p):

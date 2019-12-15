@@ -237,8 +237,8 @@ def unmark_first_parents(event=None):
         return changed
     for parent in c.p.self_and_parents():
         if parent.isMarked():
-            parent.v.clearMarked()
-            parent.setAllAncestorAtFileNodesDirty()
+            parent.clearMarked()
+            parent.setDirty()
             changed.append(parent.copy())
     if changed:
         # g.es("unmarked: " + ', '.join([z.h for z in changed]))

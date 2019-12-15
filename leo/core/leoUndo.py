@@ -1435,6 +1435,7 @@ class Undoer:
             else:
                 parent_v = c.hiddenRootNode
             p.v._addLink(p._childIndex, parent_v)
+            p.v.setDirty()
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
     #@+node:ekr.20050412084055: *4* u.undoDeleteNode
@@ -1447,7 +1448,7 @@ class Undoer:
         else:
             oldRoot = c.rootPosition()
             u.p._linkAsRoot(oldRoot)
-        u.p.setAllAncestorAtFileNodesDirty()
+        u.p.setDirty()
         c.selectPosition(u.p)
 
     #@+node:ekr.20080425060424.10: *4* u.undoDemote
@@ -1676,7 +1677,6 @@ class Undoer:
         u.p = self.undoRedoTree(u.p, u.newTree, u.oldTree)
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p) # Does full recolor.
-        # u.undo_nodes.add(u.p.v)
         if u.oldSel:
             i, j = u.oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
