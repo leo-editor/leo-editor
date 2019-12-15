@@ -1252,6 +1252,34 @@ class Commands:
         for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
+    #@+node:ekr.20191215044636.1: *5* c.clearChanged
+    def clearChanged(self, redrawFlag=True):
+        """clear the marker that indicates that the .leo file has been changed."""
+        c = self
+        if not c.frame:
+            return
+        c.changed = False
+        if c.loading:
+            return # don't update while loading.
+        # Clear all dirty bits _before_ setting the caption.
+        for v in c.all_unique_nodes():
+            if v.isDirty():
+                v.clearDirty()
+        # Do nothing for null frames.
+        assert c.gui
+        if c.gui.guiName() == 'nullGui':
+            return
+        if not c.frame.top:
+            return
+        if not redrawFlag: # Prevent flash when fixing #387.
+            return
+        master = getattr(c.frame.top, 'leo_master', None)
+        if master:
+            master.setChanged(c, False)
+                # LeoTabbedTopLevel.setChanged.
+        s = c.frame.getTitle()
+        if len(s) > 2 and s[0: 2] == "* ":
+            c.frame.setTitle(s[2:])
     #@+node:ekr.20060906211138: *5* c.clearMarked
     def clearMarked(self, p):
         c = self
@@ -1281,22 +1309,17 @@ class Commands:
             v.setSelection(0, 0)
             p.setDirty()
             if not c.isChanged():
-                c.setChanged(True)
+                c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, changedFlag=True, redrawFlag=True):
-        """Set or clear the marker that indicates that the .leo file has been changed."""
+        """Set the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
             return
-        c.changed = changedFlag
+        c.changed = True
         if c.loading:
             return # don't update while loading.
-        # Clear all dirty bits _before_ setting the caption.
-        if not changedFlag:
-            for v in c.all_unique_nodes():
-                if v.isDirty():
-                    v.clearDirty()
         # Do nothing for null frames.
         assert c.gui
         if c.gui.guiName() == 'nullGui':
@@ -1307,16 +1330,11 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, changedFlag)
-                # Call LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, True)
+                # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
-        if len(s) > 2:
-            if changedFlag:
-                if s[0] != '*':
-                    c.frame.setTitle("* " + s)
-            else:
-                if s[0: 2] == "* ":
-                    c.frame.setTitle(s[2:])
+        if len(s) > 2 and s[0] != '*':
+            c.frame.setTitle("* " + s)
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
@@ -2485,7 +2503,7 @@ class Commands:
         while p:
             if p.isAtFileNode():
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -2502,7 +2520,7 @@ class Commands:
         while p and p != after:
             if p.isAtFileNode():
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -2712,7 +2730,7 @@ class Commands:
         p.setDirty()
         p.moveToNthChildOf(parent, n)
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
@@ -2729,7 +2747,7 @@ class Commands:
         p.setDirty()
         p.moveAfter(after)
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
@@ -2750,7 +2768,7 @@ class Commands:
         clone.setDirty()
         clone.moveToNthChildOf(parent, n)
         clone.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         u.afterInsertNode(clone, undoType, undoData)
         c.redraw(clone)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
@@ -2765,7 +2783,7 @@ class Commands:
             clone.setDirty()
             clone.moveAfter(after)
             clone.v.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             u.afterInsertNode(clone, undoType, undoData)
             p = clone
         else:
@@ -3610,7 +3628,7 @@ class Commands:
         body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
         # Update the changed mark and icon.
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         c.redraw_after_icons_changed()
         # Scroll as necessary.
         if oldYview:
@@ -3716,7 +3734,7 @@ class Commands:
             u.afterInsertNode(root, undoType, undoData)
             if redraw:
                 c.selectPosition(root)
-                c.setChanged(True)
+                c.setChanged()
                 c.contractAllHeadlines()
                 root.expand()
                 c.redraw()

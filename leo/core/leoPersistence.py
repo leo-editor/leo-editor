@@ -68,7 +68,7 @@ class PersistenceDataController:
                     delete_list.append(child.copy())
         if delete_list:
             at_persistence.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             for p in delete_list:
                 g.es_print('deleting:', p.h)
             c.deletePositionsInList(delete_list)

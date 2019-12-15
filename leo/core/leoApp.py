@@ -2667,7 +2667,7 @@ class LoadManager:
                 root.doDelete(newNode=root.next())
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
-                c.setChanged(False)
+                c.clearChanged()
                 c.redraw(c.rootPosition()) # # 1380: Select the root.
             # #933: Restore clipboard
             g.app.gui.replaceClipboardWith(old_clipboard)
@@ -3444,7 +3444,7 @@ class LoadManager:
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
-        frame.c.setChanged(False)
+        frame.c.clearChanged()
             # Mark the outline clean.
             # This makes it easy to open non-Leo files for quick study.
         return c

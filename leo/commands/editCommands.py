@@ -1000,7 +1000,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(c.p)
         if aList:
             self.setIconList(c.p, aList[1:])
-            c.setChanged(True)
+            c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
     def deleteIconByName(self, t, name, relPath): # t not used.
@@ -1021,7 +1021,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 newList.append(d)
         if len(newList) != len(aList):
             self.setIconList(p, newList)
-            c.setChanged(True)
+            c.setChanged()
             c.redraw_after_icons_changed()
         else:
             g.trace('not found', name)
@@ -1033,7 +1033,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(c.p)
         if aList:
             self.setIconList(c.p, aList[: -1])
-            c.setChanged(True)
+            c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
     @cmd('delete-node-icons')
@@ -1045,7 +1045,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.v._p_changed = 1
             self.setIconList(p, [])
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.240: *4* ec.insertIcon
     @cmd('insert-icon')
@@ -1067,7 +1067,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList2 = self.getIconList(p)
         aList2.extend(aList)
         self.setIconList(p, aList2)
-        c.setChanged(True)
+        c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
     def insertIconFromFile(self, path, p=None, pos=None, **kargs):
@@ -1080,7 +1080,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if pos is None: pos = len(aList2)
         aList2.insert(pos, aList[0])
         self.setIconList(p, aList2)
-        c.setChanged(True)
+        c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.242: *3* ec: indent
     #@+node:ekr.20150514063305.243: *4* ec.deleteIndentation

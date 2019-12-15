@@ -4050,7 +4050,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             if nxt is not None:
                 src_p.doDelete()
                 src_c.selectPosition(src_c.vnode2position(nxt))
-                src_c.setChanged(True)
+                src_c.setChanged()
                 src_c.redraw()
             else:
                 g.es("Can't move last node out of outline")
@@ -4060,7 +4060,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.selectPosition(pasted)
         pasted.setDirty()
             # 2011/02/27: Fix bug 690467.
-        c.setChanged(True)
+        c.setChanged()
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
@@ -4109,7 +4109,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 # Set dirty bits for ancestors of *all* cloned nodes.
                 for z in p1.self_and_subtree():
                     z.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             u.afterMoveNode(p1, 'Drag', undoData)
             if (not as_child or
                 p2.isExpanded() or
@@ -4148,7 +4148,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             elif scheme in ('http',): # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
         if changed:
-            c.setChanged(True)
+            c.setChanged()
             u.afterChangeGroup(c.p, undoType, reportFlag=False)
             c.redraw()
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper

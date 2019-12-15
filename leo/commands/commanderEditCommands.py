@@ -581,7 +581,7 @@ def line_to_headline(self, event=None):
     w.setInsertPoint(i)
     u.setUndoTypingParams(p, undoType, oldText=oldText, newText=p.b)
     p2.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterChangeGroup(p, undoType=undoType)
     c.redraw_after_icons_changed()
     p.expand()

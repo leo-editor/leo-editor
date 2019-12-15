@@ -17664,6 +17664,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20191215050031.41: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20191215050031.42: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
@@ -19376,7 +19389,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20191106202319.57: *7* @@file @test python top-level later decl
+#@+node:ekr.20191215050033.77: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -19384,21 +19397,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20191106202319.58: *8* Declarations
+#@+node:ekr.20191215050033.78: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20191106202319.59: *8* merge_value
+#@+node:ekr.20191215050033.79: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20191106202319.60: *8* class MainDisplay(object)
+#@+node:ekr.20191215050033.80: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20191106202319.61: *9* save_file
+#@+node:ekr.20191215050033.81: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -19406,7 +19419,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20191106202319.62: *8* retab
+#@+node:ekr.20191215050033.82: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 

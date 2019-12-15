@@ -153,7 +153,7 @@ class QTextMixin:
         if not self.useScintilla:
             c.recolor()
         if not c.changed and c.frame.initComplete:
-            c.setChanged(True)
+            c.setChanged()
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
@@ -558,7 +558,7 @@ if QtWidgets:
                     w.delete(i, j)
                     w.insert(i, completion)
                     j = i + len(completion)
-                    c.setChanged(True)
+                    c.setChanged()
                     w.setInsertPoint(j)
                     c.frame.body.onBodyChanged('Typing')
                 self.end_completer()

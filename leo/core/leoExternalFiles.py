@@ -222,7 +222,7 @@ class ExternalFilesController:
                 c.save()
             else:
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
     def open_with(self, c, d):
         '''

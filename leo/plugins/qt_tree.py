@@ -100,7 +100,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.app.gui.setFilter(c, tw, self, tag='tree')
         # 2010/01/24: Do not set this here.
         # The read logic sets c.changed to indicate nodes have changed.
-        # c.setChanged(False)
+        # c.clearChanged()
     #@+node:ekr.20110605121601.17871: *4* qtree.reloadSettings
     def reloadSettings(self):
         """LeoQtTree."""
@@ -776,7 +776,7 @@ class LeoQtTree(leoFrame.LeoTree):
             p.initHeadString(s)
             item.setText(0, s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
-            if not c.changed: c.setChanged(True)
+            if not c.changed: c.setChanged()
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.body.recolor(p)

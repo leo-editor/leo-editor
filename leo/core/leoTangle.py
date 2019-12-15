@@ -2541,7 +2541,7 @@ class BaseTangleCommands:
         c = self.c; p = self.p
         assert(self.p)
         c.setBodyString(p, s)
-        c.setChanged(True)
+        c.setChanged()
         p.setDirty()
         p.setMarked()
         # 2010/02/02: was update_after_icons_changed.

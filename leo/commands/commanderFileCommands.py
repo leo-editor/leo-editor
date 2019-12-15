@@ -186,7 +186,7 @@ def new(self, event=None, gui=None):
     g.app.writeWaitingLog(c)
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
-    c.setChanged(False) # Fix #387: Clear all dirty bits.
+    c.clearChanged() # Fix #387: Clear all dirty bits.
     g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
@@ -352,7 +352,7 @@ def save(self, event=None, fileName=None):
         c.frame.title = ""
         c.mFileName = ""
     if c.mFileName:
-        # Calls c.setChanged(False) if no error.
+        # Calls c.clearChanged() if no error.
         g.app.syntax_error_files = []
         c.fileCommands.save(c.mFileName)
         c.syntaxErrorDialog()
@@ -366,7 +366,7 @@ def save(self, event=None, fileName=None):
             # Write the @edit node if needed.
             if root.isDirty():
                 c.atFileCommands.writeOneAtEditNode(root) 
-            c.setChanged(False)  # Clears all dirty bits.
+            c.clearChanged()  # Clears all dirty bits.
         else:
             fileName = ''.join(c.k.givenArgs)
             if not fileName:
@@ -454,7 +454,7 @@ def saveAs(self, event=None, fileName=None):
             # 2013/08/04: use c.computeWindowTitle.
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
             # Bug fix in 4.4b2.
-        # Calls c.setChanged(False) if no error.
+        # Calls c.clearChanged() if no error.
         if g.app.qt_use_tabs and hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.saveAs(c.mFileName)

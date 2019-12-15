@@ -704,7 +704,7 @@ class BlackCommand:
             if self.blacken_node_helper(p, check_flag, diff_flag):
                 changed = True
         if changed:
-            c.setChanged(True)
+            c.setChanged()
             c.undoer.afterChangeTree(root, undo_type, bunch)
         t2 = time.process_time()
         if not g.unitTesting:
@@ -715,7 +715,7 @@ class BlackCommand:
                 f'in {t2-t1:5.2f} sec.'
             )
         if self.changed and not c.changed:
-            c.setChanged(True)
+            c.setChanged()
         if self.changed or self.errors:
             c.redraw()
     #@+node:ekr.20190726013924.1: *3* black.blacken_node_helper (changed)

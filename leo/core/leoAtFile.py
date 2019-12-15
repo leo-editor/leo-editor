@@ -618,7 +618,7 @@ class AtFile:
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
-        if not changed: c.setChanged(False) ### Clears all dirty bits.
+        if not changed: c.clearChanged() ### Clears all dirty bits.
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, fn, p):
@@ -640,7 +640,7 @@ class AtFile:
         old_body = p.b
         p.b = g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not c.isChanged() and p.b != old_body:
-            c.setChanged(True)
+            c.setChanged()
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''
@@ -1151,7 +1151,7 @@ class AtFile:
                 if not at_persistence.isAncestorOf(p)]
         if not changed_positions:
             # g.warning('auto-saving @persistence tree.')
-            c.setChanged(False)  ### Clears all dirty bits.
+            c.clearChanged()  ### Clears all dirty bits.
             c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root):

@@ -742,7 +742,7 @@ def clone(self, event=None):
     c.endEditing() # Capture any changes to the headline.
     clone = p.clone()
     clone.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.redraw(clone)
@@ -778,7 +778,7 @@ def cloneToAtSpot(self, event=None):
     clone = p.copy()
     clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     clone.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
@@ -805,7 +805,7 @@ def cloneToLastNode(self, event=None):
         last.moveToNext()
     clone.moveAfter(last)
     clone.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterCloneNode(clone, 'Clone Node To Last', undoData)
     c.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
@@ -830,7 +830,7 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     undoData = u.beforeDeleteNode(p)
     p.setDirty()
     p.doDelete(newNode)
-    c.setChanged(True)
+    c.setChanged()
     u.afterDeleteNode(newNode, op_name, undoData)
     c.redraw(newNode)
     c.validateOutline()
@@ -891,7 +891,7 @@ def insertHeadlineHelper(c,
         p = current.insertAfter()
     g.doHook('create-node', c=c, p=p)
     p.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterInsertNode(p, op_name, undoData)
     c.redrawAndEdit(p, selectAll=True)
     return p
@@ -912,7 +912,7 @@ def insertHeadlineBefore(self, event=None):
     p = current.insertBefore()
     g.doHook('create-node', c=c, p=p)
     p.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterInsertNode(p, op_name, undoData)
     c.redrawAndEdit(p, selectAll=True)
     return p
@@ -945,7 +945,7 @@ def cloneMarked(self, event=None):
         else:
             p.moveToThreadNext()
     if n:
-        c.setChanged(True)
+        c.setChanged()
         parent.expand()
         c.selectPosition(parent)
         u.afterCloneMarkedNodes(p1)
@@ -977,7 +977,7 @@ def copyMarked(self, event=None):
         else:
             p.moveToThreadNext()
     if n:
-        c.setChanged(True)
+        c.setChanged()
         parent.expand()
         c.selectPosition(parent)
         u.afterCopyMarkedNodes(p1)
@@ -1005,7 +1005,7 @@ def deleteMarked(self, event=None):
         u.afterDeleteMarkedNodes(undo_data, p1)
         if not g.unitTesting:
             g.blue('deleted %s nodes' % (len(undo_data)))
-        c.setChanged(True)
+        c.setChanged()
     # Don't even *think* about restoring the old position.
     c.contractAllHeadlines()
     c.selectPosition(c.rootPosition())
@@ -1068,7 +1068,7 @@ def moveMarked(self, event=None):
         # u.afterMoveMarkedNodes(moved, p1)
         if not g.unitTesting:
             g.blue('moved %s nodes' % (len(moved)))
-        c.setChanged(True)
+        c.setChanged()
     # c.contractAllHeadlines()
         # Causes problems when in a chapter.
     c.selectPosition(parent)
@@ -1094,7 +1094,7 @@ def markChangedHeadlines(self, event=None):
             # c.setMarked calls a hook.
             c.setMarked(p)
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -1115,7 +1115,7 @@ def markChangedRoots(self, event=None):
                 bunch = u.beforeMark(p, undoType)
                 c.setMarked(p)  # Calls a hook.
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
                 u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -1136,7 +1136,7 @@ def markHeadline(self, event=None):
     else:
         c.setMarked(p)
     p.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterMark(p, undoType, bunch)
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2929: *3* c_oc.markSubheads (changed)
@@ -1153,7 +1153,7 @@ def markSubheads(self, event=None):
             bunch = u.beforeMark(p, undoType)
             c.setMarked(p) # Calls a hook.
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
     c.redraw_after_icons_changed()
@@ -1178,7 +1178,7 @@ def unmarkAll(self, event=None):
             changed = True
     if changed:
         g.doHook("clear-all-marks", c=c, p=p)
-        c.setChanged(True)
+        c.setChanged()
     u.afterChangeGroup(current, undoType)
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
@@ -1213,7 +1213,7 @@ def demote(self, event=None):
         child.parents.append(p.v)
     p.expand()
     p.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterDemote(p, followingSibs)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -1265,7 +1265,7 @@ def moveOutlineDown(self, event=None):
     #@-<< Move p down & set moved if successful >>
     if moved:
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         u.afterMoveNode(p, 'Move Down', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -1288,7 +1288,7 @@ def moveOutlineLeft(self, event=None):
     p.setDirty()
     p.moveAfter(parent)
     p.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterMoveNode(p, 'Move Left', undoData)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
@@ -1374,7 +1374,7 @@ def moveOutlineUp(self, event=None):
     #@-<< Move p up >>
     if moved:
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -1389,7 +1389,7 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     c.endEditing()
     children = p.v.children # First, for undo.
     p.promote()
-    c.setChanged(True)
+    c.setChanged()
     if undoFlag:
         p.setDirty()
         u.afterPromote(p, children)
@@ -1441,7 +1441,7 @@ def sortSiblings(self, event=None,
     if oldChildren == newChildren:
         return
     # 2010/01/20. Fix bug 510148.
-    c.setChanged(True)
+    c.setChanged()
     bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
     parent_v.children = newChildren
     u.afterSort(p, bunch)

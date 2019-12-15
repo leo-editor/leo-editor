@@ -1662,7 +1662,7 @@ class LeoFind:
             found = self.createCloneTagNodes(clones)
             u.afterInsertNode(found, undoType, undoData)
             assert c.positionExists(found, trace=True), found
-            c.setChanged(True)
+            c.setChanged()
             c.selectPosition(found)
             c.redraw()
         else:
@@ -1752,7 +1752,7 @@ class LeoFind:
             found = self.createCloneFindAllNodes(clones, flatten)
             u.afterInsertNode(found, undoType, undoData)
             assert c.positionExists(found, trace=True), found
-            c.setChanged(True)
+            c.setChanged()
             c.selectPosition(found)
         else:
             self.restore(data)
@@ -1842,7 +1842,7 @@ class LeoFind:
                 found = self.createFindAllNode(result)
             u.afterInsertNode(found, undoType, undoData)
             c.selectPosition(found)
-            c.setChanged(True)
+            c.setChanged()
         else:
             self.restore(data)
         return count

@@ -80,7 +80,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             if self.cleanAtCleanNode(p2, undoType):
                 n += 1
         if n > 0:
-            c.setChanged(True)
+            c.setChanged()
             c.undoer.afterChangeTree(p, undoType, bunch)
         g.es_print(f"{n} node{g.plural(n)} cleaned")
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers

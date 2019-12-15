@@ -415,7 +415,7 @@ class Undoer:
             c.clearMarked(u.p)
         # Undo/redo always set changed/dirty bits because the file may have been saved.
         u.p.setDirty()
-        u.c.setChanged(True)
+        u.c.setChanged()
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup

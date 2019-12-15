@@ -544,7 +544,7 @@ class FileCommands:
         """
         fc, c = self, self.c
         t1 = time.time()
-        c.setChanged(False)  # May be set when reading @file nodes.
+        c.clearChanged()  # May be set when reading @file nodes.
         fc.warnOnReadOnlyFiles(fileName)
         fc.checking = False
         fc.mFileName = c.mFileName
@@ -1055,7 +1055,7 @@ class FileCommands:
             if ok:
                 if not silent:
                     self.putSavedMessage(fileName)
-                c.setChanged(False)  # Clears all dirty bits.
+                c.clearChanged()  # Clears all dirty bits.
                 if c.config.save_clears_undo_buffer:
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
@@ -1133,7 +1133,7 @@ class FileCommands:
             c.ignoreChangedPaths = True
             try:
                 if self.write_Leo_file(fileName, outlineOnlyFlag=False):
-                    c.setChanged(False)  # Clears all dirty bits.
+                    c.clearChanged()  # Clears all dirty bits.
                     self.putSavedMessage(fileName)
             finally:
                 c.ignoreChangedPaths = False # #1367.

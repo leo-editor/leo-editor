@@ -620,7 +620,7 @@ class LeoBody:
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
-        if not c.changed: c.setChanged(True)
+        if not c.changed: c.setChanged()
         self.updateEditors()
         p.v.contentModified()
         #@+<< update icons if necessary >>
@@ -1297,7 +1297,7 @@ class LeoTree:
             return # The hook claims to have handled the event.
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
-            if not c.changed: c.setChanged(True)
+            if not c.changed: c.setChanged()
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
