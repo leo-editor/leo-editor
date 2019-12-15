@@ -2869,7 +2869,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             g.app.unitTestDict['colorized'] = True
         if not c.changed:
             c.setChanged()
-        ### self.updateEditors()
+        # self.updateEditors()
         p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name

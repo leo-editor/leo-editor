@@ -76,7 +76,7 @@ def getPath(c,p):
     return os.path.join(*path)
 #@+node:ajones.20070122181914.1: ** readtextnode
 def readtextnode(c, p):
-    ### changed = c.isChanged()
+
     name = getPath(c,p)
     try:
         file = open(name,"rU")

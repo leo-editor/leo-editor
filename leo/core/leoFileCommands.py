@@ -1036,6 +1036,17 @@ class FileCommands:
         return geom
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
+    #@+node:ekr.20070413061552: *5* fc.putSavedMessage
+    def putSavedMessage(self, fileName):
+        c = self.c
+        # #531: Optionally report timestamp...
+        if c.config.getBool('log-show-save-time', default=False):
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
+            timestamp = time.strftime(format) + ' '
+        else:
+            timestamp = ''
+        zipMark = '[zipped] ' if c.isZipped else ''
+        g.es(f"{timestamp} saved: {zipMark}{g.shortFileName(fileName)}")
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
         c = self.c
@@ -1160,17 +1171,6 @@ class FileCommands:
                 self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
-    #@+node:ekr.20070413061552: *5* fc.putSavedMessage
-    def putSavedMessage(self, fileName):
-        c = self.c
-        # #531: Optionally report timestamp...
-        if c.config.getBool('log-show-save-time', default=False):
-            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
-            timestamp = time.strftime(format) + ' '
-        else:
-            timestamp = ''
-        zipMark = '[zipped] ' if c.isZipped else ''
-        g.es(f"{timestamp} saved: {zipMark}{g.shortFileName(fileName)}")
     #@+node:ekr.20050404190914.2: *4* fc.deleteFileWithMessage
     def deleteFileWithMessage(self, fileName, unused_kind):
         try:

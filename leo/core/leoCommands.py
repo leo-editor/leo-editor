@@ -1252,7 +1252,7 @@ class Commands:
         for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
-    #@+node:ekr.20191215044636.1: *5* c.clearChanged
+    #@+node:ekr.20191215044636.1: *5* c.clearChanged (new)
     def clearChanged(self):
         """clear the marker that indicates that the .leo file has been changed."""
         c = self
@@ -1309,7 +1309,7 @@ class Commands:
             if not c.isChanged():
                 c.setChanged()
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2989: *5* c.setChanged
+    #@+node:ekr.20031218072017.2989: *5* c.setChanged (changed)
     def setChanged(self, changedFlag=True, redrawFlag=True):
         """Set the marker that indicates that the .leo file has been changed."""
         c = self

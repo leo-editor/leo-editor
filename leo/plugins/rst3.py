@@ -611,7 +611,7 @@ class rstClass(object):
         c.k.registerCommand('write-restructured-text', rst3PluginCallback)
         table = (
             ("-",None,None),
-            ### ("Write Restructed Text","",rst3PluginCallback),
+            # ("Write Restructed Text","",rst3PluginCallback),
             '&write-restructured-text',
         )
         c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)

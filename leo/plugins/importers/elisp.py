@@ -39,7 +39,7 @@ class Elisp_Importer(Importer):
                 # key    kind   pattern  ends?
                 '\\':   [('len+1', '\\', None),],
                 '"':    [('len', '"',    context == '"'),],
-                ### "'":    [('len', "'",    context == "'"),],
+                # "'":    [('len', "'",    context == "'"),],
             }
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
@@ -50,7 +50,7 @@ class Elisp_Importer(Importer):
                 # key    kind pattern new-ctx  deltas
                 '\\':[('len+1', '\\', context, None),],
                 '"':    [('len', '"', '"',     None),],
-                ### "'":    [('len', "'", "'",     None),],
+                # "'":    [('len', "'", "'",     None),],
                 '{':    [('len', '{', context, (1,0,0)),],
                 '}':    [('len', '}', context, (-1,0,0)),],
                 '(':    [('len', '(', context, (0,1,0)),],
