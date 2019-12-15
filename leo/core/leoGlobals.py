@@ -407,7 +407,7 @@ class Bunch:
             f"{key}: {str(self.__dict__.get(key)) or repr(self.__dict__.get(key))}"
                 for key in self.ivars() if key != 'tag'
         ]
-        ### Fail.
+        # Fail.
         result = [f'g.Bunch({tag or ""})']
         result.extend(entries)
         return '\n    '.join(result) + '\n'

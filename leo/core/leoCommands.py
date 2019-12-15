@@ -2483,7 +2483,7 @@ class Commands:
         c.endEditing()
         p = c.rootPosition()
         while p:
-            if p.isAtFileNode(): ### and not p.isDirty():
+            if p.isAtFileNode():
                 p.setDirty()
                 c.setChanged(True)
                 p.moveToNodeAfterTree()

@@ -627,8 +627,6 @@ class LeoBody:
         #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
         redraw_flag = False
         # Update dirty bits.
-        # p.setDirty() sets all cloned and @file dirty bits.
-        ### if not p.isDirty() and p.setDirty():   ### p.setDirty no longer returns a list.
         if not p.isDirty():
             p.setDirty()
             redraw_flag = True
