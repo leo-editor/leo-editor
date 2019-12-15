@@ -2416,17 +2416,6 @@ class VNode:
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
                 v2.setDirty()
-                
-        ###
-            # aList = list(set(
-                # [v for v in v_and_parents(v)
-                    # if v.isAnyAtFileNode() and not v.isDirty()]
-            # ))
-            # if 'save' in g.app.debug and aList:
-                # g.trace(v.h, g.callers())
-                # g.printObj(aList)
-            # for v in aList:
-                # v.setDirty()
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!
