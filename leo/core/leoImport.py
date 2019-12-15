@@ -719,8 +719,6 @@ class LeoImportCommands:
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):
         """Scan the text of an unknown file type."""
-        ### c = self.c
-        ### changed = c.isChanged()
         body = ''
         if ext in ('.html', '.htm'): body += '@language html\n'
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
@@ -730,7 +728,6 @@ class LeoImportCommands:
         self.setBodyString(p, body + self.rootLine + s)
         for p in p.self_and_subtree():
             p.clearDirty()
-        ### if not changed: c.clearChanged()  ### Clears all dirty bits.
         g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension

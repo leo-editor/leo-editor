@@ -2228,7 +2228,6 @@ class VimCommands:
                 # A benign hack: simulate an Escape for the dot.
                 self.stroke = 'Escape'
                 self.end_insert_mode()
-                ### if not self.j_changed: c.clearChanged() ### Clears all dirty bits.
                 return True
             # Remember the changed state when we saw the first 'j'.
             self.j_changed = c.isChanged()

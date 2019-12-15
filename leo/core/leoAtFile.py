@@ -604,7 +604,6 @@ class AtFile:
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
-        ### changed = c.isChanged()
         head = ''
         ext = ext.lower()
         if ext in ('.html', '.htm'): head = '@language html\n'
@@ -616,7 +615,6 @@ class AtFile:
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
-        ### if not changed: c.clearChanged() ### Clears all dirty bits.
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, fn, p):

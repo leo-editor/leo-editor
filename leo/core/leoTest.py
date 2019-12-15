@@ -286,7 +286,6 @@ class ImportExportTestCase(unittest.TestCase):
             self.gui = None
         temp_p.setBodyString("")
         temp_p.clearDirty()
-        ### if not self.wasChanged: c.clearChanged()  ### Clears all dirty bits.
         if 1: # Delete all children of temp node.
             while temp_p.firstChild():
                 temp_p.firstChild().doDelete()
@@ -588,7 +587,6 @@ class TestManager:
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
         try:
-            ### changed = c.isChanged()
             g.unitTesting = g.app.unitTesting = True
             g.app.runningAllUnitTests = all and not marked
             self.do_tests_helper(all, marked, verbosity)
@@ -599,7 +597,6 @@ class TestManager:
                     g.trace('calling sys.exit(0) after unit test')
                 sys.exit(0)
             g.unitTesting = g.app.unitTesting = False
-            ### c.setChanged(changed)  ### Clears all dirty bits.
             c.contractAllHeadlines()
             c.redraw(p1)
     #@+node:ekr.20170504130531.1: *5* class LoggingLog
