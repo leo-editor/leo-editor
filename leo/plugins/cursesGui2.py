@@ -2600,7 +2600,7 @@ class CoreTree (leoFrame.LeoTree):
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
             if not c.changed:
-                c.setChanged(True)
+                c.setChanged()
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
                 # c.frame.scanForTabWidth(p)
@@ -2868,7 +2868,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         if not c.changed:
-            c.setChanged(True)
+            c.setChanged()
         ### self.updateEditors()
         p.v.contentModified()
         # Don't update icons.

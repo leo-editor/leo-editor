@@ -91,7 +91,10 @@ class CText_Importer(Importer):
         # It's always useless for an an import to dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        c.setChanged(changed)
+        if changed:
+            c.setChanged()
+        else:
+            c.clearChanged()
         return True
     #@-others
 #@-others

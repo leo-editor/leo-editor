@@ -618,7 +618,7 @@ class todoController:
                 op = node._cached_src_c.vnode2position(node._cached_src_vnode)
                 node._cached_src_c.cleo.loadIcons(op)
                 node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
-                node._cached_src_c.setChanged(True)
+                node._cached_src_c.setChanged()
 
         isDefault = self.testDefault(attrib, val)
 
@@ -644,7 +644,7 @@ class todoController:
         if (attrib not in node.unknownAttributes["annotate"] or
             node.unknownAttributes["annotate"][attrib] != val
         ):
-            self.c.setChanged(True)
+            self.c.setChanged()
             node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
@@ -668,7 +668,7 @@ class todoController:
 
             if isDefault:  # no non-defaults seen, drop the whole cleo dictionary
                 del node.unknownAttributes["annotate"]
-                self.c.setChanged(True)
+                self.c.setChanged()
                 return True
 
         return False

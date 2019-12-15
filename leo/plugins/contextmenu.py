@@ -161,7 +161,7 @@ def deletenodes_rclick(c,p,menu):
                     bunch = u.beforeDeleteNode(pos)
                     pos.doDelete()
                     u.afterDeleteNode(pos,undoType,bunch)
-                    c.setChanged(True)
+                    c.setChanged()
                     break
         u.afterChangeGroup(current,undoType)
         # move to a node that still exists

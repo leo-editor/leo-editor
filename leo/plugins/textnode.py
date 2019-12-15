@@ -76,16 +76,13 @@ def getPath(c,p):
     return os.path.join(*path)
 #@+node:ajones.20070122181914.1: ** readtextnode
 def readtextnode(c, p):
-    changed = c.isChanged()
-
+    ### changed = c.isChanged()
     name = getPath(c,p)
-
     try:
         file = open(name,"rU")
         g.es("..." + name)
         c.setBodyString(p, file.read())
         p.clearDirty()
-        c.setChanged(changed)
         file.close()
     except IOError as msg:
         g.es("error reading %s: %s" % (name, msg))

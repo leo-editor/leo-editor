@@ -517,7 +517,7 @@ def openDir(c,parent,d):
             continue
 
         p = parent.insertAsNthChild(0)
-        c.setChanged(True)
+        c.setChanged()
         c.setHeadString(p,name)
         if name.startswith('/'):
             # sufficient test of dirness as we created newlist

@@ -63,7 +63,10 @@ class Import_IPYNB:
             )
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            c.setChanged(changed)
+            if changed:
+                c.setChanged()
+            else:
+                c.clearChanged()
         elif not c or not fn:
             g.trace('can not happen', c, fn)
     #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper

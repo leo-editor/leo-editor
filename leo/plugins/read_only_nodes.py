@@ -352,7 +352,7 @@ def on_open (tag,keywords):
                 if not p.isDirty():
                     p.setDirty()
                 if not c.isChanged():
-                    c.setChanged(changed)
+                    c.setChanged()
         p.moveToThreadNext()
     c.redraw()
 #@+node:edream.110203113231.897: ** on_bodykey1
@@ -385,7 +385,10 @@ def on_headkey2 (tag,keywords):
     if ch in ('\n','\r') and g.match_word(h,0,"@read-only"):
         # on-the-fly update of @read-only directives
         changed = insert_read_only_node(c,p,h[11:])
-        c.setChanged(changed)
+        if changed:
+            c.setChanged()
+        else:
+            c.clearChanged()
 #@+node:edream.110203113231.899: ** on_select1
 def on_select1 (tag,keywords):
 

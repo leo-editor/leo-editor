@@ -433,7 +433,10 @@ class Importer:
         # It's always useless for an an import to dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        c.setChanged(changed)
+        if changed:
+            c.setChanged()
+        else:
+            c.clearChanged()
         return ok
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):

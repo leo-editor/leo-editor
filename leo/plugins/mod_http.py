@@ -766,7 +766,7 @@ class LeoActions:
                 selection,
                 query.get('description', [''])[0],
             )
-            c.setChanged(True)
+            c.setChanged()
             c.selectPosition(nd) # required for body text redraw
             c.redraw()
             return f

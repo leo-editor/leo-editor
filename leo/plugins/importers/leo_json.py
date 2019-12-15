@@ -63,10 +63,13 @@ class JSON_Scanner:
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            c.setChanged(changed)
+            if changed:
+                c.setChanged()
+            else:
+                c.clearChanged()
         else:
             parent.setDirty() # setDescendentsDirty=False)
-            c.setChanged(True)
+            c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):

@@ -94,7 +94,6 @@ def on_icondclick(tag, keywords):
 
         dirs.sort()
         files.sort()
-
         for f in files:
             pn = p.insertAsNthChild(0)
             if os.path.splitext(f)[1] in textexts:
@@ -102,17 +101,9 @@ def on_icondclick(tag, keywords):
                 pn.clearDirty()
             else:
                 c.setHeadString(pn, f)
-            #pn.clearDirty()
-
         for d in dirs:
             pn = p.insertAsNthChild(0)
             c.setHeadString(pn, "@expfolder "+d)
-            #pn.clearDirty()
-
-        #p.clearDirty()
-
-        #c.setChanged(changed)
-
         c.expandSubtree(p)
 #@-others
 #@-leo
