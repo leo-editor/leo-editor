@@ -419,9 +419,8 @@ class ScreenCastController:
         w = tree.edit_widget(p)
         # Support undo.
         undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
-        dirtyVnodeList = p.setDirty()
-        c.undoer.afterChangeNodeContents(p, undoType, undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        p.setDirty()
+        c.undoer.afterChangeNodeContents(p, undoType, undoData)
         # Lock out key handling in m.state_handler.
         m.ignore_keys = True
         try:

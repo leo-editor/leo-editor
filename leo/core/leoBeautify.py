@@ -1755,7 +1755,6 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # Remembering token.line is necessary, because dedent tokens
         # can happen *after* comment lines that should be dedented!
         self.kind, self.val, self.line = token.kind, token.value, token.line
-        ### g.trace(self.kind, self.val)
         func = getattr(self, f"do_{token.kind}", self.oops)
         func()
     #@+node:ekr.20191027172407.1: *4* ptb.file_end (override)

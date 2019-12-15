@@ -426,9 +426,8 @@ class Demo:
         w = tree.edit_widget(p)
         if undo:
             undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
-            dirtyVnodeList = p.setDirty()
-            c.undoer.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList)
+            p.setDirty()
+            c.undoer.afterChangeNodeContents(p, undoType, undoData)
         for ch in s:
             p.h = p.h + ch
             tree.repaint() # *not* tree.update.

@@ -1087,15 +1087,14 @@ class BookMarkDisplay:
         u = c.undoer
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next()
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)
         if self.current == p.v:
             self.current = p.v.parents[0]
         p.doDelete(newNode)  # p is deleted, newNode is where to go afterwards
         c.setChanged()
-        u.afterDeleteNode(newNode, "Bookmark deletion", undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        u.afterDeleteNode(newNode, "Bookmark deletion", undoData)
         c.redraw()
         self.c.bodyWantsFocusNow()
 
