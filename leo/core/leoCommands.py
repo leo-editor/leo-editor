@@ -1253,7 +1253,7 @@ class Commands:
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20191215044636.1: *5* c.clearChanged
-    def clearChanged(self, redrawFlag=True):
+    def clearChanged(self):
         """clear the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
@@ -1270,8 +1270,6 @@ class Commands:
         if c.gui.guiName() == 'nullGui':
             return
         if not c.frame.top:
-            return
-        if not redrawFlag: # Prevent flash when fixing #387.
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:

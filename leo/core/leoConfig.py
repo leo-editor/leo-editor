@@ -1018,7 +1018,7 @@ class ActiveSettingsOutline:
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
-        c.setChanged(changedFlag=False, redrawFlag=True)
+        c.setChanged()
         c.redraw()
 
     #@+node:ekr.20190905091614.7: *4* aso.legend
