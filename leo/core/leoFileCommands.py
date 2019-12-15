@@ -590,7 +590,6 @@ class FileCommands:
                 # Leo holding directory/file handles after file close?
         if c.changed:
             fc.propegateDirtyNodes()
-        ### c.setChanged(c.changed) ### Huh? Refresh the changed marker.
         fc.initReadIvars()
         t2 = time.time()
         g.es('read outline in %2.2f seconds' % (t2 - t1))

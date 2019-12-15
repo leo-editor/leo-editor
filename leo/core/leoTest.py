@@ -286,8 +286,7 @@ class ImportExportTestCase(unittest.TestCase):
             self.gui = None
         temp_p.setBodyString("")
         temp_p.clearDirty()
-        if not self.wasChanged:
-            c.clearChanged()  ### Clears all dirty bits.
+        ### if not self.wasChanged: c.clearChanged()  ### Clears all dirty bits.
         if 1: # Delete all children of temp node.
             while temp_p.firstChild():
                 temp_p.firstChild().doDelete()
@@ -1069,7 +1068,7 @@ class TestManager:
         finally:
             g.app.gui = old_gui
             if c2 and c2 != c:
-                c2.clearChanged()  ### Clears all dirty bits.
+                c2.clearChanged()  # Clears all dirty bits.
                 g.app.closeLeoWindow(c2.frame)
             c.frame.update() # Restored in Leo 4.4.8.
     #@+node:sps.20100531175334.10307: *4* TM.runRootFileTangleTest

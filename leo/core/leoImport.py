@@ -719,8 +719,8 @@ class LeoImportCommands:
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):
         """Scan the text of an unknown file type."""
-        c = self.c
-        changed = c.isChanged()
+        ### c = self.c
+        ### changed = c.isChanged()
         body = ''
         if ext in ('.html', '.htm'): body += '@language html\n'
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
@@ -730,8 +730,7 @@ class LeoImportCommands:
         self.setBodyString(p, body + self.rootLine + s)
         for p in p.self_and_subtree():
             p.clearDirty()
-        if not changed:
-            c.clearChanged()  ### Clears all dirty bits.
+        ### if not changed: c.clearChanged()  ### Clears all dirty bits.
         g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
@@ -1286,7 +1285,6 @@ class LeoImportCommands:
         old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
-        ### oldChanged = c.changed
         # A hack.  Let unit tests set the kill-check flag first.
         d = g.app.unitTestDict
         if d.get('kill-check'):
@@ -1323,7 +1321,6 @@ class LeoImportCommands:
         else:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
-            ### c.setChanged(oldChanged)  ###
         c.redraw(old_root)
         if g.app.unitTesting:
             d['kill-check'] = False
@@ -1967,7 +1964,7 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
-        c.clearChanged()  ### Clears *all* dirty bits.
+        c.clearChanged()  # Clears *all* dirty bits.
         for p in p.self_and_subtree(copy=False):
             p.clearDirty()
     #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
