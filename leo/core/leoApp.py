@@ -1980,9 +1980,10 @@ class LoadManager:
     def computeHomeLeoDir(self):
         # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
-        if not g.os_path_exists(homeLeoDir):
-            g.makeAllNonExistentDirectories(homeLeoDir, force=True)
-        return homeLeoDir
+        if g.os_path_exists(homeLeoDir):
+            return homeLeoDir
+        ok = g.makeAllNonExistentDirectories(homeLeoDir, force=True)
+        return homeLeoDir if ok else '' # #1450
     #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
     def computeLeoDir(self):
         # lm = self

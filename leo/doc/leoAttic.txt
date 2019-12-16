@@ -3662,6 +3662,20 @@ def leo_excepthook(type, value, tb):
     # Note: Leo will still exit!
     g.trace(f"Uncaught Python exception: {value}\n")
     g.es_exception()
+#@+node:ekr.20190111112432.1: ** at.checkDir (no longer used)
+def checkDirectory(self, directory):
+    """Return True if directory exists or could be created."""
+    at, c = self, self.c
+    assert directory, g.callers()
+    if g.os_path_exists(directory):
+        return at.isWritable(directory)
+    try:
+        g.makeAllNonExistentDirectories(directory, c=c)
+        return True
+    except Exception:
+        g.es("exception creating path: %r" % (directory), color='red')
+        g.es_exception()
+        return False
 #@-all
 #@@nosearch
 #@-leo

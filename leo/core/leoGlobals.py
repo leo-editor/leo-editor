@@ -3869,11 +3869,13 @@ def is_sentinel(line, delims):
     g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
     return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
 def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
-    """Attempt to make all non-existent directories"""
-    testing = False  # True: don't actually make the directories.
+    """
+    Attempt to make all non-existent directories.
+    
+    A wrapper from os.makedirs (new in Python 3.2).
+    
+    """
     if force:
         create = True  # Bug fix: g.app.config will not exist during startup.
     elif c:
@@ -3883,39 +3885,52 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
             g.app.config.create_nonexistent_directories)
     if c:
         theDir = c.expand_path_expression(theDir)
+    #
+    # Return True if the directory already exists.
     dir1 = theDir = g.os_path_normpath(theDir)
-    ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
-    if ok:
-        return ok
+    exists = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
+    if exists:
+        return True
+    #
+    # Return False if we aren't forcing the create.
     if not force and not create:
         return False
-    # Split theDir into all its component parts.
-    paths = []
-    while theDir:
-        head, tail = g.os_path_split(theDir)
-        if tail:
-            paths.append(tail)
-            theDir = head
-        else:
-            paths.append(head)
-            break
-    path = ""
-    paths.reverse()
-    for s in paths:
-        path = g.os_path_finalize_join(path, s)
-        if not g.os_path_exists(path):
-            try:
-                if testing:
-                    g.trace('***making', path)
-                else:
-                    os.mkdir(path)
-                if verbose and not testing and not g.app.unitTesting:
-                    g.red("created directory:", path)
-            except Exception:
-                if verbose: g.error("exception creating directory:", path)
-                g.es_exception()
-                return None
-    return dir1  # All have been created.
+    #
+    # Just use os.makedirs.
+    try:
+        os.makedirs(theDir, mode=0o777, exist_ok=False)
+        return True
+    except Exception:
+        return False
+        
+    ### Old code...
+        # # Split theDir into all its component parts.
+        # paths = []
+        # while theDir:
+            # head, tail = g.os_path_split(theDir)
+            # if tail:
+                # paths.append(tail)
+                # theDir = head
+            # else:
+                # paths.append(head)
+                # break
+        # path = ""
+        # paths.reverse()
+        # for s in paths:
+            # path = g.os_path_finalize_join(path, s)
+            # if not g.os_path_exists(path):
+                # try:
+                    # if testing:
+                        # g.trace('***making', path)
+                    # else:
+                        # os.mkdir(path)
+                    # if verbose and not testing and not g.app.unitTesting:
+                        # g.red("created directory:", path)
+                # except Exception:
+                    # if verbose: g.error("exception creating directory:", path)
+                    # g.es_exception()
+                    # return None
+        # return dir1  # All have been created.
 #@+node:ekr.20071114113736: *3* g.makePathRelativeTo
 def makePathRelativeTo(fullPath, basePath):
     if fullPath.startswith(basePath):
@@ -4102,8 +4117,6 @@ def update_file_if_changed(c, file_name, temp_name):
             ok = g.utils_rename(c, temp_name, file_name, mode)
     else:
         kind = 'creating'
-        # 2010/02/04: g.utils_rename no longer calls
-        # makeAllNonExistentDirectories
         head, tail = g.os_path_split(file_name)
         ok = True
         if head:
@@ -4128,10 +4141,7 @@ def utils_remove(fileName, verbose=True):
 #@+node:ekr.20031218072017.1263: *4* g.utils_rename
 def utils_rename(c, src, dst, verbose=True):
     """Platform independent rename."""
-    # Don't call g.makeAllNonExistentDirectories.
-    # It's not right to do this here!!
-    # head, tail = g.os_path_split(dst)
-    # if head: g.makeAllNonExistentDirectories(head,c=c)
+    # Don't call g.makeAllNonExistentDirectories here!
     try:
         shutil.move(src, dst)
         return True

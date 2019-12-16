@@ -2208,20 +2208,6 @@ class AtFile:
         if g.os_path_exists(fileName):
             return at.isWritable(fileName)
         return True
-    #@+node:ekr.20190111112432.1: *6* at.checkDir
-    def checkDirectory(self, directory):
-        """Return True if directory exists or could be created."""
-        at, c = self, self.c
-        assert directory, g.callers()
-        if g.os_path_exists(directory):
-            return at.isWritable(directory)
-        try:
-            g.makeAllNonExistentDirectories(directory, c=c)
-            return True
-        except Exception:
-            g.es("exception creating path: %r" % (directory), color='red')
-            g.es_exception()
-            return False
     #@+node:ekr.20190111112442.1: *6* at.isWritable
     def isWritable(self, path):
         """Return True if the path is writable."""
