@@ -4021,7 +4021,7 @@ def move_shebang_line (self,c,root):
     p.setMarked()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12354: *5* move_doc_string
@@ -4054,7 +4054,7 @@ def move_doc_string(self,c,root):
     p.setMarked()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12355: *5* rename_decls (test)
@@ -4084,7 +4084,7 @@ def rename_decls (self,c,root):
     p.setDirty()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12356: *5* clean_blank_lines
@@ -4111,7 +4111,7 @@ def clean_blank_lines(self,c,p):
         p.b = s
         p.setDirty()
         # p.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         # if self.trace: g.trace(p.h)
         
@@ -4133,7 +4133,7 @@ def merge_comment_nodes(self,c,p):
         p.doDelete(p2)
         p2.setDirty()
         # p2.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         if self.trace: g.trace(h,' --> ',p2.h)
 #@+node:ekr.20120602062004.12358: *5* merge_extra_nodes
@@ -4157,7 +4157,7 @@ def merge_extra_nodes(self,c,p):
         p.doDelete(p2)
         p2.setDirty()
         # p2.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         if self.trace: g.trace(h,' --> ',p2.h)
 #@+node:ekr.20071113150213: *3* Clone all nodes to child node
@@ -4671,7 +4671,7 @@ for p in c.all_unique_positions():
     if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
         g.es("deleting tnodeList for " + `v`,color="blue")
         delattr(v,"tnodeList")
-        c.setChanged(True)
+        c.setChanged()
 
 s = "%d nodes" % count
 print s ; g.es(s)
@@ -9864,7 +9864,7 @@ for p in c.all_positions():
             a["icons"] = []
             a["lineYOffset"] = 0
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
 c.redraw()
 #@+node:ekr.20071116114235: *3* Print all Tango icons in wiki-markup format
 # Prints all icons in the Icons/Tango folder in wiki-markup format.
