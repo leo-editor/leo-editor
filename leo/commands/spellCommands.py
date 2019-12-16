@@ -53,7 +53,7 @@ class BaseSpellWrapper:
         theDir = g.os_path_dirname(fn)
         if theDir:
             ok = g.makeAllNonExistentDirectories(
-                theDir, c=self.c, force=True, verbose=True)
+                theDir, c=self.c, force=True)
             # #1453: Don't assume the directory exists.
             if not ok:
                 g.error(f"did not create directory: {theDir}")

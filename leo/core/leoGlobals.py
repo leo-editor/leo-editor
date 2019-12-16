@@ -3865,7 +3865,7 @@ def is_sentinel(line, delims):
     g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
     return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
-def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
+def makeAllNonExistentDirectories(theDir, c=None, force=False):
     """
     Attempt to make all non-existent directories.
     Return the created directory, or None.
@@ -3893,7 +3893,7 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
         return theDir
     #
     # Return False if we aren't forcing the create.
-    if not force and not create:
+    if not create:
         return None
     #
     # #1450: Just use os.makedirs.
