@@ -731,7 +731,7 @@ def hoist(self, event=None):
     c.undoer.afterHoist(p, 'Hoist')
     g.doHook('hoist-changed', c=c)
 #@+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-#@+node:ekr.20031218072017.1762: *3* c_oc.clone (changed)
+#@+node:ekr.20031218072017.1762: *3* c_oc.clone
 @g.commander_command('clone-node')
 def clone(self, event=None):
     """Create a clone of the selected outline."""
@@ -751,7 +751,7 @@ def clone(self, event=None):
     clone.doDelete()
     c.setCurrentPosition(p)
     return None
-#@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot (changed)
+#@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
 @g.commander_command('clone-to-at-spot')
 def cloneToAtSpot(self, event=None):
     """
@@ -787,7 +787,7 @@ def cloneToAtSpot(self, event=None):
     else:
         clone.doDelete()
         c.setCurrentPosition(p)
-#@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode (changed)
+#@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
 @g.commander_command('clone-node-to-last-node')
 def cloneToLastNode(self, event=None):
     """
@@ -809,7 +809,7 @@ def cloneToLastNode(self, event=None):
     u.afterCloneNode(clone, 'Clone Node To Last', undoData)
     c.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
-#@+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline (changed)
+#@+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
 @g.commander_command('delete-node')
 def deleteOutline(self, event=None, op_name="Delete Node"):
     """Deletes the selected outline."""
@@ -859,7 +859,7 @@ def insertNodeAsLastChild(self, event=None):
     """Insert a node as the last child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_last_child=True)
-#@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper (changed)
+#@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper
 def insertHeadlineHelper(c,
     event=None,
     op_name="Insert Node",
@@ -895,7 +895,7 @@ def insertHeadlineHelper(c,
     u.afterInsertNode(p, op_name, undoData)
     c.redrawAndEdit(p, selectAll=True)
     return p
-#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore (changed)
+#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self, event=None):
     """Insert a node before the presently selected node."""
@@ -1121,7 +1121,7 @@ def markChangedRoots(self, event=None):
     if not g.unitTesting:
         g.blue('done')
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline (changed)
+#@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
 @g.commander_command('mark')
 def markHeadline(self, event=None):
     """Toggle the mark of the selected node."""
@@ -1139,7 +1139,7 @@ def markHeadline(self, event=None):
     c.setChanged()
     u.afterMark(p, undoType, bunch)
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2929: *3* c_oc.markSubheads (changed)
+#@+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
 @g.commander_command('mark-subheads')
 def markSubheads(self, event=None):
     """Mark all children of the selected node as changed."""
@@ -1157,7 +1157,7 @@ def markSubheads(self, event=None):
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll (changed)
+#@+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
 @g.commander_command('unmark-all')
 def unmarkAll(self, event=None):
     """Unmark all nodes in the entire outline."""
@@ -1182,7 +1182,7 @@ def unmarkAll(self, event=None):
     u.afterChangeGroup(current, undoType)
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
-#@+node:ekr.20031218072017.1767: *3* c_oc.demote (changed)
+#@+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')
 def demote(self, event=None):
     """Make all following siblings children of the selected node."""
@@ -1217,7 +1217,7 @@ def demote(self, event=None):
     u.afterDemote(p, followingSibs)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown (changed)
+#@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 @g.commander_command('move-outline-down')
 def moveOutlineDown(self, event=None):
     """Move the selected node down."""
@@ -1269,7 +1269,7 @@ def moveOutlineDown(self, event=None):
         u.afterMoveNode(p, 'Move Down', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft (changed)
+#@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
 def moveOutlineLeft(self, event=None):
     """Move the selected node left if possible."""
@@ -1295,7 +1295,7 @@ def moveOutlineLeft(self, event=None):
         parent.contract()
     c.redraw(p)
     c.recolor() # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight (big change)
+#@+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
 def moveOutlineRight(self, event=None):
     """Move the selected node right if possible."""
@@ -1321,7 +1321,7 @@ def moveOutlineRight(self, event=None):
     u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
     c.recolor()
-#@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp (changed)
+#@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self, event=None):
     """Move the selected node up if possible."""
@@ -1378,7 +1378,7 @@ def moveOutlineUp(self, event=None):
         u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1774: *3* c_oc.promote (changed)
+#@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
 def promote(self, event=None, undoFlag=True, redrawFlag=True):
     """Make all children of the selected nodes siblings of the selected node."""
@@ -1413,7 +1413,7 @@ def sortChildren(self, event=None, key=None, reverse=False):
     c = self; p = c.p
     if p and p.hasChildren():
         c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
-#@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings (changed)
+#@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
 @g.commander_command('sort-siblings')
 def sortSiblings(self, event=None,
     # cmp keyword is no longer supported.

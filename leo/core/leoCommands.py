@@ -1252,7 +1252,7 @@ class Commands:
         for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
-    #@+node:ekr.20191215044636.1: *5* c.clearChanged (new)
+    #@+node:ekr.20191215044636.1: *5* c.clearChanged
     def clearChanged(self):
         """clear the marker that indicates that the .leo file has been changed."""
         c = self
@@ -1309,7 +1309,7 @@ class Commands:
             if not c.isChanged():
                 c.setChanged()
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2989: *5* c.setChanged (changed)
+    #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, redrawFlag=True):
         """Set the marker that indicates that the .leo file has been changed."""
         c = self
@@ -2716,7 +2716,7 @@ class Commands:
                 message=message,
                 text="Ok")
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
-    #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf (changed)
+    #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p, parent, n):
         c = self; u = c.undoer; undoType = 'Drag'
         current = c.p
@@ -2733,7 +2733,7 @@ class Commands:
         u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
-    #@+node:ekr.20031218072017.2353: *5* c.dragAfter (changed)
+    #@+node:ekr.20031218072017.2353: *5* c.dragAfter
     def dragAfter(self, p, after):
         c = self; u = self.undoer; undoType = 'Drag'
         current = c.p
@@ -2750,7 +2750,7 @@ class Commands:
         u.afterMoveNode(p, undoType, undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
-    #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf (changed)
+    #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p, parent, n):
         c = self; u = c.undoer; undoType = 'Clone Drag'
         current = c.p
@@ -2771,7 +2771,7 @@ class Commands:
         u.afterInsertNode(clone, undoType, undoData)
         c.redraw(clone)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
-    #@+node:ekr.20031218072017.2948: *5* c.dragCloneAfter (changed)
+    #@+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p, after):
         c = self; u = c.undoer; undoType = 'Clone Drag'
         current = c.p
@@ -3686,7 +3686,7 @@ class Commands:
         else:
             g.es_print(f"Does not exist: {dir_}")
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
-    #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicated (changed)
+    #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicated
     def cloneFindByPredicate(self,
         generator,     # The generator used to traverse the tree.
         predicate,     # A function of one argument p, returning True

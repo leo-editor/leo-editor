@@ -49,7 +49,7 @@ class Undoer:
     # So that ivars can be inited to None rather thatn [].
     #@+others
     #@+node:ekr.20150509193307.1: *3* u.Birth
-    #@+node:ekr.20031218072017.3606: *4* u.__init__ (changed)
+    #@+node:ekr.20031218072017.3606: *4* u.__init__
     def __init__(self, c):
         self.c = c
         self.granularity = None # Set in reloadSettings.
@@ -399,7 +399,7 @@ class Undoer:
         ivars = ('kind', 'undoType')
         for ivar in ivars:
             g.pr(ivar, getattr(self, ivar))
-    #@+node:ekr.20050410095424: *4* u.updateMarks (changed)
+    #@+node:ekr.20050410095424: *4* u.updateMarks
     def updateMarks(self, oldOrNew):
         """Update dirty and marked bits."""
         u = self; c = u.c
@@ -1083,7 +1083,7 @@ class Undoer:
         if u.per_node_undo:
             u.putIvarsToVnode(p)
         return bunch # Never used.
-    #@+node:ekr.20031218072017.2030: *3* u.redo (changed)
+    #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event=None):
         """Redo the operation undone by the last undo."""
@@ -1243,6 +1243,7 @@ class Undoer:
         u = self; c = u.c
         u.updateMarks('new')
         if u.groupCount == 0:
+            u.p.setDirty()
             c.selectPosition(u.p)
 
     #@+node:ekr.20050411111847: *4* u.redoMove
@@ -1353,7 +1354,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20031218072017.2039: *3* u.undo (changed)
+    #@+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
@@ -1466,8 +1467,8 @@ class Undoer:
         for sib in u.followingSibs:
             sib.parents.remove(u.p.v)
             sib.parents.append(parent_v)
+        u.p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(u.p)
-
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
         """Process beads until the matching 'beforeGroup' bead is seen."""
@@ -1536,6 +1537,7 @@ class Undoer:
         u = self; c = u.c
         u.updateMarks('old')
         if u.groupCount == 0:
+            u.p.setDirty()
             c.selectPosition(u.p)
 
     #@+node:ekr.20050411112033: *4* u.undoMove
@@ -1581,7 +1583,6 @@ class Undoer:
         if u.groupCount == 0 and u.oldYScroll is not None:
             w.setYScrollPosition(u.oldYScroll)
         u.updateMarks('old')
-
     #@+node:ekr.20080425060424.14: *4* u.undoPromote
     def undoPromote(self):
         u = self; c = u.c
@@ -1602,8 +1603,9 @@ class Undoer:
         for child in u.children:
             child.parents.remove(parent_v)
             child.parents.append(u.p.v)
+        u.p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(u.p)
-    #@+node:ekr.20031218072017.1493: *4* u.undoRedoText (changed)
+    #@+node:ekr.20031218072017.1493: *4* u.undoRedoText
     def undoRedoText(self, p,
         leading, trailing, # Number of matching leading & trailing lines.
         oldMidLines, newMidLines, # Lists of unmatched lines.
@@ -1701,7 +1703,7 @@ class Undoer:
         if u.yview:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
-    #@+node:ekr.20191213092304.1: *3* u.update_status (new)
+    #@+node:ekr.20191213092304.1: *3* u.update_status
     def update_status(self):
         """
         Update status after either an undo or redo:

@@ -725,7 +725,7 @@ class AtFile:
             if ok:
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
-    #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode (changed)
+    #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, fn, p):
         at = self; c = at.c; ic = c.importCommands
         # Delete all the child nodes.
