@@ -1324,6 +1324,8 @@ class AtFile:
         at, c = self, self.c
         writtenFiles = False
         c.init_error_dialogs()
+        # #1450.
+        at.initWriteIvars(root=p.copy(), targetFileName='')
         p = p.copy()
         after = p.nodeAfterTree()
         at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
@@ -2781,6 +2783,20 @@ class AtFile:
         at.remove(fileName)
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
+    #@+node:ekr.20190111112432.1: *4* at.checkDirectory
+    def checkDirectory(self, directory):
+        """Return True if directory exists or could be created."""
+        at, c = self, self.c
+        assert directory, g.callers()
+        if g.os_path_exists(directory):
+            return at.isWritable(directory)
+        try:
+            g.makeAllNonExistentDirectories(directory, c=c)
+            return True
+        except Exception:
+            g.es("exception creating path: %r" % (directory), color='red')
+            g.es_exception()
+            return False
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
         at = self
