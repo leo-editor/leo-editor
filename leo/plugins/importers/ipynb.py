@@ -53,7 +53,6 @@ class Import_IPYNB:
         c = self.c
         fn = parent.atAutoNodeName()
         if c and fn:
-            changed = c.isChanged()
             self.import_file(fn, parent)
             # Similar to Importer.run.
             parent.b = (
@@ -63,10 +62,11 @@ class Import_IPYNB:
             )
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            if changed:
-                c.setChanged()
-            else:
-                c.clearChanged()
+            # #1451: The caller should be responsible for this.
+                # if changed:
+                    # c.setChanged()
+                # else:
+                    # c.clearChanged()
         elif not c or not fn:
             g.trace('can not happen', c, fn)
     #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
