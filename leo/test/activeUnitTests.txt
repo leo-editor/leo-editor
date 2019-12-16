@@ -15959,10 +15959,11 @@ require([
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161123202857.1: *5* org tests
 #@+node:ekr.20181020062526.1: *6* @test org_pattern
-if c.isChanged(): c.save()
-import imp
 import leo.plugins.importers.org as org
-imp.reload(org)
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import imp
+    imp.reload(org)
 x = org.Org_Importer(c.importCommands, atAuto=False)    
 pattern = x.org_pattern
 table = (
@@ -16160,10 +16161,11 @@ finally:
 
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20181020062334.1: *6* @test otl (vim-outline) mode
-if c.isChanged(): c.save()
-import imp
 import leo.plugins.importers.otl as otl
-imp.reload(otl)
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import imp
+    imp.reload(otl)
 x = otl.Otl_Importer(c.importCommands, atAuto=False)    
 pattern = x.otl_pattern
 table = (
@@ -21085,10 +21087,11 @@ table = [
 
 ]
 #@+node:ekr.20181020063656.1: *5* @test importers.dart.clean_headline
-if c.isChanged(): c.save()
-import imp
 import leo.plugins.importers.dart as dart
-imp.reload(dart)
+if 0: # Preamble.
+    if c.isChanged(): c.save()
+    import imp
+    imp.reload(dart)
 x = dart.Dart_Importer(c.importCommands, atAuto=False)    
 table = (
     ('func(abc) {', 'func'),
@@ -21206,12 +21209,13 @@ for line, cleaned in table:
     assert x.clean_headline(line) == cleaned
 
 #@+node:ekr.20181020063007.4: *5* @test importers.python.test_scan_state
-if c.isChanged(): c.save()
-import imp
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.python as py
-imp.reload(linescanner)
-imp.reload(py)
+if 0: # Preamble.
+    if c.isChanged(): c.save()
+    import imp
+    imp.reload(linescanner)
+    imp.reload(py)
 State = py.Python_ScanState
 << define python tests >>
 if 1:
@@ -21244,9 +21248,9 @@ else:
     ]
 #@+node:ekr.20181020074227.2: *5* @test importers.xml.is_ws_line
 import leo.plugins.importers.xml as xml
+import leo.plugins.importers.linescanner as linescanner
 if 0: # Prefix
     import imp
-    import leo.plugins.importers.linescanner as linescanner
     imp.reload(linescanner)
     imp.reload(xml)
 x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
