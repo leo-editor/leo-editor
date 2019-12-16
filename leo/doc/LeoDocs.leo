@@ -8,7 +8,11 @@
 <vnodes>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="rkeeney.20190823135126.4"><vh>@persistence</vh></v>
+<v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
+<v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
+<v t="ekr.20191216061528.2"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
@@ -3733,8 +3737,6 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
 
 Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.
-
-p.setDirty and p.setAllAncestorAtFileNodesDirty now return a dirtyVnodeList that all vnodes that became dirty as the result of an operation. More than one list may be generated: client code is responsible for merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
 
 See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
 </t>
@@ -13728,7 +13730,7 @@ else:
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
-    frame.c.setChanged(False)
+    frame.c.clearChanged()
         # Mark the outline clean.
         # This makes it easy to open non-Leo files for quick study.
     return c
@@ -17182,7 +17184,7 @@ myDocument.html.txt is the **input** file for sphinx.
                 # p.expand()
             c.target_language = 'rest'
                 # Settings not parsed the first time.
-            c.setChanged(False)
+            c.clearChanged()
             c.redraw()
     return c
 </t>
@@ -21918,7 +21920,7 @@ def markup(p, root):
     if p.b != s:
         g.es_print('changed: %s' % (p.h))
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         p.b = s
 </t>
 <t tx="ekr.20161204055040.1">'''Make a markdown table of contents for an @auto-md node.'''
@@ -22716,7 +22718,7 @@ def teardown(self):
     ratio1, ratio2 = self.ratios
     self.set_ratios(ratio1, ratio2)
     c.contractAllHeadlines()
-    c.setChanged(False)
+    c.clearChanged()
     c.redraw()
 </t>
 <t tx="ekr.20170212105226.7">def teardown_script(self):
@@ -31138,6 +31140,59 @@ The TOG class makes no demands on either python's call stack or python's heap:
 
 - The *only* variable-length data is tog.node_stack. In the worst case it
   would have only a few tens of thousands of entries</t>
+<t tx="ekr.20191216061528.1">gnx: ekr.20170130080532.1
+</t>
+<t tx="ekr.20191216061528.2">gnx: ekr.20191216061356.4
+unl: Leo's demo.py plugin
+gnx: ekr.20191216061356.5
+unl: Overview
+gnx: ekr.20191216061356.6
+unl: A simpler work flow
+gnx: ekr.20191216061356.7
+unl: Graphics classes &amp; helpers
+gnx: ekr.20191216061356.8
+unl: Using demo scripts
+gnx: ekr.20191216061356.9
+unl: Using demo scripts--&gt;Script trees and lists
+gnx: ekr.20191216061356.10
+unl: Using demo scripts--&gt;Predefined symbols
+gnx: ekr.20191216061356.11
+unl: Using demo scripts--&gt;Positioning graphics
+gnx: ekr.20191216061356.12
+unl: Using demo scripts--&gt;Deleting graphics
+gnx: ekr.20191216061356.13
+unl: Using demo scripts--&gt;Details
+gnx: ekr.20191216061356.14
+unl: Example scripts
+gnx: ekr.20191216061356.15
+unl: Example scripts--&gt;Top-level script
+gnx: ekr.20191216061356.16
+unl: Example scripts--&gt;Simulate typing
+gnx: ekr.20191216061356.17
+unl: Example scripts--&gt;Change the demo namespace
+gnx: ekr.20191216061356.18
+unl: Example scripts--&gt;Add graphics
+gnx: ekr.20191216061356.19
+unl: Example scripts--&gt;Switch focus
+gnx: ekr.20191216061356.20
+unl: Helper methods
+gnx: ekr.20191216061356.21
+unl: Helper methods--&gt;Ivars
+gnx: ekr.20191216061356.22
+unl: Helper methods--&gt;Menus
+gnx: ekr.20191216061356.23
+unl: Helper methods--&gt;Magnification and styling
+gnx: ekr.20191216061356.24
+unl: Helper methods--&gt;Simulated typing
+gnx: ekr.20191216061356.25
+unl: Helper methods--&gt;Startup, setup and teardown
+gnx: ekr.20191216061356.26
+unl: Helper methods--&gt;Window position and ratios
+gnx: ekr.20191216061356.27
+unl: Summary
+gnx: ekr.20191216061356.28
+unl: History and change log
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

@@ -304,7 +304,7 @@ class IntroSlides (demo_module.Demo):
         ratio1, ratio2 = self.ratios
         self.set_ratios(ratio1, ratio2)
         c.contractAllHeadlines()
-        c.setChanged(False)
+        c.clearChanged()
         c.redraw()
             
     def teardown_script(self):
