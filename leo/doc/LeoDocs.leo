@@ -585,7 +585,7 @@
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's GitHub site?</vh></v>
+<v t="ekr.20170206073747.10"></v>
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -7241,20 +7241,6 @@ And then I hit Control-B to execute the Profiling Experiment body. This let me m
 
 The great thing about this was that I just used the Leo @others construct to create a wrapper around the code and did not need to litter my code with debug or profiling statements.---Kayvan
 </t>
-<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay on top of the latest features and bug fixes. Running the development version is quite safe and easy, and it's also a requirement if you want to contribute to Leo.
-
-1. First, you need to get git from http://git-scm.com/.
-
-2. Get Leo from GitHub by doing::
-
-        git clone https://github.com/leo-editor/leo-editor (http access)
-    
-   or::
-   
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
-
-And that's it! You can run the launchLeo script (in the top-level branch directory) directly. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
-</t>
 <t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module. See http://docs.python.org/lib/module-timeit.html. The contents of @button timer is::
 
     import leo.core.leoTest as leoTest
@@ -7546,7 +7532,8 @@ The command name follows @item. If the body text of an @item node exists, this b
 - **machineDir**, the HOME/.leo/MACHINE directory. MACHINE is given by Python's HOSTNAME environment variable, or by Python's COMPUTERNAME environment variable if there is no HOSTNAME variable, or by the value returned by socket.gethostname() if neither environment variable exists.
 
 - **localDir**, the directory containing the .leo file being loaded.
-</t>
+
+Leo reports in the Log pane window on startup and when opening .leo files what HOME dir is used and which settings files are read.</t>
 <t tx="ekr.20090126063121.3">def createWxGui(self, fileName='', verbose=False):
     # Do NOT omit fileName param: it is used in plugin code.
     """A convenience routines for plugins to create the wx gui class."""
@@ -14933,7 +14920,7 @@ Leo uses outlines for just about *everything*, including configuring Leo:
 
 - **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
-- **~/myLeoSettings.leo** contains your **personal settings**. Leo will not create this file automatically: you should create it yourself. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
+- **~/myLeoSettings.leo** contains your **personal settings**. Leo will create this file automatically if it doesn't exist when using *Settings &gt;&gt; Open myLeoSettings* menu item. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
    
 - Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings.
 
@@ -22456,8 +22443,11 @@ Leo.
    
         git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
 
-And that's it! You can run launchLeo.py directly. When you want to refresh the
-code with latest modifications from GitHub, run git pull.
+3. Install dependencies and create leo script launcher::
+
+        pip install --editable path/to/leo-editor
+        
+And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
