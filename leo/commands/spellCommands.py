@@ -49,14 +49,16 @@ class BaseSpellWrapper:
     #@+node:ekr.20180207071114.5: *3* spell.create
     def create(self, fn):
         """Create the given file with empty contents."""
-        theDir = g.os_path_dirname(fn)
         # Make the directories as needed.
-        ok = g.makeAllNonExistentDirectories(
-            theDir, c=self.c, force=True, verbose=True)
-        # #1453: Don't assume the directory exists.
-        if not ok:
-            g.error(f"did not create: {theDir}")
-            return
+        theDir = g.os_path_dirname(fn)
+        if theDir:
+            ok = g.makeAllNonExistentDirectories(
+                theDir, c=self.c, force=True, verbose=True)
+            # #1453: Don't assume the directory exists.
+            if not ok:
+                g.error(f"did not create directory: {theDir}")
+                return
+        # Create the file.
         try:
             f = open(fn, mode='wb')
             f.close()

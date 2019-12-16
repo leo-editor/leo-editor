@@ -291,7 +291,7 @@ class RootAttributes:
             # Stephen P. Schaefer 9/13/2002
             ", first_lines: " + self.first_lines)
     #@-others
-#@+node:ekr.20031218072017.3465: ** class TangleCommands methods
+#@+node:ekr.20031218072017.3465: ** class TangleCommands
 class BaseTangleCommands:
     """The base class for Leo's tangle and untangle commands."""
     #@+others
@@ -2548,20 +2548,6 @@ class BaseTangleCommands:
         c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.3576: *3* utility methods
     #@+at These utilities deal with tangle ivars, so they should be methods.
-    #@+node:sps.20100623164631.12028: *4* refpart_stack_dump
-    def refpart_stack_dump(self):
-        s = "top of stack:"
-        for i in range(-1, -(len(self.refpart_stack) + 1), -1):
-            if self.refpart_stack[i].__class__ == PartNode:
-                s += ("\nnode: " + self.refpart_stack[i].name +
-                      " delims: " + repr(self.refpart_stack[i].delims))
-            elif self.refpart_stack[i].__class__ == TstNode:
-                s += ("\nsection: " + self.refpart_stack[i].name +
-                " delims: " + repr(self.refpart_stack[i].delims))
-            else:
-                s += "\nINVALID ENTRY of type " + repr(self.refpart_stack[i].__class__)
-        s += "\nbottom of stack.\n"
-        return s
     #@+node:ekr.20031218072017.3577: *4* compare_section_names
     # Compares section names or root names.
     # Arbitrary text may follow the section name on the same line.
@@ -2801,6 +2787,20 @@ class BaseTangleCommands:
 
         node = DefNode(name, indent, part, of, nl_flag, None)
         self.def_stack.append(node)
+    #@+node:sps.20100623164631.12028: *4* refpart_stack_dump
+    def refpart_stack_dump(self):
+        s = "top of stack:"
+        for i in range(-1, -(len(self.refpart_stack) + 1), -1):
+            if self.refpart_stack[i].__class__ == PartNode:
+                s += ("\nnode: " + self.refpart_stack[i].name +
+                      " delims: " + repr(self.refpart_stack[i].delims))
+            elif self.refpart_stack[i].__class__ == TstNode:
+                s += ("\nsection: " + self.refpart_stack[i].name +
+                " delims: " + repr(self.refpart_stack[i].delims))
+            else:
+                s += "\nINVALID ENTRY of type " + repr(self.refpart_stack[i].__class__)
+        s += "\nbottom of stack.\n"
+        return s
     #@+node:ekr.20031218072017.3593: *4* scan_short_val
     # This function scans a positive integer.
     # returns (i,val), where val == -1 if there is an error.
@@ -2993,6 +2993,36 @@ class BaseTangleCommands:
             "path": self.tangle_directory,
             "tabwidth": self.tab_width,
         }
+    #@+node:ekr.20031218072017.1241: *4* tangle.update_file_if_changed
+    def update_file_if_changed(self, c, file_name, temp_name):
+        """
+        A helper for ompares two files.
+
+        If they are different, we replace file_name with temp_name.
+        Otherwise, we just delete temp_name. Both files should be closed.
+        """
+        import filecmp
+        if g.os_path_exists(file_name):
+            if filecmp.cmp(temp_name, file_name):
+                kind = 'unchanged'
+                ok = g.utils_remove(temp_name)
+            else:
+                kind = '***updating'
+                mode = g.utils_stat(file_name)
+                ok = g.utils_rename(c, temp_name, file_name, mode)
+        else:
+            kind = 'creating'
+            head, tail = g.os_path_split(file_name)
+            ok = True
+            if head:
+                ok = g.makeAllNonExistentDirectories(head, c=c)
+            if ok:
+                ok = g.utils_rename(c, temp_name, file_name)
+        if ok:
+            g.es('', f'{kind:12}: {file_name}')
+        else:
+            g.error("rename failed: no file created!")
+            g.es('', file_name, " may be read-only or in use")
     #@+node:ekr.20031218072017.3599: *4* token_type
     def token_type(self, s, i, report_errors=True):
         """This method returns a code indicating the apparent kind of token at the position i.

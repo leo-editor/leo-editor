@@ -24,14 +24,10 @@ in_bridge = False
 # This is now done in run.
     # import leo.core.leoGlobals as g # So code can use g below.
 #
-# Don't import this here: it messes up Leo's startup code.
+# Don't import leoTest here: it messes up Leo's startup code.
     # import leo.core.leoTest as leoTest
 import binascii
 import codecs
-try:
-    import filecmp
-except ImportError:  # does not exist in jython.
-    filecmp = None
 from functools import reduce
 try:
     import gc
@@ -3872,14 +3868,18 @@ def is_sentinel(line, delims):
 def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
     """
     Attempt to make all non-existent directories.
+    Return the created directory, or None.
+    
+    If c is given, support {{expressions}}.
     
     A wrapper from os.makedirs (new in Python 3.2).
     
     """
     if force:
-        create = True  # Bug fix: g.app.config will not exist during startup.
+        # Bug fix: g.app.config will not exist during startup.
+        create = True
     elif c:
-        create = c.config and c.config.create_nonexistent_directories
+        create = c and c.config and c.config.create_nonexistent_directories
     else:
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
@@ -3887,50 +3887,21 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
         theDir = c.expand_path_expression(theDir)
     #
     # Return True if the directory already exists.
-    dir1 = theDir = g.os_path_normpath(theDir)
-    exists = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
+    theDir = g.os_path_normpath(theDir)
+    exists = g.os_path_isdir(theDir) and g.os_path_exists(theDir)
     if exists:
-        return True
+        return theDir
     #
     # Return False if we aren't forcing the create.
     if not force and not create:
-        return False
+        return None
     #
-    # Just use os.makedirs.
+    # #1450: Just use os.makedirs.
     try:
         os.makedirs(theDir, mode=0o777, exist_ok=False)
-        return True
+        return theDir
     except Exception:
-        return False
-        
-    ### Old code...
-        # # Split theDir into all its component parts.
-        # paths = []
-        # while theDir:
-            # head, tail = g.os_path_split(theDir)
-            # if tail:
-                # paths.append(tail)
-                # theDir = head
-            # else:
-                # paths.append(head)
-                # break
-        # path = ""
-        # paths.reverse()
-        # for s in paths:
-            # path = g.os_path_finalize_join(path, s)
-            # if not g.os_path_exists(path):
-                # try:
-                    # if testing:
-                        # g.trace('***making', path)
-                    # else:
-                        # os.mkdir(path)
-                    # if verbose and not testing and not g.app.unitTesting:
-                        # g.red("created directory:", path)
-                # except Exception:
-                    # if verbose: g.error("exception creating directory:", path)
-                    # g.es_exception()
-                    # return None
-        # return dir1  # All have been created.
+        return None
 #@+node:ekr.20071114113736: *3* g.makePathRelativeTo
 def makePathRelativeTo(fullPath, basePath):
     if fullPath.startswith(basePath):
@@ -4099,35 +4070,6 @@ def splitLongFileName(fn, limit=40):
             n = 0
     return ''.join(result)
 #@+node:ekr.20050104135720: *3* g.Used by tangle code & leoFileCommands
-#@+node:ekr.20031218072017.1241: *4* g.update_file_if_changed
-# This is part of the tangle code.
-
-def update_file_if_changed(c, file_name, temp_name):
-    """Compares two files.
-
-    If they are different, we replace file_name with temp_name.
-    Otherwise, we just delete temp_name. Both files should be closed."""
-    if g.os_path_exists(file_name):
-        if filecmp.cmp(temp_name, file_name):
-            kind = 'unchanged'
-            ok = g.utils_remove(temp_name)
-        else:
-            kind = '***updating'
-            mode = g.utils_stat(file_name)
-            ok = g.utils_rename(c, temp_name, file_name, mode)
-    else:
-        kind = 'creating'
-        head, tail = g.os_path_split(file_name)
-        ok = True
-        if head:
-            ok = g.makeAllNonExistentDirectories(head, c=c)
-        if ok:
-            ok = g.utils_rename(c, temp_name, file_name)
-    if ok:
-        g.es('', f'{kind:12}: {file_name}')
-    else:
-        g.error("rename failed: no file created!")
-        g.es('', file_name, " may be read-only or in use")
 #@+node:ekr.20050104123726.3: *4* g.utils_remove
 def utils_remove(fileName, verbose=True):
     try:
