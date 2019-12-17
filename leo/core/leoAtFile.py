@@ -2230,18 +2230,7 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
-    def checkPath(self, fileName):
-        """Return True if we can write to the file's directory."""
-        at = self
-        assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
-        directory = g.os_path_dirname(fileName)
-        if not at.checkDirectory(directory):
-            return False
-        if g.os_path_exists(fileName):
-            return at.isWritable(fileName)
-        return True
-    #@+node:ekr.20190111112442.1: *6* at.isWritable
+    #@+node:ekr.20190111112442.1: *5* at.isWritable
     def isWritable(self, path):
         """Return True if the path is writable."""
         try:
@@ -2521,16 +2510,26 @@ class AtFile:
         Return True if so.  Return False *and* issue a warning otherwise.
         """
         at = self
+        #
+        # #1450: First, check that the directory exists.
+        theDir = g.os_path_dirname(fileName)
+        if theDir and not g.os_path_exists(theDir):
+            at.error(f"Directory not found:\n{theDir}")
+            return False
+        #
+        # Now check the file.
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
+        #
         # Prompt if the write would overwrite the existing file.
         ok = self.promptForDangerousWrite(fileName)
         if ok:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
+        #
         # Fix #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False
@@ -2705,10 +2704,10 @@ class AtFile:
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
+                    at.checkPythonCode(contents, fileName, root)
             else:
                 at.addToOrphanList(root)
             # No original file to change. Return value tested by a unit test.
-            at.checkPythonCode(contents, fileName, root)
             return False # No change to original file.
         #
         # Compare the old and new contents.
@@ -2814,20 +2813,6 @@ class AtFile:
         at.remove(fileName)
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
-    #@+node:ekr.20190111112432.1: *4* at.checkDirectory
-    def checkDirectory(self, directory):
-        """Return True if directory exists or could be created."""
-        at, c = self, self.c
-        assert directory, g.callers()
-        if g.os_path_exists(directory):
-            return at.isWritable(directory)
-        if c.config and c.config.create_nonexistent_directories:
-            directory = c.expand_path_expression(directory)
-            ok = g.makeAllNonExistentDirectories(directory)
-            if not ok:
-                g.error(f"did not create {directory}")
-                return False
-        return at.isWritable(directory)
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
         at = self

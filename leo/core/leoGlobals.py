@@ -4101,8 +4101,10 @@ def writeFile(contents, encoding, fileName):
         with open(fileName, 'wb') as f:
             f.write(contents)
         return True
-    except Exception:
-        g.es_exception()
+    except Exception as e:
+        print(f"exception writing: {fileName}:\n{e}")
+        # g.trace(g.callers())
+        # g.es_exception()
         return False
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
