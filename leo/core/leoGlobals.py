@@ -3867,36 +3867,17 @@ def is_sentinel(line, delims):
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
 def makeAllNonExistentDirectories(theDir):
     """
-    Attempt to make all non-existent directories.
-    
     A wrapper from os.makedirs (new in Python 3.2).
-    
-    Return True if the directory already exists or was created successfully.
+    Attempt to make all non-existent directories.
+
+    Return True if the directory exists or was created successfully.
     """
-    ###
-        # if force:
-            # # Bug fix: g.app.config will not exist during startup.
-            # create = True
-        # elif c:
-            # create = c and c.config and c.config.create_nonexistent_directories
-        # else:
-            # create = (g.app and g.app.config and
-                # g.app.config.create_nonexistent_directories)
-        #if c:
-            # theDir = c.expand_path_expression(theDir)
-    #
     # Return True if the directory already exists.
     theDir = g.os_path_normpath(theDir)
-    exists = g.os_path_isdir(theDir) and g.os_path_exists(theDir)
-    if exists:
+    ok = g.os_path_isdir(theDir) and g.os_path_exists(theDir)
+    if ok:
         return theDir
-    ###
-        # #
-        # # Return False if we aren't forcing the create.
-        # if not create:
-            # return None
-    #
-    # #1450: Just use os.makedirs.
+    # #1450: Create the directory with os.makedirs.
     try:
         os.makedirs(theDir, mode=0o777, exist_ok=False)
         return theDir
