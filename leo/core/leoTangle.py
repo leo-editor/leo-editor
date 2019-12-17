@@ -2996,7 +2996,7 @@ class BaseTangleCommands:
     #@+node:ekr.20031218072017.1241: *4* tangle.update_file_if_changed
     def update_file_if_changed(self, c, file_name, temp_name):
         """
-        A helper for ompares two files.
+        A helper for compares two files.
 
         If they are different, we replace file_name with temp_name.
         Otherwise, we just delete temp_name. Both files should be closed.
@@ -3014,8 +3014,12 @@ class BaseTangleCommands:
             kind = 'creating'
             head, tail = g.os_path_split(file_name)
             ok = True
-            if head:
-                ok = g.makeAllNonExistentDirectories(head, c=c)
+            if (
+                head and c and c.config and
+                c.config.create_nonexistent_directories
+            ):
+                theDir = c.expand_path_expression(head)
+                ok = g.makeAllNonExistentDirectories(theDir)
             if ok:
                 ok = g.utils_rename(c, temp_name, file_name)
         if ok:

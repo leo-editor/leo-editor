@@ -1534,9 +1534,11 @@ class RstCommands:
         theDir = g.os_path_finalize(theDir) # 1341
         if g.os_path_exists(theDir):
             return True
-        ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
-        if not ok:
-            g.error('did not create:', theDir)
+        if c and c.config and c.config.create_nonexistent_directories:
+            theDir = c.expand_path_expression(theDir)
+            ok = g.makeAllNonExistentDirectories(theDir)
+            if not ok:
+                g.error('did not create:', theDir)
         return ok
     #@+node:ekr.20100813041139.5912: *5* rst.createIntermediateFile
     def createIntermediateFile(self, fn, p, s):

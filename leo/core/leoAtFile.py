@@ -227,10 +227,26 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
-        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
-        targetFileName = c.expand_path_expression(targetFileName) # #1341.
+        # #1341 and #1450.
+        make_dirs = c and c.config and c.config.create_nonexistent_directories
+        if at.default_directory:
+            at.default_directory = c.expand_path_expression(at.default_directory)
+            if make_dirs:
+                ok = g.makeAllNonExistentDirectories(at.default_directory)
+                if not ok:
+                    g.error(f"Did not create default directory: {at.default_directory}")
+                    return None
+        # #1341 and #1450.
+        targetFileName = c.expand_path_expression(targetFileName)
+        theDir = g.os_path_dirname(targetFileName)
+        if theDir and make_dirs:
+            ok = g.makeAllNonExistentDirectories(theDir)
+            if not ok:
+                g.trace(f"Did not create {theDir} for {targetFileName}")
+                return None
+        # #1341.
         return g.os_path_realpath(
-            g.os_path_finalize_join(at.default_directory, targetFileName)) # #1341.
+            g.os_path_finalize_join(at.default_directory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -1266,7 +1282,8 @@ class AtFile:
             c.endEditing()
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            if not at.precheck(fileName, root):
+            # #1450.
+            if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return
             at.openOutputStream()
@@ -1303,7 +1320,8 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            if not at.precheck(fileName, root):
+            # #1450.
+            if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return
             at.openOutputStream()
@@ -1319,7 +1337,7 @@ class AtFile:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
-    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper
+    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (changed)
     def writeMissing(self, p):
         at, c = self, self.c
         writtenFiles = False
@@ -1328,9 +1346,11 @@ class AtFile:
         at.initWriteIvars(root=p.copy(), targetFileName='')
         p = p.copy()
         after = p.nodeAfterTree()
-        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         while p and p != after: # Don't use iterator.
-            if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
+            if (
+                p.isAtAsisFileNode()
+                or (p.isAnyAtFileNode() and not p.isAtIgnoreNode())
+            ):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     fileName = c.expand_path_expression(fileName) # #1341
@@ -1382,7 +1402,8 @@ class AtFile:
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            if not at.precheck(fileName, root):
+            # #1450.
+            if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return False
             if c.persistenceController:
@@ -1488,7 +1509,8 @@ class AtFile:
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            if not at.precheck(fileName, root):
+            # #1450.
+            if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return False
             contents = ''.join([s for s in g.splitLines(p.b)
@@ -1611,6 +1633,10 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
+            # #1450.
+            if not fileName:
+                at.addToOrphanList(root)
+                return ''
             return at.writeAtAutoContents(fileName, root) or ''
         except Exception:
             at.writeException(fileName, root)
@@ -1626,6 +1652,10 @@ class AtFile:
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
             fileName = at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
+            # #1450.
+            if not fileName:
+                at.addToOrphanList(root)
+                return ''
             contents = ''.join([
                 s for s in g.splitLines(root.b)
                     if at.directiveKind4(s, 0) == at.noDirective])
@@ -2790,13 +2820,13 @@ class AtFile:
         assert directory, g.callers()
         if g.os_path_exists(directory):
             return at.isWritable(directory)
-        try:
-            g.makeAllNonExistentDirectories(directory, c=c)
-            return True
-        except Exception:
-            g.es("exception creating path: %r" % (directory), color='red')
-            g.es_exception()
-            return False
+        if c.config and c.config.create_nonexistent_directories:
+            directory = c.expand_path_expression(directory)
+            ok = g.makeAllNonExistentDirectories(directory)
+            if not ok:
+                g.error(f"did not create {directory}")
+                return False
+        return at.isWritable(directory)
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
         at = self
@@ -3669,4 +3699,5 @@ class FastAtRead:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
+
 #@-leo

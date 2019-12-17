@@ -110,7 +110,7 @@ class ShadowController:
         x = self; path = x.shadowDirName(fn)
         if not g.os_path_exists(path):
             # Force the creation of the directories.
-            g.makeAllNonExistentDirectories(path, c=None, force=True)
+            g.makeAllNonExistentDirectories(path) ###, c=None, force=True)
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
     def replaceFileWithString(self, encoding, fileName, s):
