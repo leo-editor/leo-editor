@@ -1130,7 +1130,7 @@ class ScreenShotController:
                 path, junk = g.os_path_split(path)
             if not g.os_path_exists(path):
                 g.trace(tag, path)
-                g.makeAllNonExistentDirectories(path, c=sc.c, force=True)
+                g.makeAllNonExistentDirectories(path)
     #@+node:ekr.20101008112639.5625: *4* make_at_url_node_for_built_slide
     def make_at_url_node_for_built_slide(self):
         '''Create an @url node for built slide.'''
