@@ -238,12 +238,13 @@ class AtFile:
                     return None
         # #1341 and #1450.
         targetFileName = c.expand_path_expression(targetFileName)
-        theDir = g.os_path_dirname(targetFileName)
-        if theDir and make_dirs:
-            ok = g.makeAllNonExistentDirectories(theDir)
-            if not ok:
-                g.trace(f"Did not create {theDir} for {targetFileName}")
-                return None
+        if targetFileName:
+            theDir = g.os_path_dirname(targetFileName)
+            if theDir and make_dirs:
+                ok = g.makeAllNonExistentDirectories(theDir)
+                if not ok:
+                    g.trace(f"Did not create {theDir} for {targetFileName}")
+                    return None
         # #1341.
         return g.os_path_realpath(
             g.os_path_finalize_join(at.default_directory, targetFileName))
