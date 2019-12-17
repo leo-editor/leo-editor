@@ -3662,6 +3662,33 @@ def leo_excepthook(type, value, tb):
     # Note: Leo will still exit!
     g.trace(f"Uncaught Python exception: {value}\n")
     g.es_exception()
+#@+node:ekr.20191217092340.1: ** From leoAtFile.py
+@nosearch
+#@+node:ekr.20190111112432.1: *3* at.checkDirectory
+def checkDirectory(self, directory):
+    """Return True if directory exists or could be created."""
+    at, c = self, self.c
+    assert directory, g.callers()
+    if g.os_path_exists(directory):
+        return at.isWritable(directory)
+    if c.config and c.config.create_nonexistent_directories:
+        directory = c.expand_path_expression(directory)
+        ok = g.makeAllNonExistentDirectories(directory)
+        if not ok:
+            g.error(f"did not create {directory}")
+            return False
+    return at.isWritable(directory)
+#@+node:ekr.20190111111608.1: *3* at.checkPath
+def checkPath(self, fileName):
+    """Return True if we can write to the file's directory."""
+    at = self
+    assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
+    directory = g.os_path_dirname(fileName)
+    if not at.checkDirectory(directory):
+        return False
+    if g.os_path_exists(fileName):
+        return at.isWritable(fileName)
+    return True
 #@-all
 #@@nosearch
 #@-leo

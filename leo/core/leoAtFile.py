@@ -333,7 +333,7 @@ class AtFile:
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
         if not fileName:
-            at.error("Missing file name.  Restoring @file tree from .leo file.")
+            at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
         at.rememberReadPath(g.fullPath(c, root), root)
             # Fix bug 760531: always mark the root as read, even if there was an error.
@@ -1311,7 +1311,7 @@ class AtFile:
         if s:
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
-    #@+node:ekr.20041005105605.144: *6* at.write & helper
+    #@+node:ekr.20041005105605.144: *6* at.write
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
@@ -1321,9 +1321,13 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            # #1450.
             if not fileName or not at.precheck(fileName, root):
-                at.addToOrphanList(root)
+                if sentinels:
+                    # Raise dialog warning of data loss.
+                    at.addToOrphanList(root)
+                else:
+                    # #1450: No danger of data loss.
+                    pass
                 return
             at.openOutputStream()
             at.putFile(root, sentinels=sentinels)
@@ -1338,7 +1342,7 @@ class AtFile:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
-    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (changed)
+    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper
     def writeMissing(self, p):
         at, c = self, self.c
         writtenFiles = False
@@ -3044,7 +3048,7 @@ class AtFile:
             "tabwidth": at.tab_width,
         }
         return d
-    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite (#1361)
+    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
         Return True if Leo should warn the user that p is an @<file> node that
@@ -3056,6 +3060,11 @@ class AtFile:
         sfn = g.shortFileName(fn)
         c = self.c
         efc = g.app.externalFilesController
+        if p.isAtNoSentFileNode():
+            # #1450.
+            # No danger of overwriting a file.
+            # It was never read.
+            return False
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             if trace: g.trace('Return False: does not exist:', sfn)
