@@ -1270,7 +1270,7 @@ class BaseTangleCommands:
                 continue
             #@-<< unit testing set result and continue >>
             if self.errors + g.app.scanErrors == 0:
-                g.update_file_if_changed(c, file_name, temp_name)
+                self.update_file_if_changed(c, file_name, temp_name)
             else:
                 g.es("unchanged:", file_name)
                 #@+<< Erase the temporary file >>
@@ -3019,7 +3019,8 @@ class BaseTangleCommands:
                 c.config.create_nonexistent_directories
             ):
                 theDir = c.expand_path_expression(head)
-                ok = g.makeAllNonExistentDirectories(theDir)
+                if theDir:
+                    ok = g.makeAllNonExistentDirectories(theDir)
             if ok:
                 ok = g.utils_rename(c, temp_name, file_name)
         if ok:
