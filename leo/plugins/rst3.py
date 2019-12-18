@@ -1118,10 +1118,10 @@ class rstClass(object):
             theDir, junk = g.os_path_split(self.outputFileName)
             theDir = c.os_path_finalize(theDir)
             if not g.os_path_exists(theDir):
-                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-                if not ok:
-                    g.error('did not create:',theDir)
-                    return False
+                ### ok = g.makeAllNonExistentDirectories(theDir)
+                ### if not ok:
+                g.error('does not exist:',theDir)
+                return False
 
             # if not os.access(theDir,os.F_OK):
                 # os.mkdir(theDir)
