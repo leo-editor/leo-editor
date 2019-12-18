@@ -879,6 +879,7 @@ def toggleAngleBrackets(self, event=None):
         s = g.angleBrackets(' ' + s + ' ')
     p.setHeadString(s)
     p.setDirty()  # #1449.
+    c.setChanged()  # #1449.
     c.redrawAndEdit(p, selectAll=True)
 #@+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
 @g.commander_command('unformat-paragraph')
