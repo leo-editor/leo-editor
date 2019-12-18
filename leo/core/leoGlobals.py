@@ -1037,9 +1037,11 @@ def isStrokeOrNone(obj):
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
 class MatchBrackets:
     """
-    A class implementing the match-brackets command. In the interest of
-    speed, the code assumes that the user invokes the match-bracket command
-    ouside of any string, comment or (for perl or javascript) regex.
+    A class implementing the match-brackets command.
+    
+    In the interest of speed, the code assumes that the user invokes the
+    match-bracket command ouside of any string, comment or (for perl or
+    javascript) regex.
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
@@ -1377,14 +1379,14 @@ class MatchBrackets:
     #@+node:ekr.20160119094053.1: *4* mb.run
     #@@nobeautify
 
-
     def run(self):
         """The driver for the MatchBrackets class.
 
-        With no selected range, find the nearest bracket and select from
-        it to it's match, moving cursor to mathc.  With selected range, the
-        first time, move cursor back to other end of range.  The second time,
-        select enclosing range.
+        With no selected range: find the nearest bracket and select from
+        it to it's match, moving cursor to mathc.
+        
+        With selected range: the first time, move cursor back to other end of
+        range. The second time, select enclosing range.
         """
         #
         # A partial fix for bug 127: Bracket matching is buggy.
@@ -1392,29 +1394,30 @@ class MatchBrackets:
         s = w.getAllText()
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
-
         if not w.hasSelection():
             _mb['count'] = 1
-
         if _mb['range'] == sel_range and _mb['count'] == 1:
             # haven't been to other end yet
             _mb['count'] += 1
             # move insert point to other end of selection
             insert = 1 if w.getInsertPoint() == sel_range[0] else 0
-            w.setSelectionRange(sel_range[0], sel_range[1], insert=sel_range[insert])
+            w.setSelectionRange(
+                sel_range[0], sel_range[1], insert=sel_range[insert])
             return
 
-        # find bracket nearest cursor
+        # Find the bracket nearest the cursor.
         max_right = len(s) - 1 # insert point can be past last char.
         left = right = min(max_right, w.getInsertPoint())
         left, right, ch, index = self.expand_range(s, left, right, max_right)
         if left is None:
             g.es("Bracket not found")
             return
-
         index2 = self.find_matching_bracket(ch, s, index)
+        if index2 is None:
+            g.es("No matching bracket.")  # #1447.
+            return
 
-        # if this is the first time we've selected the range index-index2, do
+        # If this is the first time we've selected the range index-index2, do
         # nothing extra.  The second time, move cursor to other end (requires
         # no special action here), and the third time, try to expand the range
         # to any enclosing brackets
@@ -1427,7 +1430,10 @@ class MatchBrackets:
             _mb['range'] = minmax
         if _mb['count'] >= 3:  # try to expand range
             left, right, ch, index3 = self.expand_range(
-                s, max(minmax[0], 0), min(minmax[1], max_right), max_right, expand=True
+                s,
+                max(minmax[0], 0),
+                min(minmax[1], max_right),
+                max_right, expand=True
             )
             if index3 is not None:  # found nearest bracket outside range
                 index4 = self.find_matching_bracket(ch, s, index3)
@@ -1440,7 +1446,8 @@ class MatchBrackets:
             if index2 < index:
                 w.setSelectionRange(index2, index + 1, insert=index2)
             else:
-                w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
+                w.setSelectionRange(
+                    index, index2 + 1, insert=min(len(s), index2 + 1))
             w.see(index2)
         else:
             g.es("unmatched", repr(ch))
