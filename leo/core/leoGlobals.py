@@ -2651,12 +2651,11 @@ def listToString(obj, indent='', tag=None):
     indent2 = indent + ' ' * 4
     # I prefer not to compress lists.
     for i, obj2 in enumerate(obj):
-        if True: ### len(obj) > 1:
-            result.append('\n'+indent2)
+        result.append('\n'+indent2)
         result.append(objToString(obj2, indent=indent2))
         if i + 1 < len(obj) > 1:
             result.append(',')
-        elif True: ### len(obj) > 1:
+        else:
             result.append('\n'+indent)
     result.append(']')
     s = ''.join(result)

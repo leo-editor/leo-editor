@@ -506,7 +506,6 @@ class ExternalFilesController:
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
         import hashlib
-        ### return hashlib.md5(open(path, 'rb').read()).hexdigest()
         # #1454: Explicitly close the file.
         with open(path, 'rb') as f:
             s = f.read()
