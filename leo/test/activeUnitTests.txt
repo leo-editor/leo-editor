@@ -18266,7 +18266,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20191219040849.136: *7* @@file @test python top-level later decl
+#@+node:ekr.20191219051321.68: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18274,21 +18274,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20191219040849.137: *8* Declarations
+#@+node:ekr.20191219051321.69: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20191219040849.138: *8* merge_value
+#@+node:ekr.20191219051321.70: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20191219040849.139: *8* class MainDisplay(object)
+#@+node:ekr.20191219051321.71: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20191219040849.140: *9* save_file
+#@+node:ekr.20191219051321.72: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18296,7 +18296,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20191219040849.141: *8* retab
+#@+node:ekr.20191219051321.73: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -21728,9 +21728,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20191219040906.3: *5* insertAsFirstChild
-#@+node:ekr.20191219040906.5: *5* insertAsNthChild(1)
-#@+node:ekr.20191219040906.4: *5* insertAsLastChild
+#@+node:ekr.20191219051329.1: *5* insertAsFirstChild
+#@+node:ekr.20191219051329.3: *5* insertAsNthChild(1)
+#@+node:ekr.20191219051329.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -22358,9 +22358,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20191219040908.1: *6* A
-#@+node:ekr.20191219040908.3: *6* newHeadline
-#@+node:ekr.20191219040908.2: *6* B
+#@+node:ekr.20191219051331.6: *6* A
+#@+node:ekr.20191219051331.8: *6* newHeadline
+#@+node:ekr.20191219051331.7: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -27890,6 +27890,27 @@ assert do.b == do_undo_redo.b, "Redo should do the operation again"
 line 1
     line 2
       line 3
+line4
+#@+node:ekr.20191219051337.3: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20191219051337.4: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191219051337.5: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
 line4
 #@+node:ekr.20191219045732.6: *5* do and undo
 @tabwidth -4
