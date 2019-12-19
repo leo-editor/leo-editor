@@ -1664,7 +1664,7 @@ table = (
     ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
     # 4.2 formats...
     ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
-    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('/*',  '*/', True,   True, 'utf-8',  r'\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
     ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
     ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
 )
