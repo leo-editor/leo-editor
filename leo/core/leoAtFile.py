@@ -128,7 +128,7 @@ class AtFile:
         at.importing = bool(importFileName)
         at.importRootSeen = False
         at.indentStack = []
-        at.inputFile = None
+        ### at.inputFile = None
         at.lastLines = [] # The lines after @-leo
         at.lastRefNode = None
             # The previous reference node, for at.readAfterRef.
@@ -282,7 +282,7 @@ class AtFile:
             if at.atShadow:
                 return at.error(
                     'can not call at.read from string for @shadow files')
-            at.inputFile = g.FileLikeObject(fromString=fromString)
+            ### at.inputFile = g.FileLikeObject(fromString=fromString)
             at.initReadLine(fromString)
             return None, None
         #
@@ -298,13 +298,13 @@ class AtFile:
         assert fn
         try:
             # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            at.inputFile = open(fn, 'rb')
+            ### at.inputFile = open(fn, 'rb')
             s = at.readFileToUnicode(fn)
                 # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             at.warnOnReadOnlyFile(fn)
         except IOError:
             at.error(f"can not open: '@file {fn}'")
-            at.inputFile = None
+            ### at.inputFile = None
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
@@ -344,12 +344,9 @@ class AtFile:
         if at.errors:
             return False
         fileName, file_s = at.openFileForReading(fromString=fromString)
-            # For @shadow files, calls x.updatePublicAndPrivateFiles.
-            # Calls at.initReadLine(s), where s is the file contents.
-            # This will be used only if not cached.
         #
         # Set the time stamp.
-        if fileName and at.inputFile:
+        if fileName: ### and at.inputFile:
             c.setFileTimeStamp(fileName)
         elif not fileName and not fromString and not file_s:
             return False
