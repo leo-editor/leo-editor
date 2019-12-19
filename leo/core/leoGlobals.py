@@ -4380,10 +4380,9 @@ def scanError(s):
 # A quick and dirty sscanf.  Understands only %s and %d.
 
 def scanf(s, pat):
-    # pylint: disable=anomalous-backslash-in-string
     count = pat.count("%s") + pat.count("%d")
-    pat = pat.replace("%s", "(\S+)")
-    pat = pat.replace("%d", "(\d+)")
+    pat = pat.replace("%s", r"(\S+)")
+    pat = pat.replace("%d", r"(\d+)")
     parts = re.split(pat, s)
     result = []
     for part in parts:
@@ -4548,8 +4547,7 @@ def skip_pascal_string(s, i):
 def skip_heredoc_string(s, i):
     j = i
     assert(g.match(s, i, "<<<"))
-    # pylint: disable=anomalous-backslash-in-string
-    m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
+    m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
     if m is None:
         i += 3
         return i

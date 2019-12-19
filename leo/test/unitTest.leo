@@ -193,6 +193,92 @@
 <v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
 <v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
 </v>
+<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
+<v t="ekr.20191206053245.1"><vh>test: test end-of-file handling</vh></v>
+<v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
+<v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
+<v t="ekr.20191122203522.1"><vh>test: ClassDef, FunctionDef</vh></v>
+<v t="ekr.20191119142414.1"><vh>test: FunctionDef &amp; NamedConstant</vh></v>
+</v>
+<v t="ekr.20191120075520.1"><vh>ignore: Expressions &amp; operators...</vh>
+<v t="ekr.20191118155612.1"><vh>test: attribute</vh></v>
+<v t="ekr.20191119211714.1"><vh>test: CompareOp</vh></v>
+<v t="ekr.20191201072043.1"><vh>test: dict containing ternary</vh></v>
+<v t="ekr.20191203125635.1"><vh>test: DictComp</vh></v>
+<v t="ekr.20191119213940.1"><vh>test: ListComp and comprehension</vh></v>
+<v t="ekr.20191122153258.1"><vh>test: NamedConstant</vh></v>
+<v t="ekr.20191118160305.1"><vh>test: Operator: semicolon</vh></v>
+<v t="ekr.20191118155612.2"><vh>test: Operator: semicolon between statements</vh></v>
+<v t="ekr.20191119210429.1"><vh>test: UnaryOp</vh></v>
+</v>
+<v t="ekr.20191125151346.1"><vh>ignore: Files...</vh>
+<v t="ekr.20191204154152.1"><vh>file: core..leoApp.py</vh></v>
+<v t="ekr.20191205071617.1"><vh>file: core..leoAst.py</vh></v>
+<v t="ekr.20191205090519.1"><vh>file: core..leoDebugger.py</vh></v>
+<v t="ekr.20191119203945.1"><vh>file: core..leoFind.py</vh></v>
+<v t="ekr.20191123203957.1"><vh>file: core..leoGlobals.py</vh></v>
+<v t="ekr.20191203155845.1"><vh>file: core..leoTips.py</vh></v>
+<v t="ekr.20191118155609.1"><vh>file: core..runLeo.py</vh></v>
+</v>
+<v t="ekr.20191122210522.1"><vh>ignore: If...</vh>
+<v t="ekr.20191203160056.1"><vh>test: from leoTips.py</vh></v>
+<v t="ekr.20191119213126.1"><vh>test: if + tuple</vh></v>
+<v t="ekr.20191123210801.1"><vh>test: if + unary op</vh></v>
+<v t="ekr.20191120171921.1"><vh>test: if, elif</vh></v>
+<v t="ekr.20191122213610.1"><vh>test: if, elif + 2</vh></v>
+<v t="ekr.20191120064442.1"><vh>test: if, elif, else</vh></v>
+<v t="ekr.20191120132531.1"><vh>test: if, else</vh></v>
+<v t="ekr.20191122210035.1"><vh>test: if, else, if</vh></v>
+<v t="ekr.20191120164539.1"><vh>test: Nested If's</vh></v>
+<v t="ekr.20191125161333.1"><vh>test: ternary + if</vh></v>
+</v>
+<v t="ekr.20191124040736.1"><vh>ignore: Statements...</vh>
+<v t="ekr.20191204025303.1"><vh>test: Call</vh></v>
+<v t="ekr.20191203120043.1"><vh>test: Global</vh></v>
+<v t="ekr.20191120163559.1"><vh>test: Try</vh></v>
+<v t="ekr.20191205090659.1"><vh>test: TryExceptElse</vh></v>
+<v t="ekr.20191203125053.1"><vh>test: With</vh></v>
+<v t="ekr.20191205071827.1"><vh>test: YieldFrom</vh></v>
+</v>
+<v t="ekr.20191205090312.1"><vh>ignore: Strings...</vh>
+<v t="ekr.20191127134236.1"><vh>ignore: plain strings</vh>
+<v t="ekr.20191203185327.1"><vh>test: \x and \o escapes</vh></v>
+<v t="ekr.20191203121918.1"><vh>test: backslashes in docstring</vh></v>
+<v t="ekr.20191201065409.1"><vh>test: bs/nl</vh></v>
+<v t="ekr.20191204154344.1"><vh>test: bytes bs-x</vh></v>
+<v t="ekr.20191126143046.1"><vh>test: empty string</vh></v>
+<v t="ekr.20191127172440.1"><vh>test: escaped string delims</vh></v>
+<v t="ekr.20191201062631.1"><vh>test: escaped strings</vh></v>
+<v t="ekr.20191205014742.1"><vh>test: f-string join</vh></v>
+<v t="ekr.20191202195507.1"><vh>test: raw docstring</vh></v>
+<v t="ekr.20191201064058.1"><vh>test: raw escaped strings</vh></v>
+<v t="ekr.20191203111346.1"><vh>test: single quote</vh></v>
+<v t="ekr.20191125235415.1"><vh>test: string concatentation</vh></v>
+<v t="ekr.20191118155611.1"><vh>test: string with % op</vh></v>
+</v>
+<v t="ekr.20191126084046.1"><vh>ignore: f-strings</vh>
+<v t="ekr.20191204164129.1"><vh>test: complex Call</vh></v>
+<v t="ekr.20191125165640.1"><vh>test: f-string + Ternary</vh></v>
+<v t="ekr.20191201124815.1"><vh>test: f-string case 1: single f-string</vh></v>
+<v t="ekr.20191129033147.1"><vh>test: f-string case 2: f-string + plain</vh></v>
+<v t="ekr.20191201131734.1"><vh>test: f-string case 3: plain + f-string</vh></v>
+<v t="ekr.20191201134842.1"><vh>test: f-string case 4: f-string + fstring</vh></v>
+<v t="ekr.20191201135548.1"><vh>test: f-string case 5: many</vh></v>
+<v t="ekr.20191201064443.1"><vh>test: f-string containing ternary op</vh></v>
+<v t="ekr.20191201083823.1"><vh>test: f-string leoFind.py line 856</vh></v>
+<v t="ekr.20191127134726.1"><vh>test: f-string leoFind.py: line 861</vh></v>
+<v t="ekr.20191126002258.1"><vh>test: f-string summary</vh>
+<v t="ekr.20191129035530.1"><vh>more</vh></v>
+</v>
+<v t="ekr.20191129033245.1"><vh>test: f-string summary: joins + 1 f-expr</vh></v>
+<v t="ekr.20191129033359.1"><vh>test: f-string summary: joins + 2 f-exprs</vh></v>
+<v t="ekr.20191201201448.1"><vh>test: f-string: complex, with commas</vh></v>
+<v t="ekr.20191128141922.1"><vh>test: print one f-string</vh></v>
+<v t="ekr.20191204150947.1"><vh>test: regex string</vh></v>
+<v t="ekr.20191129042702.1"><vh>test: simple f-string tests</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1568,6 +1654,360 @@ nodeB
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
 <t tx="ekr.20190923014948.1"></t>
+<t tx="ekr.20191118154059.1">"""
+The master unit test for leoAst.TokenOrderGenerator and related classes.
+"""
+import time
+import leo.core.leoAst as leoAst
+if 0: # Not for production.
+    import imp
+    imp.reload(leoAst)
+if 0: # Not for production.
+    g.cls()
+#
+# Flags for TR.run_tests.
+flags = [
+    # New flags.
+    'all',
+    # 'coverage',
+    'show-test-kind', # all vs selected.
+    # 'dump-sources-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    # 'show-exception-after-fail',
+
+    # 'dump-tokens-after-fail',
+    # 'dump-tree-after-fail',
+    # 'dump-all-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    # 'summarize',
+    # 'trace-times',    # Only for'file:' tests.
+    # 'trace-tokenizer-tokens',
+    # 'use-asttokens',
+]
+# Reload (if enabled), then make tests, run tests, and summarize.
+leoAst.TestRunner().run_tests(flags, root=c.p)
+
+</t>
+<t tx="ekr.20191118155609.1"></t>
+<t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
+print('done')
+</t>
+<t tx="ekr.20191118155612.1">open(os.devnull, "w")
+</t>
+<t tx="ekr.20191118155612.2">a = 1 ; b = 2
+print('a') ; print('b')
+</t>
+<t tx="ekr.20191118160305.1">print('c');
+print('d')
+</t>
+<t tx="ekr.20191119133927.1">class TestClass1:
+    pass
+    
+def decorator():
+    pass
+    
+@decorator
+class TestClass2:
+    pass
+    
+@decorator
+class TestClass(base1, base2):
+    pass
+</t>
+<t tx="ekr.20191119142414.1">def run(fileName=None, pymacs=None, *args, **keywords):
+    pass
+</t>
+<t tx="ekr.20191119203945.1"># line 856 
+</t>
+<t tx="ekr.20191119210429.1">print(-(2))
+</t>
+<t tx="ekr.20191119211714.1">if a and not b and c:
+    pass
+</t>
+<t tx="ekr.20191119213126.1">for i, j in b:
+    pass
+</t>
+<t tx="ekr.20191119213940.1">any([p2.isDirty() for p2 in p.subtree()])
+</t>
+<t tx="ekr.20191120064442.1">if (a):
+    print('a1')
+    print('a2')
+elif b:
+    print('b1')
+    print('b2')
+else:
+    print('c1')
+    print('c2')
+</t>
+<t tx="ekr.20191120074811.1"></t>
+<t tx="ekr.20191120075520.1"></t>
+<t tx="ekr.20191120132531.1">if 1:
+    print('a')
+else:
+    print('b')
+</t>
+<t tx="ekr.20191120163559.1">try:
+    print('a1')
+    print('a2')
+except ImportError:
+    print('b1')
+    print('b2')
+except SyntaxError:
+    print('c1')
+    print('c2')
+finally:
+    print('d1')
+    print('d2')
+</t>
+<t tx="ekr.20191120164539.1">if a:
+    if b:
+        print('b')
+else:
+    if d:
+        print('d')
+</t>
+<t tx="ekr.20191120171921.1">if 1:
+    print('a')
+elif 2:
+    print('b')
+elif 3:
+    print('c')
+    print('d')
+print('-')
+if 1:
+    print('e')
+elif 2:
+    print('f')
+    print('g')
+
+
+</t>
+<t tx="ekr.20191122153258.1">run(a=None, b=str)
+</t>
+<t tx="ekr.20191122203522.1">"""ds 1"""
+class TestClass:
+    """ds 2"""
+    def long_name(a, b=2):
+        """ds 3"""
+        print('done')
+</t>
+<t tx="ekr.20191122210035.1">if 1:
+    print('a')
+else:
+    if 2:
+        print('b')
+</t>
+<t tx="ekr.20191122210522.1"></t>
+<t tx="ekr.20191122213610.1">if 1:
+    pass
+elif 2:
+    pass
+    pass
+</t>
+<t tx="ekr.20191123203957.1"># line 1604.
+</t>
+<t tx="ekr.20191123210801.1">if -(2):
+    pass
+</t>
+<t tx="ekr.20191124040736.1"></t>
+<t tx="ekr.20191125151346.1"></t>
+<t tx="ekr.20191125161333.1">if 1:
+    a = 'class' if cond else 'def'
+    # find_pattern = prefix + ' ' + word
+    print('1')
+else:
+    print('2')
+</t>
+<t tx="ekr.20191125165640.1">func(f"{b if not cond1 else ''}")
+</t>
+<t tx="ekr.20191125235415.1">print('a' 'b')
+print('c')
+</t>
+<t tx="ekr.20191126002258.1">print(f'x3{e3+1}y3' f'x4{e4+2}y4')
+print('done')
+</t>
+<t tx="ekr.20191126084046.1"></t>
+<t tx="ekr.20191126143046.1">self.s = ''
+self.i = 0
+</t>
+<t tx="ekr.20191127134236.1"></t>
+<t tx="ekr.20191127134726.1"># leoFind.py: line 861
+one(f"{'B'}" ": ")
+</t>
+<t tx="ekr.20191127172440.1">print("a\"b")
+</t>
+<t tx="ekr.20191128141922.1">print(f"test {a}={2}")
+print('done')
+</t>
+<t tx="ekr.20191129033147.1">print(f'{7.1}' 'p7.2')
+print('end')
+</t>
+<t tx="ekr.20191129033245.1">print(f'x1{e1}y1', 'p1')
+print(f'x2{e2}y2', f'f2')
+print(f'x3{e3}y3', f'x4{e4}y4')
+print('end')
+</t>
+<t tx="ekr.20191129033359.1">print(f'x1{e1}y1{e2}z1', 'p1')
+print(f'x2{e3}y2{e3}z2', f'f2')
+print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
+print('end')
+</t>
+<t tx="ekr.20191129035530.1"># Single f-strings.
+# 'p1' ;
+# f'f1' ;
+# f'x1{e1}y1' ;
+# f'x2{e2+1}y2{e2+2}z2' ;
+
+# Concatentated strings...
+# 'p2', 'p3' ;
+# f'f2' 'f3' ;
+
+# f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
+</t>
+<t tx="ekr.20191129042702.1">'p1' ;
+f'f1' ;
+'done' ;
+</t>
+<t tx="ekr.20191201062631.1">f1(a='\b', b='\n', t='\t')
+f2(f='\f', r='\r', v='\v')
+f3(bs='\\')
+</t>
+<t tx="ekr.20191201064058.1">r1(a=r'\b', b=r'\n', t=r'\t')
+r2(f=r'\f', r=r'\r', v=r'\v')
+r3(bs=r'\\')
+</t>
+<t tx="ekr.20191201064443.1"># leoFind.py line 856
+
+a = f"{'a' if x else 'b'}"
+f()
+
+# Pass
+# print(f"{'a' if x else 'b'}")
+</t>
+<t tx="ekr.20191201065409.1">print('hello\
+world')
+</t>
+<t tx="ekr.20191201072043.1">d = {
+    'a' if x else 'b': True,
+    }
+f()
+</t>
+<t tx="ekr.20191201083823.1">func(
+    "Isearch"
+    f"{' Backward' if True else ''}"
+)
+print('done')
+</t>
+<t tx="ekr.20191201124815.1">print(f'{7.1}')
+print('end')
+</t>
+<t tx="ekr.20191201131734.1">print('p1' f'{f2}')
+'end'
+</t>
+<t tx="ekr.20191201134842.1">print(f'{f1}' f'{f2}')
+'end'
+</t>
+<t tx="ekr.20191201135548.1">print('s1', f'{f2}' f'f3' f'{f4}' 's5')
+'end'
+</t>
+<t tx="ekr.20191201201448.1">print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
+</t>
+<t tx="ekr.20191202195507.1"># Line 1619 leoFind.py
+print(r"""DS""")
+</t>
+<t tx="ekr.20191203111346.1"># leoGlobals.py line 806.
+print('"')
+</t>
+<t tx="ekr.20191203120043.1"># Line 1604, leoGlobals.py
+def spam():
+    global gg
+    print('')
+</t>
+<t tx="ekr.20191203121918.1"># leoGlobals.py.
+
+class SherlockTracer:
+    """before\\after"""
+</t>
+<t tx="ekr.20191203125053.1"># leoGlobals.py, line 1785.
+
+with open(fn) as f:
+    pass
+
+</t>
+<t tx="ekr.20191203125635.1"># leoGlobals.py, line 3028.
+
+d2 = {val: key for key, val in d.iteritems()}
+</t>
+<t tx="ekr.20191203155845.1"># line 93.
+</t>
+<t tx="ekr.20191203160056.1"># Line 93, leoTips.py
+unseen = [i for i in range(5) if i not in seen]
+for issue in data:
+    for a in aList:
+        print('a')
+    else:
+        print('b')
+if b:
+    print('c')
+</t>
+<t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
+print("\x7e" "\o777") # tilde.
+print('done')
+</t>
+<t tx="ekr.20191204025303.1">f1(a,b=2)
+f2(1 + 2)
+f3(arg, *args, **kwargs)
+f4(a='a', *args, **kwargs)
+func(a, b, one='one', two='two', *args, **kwargs)
+</t>
+<t tx="ekr.20191204150947.1"># Line 7709, leoGlobals.py
+
+fr"""{kinds}://[^\s'"]+[\w=/]"""
+</t>
+<t tx="ekr.20191204154152.1"></t>
+<t tx="ekr.20191204154344.1"># Line 201, leoApp.py
+
+print(b'\xfe')
+print('done')
+</t>
+<t tx="ekr.20191204164129.1"># Line 1177, leoApp.py
+
+print(
+    message = f"line 1: {old_id!r}\n" "line 2\n"
+)
+print('done')
+</t>
+<t tx="ekr.20191205014742.1"># The first newline causes the fail.
+print(f"a {old_id!r}\n" "b\n")
+print('done')
+</t>
+<t tx="ekr.20191205071617.1"># line 1046, leoAst.py.
+
+</t>
+<t tx="ekr.20191205071827.1"># Line 1046, leoAst.py
+
+self.node = tree
+yield from self.gen_token('newline', '\n')
+print('done')
+</t>
+<t tx="ekr.20191205090312.1"></t>
+<t tx="ekr.20191205090519.1"></t>
+<t tx="ekr.20191205090659.1"># Line 240: leoDebugger.py
+
+try:
+    print('a')
+except ValueError:
+    print('b')
+else:
+    print('c')
+</t>
+<t tx="ekr.20191206053245.1"># Only a comment.
+</t>
 <t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
 if g.in_bridge:

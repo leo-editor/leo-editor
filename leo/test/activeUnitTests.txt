@@ -737,9 +737,11 @@ path = g.os_path_finalize_join(g.app.loadDir,
     '..', 'test', 'unittest', 'python3_test.py')
 assert g.os_path_exists(path), path
 fn = g.shortFileName(path)
-source = open(path, 'r').read()
+with open(path, 'r') as f:
+    source = f.read()
 node = ast.parse(source, filename=fn, mode='exec')
-src = open(path, 'r').read()
+with open(path, 'r') as f:
+    src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
 leoAst.AstFullTraverser().visit(node)
