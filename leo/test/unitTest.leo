@@ -188,92 +188,126 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
-<v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
-<v t="ekr.20110510054817.3476"><vh>@test g.alert</vh></v>
-<v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
-<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
-<v t="ekr.20071113143844.9"><vh>@test g.CheckVersionToInt</vh></v>
-<v t="ekr.20100131180007.5428"><vh>@test g.comment_delims_from_extension</vh></v>
-<v t="ekr.20160327132053.1"><vh>@test g.compute_directives_re</vh></v>
-<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
-<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
-<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
-<v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
-<v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
-<v t="ekr.20180128105733.1"><vh>@test g.findNode*</vh></v>
-<v t="ekr.20140702101937.4245"><vh>@test g.find_word</vh></v>
-<v t="ekr.20100131180007.5455"><vh>@test g.fullPath</vh>
-<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
-<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
+<v t="ekr.20100812172232.5800"><vh>@common leoRst test code</vh>
+<v t="ekr.20100812182942.5804"><vh>class rst3Test</vh>
+<v t="ekr.20100827194549.5963"><vh>report</vh></v>
+<v t="ekr.20100827183358.5957"><vh>run</vh></v>
+<v t="ekr.20171223221351.1"><vh>munge NEW</vh></v>
+<v t="ekr.20100827183358.5958"><vh>setup</vh></v>
+<v t="ekr.20100827183358.5959"><vh>set_got</vh></v>
 </v>
 </v>
-<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
-<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
-<v t="ekr.20111018163546.3690"><vh>@test g.getDocString</vh></v>
-<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
-<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
-<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
-<v t="ekr.20110612064437.3310"><vh>@test g.guessExternalEditor</vh></v>
-<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
-<v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
-<v t="ekr.20141208130803.11"><vh>@test g.importModule</vh></v>
-<v t="ekr.20170122164330.1"><vh>@test g.isDirective</vh></v>
-<v t="ekr.20170601070526.1"><vh>@test g.match_word</vh></v>
-<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
-<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
-<v t="ekr.20100212112056.5361"><vh>@test g.printGcAll</vh></v>
-<v t="ekr.20100131180007.5396"><vh>@test g.removeBlankLines</vh></v>
-<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
-<v t="ekr.20100131180007.5395"><vh>@test g.removeLeadingBlankLines</vh></v>
-<v t="ekr.20100131180007.5402"><vh>@test g.removeTrailing</vh></v>
-<v t="ekr.20150328120706.1"><vh>@test g.sanitize_filename</vh></v>
-<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
-<v t="ekr.20100131180007.5435"><vh>@test g.scanAtHeaderDirectives header</vh></v>
-<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
-<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
-<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
-<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
-<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
-<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
-<v t="ekr.20100131180007.5442"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
-<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
-<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
-<v t="ekr.20120228145505.4834"><vh>@thin ../test/unittest/at-path-test1.py</vh></v>
-</v>
-<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
-<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
-<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
-<v t="ekr.20120228145505.4838"><vh>@thin at-path-test3.py</vh></v>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20100813100841.5847"><vh>@ignore</vh>
+<v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
+<v t="ekr.20100812213445.5825"><vh>source</vh>
+<v t="ekr.20100812213445.5826"><vh>@rst test.html</vh>
+<v t="ekr.20100812213445.5827"><vh>section</vh></v>
 </v>
 </v>
+<v t="ekr.20100812213445.5828"><vh>expected</vh>
+<v t="ekr.20100813100841.5843"><vh>rst</vh></v>
+<v t="ekr.20100813100841.5844"><vh> html</vh></v>
 </v>
-<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py</vh>
-<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
-<v t="ekr.20120228145505.4841"><vh>@thin at-path-test2.py</vh></v>
+</v>
+<v t="ekr.20100813100841.5827"><vh>@test code_mode: show_leo_directives</vh></v>
+<v t="ekr.20100813100841.5828"><vh>@test code_mode: show_markup_doc_parts</vh></v>
+<v t="ekr.20100813100841.5829"><vh>@test code_mode: show_options_doc_parts</vh></v>
+</v>
+<v t="ekr.20091219121039.5065"><vh>@test c.rstCommands.handleMissingStyleSheetArgs</vh></v>
+<v t="ekr.20111103213154.3823"><vh>@test c.rstCommands.writeToDocutils: pdf</vh></v>
+<v t="ekr.20100131180007.5459"><vh>@test rst.initAtAutoWrite</vh></v>
+<v t="ekr.20100813100841.5850"><vh>@test rst3Test @no-head</vh>
+<v t="ekr.20100813100841.5854"><vh>source</vh>
+<v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
+<v t="ekr.20100813100841.5856"><vh>@rst-no-head section</vh></v>
 </v>
 </v>
-<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
-<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
-<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
-<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap (with @wrap)</vh></v>
-<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap (without @nowrap)</vh></v>
-<v t="ekr.20100131180007.5426"><vh>@test g.set_delims_from_language</vh></v>
-<v t="ekr.20100131180007.5425"><vh>@test g.set_delims_from_string</vh></v>
-<v t="ekr.20100131180007.5421"><vh>@test g.setDefaultDirectory</vh></v>
-<v t="sps.20100609234650.16094"><vh>@test g.skip_blank_lines</vh></v>
-<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
-<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
-<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
-<v t="ekr.20150610130646.1"><vh>@test g.splitLongFileName</vh></v>
-<v t="ekr.20100131180007.5427"><vh>@test g.stripPathCruft</vh></v>
-<v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
-<v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
-<v t="ekr.20100131180007.5429"><vh>@test g.warnOnReadOnlyFile</vh></v>
-<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
+<v t="ekr.20100813100841.5857"><vh>expected</vh>
+<v t="ekr.20100813100841.5858"><vh>rst</vh></v>
+<v t="ekr.20100813100841.5859"><vh>html</vh></v>
 </v>
-<v t="ekr.20071113145804.21"></v>
+<v t="ekr.20100827182529.6843"><vh>got</vh>
+<v t="ekr.20100827182529.6844"><vh>rst</vh></v>
+<v t="ekr.20100827182529.6845"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20100812172232.5801"><vh>@test rst3Test default</vh>
+<v t="ekr.20100812182942.5805"><vh>source</vh>
+<v t="ekr.20100812182942.5807"><vh>@rst test.html</vh>
+<v t="ekr.20100812182942.5808"><vh>section</vh></v>
+</v>
+</v>
+<v t="ekr.20100812213445.5814"><vh>expected</vh>
+<v t="ekr.20100813100841.5848"><vh>rst</vh></v>
+<v t="ekr.20100813100841.5849"><vh> html</vh></v>
+</v>
+<v t="ekr.20100827182529.6840"><vh>got</vh>
+<v t="ekr.20100827182529.6841"><vh>rst</vh></v>
+<v t="ekr.20100827182529.6842"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20100813100841.5824"><vh>@test rst3Test doc_only_mode (set in headline)</vh>
+<v t="ekr.20100813100841.5839"><vh>source</vh>
+<v t="ekr.20100813100841.5840"><vh>@rst test.html</vh>
+<v t="ekr.20100813124317.5868"><vh>@rst-option doc_only_mode=True</vh>
+<v t="ekr.20100813100841.5841"><vh>section</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20100813100841.5842"><vh>expected</vh>
+<v t="ekr.20100813124317.5869"><vh>rst</vh></v>
+<v t="ekr.20100813124317.5870"><vh> html</vh></v>
+</v>
+<v t="ekr.20100827182529.6846"><vh>got</vh>
+<v t="ekr.20100827182529.6847"><vh>rst</vh></v>
+<v t="ekr.20100827182529.6848"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20100813124317.5879"><vh>@test rst3Test doc_only_mode (set in options doc part)</vh>
+<v t="ekr.20100813124317.5880"><vh>source</vh>
+<v t="ekr.20100813124317.5881"><vh>@rst test.html</vh>
+<v t="ekr.20100813124317.5883"><vh>section</vh></v>
+</v>
+</v>
+<v t="ekr.20100813124317.5884"><vh>expected</vh>
+<v t="ekr.20100813124317.5889"><vh>rst</vh></v>
+<v t="ekr.20100813124317.5890"><vh> html</vh></v>
+</v>
+<v t="ekr.20100827182529.6849"><vh>got</vh>
+<v t="ekr.20100827182529.6850"><vh>rst</vh></v>
+<v t="ekr.20100827182529.6851"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20100827140832.5913"><vh>@test rst3Test show_leo_directives=False</vh>
+<v t="ekr.20100827140832.5917"><vh>source</vh>
+<v t="ekr.20100827140832.5918"><vh>@rst test.html</vh>
+<v t="ekr.20100827140832.5919"><vh>section</vh></v>
+</v>
+</v>
+<v t="ekr.20100827140832.5926"><vh>expected</vh>
+<v t="ekr.20100827140832.5929"><vh>rst</vh></v>
+<v t="ekr.20100827140832.5930"><vh>html</vh></v>
+</v>
+<v t="ekr.20100827182529.6852"><vh>got</vh>
+<v t="ekr.20100827182529.6853"><vh>rst</vh></v>
+<v t="ekr.20100827182529.6854"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20120307070541.3937"><vh>@test rst3Test unicode characters</vh>
+<v t="ekr.20120307070541.3941"><vh>source</vh>
+<v t="ekr.20120307070541.3942"><vh>@rst test.html</vh></v>
+</v>
+<v t="ekr.20120307070541.3944"><vh>expected</vh>
+<v t="ekr.20120307070541.3946"><vh>rst</vh></v>
+<v t="ekr.20120307070541.3947"><vh>html</vh></v>
+</v>
+<v t="ekr.20120307070541.3945"><vh>got</vh>
+<v t="ekr.20120307070541.3948"><vh>rst</vh></v>
+<v t="ekr.20120307070541.3949"><vh>html</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -297,57 +331,8 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
-<t tx="ekr.20040917062206">assert(g.cantImport("xyzzy","during unit testing") is None)
-</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
-<t tx="ekr.20050105084757.1">import os
-
-exists = g.os_path_exists
-
-path = g.os_path_join(g.app.testDir,'xyzzy')
-if exists(path):
-    os.remove(path)
-
-assert not exists(path)
-assert not g.utils_remove(path,verbose=False)
-
-f = open(path,'w')
-f.write('test')
-f.close()
-
-assert exists(path)
-assert g.utils_remove(path,verbose=True)
-assert not exists(path)
-</t>
-<t tx="ekr.20050105091547">import os
-
-exists = g.os_path_exists
-path = g.os_path_join(g.app.testDir,'xyzzy')
-path2 = g.os_path_join(g.app.testDir,'xyzzy2')
-
-# Create both paths.
-for p in (path,path2):
-    if exists(p):
-        os.remove(p)
-    assert not exists(p)
-    f = open(p,'w')
-    f.write('test %s' % p)
-    f.close()
-    assert exists(p)
-
-assert g.utils_rename(c,path,path2) #,verbose=True)
-assert exists(path2)
-f = open(path2)
-s = f.read()
-f.close()
-assert s == 'test %s' % path
-os.remove(path2)
-assert not exists(path)
-</t>
-<t tx="ekr.20050208135429">for ivar in ('c','g','p'):
-    assert ivar in dir()
-</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -752,76 +737,6 @@ elif sys.platform== 'darwin':
     assert(darwin)
 
 </t>
-<t tx="ekr.20060921115303"># for condition in ('&lt;','&lt;=','&gt;','&gt;='):
-
-for v1,condition,v2 in (
-    ('8.4.12','&gt;','8.4.3'),
-    ('1','==','1.0'),
-    ('2','&gt;','1'),
-    ('1.2','&gt;','1'),
-    ('2','&gt;','1.2.3'),
-    ('1.2.3','&lt;','2'),
-    ('1','&lt;','1.1'),
-):
-    assert g.CheckVersion(v1,v2,condition=condition,trace=False)
-</t>
-<t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
-i,j = g.getWord(s,5)
-assert s[i:j] == 'xy_z5','got %s' % s[i:j]
-</t>
-<t tx="ekr.20061104172236.15">s = 'a\n\nc'
-
-for i,result in (
-    (-1,2), # One too few.
-    (0,2),(1,2),
-    (2,3),
-    (3,4),
-    (4,4), # One too many.
-):
-    j = g.skip_line(s,i)
-    assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-</t>
-<t tx="ekr.20061104172236.16">s = 'a\n\nc'
-
-for i,result in (
-    (-1,1), # One too few.
-    (0,1),(1,1),
-    (2,2),
-    (3,4),
-    (4,4), # One too many.
-):
-    j = g.skip_to_end_of_line(s,i)
-    assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-</t>
-<t tx="ekr.20061104172236.17">s1 = 'a\n\nc'
-table1 = (
-    (-1,0), # One too few.
-    (0,0),(1,0),
-    (2,2),
-    (3,3),
-    (4,4), # One too many.
-)
-s2 = 'a\n'
-table2 = ((1,0),(2,2)) # A special case at end.
-
-for s,table in ((s1,table1),(s2,table2)):
-    for i,result in table:
-        j = g.skip_to_start_of_line(s,i)
-        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-</t>
-<t tx="ekr.20061104172236.18">s = 'a\ncd\n\ne'
-
-for i,result in (
-    (-1,(0,2)), # One too few.
-    (0,(0,2)),(1,(0,2)),
-    (2,(2,5)),(3,(2,5)),(4,(2,5)),
-    (5,(5,6)),
-    (6,(6,7)),
-    (7,(6,7)), # One too many.
-):
-    j,k = g.getLine(s,i)
-    assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -988,18 +903,6 @@ for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWO
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
-<t tx="ekr.20071113090055.5"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-@pagewidth 120
-
-d = c.atFileCommands.scanAllDirectives(p)
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-# assert d.get('path').endswith('xyzzy')
-assert d.get('pagewidth') == 120
-</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -1025,239 +928,9 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113143844.9">assert g.CheckVersionToInt('12') == 12,'fail 1'
-assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
-assert g.CheckVersionToInt('b2') == 0, 'fail 3'
-</t>
-<t tx="ekr.20071113145804.19">import sys
-
-# Not a good unit test; it probably will never fail.
-def aFunction(): pass
-assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
-
-class myStdout:
-    def write(self,s):
-        pass # g.es('From pdb:',s)
-
-class myStdin:
-    def readline (self):
-        return 'c' # Return 'c' (continue) for all requests for input.
-
-def restore():
-    sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
-
-try:
-    sys.stdin = myStdin() # Essential
-    sys.stdout=myStdout() # Optional
-    g.pdb()
-    restore()
-    # assert False,'test of reraising'
-except Exception:
-    restore()
-    raise
-</t>
-<t tx="ekr.20071113145804.21">theFile = None
-try:
-    theFile,fn = g.create_temp_file()
-    assert theFile
-    assert isinstance(fn, str)
-finally:
-    if theFile:
-        theFile.close()
-</t>
-<t tx="ekr.20071113145804.26">s1 = 'abc\n\np\nxy'
-table1 = (
-    (-1,(0,0)), # One too small.
-    (0,(0,0)),
-    (1,(0,1)),
-    (2,(0,2)),
-    (3,(0,3)), # The newline ends a row.
-    (4,(1,0)),
-    (5,(2,0)),
-    (6,(2,1)),
-    (7,(3,0)),
-    (8,(3,1)),
-    (9,(3,2)), # One too many.
-    (10,(3,2)), # Two too many.
-)
-s2 = 'abc\n\np\nxy\n'
-table2 = (
-    (9,(3,2)),
-    (10,(4,0)), # One too many.
-    (11,(4,0)), # Two too many.
-)
-s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
-table3 = (
-    (-1,(0,0)), # One too small.
-    (0,(0,0)),
-    (1,(0,1)),
-    (2,(0,2)), # One too many.
-    (3,(0,3)), # Two too many.
-)
-
-for s,table in ((s1,table1),(s2,table2)):
-    for i,result in table:
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        assert row == result[0], 'i: %d, expected row %d, got %d' % (i,result[0],row)
-        assert col == result[1], 'i: %d, expected col %d, got %d' % (i,result[1],col)
-</t>
-<t tx="ekr.20071113145804.27">s1 = 'abc\n\np\nxy'
-s2 = 'abc\n\np\nxy\n'
-table1 = (
-    (0,(-1,0)), # One too small.
-    (0,(0,0)),
-    (1,(0,1)),
-    (2,(0,2)),
-    (3,(0,3)), # The newline ends a row.
-    (4,(1,0)),
-    (5,(2,0)),
-    (6,(2,1)),
-    (7,(3,0)),
-    (8,(3,1)),
-    (9,(3,2)), # One too large.
-)
-table2 = (
-    (9,(3,2)),
-    (10,(4,0)), # One two many.
-)
-for s,table in ((s1,table1),(s2,table2)):
-    for i,data in table:
-        row,col = data
-        result = g.convertRowColToPythonIndex(s,row,col)
-        assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
-</t>
-<t tx="ekr.20071113145804.28">script = g.getScript(c,p) # This will get the text of this node.
-assert script.find('\r\n') == -1, repr(script)
-</t>
-<t tx="ekr.20071113145804.29">for s,expected in (
-    (' a\n b\n c', 'a\nb\nc'),
-    (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
-):
-    result = g.removeExtraLws(s,c.tab_width)
-    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-        repr(s),repr(expected),repr(result))
-</t>
-<t tx="ekr.20071113194033.3"># No failures with Alt-5 but warnings about no tnode lists.
-</t>
-<t tx="ekr.20071113202153.2"># Print does not work: it is redirected.
-g.pr('\nEnd of leoGlobals tests.')
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
-</t>
-<t tx="ekr.20080917151620.13">@header
-
-aList = g.get_directives_dict_list(p)
-g.scanAtHeaderDirectives(aList)
-</t>
-<t tx="ekr.20080917151620.14">@noheader
-
-aList = g.get_directives_dict_list(p)
-g.scanAtHeaderDirectives(aList)
-</t>
-<t tx="ekr.20080917151620.15">@lineending cr
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtLineendingDirectives(aList)
-
-assert s == '\r'
-</t>
-<t tx="ekr.20080917151620.16">@lineending crlf
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtLineendingDirectives(aList)
-assert s == '\r\n', repr(s)
-
-</t>
-<t tx="ekr.20080917151620.17">@lineending lf
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtLineendingDirectives(aList)
-
-assert s == '\n'
-</t>
-<t tx="ekr.20080917151620.18">@lineending nl
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtLineendingDirectives(aList)
-
-assert s == '\n'
-</t>
-<t tx="ekr.20080917151620.19">@lineending platform
-
-import sys
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtLineendingDirectives(aList)
-
-if sys.platform.startswith('win'):
-    assert s == '\r\n'
-else:
-    assert s == '\n'
-</t>
-<t tx="ekr.20080917151620.21">@pagewidth 40
-
-aList = g.get_directives_dict_list(p)
-n = g.scanAtPagewidthDirectives(aList)
-
-assert n == 40
-</t>
-<t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
-s = c.scanAtPathDirectives(aList)
-end = g.os_path_normpath(r'leo/test')
-
-assert s.endswith(end),repr(s)
-</t>
-<t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
-aList = g.get_directives_dict_list(grandChild)
-s = c.scanAtPathDirectives(aList)
-end = g.os_path_normpath(r'leo/test/unittest')
-
-assert s.endswith(end),repr(s)
-</t>
-<t tx="ekr.20080917151620.25"></t>
-<t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
-aList = g.get_directives_dict_list(greatGrandChild)
-s = c.scanAtPathDirectives(aList)
-end = g.os_path_normpath(r'leo/test/unittest')
-
-assert s.endswith(end),repr(s)
-</t>
-<t tx="ekr.20080917151620.28"></t>
-<t tx="ekr.20080917151620.29"></t>
-<t tx="ekr.20080917151620.31">@tabwidth 6
-
-aList = g.get_directives_dict_list(p)
-n = g.scanAtTabwidthDirectives(aList)
-
-assert n == 6,repr(n)
-</t>
-<t tx="ekr.20080917151620.32">@tabwidth -6
-
-aList = g.get_directives_dict_list(p)
-n = g.scanAtTabwidthDirectives(aList)
-
-assert n == -6
-</t>
-<t tx="ekr.20080917151620.33">@nowrap
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtWrapDirectives(aList)
-
-assert s is False,repr(s)
-</t>
-<t tx="ekr.20080917151620.34">@wrap
-
-aList = g.get_directives_dict_list(p)
-s = g.scanAtWrapDirectives(aList)
-
-assert s is True,repr(s)
-</t>
-<t tx="ekr.20080917151620.35">aList = g.get_directives_dict_list(p)
-s = g.scanAtWrapDirectives(aList)
-
-assert s is None,repr(s)
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1293,6 +966,24 @@ for p in c.all_positions():
             p.v.u = None
 put('done') 
 c.redraw()</t>
+<t tx="ekr.20091219121039.5065">x = c.rstCommands
+result = x.handleMissingStyleSheetArgs(p,s=None)
+assert result == {},'expected {}, got %s' % result
+expected = {
+    'documentoptions':'[english,12pt,lettersize]',
+    'language':'ca',
+    'use-latex-toc':'1',
+}
+for s in (
+    '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
+    '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
+    '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
+):
+    result = x.handleMissingStyleSheetArgs(p,s=s)
+    assert result == expected,'expected %s\ngot %s' % (expected,result)
+</t>
+<t tx="ekr.20091219122958.5066"># Warning: these depend on the .css files in leo\test\unittest.
+</t>
 <t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
 for p in c.all_unique_positions():
     nodes += 1
@@ -1468,187 +1159,20 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131180007.5395">for s,expected in (
-    ('a\nb', 'a\nb'),
-    ('\n  \nb\n', 'b\n'),
-    (' \t \n\n\n c', ' c'),
-):
-    result = g.removeLeadingBlankLines(s)
-    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-        repr(s),repr(expected),repr(result))
+<t tx="ekr.20100131180007.5459">rst = c.rstCommands
+rst.initAtAutoWrite(p,fileName='&lt;test file&gt;',outputFile=None)
+
+# Ensure we are actually testing the default logic.
+d = p.v.u.get('rst-import',{})
+underlines = d.get('underline_characters')
+assert underlines is None,'fail 1: %s' % repr(underlines)
+assert d == {},'fail 2: %s' % repr(d)
+# Now test the logic.
+assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
+assert rst.underlines1 == '=+*^~"\'`-:&gt;&lt;_', 'fail4 %s' % repr(rst.underlines1)
+assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
+    repr(rst.atAutoWriteUnderlines))
 </t>
-<t tx="ekr.20100131180007.5396">for s,expected in (
-    ('a\nb', 'a\nb'),
-    ('\n  \n\nb\n', 'b\n'),
-    (' \t \n\n  \n c\n\t\n', ' c\n'),
-):
-    result = g.removeBlankLines(s)
-    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-        repr(s),repr(expected),repr(result))
-</t>
-<t tx="ekr.20100131180007.5398">if 1: # The following must be indented.
-
-    s = '''\
-    a
-      b
-
-c
-    d'''
-
-    s2 = '    a\n      b\n\nc\n    d'
-
-    result = g.adjustTripleString(s,c.tab_width)
-    # print(c.tab_width)
-    # print(result)
-    # print('=====')
-    # print(s2)
-    assert result == s2,repr(result)
-</t>
-<t tx="ekr.20100131180007.5402">s = 'aa bc \n \n\t\n'
-table = (
-    ('\t\n ','aa bc'),
-    ('abc\t\n ',''),
-    ('c\t\n ','aa b'),
-)
-
-for arg,val in table:
-    result = g.removeTrailing(s,arg)
-    assert result == val, 'expected %s, got %s' % (val,result)
-</t>
-<t tx="ekr.20100131180007.5403">s = ' \n \n\t\naa bc'
-s2 = 'aa bc'
-
-for i in range(3):
-    result = g.ensureLeadingNewlines(s,i)
-    val = ('\n' * i) + s2
-    assert result == val, 'expected %s, got %s' % (
-        repr(val),repr(result))
-</t>
-<t tx="ekr.20100131180007.5404">s = 'aa bc \n \n\t\n'
-s2 = 'aa bc'
-
-for i in range(3):
-    result = g.ensureTrailingNewlines(s,i)
-    val = s2 + ('\n' * i)
-    assert result == val, 'expected %s, got %s' % (
-        repr(val),repr(result))
-</t>
-<t tx="ekr.20100131180007.5421">c,p = g.getTestVars()
-
-# result,error = g.setDefaultDirectory(c,p,importing=False)
-# assert error == ''
-# assert result == c.openDirectory,result
-
-result = g.setDefaultDirectory(c,p,importing=False)
-assert result == c.openDirectory,result
-</t>
-<t tx="ekr.20100131180007.5425"># New in Leo 4.6, set_delims_from_string returns '' instead of None.
-table = (
-    ('c','@comment // /* */',   ('//','/*','*/')),
-    ('c','// /* */',            ('//','/*','*/')),
-    ('python','@comment #',     ('#','','')),
-    ('python','#',              ('#','','')),
-    ('xxxyyy','@comment a b c', ('a','b','c')),
-    ('xxxyyy','a b c',          ('a','b','c')),
-)
-
-for language,s,expected in table:
-    result = g.set_delims_from_string(s)
-    assert result==expected,'language %s expected %s, got %s' % (
-        language,expected,result)
-</t>
-<t tx="ekr.20100131180007.5426"># New in Leo 4.6, set_delims_from_language returns '' instead of None.
-table = (
-    ('c',       ('//','/*','*/')),
-    ('python',  ('#','','')),
-    ('xxxyyy',  ('','','')),
-)
-
-for language, expected in table:
-    result = g.set_delims_from_language(language)
-    assert result==expected,'language %s expected %s, got %s' % (
-        language,expected,result)
-</t>
-<t tx="ekr.20100131180007.5427">table =  (
-    (None,None), # Retain empty paths for warnings.
-    ('',''),
-    (g.app.loadDir,g.app.loadDir),
-    ('&lt;abc&gt;','abc'),
-    ('"abc"','abc'),
-    ("'abc'",'abc'),
-)
-
-for path,expected in table:
-    result = g.stripPathCruft(path)
-    assert result == expected
-</t>
-<t tx="ekr.20100131180007.5428"># New in Leo 4.6, set_delims_from_language returns '' instead of None.
-table = (
-    ('.c',      ('//','/*','*/')),
-    ('.html',   ('', '&lt;!--', '--&gt;')),
-    ('.py',     ('#','','')),
-    ('.xxx',    ('','','')),
-)
-
-for ext, expected in table:
-    result = g.comment_delims_from_extension(ext)
-    assert result==expected,'ext %s expected %s, got %s' % (
-        ext,expected,result)
-</t>
-<t tx="ekr.20100131180007.5429">import os,stat
-
-fc = c.fileCommands
-path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
-if os.path.exists(path):
-    os.chmod(path, stat.S_IREAD)
-    fc.warnOnReadOnlyFiles(path)
-    assert fc.read_only
-else:
-    fc.warnOnReadOnlyFiles(path)
-</t>
-<t tx="ekr.20100131180007.5434">@language python
-@comment a b c
-    # @comment must follow @language.
-@tabwidth -8
-@pagewidth 72
-@encoding utf-8
-# @path: anError # @path ends with ':'.
-
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-d = g.get_directives_dict(p)
-
-# assert d.get('_p') == p # Never used, and a bad idea.
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == '-8'
-assert d.get('pagewidth') == '72'
-assert d.get('encoding') == 'utf-8'
-assert d.get('comment') == 'a b c'
-assert not d.get('path'),d.get('path')
-# assert d.get('path').endswith('xyzzy')
-</t>
-<t tx="ekr.20100131180007.5435">@header
-
-c,p = g.getTestVars()
-aList = g.get_directives_dict_list(p)
-g.scanAtHeaderDirectives(aList)
-</t>
-<t tx="ekr.20100131180007.5442">@pagewidth -40
-
-aList = g.get_directives_dict_list(p)
-n = g.scanAtPagewidthDirectives(aList)
-
-# The @pagewidth directive in the parent should control.
-# Depending on how this test is run, the result could be 80 or None.
-assert n in (None,80),repr(n)
-</t>
-<t tx="ekr.20100131180007.5455">p2 = p.firstChild().firstChild()
-path = g.fullPath(c,p2,simulate=True)
-end = g.os_path_normpath('abc/xyz')
-assert path.endswith(end),repr(path)
-</t>
-<t tx="ekr.20100131180007.5456"></t>
-<t tx="ekr.20100131180007.5457"></t>
 <t tx="ekr.20100204165850.5373">if g.app.inBridge:
     self.skipTest('in bridge')
 k = c.k
@@ -1691,7 +1215,3373 @@ if not result:
     self.skipTest('no settings')
 assert result.strip().lower()=='f1', repr(result)
 </t>
-<t tx="ekr.20100212112056.5361">g.printGcAll()
+<t tx="ekr.20100812172232.5800">@others
+</t>
+<t tx="ekr.20100812172232.5801">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100812182942.5804">@first # -*- coding: utf-8 -*-
+
+class rst3Test:
+    '''A class to run rst-related unit tests.'''
+    
+    def __init__ (self,c,p):
+        '''Ctor for rst3Test class.'''
+        self.c = c
+        self.p = p.copy()
+        self.run()
+
+    @others
+</t>
+<t tx="ekr.20100812182942.5805">@language rest
+</t>
+<t tx="ekr.20100812182942.5807">@language rest
+@ @rst-options
+call_docutils=True
+@c
+
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100812182942.5808">@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100812213445.5814">@language html
+</t>
+<t tx="ekr.20100812213445.5824">exec(g.findTestScript(c,'@common leoRst test code'))
+
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100812213445.5825">@language rest
+</t>
+<t tx="ekr.20100812213445.5826">@ @rst-options
+show_doc_parts_as_paragraphs=True
+@c
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100812213445.5827">@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100812213445.5828">@language html
+</t>
+<t tx="ekr.20100813100841.5824">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100813100841.5827"></t>
+<t tx="ekr.20100813100841.5828"></t>
+<t tx="ekr.20100813100841.5829"></t>
+<t tx="ekr.20100813100841.5839">@language rest
+</t>
+<t tx="ekr.20100813100841.5840">@ @rst-options
+call_docutils=True
+@c
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100813100841.5841">@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100813100841.5842"></t>
+<t tx="ekr.20100813100841.5843">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+@c
+
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100813100841.5844">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+&amp;#64;c&lt;/p&gt;
+&lt;p&gt;This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813100841.5847"></t>
+<t tx="ekr.20100813100841.5848">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100813100841.5849">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813100841.5850">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+# A kludge: run the test in 
+openDirectory = c.frame.openDirectory
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100813100841.5854">@language rest
+</t>
+<t tx="ekr.20100813100841.5855">@language rest
+@ @rst-options
+call_docutils=True
+@c
+
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100813100841.5856">This is the body of the section.
+</t>
+<t tx="ekr.20100813100841.5857"></t>
+<t tx="ekr.20100813100841.5858">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100813100841.5859">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;p&gt;This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813124317.5868"></t>
+<t tx="ekr.20100813124317.5869">.. rst3: filename: test.html
+
+#####
+Title
+#####
+
+This is test.html
+
+
+
+section
+*******
+
+This is a doc part
+it has two lines.
+
+</t>
+<t tx="ekr.20100813124317.5870">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;This is a doc part
+it has two lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813124317.5879">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100813124317.5880">@language rest
+</t>
+<t tx="ekr.20100813124317.5881">@ @rst-options
+call_docutils=True
+@c
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100813124317.5883">@ @rst-options
+doc_only_mode=True
+@c
+@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100813124317.5884"></t>
+<t tx="ekr.20100813124317.5889">.. rst3: filename: test.html
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+This is a doc part
+it has two lines.
+
+</t>
+<t tx="ekr.20100813124317.5890">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;This is a doc part
+it has two lines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827140832.5913">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100827140832.5917">@language rest
+</t>
+<t tx="ekr.20100827140832.5918">@language rest
+
+@ @rst-options
+show_leo_directives=False
+call_docutils=True
+@c
+
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100827140832.5919">@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100827140832.5926"></t>
+<t tx="ekr.20100827140832.5929">.. rst3: filename: test.html
+
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827140832.5930">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827182529.6840"></t>
+<t tx="ekr.20100827182529.6841">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827182529.6842">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827182529.6843"></t>
+<t tx="ekr.20100827182529.6844">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827182529.6845">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;p&gt;This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827182529.6846"></t>
+<t tx="ekr.20100827182529.6847">.. rst3: filename: test.html
+
+#####
+Title
+#####
+
+This is test.html
+
+
+
+section
+*******
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827182529.6848">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827182529.6849"></t>
+<t tx="ekr.20100827182529.6850">.. rst3: filename: test.html
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827182529.6851">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827182529.6852"></t>
+<t tx="ekr.20100827182529.6853">.. rst3: filename: test.html
+
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100827182529.6854">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100827183358.5957">def run(self):
+    '''run an rst test.'''
+
+    def clean(s):
+        s = s.replace('\r','')
+        s = g.toUnicode(s,'utf-8')
+        return s
+
+    c,p = self.c,self.p
+    rc = c.rstCommands
+    expected,got,source = self.setup()
+    root = source.firstChild()
+    rc.preprocessTree(root)
+    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    assert rc.getOption(root, 'call_docutils'), 'call_docutils'
+    assert rc.source is not None, 'rc.source should not be None'
+    assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
+    rst = clean(rc.source)
+    html = clean(rc.stringOutput)
+    assert rst,'rst'
+    assert html,'html'
+    # Kludge: disregard version of docutils.
+    html = self.munge(html)
+    if expected.hasChildren():
+        child1 = expected.firstChild()
+        child2 = expected.firstChild().next()
+        child1_b = clean(child1.b)
+        child2_b = clean(child2.b)
+        child2_b = self.munge(child2.b)
+        ok = rst == child1_b and html == child2_b
+        if not ok:
+            got_html,got_rst = self.set_got(expected,got)
+            got_html.b = html
+            got_rst.b = rst
+        if rst != child1_b:
+            self.report(child1,got_rst)
+        if html != child2_b:
+            self.report(child2,got_html)
+        assert rst == child1_b,'rst mismatch'
+        assert html == child2_b,'html mismatch'
+    else:
+        child = expected.insertAsNthChild(0)
+        child.h,child.b = 'rst',rst
+        child = expected.insertAsNthChild(1)
+        child.h,child.b = ' html',html
+</t>
+<t tx="ekr.20100827183358.5958">def setup (self):
+    
+    c,p = self.c, self.p
+    expected = g.findNodeInTree(c,p,'expected')
+    got = g.findNodeInTree(c,p,'got')
+    source = g.findNodeInTree(c,p,'source')
+    assert source,'source'
+    assert expected,'expected'
+    return expected,got,source
+</t>
+<t tx="ekr.20100827183358.5959">def set_got (self,expected,got):
+
+    c,p = self.c, self.p
+    if got:
+        got_rst = g.findNodeInTree(c,got,'rst')
+        got_html = g.findNodeInTree(c,got,'html')
+        assert got_rst
+        assert got_html
+    else:
+        got = p.insertAsLastChild()
+        got.h = 'got'
+        got_rst = got.insertAsNthChild(0)
+        got_rst.h = 'rst'
+        got_html = got.insertAsNthChild(1)
+        got_html.h = 'html'
+    return got_html,got_rst
+</t>
+<t tx="ekr.20100827194549.5963">def report (self,expected,got):
+    '''Report errors in an rst test.'''
+    verbose = True
+    expected_lines = g.splitLines(expected.b)
+    got_lines = g.splitLines(got.b)
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
@@ -1699,35 +4589,10 @@ assert result.strip().lower()=='f1', repr(result)
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.
 </t>
-<t tx="ekr.20110510054817.3476">g.alert(c,'test of g.alert')
-</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
-</t>
-<t tx="ekr.20110612064437.3310">val = g.guessExternalEditor(c)
-assert val,'no val' # This can be different on different platforms.
-</t>
-<t tx="ekr.20111018163546.3690">s1 = 'no docstring'
-s2 = '''
-# comment
-"""docstring2."""
-'''
-s3 = '''
-"""docstring3."""
-\'\'\'docstring2.\'\'\'
-'''
-
-table = (
-    (s1,''),
-    (s2,'docstring2.'),
-    (s3,'docstring3.'),
-)
-
-for s,result in table:
-    s2 = g.getDocString(s)
-    assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
@@ -1739,25 +4604,26 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20111103213154.3824">'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
+@encoding utf-8
 
-path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
-assert not g.os_path_exists(path)
-module = g.importFromPath ('xyz',path,verbose=False)
-assert not module,repr(module)
-</t>
-<t tx="ekr.20111104112332.3953">import os
+'''Test the interface between docutils and leo_pdf.py. No file is written.
+'''
+try:
+    import docutils
+    import reportlab.platypus
+except ImportError:
+    self.skipTest('No docutils')
 
-path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
-path2 = r'\N:Home\PTC_Creo\Creo.wmv'
-path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-
-path12 = os.path.join(path1,path2)
-path13 = os.path.join(path1,path3)
-
-if 0:
-    print(path12,g.os.path.abspath(path12))
-    print(path13,g.os.path.abspath(path13))
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+module = g.importFromPath(
+    moduleName='leo_pdf',
+    path=path,
+    verbose = False)
+assert module
+s = '''This is a test.'''
+result = c.rstCommands.writeToDocutils(p,s,'.pdf')
+assert result,result
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -1853,32 +4719,568 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20120307133953.3947">import sys
-if sys.platform.startswith('win'):
-    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
-    fn1 = 'LeoDocs.leo#'
-    fn2 = 'doc/LeoDocs.leo#'
-    unl2 = '@settings--&gt;Plugins--&gt;wikiview plugin'
-    unl3 = '@settings--&gt;Plugins--&gt;wikiview%20plugin'
-    table = (
-        (http + 'writemonkey.com/index.php', ['browser']),
-        (file_ + 'x.py',        ['os_startfile']),
-        (file_ + fn1,           ['g.recursiveUNLSearch']),
-        (file_ + fn2,           ['g.recursiveUNLSearch']),
-        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
-        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
-        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
-        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
-        (unl1 + unl2,           ['g.recursiveUNLSearch']),
-        (unl1 + unl3,           ['g.recursiveUNLSearch']),
-    )
-    d = g.app.unitTestDict
-    for url,aList in table:
-        d = g.app.unitTestDict = {}
-        g.handleUrl(c=c,p=c.p,url=url)
-        for kind in aList:
-            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
-                kind,url,g.dictToString(d))
+<t tx="ekr.20120307070541.3937">@first # -*- coding: utf-8 -*-
+
+# Note: rst3Test.munge in *this* file accounts for local docutils differences.
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20120307070541.3941">@language rest
+</t>
+<t tx="ekr.20120307070541.3942">@language rest
+@ @rst-options
+call_docutils=True
+@c
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+</t>
+<t tx="ekr.20120307070541.3944"></t>
+<t tx="ekr.20120307070541.3945"></t>
+<t tx="ekr.20120307070541.3946">.. rst3: filename: test.html
+
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+
+</t>
+<t tx="ekr.20120307070541.3947">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;Test of unicode characters: ÀǋϢﻙ&lt;/p&gt;
+&lt;p&gt;End of test.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20120307070541.3948">.. rst3: filename: test.html
+
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+
+</t>
+<t tx="ekr.20120307070541.3949">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&amp;lt;string&amp;gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;Test of unicode characters: ÀǋϢﻙ&lt;/p&gt;
+&lt;p&gt;End of test.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -2151,40 +5553,11 @@ char f
 char t
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
-<t tx="ekr.20140702101937.4245">table = (
-    ('abc a bc x','bc',0,6),
-    ('abc a bc x','bc',1,6),
-    ('abc a x','bc',0,-1),
-)
-for s,word,i,expected in table:
-    actual = g.find_word(s,word,i)
-    assert actual == expected
-</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141208130803.11">assert g.importModule('codewise',verbose=False)
-    # Top-level .py file.
-
-# The leo/external/rope folder no longer exists.
-# assert g.importModule('rope',verbose=False)
-    # In a folder.
-</t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
-<t tx="ekr.20150328120706.1">table = (
-    ('A25&amp;()','A'),         # Non-alpha characters.
-    ('B\tc','B c'),         # Tabs.
-    ('"AB"',"'AB'"),        # Double quotes.
-    ('\\/:|&lt;&gt;*:.','_'),     # Special characters.
-    ('_____________','_'),  # Combining underscores.
-    ('A' * 200,'A' * 128),  # Maximum length.
-    ('abc.','abc_'),        # Trailing dots.
-)
-for s,expected in table:
-    got = g.sanitize_filename(s)
-    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
-</t>
 <t tx="ekr.20150430053825.1">ac = c.abbrevCommands
 assert ac
 if c.abbrev_place_start is None or c.abbrev_place_end is None:
@@ -2212,27 +5585,6 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150610130646.1">table = (
-    r'abcd/xy\pdqabc/aaa.py',
-)
-for s in table:
-    g.splitLongFileName(s,limit=3)
-    
-</t>
-<t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
-import re
-pat = g.compute_directives_re()
-pat = re.compile(pat, re.MULTILINE)
-table = (
-    '@wrap', # The failure case.
-    '@wrap ',
-    '@wrap\n',
-    '@wrap\t',
-)
-for s in table:
-    m = pat.search(s)
-    assert m, repr(s)
-</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -2255,21 +5607,6 @@ if p.parent() and p.parent().h.startswith('@test'):
 else:
     print('select a child of an @test node node')</t>
 <t tx="ekr.20161129030232.1"></t>
-<t tx="ekr.20170122164330.1"># Do not try to reload g.
-table = (
-    (True, '@language python\n'),
-    (True, '@tabwidth -4 #test\n'),
-    (True, '@others\n'),
-    (True, '    @others\n'),
-    (True, '@encoding\n'),
-    (False, '@encoding.setter\n'),
-    (False, '@encoding("abc")\n'),
-    (False, 'encoding = "abc"\n'),
-)
-for expected, s in table:
-    result = g.isDirective(s)
-    assert expected == bool(result), (expected, bool(result), repr(s))
-</t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
 html
@@ -2280,65 +5617,16 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20170601070526.1">table = (
-    (True, 0, 'a', 'a'),
-    (False, 0, 'a', 'b'),
-    (True, 0, 'a', 'a b'),
-    (False, 1, 'a', 'aa b'), # Tests bug fixed 2017/06/01.
-    (False, 1, 'a', '_a b'),
-    (False, 0, 'a', 'aw b'),
-    (False, 0, 'a', 'a_'),
-    (True, 2, 'a', 'b a c'),
-    (False, 0, 'a', 'b a c'),
-)
-for data in table:
-    expected, i, word, line = data
-    got = g.match_word(line + '\n', i, word)
-    assert expected == got, (expected, i, word, line)
-# print('done')
-</t>
 <t tx="ekr.20171126152936.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
 </t>
-<t tx="ekr.20180128105733.1">trace = False
-skipped = 0
-p0 = p.copy()
-p2 = g.findNodeAnywhere(c,'@test g.findNode*')
-assert p2 and p2.v == p.v, ('1', repr(p2), repr(p))
-p2 = g.findNodeAnywhere(c,'@test g.findNode',exact=False)
-assert p2 and p2.v == p.v, ('2', repr(p2), repr(p))
-#
-parent = p0.parent()
-if parent: # Will fail for a top-level clone
-    p2 = g.findNodeInChildren(c,parent,'@test g.findNode*')
-    assert p2 and p2.v == p.v, ('3', repr(p2), repr(p))
-    p2 = g.findNodeInChildren(c,parent,'@test g.findNode',exact=False)
-    assert p2 and p2.v == p.v, ('4', repr(p2), repr(p))
-else:
-    skipped += 1
-#
-parent = p0.parent()
-if parent: # Will fail for a top-level clone
-    p2 = g.findNodeInTree(c,parent,'@test g.findNode*')
-    assert p2 and p2.v == p.v, ('5', repr(p2), repr(p))
-    p2 = g.findNodeInTree(c,parent,'@test g.findNode',exact=False)
-    assert p2 and p2.v == p.v, ('6', repr(p2), repr(p))
-else:
-    skipped += 1
-#
-p1 = g.findTopLevelNode(c,'Active Unit Tests')
-if p1:
-    p2 = g.findTopLevelNode(c,'Active Unit Test',exact=False)
-    assert p2 and p2.v == p1.v, ('7', repr(p2), repr(p1))
-    p2 = g.findNodeInTree(c,p1,'@test g.findNode*')
-    assert p2 and p2.v == p.v, ('8', repr(p2), repr(p))
-    p2 = g.findNodeInTree(c,p1,'@test g.findNode',exact=False)
-    assert p2 and p2.v == p.v, ('9', repr(p2), repr(p))
-else:
-    skipped += 1
-if trace and skipped:
-    print('%s: skipped %s sub-tests' % (p0.h, skipped))
+<t tx="ekr.20171223221351.1">def munge(self, html):
+    '''Ignore local differences in output of docutils.'''
+    import re
+    html = re.sub(r'Docutils [\.0-9]*:','Docutils VER:',html)
+    html = re.sub(r'&lt;title&gt;.*&lt;/title&gt;','&lt;title&gt;&lt;/title&gt;',html)
+    return html
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
 <t tx="ekr.20181031152556.1"></t>
@@ -2402,18 +5690,5 @@ if trace and skipped:
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
-<t tx="sps.20100609234650.16094">end = g.skip_blank_lines("",0)
-assert end == 0, "expected 0, got %d" % end
-end = g.skip_blank_lines(" ",0)
-assert end == 0, "expected 0, got %d" % end
-end = g.skip_blank_lines("\n",0)
-assert end == 1, "expected 1, got %d" % end
-end = g.skip_blank_lines(" \n",0)
-assert end == 2, "expected 1, got %d" % end
-end = g.skip_blank_lines("\n\na\n",0)
-assert end == 2, "expected 2, got %d" % end
-end = g.skip_blank_lines("\n\n a\n",0)
-assert end == 2, "expected 2, got %d" % end
-</t>
 </tnodes>
 </leo_file>
