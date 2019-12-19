@@ -885,8 +885,8 @@ def match_word(s,i,pattern):
 
 def scanf (s,pat):
     count = pat.count("%s") + pat.count("%d")
-    pat = pat.replace("%s","(\S+)")
-    pat = pat.replace("%d","(\d+)")
+    pat = pat.replace("%s", r"(\S+)")
+    pat = pat.replace("%d", r"(\d+)")
     parts = re.split(pat,s)
     result = []
     for part in parts:
