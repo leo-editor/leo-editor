@@ -12966,9 +12966,14 @@ for s,table in ((s1,table1),(s2,table2)):
         result = g.convertRowColToPythonIndex(s,row,col)
         assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
 #@+node:ekr.20071113145804.21: *4* @test g.create_temp_file
-theFile,fn = g.create_temp_file()
-assert theFile
-assert isinstance(fn, str)
+theFile = None
+try:
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert isinstance(fn, str)
+finally:
+    if theFile:
+        theFile.close()
 #@+node:ekr.20100131180007.5403: *4* @test g.ensureLeadingNewlines
 s = ' \n \n\t\naa bc'
 s2 = 'aa bc'
