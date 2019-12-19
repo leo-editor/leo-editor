@@ -1246,7 +1246,9 @@ class TestManager:
         """Called by a unit test to check the syntax of a file."""
         try:
             s = s.replace('\r', '')
-            compile(s + '\n', fileName, 'exec')
+            tree = compile(s + '\n', fileName, 'exec')
+            # #1454: To suppress -Wd ResourceWarning.
+            del tree
             return True
         except SyntaxError:
             if not suppress:

@@ -27891,6 +27891,27 @@ line 1
     line 2
       line 3
 line4
+#@+node:ekr.20191219045732.6: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20191219045732.7: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191219045732.8: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
 #@+node:ekr.20191106202329.2: *5* do and undo
 @tabwidth -4
 
@@ -28121,9 +28142,8 @@ def runTest(self):
     
     if 1:
         # Just check the syntax.  Doesn't pollute other unit tests.
-        f = open(self.path,'r')
-        s = f.read()
-        f.close
+        with open(self.path,'r') as f:
+            s = f.read()
         assert c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False)
     else: # Good for initial tests, but pollutes all other unit tests.
         exec('import leo.plugins.%s' % fn)
