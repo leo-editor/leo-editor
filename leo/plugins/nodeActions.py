@@ -297,8 +297,7 @@ def doNodeAction(pClicked, c):
                 g.blue( "nA: Checking pattern '" + pattern)
 
             #if directives exist, parse them and set directive flags for later use
-            # pylint: disable=anomalous-backslash-in-string
-            directiveExists = re.search( " \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
+            directiveExists = re.search(r" \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
             if directiveExists:
                 directives = directiveExists.group(0)
             else:
@@ -309,9 +308,9 @@ def doNodeAction(pClicked, c):
             if not passEventExternal: #don't disable once enabled.
                 passEventExternal = re.search(">", directives) is not None
             #Remove the directives from the end of the pattern (if they exist)
-            pattern = re.sub( " \[.*]$", "", pattern, 1)
+            pattern = re.sub(r" \[.*]$", "", pattern, 1)
             if messageLevel >= 4:
-                g.blue( "nA:    Pattern='" + pattern + "' " + "(after directives removed)")
+                g.blue("nA:    Pattern='" + pattern + "' " + "(after directives removed)")
 
             #Keep copy of pattern without directives for message log
             patternOriginal = pattern

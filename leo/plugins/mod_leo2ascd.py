@@ -87,15 +87,14 @@ class _ConfigOptions:
 #@-others
 #@-<< define classes >>
 #@+<< constants >>
-#@+node:ekr.20101110094152.5834: ** << constants >>
+#@+node:ekr.20101110094152.5834: ** << constants >> (mod_leo2ascd.py)
 CV = _AssignUniqueConstantValue()
 CV.NODE_IGNORE = CV.Next()      # demo of adding in code
 Conf = _ConfigOptions()
 
 # compile the patterns we'll be searching for frequently
-# pylint: disable=anomalous-backslash-in-string
-patternSectionName = re.compile("\<\< *(.+?) *\>\>")
-patternSectionDefinition = re.compile("(\<\< *)(.+?)( *\>\>)(=)")
+patternSectionName = re.compile(r"\<\< *(.+?) *\>\>")
+patternSectionDefinition = re.compile(r"(\<\< *)(.+?)( *\>\>)(=)")
 patternDirective = re.compile(r"^@")
 patternCodeDirective = re.compile(r"^(@c *$)|(@code)")
 patternDocDirective = re.compile(r"^(@ |@doc)(.*)")

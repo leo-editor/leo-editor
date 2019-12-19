@@ -228,8 +228,6 @@ if QtWidgets:
             self.initUI()
             self.registerCallbacks()
             self.mapping = {}
-            # py--lint: disable=anomalous-backslash-in-string
-            #self.search_chars = ['&','|','-','^']
             self.search_re = r'(&|\||-|\^)'
             self.custom_searches = []
             g.registerHandler('select2', self.select2_hook)
