@@ -506,7 +506,11 @@ class ExternalFilesController:
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
         import hashlib
-        return hashlib.md5(open(path, 'rb').read()).hexdigest()
+        ### return hashlib.md5(open(path, 'rb').read()).hexdigest()
+        # #1454: Explicitly close the file.
+        with open(path, 'rb') as f:
+            s = f.read()
+        return hashlib.md5(s).hexdigest()
     #@+node:ekr.20031218072017.2614: *4* efc.destroy_temp_file
     def destroy_temp_file(self, ef):
         '''Destroy the *temp* file corresponding to ef, an ExternalFile instance.'''
