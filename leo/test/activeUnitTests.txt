@@ -23351,12 +23351,12 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
-# A kludge: run the test in 
+# A kludge: run the test in the open directory.
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
-    # Defines rst3Test class.
+# Defines rst3Test class.
 rst3Test(c,p)
 #@+node:ekr.20100813100841.5854: *5* source
 @language rest

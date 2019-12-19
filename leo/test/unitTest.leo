@@ -188,15 +188,6 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20100812172232.5800"><vh>@common leoRst test code</vh>
-<v t="ekr.20100812182942.5804"><vh>class rst3Test</vh>
-<v t="ekr.20100827194549.5963"><vh>report</vh></v>
-<v t="ekr.20100827183358.5957"><vh>run</vh></v>
-<v t="ekr.20171223221351.1"><vh>munge NEW</vh></v>
-<v t="ekr.20100827183358.5958"><vh>setup</vh></v>
-<v t="ekr.20100827183358.5959"><vh>set_got</vh></v>
-</v>
-</v>
 <v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20100813100841.5847"><vh>@ignore</vh>
 <v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
@@ -308,6 +299,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100813100841.5850"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1215,8 +1207,6 @@ if not result:
     self.skipTest('no settings')
 assert result.strip().lower()=='f1', repr(result)
 </t>
-<t tx="ekr.20100812172232.5800">@others
-</t>
 <t tx="ekr.20100812172232.5801">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
@@ -1227,19 +1217,6 @@ assert s, repr(p)
 exec(s)
     # Defines rst3Test class.
 rst3Test(c,p)
-</t>
-<t tx="ekr.20100812182942.5804">@first # -*- coding: utf-8 -*-
-
-class rst3Test:
-    '''A class to run rst-related unit tests.'''
-    
-    def __init__ (self,c,p):
-        '''Ctor for rst3Test class.'''
-        self.c = c
-        self.p = p.copy()
-        self.run()
-
-    @others
 </t>
 <t tx="ekr.20100812182942.5805">@language rest
 </t>
@@ -1887,12 +1864,12 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
-# A kludge: run the test in 
+# A kludge: run the test in the open directory.
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
-    # Defines rst3Test class.
+# Defines rst3Test class.
 rst3Test(c,p)
 </t>
 <t tx="ekr.20100813100841.5854">@language rest
@@ -4496,93 +4473,6 @@ This is the body of the section.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20100827183358.5957">def run(self):
-    '''run an rst test.'''
-
-    def clean(s):
-        s = s.replace('\r','')
-        s = g.toUnicode(s,'utf-8')
-        return s
-
-    c,p = self.c,self.p
-    rc = c.rstCommands
-    expected,got,source = self.setup()
-    root = source.firstChild()
-    rc.preprocessTree(root)
-    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
-    assert rc.getOption(root, 'call_docutils'), 'call_docutils'
-    assert rc.source is not None, 'rc.source should not be None'
-    assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
-    rst = clean(rc.source)
-    html = clean(rc.stringOutput)
-    assert rst,'rst'
-    assert html,'html'
-    # Kludge: disregard version of docutils.
-    html = self.munge(html)
-    if expected.hasChildren():
-        child1 = expected.firstChild()
-        child2 = expected.firstChild().next()
-        child1_b = clean(child1.b)
-        child2_b = clean(child2.b)
-        child2_b = self.munge(child2.b)
-        ok = rst == child1_b and html == child2_b
-        if not ok:
-            got_html,got_rst = self.set_got(expected,got)
-            got_html.b = html
-            got_rst.b = rst
-        if rst != child1_b:
-            self.report(child1,got_rst)
-        if html != child2_b:
-            self.report(child2,got_html)
-        assert rst == child1_b,'rst mismatch'
-        assert html == child2_b,'html mismatch'
-    else:
-        child = expected.insertAsNthChild(0)
-        child.h,child.b = 'rst',rst
-        child = expected.insertAsNthChild(1)
-        child.h,child.b = ' html',html
-</t>
-<t tx="ekr.20100827183358.5958">def setup (self):
-    
-    c,p = self.c, self.p
-    expected = g.findNodeInTree(c,p,'expected')
-    got = g.findNodeInTree(c,p,'got')
-    source = g.findNodeInTree(c,p,'source')
-    assert source,'source'
-    assert expected,'expected'
-    return expected,got,source
-</t>
-<t tx="ekr.20100827183358.5959">def set_got (self,expected,got):
-
-    c,p = self.c, self.p
-    if got:
-        got_rst = g.findNodeInTree(c,got,'rst')
-        got_html = g.findNodeInTree(c,got,'html')
-        assert got_rst
-        assert got_html
-    else:
-        got = p.insertAsLastChild()
-        got.h = 'got'
-        got_rst = got.insertAsNthChild(0)
-        got_rst.h = 'rst'
-        got_html = got.insertAsNthChild(1)
-        got_html.h = 'html'
-    return got_html,got_rst
-</t>
-<t tx="ekr.20100827194549.5963">def report (self,expected,got):
-    '''Report errors in an rst test.'''
-    verbose = True
-    expected_lines = g.splitLines(expected.b)
-    got_lines = g.splitLines(got.b)
-    for i in range(min(len(expected_lines),len(got_lines))):
-        match = expected_lines[i]==got_lines[i]
-        if verbose or not match:
-            tag = g.choose(match,'  ','**')
-            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
-            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
-        if not verbose and not match:
-            break
-</t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
 
@@ -5620,13 +5510,6 @@ nodeB
 <t tx="ekr.20171126152936.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
-</t>
-<t tx="ekr.20171223221351.1">def munge(self, html):
-    '''Ignore local differences in output of docutils.'''
-    import re
-    html = re.sub(r'Docutils [\.0-9]*:','Docutils VER:',html)
-    html = re.sub(r'&lt;title&gt;.*&lt;/title&gt;','&lt;title&gt;&lt;/title&gt;',html)
-    return html
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
 <t tx="ekr.20181031152556.1"></t>

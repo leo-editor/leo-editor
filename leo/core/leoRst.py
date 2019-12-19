@@ -1512,9 +1512,9 @@ class RstCommands:
         the first <h1> element."""
         i = s.find('<title></title>')
         if i == -1: return s
-        m = re.search('<h1>([^<]*)</h1>', s)
+        m = re.search(r'<h1>([^<]*)</h1>', s)
         if not m:
-            m = re.search('<h1><[^>]+>([^<]*)</a></h1>', s)
+            m = re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
         if m:
             s = s.replace('<title></title>',
                 '<title>%s</title>' % m.group(1))
@@ -1624,6 +1624,11 @@ class RstCommands:
         try:
             # All paths now come through here.
             result = None # Ensure that result is defined.
+            # #1454: This call may print a -Wd warning:
+                # site-packages\docutils\io.py:245:
+                # DeprecationWarning: 'U' mode is deprecated
+                #
+                # The actual culprit is 'rU' mode at line 207.
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
