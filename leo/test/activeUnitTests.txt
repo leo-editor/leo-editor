@@ -1182,7 +1182,7 @@ print('done')
 #@+node:ekr.20191127134236.1: *6* ignore: plain strings
 #@+node:ekr.20191203185327.1: *7* test: \x and \o escapes
 # Line 4609, leoGlobals.py
-print("\x7e" "\o777") # tilde.
+print("\x7e" "\0777") # tilde.
 print('done')
 #@+node:ekr.20191203121918.1: *7* test: backslashes in docstring
 # leoGlobals.py.

@@ -1956,7 +1956,7 @@ if b:
     print('c')
 </t>
 <t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
-print("\x7e" "\o777") # tilde.
+print("\x7e" "\0777") # tilde.
 print('done')
 </t>
 <t tx="ekr.20191204025303.1">f1(a,b=2)
