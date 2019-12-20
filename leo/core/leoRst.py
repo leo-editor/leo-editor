@@ -1562,10 +1562,6 @@ class RstCommands:
         styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
         if ext == '.pdf':
             module = g.import_module('leo.plugins.leo_pdf')
-            ### module = g.importFromPath('leo.plugins.leo_pdf')
-                ### moduleName='leo_pdf',
-                ### path=g.os_path_finalize_join(g.app.loadDir, '..', 'plugins'),
-                ### verbose=False)
             if not module:
                 return None
             writer = module.Writer() # Get an instance.

@@ -680,7 +680,6 @@ class BaseJEditColorizer (BaseColorizer):
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
-            ### mode = g.importFromPath(moduleName=language, path=path)
             mode = g.import_module(name = f"leo.modes.{language}")
         else:
             mode = None
@@ -1846,6 +1845,7 @@ class JEditColorizer(BaseJEditColorizer):
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
         esc = self.escape
+        # pylint: disable=inconsistent-return-statements
         while 1:
             j = s.find(pattern, i)
             if j == -1:
