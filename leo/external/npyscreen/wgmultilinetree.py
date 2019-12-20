@@ -8,7 +8,7 @@ import weakref
 
 from . import wgmultiline    as multiline
 from . import wgtextbox      as textbox
-from npyscreen.compatibility_code import npysNPSTree as NPSTree
+from . compatibility_code import npysNPSTree as NPSTree
 from .npysTree import TreeData
 
 import leo.core.leoGlobals as g
