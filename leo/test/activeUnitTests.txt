@@ -389,11 +389,12 @@ for key in keys:
     name = getattr(f,'__name__',None) or repr(f)
     if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
         f = getattr(f,'__call__')
-    args, varargs, varkw, defaults = data = inspect.getargspec(f)
+    t = inspect.getfullargspec(f)  # t is a named tuple.
+    args = t.args
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
     expected = ('event',)
-    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
+    message = f"no event arg for command {key}, func: {name}, args: {args}"
     assert arg0 in expected or arg1 in expected, message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::

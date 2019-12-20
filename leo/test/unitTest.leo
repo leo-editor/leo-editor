@@ -1065,6 +1065,7 @@ assert result.strip().lower()=='f1', repr(result)
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
+# Dec. 2019: 938 tests, 16 skipped.
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.
