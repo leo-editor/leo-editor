@@ -40,7 +40,7 @@ except ImportError:  # does not exist in jython.
 import glob
 import io
 StringIO = io.StringIO
-import imp
+import imp ###
 import importlib
 import inspect
 import operator
