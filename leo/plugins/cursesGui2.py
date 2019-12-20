@@ -46,15 +46,9 @@ try:
     import curses
 except ImportError:
     curses = None
-npyscreen = g.importExtension(
-    'npyscreen',
-    pluginName=None,
-    required=True,
-    verbose=True, # Issue a warning if the import fails.
-)
+npyscreen = g.import_module('leo.external.npyscreen')
 if npyscreen:
     # pylint: disable=import-error
-        # These imports *will* work, because we are using g.importExtension.
     import npyscreen.utilNotify as utilNotify
     assert utilNotify
     from npyscreen.wgwidget import  EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP
