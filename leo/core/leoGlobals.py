@@ -5358,19 +5358,6 @@ def idleTimeHookHandler(timer):
     g.es_print('Replaced by IdleTimeManager.on_idle')
     g.trace(g.callers())
 #@+node:ekr.20041219095213: ** g.Importing
-#@+node:ekr.20040917061619: *3* g.cantImport
-def cantImport(moduleName, pluginName=None, verbose=True):
-    """Print a "Can't Import" message and return None."""
-    s = f"Can not import {moduleName}"
-    ### Fail: extra ws
-    if pluginName: s = s + f" from {pluginName}"
-    if not g.app or not g.app.gui:
-        print(s)
-    elif g.unitTesting:
-        # print s
-        return
-    else:
-        g.warning('', s)
 #@+node:ekr.20191220044128.1: *3* g.import_module (new)
 def import_module(name, package=None):
     """

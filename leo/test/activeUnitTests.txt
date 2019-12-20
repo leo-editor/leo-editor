@@ -12858,8 +12858,6 @@ c
     assert result == s2,repr(result)
 #@+node:ekr.20110510054817.3476: *4* @test g.alert
 g.alert(c,'test of g.alert')
-#@+node:ekr.20040917062206: *4* @test g.cantImport returns None
-assert(g.cantImport("xyzzy","during unit testing") is None)
 #@+node:ekr.20060921115303: *4* @test g.checkVersion
 # for condition in ('<','<=','>','>='):
 
