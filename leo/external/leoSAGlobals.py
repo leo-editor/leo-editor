@@ -78,7 +78,7 @@ def callers (n=4,count=0,excludeCaller=True,files=False):
     # so we must be careful to call _callerName with smaller values of i first.
     result = []
     i = choose(excludeCaller,3,2)
-    i += 1 ### Not sure why this is needed.
+    i += 1
     while 1:
         s = _callerName(i,files=files)
         if s:
@@ -116,20 +116,13 @@ def es_exception (full=True,c=None,color="red"):
 
     # val is the second argument to the raise statement.
 
-    if full: ###  or g.app.debugSwitch > 0:
+    if full:
         lines = traceback.format_exception(typ,val,tb)
     else:
         lines = traceback.format_exception_only(typ,val)
-
     for line in lines:
         es_error(line,color=color)
-
-    if False: ### g.app.debugSwitch > 1:
-        import pdb # Be careful: g.pdb may or may not have been defined.
-        pdb.set_trace()
-
     fileName,n = getLastTracebackFileAndLineNumber()
-
     return fileName,n
 #@+node:ekr.20120114064730.10367: *3* es_exception_type
 def es_exception_type (c=None,color="red"):
