@@ -5367,16 +5367,16 @@ def import_module(name, package=None):
     exceptions = []
     try:
         m = importlib.import_module(name, package=package)
-    except Exception:
+    except Exception as e:
         m = None
         if trace:
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
             v = v or str(t)
-                # in case v is empty, we'll at least have the execption type
+                # # in case v is empty, we'll at least have the execption type
             if v not in exceptions:
                 exceptions.append(v)
-                g.trace(v, name)
+                g.trace(f"Can not import {name}: {e}")
     return m
 #@+node:ekr.20140711071454.17650: ** g.Indices, Strings, Unicode & Whitespace
 #@+node:ekr.20140711071454.17647: *3* g.Indices
