@@ -41,6 +41,7 @@ import glob
 import io
 StringIO = io.StringIO
 import imp
+import importlib
 import inspect
 import operator
 import os
@@ -5371,7 +5372,7 @@ def cantImport(moduleName, pluginName=None, verbose=True):
         return
     else:
         g.warning('', s)
-#@+node:ekr.20041219095213.1: *3* g.importModule
+#@+node:ekr.20041219095213.1: *3* g.importModule (old)
 def importModule(moduleName, pluginName=None, verbose=False):
     """
     Try to import a module as Python's import command does.
@@ -5435,6 +5436,26 @@ def importModule(moduleName, pluginName=None, verbose=False):
     if not module and verbose:
         g.cantImport(moduleName, pluginName=pluginName, verbose=verbose)
     return module
+#@+node:ekr.20191220044128.1: *3* g.import_module (new)
+def import_module(name, package=None):
+    """
+    A thin wrapper over importlib.import_module.
+    """
+    trace = 'plugins' in g.app.debug
+    exceptions = []
+    try:
+        m = importlib.import_module(name, package=package)
+    except Exception:
+        m = None
+        if trace:
+            t, v, tb = sys.exc_info()
+            del tb  # don't need the traceback
+            v = v or str(t)
+                # in case v is empty, we'll at least have the execption type
+            if v not in exceptions:
+                exceptions.append(v)
+                g.trace(v, name)
+    return m
 #@+node:ekr.20041219071407: *3* g.importExtension
 def importExtension(moduleName, pluginName=None, verbose=False, required=False):
     """

@@ -1561,10 +1561,11 @@ class RstCommands:
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
         if ext == '.pdf':
-            module = g.importFromPath(
-                moduleName='leo_pdf',
-                path=g.os_path_finalize_join(g.app.loadDir, '..', 'plugins'),
-                verbose=False)
+            module = g.import_module('leo.plugins.leo_pdf')
+            ### module = g.importFromPath('leo.plugins.leo_pdf')
+                ### moduleName='leo_pdf',
+                ### path=g.os_path_finalize_join(g.app.loadDir, '..', 'plugins'),
+                ### verbose=False)
             if not module:
                 return None
             writer = module.Writer() # Get an instance.

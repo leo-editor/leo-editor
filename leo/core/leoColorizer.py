@@ -680,7 +680,8 @@ class BaseJEditColorizer (BaseColorizer):
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
-            mode = g.importFromPath(moduleName=language, path=path)
+            ### mode = g.importFromPath(moduleName=language, path=path)
+            mode = g.import_module(name = f"leo.modes.{language}")
         else:
             mode = None
         return self.init_mode_from_module(name, mode)

@@ -1584,13 +1584,16 @@ class TestManager:
         """Returns the total number of nodes in an outline"""
         return len([p for p in self.c.all_positions()])
     #@+node:ekr.20051104075904.103: *4* TM.safeImportModule
-    #@+at Warning: do NOT use g.importFromPath here!
-    # 
-    # g.importFromPath uses imp.load_module, and that is equivalent to reload!
-    # reloading Leo files while running will crash Leo.
+    def safeImportModule(self, fileName):
+        """
+        Safely import the given module name.
+        
+        Warning: do NOT use g.importFromPath here!
+        g.importFromPath is equivalent to reload!
+        reloading Leo files while running will crash Leo.
     #@@c
 
-    def safeImportModule(self, fileName):
+        """
         fileName = g.os_path_finalize(fileName)
         head, tail = g.os_path_split(fileName)
         moduleName, ext = g.os_path_splitext(tail)
