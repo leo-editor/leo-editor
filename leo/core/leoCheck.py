@@ -6,10 +6,10 @@
 # To do:
 # - Option to ignore defs without args if all calls have no args.
 # * explain typical entries
-import imp
+import importlib
 import leo.core.leoGlobals as g
 import leo.core.leoAst as leoAst
-imp.reload(leoAst)
+importlib.reload(leoAst)
 import ast
 # import glob
 import importlib
@@ -28,9 +28,9 @@ class ConventionChecker:
         g.cls()
         if c.changed: c.save()
         
-        import imp
+        import importlib
         import leo.core.leoCheck as leoCheck
-        imp.reload(leoCheck)
+        importlib.reload(leoCheck)
         
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
         leoCheck.ConventionChecker(c).check(fn=fn)
@@ -1169,14 +1169,18 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         if not spec:
             return ''
         # This may not work for leading dots.
-        aList,path,paths = spec.split('.'),None,None
+        aList = spec.split('.')
+        path = None
+        # paths = None
         name = 'no name'
         for name in aList:
             try:
-                f,path,description = imp.find_module(name,paths)
-                if not path: break
-                paths = [path]
-                if f: f.close()
+                pass
+                ### Not ready. Old code:
+                    # f,path,description = imp.find_module(name,paths)
+                    # if not path: break
+                    # paths = [path]
+                    # if f: f.close()
             except ImportError:
                 # Important: imports can fail due to Python version.
                 # Thus, such errors are not necessarily searious.
