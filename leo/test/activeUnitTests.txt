@@ -13150,20 +13150,9 @@ if sys.platform.startswith('win'):
         for kind in aList:
             assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
                 kind,url,g.dictToString(d))
-#@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
-'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
-
-path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
-assert not g.os_path_exists(path)
-module = g.importFromPath ('xyz',path,verbose=False)
-assert not module,repr(module)
-#@+node:ekr.20141208130803.11: *4* @test g.importModule
-assert g.importModule('codewise',verbose=False)
+#@+node:ekr.20141208130803.11: *4* @test g.import_module
+assert g.import_module('leo.core.leoAst')
     # Top-level .py file.
-
-# The leo/external/rope folder no longer exists.
-# assert g.importModule('rope',verbose=False)
-    # In a folder.
 #@+node:ekr.20170122164330.1: *4* @test g.isDirective
 # Do not try to reload g.
 table = (

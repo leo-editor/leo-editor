@@ -7190,7 +7190,7 @@ nameList = (
 'get_line_after',
 'getpreferredencoding',
 'idleTimeHookHandler',
-'importFromPath',
+# 'importFromPath',
 'initScriptFind',
 'init_sherlock',
 'init_trace',

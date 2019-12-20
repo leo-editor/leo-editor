@@ -2870,15 +2870,10 @@ class LoadManager:
             g.app.createDefaultGui()
     #@+node:ekr.20120219154958.10480: *5* LM.adjustSysPath
     def adjustSysPath(self):
-        """Adjust sys.path to enable imports as usual with Leo.
+        """
+        Adjust sys.path to enable imports as usual with Leo.
 
         This method is no longer needed:
-
-            1. g.importModule will import from the
-               'external' or 'extensions' folders as needed
-               without altering sys.path.
-
-            2.  Plugins now do fully qualified imports.
         """
         pass
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile

@@ -1587,12 +1587,6 @@ class TestManager:
     def safeImportModule(self, fileName):
         """
         Safely import the given module name.
-        
-        Warning: do NOT use g.importFromPath here!
-        g.importFromPath is equivalent to reload!
-        reloading Leo files while running will crash Leo.
-    #@@c
-
         """
         fileName = g.os_path_finalize(fileName)
         head, tail = g.os_path_split(fileName)
@@ -1603,11 +1597,6 @@ class TestManager:
                 g.unitTesting = False # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
-                    # for base in ('leo.core','leo.plugins','leo.external',):
-                        # fullName = '%s.%s' % (base,moduleName)
-                        # m = __import__(fullName) # 'leo.core.%s' % moduleName)
-                        # if m is not None:
-                            # return sys.modules.get(fullName)
                     fullName = 'leo.core.%s' % (moduleName)
                     __import__(fullName)
                     return sys.modules.get(fullName)
