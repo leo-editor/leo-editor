@@ -4727,7 +4727,7 @@ class TestRunner:
                 kind = 'Running *all* unit tests'
             else:
                 kind = 'Running *selected* unit tests'
-            print(f"{self.root.h}: {kind}...\n")
+            print(f"{self.root.h}: {kind}...")
         if 'asttokens' in self.reports:
             print('\nUsing asttokens, *not* the TOG classes')
     #@+node:ekr.20191205160754.6: *4* TR.summarize
