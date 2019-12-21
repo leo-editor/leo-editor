@@ -7300,25 +7300,6 @@ def executeFile(filename, options=''):
     rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
     if rc: g.pr('return code', rc)
     g.pr(so, se)
-#@+node:ekr.20031218072017.3138: *3* g.executeScript
-def executeScript(name):
-    """Execute a script whose short python file name is given.
-
-    This is called only from the scripts_menu plugin."""
-    mod_name, ext = g.os_path_splitext(name)
-    theFile = None
-    try:
-        g.import_module(mod_name)  # #1454.
-        ###
-            # # This code is in effect an import or a reload.
-            # # This allows the user to modify scripts without leaving Leo.
-            # theFile, filename, description = imp.find_module(mod_name)
-            # imp.load_module(mod_name, theFile, filename, description)
-    except Exception:
-        g.error("exception executing", name)
-        g.es_exception()
-    if theFile:
-        theFile.close()
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
 def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
