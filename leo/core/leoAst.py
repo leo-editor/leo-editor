@@ -1050,7 +1050,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191126074902.1: *3* tog.dump_one_node (new)
+    #@+node:ekr.20191126074902.1: *3* tog.dump_one_node
     header_has_been_shown = False
 
     def dump_one_node(self, node, level, tag=None):
@@ -1136,26 +1136,11 @@ class TokenOrderGenerator:
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20191124123830.1: *3* tog.is_assignable_token & is_significant*
-    def is_assignable_token(self, token):
-        """
-        A global predicate returning True if the token should be assigned to
-        the token_list field of the next significant token.
-        
-        Code should *not* use any similar local predicate.
-        """
-        return (
-            self.is_significant_token(token)
-            or token.kind in ('comment', 'newline')
-        )
-            # or token.kind == 'op' and token.value in ',()'
-
+    #@+node:ekr.20191124123830.1: *3* tog.is_significant & is_significant_token
     def is_significant(self, kind, value):
         """
-        A global predicate returning True if kind, value represent a token that
-        can be used for syncing generated tokens with the token list.
-        
-        Code should *not* use any similar local predicate.
+        Return True if (kind, value) represent a token that can be used for
+        syncing generated tokens with the token list.
         """
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
@@ -1259,7 +1244,10 @@ class TokenOrderGenerator:
         """Make two-way links between token and the given node."""
         assert token.node is None, (repr(token), g.callers())
         trace = True and self.trace_mode
-        if self.is_assignable_token(token):
+        if (
+            self.is_significant_token(token)
+            or token.kind in ('comment', 'newline')
+        ):
             if trace:
                 g.trace(
                     f"node: {node.__class__.__name__!s:16}"
