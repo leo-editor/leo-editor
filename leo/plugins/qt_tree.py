@@ -777,7 +777,7 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
             if not c.changed: c.setChanged()
-            # New in Leo 4.4.5: we must recolor the body because
+            # We must recolor the body because
             # the headline may contain directives.
             c.frame.body.recolor(p)
             p.setDirty()

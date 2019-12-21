@@ -157,13 +157,18 @@ class GeneralTestCase(unittest.TestCase):
         g.app.unitTestDict["fail"] = g.callers()
         raise self.failureException(msg)
             # Fix # 1002. Raise an exception, as in TestCase.fail()
-    #@+node:ekr.20051104075904.9: *3* tearDown
+    #@+node:ekr.20051104075904.9: *3* tearDown (GeneralTestCase)
     def tearDown(self):
         # Restore the outline.
         self.c.outerUpdate()
-    #@+node:ekr.20051104075904.8: *3* setUp
+    #@+node:ekr.20051104075904.8: *3* setUp (GeneralTestCase)
     def setUp(self):
-        self.c.selectPosition(self.p.copy()) # 2010/02/03
+        c = self.c
+        oldChanged = c.changed
+        c.selectPosition(self.p.copy())
+        if not oldChanged:
+            c.clearChanged()
+            
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         """Run a Leo GeneralTestCase test."""

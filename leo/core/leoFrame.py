@@ -1270,7 +1270,7 @@ class LeoTree:
             return
         if not w:
             return
-        ch = '\n' # New in 4.4: we only report the final keystroke.
+        ch = '\n' # We only report the final keystroke.
         if s is None: s = w.getAllText()
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
