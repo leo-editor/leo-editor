@@ -40,7 +40,7 @@ except ImportError:  # does not exist in jython.
 import glob
 import io
 StringIO = io.StringIO
-import imp
+import importlib
 import inspect
 import operator
 import os
@@ -2651,12 +2651,11 @@ def listToString(obj, indent='', tag=None):
     indent2 = indent + ' ' * 4
     # I prefer not to compress lists.
     for i, obj2 in enumerate(obj):
-        if True: ### len(obj) > 1:
-            result.append('\n'+indent2)
+        result.append('\n'+indent2)
         result.append(objToString(obj2, indent=indent2))
         if i + 1 < len(obj) > 1:
             result.append(',')
-        elif True: ### len(obj) > 1:
+        else:
             result.append('\n'+indent)
     result.append(']')
     s = ''.join(result)
@@ -4381,10 +4380,9 @@ def scanError(s):
 # A quick and dirty sscanf.  Understands only %s and %d.
 
 def scanf(s, pat):
-    # pylint: disable=anomalous-backslash-in-string
     count = pat.count("%s") + pat.count("%d")
-    pat = pat.replace("%s", "(\S+)")
-    pat = pat.replace("%d", "(\d+)")
+    pat = pat.replace("%s", r"(\S+)")
+    pat = pat.replace("%d", r"(\d+)")
     parts = re.split(pat, s)
     result = []
     for part in parts:
@@ -4549,8 +4547,7 @@ def skip_pascal_string(s, i):
 def skip_heredoc_string(s, i):
     j = i
     assert(g.match(s, i, "<<<"))
-    # pylint: disable=anomalous-backslash-in-string
-    m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
+    m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
     if m is None:
         i += 3
         return i
@@ -5361,128 +5358,26 @@ def idleTimeHookHandler(timer):
     g.es_print('Replaced by IdleTimeManager.on_idle')
     g.trace(g.callers())
 #@+node:ekr.20041219095213: ** g.Importing
-#@+node:ekr.20040917061619: *3* g.cantImport
-def cantImport(moduleName, pluginName=None, verbose=True):
-    """Print a "Can't Import" message and return None."""
-    s = f"Can not import {moduleName}"
-    ### Fail: extra ws
-    if pluginName: s = s + f" from {pluginName}"
-    if not g.app or not g.app.gui:
-        print(s)
-    elif g.unitTesting:
-        # print s
-        return
-    else:
-        g.warning('', s)
-#@+node:ekr.20041219095213.1: *3* g.importModule
-def importModule(moduleName, pluginName=None, verbose=False):
+#@+node:ekr.20191220044128.1: *3* g.import_module (new)
+def import_module(name, package=None):
     """
-    Try to import a module as Python's import command does.
-
-    moduleName is the module's name, without file extension.
-
-    This function first attempts to import from sys.modules,
-    then from the extensions and external directories.
+    A thin wrapper over importlib.import_module.
     """
-    # Important: g is Null during startup.
-    trace = 'plugins' in g.app.debug
-    module = sys.modules.get(moduleName)
-    if module:
-        return module
-    if verbose: g.blue(f"loading {moduleName}")
+    trace = True or 'plugins' in g.app.debug
     exceptions = []
     try:
-        theFile = None
-        try:
-            # New in Leo 4.7. We no longer add Leo directories to sys.path,
-            # so search extensions and external directories here explicitly.
-            for findPath in (None, 'extensions', 'external'):
-                if findPath:
-                    findPath2 = g.os_path_finalize_join(g.app.loadDir, '..', findPath)
-                    findPath3 = g.os_path_finalize_join(findPath2, moduleName)
-                    findPath = [findPath2, findPath3]
-                if trace and verbose:
-                    g.trace('findPath', findPath)
-                try:
-                    data = imp.find_module(moduleName, findPath)  # This can open the file.
-                    theFile, pathname, description = data
-                    if trace and verbose:
-                        g.trace(theFile, moduleName, pathname)
-                    module = imp.load_module(moduleName, theFile, pathname, description)
-                    if module:
-                        # This trace is usually annoying.
-                        if trace and verbose: g.es(f"{moduleName} loaded")
-                        break
-                except Exception:
-                    t, v, tb = sys.exc_info()
-                    del tb  # don't need the traceback
-                    v = v or str(t)  # in case v is empty, we'll at least have the execption type
-                    if trace and verbose:
-                        g.trace(v, moduleName, findPath)
-                    if v not in exceptions:
-                        exceptions.append(v)
-            else:
-                # Unable to load module, display all exception messages
-                if verbose:
-                    for e in exceptions:
-                        g.warning(e)
-        except Exception:
-            # Importing a module can throw exceptions other than ImportError.
-            if verbose:
-                t, v, tb = sys.exc_info()
-                del tb  # don't need the traceback
-                v = v or str(t)  # in case v is empty, we'll at least have the execption type
-                g.es_exception(v)
-    finally:
-        if theFile: theFile.close()
-    if not module and verbose:
-        g.cantImport(moduleName, pluginName=pluginName, verbose=verbose)
-    return module
-#@+node:ekr.20041219071407: *3* g.importExtension
-def importExtension(moduleName, pluginName=None, verbose=False, required=False):
-    """
-    Try to import a module. If that fails, try to import the module from
-    Leo's extensions directory.
-
-    moduleName is the module's name, without file extension.
-    """
-    module = g.importModule(moduleName, pluginName=pluginName, verbose=verbose)
-    if not module and verbose:
-        g.pr(f"Warning: '{pluginName}' failed to import '{moduleName}'")
-    return module
-#@+node:ekr.20031218072017.2278: *3* g.importFromPath
-def importFromPath(moduleName, path, verbose=False):
-    """
-    Import a module whose name is given from the directory given by path.
-
-    **Warning**: This is a thin wrapper for imp.load_module, which is
-    equivalent to reload! Reloading Leo files while running will crash Leo.
-    """
-    trace = 'plugins' in g.app.debug
-    path = g.os_path_normpath(path)
-    assert isinstance(path, str), repr(path)
-    #
-    # Bug fix 2011/10/28: Always import the path from the specified path!
-    try:
-        module, theFile = None, None
-        try:
-            data = imp.find_module(moduleName, [path])  # This can open the file.
-            theFile, pathname, description = data
-            module = imp.load_module(moduleName, theFile, pathname, description)
-            if trace: g.trace('loaded', moduleName, 'from', path)
-        except ImportError:
-            if trace or verbose:
-                g.error(f"no module {moduleName} in path {path}")
-        except UiTypeException:
-            if not g.unitTesting and not g.app.batchMode:
-                g.es_print(f"Plugin {moduleName} does not support {g.app.gui.guiName()} gui")
-        except Exception:
-            g.error(f"unexpected exception in g.importFromPath({moduleName})")
-            g.es_exception()
-    # Put no return statements before here!
-    finally:
-        if theFile: theFile.close()
-    return module
+        m = importlib.import_module(name, package=package)
+    except Exception as e:
+        m = None
+        if trace:
+            t, v, tb = sys.exc_info()
+            del tb  # don't need the traceback
+            v = v or str(t)
+                # # in case v is empty, we'll at least have the execption type
+            if v not in exceptions:
+                exceptions.append(v)
+                g.trace(f"Can not import {name}: {e}")
+    return m
 #@+node:ekr.20140711071454.17650: ** g.Indices, Strings, Unicode & Whitespace
 #@+node:ekr.20140711071454.17647: *3* g.Indices
 #@+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol
@@ -7400,10 +7295,12 @@ def executeScript(name):
     mod_name, ext = g.os_path_splitext(name)
     theFile = None
     try:
-        # This code is in effect an import or a reload.
-        # This allows the user to modify scripts without leaving Leo.
-        theFile, filename, description = imp.find_module(mod_name)
-        imp.load_module(mod_name, theFile, filename, description)
+        g.import_module(mod_name)  # #1454.
+        ###
+            # # This code is in effect an import or a reload.
+            # # This allows the user to modify scripts without leaving Leo.
+            # theFile, filename, description = imp.find_module(mod_name)
+            # imp.load_module(mod_name, theFile, filename, description)
     except Exception:
         g.error("exception executing", name)
         g.es_exception()

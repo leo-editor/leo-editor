@@ -19,7 +19,6 @@ def cmd(name):
 #@+node:ekr.20160514121110.1: ** class HelpCommandsClass
 class HelpCommandsClass(BaseEditCommandsClass):
     """A class to load files into buffers and save buffers to files."""
-    # pylint: disable=anomalous-backslash-in-string
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
@@ -68,7 +67,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.376: *4* << define s >> (helpForAbbreviations)
         #@@language rest
 
-        s = '''\
+        s = r'''\
 
         About Abbreviations
         -------------------
@@ -447,7 +446,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.387: *4* << define s >> (helpForCreatingExternalFiles)
         #@@language rest
 
-        s = '''
+        s = r'''
 
         Creating External Files
         -------------------------

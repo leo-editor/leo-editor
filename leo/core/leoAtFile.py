@@ -98,7 +98,7 @@ class AtFile:
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
         at.writing_to_shadow_directory = False
-    #@+node:ekr.20041005105605.13: *4* at.initReadIvars
+    #@+node:ekr.20041005105605.13: *4* at.initReadIvars (changed)
     def initReadIvars(self, root, fileName,
         importFileName=None,
         perfectImportRoot=None,
@@ -128,7 +128,6 @@ class AtFile:
         at.importing = bool(importFileName)
         at.importRootSeen = False
         at.indentStack = []
-        at.inputFile = None
         at.lastLines = [] # The lines after @-leo
         at.lastRefNode = None
             # The previous reference node, for at.readAfterRef.
@@ -271,7 +270,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
         return c
-    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
+    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (changed)
     def openFileForReading(self, fromString=False):
         """
         Open the file given by at.root.
@@ -282,7 +281,6 @@ class AtFile:
             if at.atShadow:
                 return at.error(
                     'can not call at.read from string for @shadow files')
-            at.inputFile = g.FileLikeObject(fromString=fromString)
             at.initReadLine(fromString)
             return None, None
         #
@@ -297,14 +295,11 @@ class AtFile:
                 return None, None
         assert fn
         try:
-            # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            at.inputFile = open(fn, 'rb')
             s = at.readFileToUnicode(fn)
                 # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             at.warnOnReadOnlyFile(fn)
         except IOError:
             at.error(f"can not open: '@file {fn}'")
-            at.inputFile = None
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
@@ -325,7 +320,7 @@ class AtFile:
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
-    #@+node:ekr.20041005105605.21: *5* at.read & helpers
+    #@+node:ekr.20041005105605.21: *5* at.read & helpers (changed)
     def read(self, root, importFileName=None,
         fromString=None, atShadow=False, force=False
     ):
@@ -344,12 +339,9 @@ class AtFile:
         if at.errors:
             return False
         fileName, file_s = at.openFileForReading(fromString=fromString)
-            # For @shadow files, calls x.updatePublicAndPrivateFiles.
-            # Calls at.initReadLine(s), where s is the file contents.
-            # This will be used only if not cached.
         #
         # Set the time stamp.
-        if fileName and at.inputFile:
+        if fileName:
             c.setFileTimeStamp(fileName)
         elif not fileName and not fromString and not file_s:
             return False

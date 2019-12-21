@@ -630,8 +630,7 @@ class AutoCompleterClass:
             # Return the nearest enclosing class.
             for p in c.p.parents():
                 h = p.h
-                # pylint: disable=anomalous-backslash-in-string
-                m = re.search('class\s+(\w+)', h)
+                m = re.search(r'class\s+(\w+)', h)
                 if m:
                     return 'class', [m.group(1)]
         if 1:

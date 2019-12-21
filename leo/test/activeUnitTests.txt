@@ -331,8 +331,8 @@ def run(self):
 def munge(self, html):
     '''Ignore local differences in output of docutils.'''
     import re
-    html = re.sub('Docutils [\.0-9]*:','Docutils VER:',html)
-    html = re.sub('<title>.*</title>','<title></title>',html)
+    html = re.sub(r'Docutils [\.0-9]*:','Docutils VER:',html)
+    html = re.sub(r'<title>.*</title>','<title></title>',html)
     return html
 #@+node:ekr.20100827183358.5958: *5* setup
 def setup (self):
@@ -389,11 +389,12 @@ for key in keys:
     name = getattr(f,'__name__',None) or repr(f)
     if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
         f = getattr(f,'__call__')
-    args, varargs, varkw, defaults = data = inspect.getargspec(f)
+    t = inspect.getfullargspec(f)  # t is a named tuple.
+    args = t.args
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
     expected = ('event',)
-    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
+    message = f"no event arg for command {key}, func: {name}, args: {args}"
     assert arg0 in expected or arg1 in expected, message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
@@ -737,9 +738,11 @@ path = g.os_path_finalize_join(g.app.loadDir,
     '..', 'test', 'unittest', 'python3_test.py')
 assert g.os_path_exists(path), path
 fn = g.shortFileName(path)
-source = open(path, 'r').read()
+with open(path, 'r') as f:
+    source = f.read()
 node = ast.parse(source, filename=fn, mode='exec')
-src = open(path, 'r').read()
+with open(path, 'r') as f:
+    src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
 leoAst.AstFullTraverser().visit(node)
@@ -767,8 +770,8 @@ py2cs.unit_test(raise_on_fail=True)
 #@+node:ekr.20191121063148.1: *5* @test tokens: tog vs asttokens
 import leo.core.leoAst as leoAst
 if 0: ###
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 try:
     import asttokens
 except Exception:
@@ -840,8 +843,8 @@ for file_name in file_names[:1]:
 #@+node:ekr.20191121163350.1: *5* @@test nodes: tog vs asttokens (fails)
 import leo.core.leoAst as leoAst
 if 0:
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 import ast
 try:
     import asttokens
@@ -918,8 +921,8 @@ A unit test that tests TOG on all of Leo's sources.
 import time
 import leo.core.leoAst as leoAst
 if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
 #
@@ -957,8 +960,8 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 import time
 import leo.core.leoAst as leoAst
 if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
 #
@@ -1180,7 +1183,7 @@ print('done')
 #@+node:ekr.20191127134236.1: *6* ignore: plain strings
 #@+node:ekr.20191203185327.1: *7* test: \x and \o escapes
 # Line 4609, leoGlobals.py
-print("\x7e" "\o777") # tilde.
+print("\x7e" "\0777") # tilde.
 print('done')
 #@+node:ekr.20191203121918.1: *7* test: backslashes in docstring
 # leoGlobals.py.
@@ -1662,7 +1665,7 @@ table = (
     ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
     # 4.2 formats...
     ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
-    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('/*',  '*/', True,   True, 'utf-8',  r'\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
     ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
     ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
 )
@@ -1681,8 +1684,8 @@ finally:
 import re
 import leo.core.leoAtFile as atFile
 if 0: # prefix
-    import imp
-    imp.reload(atFile)
+    import importlib
+    importlib.reload(atFile)
 at = atFile.AtFile(c)
 s = '''\
 if (
@@ -1735,8 +1738,8 @@ b
 import re
 import leo.core.leoAtFile as atFile
 if 0: # prefix
-    import imp
-    imp.reload(atFile)
+    import importlib
+    importlib.reload(atFile)
 at = atFile.AtFile(c)
 s = '''\
 if (%s and %s > 3):
@@ -12856,8 +12859,6 @@ c
     assert result == s2,repr(result)
 #@+node:ekr.20110510054817.3476: *4* @test g.alert
 g.alert(c,'test of g.alert')
-#@+node:ekr.20040917062206: *4* @test g.cantImport returns None
-assert(g.cantImport("xyzzy","during unit testing") is None)
 #@+node:ekr.20060921115303: *4* @test g.checkVersion
 # for condition in ('<','<=','>','>='):
 
@@ -12964,9 +12965,14 @@ for s,table in ((s1,table1),(s2,table2)):
         result = g.convertRowColToPythonIndex(s,row,col)
         assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
 #@+node:ekr.20071113145804.21: *4* @test g.create_temp_file
-theFile,fn = g.create_temp_file()
-assert theFile
-assert isinstance(fn, str)
+theFile = None
+try:
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert isinstance(fn, str)
+finally:
+    if theFile:
+        theFile.close()
 #@+node:ekr.20100131180007.5403: *4* @test g.ensureLeadingNewlines
 s = ' \n \n\t\naa bc'
 s2 = 'aa bc'
@@ -13143,20 +13149,9 @@ if sys.platform.startswith('win'):
         for kind in aList:
             assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
                 kind,url,g.dictToString(d))
-#@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
-'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
-
-path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
-assert not g.os_path_exists(path)
-module = g.importFromPath ('xyz',path,verbose=False)
-assert not module,repr(module)
-#@+node:ekr.20141208130803.11: *4* @test g.importModule
-assert g.importModule('codewise',verbose=False)
+#@+node:ekr.20141208130803.11: *4* @test g.import_module
+assert g.import_module('leo.core.leoAst')
     # Top-level .py file.
-
-# The leo/external/rope folder no longer exists.
-# assert g.importModule('rope',verbose=False)
-    # In a folder.
 #@+node:ekr.20170122164330.1: *4* @test g.isDirective
 # Do not try to reload g.
 table = (
@@ -13360,6 +13355,8 @@ end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)
 #@+node:ekr.20120228145505.4834: *5* @thin ../test/unittest/at-path-test1.py
+@language python
+# unittest/at-path-test1.py 
 #@+node:ekr.20080917151620.27: *4* @test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py
 greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
@@ -13370,6 +13367,8 @@ assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.28: *5* @path ../test
 #@+node:ekr.20080917151620.29: *6* @path unittest
 #@+node:ekr.20120228145505.4838: *7* @thin at-path-test3.py
+@language python
+# unittest/at-path-test3.py 
 #@+node:ekr.20080917151620.24: *4* @test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py
 grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
@@ -13379,6 +13378,8 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.25: *5* @path ../test/unittest
 #@+node:ekr.20120228145505.4841: *6* @thin at-path-test2.py
+@language python
+# unittest/at-path-test2.py
 #@+node:ekr.20080917151620.31: *4* @test g.scanAtTabwidthDirectives +6
 @tabwidth 6
 
@@ -13590,10 +13591,10 @@ if g.in_bridge:
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
@@ -13624,10 +13625,10 @@ if False: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13673,10 +13674,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13721,10 +13722,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13772,10 +13773,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13823,10 +13824,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13865,10 +13866,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13907,10 +13908,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -13947,10 +13948,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.c
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.c)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.c)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15009,10 +15010,10 @@ if 0:
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.elisp
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.elisp)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.elisp)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15522,10 +15523,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.java
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.java)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.java)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15577,10 +15578,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.java
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.java)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.java)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15661,10 +15662,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.java
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.java)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.java)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15701,10 +15702,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.java
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.java)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.java)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -15962,8 +15963,8 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 import leo.plugins.importers.org as org
 if 0: # Preamble
     if c.isChanged(): c.save()
-    import imp
-    imp.reload(org)
+    import importlib
+    importlib.reload(org)
 x = org.Org_Importer(c.importCommands, atAuto=False)    
 pattern = x.org_pattern
 table = (
@@ -16115,10 +16116,10 @@ if 0:
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.org as org
     # Reload all.
-    import imp
-    imp.reload(linescanner)
-    imp.reload(org)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(linescanner)
+    importlib.reload(org)
+    importlib.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -16164,8 +16165,8 @@ finally:
 import leo.plugins.importers.otl as otl
 if 0: # Preamble
     if c.isChanged(): c.save()
-    import imp
-    imp.reload(otl)
+    import importlib
+    importlib.reload(otl)
 x = otl.Otl_Importer(c.importCommands, atAuto=False)    
 pattern = x.otl_pattern
 table = (
@@ -16223,10 +16224,10 @@ if 0:
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.pascal
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.pascal)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.pascal)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16401,10 +16402,10 @@ if 0:
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.perl
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.perl)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.perl)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16545,8 +16546,8 @@ c.importCommands.phpUnitTest(p,s=s,showTree=False)
 
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
 import leo.plugins.importers.python as python
-# import imp
-# imp.reload(python)
+# import importlib
+# importlib.reload(python)
 # A list of dictionaries.
 if 0:
     tests = [
@@ -16585,10 +16586,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16680,10 +16681,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16741,10 +16742,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16807,10 +16808,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -16862,10 +16863,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17353,10 +17354,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17400,10 +17401,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17476,10 +17477,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17609,10 +17610,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17661,10 +17662,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17722,10 +17723,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17810,10 +17811,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -17888,10 +17889,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -18089,10 +18090,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -18193,10 +18194,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -18253,7 +18254,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20191215093847.34: *7* @@file @test python top-level later decl
+#@+node:ekr.20191219051321.68: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18261,21 +18262,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20191215093847.35: *8* Declarations
+#@+node:ekr.20191219051321.69: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20191215093847.36: *8* merge_value
+#@+node:ekr.20191219051321.70: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20191215093847.37: *8* class MainDisplay(object)
+#@+node:ekr.20191219051321.71: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20191215093847.38: *9* save_file
+#@+node:ekr.20191219051321.72: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18283,7 +18284,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20191215093847.39: *8* retab
+#@+node:ekr.20191219051321.73: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -18337,10 +18338,10 @@ if 0: # Preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.python
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.python)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -19046,11 +19047,11 @@ if 0:
     import leo.plugins.importers.markdown
     import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -19584,11 +19585,11 @@ if 0:
     import leo.plugins.importers.markdown
     # import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    # imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    # importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -20387,11 +20388,11 @@ if 0:
     import leo.plugins.importers.markdown
     # import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    # imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    # importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -20444,11 +20445,11 @@ if 0:
     import leo.plugins.importers.markdown
     # import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    # imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    # importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -20510,11 +20511,11 @@ if 0:
     import leo.plugins.importers.markdown
     # import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    # imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    # importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -20581,11 +20582,11 @@ if 0:
     import leo.plugins.importers.markdown
     # import leo.plugins.writers.markdown
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.markdown)
-    # imp.reload(leo.plugins.writers.markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.markdown)
+    # importlib.reload(leo.plugins.writers.markdown)
+    importlib.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
@@ -20634,10 +20635,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.leo_rst
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.leo_rst)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -20753,10 +20754,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.leo_rst
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.leo_rst)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -20837,10 +20838,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.leo_rst
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.leo_rst)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -20881,10 +20882,10 @@ if 0: # Preamble
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.leo_rst
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.leo_rst)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -20964,10 +20965,10 @@ if 0:
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.leo_rst as leo_rst
     # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.leo_rst)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
@@ -21023,8 +21024,8 @@ for fn in glob.glob(pattern):
     assert m
 #@+node:ekr.20161109065940.1: *5* @test Importer.get_leading_indent
 import leo.plugins.importers.linescanner as linescanner
-# import imp
-# imp.reload(linescanner)
+# import importlib
+# importlib.reload(linescanner)
 lines_table = [
     'abc',
     '    xyz',
@@ -21056,8 +21057,8 @@ for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
 import leo.plugins.importers.linescanner as linescanner
-# import imp
-# imp.reload(linescanner)
+# import importlib
+# importlib.reload(linescanner)
 table = [
     (False, 'abc'),
     (False, '    xyz'),
@@ -21068,9 +21069,9 @@ importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20181020063007.2: *5* @test importers.coffee.scan_line
-import imp
+import importlib
 import leo.plugins.importers.coffeescript as cs
-imp.reload(cs)
+importlib.reload(cs)
 << define table >>
 x = cs.CS_Importer(c.importCommands, atAuto=True)
 assert x.single_comment == '#', x.single_comment
@@ -21090,8 +21091,8 @@ table = [
 import leo.plugins.importers.dart as dart
 if 0: # Preamble.
     if c.isChanged(): c.save()
-    import imp
-    imp.reload(dart)
+    import importlib
+    importlib.reload(dart)
 x = dart.Dart_Importer(c.importCommands, atAuto=False)    
 table = (
     ('func(abc) {', 'func'),
@@ -21102,9 +21103,9 @@ for s, expected in table:
     got = x.clean_headline(s)
     assert got == expected
 #@+node:ekr.20170407065952.1: *5* @test importers.javascript.op_pattern
-import imp
+import importlib
 import leo.plugins.importers.javascript as js
-imp.reload(js)
+importlib.reload(js)
 importer = js.JS_Importer(c.importCommands)
 pattern = importer.op_pattern
 table = (
@@ -21123,9 +21124,9 @@ for s in table:
     assert m, s
     assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
-import imp
+import importlib
 import leo.plugins.importers.javascript as js
-imp.reload(js)
+importlib.reload(js)
 table = (
     # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
@@ -21154,9 +21155,9 @@ import leo.plugins.importers.markdown as markdown
 if 0: # Preamble.
     import leo
     import leo.core.leoImport as leoImport
-    import imp
-    imp.reload(markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(markdown)
+    importlib.reload(leoImport)
     ic = leo.core.leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -21181,9 +21182,9 @@ import leo.plugins.importers.markdown as markdown
 if 0: # Preamble.
     import leo
     import leo.core.leoImport as leoImport
-    import imp
-    imp.reload(markdown)
-    imp.reload(leoImport)
+    import importlib
+    importlib.reload(markdown)
+    importlib.reload(leoImport)
     ic = leo.core.leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -21197,8 +21198,8 @@ for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n','==-==\n', 'abc\n'
 #@+node:ekr.20181020072106.1: *5* @test importers.pascal methods
 import leo.plugins.importers.pascal as pascal
 if 0: # Preamble.
-    import imp
-    imp.reload(pascal)
+    import importlib
+    importlib.reload(pascal)
 x = pascal.Pascal_Importer(c.importCommands, atAuto=False)    
 table = (
     ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
@@ -21213,9 +21214,9 @@ import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.python as py
 if 0: # Preamble.
     if c.isChanged(): c.save()
-    import imp
-    imp.reload(linescanner)
-    imp.reload(py)
+    import importlib
+    importlib.reload(linescanner)
+    importlib.reload(py)
 State = py.Python_ScanState
 << define python tests >>
 if 1:
@@ -21250,9 +21251,9 @@ else:
 import leo.plugins.importers.xml as xml
 import leo.plugins.importers.linescanner as linescanner
 if 0: # Prefix
-    import imp
-    imp.reload(linescanner)
-    imp.reload(xml)
+    import importlib
+    importlib.reload(linescanner)
+    importlib.reload(xml)
 x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
 table = (
    (1, ' \n'),
@@ -21269,10 +21270,10 @@ for expected, line in table:
 #@+node:ekr.20181020074227.3: *5* @test importesrs.xml.scan line
 import leo.plugins.importers.xml as xml
 if 0: # Preamble
-    import imp
+    import importlib
     import leo.plugins.importers.linescanner as linescanner
-    imp.reload(linescanner)
-    imp.reload(xml)
+    importlib.reload(linescanner)
+    importlib.reload(xml)
 x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
 table = (
     (0, '<tag>'),
@@ -21715,9 +21716,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20191106202324.1: *5* insertAsFirstChild
-#@+node:ekr.20191106202324.3: *5* insertAsNthChild(1)
-#@+node:ekr.20191106202324.2: *5* insertAsLastChild
+#@+node:ekr.20191219051329.1: *5* insertAsFirstChild
+#@+node:ekr.20191219051329.3: *5* insertAsNthChild(1)
+#@+node:ekr.20191219051329.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -22345,9 +22346,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20191106202325.6: *6* A
-#@+node:ekr.20191106202325.8: *6* newHeadline
-#@+node:ekr.20191106202325.7: *6* B
+#@+node:ekr.20191219051331.6: *6* A
+#@+node:ekr.20191219051331.8: *6* newHeadline
+#@+node:ekr.20191219051331.7: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -23338,12 +23339,12 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
-# A kludge: run the test in 
+# A kludge: run the test in the open directory.
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
-    # Defines rst3Test class.
+# Defines rst3Test class.
 rst3Test(c,p)
 #@+node:ekr.20100813100841.5854: *5* source
 @language rest
@@ -27878,6 +27879,48 @@ line 1
     line 2
       line 3
 line4
+#@+node:ekr.20191219051337.3: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20191219051337.4: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191219051337.5: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191219045732.6: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20191219045732.7: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20191219045732.8: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
 #@+node:ekr.20191106202329.2: *5* do and undo
 @tabwidth -4
 
@@ -28108,9 +28151,8 @@ def runTest(self):
     
     if 1:
         # Just check the syntax.  Doesn't pollute other unit tests.
-        f = open(self.path,'r')
-        s = f.read()
-        f.close
+        with open(self.path,'r') as f:
+            s = f.read()
         assert c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False)
     else: # Good for initial tests, but pollutes all other unit tests.
         exec('import leo.plugins.%s' % fn)

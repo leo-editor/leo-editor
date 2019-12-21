@@ -6,7 +6,7 @@
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
 import time
-import imp
+import importlib
 try:
     import rope.base.project as project
     import rope.base.simplify as simplify
@@ -15,9 +15,9 @@ try:
 except Exception:
     has_rope = False
 if has_rope:
-    imp.reload(project)
-    imp.reload(simplify)
-    imp.reload(refactor)
+    importlib.reload(project)
+    importlib.reload(simplify)
+    importlib.reload(refactor)
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController

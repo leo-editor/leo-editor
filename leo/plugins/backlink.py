@@ -816,10 +816,7 @@ if g.app.gui.guiName() == "qt":
 #@+node:ekr.20140920145803.17994: ** class backlinkTkUI
 if g.app.gui.guiName() == "tkinter":
 
-    Tk = g.importExtension('Tkinter',
-        pluginName=__name__,
-        verbose=True,
-        required=True)
+    Tk = g.import_module('tkinter')
 
     class backlinkTkUI:
         # pylint: disable=no-member

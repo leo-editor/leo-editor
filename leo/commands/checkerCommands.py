@@ -30,9 +30,9 @@ def checkConventions(event):
     c = event.get('c')
     if c:
         if c.changed: c.save()
-        import imp
+        import importlib
         import leo.core.leoCheck as leoCheck
-        imp.reload(leoCheck)
+        importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')

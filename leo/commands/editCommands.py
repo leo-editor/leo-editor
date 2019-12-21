@@ -2086,10 +2086,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         n = len(s)
         i = w.getInsertPoint()
-        # pylint: disable=anomalous-backslash-in-string
-        alphanumeric_re = re.compile("\w")
-        whitespace_re = re.compile("\s")
-        simple_whitespace_re = re.compile("[ \t]")
+        alphanumeric_re = re.compile(r"\w")
+        whitespace_re = re.compile(r"\s")
+        simple_whitespace_re = re.compile(r"[ \t]")
         #@+others
         #@+node:ekr.20150514063305.318: *6* ec.moveWordHelper functions
         def is_alphanumeric(c):

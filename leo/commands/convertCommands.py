@@ -920,8 +920,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c):
                 """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
-                self.msf = msf = g.importExtension(moduleName='make_stub_files',
-                    pluginName=None, verbose=False, required=False)
+                ### self.msf = msf = g.importExtension(moduleName='make_stub_files',
+                ###     pluginName=None, verbose=False, required=False)
+                self.msf = msf = g.import_module('make_stub_files')
                 x = msf.StandAloneMakeStubFile()
                     # x is used *only* to init ivars.
                 # Ivars set on the command line...
@@ -1079,12 +1080,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # self.output_fn = None
                 self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
                 # Connect to the external module.
-                self.py2cs = g.importExtension(
-                    'py2cs',
-                    pluginName=None,
-                    verbose=False,
-                    required=False,
-                )
+                self.py2cs = g.import_module('leo.external.py2cs')
+                ###
+                    # self.py2cs = g.importExtension(
+                        # 'py2cs',
+                        # pluginName=None,
+                        # verbose=False,
+                        # required=False,
+                    # )
             #@+node:ekr.20160316093019.1: *5* py2cs.main
             def main(self):
                 """Main line for Python_To_CoffeeScript class."""

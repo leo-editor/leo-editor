@@ -1251,7 +1251,9 @@ class TestManager:
         """Called by a unit test to check the syntax of a file."""
         try:
             s = s.replace('\r', '')
-            compile(s + '\n', fileName, 'exec')
+            tree = compile(s + '\n', fileName, 'exec')
+            # #1454: To suppress -Wd ResourceWarning.
+            del tree
             return True
         except SyntaxError:
             if not suppress:
@@ -1587,13 +1589,10 @@ class TestManager:
         """Returns the total number of nodes in an outline"""
         return len([p for p in self.c.all_positions()])
     #@+node:ekr.20051104075904.103: *4* TM.safeImportModule
-    #@+at Warning: do NOT use g.importFromPath here!
-    # 
-    # g.importFromPath uses imp.load_module, and that is equivalent to reload!
-    # reloading Leo files while running will crash Leo.
-    #@@c
-
     def safeImportModule(self, fileName):
+        """
+        Safely import the given module name.
+        """
         fileName = g.os_path_finalize(fileName)
         head, tail = g.os_path_split(fileName)
         moduleName, ext = g.os_path_splitext(tail)
@@ -1603,11 +1602,6 @@ class TestManager:
                 g.unitTesting = False # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
-                    # for base in ('leo.core','leo.plugins','leo.external',):
-                        # fullName = '%s.%s' % (base,moduleName)
-                        # m = __import__(fullName) # 'leo.core.%s' % moduleName)
-                        # if m is not None:
-                            # return sys.modules.get(fullName)
                     fullName = 'leo.core.%s' % (moduleName)
                     __import__(fullName)
                     return sys.modules.get(fullName)

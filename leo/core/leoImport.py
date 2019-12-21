@@ -2223,8 +2223,7 @@ class ZimImportController:
             g.es(f"not found: {pathToIndex}", color='red')
             return None
         index = open(pathToIndex).read()
-        # pylint: disable=anomalous-backslash-in-string
-        parse = re.findall('(\t*)-\s`(.+)\s<(.+)>`_', index)
+        parse = re.findall(r'(\t*)-\s`(.+)\s<(.+)>`_', index)
         if not parse:
             g.es(f"invalid index: {pathToIndex}", color='red')
             return None
