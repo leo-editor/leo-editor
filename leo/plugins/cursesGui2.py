@@ -48,11 +48,8 @@ except ImportError:
     curses = None
 import leo.external.npyscreen as npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
-import leo.external.npyscreen.wgwidget as wgwidget
-EXITED_DOWN = wgwidget.EXITED_DOWN
-EXITED_ESCAPE = wgwidget.EXITED_ESCAPE
-EXITED_MOUSE = wgwidget.EXITED_MOUSE
-EXITED_UP = wgwidget.EXITED_UP
+from leo.external.npyscreen.wgwidget import (
+    EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
 #@-<< cursesGui2 imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
