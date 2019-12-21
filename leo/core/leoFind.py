@@ -2254,6 +2254,8 @@ class LeoFind:
             if k == -1:
                 return -1, -1
             return k, k + n
+        # For pylint:
+        return -1, -1
     #@+node:ekr.20060526093531: *6* find.plainHelper
     def plainHelper(self, s, i, j, pattern, nocase, word):
         """Do a plain search."""
@@ -2274,6 +2276,8 @@ class LeoFind:
             if k == -1:
                 return -1, -1
             return k, k + n
+        # For pylint
+        return -1, -1
     #@+node:ekr.20060526140744.1: *6* find.matchWord
     def matchWord(self, s, i, pattern):
         """Do a whole-word search."""
