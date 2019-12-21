@@ -594,6 +594,7 @@ class Importer:
             stack.append(stack[-1])
         elif len(stack) <= 1:
             return underflow(3)
+        return None
     #@+node:ekr.20161108160409.3: *5* i.end_block
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
