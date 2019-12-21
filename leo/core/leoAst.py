@@ -4495,6 +4495,7 @@ class TestRunner:
         #
         # Startup.
         self.fails = []
+        self.root = root
         ok = self.make_flags_and_reports(flags)
         if not ok:
             print('Aborting...')
@@ -4726,7 +4727,7 @@ class TestRunner:
                 kind = 'Running *all* unit tests'
             else:
                 kind = 'Running *selected* unit tests'
-            print(f"{kind}...\n")
+            print(f"{self.root.h}: {kind}...\n")
         if 'asttokens' in self.reports:
             print('\nUsing asttokens, *not* the TOG classes')
     #@+node:ekr.20191205160754.6: *4* TR.summarize
