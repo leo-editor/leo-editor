@@ -3689,6 +3689,17 @@ def checkPath(self, fileName):
     if g.os_path_exists(fileName):
         return at.isWritable(fileName)
     return True
+#@+node:ekr.20031218072017.3138: ** g.executeScript
+def executeScript(name):
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
+    mod_name, ext = g.os_path_splitext(name)
+    try:
+        g.import_module(mod_name)  # #1454.
+    except Exception:
+        g.error("exception executing", name)
+        g.es_exception()
 #@-all
 #@@nosearch
 #@-leo

@@ -2260,7 +2260,6 @@ def null_object_print(id_, kind, *args):
         # Always print:
         if args:
             args = ', '.join([repr(z) for z in args])
-            ### FAIL: \t\t should be replaced by blanks.
             g.pr(f'{s:40} {callers}\n\t\t\targs: {args}')
         else:
             g.pr(f'{s:40} {callers}')
@@ -2471,7 +2470,6 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
     if count > 0:
         result = result[: count]
     if verbose:
-        ### Fail.
         return ''.join([f'\n  {z}' for z in result])
     return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
@@ -5362,7 +5360,6 @@ def idleTimeHookHandler(timer):
 def cantImport(moduleName, pluginName=None, verbose=True):
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
-    ### Fail: extra ws
     if pluginName: s = s + f" from {pluginName}"
     if not g.app or not g.app.gui:
         print(s)
@@ -7300,25 +7297,6 @@ def executeFile(filename, options=''):
     rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
     if rc: g.pr('return code', rc)
     g.pr(so, se)
-#@+node:ekr.20031218072017.3138: *3* g.executeScript
-def executeScript(name):
-    """Execute a script whose short python file name is given.
-
-    This is called only from the scripts_menu plugin."""
-    mod_name, ext = g.os_path_splitext(name)
-    theFile = None
-    try:
-        g.import_module(mod_name)  # #1454.
-        ###
-            # # This code is in effect an import or a reload.
-            # # This allows the user to modify scripts without leaving Leo.
-            # theFile, filename, description = imp.find_module(mod_name)
-            # imp.load_module(mod_name, theFile, filename, description)
-    except Exception:
-        g.error("exception executing", name)
-        g.es_exception()
-    if theFile:
-        theFile.close()
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
 def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
