@@ -557,6 +557,8 @@ class LeoMenu:
                 return c.doCommand(command, label)
 
             return legacyMenuCallback
+        # For pylint
+        return None
     #@+node:ekr.20031218072017.3805: *4* LeoMenu.deleteMenu
     def deleteMenu(self, menuName):
         try:

@@ -1869,6 +1869,8 @@ class JEditColorizer(BaseJEditColorizer):
                     return j
             else:
                 return j
+        # For pylint.
+        return -1
     #@+node:ekr.20110605121601.18624: *5* jedit.restart_match_span
     def restart_match_span(self, s,
         delegate, end, exclude_match, kind,
