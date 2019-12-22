@@ -3318,17 +3318,21 @@ class Fstringify (TokenOrderGenerator):
         self.node = self.node_stack.pop()
     #@+node:ekr.20191222084644.1: *3* fs.BinOp
     def do_BinOp(self, node):
-
+        """Handle binary ops, including possible f-strings."""
         op_name = self.op_name(node.op)
-        g.trace('=====', op_name)
+        if op_name == '%' and isinstance(node.left, ast.Str):
+            self.make_fstring(node)
         yield from self.gen(node.left)
         yield from self.gen_op(op_name)
         yield from self.gen(node.right)
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring
+    def make_fstring(self, node):
+        g.trace('...\n')
+        print(f"left...\n{AstDumper().brief_dump(node.left)}")
+        print(f"right...\n{AstDumper().brief_dump(node.right)}")
     #@+node:ekr.20191222083947.1: *3* fs.fstringify (entry)
     def fstringify(self, tokens, tree, file_name):
-        g.trace(
-            f"({self.__class__.__name__}) "
-            f"{file_name}: {len(tokens)} tokens")
+        """The entry point for the Fstringify class"""
         # Init all ivars.
         self.file_name = file_name
         self.level = 0

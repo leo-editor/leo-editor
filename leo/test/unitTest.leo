@@ -2260,7 +2260,7 @@ else:
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 0: # Not for production.
+if 1: # Not for production.
     g.cls()
 #
 # Flags for TR.run_tests.
