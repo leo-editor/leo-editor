@@ -1051,9 +1051,9 @@ class TokenOrderGenerator:
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
     #@+node:ekr.20191222082453.1: *3* tog.fstringify (entry)
-    def fstringify(self, tokens, tree, file_name=''):
+    def fstringify(self, tokens, tree, file_name):
         """Convert relevant % operators to fstrings."""
-        g.trace(f"{file_name}: {len(tokens)} tokens")
+        Fstringify().fstringify(tokens, tree, file_name)
     #@+node:ekr.20191126074902.1: *3* tog.dump_one_node
     header_has_been_shown = False
 
@@ -1907,8 +1907,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.55: *5* tog.BinOp
     def do_BinOp(self, node):
 
-        yield from self.gen(node.left)
         op_name = self.op_name(node.op)
+        yield from self.gen(node.left)
         yield from self.gen_op(op_name)
         yield from self.gen(node.right)
     #@+node:ekr.20191113063144.56: *5* tog.BoolOp
@@ -3286,6 +3286,65 @@ class AstPatternFormatter(AstFormatter):
         """This represents a string constant."""
         return 'Str'  # return repr(node.s)
     #@-others
+#@+node:ekr.20191222083453.1: ** class Fstringify (TokenOrderGenerator)
+class Fstringify (TokenOrderGenerator):
+    """A class to fstringify an existing ast tree."""
+    #@+others
+    #@+node:ekr.20191222090221.1: *3* fs.begin/end_visitor
+    begin_end_stack = []
+    node_index = 0  # The index into the node_stack.
+    node_stack = []  # The stack of parent nodes.
+
+    # These methods support generators.
+
+    # Subclasses may/should override these methods.
+
+    def begin_visitor(self, node):
+        """Enter a visitor."""
+        # begin_visitor and end_visitor must be paired.
+        self.begin_end_stack.append(node.__class__.__name__)
+        # Push the previous node.
+        self.node_stack.append(self.node)
+        # Update self.node *last*.
+        self.node = node
+
+    def end_visitor(self, node):
+        """Leave a visitor."""
+        # begin_visitor and end_visitor must be paired.
+        entry_name = self.begin_end_stack.pop()
+        assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
+        assert self.node == node, (repr(self.node), repr(node))
+        # Restore self.node.
+        self.node = self.node_stack.pop()
+    #@+node:ekr.20191222084644.1: *3* fs.BinOp
+    def do_BinOp(self, node):
+
+        op_name = self.op_name(node.op)
+        g.trace('=====', op_name)
+        yield from self.gen(node.left)
+        yield from self.gen_op(op_name)
+        yield from self.gen(node.right)
+    #@+node:ekr.20191222083947.1: *3* fs.fstringify (entry)
+    def fstringify(self, tokens, tree, file_name):
+        g.trace(
+            f"({self.__class__.__name__}) "
+            f"{file_name}: {len(tokens)} tokens")
+        # Init all ivars.
+        self.file_name = file_name
+        self.level = 0
+        self.node = None
+        self.tokens = tokens
+        self.tree = tree
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+    #@+node:ekr.20191222091058.1: *3* fs.set_links
+    def set_links(self, node, token):
+        """Make two-way links between token and the given node."""
+    #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
 class HTMLReportTraverser:
     """
@@ -4616,6 +4675,8 @@ class TestRunner:
                     helper()
                 except Exception as e:
                     print(f"{tag}: Exception in {report}: {e}")
+                    if 'show-exception-after-fail' in flags:
+                        g.es_exception()
                     return False
             else:
                 bad_reports.append(report)

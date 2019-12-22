@@ -2270,7 +2270,7 @@ flags = [
     # 'dump-tokens-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'do-fstringify', # Required.
-    # 'show-exception-after-fail',
+    'show-exception-after-fail',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
@@ -2283,6 +2283,7 @@ flags = [
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 contents = """print('test %s=%s'%(a, 2))"""
-leoAst.TestRunner().fstringify(contents, flags)</t>
+leoAst.TestRunner().fstringify(contents, flags)
+</t>
 </tnodes>
 </leo_file>

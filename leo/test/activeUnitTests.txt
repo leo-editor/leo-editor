@@ -1322,7 +1322,7 @@ flags = [
     # 'dump-tokens-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'do-fstringify', # Required.
-    # 'show-exception-after-fail',
+    'show-exception-after-fail',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
