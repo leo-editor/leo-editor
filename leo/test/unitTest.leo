@@ -2260,7 +2260,7 @@ else:
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 #
 # Flags for TR.run_tests.
@@ -2277,7 +2277,7 @@ flags = [
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-tokens',
-    'dump-tree',
+    # 'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]

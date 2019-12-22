@@ -3305,7 +3305,7 @@ class Fstringify (TokenOrderGenerator):
                 next(self.visitor(tree))
         except StopIteration:
             pass
-    #@+node:ekr.20191222095754.1: *3* fs.make_fstring & helpers
+    #@+node:ekr.20191222095754.1: *3* fs.make_fstring (top level) & helpers
     def make_fstring(self, node):
         """
         node is BinOp node for the '%' operator.
@@ -3316,7 +3316,7 @@ class Fstringify (TokenOrderGenerator):
         replacing node's entire tree with a new ast.Str node.
         """
         trace = True
-        if trace:
+        if False and trace:
             g.trace('...\n')
             print(f" left tree...\n{AstDumper().brief_dump(node.left)}")
             print(f"right tree...\n{AstDumper().brief_dump(node.right)}")
@@ -3324,46 +3324,134 @@ class Fstringify (TokenOrderGenerator):
             g.trace('not an f-string')
             return
         lt_s = ''.join([z.to_string() for z in node.left.token_list])
-        if trace:
-            print(f"lt tokens: {lt_s}")
         #
-        # Count the expected substitutions.
-        n, rt_s = self.scan_rhs(node)
-        if n == -1:
+        # Get the RHS values.
+        values = self.scan_rhs(node)
+        if not values:
             return
-        aList = self.scan_format_string(lt_s)
-        if trace:
-            g.printObj(aList, tag='scan_format_string')
-            g.trace('looking for ', n, 'substitution')
-            print(f"rt tokens: {rt_s}")
-        if n != len(aList):
+        #
+        # Get the % specs in the LHS string.
+        specs = self.scan_format_string(lt_s)
+        if False and trace:
+            g.printObj(specs, tag='specs')
+            g.trace(f"Looking for {len(specs)} specs")
+        if len(values) != len(specs):
             g.trace('Conversion mismatch')
-    #@+node:ekr.20191222104224.1: *4* fs.scan_rhs
-    def scan_rhs(self, node):
+            return
+        #
+        # Substitute the values.
+        i, results = 0, [Token('string', 'f')]
+        for spec_i, m in enumerate(specs):
+            value = ''.join(z.to_string() for z in values[spec_i])
+            # g.trace(spec_i, repr(value))
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                results.append(Token('string', lt_s[i : start]))
+            head, tail = self.munge_spec(spec)
+            results.append(Token('op', '{'))
+            results.append(Token('string', value))
+            if head:
+                results.append(Token('string', '!'))
+                results.append(Token('string', head))
+            if tail:
+                results.append(Token('string', ':'))
+                results.append(Token('string', tail))
+            results.append(Token('op', '}'))
+            i = end
+        # Add the tail.
+        tail = lt_s[i:]
+        if tail:
+            results.append(Token('string', tail))
+        if False and trace:
+            # g.printObj(results)
+            g.trace('1', ''.join(z.to_string() for z in results))
+        result = self.compute_result(lt_s, results)
+        if not result:
+            return
+        # Remove whitespace before ! and :.
+        result = self.clean_ws(result)
+        if trace:
+            g.trace(result)
+        ### self.add_token('string', result)
+    #@+node:ekr.20191222102831.3: *4* fs.clean_ws
+    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+    def clean_ws(self, s):
+        """Carefully remove whitespace before ! and : specifiers."""
+        s = re.sub(self.ws_pat, r'\2', s)
+        return s
+
+    #@+node:ekr.20191222102831.4: *4* fs.compute_result & helpers
+    def compute_result(self, string_val, tokens):
         """
-        Scan the right-hand side of a potential f-string.
+        Create the final result as follows:
+            
+        1. Flatten the results array.
         
-        Return (n, rt_s), where:
-        - n is the number of expected %-values in the left-hand side.
-        - rt_s is the string correspoding to the RHS tokens.
+        2. Using string_val (the original string) compute whether to use single
+           or double quotes for the outer fs.
+        
+        3. Beautify the result using the PythonTokenBeautifier class.
+
+        Return the result string, or None if there are errors.
         """
-        if isinstance(node.right, ast.Tuple):
-            aList = []
-            for elt in node.right.elts:
-                if hasattr(elt, 'token_list'):
-                    s = ''.join([z.to_string() for z in elt.token_list])
-                    aList.append(s)
-            rt_s = ', '.join(aList)
-            if len(node.right.elts) != len(aList):
-                g.trace('not ready yet: list mismatch')
-                return -1
-            n = len(node.right.elts)
-        else:
-            rt_s = ''.join([z.to_string() for z in node.right.token_list])
-            n = 1
-        return n, rt_s
-    #@+node:ekr.20191222102831.1: *3* fs: Conversion...
-    #@+node:ekr.20191222102831.7: *4* fs.change_quotes
+        # Fail if the result would include a backslash within { and }.
+        if not self.check_newlines(tokens):
+            return None
+        # Ensure consistent quotes.
+        ok = self.change_quotes(string_val, tokens)
+        if not ok:
+            if not g.unitTesting:
+                self.error('string contains backslashes')
+            return None
+        ### Doesn't work well.
+            # Ensure one blank after the f-string.
+            # tokens.append(self.new_token('fstringify', ' '))
+        ### Not yet. We need a TOG_Beautify class.
+            # Clean up inter-token whitespace.
+            # py---lint: disable=import-self
+            # import leo.core.leoBeautify as leoBeautify
+            # if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+            # x = leoBeautify.PythonTokenBeautifier(c=None)
+            # x.dump_input_tokens = True
+            # x.dump_output_tokens = True
+            # result_tokens = x.scan_all_beautifier_tokens(tokens)
+        #
+        # Create the result.
+        result = ''.join([z.to_string() for z in tokens])
+        # Ensure a space between the new fstring and a previous name.
+        ### Old code...
+            # if self.prev_token.kind == 'name':
+                # result = ' ' + result
+            # if self.add_trailing_ws:
+                # result = result + ' '
+        return result
+    #@+node:ekr.20191222102831.2: *5* fs.check_newlines
+    def check_newlines(self, tokens):
+        """
+        Check to ensure that no newlines appear within { and }.
+        
+        Return False if there is an error
+        """
+        level = 0
+        for token in tokens:
+            kind, val = token.kind, token.value
+            if kind == 'op':
+                if val == '{':
+                    level += 1
+                elif val == '}':
+                    level -= 1
+                    if level < 0:
+                        self.error('curly bracket underflow')
+                        return False
+            if '\\n' in val and level > 0:
+                self.error('f-expression would contain a backslash')
+                return False
+        if level > 0:
+            self.error('unclosed curly bracket')
+            return False
+        return True
+    #@+node:ekr.20191222102831.7: *5* fs.change_quotes
     def change_quotes(self, string_val, aList):
         """
         Carefully change quotes in all "inner" tokens as necessary.
@@ -3390,7 +3478,7 @@ class Fstringify (TokenOrderGenerator):
         token1 = aList[1]
         token_last = aList[-1]
         for token in token0, token1, token_last:
-            if token.kind != 'fstringify':
+            if token.kind != 'string': ### 'fstringify':
                 g.es_print(f"unexpected token: {token!r}")
                 return False
         if token0.value != 'f':
@@ -3421,100 +3509,6 @@ class Fstringify (TokenOrderGenerator):
             z.value = z.value.replace(delim, delim2)
         # g.printObj(aList)
         return True
-    #@+node:ekr.20191222102831.2: *4* fs.check_newlines
-    def check_newlines(self, tokens):
-        """
-        Check to ensure that no newlines appear within { and }.
-        
-        Return False if there is an error
-        """
-        level = 0
-        for token in tokens:
-            kind, val = token.kind, token.value
-            if kind == 'op':
-                if val == '{':
-                    level += 1
-                elif val == '}':
-                    level -= 1
-                    if level < 0:
-                        self.error('curly bracket underflow')
-                        return False
-            if '\\n' in val and level > 0:
-                self.error('f-expression would contain a backslash')
-                return False
-        if level > 0:
-            self.error('unclosed curly bracket')
-            return False
-        return True
-    #@+node:ekr.20191222102831.3: *4* fs.clean_ws
-    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
-
-    def clean_ws(self, s):
-        """Carefully remove whitespace before ! and : specifiers."""
-        s = re.sub(self.ws_pat, r'\2', s)
-        return s
-    #@+node:ekr.20191222102831.4: *4* fs.compute_result
-    def compute_result(self, string_val, results_list):
-        """
-        Create the final result as follows:
-            
-        1. Flatten the results array.
-        
-        2. Using string_val (the original string) compute whether to use single
-           or double quotes for the outer fs.
-        
-        3. Beautify the result using the PythonTokenBeautifier class.
-        
-        Return the result string, or None if there are errors.
-        """
-        trace = False and not g.unitTesting
-        # pylint: disable=import-self
-        #
-        # Flatten the token list.
-        if trace: g.printObj(results_list, tag='TOKENS 1')
-        tokens = []
-        for z in results_list:
-            if isinstance(z, (list, tuple)):
-                tokens.extend(z)
-            else:
-                tokens.append(z)
-        if trace: g.printObj(tokens, tag='TOKENS 2')
-        #
-        # Fail if the result would include a backslash within { and }.
-        if not self.check_newlines(tokens):
-            return None
-        #
-        # Ensure consistent quotes.
-        ok = self.change_quotes(string_val, tokens)
-        if not ok:
-            if not g.unitTesting:
-                self.error('string contains backslashes')
-            return None
-        #
-        # Ensure one blank after the f-string.
-        ### Doesn't work well.
-        # tokens.append(self.new_token('fstringify', ' '))
-        #
-        # Clean up inter-token whitespace.
-        result_tokens = tokens
-        ### Not yet. We need a TOG_Beautify class.
-            # import leo.core.leoBeautify as leoBeautify
-            # if trace: g.printObj(tokens, tag='TOKENS: before ptb')
-            # x = leoBeautify.PythonTokenBeautifier(c=None)
-            # x.dump_input_tokens = True
-            # x.dump_output_tokens = True
-            # result_tokens = x.scan_all_beautifier_tokens(tokens)
-        #
-        # Create the result.
-        if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
-        result = ''.join([z.to_string() for z in result_tokens])
-        # Ensure a space between the new fstring and a previous name.
-        ### Old code...
-            # if self.prev_token.kind == 'name':
-                # result = ' ' + result
-            # if self.add_trailing_ws:
-                # result = result + ' '
-        return result
     #@+node:ekr.20191222102831.6: *4* fs.munge_spec
     def munge_spec(self, spec):
         """
@@ -3553,6 +3547,26 @@ class Fstringify (TokenOrderGenerator):
     def scan_format_string(self, s):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
+        return result
+    #@+node:ekr.20191222104224.1: *4* fs.scan_rhs
+    def scan_rhs(self, node):
+        """
+        Scan the right-hand side of a potential f-string.
+        
+        Return a list of the token lists for each element.
+        """
+        if isinstance(node.right, ast.Str):
+            return [node.right.token_list]
+        result = []
+        assert isinstance(node.right, ast.Tuple), repr(node.right)
+        for elt in node.right.elts:
+            if hasattr(elt, 'token_list'):
+                result.append(elt.token_list)
+            else:
+                g.trace(f"No token list for {elt.__class__.__name__}")
+        if len(node.right.elts) != len(result):
+            g.trace('not ready yet: list mismatch')
+            return []
         return result
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
