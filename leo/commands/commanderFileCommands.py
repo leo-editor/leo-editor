@@ -979,7 +979,7 @@ def tangle(self, event=None):
 #@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
 def open_theme_file(self, event):
-    """Open a theme file and apply the theme."""
+    """Open a theme file in a new session and apply the theme."""
     c = event and event.get('c')
     if not c: return
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
@@ -996,8 +996,23 @@ def open_theme_file(self, event):
         return
     leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    command = f'python launchLeo.py "{fn}"'
-    os.system(command)
+    
+    #--/start: Opening a theme file locks the initiating Leo session #1425 
+    #command = f'python launchLeo.py "{fn}"'
+    #os.system(command)
+
+    # fix idea 1:
+    command = f'{g.sys.executable} {g.app.loadDir}/runLeo.py "{fn}"'
+
+    # # fix idea 2:
+    # if g.sys.argv[0].endswith('.py'):
+        # command = f'{g.sys.executable} {g.sys.argv[0]} "{fn}"'
+    # else:
+        # command = f'{g.sys.argv[0]} "{fn}"'
+
+    # g.es_print(command)
+    g.subprocess.Popen(command)
+    # --/end
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
