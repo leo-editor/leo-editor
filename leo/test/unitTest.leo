@@ -1165,6 +1165,7 @@ assert result.strip().lower()=='f1', repr(result)
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
+# Dec. 2019: 938 tests, 16 skipped.
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.
@@ -1590,9 +1591,11 @@ path = g.os_path_finalize_join(g.app.loadDir,
     '..', 'test', 'unittest', 'python3_test.py')
 assert g.os_path_exists(path), path
 fn = g.shortFileName(path)
-source = open(path, 'r').read()
+with open(path, 'r') as f:
+    source = f.read()
 node = ast.parse(source, filename=fn, mode='exec')
-src = open(path, 'r').read()
+with open(path, 'r') as f:
+    src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
 leoAst.AstFullTraverser().visit(node)
@@ -1705,8 +1708,8 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 import time
 import leo.core.leoAst as leoAst
 if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
 #
@@ -1834,8 +1837,8 @@ elif 2:
 </t>
 <t tx="ekr.20191121063148.1">import leo.core.leoAst as leoAst
 if 0: ###
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 try:
     import asttokens
 except Exception:
@@ -1907,8 +1910,8 @@ for file_name in file_names[:1]:
 </t>
 <t tx="ekr.20191121163350.1">import leo.core.leoAst as leoAst
 if 0:
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 import ast
 try:
     import asttokens
@@ -2026,8 +2029,8 @@ A unit test that tests TOG on all of Leo's sources.
 import time
 import leo.core.leoAst as leoAst
 if 0: # Not for production.
-    import imp
-    imp.reload(leoAst)
+    import importlib
+    importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
 #
@@ -2188,7 +2191,7 @@ if b:
     print('c')
 </t>
 <t tx="ekr.20191203185327.1"># Line 4609, leoGlobals.py
-print("\x7e" "\o777") # tilde.
+print("\x7e" "\0777") # tilde.
 print('done')
 </t>
 <t tx="ekr.20191204025303.1">f1(a,b=2)
