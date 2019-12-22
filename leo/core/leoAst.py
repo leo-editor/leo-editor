@@ -3363,6 +3363,179 @@ class Fstringify (TokenOrderGenerator):
             n = 1
         return n, rt_s
     #@+node:ekr.20191222102831.1: *3* fs: Conversion...
+    #@+node:ekr.20191222102831.7: *4* fs.change_quotes
+    def change_quotes(self, string_val, aList):
+        """
+        Carefully change quotes in all "inner" tokens as necessary.
+        
+        Return True if all went well.
+        
+        We expect the following "outer" tokens.
+            
+        aList[0]:  ('fstringify', 'f')
+        aList[1]:  ('fstringify', a string starting with a quote)
+        aList[-1]: ('fstringify', a string ending with a quote that matches aList[1])
+        """
+        # Sanity checks.
+        if len(aList) < 4:
+            return True
+        if not string_val:
+            g.es_print('no string_val!')
+            return False
+        delim = string_val[0]
+        ### delim2 = '"' if delim == "'" else "'"
+        #
+        # Check tokens 0, 1 and -1.
+        token0 = aList[0]
+        token1 = aList[1]
+        token_last = aList[-1]
+        for token in token0, token1, token_last:
+            if token.kind != 'fstringify':
+                g.es_print(f"unexpected token: {token!r}")
+                return False
+        if token0.value != 'f':
+            g.es_print('token[0] error!', repr(token0))
+            return False
+        val1 = token1.value and token1.value[0]
+        if delim != val1:
+            g.es_print('token[1] error!', delim, val1, repr(token1))
+            return False
+        val_last = token_last.value and token_last.value[-1]
+        if delim != val_last:
+            g.es_print('token[-1] error!', delim, val_last, repr(token_last))
+            return False
+        # g.printObj(aList)
+        # Regularize the outer tokens.
+        delim, delim2 = '"', "'"
+        token1.value = delim + token1.value[1:]
+        aList[1] = token1
+        token_last.value = token_last.value[:-1] + delim
+        aList[-1] = token_last
+        #
+        # Replace delim by delim2 in all inner tokens.
+        for z in aList[2:-1]:
+            ### g.trace(z)
+            if not isinstance(z, Token):
+                g.es_print('Bad token:', repr(z))
+                return False
+            z.value = z.value.replace(delim, delim2)
+        # g.printObj(aList)
+        return True
+    #@+node:ekr.20191222102831.2: *4* fs.check_newlines
+    def check_newlines(self, tokens):
+        """
+        Check to ensure that no newlines appear within { and }.
+        
+        Return False if there is an error
+        """
+        level = 0
+        for token in tokens:
+            kind, val = token.kind, token.value
+            if kind == 'op':
+                if val == '{':
+                    level += 1
+                elif val == '}':
+                    level -= 1
+                    if level < 0:
+                        self.error('curly bracket underflow')
+                        return False
+            if '\\n' in val and level > 0:
+                self.error('f-expression would contain a backslash')
+                return False
+        if level > 0:
+            self.error('unclosed curly bracket')
+            return False
+        return True
+    #@+node:ekr.20191222102831.3: *4* fs.clean_ws
+    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+    def clean_ws(self, s):
+        """Carefully remove whitespace before ! and : specifiers."""
+        s = re.sub(self.ws_pat, r'\2', s)
+        return s
+    #@+node:ekr.20191222102831.4: *4* fs.compute_result
+    def compute_result(self, string_val, results_list):
+        """
+        Create the final result as follows:
+            
+        1. Flatten the results array.
+        
+        2. Using string_val (the original string) compute whether to use single
+           or double quotes for the outer fs.
+        
+        3. Beautify the result using the PythonTokenBeautifier class.
+        
+        Return the result string, or None if there are errors.
+        """
+        trace = False and not g.unitTesting
+        # pylint: disable=import-self
+        import leo.core.leoBeautify as leoBeautify
+        #
+        # Flatten the token list.
+        if trace: g.printObj(results_list, tag='TOKENS 1')
+        tokens = []
+        for z in results_list:
+            if isinstance(z, (list, tuple)):
+                tokens.extend(z)
+            else:
+                tokens.append(z)
+        if trace: g.printObj(tokens, tag='TOKENS 2')
+        #
+        # Fail if the result would include a backslash within { and }.
+        if not self.check_newlines(tokens):
+            return None
+        #
+        # Ensure consistent quotes.
+        ok = self.change_quotes(string_val, tokens)
+        if not ok:
+            if not g.unitTesting:
+                self.error('string contains backslashes')
+            return None
+        #
+        # Ensure one blank after the f-string.
+        ### Doesn't work well.
+        # tokens.append(self.new_token('fstringify', ' '))
+        #
+        # Use ptb to clean up inter-token whitespace.
+        if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+        x = leoBeautify.PythonTokenBeautifier()
+        x.dump_input_tokens = True
+        x.dump_output_tokens = True
+        result_tokens = x.scan_all_beautifier_tokens(tokens)
+        #
+        # Create the result.
+        if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
+        result = ''.join([z.to_string() for z in result_tokens])
+        # Ensure a space between the new fstring and a previous name.
+        if self.prev_token.kind == 'name':
+            result = ' ' + result
+        if self.add_trailing_ws:
+            result = result + ' '
+        return result
+    #@+node:ekr.20191222102831.6: *4* fs.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (head, tail).
+        
+        The format is spec !head:tail or :tail
+        
+        Example specs: s2, r3
+        """
+        ### To do: handle more specs.
+        head, tail = [], []
+        if spec.startswith('+'):
+            pass # Leave it alone!
+        elif spec.startswith('-'):
+            tail.append('>')
+            spec = spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            head.append('r')
+            spec = spec[:-1]
+        tail = ''.join(tail) + spec
+        head = ''.join(head)
+        return head, tail
     #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>

@@ -412,7 +412,7 @@ class NullTokenBeautifier:
     #@+others
     #@+node:ekr.20191101044034.1: *3*  null_tok_b: Birth
     #@+node:ekr.20191029014023.2: *4* null_tok_b.ctor
-    def __init__(self, c):
+    def __init__(self, c=None):
         self.c = c
         self.changed = None
         self.code_list = []
@@ -469,10 +469,13 @@ class NullTokenBeautifier:
         """
         pass
     #@+node:ekr.20191029014023.9: *3*  null_tok_b: Utils...
-    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo (changed)
+    #@+node:ekr.20191029014023.10: *4* null_tok_b.end_undo
     def end_undo(self):
         """Complete undo processing."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        if not c:
+            return
+        u = self.c.undoer
         if self.changed:
             # Tag the end of the command.
             u.afterChangeGroup(c.p, self.undo_type)
@@ -482,7 +485,10 @@ class NullTokenBeautifier:
         Return the nearest ancestor @<file> node, or None.
         Issue error messages if necessary.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        if not c:
+            return None
+        p = c.p
 
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
@@ -515,10 +521,13 @@ class NullTokenBeautifier:
             f"check          {self.check_time:4.2f}\n"
             f"total          {self.total_time:4.2f}"
         )
-    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body (changed)
+    #@+node:ekr.20191029014023.13: *4* null_tok_b.replace_body
     def replace_body(self, p, s):
         """Undoably replace the body."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        if not c:
+            raise TypeError('NullTokenBeautifier: no c')
+        u = c.undoer
         undoType = self.undo_type
         if p.b == s:
             return
@@ -1676,7 +1685,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
     #@@nobeautify
 
     def __init__(self, c):
-        """Ctor for PythonPrettyPrinter class."""
+        """Ctor for PythonTokenBeautifier class."""
         super().__init__(c)
         #
         # Globals...
