@@ -3387,19 +3387,13 @@ class Fstringify (TokenOrderGenerator):
     #@+node:ekr.20191222102831.4: *4* fs.compute_result & helpers
     def compute_result(self, string_val, tokens):
         """
-        Create the final result as follows:
-            
-        1. Flatten the results array.
-        
-        2. Using string_val (the original string) compute whether to use single
-           or double quotes for the outer fs.
-        
-        3. Beautify the result using the PythonTokenBeautifier class.
+        Create the final result, with various kinds of munges.
 
         Return the result string, or None if there are errors.
         """
-        ### This dependency should be removed.
         import leo.core.leoBeautify as leoBeautify
+            ### This dependency should be removed.
+        #
         # Fail if the result would include a backslash within { and }.
         if not self.check_newlines(tokens):
             return None
