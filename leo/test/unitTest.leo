@@ -2267,8 +2267,8 @@ if 0: # Not for production.
 # Flags for TR.run_tests.
 flags = [
     'dump-sources-first',
-    'dump-raw-tree-first',
-    'dump-tokens-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     # 'show-exception-after-fail',
     'do-fstringify', # Required.
@@ -2278,7 +2278,7 @@ flags = [
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-tokens',
-    # 'dump-tree',
+    'dump-tree',
     'summarize',
     # 'trace-tokenizer-tokens',
     # 'use-asttokens',

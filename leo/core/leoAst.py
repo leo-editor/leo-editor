@@ -2503,13 +2503,14 @@ class AstDumper:
             val = f"s={node.s!r}"
         elif class_name in ('AugAssign', 'BinOp', 'BoolOp', 'UnaryOp'): # IfExp
             name = node.op.__class__.__name__
-            val = f"{_op_names.get(name, name)}"
+            val = f"op={_op_names.get(name, name)}"
         elif class_name == 'Compare':
             ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
             val = f"ops={ops}"
         else:
             val = '' ## f"{class_name}"
-        val = f"{class_name}.{val}"
+        # This is redundant.
+            # val = f"{class_name}.{val}"
         return truncate(val, truncate_n)
 
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
