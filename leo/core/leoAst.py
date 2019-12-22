@@ -3,7 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
-# import time
+import re
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -3290,7 +3290,96 @@ class AstPatternFormatter(AstFormatter):
 class Fstringify (TokenOrderGenerator):
     """A class to fstringify an existing ast tree."""
     #@+others
-    #@+node:ekr.20191222090221.1: *3* fs.begin/end_visitor
+    #@+node:ekr.20191222083947.1: *3* fs.fstringify (entry)
+    def fstringify(self, tokens, tree, file_name):
+        """The entry point for the Fstringify class"""
+        # Init all ivars.
+        self.file_name = file_name
+        self.level = 0
+        self.node = None
+        self.tokens = tokens
+        self.tree = tree
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+    #@+node:ekr.20191222095754.1: *3* fs.make_fstring & helpers
+    def make_fstring(self, node):
+        """
+        node is BinOp node for the '%' operator.
+        node.left is an ast.Str node.
+        node.right should be an ast.Tuple or an ast.Str.
+
+        Convert this tree to an f-string, if possible,
+        replacing node's entire tree with a new ast.Str node.
+        """
+        trace = True
+        if trace:
+            g.trace('...\n')
+            print(f" left tree...\n{AstDumper().brief_dump(node.left)}")
+            print(f"right tree...\n{AstDumper().brief_dump(node.right)}")
+        if not isinstance(node.right, (ast.Str, ast.Tuple)):
+            g.trace('not an f-string')
+            return
+        lt_s = ''.join([z.to_string() for z in node.left.token_list])
+        if trace:
+            print(f"lt tokens: {lt_s}")
+        #
+        # Count the expected substitutions.
+        n, rt_s = self.scan_rhs(node)
+        if n == -1:
+            return
+        aList = self.scan_format_string(lt_s)
+        if trace:
+            g.printObj(aList, tag='scan_format_string')
+            g.trace('looking for ', n, 'substitution')
+            print(f"rt tokens: {rt_s}")
+        if n != len(aList):
+            g.trace('Conversion mismatch')
+    #@+node:ekr.20191222104224.1: *4* fs.scan_rhs
+    def scan_rhs(self, node):
+        """
+        Scan the right-hand side of a potential f-string.
+        
+        Return (n, rt_s), where:
+        - n is the number of expected %-values in the left-hand side.
+        - rt_s is the string correspoding to the RHS tokens.
+        """
+        if isinstance(node.right, ast.Tuple):
+            aList = []
+            for elt in node.right.elts:
+                if hasattr(elt, 'token_list'):
+                    s = ''.join([z.to_string() for z in elt.token_list])
+                    aList.append(s)
+            rt_s = ', '.join(aList)
+            if len(node.right.elts) != len(aList):
+                g.trace('not ready yet: list mismatch')
+                return -1
+            n = len(node.right.elts)
+        else:
+            rt_s = ''.join([z.to_string() for z in node.right.token_list])
+            n = 1
+        return n, rt_s
+    #@+node:ekr.20191222102831.1: *3* fs: Conversion...
+    #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+    #@+node:ekr.20191222100303.1: *3* fs: Overrides...
+    #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
     begin_end_stack = []
     node_index = 0  # The index into the node_stack.
     node_stack = []  # The stack of parent nodes.
@@ -3316,7 +3405,7 @@ class Fstringify (TokenOrderGenerator):
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@+node:ekr.20191222084644.1: *3* fs.BinOp
+    #@+node:ekr.20191222084644.1: *4* fs.BinOp
     def do_BinOp(self, node):
         """Handle binary ops, including possible f-strings."""
         op_name = self.op_name(node.op)
@@ -3325,27 +3414,7 @@ class Fstringify (TokenOrderGenerator):
         yield from self.gen(node.left)
         yield from self.gen_op(op_name)
         yield from self.gen(node.right)
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring
-    def make_fstring(self, node):
-        g.trace('...\n')
-        print(f"left...\n{AstDumper().brief_dump(node.left)}")
-        print(f"right...\n{AstDumper().brief_dump(node.right)}")
-    #@+node:ekr.20191222083947.1: *3* fs.fstringify (entry)
-    def fstringify(self, tokens, tree, file_name):
-        """The entry point for the Fstringify class"""
-        # Init all ivars.
-        self.file_name = file_name
-        self.level = 0
-        self.node = None
-        self.tokens = tokens
-        self.tree = tree
-        # Traverse the tree.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
-    #@+node:ekr.20191222091058.1: *3* fs.set_links
+    #@+node:ekr.20191222091058.1: *4* fs.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
     #@-others
