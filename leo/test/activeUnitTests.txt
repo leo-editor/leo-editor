@@ -953,7 +953,7 @@ flags = [
 # Reload (if enabled), then make tests, run tests, and summarize.
 leoAst.TestRunner().run_tests(flags, root=c.p)
 
-#@+node:ekr.20191118154059.1: *4* @test TokenOrder classes
+#@+node:ekr.20191118154059.1: *4* @test TOG master test
 """
 The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
@@ -968,9 +968,9 @@ if 0: # Not for production.
 # Flags for TR.run_tests.
 flags = [
     # New flags.
-    'all',
+    # 'all',
     # 'coverage',
-    'show-test-kind', # all vs selected.
+    # 'show-test-kind', # all vs selected.
     # 'dump-sources-first',
     # 'dump-raw-tree-first',
     # 'dump-tokens-first',
@@ -1307,6 +1307,36 @@ fr"""{kinds}://[^\s'"]+[\w=/]"""
 'p1' ;
 f'f1' ;
 'done' ;
+#@+node:ekr.20191222064122.1: *4* @test fstringify w/ TOG
+import time
+import leo.core.leoAst as leoAst
+if 1: # Not for production.
+    import importlib
+    importlib.reload(leoAst)
+if 0: # Not for production.
+    g.cls()
+#
+# Flags for TR.run_tests.
+flags = [
+    # 'dump-sources-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    # 'show-exception-after-fail',
+
+    # 'dump-tokens-after-fail',
+    # 'dump-tree-after-fail',
+    # 'dump-all-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    # 'trace-tokenizer-tokens',
+    # 'use-asttokens',
+]
+# Reload (if enabled), then make tests, run tests, and summarize.
+leoAst.TestRunner().fstringify(flags, root=c.p)
+
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1

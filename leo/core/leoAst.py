@@ -4489,45 +4489,77 @@ class TestRunner:
                 tokens_s = ' '.join(
                     repr(z.string) for z in tokens[first:last] if z)
             print(f"{class_name:>12} {token_range:<10} {tokens_s}")
-    #@+node:ekr.20191205160754.4: *3* TR.run_tests & helpers
-    def run_tests(self, flags, root):
-        """The outer test runner."""
-        #
+    #@+node:ekr.20191222064521.1: *3* TR.fstringify
+    def fstringify(self, flags, root):
+        """A test runner for fstringify logic."""
         # Startup.
+        #@+<< define valid flags & reports for TR.fstringify >>
+        #@+node:ekr.20191222064838.1: *4* << define valid flags & reports for TR.fstringify >>
+        valid_flags = [
+            # 'all',
+            # 'all-leo-files',
+            # 'coverage',
+            'dump-all-after-fail',
+            'dump-raw-tree-first', 
+            'dump-sources-first',
+            'dump-tokens-after-fail',
+            'dump-tokens-first',
+            'dump-tree-after-fail',
+            'no-trace-after-fail',
+            'set-trace-mode',
+            'show-exception-after-fail',
+            # 'show-test-kind',
+            # 'summarize',
+            # 'use-asttokens',
+            # 'trace-times',
+            'trace-tokenizer-tokens',
+            'verbose-fail',
+        ]
+        valid_reports = [
+            'dump-all',
+            'dump-contents',
+            'dump-lines',
+            'dump-raw_tree',
+            'dump-tokens',
+            'dump-tree'
+        ]
+        #@-<< define valid flags & reports for TR.fstringify >>
         self.fails = []
         self.root = root
-        ok = self.make_flags_and_reports(flags)
+        ok = self.make_flags_and_reports(flags, valid_flags, valid_reports)
         if not ok:
             print('Aborting...')
             return
         flags = self.flags
         self.show_status()
-        if 'all-leo-files' in flags:
-            tests = self.make_leo_tests()
-        else:
-            tests = self.make_tests(root)
-        self.tests = tests
+        ###
+            # if 'all-leo-files' in flags:
+                # tests = self.make_leo_tests()
+            # else:
+                # tests = self.make_tests(root)
+            # self.tests = tests
         #
         # The main test runner loop.
         t1 = time.process_time()
-        for contents, description in tests:
-            # run_one_test catches all exceptions.
-            if 'show-test-description' in flags:
-                print(f"Running {description}...")
-            ok = self.run_one_test(contents, description)
-            if not ok:
-                self.fails.append(description)
-            if 'fail-fast' in flags:
-                break
+        ###
+            # for contents, description in tests:
+                # # run_one_test catches all exceptions.
+                # if 'show-test-description' in flags:
+                    # print(f"Running {description}...")
+                # ok = self.run_one_test(contents, description)
+                # if not ok:
+                    # self.fails.append(description)
+                # if 'fail-fast' in flags:
+                    # break
         t2 = time.process_time()
         if 'coverage' in flags:
             self.show_coverage()
         self.summarize(test_time = t2 - t1)
-    #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
-    def make_flags_and_reports(self, user_flags):
-        """
-        Create self.flags and self.reports from flags.
-        """
+    #@+node:ekr.20191205160754.4: *3* TR.run_tests
+    def run_tests(self, flags, root):
+        """The outer test runner."""
+        #@+<< define valid flags & reports for TR.run_tests >>
+        #@+node:ekr.20191222064729.1: *4* << define valid flags & reports for TR.run_tests >>
         valid_flags = [
             'all',
             'all-leo-files',
@@ -4556,9 +4588,46 @@ class TestRunner:
             'dump-tokens',
             'dump-tree'
         ]
+        #@-<< define valid flags & reports for TR.run_tests >>
+        # Startup.
+        self.fails = []
+        self.root = root
+        ok = self.make_flags_and_reports(flags, valid_flags, valid_reports)
+        if not ok:
+            print('Aborting...')
+            return
+        flags = self.flags
+        self.show_status()
+        if 'all-leo-files' in flags:
+            tests = self.make_leo_tests()
+        else:
+            tests = self.make_tests(root)
+        self.tests = tests
+        #
+        # The main test runner loop.
+        t1 = time.process_time()
+        for contents, description in tests:
+            # run_one_test catches all exceptions.
+            if 'show-test-description' in flags:
+                print(f"Running {description}...")
+            ok = self.run_one_test(contents, description)
+            if not ok:
+                self.fails.append(description)
+            if 'fail-fast' in flags:
+                break
+        t2 = time.process_time()
+        if 'coverage' in flags:
+            self.show_coverage()
+        self.summarize(test_time = t2 - t1)
+    #@+node:ekr.20191222064452.1: *3* TR: utils...
+    #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
+    def make_flags_and_reports(self, flags, valid_flags, valid_reports):
+        """
+        Create self.flags and self.reports from flags.
+        """
         for z in valid_reports:
             assert hasattr(self, z.replace('-','_')), repr(z)
-        aList = [z.lower() for z in user_flags or []]
+        aList = [z.lower() for z in flags or []]
         self.flags = [z for z in aList if z in valid_flags]
         self.reports = [z for z in aList if z in valid_reports]
         bad = [z for z in aList if z not in valid_flags + valid_reports]

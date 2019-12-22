@@ -172,9 +172,6 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e342e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e342e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
 <v t="ekr.20190923014948.1"><vh>Failures when run from bridge w/ readSettings=False</vh>
 <v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
 <v t="ekr.20150430061225.1"><vh>child</vh></v>
@@ -188,10 +185,8 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20191213161917.1"><vh>Recent</vh>
-<v t="ekr.20191207060251.1"></v>
-<v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
-<v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e342e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e342e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
@@ -201,7 +196,7 @@
 <v t="ekr.20191121163350.1"><vh>@@test nodes: tog vs asttokens (fails)</vh></v>
 <v t="ekr.20191125235556.1"><vh>@@test TOG: Leo's core files (long)</vh></v>
 </v>
-<v t="ekr.20191118154059.1"><vh>@test TokenOrder classes</vh>
+<v t="ekr.20191118154059.1"><vh>@test TOG master test</vh>
 <v t="ekr.20191206053245.1"><vh>test: test end-of-file handling</vh></v>
 <v t="ekr.20191120074811.1"><vh>ignore: Contexts...</vh>
 <v t="ekr.20191119133927.1"><vh>test: ClassDef</vh></v>
@@ -287,7 +282,9 @@
 </v>
 </v>
 </v>
+<v t="ekr.20191222064122.1"><vh>@test fstringify w/ TOG</vh></v>
 </v>
+<v t="ekr.20191222064122.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1716,9 +1713,9 @@ if 0: # Not for production.
 # Flags for TR.run_tests.
 flags = [
     # New flags.
-    'all',
+    # 'all',
     # 'coverage',
-    'show-test-kind', # all vs selected.
+    # 'show-test-kind', # all vs selected.
     # 'dump-sources-first',
     # 'dump-raw-tree-first',
     # 'dump-tokens-first',
@@ -2243,29 +2240,6 @@ else:
 </t>
 <t tx="ekr.20191206053245.1"># Only a comment.
 </t>
-<t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@clean unittest/at-clean-write-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-#
-# Enable --trace=save
-at = c.atFileCommands
-# Get the correct file name.
-fn = p.anyAtFileNodeName()
-path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
-assert g.os_path_exists(path), path
-#
-# Run the test.
-if 0:
-    g.app.debug.append('save')
-    g.cls() ###
-    print(f"Running {c.p.h}...\n")
-val = at.shouldPromptForDangerousWrite(path, p)
-assert val is False
-</t>
 <t tx="ekr.20191207060251.1">@language python
 @tabwidth -4
 @others
@@ -2276,35 +2250,41 @@ assert val is False
 <t tx="ekr.20191207060251.3">def eggs():
     pass
 </t>
-<t tx="ekr.20191207064106.1">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@clean unittest/at-clean-write-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-#
-# Enable --trace=save
-at = c.atFileCommands
-# Get the correct file name.
-fn = p.anyAtFileNodeName()
-path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
-assert g.os_path_exists(path), path
-#
-# Run the test.
-if 0:
-    g.app.debug.append('save')
-    g.cls() ###
-    print(f"Running {c.p.h}...\n")
-val = at.precheck(path, p)
-assert val is True
-</t>
-<t tx="ekr.20191213161917.1"></t>
 <t tx="ekr.20191215093835.12"></t>
 <t tx="ekr.20191215093835.13"></t>
 <t tx="ekr.20191215093835.14"></t>
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
+<t tx="ekr.20191222064122.1">import time
+import leo.core.leoAst as leoAst
+if 1: # Not for production.
+    import importlib
+    importlib.reload(leoAst)
+if 0: # Not for production.
+    g.cls()
+#
+# Flags for TR.run_tests.
+flags = [
+    # 'dump-sources-first',
+    # 'dump-raw-tree-first',
+    # 'dump-tokens-first',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    # 'show-exception-after-fail',
+
+    # 'dump-tokens-after-fail',
+    # 'dump-tree-after-fail',
+    # 'dump-all-after-fail',
+    # 'dump-contents',
+    # 'dump-raw-tree',
+    # 'dump-tokens',
+    # 'dump-tree',
+    # 'trace-tokenizer-tokens',
+    # 'use-asttokens',
+]
+# Reload (if enabled), then make tests, run tests, and summarize.
+leoAst.TestRunner().fstringify(flags, root=c.p)
+
+</t>
 </tnodes>
 </leo_file>
