@@ -4420,76 +4420,7 @@ class TestRunner:
     A testing framework for TokenOrderGenerator and related classes.
     """
     #@+others
-    #@+node:ekr.20191205160624.1: *3* TR.dump*
-    #@+node:ekr.20191122022728.1: *4* TR.dump_all
-    def dump_all(self):
-
-        if self.x:
-            self.dump_contents()
-            self.dump_tokens()
-            self.dump_tree()
-            # self.dump_raw_tree()
-
-    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
-    def dump_contents(self):
-        sources = self.sources
-        print('\nContents...\n')
-        for i, z in enumerate(g.splitLines(sources)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
-    def dump_lines(self):
-        print('\nTOKEN lines...\n')
-        for z in self.tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
-    def dump_raw_tree(self):
-        print('\nRaw tree...\n')
-        print(AstDumper().dump(self.tree))
-        print('')
-    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
-    def dump_tokens(self, brief=False):
-        tokens = self.tokens
-        print('\nTokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        # pylint: disable=not-an-iterable
-        if self.x:
-            for z in tokens:
-                print(z.dump(brief=brief))
-            print('')
-        else:
-            import token as tm
-            for z in tokens:
-                kind = tm.tok_name[z.type].lower()
-                print(f"{z.index:4} {kind:>12} {z.string!r}")
-    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
-    def dump_tree(self, brief=False):
-        print('\nPatched tree...\n')
-        tokens, tree = self.tokens, self.tree
-        if self.x:
-            print(AstDumper().brief_dump(tree))
-            return
-        try:
-            # pylint: disable=import-error
-            from asttokens.util import walk
-        except Exception:
-            return
-        # print(dumper.dump(tree))
-        for z in walk(tree):
-            class_name = z.__class__.__name__
-            first, last = z.first_token.index, z.last_token.index
-            token_range = f"{first:>4}..{last:<4}"
-            if isinstance(z, ast.Module):
-                tokens_s = ''
-            else:
-                tokens_s = ' '.join(
-                    repr(z.string) for z in tokens[first:last] if z)
-            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
-    #@+node:ekr.20191222064521.1: *3* TR.fstringify
+    #@+node:ekr.20191222064521.1: *3* TR.fstringify & do_fstringify
     def fstringify(self, contents, flags):
         """The test runner for fstringify."""
         #@+<< define valid flags & reports for TR.fstringify >>
@@ -4515,15 +4446,16 @@ class TestRunner:
             'verbose-fail',
         ]
         valid_reports = [
+            'do-fstringify',
             'dump-all',
             'dump-contents',
             'dump-lines',
             'dump-raw_tree',
             'dump-tokens',
-            'dump-tree'
+            'dump-tree',
+            'fstringify',
         ]
         #@-<< define valid flags & reports for TR.fstringify >>
-        # self.fails = []
         ok = self.make_flags_and_reports(flags, valid_flags, valid_reports)
         if not ok:
             return
@@ -4532,6 +4464,10 @@ class TestRunner:
         t2 = self.time()
         if 'summarize' in self.flags:
             print(f"\nfstringify: {t2-t1:4.2f} sec.")
+    #@+node:ekr.20191222074711.1: *4* TR.do_fstringify
+    def do_fstringify(self):
+        g.trace()
+        g.printObj(self.sources, tag='Sources')
     #@+node:ekr.20191205160754.4: *3* TR.run_tests
     def run_tests(self, flags, root):
         """The outer test runner."""
@@ -4680,6 +4616,75 @@ class TestRunner:
             for report in list(set(bad_reports)):
                 print(f"{tag}: bad report option: {report!r}")
         return True
+    #@+node:ekr.20191205160624.1: *3* TR: reports...
+    #@+node:ekr.20191122022728.1: *4* TR.dump_all
+    def dump_all(self):
+
+        if self.x:
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_tree()
+            # self.dump_raw_tree()
+
+    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
+    def dump_contents(self):
+        sources = self.sources
+        print('\nContents...\n')
+        for i, z in enumerate(g.splitLines(sources)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
+    def dump_lines(self):
+        print('\nTOKEN lines...\n')
+        for z in self.tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
+    def dump_raw_tree(self):
+        print('\nRaw tree...\n')
+        print(AstDumper().dump(self.tree))
+        print('')
+    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
+    def dump_tokens(self, brief=False):
+        tokens = self.tokens
+        print('\nTokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+        # pylint: disable=not-an-iterable
+        if self.x:
+            for z in tokens:
+                print(z.dump(brief=brief))
+            print('')
+        else:
+            import token as tm
+            for z in tokens:
+                kind = tm.tok_name[z.type].lower()
+                print(f"{z.index:4} {kind:>12} {z.string!r}")
+    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
+    def dump_tree(self, brief=False):
+        print('\nPatched tree...\n')
+        tokens, tree = self.tokens, self.tree
+        if self.x:
+            print(AstDumper().brief_dump(tree))
+            return
+        try:
+            # pylint: disable=import-error
+            from asttokens.util import walk
+        except Exception:
+            return
+        # print(dumper.dump(tree))
+        for z in walk(tree):
+            class_name = z.__class__.__name__
+            first, last = z.first_token.index, z.last_token.index
+            token_range = f"{first:>4}..{last:<4}"
+            if isinstance(z, ast.Module):
+                tokens_s = ''
+            else:
+                tokens_s = ' '.join(
+                    repr(z.string) for z in tokens[first:last] if z)
+            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
     #@+node:ekr.20191222064452.1: *3* TR: utils...
     #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
     def make_flags_and_reports(self, flags, valid_flags, valid_reports):
