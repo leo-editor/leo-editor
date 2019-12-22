@@ -3329,10 +3329,12 @@ class Fstringify (TokenOrderGenerator):
         values = self.scan_rhs(node)
         if not values:
             return
+        if trace:
+            g.printObj(values, tag='values')
         #
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
-        if False and trace:
+        if trace:
             g.printObj(specs, tag='specs')
             g.trace(f"Looking for {len(specs)} specs")
         if len(values) != len(specs):
@@ -3343,7 +3345,8 @@ class Fstringify (TokenOrderGenerator):
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = ''.join(z.to_string() for z in values[spec_i])
-            # g.trace(spec_i, repr(value))
+            if trace:
+                g.trace(spec_i, repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 results.append(Token('string', lt_s[i : start]))
@@ -3362,8 +3365,8 @@ class Fstringify (TokenOrderGenerator):
         tail = lt_s[i:]
         if tail:
             results.append(Token('string', tail))
-        if False and trace:
-            # g.printObj(results)
+        if trace:
+            g.printObj(results)
             g.trace('1', ''.join(z.to_string() for z in results))
         result = self.compute_result(lt_s, results)
         if not result:
@@ -3372,7 +3375,7 @@ class Fstringify (TokenOrderGenerator):
         result = self.clean_ws(result)
         if trace:
             g.trace(result)
-        ### self.add_token('string', result)
+        ### To do: update the tokens and the tree.
     #@+node:ekr.20191222102831.3: *4* fs.clean_ws
     ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
 
@@ -3395,27 +3398,28 @@ class Fstringify (TokenOrderGenerator):
 
         Return the result string, or None if there are errors.
         """
+        ### This dependency should be removed.
+        import leo.core.leoBeautify as leoBeautify
         # Fail if the result would include a backslash within { and }.
         if not self.check_newlines(tokens):
             return None
+        #
         # Ensure consistent quotes.
         ok = self.change_quotes(string_val, tokens)
         if not ok:
-            if not g.unitTesting:
-                self.error('string contains backslashes')
+            self.error('string contains backslashes')
             return None
+        #
         ### Doesn't work well.
             # Ensure one blank after the f-string.
             # tokens.append(self.new_token('fstringify', ' '))
-        ### Not yet. We need a TOG_Beautify class.
-            # Clean up inter-token whitespace.
-            # py---lint: disable=import-self
-            # import leo.core.leoBeautify as leoBeautify
-            # if trace: g.printObj(tokens, tag='TOKENS: before ptb')
-            # x = leoBeautify.PythonTokenBeautifier(c=None)
-            # x.dump_input_tokens = True
-            # x.dump_output_tokens = True
-            # result_tokens = x.scan_all_beautifier_tokens(tokens)
+        #
+        # Clean up inter-token whitespace.
+        if 0:
+            x = leoBeautify.PythonTokenBeautifier(c=None)
+            x.dump_input_tokens = True
+            x.dump_output_tokens = True
+            tokens = x.scan_all_beautifier_tokens(tokens)
         #
         # Create the result.
         result = ''.join([z.to_string() for z in tokens])

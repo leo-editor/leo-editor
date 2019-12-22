@@ -2262,6 +2262,9 @@ if 1: # Not for production.
     importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
+contents = """\
+print('test %s=%s'%(a * b, 2 + f(3)))
+"""
 #
 # Flags for TR.run_tests.
 flags = [
@@ -2277,12 +2280,11 @@ flags = [
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-tokens',
-    # 'dump-tree',
+    'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
-contents = """print('test %s=%s'%(a, 2))"""
 leoAst.TestRunner().fstringify(contents, flags)
 </t>
 </tnodes>
