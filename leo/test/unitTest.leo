@@ -2256,7 +2256,7 @@ else:
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
-<t tx="ekr.20191222064122.1">import time
+<t tx="ekr.20191222064122.1"># import time
 import leo.core.leoAst as leoAst
 if 1: # Not for production.
     import importlib
@@ -2266,9 +2266,9 @@ if 0: # Not for production.
 #
 # Flags for TR.run_tests.
 flags = [
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
+    'dump-sources-first',
+    'dump-raw-tree-first',
+    'dump-tokens-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     # 'show-exception-after-fail',
 
@@ -2279,11 +2279,13 @@ flags = [
     # 'dump-raw-tree',
     # 'dump-tokens',
     # 'dump-tree',
+    'summarize',
     # 'trace-tokenizer-tokens',
     # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().fstringify(flags, root=c.p)
+contents = """print('test %s=%s'%(a, 2))"""
+leoAst.TestRunner().fstringify(contents, flags)
 
 </t>
 </tnodes>

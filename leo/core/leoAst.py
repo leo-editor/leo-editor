@@ -3,7 +3,7 @@
 """AST (Abstract Syntax Tree) related classes."""
 import leo.core.leoGlobals as g
 import ast
-import time
+# import time
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -4490,9 +4490,8 @@ class TestRunner:
                     repr(z.string) for z in tokens[first:last] if z)
             print(f"{class_name:>12} {token_range:<10} {tokens_s}")
     #@+node:ekr.20191222064521.1: *3* TR.fstringify
-    def fstringify(self, flags, root):
-        """A test runner for fstringify logic."""
-        # Startup.
+    def fstringify(self, contents, flags):
+        """The test runner for fstringify."""
         #@+<< define valid flags & reports for TR.fstringify >>
         #@+node:ekr.20191222064838.1: *4* << define valid flags & reports for TR.fstringify >>
         valid_flags = [
@@ -4509,7 +4508,7 @@ class TestRunner:
             'set-trace-mode',
             'show-exception-after-fail',
             # 'show-test-kind',
-            # 'summarize',
+            'summarize',
             # 'use-asttokens',
             # 'trace-times',
             'trace-tokenizer-tokens',
@@ -4524,37 +4523,15 @@ class TestRunner:
             'dump-tree'
         ]
         #@-<< define valid flags & reports for TR.fstringify >>
-        self.fails = []
-        self.root = root
+        # self.fails = []
         ok = self.make_flags_and_reports(flags, valid_flags, valid_reports)
         if not ok:
-            print('Aborting...')
             return
-        flags = self.flags
-        self.show_status()
-        ###
-            # if 'all-leo-files' in flags:
-                # tests = self.make_leo_tests()
-            # else:
-                # tests = self.make_tests(root)
-            # self.tests = tests
-        #
-        # The main test runner loop.
-        t1 = time.process_time()
-        ###
-            # for contents, description in tests:
-                # # run_one_test catches all exceptions.
-                # if 'show-test-description' in flags:
-                    # print(f"Running {description}...")
-                # ok = self.run_one_test(contents, description)
-                # if not ok:
-                    # self.fails.append(description)
-                # if 'fail-fast' in flags:
-                    # break
-        t2 = time.process_time()
-        if 'coverage' in flags:
-            self.show_coverage()
-        self.summarize(test_time = t2 - t1)
+        t1 = self.time()
+        self.run_one_test(sources=contents, description='fstringify')
+        t2 = self.time()
+        if 'summarize' in self.flags:
+            print(f"\nfstringify: {t2-t1:4.2f} sec.")
     #@+node:ekr.20191205160754.4: *3* TR.run_tests
     def run_tests(self, flags, root):
         """The outer test runner."""
@@ -4605,7 +4582,7 @@ class TestRunner:
         self.tests = tests
         #
         # The main test runner loop.
-        t1 = time.process_time()
+        t1 = self.time()
         for contents, description in tests:
             # run_one_test catches all exceptions.
             if 'show-test-description' in flags:
@@ -4615,10 +4592,94 @@ class TestRunner:
                 self.fails.append(description)
             if 'fail-fast' in flags:
                 break
-        t2 = time.process_time()
+        t2 = self.time()
         if 'coverage' in flags:
             self.show_coverage()
         self.summarize(test_time = t2 - t1)
+    #@+node:ekr.20191122021515.1: *3* TR.run_one_test
+    def run_one_test(self, sources, description):
+        """
+        Run the test given by the sources and description.
+        """
+        tag = 'run_tests'
+        flags = self.flags
+        # Dump sources if asked.
+        self.sources = sources = sources.strip() + '\n'
+        if 'dump-sources-first' in flags:
+            self.dump_contents()
+        # Create tokens and tree.
+        t1 = self.time()
+        if 'use-asttokens' in flags:
+            # pylint: disable=import-error
+            # It's ok to raise ImportError here.
+            import asttokens
+            x = self.x = None
+            atok = asttokens.ASTTokens(sources, parse=True)
+            self.tree = atok.tree
+            self.tokens = atok._tokens
+            t2 = self.time()
+        else:
+            x = self.x = TokenOrderInjector()
+            x.trace_mode = 'set-trace-mode' in flags
+                # The TOI class *also* calls the base begin/end_visitor methods.
+            self.tokens = x.make_tokens(sources, trace_mode='trace-tokenizer-tokens' in flags)
+            if 'dump-tokens-first' in flags:
+                self.dump_tokens(brief=True)
+            self.tree = parse_ast(sources)
+            if 'dump-raw-tree-first' in flags:
+                self.dump_raw_tree()
+            # Catch exceptions so we can get data late.
+            try:
+                t2 = self.time()
+                # Yes, list *is* required here.
+                list(x.create_links(self.tokens, self.tree, file_name=description))
+                t3 = self.time()
+            except Exception as e:
+                t3 = self.time()
+                g.trace(f"\nFAIL: {description}\n")
+                # Don't use g.trace.  It doesn't handle newlines properly.
+                print(e)
+                if 'show-exception-after-fail' in flags:
+                    g.es_exception()
+                if 'dump-all-after-fail' in flags:
+                    self.dump_all()
+                else:
+                    if 'dump-tokens-after-fail' in flags:
+                        self.dump_tokens()
+                    if 'dump-tree-after-fail' in flags:
+                        self.dump_tree()
+                if 'no-trace-after-fail':
+                    x.trace_mode = False
+                return False
+        if 'trace-times' in flags and description.startswith('file:'):
+            pad = ' '*4
+            print('')
+            n_nodes = x.n_nodes if x else '<unknown>'
+            print(
+                f"{pad}         {description}\n"
+                f"{pad} len(sources): {len(sources)}\n"
+                f"{pad}visited nodes: {n_nodes}\n"
+                f"{pad}       tokens: {len(self.tokens)}\n"
+                f"{pad}   setup time: {(t2-t1):4.2f} sec.\n"
+                f"{pad}    link time: {(t3-t2):4.2f} sec.")
+            print('')
+        #
+        # Print reports, in the user-defined order.
+        bad_reports = []
+        for report in self.reports:
+            helper = getattr(self, report.replace('-', '_'), None)
+            if helper:
+                try:
+                    helper()
+                except Exception as e:
+                    print(f"{tag}: Exception in {report}: {e}")
+                    return False
+            else:
+                bad_reports.append(report)
+        if bad_reports:
+            for report in list(set(bad_reports)):
+                print(f"{tag}: bad report option: {report!r}")
+        return True
     #@+node:ekr.20191222064452.1: *3* TR: utils...
     #@+node:ekr.20191205163727.1: *4* TR.make_flags_and_reports
     def make_flags_and_reports(self, flags, valid_flags, valid_reports):
@@ -4695,91 +4756,6 @@ class TestRunner:
         if not tests:
             print(f"no tests in {root.h}")
         return tests
-    #@+node:ekr.20191122021515.1: *4* TR.run_one_test
-    def run_one_test(self, sources, description):
-        """
-        Run the test given by the sources and description.
-        """
-        import time
-        tag = 'run_tests'
-        flags = self.flags
-        # Dump sources if asked.
-        self.sources = sources = sources.strip() + '\n'
-        if 'dump-sources-first' in flags:
-            self.dump_contents()
-        # Create tokens and tree.
-        t1 = time.process_time()
-        if 'use-asttokens' in flags:
-            # pylint: disable=import-error
-            # It's ok to raise ImportError here.
-            import asttokens
-            x = self.x = None
-            atok = asttokens.ASTTokens(sources, parse=True)
-            self.tree = atok.tree
-            self.tokens = atok._tokens
-            t2 = time.process_time()
-        else:
-            x = self.x = TokenOrderInjector()
-            x.trace_mode = 'set-trace-mode' in flags
-                # The TOI class *also* calls the base begin/end_visitor methods.
-            self.tokens = x.make_tokens(sources, trace_mode='trace-tokenizer-tokens' in flags)
-            if 'dump-tokens-first' in flags:
-                self.dump_tokens(brief=True)
-            self.tree = parse_ast(sources)
-            if 'dump-raw-tree-first' in flags:
-                self.dump_raw_tree()
-            # Catch exceptions so we can get data late.
-            try:
-                t2 = time.process_time()
-                # Yes, list *is* required here.
-                list(x.create_links(self.tokens, self.tree, file_name=description))
-                t3 = time.process_time()
-            except Exception as e:
-                t3 = time.process_time()
-                g.trace(f"\nFAIL: {description}\n")
-                # Don't use g.trace.  It doesn't handle newlines properly.
-                print(e)
-                if 'show-exception-after-fail' in flags:
-                    g.es_exception()
-                if 'dump-all-after-fail' in flags:
-                    self.dump_all()
-                else:
-                    if 'dump-tokens-after-fail' in flags:
-                        self.dump_tokens()
-                    if 'dump-tree-after-fail' in flags:
-                        self.dump_tree()
-                if 'no-trace-after-fail':
-                    x.trace_mode = False
-                return False
-        if 'trace-times' in flags and description.startswith('file:'):
-            pad = ' '*4
-            print('')
-            n_nodes = x.n_nodes if x else '<unknown>'
-            print(
-                f"{pad}         {description}\n"
-                f"{pad} len(sources): {len(sources)}\n"
-                f"{pad}visited nodes: {n_nodes}\n"
-                f"{pad}       tokens: {len(self.tokens)}\n"
-                f"{pad}   setup time: {(t2-t1):4.2f} sec.\n"
-                f"{pad}    link time: {(t3-t2):4.2f} sec.")
-            print('')
-        #
-        # Print reports, in the user-defined order.
-        bad_reports = []
-        for report in self.reports:
-            helper = getattr(self, report.replace('-', '_'), None)
-            if helper:
-                try:
-                    helper()
-                except Exception as e:
-                    print(f"{tag}: Exception in {report}: {e}")
-                    return False
-            else:
-                bad_reports.append(report)
-        if bad_reports:
-            for report in list(set(bad_reports)):
-                print(f"{tag}: bad report option: {report!r}")
-        return True
     #@+node:ekr.20191122025155.1: *4* TR.show_coverage
     def show_coverage(self):
         if self.x:
@@ -4810,6 +4786,10 @@ class TestRunner:
             print(
                 f"\n{status} Ran {len(tests)} test{g.plural(len(tests))} "
                 f"in {test_time:4.2f} sec.")
+    #@+node:ekr.20191222073018.1: *4* TR.time
+    def time(self):
+        import time as time_module
+        return time_module.process_time()
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token
