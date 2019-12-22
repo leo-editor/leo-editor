@@ -3469,7 +3469,6 @@ class Fstringify (TokenOrderGenerator):
         """
         trace = False and not g.unitTesting
         # pylint: disable=import-self
-        import leo.core.leoBeautify as leoBeautify
         #
         # Flatten the token list.
         if trace: g.printObj(results_list, tag='TOKENS 1')
@@ -3496,21 +3495,25 @@ class Fstringify (TokenOrderGenerator):
         ### Doesn't work well.
         # tokens.append(self.new_token('fstringify', ' '))
         #
-        # Use ptb to clean up inter-token whitespace.
-        if trace: g.printObj(tokens, tag='TOKENS: before ptb')
-        x = leoBeautify.PythonTokenBeautifier()
-        x.dump_input_tokens = True
-        x.dump_output_tokens = True
-        result_tokens = x.scan_all_beautifier_tokens(tokens)
+        # Clean up inter-token whitespace.
+        result_tokens = tokens
+        ### Not yet. We need a TOG_Beautify class.
+            # import leo.core.leoBeautify as leoBeautify
+            # if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+            # x = leoBeautify.PythonTokenBeautifier(c=None)
+            # x.dump_input_tokens = True
+            # x.dump_output_tokens = True
+            # result_tokens = x.scan_all_beautifier_tokens(tokens)
         #
         # Create the result.
         if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
         result = ''.join([z.to_string() for z in result_tokens])
         # Ensure a space between the new fstring and a previous name.
-        if self.prev_token.kind == 'name':
-            result = ' ' + result
-        if self.add_trailing_ws:
-            result = result + ' '
+        ### Old code...
+            # if self.prev_token.kind == 'name':
+                # result = ' ' + result
+            # if self.add_trailing_ws:
+                # result = result + ' '
         return result
     #@+node:ekr.20191222102831.6: *4* fs.munge_spec
     def munge_spec(self, spec):
