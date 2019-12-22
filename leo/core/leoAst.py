@@ -1050,6 +1050,10 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
+    #@+node:ekr.20191222082453.1: *3* tog.fstringify (entry)
+    def fstringify(self, tokens, tree, file_name=''):
+        """Convert relevant % operators to fstrings."""
+        g.trace(f"{file_name}: {len(tokens)} tokens")
     #@+node:ekr.20191126074902.1: *3* tog.dump_one_node
     header_has_been_shown = False
 
@@ -4467,8 +4471,10 @@ class TestRunner:
             print(f"\nfstringify: {t2-t1:4.2f} sec.")
     #@+node:ekr.20191222074711.1: *4* TR.do_fstringify
     def do_fstringify(self):
-        g.trace()
-        g.printObj(self.sources, tag='Sources')
+        """Run TOG.fstringify."""
+        x = self.x
+        assert isinstance(x, TokenOrderGenerator), repr(x)
+        x.fstringify(x.tokens, x.tree, file_name='unit test')
     #@+node:ekr.20191205160754.4: *3* TR.run_tests
     def run_tests(self, flags, root):
         """The outer test runner."""

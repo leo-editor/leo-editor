@@ -1308,7 +1308,6 @@ fr"""{kinds}://[^\s'"]+[\w=/]"""
 f'f1' ;
 'done' ;
 #@+node:ekr.20191222064122.1: *4* @test fstringify w/ TOG
-# import time
 import leo.core.leoAst as leoAst
 if 1: # Not for production.
     import importlib
@@ -1322,8 +1321,8 @@ flags = [
     # 'dump-raw-tree-first',
     # 'dump-tokens-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
     'do-fstringify', # Required.
+    # 'show-exception-after-fail',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
@@ -1331,14 +1330,12 @@ flags = [
     # 'dump-raw-tree',
     # 'dump-tokens',
     'dump-tree',
-    'summarize',
+    # 'summarize',
     # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
 ]
 # Reload (if enabled), then make tests, run tests, and summarize.
 contents = """print('test %s=%s'%(a, 2))"""
 leoAst.TestRunner().fstringify(contents, flags)
-
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
