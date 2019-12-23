@@ -1147,14 +1147,12 @@ class TokenOrderGenerator:
             g.trace('===== no tokens', node.__class__.__name__)
             return []
         assert self.is_ancestor(node, token)
-        ### g.trace('Entry', node.__class__.__name__)
+        g.trace('Entry', node.__class__.__name__)
         # Scan forward...
         i = last_i = token.index
         while i >= 0:
             token2 = self.tokens[i-1]
-            if self.is_significant_token(token2):
-                ### g.trace('Sig i', token2.index, token2.kind, repr(token2.value))
-                assert token2.node, repr(token2)
+            if getattr(token2, 'node', None):
                 if self.is_ancestor(node, token2):
                     last_i = i - 1
                 else:
@@ -1165,14 +1163,13 @@ class TokenOrderGenerator:
         j = last_j = token.index
         while j + 1 < len(self.tokens):
             token2 = self.tokens[j+1]
-            ### g.trace('TEST', token2.index, token2.kind, token2.value)
-            if self.is_significant_token(token2):
-                ### g.trace('Sig j', token2.index, token2.kind)
-                assert token2.node, repr(token2)
+            g.trace('Test', token2.index, token2.kind, token2.value)
+            if getattr(token2, 'node', None):
                 if self.is_ancestor(node, token2):
+                    g.trace('Add', token2.index, token2.kind, token2.value)
                     last_j = j + 1
                 else:
-                    ### g.trace('END j', token2.index)
+                    g.trace('END j', token2.index)
                     break
             j += 1
         results = self.tokens[last_i : last_j + 1]
@@ -3660,6 +3657,9 @@ class Fstringify (TokenOrderGenerator):
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
             return [node.token_list]
+        ###if isinstance(node, ast.Call):
+            # We have to special-case this to deal with parens...
+            
         if isinstance(node, ast.Tuple):
             result = []
             for elt in node.elts:
@@ -3674,12 +3674,16 @@ class Fstringify (TokenOrderGenerator):
             return result
         #
         # Now we expect only one result. 
-        node2 = self.find_node_with_token_list(node)
-        if node2:
-            tokens = self.tokens_for_node(node2)
-            return [tokens]
-        g.trace('===== no token list', node.__class__.__name__)
-        return []
+        tokens = self.tokens_for_node(node)
+        if not tokens:
+            g.trace('===== no token list', node.__class__.__name__)
+        return [tokens]
+        ###
+            # node2 = self.find_node_with_token_list(node)
+            # if node2:
+                # tokens = self.tokens_for_node(node2)
+                # return [tokens]
+            # return []
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
     begin_end_stack = []

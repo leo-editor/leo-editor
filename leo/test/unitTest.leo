@@ -2264,8 +2264,9 @@ if 1: # Not for production.
     g.cls()
 contents = """\
 print('%s' % func(3))
-print('x %s=%s z'%(a * b, 2))
 """
+# Works...
+# print('x %s=%s z'%(a * b, 2))
 #
 # Flags for TR.run_tests.
 flags = [
