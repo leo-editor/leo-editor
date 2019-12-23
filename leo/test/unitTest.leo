@@ -2260,10 +2260,11 @@ else:
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 0: # Not for production.
+if 1: # Not for production.
     g.cls()
+# print('x %s=%s z'%(a * b, 2))
 contents = """\
-print('test %s=%s'%(a * b, 2 + f(3)))
+print('%s' % f(3))
 """
 #
 # Flags for TR.run_tests.
