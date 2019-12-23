@@ -1077,6 +1077,107 @@ class TokenOrderGenerator:
             print('All visitors covered')
         print('')
             
+    #@+node:ekr.20191223095408.1: *3* tog: Token/Node finders
+    #@+node:ekr.20191223053247.1: *4* tog.find_token
+    def find_token(self, node):
+        """Return any token descending from node."""
+        node2 = self.find_node_with_token_list(node)
+        if node2:
+            token = node2.token_list[0]
+            ### g.trace(token.index, token.kind, token.value)
+            return token
+        g.trace('===== no token list', node.__class__.__name__)
+        return None
+            
+    #@+node:ekr.20191223093539.1: *4* tog.find_node_with_token_list
+    def find_node_with_token_list(self, node):
+        """
+        Return any node in node's tree with a token_list.
+        """
+        # This table only has to cover fields for ast.Nodes that
+        # won't have any associated token.
+        fields = (
+            # Common...
+            'elt', 'elts', 'body', 'value',
+            # Less common...
+            'dims', 'ifs', 'names', 's',
+            'test', 'values', 'targets',
+        )
+        node1 = node
+        while node:
+            # First, try the node itself.
+            if getattr(node, 'token_list', None):
+                return node
+            # Second, try the most common nodes w/o token_lists:
+            if isinstance(node, ast.Call):
+                node = node.func
+            elif isinstance(node. ast.Tuple):
+                node = node.elts
+            # Finally, try all other nodes.
+            else:
+                # This will be used rarely.
+                for field in fields:
+                    if getattr(node, field, None):
+                        node = getattr(node, field)
+                        break
+                else:
+                    break
+        g.trace('===== no token list', node1.__class__.__name__)
+        return None
+    #@+node:ekr.20191223054300.1: *4* tog.is_ancestor
+    def is_ancestor(self, node, token):
+        """Return True if node is an ancestor of token."""
+        t_node = token.node
+        assert t_node, token
+        ### g.trace('ENTRY', token.kind, repr(token.value), node.__class__.__name__)
+        while t_node:
+            # g.trace(token.kind, t_node.__class__.__name__)
+            if t_node == node:
+                ### g.trace('FOUND', t_node.__class__.__name__)
+                return True
+            t_node = t_node.parent
+        ### g.trace('not FOUND')
+        return False
+    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node
+    def tokens_for_node(self, node):
+        """Return the list of all tokens descending from node."""
+        # Find any token descending from node.
+        token = self.find_token(node)
+        if not token:
+            g.trace('===== no tokens', node.__class__.__name__)
+            return []
+        assert self.is_ancestor(node, token)
+        ### g.trace('Entry', node.__class__.__name__)
+        # Scan forward...
+        i = last_i = token.index
+        while i >= 0:
+            token2 = self.tokens[i-1]
+            if self.is_significant_token(token2):
+                ### g.trace('Sig i', token2.index, token2.kind, repr(token2.value))
+                assert token2.node, repr(token2)
+                if self.is_ancestor(node, token2):
+                    last_i = i - 1
+                else:
+                    ### g.trace('END i', token2.index)
+                    break
+            i -= 1
+        # Scan backward...
+        j = last_j = token.index
+        while j + 1 < len(self.tokens):
+            token2 = self.tokens[j+1]
+            ### g.trace('TEST', token2.index, token2.kind, token2.value)
+            if self.is_significant_token(token2):
+                ### g.trace('Sig j', token2.index, token2.kind)
+                assert token2.node, repr(token2)
+                if self.is_ancestor(node, token2):
+                    last_j = j + 1
+                else:
+                    ### g.trace('END j', token2.index)
+                    break
+            j += 1
+        results = self.tokens[last_i : last_j + 1]
+        ### g.trace(results)
+        return results
     #@+node:ekr.20191223052749.1: *3* tog: Traversal
     #@+node:ekr.20191113063144.3: *4* tog.begin/end_visitor
     begin_end_stack = []
@@ -1350,88 +1451,6 @@ class TokenOrderGenerator:
             # Don't change the message. It may contain aligned lines.
             print(message)
         return AssignLinksError(header+message)
-    #@+node:ekr.20191223053247.1: *4* tog.find_token
-    def find_token(self, node):
-        """Return any token descending from node."""
-        node1 = node
-        # This table only has to cover fields for ast.Nodes that
-        # won't have any associated token.
-        fields = (
-            # Common...
-            'elt', 'elts', 'body', 'value',
-            # Less common...
-            'dims', 'ifs', 'names', 's',
-            'test', 'values', 'targets',
-        )
-        while node:
-            if getattr(node, 'token_list', None):
-                token = node.token_list[0]
-                g.trace(token.index, token.kind, token.value)
-                return token
-            if isinstance(node, ast.Call):
-                node = node.func
-            elif isinstance(node. ast.Tuple):
-                node = node.elts
-            else:
-                # This will be used rarely.
-                for field in fields:
-                    if getattr(node, field, None):
-                        node = getattr(node, field)
-                        break
-                else:
-                    break
-        g.trace('===== no token list', node1.__class__.__name__)
-        return None
-            
-    #@+node:ekr.20191223054300.1: *4* tog.is_ancestor
-    def is_ancestor(self, node, token):
-        """Return True if node is an ancestor of token."""
-        t_node = token.node
-        assert t_node, token
-        ### g.trace('ENTRY', token.kind, repr(token.value), node.__class__.__name__)
-        while t_node:
-            # g.trace(token.kind, t_node.__class__.__name__)
-            if t_node == node:
-                ### g.trace('FOUND', t_node.__class__.__name__)
-                return True
-            t_node = t_node.parent
-        ### g.trace('not FOUND')
-        return False
-    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node
-    def tokens_for_node(self, node):
-        """Return the list of all tokens descending from node."""
-        # Find any token descending from node.
-        token = self.find_token(node)
-        if not token:
-            g.trace('===== no tokens', node.__class__.__name__)
-            return []
-        assert self.is_ancestor(node, token)
-        # Scan forward...
-        i = last_i = token.index
-        while i >= 0:
-            token2 = self.tokens[i-1]
-            # Insignificant tokens have no 'node' field.
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_i = i - 1
-                else:
-                    break
-            i -= 1
-        # Scan backward...
-        j = last_j = token.index
-        while j + 1 < len(self.tokens):
-            token2 = self.tokens[j+1]
-            # Insignificant tokens have no 'node' field.
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_j = j + 1
-                else:
-                    break
-            j += 1
-        result = self.tokens[last_i:last_j]
-        # g.trace(''.join(z.to_string() for z in result))
-        g.trace(result)
-        return result
     #@+node:ekr.20191113063144.13: *3* tog: Visitors
     #@+node:ekr.20191113063144.54: *4* tog.op_name
     def op_name(self, node):
@@ -3409,9 +3428,8 @@ class Fstringify (TokenOrderGenerator):
             print(f"right tree...\n{AstDumper().brief_dump(node.right)}")
         lt_s = ''.join([z.to_string() for z in node.left.token_list])
         #
-        # Get the RHS values.
-        ### values = self.scan_rhs(node)
-        values = self.tokens_for_node(node.right)
+        # Get the RHS values, a list of token lists.
+        values = self.scan_rhs(node.right)
         if not values:
             return
         if trace and verbose:
@@ -3419,7 +3437,7 @@ class Fstringify (TokenOrderGenerator):
         #
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
-        if trace:
+        if trace and verbose:
             g.printObj(specs, tag='specs')
             g.trace(f"Looking for {len(specs)} specs")
         if len(values) != len(specs):
@@ -3431,7 +3449,7 @@ class Fstringify (TokenOrderGenerator):
         for spec_i, m in enumerate(specs):
             value = ''.join(z.to_string() for z in values[spec_i])
             if trace:
-                g.trace(spec_i, repr(value))
+                g.trace('item', spec_i, 'value', repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 results.append(Token('string', lt_s[i : start]))
@@ -3450,9 +3468,9 @@ class Fstringify (TokenOrderGenerator):
         tail = lt_s[i:]
         if tail:
             results.append(Token('string', tail))
-        if trace:
+        if trace and verbose:
             g.printObj(results)
-            g.trace('1', ''.join(z.to_string() for z in results))
+            g.trace(''.join(z.to_string() for z in results))
         result = self.compute_result(lt_s, results)
         if not result:
             return
@@ -3631,6 +3649,37 @@ class Fstringify (TokenOrderGenerator):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
+    #@+node:ekr.20191222104224.1: *4* fs.scan_rhs
+    def scan_rhs(self, node):
+        """
+        Scan the right-hand side of a potential f-string.
+        
+        Return a list of the token lists for each element.
+        """
+        #
+        # First, Try the most common cases.
+        if isinstance(node, ast.Str):
+            return [node.token_list]
+        if isinstance(node, ast.Tuple):
+            result = []
+            for elt in node.elts:
+                if hasattr(elt, 'token_list'):
+                    tokens = self.tokens_for_node(elt)
+                    result.append(tokens)
+                else:
+                    g.trace(f"No token list for {elt.__class__.__name__}")
+            if len(node.elts) != len(result):
+                g.trace('not ready yet: list mismatch')
+                return []
+            return result
+        #
+        # Now we expect only one result. 
+        node2 = self.find_node_with_token_list(node)
+        if node2:
+            tokens = self.tokens_for_node(node2)
+            return [tokens]
+        g.trace('===== no token list', node.__class__.__name__)
+        return []
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
     begin_end_stack = []
