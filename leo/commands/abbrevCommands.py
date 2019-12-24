@@ -232,11 +232,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
         if not w:
-            g.trace('no w')
+            if trace: g.trace('no w')
             return False
         ch = self.get_ch(event, stroke, w)
         if not ch:
-            g.trace('no ch')
+            if trace: g.trace('no ch')
             return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
