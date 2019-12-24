@@ -844,19 +844,20 @@ class AtFile:
         '''
         at = self
         s = at.openFileHelper(fileName)
-        if s is not None:
-            e, s = g.stripBOM(s)
-            if e:
-                # The BOM determines the encoding unambiguously.
-                s = g.toUnicode(s, encoding=e)
-            else:
-                # Get the encoding from the header, or the default encoding.
-                s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
-                e = at.getEncodingFromHeader(fileName, s_temp)
-                s = g.toUnicode(s, encoding=e)
-            s = s.replace('\r\n', '\n')
-            at.encoding = e
-            at.initReadLine(s)
+        if s is None:
+            return None
+        e, s = g.stripBOM(s)
+        if e:
+            # The BOM determines the encoding unambiguously.
+            s = g.toUnicode(s, encoding=e)
+        else:
+            # Get the encoding from the header, or the default encoding.
+            s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
+            e = at.getEncodingFromHeader(fileName, s_temp)
+            s = g.toUnicode(s, encoding=e)
+        s = s.replace('\r\n', '\n')
+        at.encoding = e
+        at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
     def openFileHelper(self, fileName):
