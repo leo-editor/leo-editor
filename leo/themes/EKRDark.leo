@@ -185,6 +185,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180318145515.822"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -908,26 +909,22 @@ QLineEdit#lineEdit {
 }
 </t>
 <t tx="ekr.20180318145515.822">QScrollBar::horizontal {
-   height: 7px;
+   height: 15px;
 }
 QScrollBar::vertical {
-   width: 7px;
+   width: 15px;
 }
 QScrollBar::add-page, QScrollBar::sub-page {
-  background: @dark-base03;
+   background: @dark-base03;
 }
 QScrollBar::handle {
-  background: @dark-base02;
-  color: @dark-base02;
+  background: @dark-base3;
 }
 QScrollBar::handle:hover {
-  background: @dark-base0;
-  color: @dark-base0;
+    background: @solarized-blue;
 }
-/* to make these show up, remove the ::handle style above... bug? */
 QScrollBar::add-line, QScrollBar::sub-line {
-  background: @dark-base01;
-  color: @dark-base01;
+   background: @solarized-blue;
 }</t>
 <t tx="ekr.20180318145515.823">QSplitter::handle {
   background: @dark-base01;
