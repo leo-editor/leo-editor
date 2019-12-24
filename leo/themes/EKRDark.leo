@@ -909,10 +909,10 @@ QLineEdit#lineEdit {
 }
 </t>
 <t tx="ekr.20180318145515.822">QScrollBar::horizontal {
-   height: 15px;
+   height: 18px;
 }
 QScrollBar::vertical {
-   width: 15px;
+   width: 18px;
 }
 QScrollBar::add-page, QScrollBar::sub-page {
    background: @dark-base03;
@@ -921,10 +921,10 @@ QScrollBar::handle {
   background: @dark-base1;
 }
 QScrollBar::handle:hover {
-    background: @solarized-blue;
+    background: @dark-base00;
 }
 QScrollBar::add-line, QScrollBar::sub-line {
-   background: @solarized-blue;
+   background: @dark-base00;
 }</t>
 <t tx="ekr.20180318145515.823">QSplitter::handle {
   background: @dark-base01;
