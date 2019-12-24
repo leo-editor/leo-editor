@@ -1141,16 +1141,13 @@ class TokenOrderGenerator:
     #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node & helper
     def tokens_for_node(self, node):
         """Return the list of all tokens descending from node."""
-        #
         # Find any token descending from node.
         token = self.find_token(node)
         if not token:
             g.trace('===== no tokens', node.__class__.__name__)
             return []
         assert self.is_ancestor(node, token)
-        ### g.trace('Entry', node.__class__.__name__)
-        #
-        # Scan backward...
+        # Scan backward.
         i = last_i = token.index
         while i >= 0:
             token2 = self.tokens[i-1]
@@ -1158,22 +1155,19 @@ class TokenOrderGenerator:
                 if self.is_ancestor(node, token2):
                     last_i = i - 1
                 else:
-                    ### g.trace('END i', token2.index)
                     break
             i -= 1
-        # Scan forward...
+        # Scan forward.
         j = last_j = token.index
         while j + 1 < len(self.tokens):
             token2 = self.tokens[j+1]
-            ### g.trace('Test', token2.index, token2.kind, token2.value)
             if getattr(token2, 'node', None):
                 if self.is_ancestor(node, token2):
-                    ### g.trace('Add', token2.index, token2.kind, token2.value)
                     last_j = j + 1
                 else:
-                    ### g.trace('END j', token2.index)
                     break
             j += 1
+        # Extend tokens to balance parens.
         results = self.tokens[last_i : last_j + 1]
         return self.match_parens(results)
     #@+node:ekr.20191224093336.1: *5* tog.match_parens
