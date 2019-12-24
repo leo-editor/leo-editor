@@ -227,13 +227,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         Words start with '@'.
         """
+        trace = 'keys' in g.app.debug
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
         if not w:
+            g.trace('no w')
             return False
         ch = self.get_ch(event, stroke, w)
         if not ch:
+            g.trace('no ch')
             return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
@@ -249,6 +252,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
+            if trace: g.trace(f"No prefix in {s!r}")
             return False
         # 448: Add abbreviations for commands.
         if 0: # Not worth documenting.
@@ -261,6 +265,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 c.doCommand(func, commandName, event)
                 return False
         c.abbrev_subst_env['_abr'] = word
+        if trace: g.trace(f"Found {word!r} = {val!r}")
         if tag == 'tree':
             self.root = p.copy()
             self.last_hit = p.copy()
