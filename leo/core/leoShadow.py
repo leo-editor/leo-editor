@@ -394,7 +394,7 @@ class ShadowController:
         self.encoding = at.encoding
         s = at.readFileToUnicode(old_private_file)
             # Sets at.encoding and inits at.readLines.
-        old_private_lines = g.splitLines(s)
+        old_private_lines = g.splitLines(s or '')  # #1466.
         s = at.readFileToUnicode(old_public_file)
         if at.encoding != self.encoding:
             g.trace(f"can not happen: encoding mismatch: {at.encoding} {self.encoding}")

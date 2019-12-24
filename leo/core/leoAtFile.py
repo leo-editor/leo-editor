@@ -270,7 +270,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
         return c
-    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (changed)
+    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (bug fix)
     def openFileForReading(self, fromString=False):
         """
         Open the file given by at.root.
@@ -297,9 +297,14 @@ class AtFile:
         try:
             s = at.readFileToUnicode(fn)
                 # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
+            # #1466.
+            if s is None:
+                # The error has been given.
+                at._file_bytes = g.toEncodedString('')
+                return None, None
             at.warnOnReadOnlyFile(fn)
-        except IOError:
-            at.error(f"can not open: '@file {fn}'")
+        except Exception:
+            at.error(f"unexpected exception opening: '@file {fn}'")
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
@@ -844,6 +849,7 @@ class AtFile:
         '''
         at = self
         s = at.openFileHelper(fileName)
+            # Catches all exceptions.
         if s is None:
             return None
         e, s = g.stripBOM(s)
