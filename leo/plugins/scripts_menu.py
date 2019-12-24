@@ -70,7 +70,6 @@ def create_inner_scripts(c, directory, files):
         prefix = g.os_path_finalize_join(g.app.loadDir, "..", "..")
         name = filename[len(prefix)+1:-3]
         name = name.replace('\\','.').replace('/','.')
-        g.trace(name)
         
         def inner_script_callback(event=None, name=name):
             g.import_module(name)
