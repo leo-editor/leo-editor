@@ -440,7 +440,6 @@
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
-<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
@@ -2517,7 +2516,7 @@ To activate the rst3 plugin, do the following:
 beautify-node
 beautify-tree
 </t>
-<t tx="ekr.20160122104400.1"></t>
+<t tx="ekr.20160122104400.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
 <t tx="ekr.20160412101537.1">'''Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb'''
 import nbformat
 @others
@@ -2559,7 +2558,7 @@ assert p, h
 @others
 Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
-<t tx="ekr.20160510132151.1">c.backup_helper(sub_dir='leoPlugins')
+<t tx="ekr.20160510132151.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">c.backup_helper(sub_dir='leoPlugins')
 </t>
 <t tx="ekr.20161030154232.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
 # aTestExample notFoundExample.
@@ -2863,8 +2862,8 @@ if 0: # A more complex example, for the C language.
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20170203054655.1"></t>
-<t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
+<t tx="ekr.20170203054655.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
+<t tx="ekr.20170420085814.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">'''Recursively import all python files in a directory and clean the result.'''
 dir_ = r'C:\leo.repo\leo-editor\leo\plugins\pyzo'
 g.cls()
 c.recursiveImport(
@@ -2876,7 +2875,7 @@ c.recursiveImport(
 )
 </t>
 <t tx="ekr.20170709095709.1">**Temporary**: So I can fix #516 without going crazy.</t>
-<t tx="ekr.20170811173231.1">@language python
+<t tx="ekr.20170811173231.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language python
 import os
 import subprocess
 import sys
@@ -2907,7 +2906,7 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20181017164437.1"># Replace underscore by - in settings names.
+<t tx="ekr.20181017164437.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"># Replace underscore by - in settings names.
 g.cls()
 import re
 kinds = (

@@ -6,7 +6,7 @@
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20190412154439.1: ** Abandoned projects
+#@+node:ekr.20190412154439.1: **  Abandoned projects
 #@+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane
 https://github.com/leo-editor/leo-editor/issues/396
 
@@ -2971,6 +2971,97 @@ def regularize_node(self, p, scanner):
     if not ok:
         g.es_print('please regularize:', p.h)
     return ok
+#@+node:ekr.20191224054725.1: **  Retired plugins
+#@+node:ekr.20191224054733.1: *3* Retired plugin: scripts_menu.py
+"""Creates a Scripts menu for LeoPy.leo."""
+
+# The new Execute Script command seems much safer and more convenient.
+
+@language python
+@tabwidth -4
+
+import leo.core.leoGlobals as g
+import glob
+import os
+
+__version__ = "1.5"
+
+@others
+#@+node:ekr.20191224054733.2: *4*  init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    # Ok for unit testing: creates menu.
+    g.registerHandler("create-optional-menus",create_scripts_menu)
+    g.plugin_signon(__name__)
+    return True
+#@+node:ekr.20191224054733.3: *4* create_scripts_menu & helpers
+def create_scripts_menu (tag,keywords):
+    """
+    Populate a new Scripts menu with all .py files
+    in leo/scripts and subdirectories.
+    """
+    c = keywords.get("c")
+    if not c:
+        return
+    # finalize = g.os_path_finalize
+    join = g.os_path_finalize_join
+    path = join(g.app.loadDir,"..","scripts")
+    if not os.path.exists(path):
+        return
+    # Get all files and directories.
+    entries = glob.glob(join(path, "*"))
+    # Get all top-level modules.
+    top_mods = glob.glob(join(path, "*.py"))
+    top_mods = [z for z in top_mods
+        if not z.endswith('__init__.py')]
+    # Get all inner modules.
+    dirs = [f for f in entries if os.path.isdir(f)]
+    inner_mods = [glob.glob(join(z, "*.py")) for z in dirs]
+    inner_mods = [z for z in inner_mods if z]
+    # g.printObj(top_mods, tag='top_mods')
+    # g.printObj(inner_mods, tag='inner_mods')
+    if not top_mods and not inner_mods:
+        return
+    # Create the top-level scripts menu.
+    scriptsMenu = c.frame.menu.createNewMenu("&Scripts")
+    create_top_level_scripts(c, scriptsMenu, top_mods)
+    for directory in dirs:
+        files = glob.glob(join(directory, "*.py"))
+        if files:
+            create_inner_scripts(c, directory, files)
+#@+node:ekr.20191224054733.4: *5* create_inner_scripts
+def create_inner_scripts(c, directory, files):
+    """Create a submenu of the Scripts menu."""
+    name = os.path.join("scripts", g.shortFileName(directory))
+    menu = c.frame.menu.createNewMenu(name,"&Scripts")
+    
+    # Populate the submenu.
+    table = []
+    for filename in files:
+        if filename.endswith('__init__.py'):
+            continue
+        prefix = g.os_path_finalize_join(g.app.loadDir, "..", "..")
+        name = filename[len(prefix)+1:-3]
+        name = name.replace('\\','.').replace('/','.')
+        
+        def inner_script_callback(event=None, name=name):
+            g.import_module(name)
+
+        table.append((name, None, inner_script_callback))
+    c.frame.menu.createMenuEntries(menu, table, dynamicMenu=True)
+#@+node:ekr.20191224054733.5: *5* create_top_level_scripts
+def create_top_level_scripts(c, scriptsMenu, top_scripts):
+ 
+    table = []
+    for script in sorted(top_scripts):
+        name = g.shortFileName(script)[:-3]
+
+        def script_callback(event=None, name=name):
+            g.import_module(f"leo.scripts.{name}")
+
+        table.append((name, None, script_callback))
+    c.frame.menu.createMenuEntries(
+        scriptsMenu, table, dynamicMenu=True)
 #@+node:ekr.20190506094028.1: ** Demo stuff
 #@+node:ekr.20190506094028.2: *3* @@button demo1 @key=Ctrl-8
 g.cls()
@@ -3385,283 +3476,6 @@ def test_beautifier(c, h, p, settings):
         print('*************** fail: %s ***************' % (h))
     return beautifier
         # For statistics.
-#@+node:ekr.20191110074532.1: ** From leoAst.py
-#@+node:ekr.20191109055417.1: *3*  function: mark_tokens_visit_after_children
-@tabwidth -2
-
-try:
-    import asttokens
-    from asttokens import mark_tokens
-except Exception:
-    mark_tokens = None
-    asttokens = None 
-
-def mark_tokens_visit_after_children(self, node, parent_token, token):
-  
-  """
-  Monkey-patched version of mark_tokens.MarkTokens._visit_after_children.
-  
-  We must duplicate that method because the nfirst and nlast vars are not
-  available.
-  """
-  # pylint: disable=no-member
-    # pylint doesn't know about monkey-patches.
-  from asttokens.util import is_stmt
-    # Essential
-  #
-  # Start of MarkTokens._visit_after_children.
-  first = token
-  last = None
-  for child in self._iter_children(node):
-    if not first or child.first_token.index < first.index:
-      first = child.first_token
-    if not last or child.last_token.index > last.index:
-      last = child.last_token
-
-  # If we don't have a first token from _visit_before_children, and there were no children, then
-  # use the parent's token as the first token.
-  first = first or parent_token
-
-  # If no children, set last token to the first one.
-  last = last or first
-
-  # Statements continue to before NEWLINE. This helps cover a few different cases at once.
-  if is_stmt(node):
-    last = self._find_last_in_line(last)
-
-  # Capture any unmatched brackets.
-  first, last = self._expand_to_matching_pairs(first, last, node)
-
-  # Give a chance to node-specific methods to adjust.
-  nfirst, nlast = self._methods.get(self, node.__class__)(node, first, last)
-
-  if (nfirst, nlast) != (first, last):
-    # If anything changed, expand again to capture any unmatched brackets.
-    nfirst, nlast = self._expand_to_matching_pairs(nfirst, nlast, node)
-
-  node.first_token = nfirst
-  node.last_token = nlast
-  #
-  # End of MarkTokens._visit_after_children.
-  #
-  # New code: Create bi-directional links between tokens and ast nodes.
-  # 
-  # Inject a "tree" ivar into each token
-  nfirst.tree = node
-  nlast.tree = node
-  #
-  # Inject a "ekr_token_info_dict" into the node.
-  tag = 'ekr_token_info_dict'
-  assert not hasattr(node, tag), (repr(node), getattr(node, tag))
-  d = {}
-  # nfirst and nlast will often be the same.
-  d [nfirst.index] = nfirst
-  d [nlast.index] = nlast
-  setattr(node, tag, d)
-#@+node:ekr.20191116160325.1: *3* OLD class Linker
-class Linker:
-
-    @others
-#@+node:ekr.20191115034242.1: *4* links.assign_links
-def assign_links(self, results, tokens, tree):
-    """Assign two-way links between tokens and results."""
-    self.results = results
-    self.tokens = tokens
-    self.node = tree
-    self.rx, self.tx = 0, 0
-    while self.tx < len(self.tokens) and self.rx < len(self.results):
-        assert self.node, g.callers()
-        kind = self.tokens[self.tx].kind
-        name = f"{kind}_handler"
-        handler = getattr(self, name)
-        # print(f"{name:12} {rx:<3} {tx:<3} {self.node.__class__.__name__}")
-        handler()
-        self.tx += 1
-#@+node:ekr.20191116153348.1: *4* links.set_links
-def set_links(self, rx, tx):
-    """Set two-way links between self.tokens[tx] and self.results[rx].node"""
-    # Check everything.
-    token = self.tokens[tx]
-    result = self.results[rx] 
-    node = result.node
-    assert isinstance(node, ast.AST), g.callers()
-    assert isinstance(token, Token), g.callers()
-    assert isinstance(result, Token), g.callers()
-    if token.index is None:
-        raise AssignLinksError(
-            f"set_links: token.index is None: "
-            f"token: {token.error_dump()}")
-    if token.level is None:
-        raise AssignLinksError(
-            f"set_links: token.level is None: "
-            f"token: {token.error_dump()}")
-    # Patch the token.
-    token.node = node
-    # Create/update node.token_list.
-    token_list = getattr(node, 'token_list', [])
-    token_list.append(token)
-    node.token_list = token_list
-    # Update ivars.
-    self.node = node
-    self.rx = rx + 1
-    # The main loop updates self.tx.
-#@+node:ekr.20191117010102.1: *4* links.find_in_results
-def find_in_results(self, rx, tx, optional=False):
-    """
-    Scan forward from self.results[rx], looking for self.tokens[tx].kind.
-    """
-    trace = True and not g.unitTesting
-    kind = self.tokens[tx].kind
-    tag = 'find_in_results:'
-    end_message = f"{tag} at end: {kind} not found starting at {rx}"
-    if trace: print(f"{tag} ENTRY: {kind:12} tx: {tx} rx: {rx}")
-    while rx < len(self.results):
-        r = self.results[rx]
-        if r.kind == kind:
-            if trace: print(f"{tag} FOUND: {kind:12} tx: {tx} rx: {rx}")
-            return rx
-        if r.kind in ('name', 'number', 'op'):
-            if optional:
-                if trace: print(f"{tag} SKIP: {kind:12} tx: {tx} rx: {rx}")
-                return None
-            # This is the only possible serious failure.
-            message = f"{tag} MISMATCH: tx: {tx} rx: {rx}. target: {kind}, found: {r.kind}"
-            self.sync_error(message, rx, tx)
-            raise AssignLinksError(message)
-        if trace: print(f"{tag} SKIP:  {r.kind:12} tx: {tx} rx: {rx}")
-        rx += 1
-    raise AssignLinksError(end_message)
-#@+node:ekr.20191117121053.1: *4* links.sync_error
-def sync_error(self, message, rx, tx):
-    
-    print('')
-    print(message)
-    print('\nNearby tokens...\n')
-    for tx2 in range(max(0,tx-5),tx):
-        t = self.tokens[tx2]
-        print(t.error_dump())
-    print('\nNearby results...\n')
-    for rx2 in range(max(0,rx-5),rx):
-        r = self.results[rx2]
-        print(r.error_dump())
-    print('')
-#@+node:ekr.20191116164159.1: *4* links: Visitors
-#@+node:ekr.20191116160124.1: *5* links.comment, dedent, indent
-# The results list never contains items matching these tokens.
-
-def comment_handler(self):
-    pass
-
-def dedent_handler(self):
-    pass
-    
-def indent_handler(self):
-    pass
-#@+node:ekr.20191116152657.1: *5* links.encoding
-def encoding_handler(self):
-    """Handle an encoding token. It should appear first"""
-    rx, tx = self.rx, self.tx
-    if tx == 0:
-        # Update the links and ivars.
-        self.set_links(rx, tx)
-        return
-    raise AssignLinksError(f"Uunexpected 'encoding' token at tx={tx}")
-#@+node:ekr.20191117015348.1: *5* links.endmarker (revise)
-def endmarker_handler(self):
-
-    rx, tx = self.rx, self.tx
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx)
-    # Update the links and ivars.
-    self.set_links(rx2, tx)
-#@+node:ekr.20191116161848.1: *5* links.name
-def name_handler(self):
-    """
-    'name' tokens block lookahead.
-    """
-    rx, tx = self.rx, self.tx
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx)
-    # Update the links and ivars.
-    self.set_links(rx2, tx)
-#@+node:ekr.20191116161718.1: *5* links.newline
-def newline_handler(self):
-    """
-    'newline' tokens represent newlines in the token stream.
-    
-    They may not correspond exactly to results.
-
-    Note that 'nl' tokens represent newlines in continued strings.
-    """
-    rx, tx = self.rx, self.tx
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx, optional=True)
-    if rx2:
-        # Update the links and ivars.
-        self.set_links(rx2, tx)
-#@+node:ekr.20191117073210.1: *5* links.nl & ws
-# The results list never contains these tokens.
-
-def nl_handler(self):
-    """
-    Handle a 'nl' token.
-    These tokens follow comment tokens and multi-line string tokens.
-    """
-    pass
-
-def ws_handler(self):
-    """
-    'ws' tokens represent *actual* whitespace in the token stream, and
-    *suggested* whitespace in the results list.
-    
-    This handler just skips this token, leaving it for later to decide
-    whether to associate the token an ast node.
-    """
-    pass
-#@+node:ekr.20191116161922.1: *5* links.number
-def number_handler(self):
-    """
-    'number' tokens block lookahead.
-    """
-    rx, tx = self.rx, self.tx
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx)
-    # Update the links and ivars.
-    self.set_links(rx2, tx)
-#@+node:ekr.20191116161828.1: *5* links.op
-def op_handler(self):
-    """The 'op' token blocks lookahead."""
-    rx, tx = self.rx, self.tx
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx)
-    # Update the links and ivars.
-    self.set_links(rx2, tx)
-#@+node:ekr.20191116161759.1: *5* links.string
-def string_handler(self):
-    """
-    'string' tokens are a difficult special case. They are associated with
-    normal strings and with docstrings. Therefore, scanning for them must
-    be optional, which can cause problems laters.
-    
-    Also, the spelling of strings in tokens is the "ground truth". It should
-    replace the spelling of strings in results.
-    """
-    rx, tx = self.rx, self.tx
-    # For later.
-    old_token = self.tokens[tx]
-    # Find the matching result.
-    rx2 = self.find_in_results(rx, tx)
-    # Update the links and ivars.
-    self.set_links(rx2, tx)
-    # A special case.  Use the *token's* spelling in the result.
-    result = self.results[rx2]
-    if old_token.value != result.value:
-        self.results[rx2].value = old_token.value
-#@+node:ekr.20190923093951.1: ** leo_excepthook
-def leo_excepthook(type, value, tb):
-    # Note: Leo will still exit!
-    g.trace(f"Uncaught Python exception: {value}\n")
-    g.es_exception()
 #@+node:ekr.20191217092340.1: ** From leoAtFile.py
 @nosearch
 #@+node:ekr.20190111112432.1: *3* at.checkDirectory
@@ -3689,127 +3503,6 @@ def checkPath(self, fileName):
     if g.os_path_exists(fileName):
         return at.isWritable(fileName)
     return True
-#@+node:ekr.20031218072017.3138: ** g.executeScript
-def executeScript(name):
-    """Execute a script whose short python file name is given.
-
-    This is called only from the scripts_menu plugin."""
-    mod_name, ext = g.os_path_splitext(name)
-    try:
-        g.import_module(mod_name)  # #1454.
-    except Exception:
-        g.error("exception executing", name)
-        g.es_exception()
-#@+node:ekr.20191220052124.1: ** import functions from leoGlobals.py
-#@+node:ekr.20041219071407: *3* g.importExtension
-def importExtension(moduleName, pluginName=None, verbose=False, required=False):
-    """
-    Try to import a module. If that fails, try to import the module from
-    Leo's extensions directory.
-
-    moduleName is the module's name, without file extension.
-    """
-    module = g.importModule(moduleName, pluginName=pluginName, verbose=verbose)
-    if not module and verbose:
-        g.pr(f"Warning: '{pluginName}' failed to import '{moduleName}'")
-    return module
-#@+node:ekr.20031218072017.2278: *3* g.importFromPath
-def importFromPath(moduleName, path, verbose=False):
-    """
-    Import a module whose name is given from the directory given by path.
-
-    **Warning**: This is a thin wrapper for imp.load_module, which is
-    equivalent to reload! Reloading Leo files while running will crash Leo.
-    """
-    trace = 'plugins' in g.app.debug
-    path = g.os_path_normpath(path)
-    assert isinstance(path, str), repr(path)
-    #
-    # Bug fix 2011/10/28: Always import the path from the specified path!
-    try:
-        module, theFile = None, None
-        try:
-            data = imp.find_module(moduleName, [path])  # This can open the file.
-            theFile, pathname, description = data
-            module = imp.load_module(moduleName, theFile, pathname, description)
-            if trace: g.trace('loaded', moduleName, 'from', path)
-        except ImportError:
-            if trace or verbose:
-                g.error(f"no module {moduleName} in path {path}")
-        except UiTypeException:
-            if not g.unitTesting and not g.app.batchMode:
-                g.es_print(f"Plugin {moduleName} does not support {g.app.gui.guiName()} gui")
-        except Exception:
-            g.error(f"unexpected exception in g.importFromPath({moduleName})")
-            g.es_exception()
-    # Put no return statements before here!
-    finally:
-        if theFile: theFile.close()
-    return module
-#@+node:ekr.20041219095213.1: *3* g.importModule
-def importModule(moduleName, pluginName=None, verbose=False):
-    """
-    Try to import a module as Python's import command does.
-
-    moduleName is the module's name, without file extension.
-
-    This function first attempts to import from sys.modules,
-    then from the extensions and external directories.
-    """
-    # Important: g is Null during startup.
-    trace = 'plugins' in g.app.debug
-    module = sys.modules.get(moduleName)
-    if module:
-        return module
-    if verbose: g.blue(f"loading {moduleName}")
-    exceptions = []
-    try:
-        theFile = None
-        try:
-            # New in Leo 4.7. We no longer add Leo directories to sys.path,
-            # so search extensions and external directories here explicitly.
-            for findPath in (None, 'extensions', 'external'):
-                if findPath:
-                    findPath2 = g.os_path_finalize_join(g.app.loadDir, '..', findPath)
-                    findPath3 = g.os_path_finalize_join(findPath2, moduleName)
-                    findPath = [findPath2, findPath3]
-                if trace and verbose:
-                    g.trace('findPath', findPath)
-                try:
-                    data = imp.find_module(moduleName, findPath)  # This can open the file.
-                    theFile, pathname, description = data
-                    if trace and verbose:
-                        g.trace(theFile, moduleName, pathname)
-                    module = imp.load_module(moduleName, theFile, pathname, description)
-                    if module:
-                        # This trace is usually annoying.
-                        if trace and verbose: g.es(f"{moduleName} loaded")
-                        break
-                except Exception:
-                    t, v, tb = sys.exc_info()
-                    del tb  # don't need the traceback
-                    v = v or str(t)  # in case v is empty, we'll at least have the execption type
-                    if trace and verbose:
-                        g.trace(v, moduleName, findPath)
-                    if v not in exceptions:
-                        exceptions.append(v)
-            else:
-                # Unable to load module, display all exception messages
-                if verbose:
-                    for e in exceptions:
-                        g.warning(e)
-        except Exception:
-            # Importing a module can throw exceptions other than ImportError.
-            if verbose:
-                t, v, tb = sys.exc_info()
-                del tb  # don't need the traceback
-                v = v or str(t)  # in case v is empty, we'll at least have the execption type
-                g.es_exception(v)
-    finally:
-        if theFile: theFile.close()
-    if not module and verbose:
-        g.cantImport(moduleName, pluginName=pluginName, verbose=verbose)
-    return module
 #@-all
 #@@nosearch
 #@-leo
