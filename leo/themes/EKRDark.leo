@@ -303,7 +303,7 @@ DejaVu Sans Mono</t>
 <t tx="ekr.20180318145515.201"></t>
 <t tx="ekr.20180318145515.202"></t>
 <t tx="ekr.20180318145515.203">@LeoYellow</t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e">@language rest
+<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
 @wrap
 @tabwidth -2
 
@@ -918,7 +918,7 @@ QScrollBar::add-page, QScrollBar::sub-page {
    background: @dark-base03;
 }
 QScrollBar::handle {
-  background: @dark-base3;
+  background: @dark-base1;
 }
 QScrollBar::handle:hover {
     background: @solarized-blue;
