@@ -2264,9 +2264,9 @@ if 1: # Not for production.
     g.cls()
 contents = """\
 print('%s' % func(3))
+print('x %s=%s z'%(a * b, 2))
 """
 # Works...
-# print('x %s=%s z'%(a * b, 2))
 #
 # Flags for TR.run_tests.
 flags = [
@@ -2282,11 +2282,11 @@ flags = [
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-tokens',
-    'dump-tree',
+    # 'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]
-# Reload (if enabled), then make tests, run tests, and summarize.
+# Make tests and run tests.
 leoAst.TestRunner().fstringify(contents, flags)
 </t>
 </tnodes>

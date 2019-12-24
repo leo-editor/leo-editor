@@ -1138,17 +1138,19 @@ class TokenOrderGenerator:
             t_node = t_node.parent
         ### g.trace('not FOUND')
         return False
-    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node
+    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node & helper
     def tokens_for_node(self, node):
         """Return the list of all tokens descending from node."""
+        #
         # Find any token descending from node.
         token = self.find_token(node)
         if not token:
             g.trace('===== no tokens', node.__class__.__name__)
             return []
         assert self.is_ancestor(node, token)
-        g.trace('Entry', node.__class__.__name__)
-        # Scan forward...
+        ### g.trace('Entry', node.__class__.__name__)
+        #
+        # Scan backward...
         i = last_i = token.index
         while i >= 0:
             token2 = self.tokens[i-1]
@@ -1159,22 +1161,51 @@ class TokenOrderGenerator:
                     ### g.trace('END i', token2.index)
                     break
             i -= 1
-        # Scan backward...
+        # Scan forward...
         j = last_j = token.index
         while j + 1 < len(self.tokens):
             token2 = self.tokens[j+1]
-            g.trace('Test', token2.index, token2.kind, token2.value)
+            ### g.trace('Test', token2.index, token2.kind, token2.value)
             if getattr(token2, 'node', None):
                 if self.is_ancestor(node, token2):
-                    g.trace('Add', token2.index, token2.kind, token2.value)
+                    ### g.trace('Add', token2.index, token2.kind, token2.value)
                     last_j = j + 1
                 else:
-                    g.trace('END j', token2.index)
+                    ### g.trace('END j', token2.index)
                     break
             j += 1
         results = self.tokens[last_i : last_j + 1]
-        ### g.trace(results)
-        return results
+        return self.match_parens(results)
+    #@+node:ekr.20191224093336.1: *5* tog.match_parens
+    def match_parens(self, tokens):
+        """
+        Extend the tokens in the token list to include unmatched trailing
+        closing parens.
+        """
+        if not tokens:
+            return tokens
+        # Calculate paren level...
+        level = 0
+        for token in tokens:
+            if token.kind == 'op' and token.value == '(':
+                level += 1
+            if token.kind == 'op' and token.value == ')':
+                level -= 1
+        # Find matching ')' tokens...
+        if level > 0:
+            i = i1 = tokens[-1].index
+            while level > 0 and i + 1 < len(self.tokens):
+                token = self.tokens[i+1]
+                if token.kind == 'op' and token.value == ')':
+                    level -= 1
+                elif self.is_significant_token(token):
+                    ### g.trace('Stop', token.kind, repr(token.value))
+                    break
+                i += 1
+            tokens.extend(self.tokens[i1 + 1 : i + 1])
+        if level != 0:
+            g.trace('FAIL:', ''.join(z.to_string() for z in tokens))
+        return tokens
     #@+node:ekr.20191223052749.1: *3* tog: Traversal
     #@+node:ekr.20191113063144.3: *4* tog.begin/end_visitor
     begin_end_stack = []
@@ -3445,7 +3476,7 @@ class Fstringify (TokenOrderGenerator):
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = ''.join(z.to_string() for z in values[spec_i])
-            if trace:
+            if trace and verbose:
                 g.trace('item', spec_i, 'value', repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
@@ -3657,9 +3688,6 @@ class Fstringify (TokenOrderGenerator):
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
             return [node.token_list]
-        ###if isinstance(node, ast.Call):
-            # We have to special-case this to deal with parens...
-            
         if isinstance(node, ast.Tuple):
             result = []
             for elt in node.elts:
@@ -3678,12 +3706,6 @@ class Fstringify (TokenOrderGenerator):
         if not tokens:
             g.trace('===== no token list', node.__class__.__name__)
         return [tokens]
-        ###
-            # node2 = self.find_node_with_token_list(node)
-            # if node2:
-                # tokens = self.tokens_for_node(node2)
-                # return [tokens]
-            # return []
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
     begin_end_stack = []
