@@ -3679,16 +3679,16 @@ class Fstringify (TokenOrderGenerator):
         # Replace the tokens...
         i, j = NodeTokens().token_range(node)
         i1 = i
-        g.trace('\n', node.__class__.__name__, s)
+        ### g.trace('\n', node.__class__.__name__, s)
         tokens = self.tokens[i:j+1]
-        g.printObj(tokens, tag='Before match_parens')
+        ### g.printObj(tokens, tag='Before match_parens')
         tokens = self.match_parens(tokens)
-        g.printObj(tokens, tag='After match_parens')
-        for i, token in enumerate(tokens):
-            if i == 0:
-                self.replace_token(i1 + i, 'string', s)
-            else:
-                self.replace_token(i1 + i, 'killed', '')
+        ### g.printObj(tokens, tag='After match_parens')
+        self.replace_token(i, 'string', s)
+        j = 1
+        while j < len(tokens):
+            self.replace_token(i1 + j, 'killed', '')
+            j += 1
         # Replace the node.
         if 0:
             new_node = ast.Str()
@@ -5183,7 +5183,6 @@ class TestRunner:
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree
         if self.x:
-            g.trace(tree)
             print(brief_dump(tree))
             return
         try:

@@ -2282,8 +2282,8 @@ flags = [
     # 'dump-contents',
     # 'dump-raw-tree',
     # 'dump-results',
-    # 'dump-tokens',
-    'dump-tree',
+    'dump-tokens',
+    # 'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]
