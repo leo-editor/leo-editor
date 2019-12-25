@@ -1077,6 +1077,19 @@ class TokenOrderGenerator:
             print('All visitors covered')
         print('')
             
+    #@+node:ekr.20191225061516.1: *3* tog: Replacers
+    #@+node:ekr.20191225055626.1: *4* tog.replace_token
+    def replace_token(self, i, kind, value, new_node=None):
+        """Replace kind and value of self.tokens[i]"""
+        # g.trace(i, kind, repr(value))
+        token = self.tokens[i]
+        token.kind = kind
+        token.value = value
+        token.node = new_node
+    #@+node:ekr.20191225055616.1: *4* tog.replace_node (to do)
+    def replace_node(self, new_node, old_node):
+        
+        g.trace(new_node, old_node)
     #@+node:ekr.20191223095408.1: *3* tog: Token/Node finders
     #@+node:ekr.20191223053247.1: *4* tog.find_token
     def find_token(self, node):
@@ -3498,9 +3511,8 @@ class Fstringify (TokenOrderGenerator):
             return
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
-        if trace:
-            g.trace(result)
-        ### To do: update the tokens and the tree.
+        # Adjust the tree and the token list.
+        self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *4* fs.clean_ws
     ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
 
@@ -3516,39 +3528,14 @@ class Fstringify (TokenOrderGenerator):
 
         Return the result string, or None if there are errors.
         """
-        import leo.core.leoBeautify as leoBeautify
-            ### This dependency should be removed.
-        #
-        # Fail if the result would include a backslash within { and }.
+        # Fail if there is a backslash within { and }.
         if not self.check_newlines(tokens):
             return None
-        #
         # Ensure consistent quotes.
-        ok = self.change_quotes(string_val, tokens)
-        if not ok:
+        if not self.change_quotes(string_val, tokens):
             self.error('string contains backslashes')
             return None
-        #
-        ### Doesn't work well.
-            # Ensure one blank after the f-string.
-            # tokens.append(self.new_token('fstringify', ' '))
-        #
-        # Clean up inter-token whitespace.
-        if 0:
-            x = leoBeautify.PythonTokenBeautifier(c=None)
-            x.dump_input_tokens = True
-            x.dump_output_tokens = True
-            tokens = x.scan_all_beautifier_tokens(tokens)
-        #
-        # Create the result.
-        result = ''.join([z.to_string() for z in tokens])
-        # Ensure a space between the new fstring and a previous name.
-        ### Old code...
-            # if self.prev_token.kind == 'name':
-                # result = ' ' + result
-            # if self.add_trailing_ws:
-                # result = result + ' '
-        return result
+        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20191222102831.2: *5* fs.check_newlines
     def check_newlines(self, tokens):
         """
@@ -3594,14 +3581,12 @@ class Fstringify (TokenOrderGenerator):
             g.es_print('no string_val!')
             return False
         delim = string_val[0]
-        ### delim2 = '"' if delim == "'" else "'"
-        #
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
         token1 = aList[1]
         token_last = aList[-1]
         for token in token0, token1, token_last:
-            if token.kind != 'string': ### 'fstringify':
+            if token.kind != 'string':
                 g.es_print(f"unexpected token: {token!r}")
                 return False
         if token0.value != 'f':
@@ -3615,22 +3600,18 @@ class Fstringify (TokenOrderGenerator):
         if delim != val_last:
             g.es_print('token[-1] error!', delim, val_last, repr(token_last))
             return False
-        # g.printObj(aList)
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
         token1.value = delim + token1.value[1:]
         aList[1] = token1
         token_last.value = token_last.value[:-1] + delim
         aList[-1] = token_last
-        #
         # Replace delim by delim2 in all inner tokens.
         for z in aList[2:-1]:
-            ### g.trace(z)
             if not isinstance(z, Token):
                 g.es_print('Bad token:', repr(z))
                 return False
             z.value = z.value.replace(delim, delim2)
-        # g.printObj(aList)
         return True
     #@+node:ekr.20191222102831.6: *4* fs.munge_spec
     def munge_spec(self, spec):
@@ -3656,6 +3637,27 @@ class Fstringify (TokenOrderGenerator):
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail
+    #@+node:ekr.20191225054848.1: *4* fs.replace
+    def replace(self, node, s, values):
+        """
+        Replace node with an ast.Str node for s.
+        Replace all tokens in the range of values with a single 'string' node.
+        """
+        # Replace the node.
+        g.trace('\n', s)
+        new_node = ast.Str()
+        new_node.s = s
+        self.replace_node(new_node, node)
+        # Replace the tokens.
+        ### g.printObj(values)
+        first, last = values[0][0], values[-1][-1]
+        i, j = first.index, last.index
+        self.replace_token(i, 'string', s, new_node=new_node)
+        g.trace(i, j)
+        i += 1
+        while i <= j:
+            self.replace_token(i, 'killed', '')
+            i += 1
     #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
@@ -3739,6 +3741,10 @@ class Fstringify (TokenOrderGenerator):
     #@+node:ekr.20191222091058.1: *4* fs.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
+        assert False, g.callers()
+    #@+node:ekr.20191225062643.1: *4* fs.sync_token
+    def sync_token(self, kind, val):
+        pass
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
 class HTMLReportTraverser:
@@ -4889,7 +4895,8 @@ class TestRunner:
             # 'all-leo-files',
             # 'coverage',
             'dump-all-after-fail',
-            'dump-raw-tree-first', 
+            'dump-raw-tree-first',
+            'dump-results', 
             'dump-sources-first',
             'dump-tokens-after-fail',
             'dump-tokens-first',
@@ -4910,6 +4917,7 @@ class TestRunner:
             'dump-contents',
             'dump-lines',
             'dump-raw_tree',
+            'dump-results',
             'dump-tokens',
             'dump-tree',
             'fstringify',
@@ -4939,7 +4947,8 @@ class TestRunner:
             'all-leo-files',
             'coverage',
             'dump-all-after-fail',
-            'dump-raw-tree-first', 
+            'dump-raw-tree-first',
+            'dump-results',
             'dump-sources-first',
             'dump-tokens-after-fail',
             'dump-tokens-first',
@@ -4959,6 +4968,7 @@ class TestRunner:
             'dump-contents',
             'dump-lines',
             'dump-raw_tree',
+            'dump-results',
             'dump-tokens',
             'dump-tree'
         ]
@@ -5063,6 +5073,7 @@ class TestRunner:
         #
         # Print reports, in the user-defined order.
         bad_reports = []
+        g.printObj(self.reports)
         for report in self.reports:
             helper = getattr(self, report.replace('-', '_'), None)
             if helper:
@@ -5110,6 +5121,11 @@ class TestRunner:
         print('\nRaw tree...\n')
         print(AstDumper().dump(self.tree))
         print('')
+    #@+node:ekr.20191225063758.1: *4* TR.dump_results
+    def dump_results(self):
+
+        print('\nResults...\n')
+        print(''.join(z.to_string() for z in self.tokens))
     #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
     def dump_tokens(self, brief=False):
         tokens = self.tokens
@@ -5160,6 +5176,7 @@ class TestRunner:
         self.flags = [z for z in aList if z in valid_flags]
         self.reports = [z for z in aList if z in valid_reports]
         bad = [z for z in aList if z not in valid_flags + valid_reports]
+        g.trace(flags, self.reports)
         for z in bad:
             print('Unknown option:', z)
         return not bad

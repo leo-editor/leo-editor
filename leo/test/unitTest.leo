@@ -2281,6 +2281,7 @@ flags = [
     # 'dump-all-after-fail',
     # 'dump-contents',
     # 'dump-raw-tree',
+    'dump-results',
     # 'dump-tokens',
     # 'dump-tree',
     # 'summarize',
