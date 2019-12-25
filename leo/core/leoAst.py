@@ -3476,9 +3476,8 @@ class Fstringify (TokenOrderGenerator):
         Convert this tree to an f-string, if possible,
         replacing node's entire tree with a new ast.Str node.
         """
-        trace = True
-        verbose = False
-        if trace and verbose:
+        trace = False
+        if trace:
             g.trace('...\n')
             print(f" left tree...\n{brief_dump(node.left)}")
             print(f"right tree...\n{brief_dump(node.right)}")
@@ -3488,12 +3487,12 @@ class Fstringify (TokenOrderGenerator):
         values = self.scan_rhs(node.right)
         if not values:
             return
-        if trace and verbose:
+        if trace:
             g.printObj(values, tag='values')
         #
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
-        if trace and verbose:
+        if trace:
             g.printObj(specs, tag='specs')
             g.trace(f"Looking for {len(specs)} specs")
         if len(values) != len(specs):
@@ -3504,7 +3503,7 @@ class Fstringify (TokenOrderGenerator):
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = ''.join(z.to_string() for z in values[spec_i])
-            if trace and verbose:
+            if trace:
                 g.trace('item', spec_i, 'value', repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
@@ -3524,7 +3523,7 @@ class Fstringify (TokenOrderGenerator):
         tail = lt_s[i:]
         if tail:
             results.append(Token('string', tail))
-        if trace and verbose:
+        if trace:
             g.printObj(results)
             g.trace(''.join(z.to_string() for z in results))
         result = self.compute_result(lt_s, results)
