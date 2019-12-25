@@ -1137,7 +1137,6 @@ class TokenOrderGenerator:
         token = self.tokens[i]
         if token.kind in ('endmarker', 'killed'):
             return
-        ### g.trace(f"{i:>2} {token.kind:8} ==> {kind:8} {value!r}")
         token.kind = kind
         token.value = value
         token.node = None  # Should be filled later.
@@ -1922,7 +1921,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191205053536.1: *6* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self):
         """
-        Return the next 'string' token and all 'string' tokens concatentaed to it.
+        Return the next 'string' token and all 'string' tokens concatentaed to
+        it.
         
         Do *not* update self.string_index here.
         """
