@@ -67,7 +67,7 @@ _op_names = {
 #@+node:ekr.20191225092852.1: *3* function: brief_dump
 def brief_dump(ast):
     """Dump an ast node."""
-    print(AstDumper().brief_dump(ast))
+    return AstDumper().brief_dump(ast)
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
@@ -5190,7 +5190,6 @@ class TestRunner:
             from asttokens.util import walk
         except Exception:
             return
-        # print(dumper.dump(tree))
         for z in walk(tree):
             class_name = z.__class__.__name__
             first, last = z.first_token.index, z.last_token.index
