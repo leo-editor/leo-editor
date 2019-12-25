@@ -992,7 +992,6 @@ class TokenOrderGenerator:
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
         """
-        g.trace('=====')
         #
         # Init all ivars.
         self.file_name = file_name
@@ -1124,7 +1123,6 @@ class TokenOrderGenerator:
         node2 = self.find_node_with_token_list(node)
         if node2:
             token = node2.token_list[0]
-            ### g.trace(token.index, token.kind, token.value)
             return token
         g.trace('===== no token list', node.__class__.__name__)
         return None
@@ -1169,14 +1167,10 @@ class TokenOrderGenerator:
         """Return True if node is an ancestor of token."""
         t_node = token.node
         assert t_node, token
-        ### g.trace('ENTRY', token.kind, repr(token.value), node.__class__.__name__)
         while t_node:
-            # g.trace(token.kind, t_node.__class__.__name__)
             if t_node == node:
-                ### g.trace('FOUND', t_node.__class__.__name__)
                 return True
             t_node = t_node.parent
-        ### g.trace('not FOUND')
         return False
     #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node & helper
     def tokens_for_node(self, node):
@@ -1233,7 +1227,6 @@ class TokenOrderGenerator:
                 if token.kind == 'op' and token.value == ')':
                     level -= 1
                 elif self.is_significant_token(token):
-                    ### g.trace('Stop', token.kind, repr(token.value))
                     break
                 i += 1
             tokens.extend(self.tokens[i1 + 1 : i + 1])
@@ -1956,8 +1949,7 @@ class TokenOrderGenerator:
             i += 1
         if i >= len(self.tokens):
             g.trace('token overrun', i)
-            g.printObj(self.tokens, tag='token overrun')
-            ### raise self.error("Can not happen: no 'endmarker' token")
+            raise self.error(f"token overrun")
         if trace:
             g.trace('\nresults...')
             for z in results:
@@ -3679,11 +3671,8 @@ class Fstringify (TokenOrderGenerator):
         # Replace the tokens...
         i, j = NodeTokens().token_range(node)
         i1 = i
-        ### g.trace('\n', node.__class__.__name__, s)
         tokens = self.tokens[i:j+1]
-        ### g.printObj(tokens, tag='Before match_parens')
         tokens = self.match_parens(tokens)
-        ### g.printObj(tokens, tag='After match_parens')
         self.replace_token(i, 'string', s)
         j = 1
         while j < len(tokens):
@@ -5212,7 +5201,6 @@ class TestRunner:
         self.flags = [z for z in aList if z in valid_flags]
         self.reports = [z for z in aList if z in valid_reports]
         bad = [z for z in aList if z not in valid_flags + valid_reports]
-        ### g.trace(flags, self.reports)
         for z in bad:
             print('Unknown option:', z)
         return not bad
@@ -5858,29 +5846,23 @@ class NodeTokens:
     def token_range(self, node):
         self.i, self.j = None, None
         list(self.token_range_helper(node))
-        g.trace(node.__class__.__name__, self.i, self.j)
         return self.i, self.j
         
     #@+node:ekr.20191225111141.1: *3* token_range_helper
     def token_range_helper(self, node):
-        ### g.trace(self.i, self.j, node.__class__.__name__)
         if isinstance(node, (list, tuple)):
             for z in node:
-                ### g.trace(f"Item: {z.__class__.__name__}")
                 yield from self.token_range_helper(z)
         elif hasattr(node, '_fields'):
             self.update_range(node)
             for field in node._fields:
                 node2 = getattr(node, field)
                 self.update_range(node2)
-                ### g.trace(f"Field: {node2.__class__.__name__}.{field}")
                 yield from self.token_range_helper(node2)
-        ### else: g.trace('No fields:', node.__class__.__name__)
     #@+node:ekr.20191225125633.1: *3* update_range
     def update_range(self, node):
         token_list = getattr(node, 'token_list', None)
         if not token_list:
-            ### g.trace(f"{node.__class__.__name__:>15}: no token list")
             return
         if self.i is None:
             self.i = token_list[0].index

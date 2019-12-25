@@ -2263,15 +2263,15 @@ if 1: # Not for production.
 if 1: # Not for production.
     g.cls()
 contents = """\
+print('xxx %s=%s yyy'%(a * b, 2))
 print('%s' % func(3))
 """
 # Works...
-# print('x %s=%s z'%(a * b, 2))
 #
 # Flags for TR.run_tests.
 flags = [
     'dump-sources-first',
-    'dump-tokens-first',
+    # 'dump-tokens-first',
     # 'dump-raw-tree-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'do-fstringify', # Required.
@@ -2281,9 +2281,9 @@ flags = [
     # 'dump-all-after-fail',
     # 'dump-contents',
     # 'dump-raw-tree',
-    # 'dump-results',
-    'dump-tokens',
-    'dump-tree',
+    'dump-results',
+    # 'dump-tokens',
+    # 'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]
