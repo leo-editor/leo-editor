@@ -3680,6 +3680,8 @@ class Fstringify (TokenOrderGenerator):
         # Update the token.
         token = self.tokens[i1]
         token.node = new_node
+        # Update the token list.
+        new_node.token_list = [token]
     #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
