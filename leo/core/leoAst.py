@@ -1086,6 +1086,51 @@ class TokenOrderGenerator:
         print('')
             
     #@+node:ekr.20191225061516.1: *3* tog: Replacers
+    #@+node:ekr.20191224093336.1: *4* tog.match_parens
+    def match_parens(self, tokens):
+        """
+        Extend the tokens in the token list to include unmatched trailing
+        closing parens.
+        """
+        if not tokens:
+            return tokens
+        # Calculate paren level...
+        level = 0
+        for token in tokens:
+            if token.kind == 'op' and token.value == '(':
+                level += 1
+            if token.kind == 'op' and token.value == ')':
+                level -= 1
+        # Find matching ')' tokens...
+        if level > 0:
+            i = i1 = tokens[-1].index
+            while level > 0 and i + 1 < len(self.tokens):
+                token = self.tokens[i+1]
+                if token.kind == 'op' and token.value == ')':
+                    level -= 1
+                elif self.is_significant_token(token):
+                    break
+                i += 1
+            tokens.extend(self.tokens[i1 + 1 : i + 1])
+        if level != 0:
+            g.trace('FAIL:', ''.join(z.to_string() for z in tokens))
+        return tokens
+    #@+node:ekr.20191225055616.1: *4* tog.replace_node
+    def replace_node(self, new_node, old_node):
+        
+        parent = old_node.parent
+        new_node.parent = parent
+        new_node.node_index = old_node.node_index
+        children = parent.children
+        i = children.index(old_node)
+        children[i] = new_node
+        fields = getattr(old_node, '_fields', None)
+        if fields:
+            for field in fields:
+                field = getattr(old_node, field)
+                if field == old_node:
+                    setattr(old_node, field, new_node)
+                    break
     #@+node:ekr.20191225055626.1: *4* tog.replace_token
     def replace_token(self, i, kind, value):
         """Replace kind and value of self.tokens[i]"""
@@ -1096,26 +1141,38 @@ class TokenOrderGenerator:
         token.kind = kind
         token.value = value
         token.node = None  # Should be filled later.
-    #@+node:ekr.20191225055616.1: *4* tog.replace_node (to do)
-    def replace_node(self, new_node, old_node):
-        
-        parent = old_node.parent
-        children = parent.children
-        i = children.index(old_node)
-        g.trace(i)
-        children[i] = new_node
-        g.trace(
-            i, new_node.__class__.__name__,
-            old_node.__class__.__name__,
-            parent.__class__.__name__)
-        fields = getattr(old_node, '_fields', None)
-        if fields:
-            for field in fields:
-                field = getattr(old_node, field)
-                if field == old_node:
-                    setattr(old_node, field, new_node)
+    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node
+    def tokens_for_node(self, node):
+        """Return the list of all tokens descending from node."""
+        # Find any token descending from node.
+        token = self.find_token(node)
+        if not token:
+            g.trace('===== no tokens', node.__class__.__name__)
+            return []
+        assert self.is_ancestor(node, token)
+        # Scan backward.
+        i = last_i = token.index
+        while i >= 0:
+            token2 = self.tokens[i-1]
+            if getattr(token2, 'node', None):
+                if self.is_ancestor(node, token2):
+                    last_i = i - 1
+                else:
                     break
-        
+            i -= 1
+        # Scan forward.
+        j = last_j = token.index
+        while j + 1 < len(self.tokens):
+            token2 = self.tokens[j+1]
+            if getattr(token2, 'node', None):
+                if self.is_ancestor(node, token2):
+                    last_j = j + 1
+                else:
+                    break
+            j += 1
+        # Extend tokens to balance parens.
+        results = self.tokens[last_i : last_j + 1]
+        return self.match_parens(results)
     #@+node:ekr.20191223095408.1: *3* tog: Token/Node finders
     #@+node:ekr.20191223053247.1: *4* tog.find_token
     def find_token(self, node):
@@ -1172,67 +1229,6 @@ class TokenOrderGenerator:
                 return True
             t_node = t_node.parent
         return False
-    #@+node:ekr.20191223053324.1: *4* tog.tokens_for_node & helper
-    def tokens_for_node(self, node):
-        """Return the list of all tokens descending from node."""
-        # Find any token descending from node.
-        token = self.find_token(node)
-        if not token:
-            g.trace('===== no tokens', node.__class__.__name__)
-            return []
-        assert self.is_ancestor(node, token)
-        # Scan backward.
-        i = last_i = token.index
-        while i >= 0:
-            token2 = self.tokens[i-1]
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_i = i - 1
-                else:
-                    break
-            i -= 1
-        # Scan forward.
-        j = last_j = token.index
-        while j + 1 < len(self.tokens):
-            token2 = self.tokens[j+1]
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_j = j + 1
-                else:
-                    break
-            j += 1
-        # Extend tokens to balance parens.
-        results = self.tokens[last_i : last_j + 1]
-        return self.match_parens(results)
-    #@+node:ekr.20191224093336.1: *5* tog.match_parens
-    def match_parens(self, tokens):
-        """
-        Extend the tokens in the token list to include unmatched trailing
-        closing parens.
-        """
-        if not tokens:
-            return tokens
-        # Calculate paren level...
-        level = 0
-        for token in tokens:
-            if token.kind == 'op' and token.value == '(':
-                level += 1
-            if token.kind == 'op' and token.value == ')':
-                level -= 1
-        # Find matching ')' tokens...
-        if level > 0:
-            i = i1 = tokens[-1].index
-            while level > 0 and i + 1 < len(self.tokens):
-                token = self.tokens[i+1]
-                if token.kind == 'op' and token.value == ')':
-                    level -= 1
-                elif self.is_significant_token(token):
-                    break
-                i += 1
-            tokens.extend(self.tokens[i1 + 1 : i + 1])
-        if level != 0:
-            g.trace('FAIL:', ''.join(z.to_string() for z in tokens))
-        return tokens
     #@+node:ekr.20191223052749.1: *3* tog: Traversal
     #@+node:ekr.20191113063144.3: *4* tog.begin/end_visitor
     begin_end_stack = []
@@ -3679,12 +3675,12 @@ class Fstringify (TokenOrderGenerator):
             self.replace_token(i1 + j, 'killed', '')
             j += 1
         # Replace the node.
-        if 0:
-            new_node = ast.Str()
-            new_node.s = s
-            self.replace_node(new_node, node)
-            token = self.tokens[i1]
-            token.node = new_node
+        new_node = ast.Str()
+        new_node.s = s
+        self.replace_node(new_node, node)
+        # Update the token.
+        token = self.tokens[i1]
+        token.node = new_node
     #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>

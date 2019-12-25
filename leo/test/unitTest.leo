@@ -2283,7 +2283,7 @@ flags = [
     # 'dump-raw-tree',
     'dump-results',
     # 'dump-tokens',
-    # 'dump-tree',
+    'dump-tree',
     # 'summarize',
     # 'trace-tokenizer-tokens',
 ]
