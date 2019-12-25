@@ -1083,7 +1083,7 @@ class TokenOrderGenerator:
             
     #@+node:ekr.20191225061516.1: *3* tog: Replacers
     #@+node:ekr.20191225055626.1: *4* tog.replace_token
-    def replace_token(self, i, kind, value, new_node=None):
+    def replace_token(self, i, kind, value):
         """Replace kind and value of self.tokens[i]"""
         token = self.tokens[i]
         if token.kind in ('endmarker', 'killed'):
@@ -1091,7 +1091,7 @@ class TokenOrderGenerator:
         ### g.trace(f"{i:>2} {token.kind:8} ==> {kind:8} {value!r}")
         token.kind = kind
         token.value = value
-        token.node = new_node
+        token.node = None  # Should be filled later.
     #@+node:ekr.20191225055616.1: *4* tog.replace_node (to do)
     def replace_node(self, new_node, old_node):
         
@@ -3667,25 +3667,24 @@ class Fstringify (TokenOrderGenerator):
         """
         # Replace the node.
         g.trace('\n', node.__class__.__name__, s)
-        if 1:
-            return
-        new_node = ast.Str()
-        new_node.s = s
-        self.replace_node(new_node, node)
         # Replace the tokens.
         i, j = NodeTokens().token_range(node)
+        i1 = i
         g.trace(i, j)
-        ###
-            # g.printObj(values)
-            # first, last = values[0][0], values[-1][-1]
-            # first, last = node.token_list[0], node.token_list[-1]
-            # i, j = first.index, last.index
-        self.replace_token(i, 'string', s, new_node=new_node)
+        self.replace_token(i, 'string', s) ### , new_node=new_node)
         g.trace(i, j)
+        if 1: return ###
         i += 1
         while i <= j:
             self.replace_token(i, 'killed', '')
             i += 1
+        # Replace the node.
+        if 0:
+            new_node = ast.Str()
+            new_node.s = s
+            self.replace_node(new_node, node)
+            token = self.tokens[i1]
+            token.node = new_node
     #@+node:ekr.20191222102831.9: *4* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
@@ -5848,7 +5847,7 @@ class NodeTokens:
     #@+node:ekr.20191225111222.1: *3* token_range
     def token_range(self, node):
         self.i, self.j = 0, 0
-        # g.trace(node.__class__.__name__)
+        g.trace(node.__class__.__name__)
         list(self.token_range_helper(node))
         return self.i, self.j
         
@@ -5857,11 +5856,13 @@ class NodeTokens:
         g.trace(self.i, self.j, node.__class__.__name__)
         if isinstance(node, (list, tuple)):
             for z in node:
+                g.trace(f"Item: {z.__class__.__name__}")
                 yield from self.token_range_helper(z)
         elif hasattr(node, '_fields'):
             for field in node._fields:
                 node2 = getattr(node, field)
                 self.update_range(node2)
+                g.trace(f"Field: {node2.__class__.__name__}.{field}")
                 yield from self.token_range_helper(node2)
 
     def update_range(self, node):
@@ -5869,6 +5870,9 @@ class NodeTokens:
         if token_list:
             self.i = min(self.i, token_list[0].index)
             self.j = max(self.j, token_list[-1].index)
+            g.trace(
+                f"{node.__class__.__name__:>15}, "
+                f"{self.i:>2} {self.j:>2} {brief_dump(token_list)}")
     #@-others
 #@-others
 #@@language python
