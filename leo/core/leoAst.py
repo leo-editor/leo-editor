@@ -64,6 +64,10 @@ _op_names = {
     'UAdd':     '+',
     'USub':     '-',
 }
+#@+node:ekr.20191225092852.1: *3* function: brief_dump
+def brief_dump(ast):
+    """Dump an ast node."""
+    print(AstDumper().brief_dump(ast))
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
@@ -1081,15 +1085,33 @@ class TokenOrderGenerator:
     #@+node:ekr.20191225055626.1: *4* tog.replace_token
     def replace_token(self, i, kind, value, new_node=None):
         """Replace kind and value of self.tokens[i]"""
-        # g.trace(i, kind, repr(value))
         token = self.tokens[i]
+        if token.kind in ('endmarker', 'killed'):
+            return
+        ### g.trace(f"{i:>2} {token.kind:8} ==> {kind:8} {value!r}")
         token.kind = kind
         token.value = value
         token.node = new_node
     #@+node:ekr.20191225055616.1: *4* tog.replace_node (to do)
     def replace_node(self, new_node, old_node):
         
-        g.trace(new_node, old_node)
+        parent = old_node.parent
+        children = parent.children
+        i = children.index(old_node)
+        g.trace(i)
+        children[i] = new_node
+        g.trace(
+            i, new_node.__class__.__name__,
+            old_node.__class__.__name__,
+            parent.__class__.__name__)
+        fields = getattr(old_node, '_fields', None)
+        if fields:
+            for field in fields:
+                field = getattr(old_node, field)
+                if field == old_node:
+                    setattr(old_node, field, new_node)
+                    break
+        
     #@+node:ekr.20191223095408.1: *3* tog: Token/Node finders
     #@+node:ekr.20191223053247.1: *4* tog.find_token
     def find_token(self, node):
@@ -1928,7 +1950,9 @@ class TokenOrderGenerator:
                 pass # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
             i += 1
         if i >= len(self.tokens):
-            raise self.error("Can not happen: no 'endmarker' token")
+            g.trace('token overrun', i)
+            g.printObj(self.tokens, tag='token overrun')
+            # raise self.error("Can not happen: no 'endmarker' token")
         if trace:
             g.trace('\nresults...')
             for z in results:
@@ -2674,8 +2698,6 @@ class AstDumper:
         Split the result if n + len(result) > m
         """
         token_list = getattr(node, 'token_list', [])
-        if 0: # Too brief.
-            return ','.join([z.kind for z in token_list])
         result = []
         for z in token_list:
             if z.kind == 'comment':
@@ -2685,7 +2707,7 @@ class AstDumper:
                 val = truncate(z.value,20)
                 result.append(f"{z.kind}({val})")
             elif z.kind == 'newline':
-                result.append(f"{z.kind.strip()}({z.line_number}:{len(z.line)})")
+                result.append(f"{z.kind} ({z.line_number}:{len(z.line)})")
             elif z.kind == 'number':
                 result.append(f"{z.kind}({z.value})")
             elif z.kind == 'op':
@@ -3459,8 +3481,8 @@ class Fstringify (TokenOrderGenerator):
         verbose = False
         if trace and verbose:
             g.trace('...\n')
-            print(f" left tree...\n{AstDumper().brief_dump(node.left)}")
-            print(f"right tree...\n{AstDumper().brief_dump(node.right)}")
+            print(f" left tree...\n{brief_dump(node.left)}")
+            print(f"right tree...\n{brief_dump(node.right)}")
         lt_s = ''.join([z.to_string() for z in node.left.token_list])
         #
         # Get the RHS values, a list of token lists.
@@ -3644,14 +3666,20 @@ class Fstringify (TokenOrderGenerator):
         Replace all tokens in the range of values with a single 'string' node.
         """
         # Replace the node.
-        g.trace('\n', s)
+        g.trace('\n', node.__class__.__name__, s)
+        if 1:
+            return
         new_node = ast.Str()
         new_node.s = s
         self.replace_node(new_node, node)
         # Replace the tokens.
-        ### g.printObj(values)
-        first, last = values[0][0], values[-1][-1]
-        i, j = first.index, last.index
+        i, j = NodeTokens().token_range(node)
+        g.trace(i, j)
+        ###
+            # g.printObj(values)
+            # first, last = values[0][0], values[-1][-1]
+            # first, last = node.token_list[0], node.token_list[-1]
+            # i, j = first.index, last.index
         self.replace_token(i, 'string', s, new_node=new_node)
         g.trace(i, j)
         i += 1
@@ -5073,7 +5101,6 @@ class TestRunner:
         #
         # Print reports, in the user-defined order.
         bad_reports = []
-        g.printObj(self.reports)
         for report in self.reports:
             helper = getattr(self, report.replace('-', '_'), None)
             if helper:
@@ -5146,7 +5173,7 @@ class TestRunner:
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree
         if self.x:
-            print(AstDumper().brief_dump(tree))
+            print(brief_dump(tree))
             return
         try:
             # pylint: disable=import-error
@@ -5811,6 +5838,37 @@ class TokenSync:
             if i < len(aList) - 1:
                 tokens.append(sep)
         return tokens
+    #@-others
+#@+node:ekr.20191225072008.1: ** class NodeTokens
+class NodeTokens:
+    """
+    A class returning a range of tokens for a single ast node.
+    """
+    #@+others
+    #@+node:ekr.20191225111222.1: *3* token_range
+    def token_range(self, node):
+        self.i, self.j = 0, 0
+        # g.trace(node.__class__.__name__)
+        list(self.token_range_helper(node))
+        return self.i, self.j
+        
+    #@+node:ekr.20191225111141.1: *3* token_range_helper
+    def token_range_helper(self, node):
+        g.trace(self.i, self.j, node.__class__.__name__)
+        if isinstance(node, (list, tuple)):
+            for z in node:
+                yield from self.token_range_helper(z)
+        elif hasattr(node, '_fields'):
+            for field in node._fields:
+                node2 = getattr(node, field)
+                self.update_range(node2)
+                yield from self.token_range_helper(node2)
+
+    def update_range(self, node):
+        token_list = getattr(node, 'token_list', None)
+        if token_list:
+            self.i = min(self.i, token_list[0].index)
+            self.j = max(self.j, token_list[-1].index)
     #@-others
 #@-others
 #@@language python
