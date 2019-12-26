@@ -3736,6 +3736,7 @@ class Fstringify (TokenOrderGenerator):
                     g.trace(f"No token list for {elt.__class__.__name__}")
             if len(node.elts) != len(result):
                 g.trace('not ready yet: list mismatch')
+                brief_dump(node)
                 return []
             return result
         #
@@ -3743,6 +3744,7 @@ class Fstringify (TokenOrderGenerator):
         tokens = self.tokens_for_node(node)
         if not tokens:
             g.trace('===== no token list', node.__class__.__name__)
+            brief_dump(node)
         return [tokens]
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
@@ -4940,6 +4942,7 @@ class TestRunner:
         'dump-results',
         'dump-tokens',
         'dump-tree',
+        'show-times',
     ]
 
     valid_flags = [
@@ -4971,6 +4974,7 @@ class TestRunner:
         # Startup.
         self.fails = []
         self.root = root
+        self.times = {}
         # Create self.actions and self.flags.
         ok = self.make_actions_and_flags(actions, flags)
         if not ok:
@@ -4997,10 +5001,11 @@ class TestRunner:
                 break
         # End-of-tests reports.
         t2 = get_time()
+        self.times['total_time'] = t2 - t1
         if 'coverage' in flags:
             self.show_coverage()
         if 'summarize' in flags:
-            self.summarize(test_time = t2 - t1)
+            self.summarize()
     #@+node:ekr.20191205163727.1: *4* TR.make_actions_and_flags
     def make_actions_and_flags(self, actions, flags):
         """
@@ -5116,8 +5121,8 @@ class TestRunner:
             print('')
             g.printObj(fails, tag='Failed tests')
         print(
-            f"\n{status} Ran {len(tests)} test{g.plural(len(tests))} "
-            f"in {test_time:4.2f} sec.")
+            f"\n{status} Ran "
+            f"{len(tests)} test{g.plural(len(tests))}")
     #@+node:ekr.20191122021515.1: *3* TR.run_one_test
     def run_one_test(self, contents, description):
         """
@@ -5160,8 +5165,8 @@ class TestRunner:
             # Yes, list *is* required here.
             list(x.create_links(self.tokens, self.tree, file_name=self.description))
             t2 = get_time()
-            if 'show-create-links-time' in self.flags:
-                print(f"create-links: {t2-t1:5.2f} sec.")
+            old_t = self.times.get('create-links', 0.0)
+            self.times ['create-links'] = old_t + (t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -5258,28 +5263,45 @@ class TestRunner:
         t1 = get_time()
         x.fstringify(x.tokens, x.tree, file_name='unit test')
         t2 = get_time()
-        if 'summarize' in self.flags:
-            print(f"\n  fstringify: {t2-t1:5.2f} sec.")
-
+        old_time = self.times.get('fstringify', 0.0)
+        self.times ['fstringify'] = old_time + (t2 - t1)
     #@+node:ekr.20191226063007.1: *4* TR.make_tokens_and_tree (pass 0)
     def make_tokens_and_tree(self):
         """Pass 0: TOG.make_tokens."""
         contents, flags = self.contents, self.flags
-        show_times = 'show-pass0-times' in flags
+        t1 = get_time()
         # Create and remember the TOJ.
         x = self.x = TokenOrderInjector()
         x.trace_mode = 'set-trace-mode' in flags
         # Tokenize.
         self.tokens = x.make_tokens(contents,
-            show_times=show_times,
             trace_mode='trace-tokenizer-tokens' in flags)
+        t2 = get_time()
+        old_t = self.times.get('make-tokens', 0.0)
+        self.times ['make-tokens'] = old_t + (t2 - t1)
         # Parse.
-        self.tree = parse_ast(contents, show_time=show_times)
+        self.tree = parse_ast(contents)
+        t3 = get_time()
+        old_t = self.times.get('parse-ast', 0.0)
+        self.times ['parse-ast'] = old_t + (t3 - t2)
         # Dump.
         if 'dump-tokens-first' in flags:
             self.dump_tokens(brief=True)
         if 'dump-raw-tree-first' in flags:
             self.dump_raw_tree()
+    #@+node:ekr.20191226095129.1: *4* TR.show_times
+    def show_times(self):
+        """Show all calculated times."""
+        if not self.times:
+            return
+        table = (
+            'make-tokens', 'parse-ast',
+            'create-links', 'fstringify',
+        )
+        print('')
+        for key in table:
+            t = self.times.get(key)
+            print(f"{key:>15}: {t:5.2f} sec.")
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token

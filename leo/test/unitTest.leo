@@ -2267,13 +2267,19 @@ if 0:
     path = r'c:\test\core\leoAtFile.py'
     with open(path, 'r') as f:
         contents = f.read()
+elif 0: # Bug
+    contents = """\
+# From fast_at.get_patterns.
+delim1, delim2 = '#', ''
+print(fr'^\s*{delim1}@afterref{delim2}$')
+"""
 else:
     contents = """\
 print('xxx %s=%s yyy'%(a * b, 2))
 print('%s' % func(3))
 """
 actions = [
-    'dump-contents',
+    # 'dump-contents',
     'make-tokens-and-tree', # Pass 0.
         # 'dump-raw-tree',
         # 'dump-tokens',
@@ -2282,11 +2288,9 @@ actions = [
     'fstringify',           # Pass 2.
         # 'dump-results',
         # 'dump-tokens',
+    'show-times',
 ]
 flags = [
-    # 'show-pass0-times',
-    # 'show-create-links-time',
-    # 'show-fstringify-time',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'show-exception-after-fail',
     'show-test-description',
