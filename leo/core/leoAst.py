@@ -4979,7 +4979,7 @@ class TestRunner:
         flags = self.flags
         self.show_status()
         if contents:
-            self.tests = [(contents, 'contents')]
+            self.tests = [(contents, root.h or 'None')]
         elif 'all-leo-files' in flags:
             self.tests = self.make_leo_tests()
         else:
