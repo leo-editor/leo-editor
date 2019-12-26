@@ -1309,10 +1309,10 @@ f'f1' ;
 'done' ;
 #@+node:ekr.20191222064122.1: *4* @test fstringify w/ TOG
 import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 if 1:
     path = r'c:\test\core\leoAtFile.py'

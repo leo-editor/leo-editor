@@ -2258,10 +2258,10 @@ else:
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
 <t tx="ekr.20191222064122.1">import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 if 1:
     path = r'c:\test\core\leoAtFile.py'
