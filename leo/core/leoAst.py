@@ -3509,9 +3509,10 @@ class Fstringify (TokenOrderGenerator):
             print(
                 f"f-string mismatch at line {line}: "
                 f"{n_specs} specs, {n_values} values")
-            if trace:
+            if 0:
                 specs_s = ', '.join(m.group(0) for m in specs)
-                values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]" for z2 in z) for z in values)
+                values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]"
+                    for z2 in z) for z in values)
                 print(f"specs: {specs_s!r} values: {values_s}")
             return
         # Replace specs with values.
