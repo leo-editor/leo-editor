@@ -284,6 +284,7 @@
 </v>
 <v t="ekr.20191222064122.1"><vh>@test fstringify w/ TOG</vh></v>
 </v>
+<v t="ekr.20191118154059.1"></v>
 <v t="ekr.20191222064122.1"></v>
 </vnodes>
 <tnodes>
@@ -2271,29 +2272,32 @@ else:
 print('xxx %s=%s yyy'%(a * b, 2))
 print('%s' % func(3))
 """
-# Works...
-#
-# Flags for TR.run_tests.
+actions = [
+    'dump-contents',
+    'make-tokens-and-tree', # Pass 0.
+        # 'dump-raw-tree',
+        # 'dump-tokens',
+    'create-links',         # Pass 1.
+        # 'dump-tree',
+    'fstringify',           # Pass 2.
+        # 'dump-results',
+        # 'dump-tokens',
+]
 flags = [
-    # 'dump-sources-first',
-    # 'dump-tokens-first',
-    # 'dump-raw-tree-first',
+    'show-pass0-times',
+    'show-create-links-time',
+    'show-fstringify-time',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
-    'do-fstringify', # Required.
     'show-exception-after-fail',
+    'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-results',
-    # 'dump-tokens',
-    'dump-tree',
-    'summarize',
     # 'trace-tokenizer-tokens',
+    # 'summarize',
 ]
 # Make tests and run tests.
-leoAst.TestRunner().fstringify(contents, flags)
-</t>
+leoAst.TestRunner().run_tests(
+    actions, flags, root=c.p, contents=contents)</t>
 </tnodes>
 </leo_file>

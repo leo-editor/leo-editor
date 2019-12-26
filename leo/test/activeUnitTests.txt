@@ -1323,29 +1323,33 @@ else:
 print('xxx %s=%s yyy'%(a * b, 2))
 print('%s' % func(3))
 """
-# Works...
-#
-# Flags for TR.run_tests.
+actions = [
+    'dump-contents',
+    'make-tokens-and-tree', # Pass 0.
+        # 'dump-raw-tree',
+        # 'dump-tokens',
+    'create-links',         # Pass 1.
+        # 'dump-tree',
+    'fstringify',           # Pass 2.
+        # 'dump-results',
+        # 'dump-tokens',
+]
 flags = [
-    # 'dump-sources-first',
-    # 'dump-tokens-first',
-    # 'dump-raw-tree-first',
+    'show-pass0-times',
+    'show-create-links-time',
+    'show-fstringify-time',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
-    'do-fstringify', # Required.
     'show-exception-after-fail',
+    'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-results',
-    # 'dump-tokens',
-    'dump-tree',
-    'summarize',
     # 'trace-tokenizer-tokens',
+    # 'summarize',
 ]
 # Make tests and run tests.
-leoAst.TestRunner().fstringify(contents, flags)
+leoAst.TestRunner().run_tests(
+    actions, flags, root=c.p, contents=contents)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
