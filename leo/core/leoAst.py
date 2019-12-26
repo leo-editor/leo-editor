@@ -3488,53 +3488,34 @@ class Fstringify (TokenOrderGenerator):
         replacing node's entire tree with a new ast.Str node.
         """
         trace = False
+        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        lt_s = ''.join([z.to_string() for z in node.left.token_list])
         if trace:
             g.trace('...\n')
             print(f" left tree...\n{brief_dump(node.left)}")
             print(f"right tree...\n{brief_dump(node.right)}")
-        lt_s = ''.join([z.to_string() for z in node.left.token_list])
-        #
+            g.trace(lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         if not values:
             return
-        if trace:
-            g.printObj(values, tag='values')
-        #
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):
-            g.trace('Conversion mismatch')
-            print('node...')
-            print(brief_dump(node))
-            g.printObj(specs, tag='specs')
-            g.printObj(values, tag='values')
-            return
-        #
-        # Substitute the values.
-        i, results = 0, [Token('string', 'f')]
-        for spec_i, m in enumerate(specs):
-            value = ''.join(z.to_string() for z in values[spec_i])
+            token_list = getattr(node.left, 'token_list', None)
+            token = token_list and token_list[0]
+            line = getattr(token, 'line_number', '<unknown>')
+            n_specs, n_values = len(specs), len(values)
+            print(
+                f"f-string mismatch at line {line}: "
+                f"{n_specs} specs, {n_values} values")
             if trace:
-                g.trace('item', spec_i, 'value', repr(value))
-            start, end, spec = m.start(0), m.end(0), m.group(1)
-            if start > i:
-                results.append(Token('string', lt_s[i : start]))
-            head, tail = self.munge_spec(spec)
-            results.append(Token('op', '{'))
-            results.append(Token('string', value))
-            if head:
-                results.append(Token('string', '!'))
-                results.append(Token('string', head))
-            if tail:
-                results.append(Token('string', ':'))
-                results.append(Token('string', tail))
-            results.append(Token('op', '}'))
-            i = end
-        # Add the tail.
-        tail = lt_s[i:]
-        if tail:
-            results.append(Token('string', tail))
+                specs_s = ', '.join(m.group(0) for m in specs)
+                values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]" for z2 in z) for z in values)
+                print(f"specs: {specs_s!r} values: {values_s}")
+            return
+        # Replace specs with values.
+        results = self.substitute_values(lt_s, specs, values)
         if trace:
             g.printObj(results)
             g.trace(''.join(z.to_string() for z in results))
@@ -3716,7 +3697,7 @@ class Fstringify (TokenOrderGenerator):
         
         Return a list of the token lists for each element.
         """
-        #
+        trace = False
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
             return [node.token_list]
@@ -3730,20 +3711,47 @@ class Fstringify (TokenOrderGenerator):
                 if hasattr(elt, 'token_list'):
                     tokens = self.tokens_for_node(elt)
                     result.append(tokens)
-                else:
+                elif trace:
                     g.trace(f"No token list for {elt.__class__.__name__}")
             if len(node.elts) != len(result):
-                g.trace('not ready yet: list mismatch')
-                brief_dump(node)
+                if trace:
+                    g.trace('list mismatch')
+                    brief_dump(node)
                 return []
             return result
         #
         # Now we expect only one result. 
         tokens = self.tokens_for_node(node)
-        if not tokens:
+        if trace and not tokens:
             g.trace('===== no token list', node.__class__.__name__)
             brief_dump(node)
         return [tokens]
+    #@+node:ekr.20191226155316.1: *4* fs.substitute_values
+    def substitute_values(self, lt_s, specs, values):
+        """Replace specifieriers with values in lt_s string."""
+        i, results = 0, [Token('string', 'f')]
+        for spec_i, m in enumerate(specs):
+            value = ''.join(z.to_string() for z in values[spec_i])
+            # g.trace('item', spec_i, 'value', repr(value))
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                results.append(Token('string', lt_s[i : start]))
+            head, tail = self.munge_spec(spec)
+            results.append(Token('op', '{'))
+            results.append(Token('string', value))
+            if head:
+                results.append(Token('string', '!'))
+                results.append(Token('string', head))
+            if tail:
+                results.append(Token('string', ':'))
+                results.append(Token('string', tail))
+            results.append(Token('op', '}'))
+            i = end
+        # Add the tail.
+        tail = lt_s[i:]
+        if tail:
+            results.append(Token('string', tail))
+        return results
     #@+node:ekr.20191222100303.1: *3* fs: Overrides...
     #@+node:ekr.20191222090221.1: *4* fs.begin/end_visitor
     begin_end_stack = []

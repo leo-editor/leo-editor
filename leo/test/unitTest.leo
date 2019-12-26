@@ -2261,9 +2261,9 @@ else:
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 0: # Not for production.
+if 1: # Not for production.
     g.cls()
-if 0:
+if 1:
     path = r'c:\test\core\leoAtFile.py'
     with open(path, 'r') as f:
         contents = f.read()
