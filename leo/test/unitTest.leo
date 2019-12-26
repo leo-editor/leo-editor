@@ -284,8 +284,8 @@
 </v>
 <v t="ekr.20191222064122.1"><vh>@test fstringify w/ TOG</vh></v>
 </v>
-<v t="ekr.20191222064122.1"></v>
 <v t="ekr.20191118154059.1"></v>
+<v t="ekr.20191222064122.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1705,7 +1705,7 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import importlib
     importlib.reload(leoAst)
 if 0: # Not for production.
@@ -1734,7 +1734,7 @@ flags = [
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
     # 'trace-tokenizer-tokens',
-    'summarize',
+    # 'summarize',
 ]
 # Make and run tests.
 leoAst.TestRunner().run_tests(actions, flags, root=c.p)
@@ -2258,7 +2258,6 @@ else:
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
 <t tx="ekr.20191222064122.1">import leo.core.leoAst as leoAst
-print(g, c.p.h)
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
@@ -2289,14 +2288,14 @@ actions = [
         # 'dump-tree',
     'fstringify',           # Pass 2.
         # 'dump-results',
-        'dump-tree',
+        # 'dump-tree',
         # 'dump-tokens',
-    'show-times',
+    # 'show-times',
 ]
 flags = [
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'show-exception-after-fail',
-    'show-test-description',
+    # 'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',

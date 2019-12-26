@@ -959,7 +959,7 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-if 1: # Not for production.
+if 0: # Not for production.
     import importlib
     importlib.reload(leoAst)
 if 0: # Not for production.
@@ -988,7 +988,7 @@ flags = [
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
     # 'trace-tokenizer-tokens',
-    'summarize',
+    # 'summarize',
 ]
 # Make and run tests.
 leoAst.TestRunner().run_tests(actions, flags, root=c.p)
@@ -1309,7 +1309,6 @@ f'f1' ;
 'done' ;
 #@+node:ekr.20191222064122.1: *4* @test fstringify w/ TOG
 import leo.core.leoAst as leoAst
-print(g, c.p.h)
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
@@ -1340,14 +1339,14 @@ actions = [
         # 'dump-tree',
     'fstringify',           # Pass 2.
         # 'dump-results',
-        'dump-tree',
+        # 'dump-tree',
         # 'dump-tokens',
-    'show-times',
+    # 'show-times',
 ]
 flags = [
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'show-exception-after-fail',
-    'show-test-description',
+    # 'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
