@@ -284,8 +284,8 @@
 </v>
 <v t="ekr.20191222064122.1"><vh>@test fstringify w/ TOG</vh></v>
 </v>
-<v t="ekr.20191118154059.1"></v>
 <v t="ekr.20191222064122.1"></v>
+<v t="ekr.20191118154059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1705,39 +1705,39 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-if 0: # Not for production.
+if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
-#
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    # 'all',
-    # 'coverage',
-    # 'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
 
+actions = [
+    # 'dump-contents',
+    # 'run-ast-tokens',       # Alternate pass 0.
+    'make-tokens-and-tree', # Pass 0.
+        # 'dump-raw-tree',
+        # 'dump-tokens',
+    'create-links',         # Pass 1.
+        # 'dump-tree',
+    ### 'fstringify',           # Pass 2.
+        # 'dump-results',
+        # 'dump-tree',
+        # 'dump-tokens',
+    # 'show-times',
+]
+flags = [
+    'all',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    'show-exception-after-fail',
+    # 'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    # 'summarize',
-    # 'trace-times',    # Only for'file:' tests.
     # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
+    'summarize',
 ]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
+# Make and run tests.
+leoAst.TestRunner().run_tests(actions, flags, root=c.p)
 </t>
 <t tx="ekr.20191118155609.1"></t>
 <t tx="ekr.20191118155611.1">print('test %s=%s'%(a, 2))
@@ -2258,10 +2258,11 @@ else:
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
 <t tx="ekr.20191222064122.1">import leo.core.leoAst as leoAst
+print(g, c.p.h)
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 if 0:
     path = r'c:\test\core\leoAtFile.py'
@@ -2302,7 +2303,7 @@ flags = [
     # 'trace-tokenizer-tokens',
     # 'summarize',
 ]
-# Make tests and run tests.
+# Make and run tests.
 leoAst.TestRunner().run_tests(
     actions, flags, root=c.p, contents=contents)
 </t>

@@ -5113,7 +5113,7 @@ class TestRunner:
         if 'run-ast-tokens' in self.actions:
             print('\nUsing asttokens, *not* the TOG classes')
     #@+node:ekr.20191205160754.6: *4* TR.summarize
-    def summarize(self, test_time):
+    def summarize(self):
         fails, tests = self.fails, self.tests
         status = 'FAIL' if fails else 'PASS'
         if fails:
@@ -5122,6 +5122,8 @@ class TestRunner:
         print(
             f"\n{status} Ran "
             f"{len(tests)} test{g.plural(len(tests))}")
+        if not 'show-times' in self.flags:
+            self.show_times()
     #@+node:ekr.20191122021515.1: *3* TR.run_one_test
     def run_one_test(self, contents, description):
         """

@@ -959,39 +959,39 @@ The master unit test for leoAst.TokenOrderGenerator and related classes.
 """
 import time
 import leo.core.leoAst as leoAst
-if 0: # Not for production.
+if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
 if 0: # Not for production.
     g.cls()
-#
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    # 'all',
-    # 'coverage',
-    # 'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
 
+actions = [
+    # 'dump-contents',
+    # 'run-ast-tokens',       # Alternate pass 0.
+    'make-tokens-and-tree', # Pass 0.
+        # 'dump-raw-tree',
+        # 'dump-tokens',
+    'create-links',         # Pass 1.
+        # 'dump-tree',
+    ### 'fstringify',           # Pass 2.
+        # 'dump-results',
+        # 'dump-tree',
+        # 'dump-tokens',
+    # 'show-times',
+]
+flags = [
+    'all',
+    # 'set-trace-mode',  # Sets TOG.trace_mode.
+    'show-exception-after-fail',
+    # 'show-test-description',
     # 'dump-tokens-after-fail',
     # 'dump-tree-after-fail',
     # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    # 'summarize',
-    # 'trace-times',    # Only for'file:' tests.
     # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
+    'summarize',
 ]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
+# Make and run tests.
+leoAst.TestRunner().run_tests(actions, flags, root=c.p)
 #@+node:ekr.20191206053245.1: *5* test: test end-of-file handling
 # Only a comment.
 #@+node:ekr.20191120074811.1: *5* ignore: Contexts...
@@ -1309,10 +1309,11 @@ f'f1' ;
 'done' ;
 #@+node:ekr.20191222064122.1: *4* @test fstringify w/ TOG
 import leo.core.leoAst as leoAst
+print(g, c.p.h)
 if 1: # Not for production.
     import importlib
     importlib.reload(leoAst)
-if 1: # Not for production.
+if 0: # Not for production.
     g.cls()
 if 0:
     path = r'c:\test\core\leoAtFile.py'
@@ -1353,7 +1354,7 @@ flags = [
     # 'trace-tokenizer-tokens',
     # 'summarize',
 ]
-# Make tests and run tests.
+# Make and run tests.
 leoAst.TestRunner().run_tests(
     actions, flags, root=c.p, contents=contents)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
