@@ -205,7 +205,7 @@ def parse_ast(s, headline=None, show_time=False):
         tree = ast.parse(s1, filename='before', mode='exec')
         t2 = get_time()
         if show_time:
-            print(f"parse_ast: {t2-t1:5.2f}")
+            print(f"   parse_ast: {t2-t1:5.2f} sec.")
         return tree
     except IndentationError:
         oops('Indentation Error')
@@ -1069,7 +1069,7 @@ class TokenOrderGenerator:
         assert check(contents, tokens)
         t2 = get_time()
         if show_times:
-            print(f"tokenize: {t2-t1:5.2f} sec.")
+            print(f"    tokenize: {t2-t1:5.2f} sec.")
         return tokens
     #@+node:ekr.20191113063144.11: *4* tog.report_coverage
     def report_coverage(self):

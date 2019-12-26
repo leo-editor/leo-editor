@@ -2284,9 +2284,9 @@ actions = [
         # 'dump-tokens',
 ]
 flags = [
-    'show-pass0-times',
-    'show-create-links-time',
-    'show-fstringify-time',
+    # 'show-pass0-times',
+    # 'show-create-links-time',
+    # 'show-fstringify-time',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'show-exception-after-fail',
     'show-test-description',
@@ -2298,6 +2298,7 @@ flags = [
 ]
 # Make tests and run tests.
 leoAst.TestRunner().run_tests(
-    actions, flags, root=c.p, contents=contents)</t>
+    actions, flags, root=c.p, contents=contents)
+</t>
 </tnodes>
 </leo_file>

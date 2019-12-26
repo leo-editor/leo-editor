@@ -1335,9 +1335,9 @@ actions = [
         # 'dump-tokens',
 ]
 flags = [
-    'show-pass0-times',
-    'show-create-links-time',
-    'show-fstringify-time',
+    # 'show-pass0-times',
+    # 'show-create-links-time',
+    # 'show-fstringify-time',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
     'show-exception-after-fail',
     'show-test-description',
