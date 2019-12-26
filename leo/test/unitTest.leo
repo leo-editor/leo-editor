@@ -2262,7 +2262,12 @@ if 1: # Not for production.
     importlib.reload(leoAst)
 if 1: # Not for production.
     g.cls()
-contents = """\
+if 0:
+    path = r'c:\test\core\leoAtFile.py'
+    with open(path, 'r') as f:
+        contents = f.read()
+else:
+    contents = """\
 print('xxx %s=%s yyy'%(a * b, 2))
 print('%s' % func(3))
 """
@@ -2270,7 +2275,7 @@ print('%s' % func(3))
 #
 # Flags for TR.run_tests.
 flags = [
-    'dump-sources-first',
+    # 'dump-sources-first',
     # 'dump-tokens-first',
     # 'dump-raw-tree-first',
     # 'set-trace-mode',  # Sets TOG.trace_mode.
@@ -2281,10 +2286,10 @@ flags = [
     # 'dump-all-after-fail',
     # 'dump-contents',
     # 'dump-raw-tree',
-    'dump-results',
+    # 'dump-results',
     # 'dump-tokens',
     'dump-tree',
-    # 'summarize',
+    'summarize',
     # 'trace-tokenizer-tokens',
 ]
 # Make tests and run tests.

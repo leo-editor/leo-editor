@@ -3492,11 +3492,12 @@ class Fstringify (TokenOrderGenerator):
         #
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
-        if trace:
-            g.printObj(specs, tag='specs')
-            g.trace(f"Looking for {len(specs)} specs")
         if len(values) != len(specs):
             g.trace('Conversion mismatch')
+            print('node...')
+            print(brief_dump(node))
+            g.printObj(specs, tag='specs')
+            g.printObj(values, tag='values')
             return
         #
         # Substitute the values.
@@ -3708,9 +3709,13 @@ class Fstringify (TokenOrderGenerator):
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
             return [node.token_list]
-        if isinstance(node, ast.Tuple):
+        if isinstance(node, (list, tuple, ast.Tuple)):
             result = []
-            for elt in node.elts:
+            if isinstance(node, ast.Tuple):
+                elts = node.elts
+            else:
+                elts = node
+            for elt in elts:
                 if hasattr(elt, 'token_list'):
                     tokens = self.tokens_for_node(elt)
                     result.append(tokens)
