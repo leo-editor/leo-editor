@@ -2631,7 +2631,7 @@ class AstDumper:
         descriptor_s = class_name + ': ' + self.show_fields(class_name, node, 22)
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
-        full_s1 = f"{parent_s:<16} {lines:<8} {node_id:<3} {indent}{descriptor_s} "
+        full_s1 = f"{parent_s:<16} {lines:<10} {node_id:<3} {indent}{descriptor_s} "
         node_s =  f"{full_s1:<70} {tokens_s}\n"
         return node_s
     #@+node:ekr.20191113223424.1: *4* dumper.show_fields
@@ -2682,9 +2682,7 @@ class AstDumper:
             ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
             val = f"ops={ops}"
         else:
-            val = '' ## f"{class_name}"
-        # This is redundant.
-            # val = f"{class_name}.{val}"
+            val = ''
         return truncate(val, truncate_n)
 
     #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
@@ -2719,7 +2717,7 @@ class AstDumper:
             elif z.kind == 'op':
                 result.append(f"{z.kind}{z.value}")
             elif z.kind == 'string':
-                val = truncate(z.value,20)
+                val = truncate(z.value,30)
                 result.append(f"{z.kind}({val})")
             elif z.kind == 'ws':
                 result.append(f"{z.kind}({len(z.value)})")
@@ -2744,8 +2742,8 @@ class AstDumper:
     def show_header(self):
         """Return a header string, but only the fist time."""
         return (
-            f"{'parent':<16} {'lines':<8} {'node':<44} {'tokens'}\n"
-            f"{'======':<16} {'=====':<8} {'====':<44} {'======'}\n")
+            f"{'parent':<16} {'lines':<10} {'node':<42} {'tokens'}\n"
+            f"{'======':<16} {'=====':<10} {'====':<42} {'======'}\n")
     #@+node:ekr.20141012064706.18392: *3* dumper.dump & helper
     annotate_fields=False
     include_attributes = False

@@ -2287,6 +2287,7 @@ actions = [
         # 'dump-tree',
     'fstringify',           # Pass 2.
         # 'dump-results',
+        'dump-tree',
         # 'dump-tokens',
     'show-times',
 ]
