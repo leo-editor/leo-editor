@@ -2280,6 +2280,7 @@ print('%s' % func(3))
 """
 actions = [
     # 'dump-contents',
+    # 'run-ast-tokens',       # Alternate pass 0.
     'make-tokens-and-tree', # Pass 0.
         # 'dump-raw-tree',
         # 'dump-tokens',

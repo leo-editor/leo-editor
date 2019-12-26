@@ -4929,9 +4929,10 @@ class TestRunner:
     #@+<< define valid actions & flags >>
     #@+node:ekr.20191222064729.1: *3* << define valid actions & flags >>
     valid_actions = [
-        'make-tokens-and-tree',  # Pass 0.
-        'create-links',  # Pass 1.
-        'fstringify',  # Pass 2.
+        'run-ast-tokens',       # Alternate pass 0.
+        'make-tokens-and-tree', # Pass 0.
+        'create-links',         # Pass 1.
+        'fstringify',           # Pass 2.
         # Dumps...
         'dump-all',
         'dump-contents',
@@ -5293,13 +5294,27 @@ class TestRunner:
         if not self.times:
             return
         table = (
+            'ast-tokens',
             'make-tokens', 'parse-ast',
             'create-links', 'fstringify',
         )
         print('')
         for key in table:
             t = self.times.get(key)
-            print(f"{key:>15}: {t:5.2f} sec.")
+            if t is not None:
+                print(f"{key:>15}: {t:5.2f} sec.")
+    #@+node:ekr.20191226063942.1: *4* TR.run_ast_tokens
+    def run_ast_tokens(self):
+        # pylint: disable=import-error
+        # It's ok to raise ImportError here.
+        import asttokens
+        t1 = get_time()
+        atok = asttokens.ASTTokens(self.contents, parse=True)
+        self.tree = atok.tree
+        self.tokens = atok._tokens
+        t2 = get_time()
+        old_time = self.times.get('ast-tokens', 0.0)
+        self.times ['ast-tokens'] = old_time + (t2 - t1)
     #@-others
    
 #@+node:ekr.20191110080535.1: ** class Token
