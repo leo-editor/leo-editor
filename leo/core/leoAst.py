@@ -225,7 +225,28 @@ def truncate(s, n):
         s = repr(s)
     return s if len(s) <  n else s[:n-3] + '...'
 #@+node:ekr.20191227052352.1: **  leoAst.py: unit tests
-#@+node:ekr.20160521103254.1: *3* function: test_vistors_exist
+#@+node:ekr.20191227051737.1: *3*  class Test (TestCase)
+class Test (unittest.TestCase):
+    """The foundation for tests of code in leoAst.py"""
+    contents = ''
+    description = ''
+    #@+others
+    #@+node:ekr.20191227054856.1: *4* Test.setup
+    def setup(self):
+        assert self.contents
+        self.contents = self.contents.strip() + '\n'
+        # Create and remember the TOJ.
+        toj = TokenOrderInjector()
+        toj.trace_mode = False
+        # Tokenize.
+        self.tokens = toj.make_tokens(self.contents)
+        # Parse.
+        self.tree = parse_ast(self.contents)
+        # Insert links.
+        list(toj.create_links(self.tokens, self.tree,
+            file_name=self.description))
+    #@-others
+#@+node:ekr.20160521103254.1: *3* test_vistors_exist
 def test_vistors_exist():
     """Ensure that visitors for all ast nodes exist."""
     import _ast
@@ -260,6 +281,11 @@ def test_vistors_exist():
                 print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
     msg = f"{nodes} node types, {ops} op types, {errors} errors"
     assert not errors, msg
+#@+node:ekr.20191227055821.1: *3* class End_of_line (Test)
+class End_of_line (Test):
+    
+    contents = """# Only a comment."""
+    description = "Test end-of-line handling"
 #@+node:ekr.20141012064706.18399: **  class AstFormatter
 class AstFormatter:
     """
@@ -2567,9 +2593,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
-#@+node:ekr.20191227051737.1: ** class Test (TestCase)
-class Test (unittest.TestCase):
-    """The foundation for tests of code in leoAst.py"""
 #@+node:ekr.20191226175251.1: ** class LeoGlobals
 #@@nosearch
 
@@ -6048,6 +6071,8 @@ class NodeTokens:
     #@-others
 #@-others
 g = LeoGlobals()
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
