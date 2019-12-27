@@ -5123,6 +5123,408 @@ class NodeTokens:
                 f"{node.__class__.__name__:>15}, "
                 f"{self.i:>2} {self.j:>2}")
     #@-others
+#@+node:ekr.20191113133338.1: ** class TestRunner
+class TestRunner:
+    """
+    A testing framework for TokenOrderGenerator and related classes.
+    """
+    #@+<< define valid actions & flags >>
+    #@+node:ekr.20191222064729.1: *3* << define valid actions & flags >>
+    valid_actions = [
+        'run-ast-tokens',       # Alternate pass 0.
+        'make-tokens-and-tree', # Pass 0.
+        'create-links',         # Pass 1.
+        'fstringify',           # Pass 2.
+        # Dumps...
+        'dump-all',
+        'dump-contents',
+        'dump-lines',
+        'dump-raw-tree',
+        'dump-results',
+        'dump-tokens',
+        'dump-tree',
+        'show-times',
+    ]
+
+    valid_flags = [
+        'all',
+        'all-leo-files',
+        'coverage',
+        'dump-all-after-fail',
+        'dump-results',
+        'dump-tokens-after-fail',
+        'dump-tree-after-fail',
+        'no-trace-after-fail',
+        'set-trace-mode',
+        'show-pass0-times',
+        'show-create-links-time',
+        'show-fstringify-time',
+        'show-exception-after-fail',
+        'show-make-tokens-time',
+        'show-test-description',
+        'show-test-kind',
+        'summarize',
+        'trace-tokenizer-tokens',
+        'verbose-fail',
+    ]
+    #@-<< define valid actions & flags >>
+    #@+others
+    #@+node:ekr.20191205160754.4: *3* TR.run_tests & helpers
+    def run_tests(self, actions, flags, root, contents=None):
+        """The outer test runner."""
+        # Startup.
+        self.fails = []
+        self.root = root
+        self.times = {}
+        # Create self.actions and self.flags.
+        ok = self.make_actions_and_flags(actions, flags)
+        if not ok:
+            print('Aborting...')
+            return
+        flags = self.flags
+        self.show_status()
+        if contents:
+            self.tests = [(contents, root.h or 'None')]
+        elif 'all-leo-files' in flags:
+            self.tests = self.make_leo_tests()
+        else:
+            self.tests = self.make_tests(root)
+        # Execute all tests.
+        t1 = get_time()
+        for contents, description in self.tests:
+            # run_one_test catches all exceptions.
+            if 'show-test-description' in flags:
+                print(f"Running {description}...")
+            ok = self.run_one_test(contents, description)
+            if not ok:
+                self.fails.append(description)
+            if 'fail-fast' in flags:
+                break
+        # End-of-tests reports.
+        t2 = get_time()
+        self.times['total_time'] = t2 - t1
+        if 'coverage' in flags:
+            self.show_coverage()
+        if 'summarize' in flags:
+            self.summarize()
+    #@+node:ekr.20191205163727.1: *4* TR.make_actions_and_flags
+    def make_actions_and_flags(self, actions, flags):
+        """
+        Create self.actions and self.flags.
+        
+        Return False if there are unknow actions or flags.
+        """
+        valid_actions, valid_flags = self.valid_actions, self.valid_flags
+        # Check valid actions.
+        for z in valid_actions:
+            assert hasattr(self, z.replace('-','_')), repr(z)
+        # Clean and check actions.
+        self.actions = [z for z in actions if z in valid_actions]
+        bad_actions = [z for z in actions if z not in valid_actions]
+        if bad_actions:
+            for z in bad_actions:
+                print('Unknown action:', z)
+            return False
+        # Clean and check flags.
+        flags = [z.lower() for z in flags or []]
+        self.flags = [z for z in flags if z in valid_flags]
+        bad_flags = [z for z in flags if z not in valid_flags]
+        if bad_flags:
+            for z in bad_flags:
+                print('Unknown flag:', z)
+            return False
+        return True
+    #@+node:ekr.20191205172431.1: *4* TR.make_leo_tests
+    def make_leo_tests(self):
+        """
+        Leo-specific code for unit tests.
+        
+        Return a list of tuples (contents, description) for all of Leo's core
+        .py files.
+        """
+        import leo.core.leoGlobals as leo_g
+        core_directory = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..', 'core')
+        assert os.path.exists(core_directory), core_directory
+        paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
+        tests = []
+        for path in paths:
+            assert os.path.exists(path), path
+            with open(path, 'r') as f:
+                contents = f.read()
+            description = path
+            tests.append((contents, description))   
+        return tests
+
+    #@+node:ekr.20191205160754.2: *4* TR.make_tests
+    def make_tests(self, root):
+        """
+        Leo-specific code for unit tests.
+        
+        Return a list of tuples (contents, description) found in all children
+        of the root, except this node.
+        """
+        import leo.core.leoGlobals as leo_g
+        tests = []
+        contents_tag = 'test:'
+        file_tag = 'file:'
+        after = root.nodeAfterTree()
+        p = root.copy()
+        while p and p != after:
+            if p.h.startswith(('fail:', 'fails')):
+                # Ignore all fails, regardless of 'all' flag.
+                p.moveToNodeAfterTree()
+            elif 'all' not in self.flags and p.h.startswith('ignore:'):
+                # Honor 'ignore' only when *not* runnining all tests.
+                p.moveToNodeAfterTree()
+            elif p.h.startswith(contents_tag):
+                description = p.h
+                contents = p.b.strip() + '\n'
+                tests.append((contents, description))
+                p.moveToThreadNext()
+            elif p.h.startswith(file_tag):
+                description = p.h
+                s = p.h[len(file_tag):].strip()
+                parts = [leo_g.app.loadDir, '..'] + s.split('..')
+                path = os.path.sep.join(parts)
+                if os.path.exists(path):
+                    with open(path, 'r') as f:
+                        contents = f.read()
+                    tests.append((contents, description))
+                    p.moveToThreadNext()
+                else:
+                    assert False, f"file not found: {path}"
+            else:
+                # Ignore organizer nodes.
+                p.moveToThreadNext()
+        if not tests:
+            print(f"no tests in {root.h}")
+        return tests
+    #@+node:ekr.20191122025155.1: *4* TR.show_coverage
+    def show_coverage(self):
+        if self.x:
+            self.x.report_coverage()
+    #@+node:ekr.20191205160754.5: *4* TR.show_status
+    def show_status(self):
+        """Show the preliminary status."""
+        flags = self.flags
+        print('')
+        if 'show-test-kind' in flags:
+            if 'all-leo-files' in flags:
+                kind = 'Testing all Leo files'
+            elif 'all' in flags:
+                kind = 'Running *all* unit tests'
+            else:
+                kind = 'Running *selected* unit tests'
+            print(f"{self.root.h}: {kind}...")
+        if 'run-ast-tokens' in self.actions:
+            print('\nUsing asttokens, *not* the TOG classes')
+    #@+node:ekr.20191205160754.6: *4* TR.summarize
+    def summarize(self):
+        fails, tests = self.fails, self.tests
+        status = 'FAIL' if fails else 'PASS'
+        if fails:
+            print('')
+            g.printObj(fails, tag='Failed tests')
+        print(
+            f"\n{status} Ran "
+            f"{len(tests)} test{g.plural(len(tests))}")
+        if not 'show-times' in self.flags:
+            self.show_times()
+    #@+node:ekr.20191122021515.1: *3* TR.run_one_test
+    def run_one_test(self, contents, description):
+        """
+        Run the test given by the contents and description.
+        """
+        tag = 'run_tests'
+        self.description = description
+        # flags = self.flags
+        # Clean the contents.
+        self.contents = contents = contents.strip() + '\n'
+        
+        #
+        # Execute actions, in the user-defined order.
+        bad_actions = []
+        for action in self.actions:
+            helper = getattr(self, action.replace('-', '_'), None)
+            if helper:
+                try:
+                    helper()
+                except Exception as e:
+                    print(f"{tag}: Exception in {action}: {e}")
+                    if 'show-exception-after-fail' in self.flags:
+                        g.es_exception()
+                    return False
+            else:
+                bad_actions.append(action)
+        if bad_actions:
+            for action in list(set(bad_actions)):
+                print(f"{tag}: bad action option: {action!r}")
+        return True
+    #@+node:ekr.20191205160624.1: *3* TR: actions...
+    # Actions should fail by throwing an exception.
+    #@+node:ekr.20191226064933.1: *4* TR.create_links (pass 1)
+    def create_links(self):
+        """Pass 1: TOG.create_links"""
+        flags, x = self.flags, self.x
+        # Catch exceptions so we can get data late.
+        try:
+            t1 = get_time()
+            # Yes, list *is* required here.
+            list(x.create_links(self.tokens, self.tree, file_name=self.description))
+            t2 = get_time()
+            old_t = self.times.get('create-links', 0.0)
+            self.times ['create-links'] = old_t + (t2 - t1)
+        except Exception as e:
+            g.trace(f"\nFAIL: make-tokens\n")
+            # Don't use g.trace.  It doesn't handle newlines properly.
+            print(e)
+            if 'show-exception-after-fail' in flags:
+                g.es_exception()
+            if 'dump-all-after-fail' in flags:
+                self.dump_all()
+            else:
+                if 'dump-tokens-after-fail' in flags:
+                    self.dump_tokens()
+                if 'dump-tree-after-fail' in flags:
+                    self.dump_tree()
+            if 'no-trace-after-fail':
+                x.trace_mode = False
+            raise
+    #@+node:ekr.20191122022728.1: *4* TR.dump_all
+    def dump_all(self):
+
+        if self.x:
+            self.dump_contents()
+            self.dump_tokens()
+            self.dump_tree()
+            # self.dump_raw_tree()
+
+    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
+    def dump_contents(self):
+        contents = self.contents
+        print('\nContents...\n')
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
+    def dump_lines(self):
+        print('\nTOKEN lines...\n')
+        for z in self.tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
+    def dump_raw_tree(self):
+        print('\nRaw tree...\n')
+        print(AstDumper().dump(self.tree))
+        print('')
+    #@+node:ekr.20191225063758.1: *4* TR.dump_results
+    def dump_results(self):
+
+        print('\nResults...\n')
+        print(''.join(z.to_string() for z in self.tokens))
+    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
+    def dump_tokens(self, brief=False):
+        tokens = self.tokens
+        print('\nTokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+        # pylint: disable=not-an-iterable
+        if self.x:
+            for z in tokens:
+                print(z.dump(brief=brief))
+            print('')
+        else:
+            import token as tm
+            for z in tokens:
+                kind = tm.tok_name[z.type].lower()
+                print(f"{z.index:4} {kind:>12} {z.string!r}")
+    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
+    def dump_tree(self, brief=False):
+        print('\nPatched tree...\n')
+        tokens, tree = self.tokens, self.tree
+        if self.x:
+            print(brief_dump(tree))
+            return
+        try:
+            # pylint: disable=import-error
+            from asttokens.util import walk
+        except Exception:
+            return
+        for z in walk(tree):
+            class_name = z.__class__.__name__
+            first, last = z.first_token.index, z.last_token.index
+            token_range = f"{first:>4}..{last:<4}"
+            if isinstance(z, ast.Module):
+                tokens_s = ''
+            else:
+                tokens_s = ' '.join(
+                    repr(z.string) for z in tokens[first:last] if z)
+            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
+    #@+node:ekr.20191222074711.1: *4* TR.fstringify (pass 2)
+    def fstringify(self):
+        """Pass 2: TOG.fstringify."""
+        x = self.x
+        assert isinstance(x, TokenOrderGenerator), repr(x)
+        t1 = get_time()
+        x.fstringify(x.tokens, x.tree, file_name='unit test')
+        t2 = get_time()
+        old_time = self.times.get('fstringify', 0.0)
+        self.times ['fstringify'] = old_time + (t2 - t1)
+    #@+node:ekr.20191226063007.1: *4* TR.make_tokens_and_tree (pass 0)
+    def make_tokens_and_tree(self):
+        """Pass 0: TOG.make_tokens."""
+        contents, flags = self.contents, self.flags
+        t1 = get_time()
+        # Create and remember the TOJ.
+        x = self.x = TokenOrderInjector()
+        x.trace_mode = 'set-trace-mode' in flags
+        # Tokenize.
+        self.tokens = x.make_tokens(contents,
+            trace_mode='trace-tokenizer-tokens' in flags)
+        t2 = get_time()
+        old_t = self.times.get('make-tokens', 0.0)
+        self.times ['make-tokens'] = old_t + (t2 - t1)
+        # Parse.
+        self.tree = parse_ast(contents)
+        t3 = get_time()
+        old_t = self.times.get('parse-ast', 0.0)
+        self.times ['parse-ast'] = old_t + (t3 - t2)
+        # Dump.
+        if 'dump-tokens-first' in flags:
+            self.dump_tokens(brief=True)
+        if 'dump-raw-tree-first' in flags:
+            self.dump_raw_tree()
+    #@+node:ekr.20191226095129.1: *4* TR.show_times
+    def show_times(self):
+        """Show all calculated times."""
+        if not self.times:
+            return
+        table = (
+            'ast-tokens',
+            'make-tokens', 'parse-ast',
+            'create-links', 'fstringify',
+        )
+        print('')
+        for key in table:
+            t = self.times.get(key)
+            if t is not None:
+                print(f"{key:>15}: {t:5.2f} sec.")
+    #@+node:ekr.20191226063942.1: *4* TR.run_ast_tokens
+    def run_ast_tokens(self):
+        # pylint: disable=import-error
+        # It's ok to raise ImportError here.
+        import asttokens
+        t1 = get_time()
+        atok = asttokens.ASTTokens(self.contents, parse=True)
+        self.tree = atok.tree
+        self.tokens = atok._tokens
+        t2 = get_time()
+        old_time = self.times.get('ast-tokens', 0.0)
+        self.times ['ast-tokens'] = old_time + (t2 - t1)
+    #@-others
+   
 #@+node:ekr.20191227051737.1: ** class TestTOG (BaseTest)
 class TestTOG (BaseTest):
     """Tests for the TokenOrderGenerator class."""
@@ -5739,413 +6141,18 @@ class TestTOG (BaseTest):
         self.fstringify(filename)
         
     #@-others
-#@+node:ekr.20191113133338.1: ** class TestRunner
-class TestRunner:
-    """
-    A testing framework for TokenOrderGenerator and related classes.
-    """
-    #@+<< define valid actions & flags >>
-    #@+node:ekr.20191222064729.1: *3* << define valid actions & flags >>
-    valid_actions = [
-        'run-ast-tokens',       # Alternate pass 0.
-        'make-tokens-and-tree', # Pass 0.
-        'create-links',         # Pass 1.
-        'fstringify',           # Pass 2.
-        # Dumps...
-        'dump-all',
-        'dump-contents',
-        'dump-lines',
-        'dump-raw-tree',
-        'dump-results',
-        'dump-tokens',
-        'dump-tree',
-        'show-times',
-    ]
-
-    valid_flags = [
-        'all',
-        'all-leo-files',
-        'coverage',
-        'dump-all-after-fail',
-        'dump-results',
-        'dump-tokens-after-fail',
-        'dump-tree-after-fail',
-        'no-trace-after-fail',
-        'set-trace-mode',
-        'show-pass0-times',
-        'show-create-links-time',
-        'show-fstringify-time',
-        'show-exception-after-fail',
-        'show-make-tokens-time',
-        'show-test-description',
-        'show-test-kind',
-        'summarize',
-        'trace-tokenizer-tokens',
-        'verbose-fail',
-    ]
-    #@-<< define valid actions & flags >>
-    #@+others
-    #@+node:ekr.20191205160754.4: *3* TR.run_tests & helpers
-    def run_tests(self, actions, flags, root, contents=None):
-        """The outer test runner."""
-        # Startup.
-        self.fails = []
-        self.root = root
-        self.times = {}
-        # Create self.actions and self.flags.
-        ok = self.make_actions_and_flags(actions, flags)
-        if not ok:
-            print('Aborting...')
-            return
-        flags = self.flags
-        self.show_status()
-        if contents:
-            self.tests = [(contents, root.h or 'None')]
-        elif 'all-leo-files' in flags:
-            self.tests = self.make_leo_tests()
-        else:
-            self.tests = self.make_tests(root)
-        # Execute all tests.
-        t1 = get_time()
-        for contents, description in self.tests:
-            # run_one_test catches all exceptions.
-            if 'show-test-description' in flags:
-                print(f"Running {description}...")
-            ok = self.run_one_test(contents, description)
-            if not ok:
-                self.fails.append(description)
-            if 'fail-fast' in flags:
-                break
-        # End-of-tests reports.
-        t2 = get_time()
-        self.times['total_time'] = t2 - t1
-        if 'coverage' in flags:
-            self.show_coverage()
-        if 'summarize' in flags:
-            self.summarize()
-    #@+node:ekr.20191205163727.1: *4* TR.make_actions_and_flags
-    def make_actions_and_flags(self, actions, flags):
-        """
-        Create self.actions and self.flags.
-        
-        Return False if there are unknow actions or flags.
-        """
-        valid_actions, valid_flags = self.valid_actions, self.valid_flags
-        # Check valid actions.
-        for z in valid_actions:
-            assert hasattr(self, z.replace('-','_')), repr(z)
-        # Clean and check actions.
-        self.actions = [z for z in actions if z in valid_actions]
-        bad_actions = [z for z in actions if z not in valid_actions]
-        if bad_actions:
-            for z in bad_actions:
-                print('Unknown action:', z)
-            return False
-        # Clean and check flags.
-        flags = [z.lower() for z in flags or []]
-        self.flags = [z for z in flags if z in valid_flags]
-        bad_flags = [z for z in flags if z not in valid_flags]
-        if bad_flags:
-            for z in bad_flags:
-                print('Unknown flag:', z)
-            return False
-        return True
-    #@+node:ekr.20191205172431.1: *4* TR.make_leo_tests
-    def make_leo_tests(self):
-        """
-        Leo-specific code for unit tests.
-        
-        Return a list of tuples (contents, description) for all of Leo's core
-        .py files.
-        """
-        import leo.core.leoGlobals as leo_g
-        core_directory = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..', 'core')
-        assert os.path.exists(core_directory), core_directory
-        paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
-        tests = []
-        for path in paths:
-            assert os.path.exists(path), path
-            with open(path, 'r') as f:
-                contents = f.read()
-            description = path
-            tests.append((contents, description))   
-        return tests
-
-    #@+node:ekr.20191205160754.2: *4* TR.make_tests
-    def make_tests(self, root):
-        """
-        Leo-specific code for unit tests.
-        
-        Return a list of tuples (contents, description) found in all children
-        of the root, except this node.
-        """
-        import leo.core.leoGlobals as leo_g
-        tests = []
-        contents_tag = 'test:'
-        file_tag = 'file:'
-        after = root.nodeAfterTree()
-        p = root.copy()
-        while p and p != after:
-            if p.h.startswith(('fail:', 'fails')):
-                # Ignore all fails, regardless of 'all' flag.
-                p.moveToNodeAfterTree()
-            elif 'all' not in self.flags and p.h.startswith('ignore:'):
-                # Honor 'ignore' only when *not* runnining all tests.
-                p.moveToNodeAfterTree()
-            elif p.h.startswith(contents_tag):
-                description = p.h
-                contents = p.b.strip() + '\n'
-                tests.append((contents, description))
-                p.moveToThreadNext()
-            elif p.h.startswith(file_tag):
-                description = p.h
-                s = p.h[len(file_tag):].strip()
-                parts = [leo_g.app.loadDir, '..'] + s.split('..')
-                path = os.path.sep.join(parts)
-                if os.path.exists(path):
-                    with open(path, 'r') as f:
-                        contents = f.read()
-                    tests.append((contents, description))
-                    p.moveToThreadNext()
-                else:
-                    assert False, f"file not found: {path}"
-            else:
-                # Ignore organizer nodes.
-                p.moveToThreadNext()
-        if not tests:
-            print(f"no tests in {root.h}")
-        return tests
-    #@+node:ekr.20191122025155.1: *4* TR.show_coverage
-    def show_coverage(self):
-        if self.x:
-            self.x.report_coverage()
-    #@+node:ekr.20191205160754.5: *4* TR.show_status
-    def show_status(self):
-        """Show the preliminary status."""
-        flags = self.flags
-        print('')
-        if 'show-test-kind' in flags:
-            if 'all-leo-files' in flags:
-                kind = 'Testing all Leo files'
-            elif 'all' in flags:
-                kind = 'Running *all* unit tests'
-            else:
-                kind = 'Running *selected* unit tests'
-            print(f"{self.root.h}: {kind}...")
-        if 'run-ast-tokens' in self.actions:
-            print('\nUsing asttokens, *not* the TOG classes')
-    #@+node:ekr.20191205160754.6: *4* TR.summarize
-    def summarize(self):
-        fails, tests = self.fails, self.tests
-        status = 'FAIL' if fails else 'PASS'
-        if fails:
-            print('')
-            g.printObj(fails, tag='Failed tests')
-        print(
-            f"\n{status} Ran "
-            f"{len(tests)} test{g.plural(len(tests))}")
-        if not 'show-times' in self.flags:
-            self.show_times()
-    #@+node:ekr.20191122021515.1: *3* TR.run_one_test
-    def run_one_test(self, contents, description):
-        """
-        Run the test given by the contents and description.
-        """
-        tag = 'run_tests'
-        self.description = description
-        # flags = self.flags
-        # Clean the contents.
-        self.contents = contents = contents.strip() + '\n'
-        
-        #
-        # Execute actions, in the user-defined order.
-        bad_actions = []
-        for action in self.actions:
-            helper = getattr(self, action.replace('-', '_'), None)
-            if helper:
-                try:
-                    helper()
-                except Exception as e:
-                    print(f"{tag}: Exception in {action}: {e}")
-                    if 'show-exception-after-fail' in self.flags:
-                        g.es_exception()
-                    return False
-            else:
-                bad_actions.append(action)
-        if bad_actions:
-            for action in list(set(bad_actions)):
-                print(f"{tag}: bad action option: {action!r}")
-        return True
-    #@+node:ekr.20191205160624.1: *3* TR: actions...
-    # Actions should fail by throwing an exception.
-    #@+node:ekr.20191226064933.1: *4* TR.create_links (pass 1)
-    def create_links(self):
-        """Pass 1: TOG.create_links"""
-        flags, x = self.flags, self.x
-        # Catch exceptions so we can get data late.
-        try:
-            t1 = get_time()
-            # Yes, list *is* required here.
-            list(x.create_links(self.tokens, self.tree, file_name=self.description))
-            t2 = get_time()
-            old_t = self.times.get('create-links', 0.0)
-            self.times ['create-links'] = old_t + (t2 - t1)
-        except Exception as e:
-            g.trace(f"\nFAIL: make-tokens\n")
-            # Don't use g.trace.  It doesn't handle newlines properly.
-            print(e)
-            if 'show-exception-after-fail' in flags:
-                g.es_exception()
-            if 'dump-all-after-fail' in flags:
-                self.dump_all()
-            else:
-                if 'dump-tokens-after-fail' in flags:
-                    self.dump_tokens()
-                if 'dump-tree-after-fail' in flags:
-                    self.dump_tree()
-            if 'no-trace-after-fail':
-                x.trace_mode = False
-            raise
-    #@+node:ekr.20191122022728.1: *4* TR.dump_all
-    def dump_all(self):
-
-        if self.x:
-            self.dump_contents()
-            self.dump_tokens()
-            self.dump_tree()
-            # self.dump_raw_tree()
-
-    #@+node:ekr.20191122025303.1: *4* TR.dump_contents
-    def dump_contents(self):
-        contents = self.contents
-        print('\nContents...\n')
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20191122025306.1: *4* TR.dump_lines
-    def dump_lines(self):
-        print('\nTOKEN lines...\n')
-        for z in self.tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20191122025306.2: *4* TR.dump_raw_tree
-    def dump_raw_tree(self):
-        print('\nRaw tree...\n')
-        print(AstDumper().dump(self.tree))
-        print('')
-    #@+node:ekr.20191225063758.1: *4* TR.dump_results
-    def dump_results(self):
-
-        print('\nResults...\n')
-        print(''.join(z.to_string() for z in self.tokens))
-    #@+node:ekr.20191122025418.1: *4* TR.dump_tokens
-    def dump_tokens(self, brief=False):
-        tokens = self.tokens
-        print('\nTokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        # pylint: disable=not-an-iterable
-        if self.x:
-            for z in tokens:
-                print(z.dump(brief=brief))
-            print('')
-        else:
-            import token as tm
-            for z in tokens:
-                kind = tm.tok_name[z.type].lower()
-                print(f"{z.index:4} {kind:>12} {z.string!r}")
-    #@+node:ekr.20191122025419.1: *4* TR.dump_tree
-    def dump_tree(self, brief=False):
-        print('\nPatched tree...\n')
-        tokens, tree = self.tokens, self.tree
-        if self.x:
-            print(brief_dump(tree))
-            return
-        try:
-            # pylint: disable=import-error
-            from asttokens.util import walk
-        except Exception:
-            return
-        for z in walk(tree):
-            class_name = z.__class__.__name__
-            first, last = z.first_token.index, z.last_token.index
-            token_range = f"{first:>4}..{last:<4}"
-            if isinstance(z, ast.Module):
-                tokens_s = ''
-            else:
-                tokens_s = ' '.join(
-                    repr(z.string) for z in tokens[first:last] if z)
-            print(f"{class_name:>12} {token_range:<10} {tokens_s}")
-    #@+node:ekr.20191222074711.1: *4* TR.fstringify (pass 2)
-    def fstringify(self):
-        """Pass 2: TOG.fstringify."""
-        x = self.x
-        assert isinstance(x, TokenOrderGenerator), repr(x)
-        t1 = get_time()
-        x.fstringify(x.tokens, x.tree, file_name='unit test')
-        t2 = get_time()
-        old_time = self.times.get('fstringify', 0.0)
-        self.times ['fstringify'] = old_time + (t2 - t1)
-    #@+node:ekr.20191226063007.1: *4* TR.make_tokens_and_tree (pass 0)
-    def make_tokens_and_tree(self):
-        """Pass 0: TOG.make_tokens."""
-        contents, flags = self.contents, self.flags
-        t1 = get_time()
-        # Create and remember the TOJ.
-        x = self.x = TokenOrderInjector()
-        x.trace_mode = 'set-trace-mode' in flags
-        # Tokenize.
-        self.tokens = x.make_tokens(contents,
-            trace_mode='trace-tokenizer-tokens' in flags)
-        t2 = get_time()
-        old_t = self.times.get('make-tokens', 0.0)
-        self.times ['make-tokens'] = old_t + (t2 - t1)
-        # Parse.
-        self.tree = parse_ast(contents)
-        t3 = get_time()
-        old_t = self.times.get('parse-ast', 0.0)
-        self.times ['parse-ast'] = old_t + (t3 - t2)
-        # Dump.
-        if 'dump-tokens-first' in flags:
-            self.dump_tokens(brief=True)
-        if 'dump-raw-tree-first' in flags:
-            self.dump_raw_tree()
-    #@+node:ekr.20191226095129.1: *4* TR.show_times
-    def show_times(self):
-        """Show all calculated times."""
-        if not self.times:
-            return
-        table = (
-            'ast-tokens',
-            'make-tokens', 'parse-ast',
-            'create-links', 'fstringify',
-        )
-        print('')
-        for key in table:
-            t = self.times.get(key)
-            if t is not None:
-                print(f"{key:>15}: {t:5.2f} sec.")
-    #@+node:ekr.20191226063942.1: *4* TR.run_ast_tokens
-    def run_ast_tokens(self):
-        # pylint: disable=import-error
-        # It's ok to raise ImportError here.
-        import asttokens
-        t1 = get_time()
-        atok = asttokens.ASTTokens(self.contents, parse=True)
-        self.tree = atok.tree
-        self.tokens = atok._tokens
-        t2 = get_time()
-        old_time = self.times.get('ast-tokens', 0.0)
-        self.times ['ast-tokens'] = old_time + (t2 - t1)
-    #@-others
-   
 #@+node:ekr.20191227152538.1: ** class TestTOT (BaseTest)
 class TestTOT (BaseTest):
     
-    def test_tot_traverse(self):
-        g.trace('=====')
+    def test_traverse(self):
+        
+        contents = """\
+print('%s = %s' % (2+3, 4*5))
+"""
+        # self.make_file_data('leoApp.py')
+        self.make_data(contents)
+        x = TokenOrderTraverser()
+        x.traverse(self.tree)
 #@+node:ekr.20191110080535.1: ** class Token
 class Token:
     """
@@ -6419,6 +6426,37 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
 
     def sync_token(self, kind, val):
         pass
+#@+node:ekr.20191226195813.1: ** class TokenOrderTraverser
+class TokenOrderTraverser:
+    """
+    Traverse an ast tree using the parent/child links created by the
+    TokenOrderInjector class.
+    """
+    #@+others
+    #@+node:ekr.20191226200154.1: *3* TOT.traverse
+    def traverse(self, tree):
+        """
+        Call visit, in token order, for all nodes in tree.
+        
+        Recursion is not allowed.
+        """
+        # The stack contains child indices.
+        node, stack = tree, [0]
+        limit = 0
+        while stack and limit < 100:
+            limit += 1
+            self.visit(node)
+            children = getattr(node, 'children', None)
+            if children:
+                stack.append(0)
+                node = children[0]
+            else:
+                node = node.parent
+                
+    #@+node:ekr.20191227160547.1: *3* TOT.visit
+    def visit(self, node):
+        g.trace(f"{node.node_index:>3} {node.__class__.__name__}")
+    #@-others
 #@+node:ekr.20160225102931.1: ** class TokenSync (deprecated)
 class TokenSync:
     """A class to sync and remember tokens."""
