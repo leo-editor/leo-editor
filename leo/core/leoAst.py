@@ -11,281 +11,6 @@ import traceback
 import types
 import unittest
 #@+others
-#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
-#@+node:ekr.20191027072910.1: *3* exception classes
-class AstNotEqual(Exception):
-    """The two given AST's are not equivalent."""
-
-class AssignLinksError(Exception):
-    """Assigning links to ast nodes failed."""
-    
-class FailFast(Exception):
-    """Abort tests in TestRunner class."""
-#@+node:ekr.20160521104555.1: *3* function: _op_names
-#@@nobeautify
-
-# Python 2: https://docs.python.org/2/library/ast.html
-# Python 3: https://docs.python.org/3/library/ast.html
-
-_op_names = {
-    # Binary operators.
-    'Add':       '+',
-    'BitAnd':    '&',
-    'BitOr':     '|',
-    'BitXor':    '^',
-    'Div':       '/',
-    'FloorDiv':  '//',
-    'LShift':    '<<',
-    'MatMult':   '@', # Python 3.5.
-    'Mod':       '%',
-    'Mult':      '*',
-    'Pow':       '**',
-    'RShift':    '>>',
-    'Sub':       '-',
-    # Boolean operators.
-    'And':   ' and ',
-    'Or':    ' or ',
-    # Comparison operators
-    'Eq':    '==',
-    'Gt':    '>',
-    'GtE':   '>=',
-    'In':    ' in ',
-    'Is':    ' is ',
-    'IsNot': ' is not ',
-    'Lt':    '<',
-    'LtE':   '<=',
-    'NotEq': '!=',
-    'NotIn': ' not in ',
-    # Context operators.
-    'AugLoad':  '<AugLoad>',
-    'AugStore': '<AugStore>',
-    'Del':      '<Del>',
-    'Load':     '<Load>',
-    'Param':    '<Param>',
-    'Store':    '<Store>',
-    # Unary operators.
-    'Invert':   '~',
-    'Not':      ' not ',
-    'UAdd':     '+',
-    'USub':     '-',
-}
-#@+node:ekr.20191225092852.1: *3* function: brief_dump
-def brief_dump(ast):
-    """Dump an ast node."""
-    return AstDumper().brief_dump(ast)
-#@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
-def compare_asts(ast1, ast2):
-    """Compare two ast trees. Return True if they are equal."""
-    import leo.core.leoGlobals as g
-    # Compare the two parse trees.
-    try:
-        _compare_asts(ast1, ast2)
-    except AstNotEqual:
-        dump_ast(ast1, tag='AST BEFORE')
-        dump_ast(ast2, tag='AST AFTER')
-        if g.unitTesting:
-            raise
-        return False
-    except Exception:
-        g.trace(f"Unexpected exception")
-        g.es_exception()
-        return False
-    return True
-#@+node:ekr.20191027071653.2: *4* function._compare_asts
-def _compare_asts(node1, node2):
-    """
-    Compare both nodes, and recursively compare their children.
-    
-    See also: http://stackoverflow.com/questions/3312989/
-    """
-    # Compare the nodes themselves.
-    _compare_nodes(node1, node2)
-    # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])
-    fields2 = getattr(node2, "_fields", [])
-    if fields1 != fields2:
-        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
-    # Recursively compare each field.
-    for field in fields1:
-        if field not in ('lineno', 'col_offset', 'ctx'):
-            attr1 = getattr(node1, field, None)
-            attr2 = getattr(node2, field, None)
-            if attr1.__class__.__name__ != attr2.__class__.__name__:
-                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
-            _compare_asts(attr1, attr2)
-#@+node:ekr.20191027071653.3: *4* function._compare_nodes
-def _compare_nodes(node1, node2):
-    """
-    Compare node1 and node2.
-    For lists and tuples, compare elements recursively.
-    Raise AstNotEqual if not equal.
-    """
-    # Class names must always match.
-    if node1.__class__.__name__ != node2.__class__.__name__:
-        raise AstNotEqual(
-            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-            f"node2.__class__.__name__: {node2.__class__.__name_}"
-        )
-    # Special cases for strings and None
-    if node1 is None:
-        return
-    if isinstance(node1, str):
-        if node1 != node2:
-            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
-    # Special cases for lists and tuples:
-    if isinstance(node1, (tuple, list)):
-        if len(node1) != len(node2):
-            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
-        for i, item1 in enumerate(node1):
-            item2 = node2[i]
-            if item1.__class__.__name__ != item2.__class__.__name__:
-                raise AstNotEqual(
-                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
-                )
-            _compare_asts(item1, item2)
-#@+node:ekr.20191121081439.1: *3* function: compare_lists
-def compare_lists(list1, list2):
-    """
-    Compare two lists of strings, showing the first mismatch.
-
-    Return the index of the first mismatched lines, or None if identical.
-    """
-    import itertools
-    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
-    for i, (s1, s2) in enumerate(it):
-        if s1 != s2:
-            return i
-    return None
-#@+node:ekr.20191027074436.1: *3* function: dump_ast
-def dump_ast(ast, tag=None):
-    """Utility to dump an ast tree."""
-    g.printObj(AstDumper().dump(ast), tag=tag)
-#@+node:ekr.20191109063033.1: *3* function: funcToMethod 
-
-def funcToMethod(f, theClass, name=None):
-    """
-    From the Python Cookbook...
-
-    The following method allows you to add a function as a method of
-    any class. That is, it converts the function to a method of the
-    class. The method just added is available instantly to all
-    existing instances of the class, and to all instances created in
-    the future.
-    
-    The function's first argument should be self.
-    
-    The newly created method has the same name as the function unless
-    the optional name argument is supplied, in which case that name is
-    used as the method name.
-    """
-    setattr(theClass, name or f.__name__, f)
-#@+node:ekr.20191226071135.1: *3* function: get_time
-def get_time():
-    return time.process_time()
-#@+node:ekr.20191119085222.1: *3* function: obj_id
-def obj_id(obj):
-    """Return the last four digits of id(obj), for dumps & traces."""
-    return str(id(obj))[-4:]
-#@+node:ekr.20191027075648.1: *3* function: parse_ast
-def parse_ast(s, headline=None, show_time=False):
-    """
-    Parse string s, catching & reporting all exceptions.
-    Return the ast node, or None.
-    """
-
-    def oops(message):
-        print('')
-        if headline:
-            print(f"parse_ast: {message} in: {headline}")
-        else:
-            print(f"parse_ast: {message}")
-        print('')
-
-    try:
-        s1 = g.toEncodedString(s)
-        t1 = get_time()
-        tree = ast.parse(s1, filename='before', mode='exec')
-        t2 = get_time()
-        if show_time:
-            print(f"   parse_ast: {t2-t1:5.2f} sec.")
-        return tree
-    except IndentationError:
-        oops('Indentation Error')
-    except SyntaxError:
-        oops('Syntax Error')
-    except Exception:
-        oops('Unexpected Exception')
-        g.es_exception()
-    return None
-#@+node:ekr.20191113205051.1: *3* function: truncate
-def truncate(s, n):
-    if isinstance(s, str):
-        s = s.replace('\n','<NL>')
-    else:
-        s = repr(s)
-    return s if len(s) <  n else s[:n-3] + '...'
-#@+node:ekr.20191227052352.1: **  leoAst.py: unit tests
-#@+node:ekr.20191227051737.1: *3*  class Test (TestCase)
-class Test (unittest.TestCase):
-    """The foundation for tests of code in leoAst.py"""
-    contents = ''
-    description = ''
-    #@+others
-    #@+node:ekr.20191227054856.1: *4* Test.setup
-    def setup(self):
-        assert self.contents
-        self.contents = self.contents.strip() + '\n'
-        # Create and remember the TOJ.
-        toj = TokenOrderInjector()
-        toj.trace_mode = False
-        # Tokenize.
-        self.tokens = toj.make_tokens(self.contents)
-        # Parse.
-        self.tree = parse_ast(self.contents)
-        # Insert links.
-        list(toj.create_links(self.tokens, self.tree,
-            file_name=self.description))
-    #@-others
-#@+node:ekr.20160521103254.1: *3* test_vistors_exist
-def test_vistors_exist():
-    """Ensure that visitors for all ast nodes exist."""
-    import _ast
-    # Compute all fields to test.
-    aList = sorted(dir(_ast))
-    remove = [
-        'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
-        'AST',  # The base class,
-    ]
-    aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
-    aList = [z for z in aList
-        if not z.startswith('_') and not z in remove]
-    # Now test them.
-    table = (
-        AstFullTraverser,
-        AstFormatter,
-        AstPatternFormatter,
-        HTMLReportTraverser,
-    )
-    for class_ in table:
-        traverser = class_()
-        errors, nodes, ops = 0, 0, 0
-        for z in aList:
-            if hasattr(traverser, 'do_'+z):
-                nodes += 1
-            elif _op_names.get(z):
-                ops += 1
-            else:
-                errors += 1
-                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
-    msg = f"{nodes} node types, {ops} op types, {errors} errors"
-    assert not errors, msg
-#@+node:ekr.20191227055821.1: *3* class End_of_line (Test)
-class End_of_line (Test):
-    
-    contents = """# Only a comment."""
-    description = "Test end-of-line handling"
 #@+node:ekr.20141012064706.18399: **  class AstFormatter
 class AstFormatter:
     """
@@ -2593,141 +2318,219 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
-#@+node:ekr.20191226175251.1: ** class LeoGlobals
-#@@nosearch
+#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
+#@+node:ekr.20191027072910.1: *3* exception classes
+class AstNotEqual(Exception):
+    """The two given AST's are not equivalent."""
 
-class LeoGlobals:
+class AssignLinksError(Exception):
+    """Assigning links to ast nodes failed."""
+    
+class FailFast(Exception):
+    """Abort tests in TestRunner class."""
+#@+node:ekr.20160521104555.1: *3* function: _op_names
+#@@nobeautify
+
+# Python 2: https://docs.python.org/2/library/ast.html
+# Python 3: https://docs.python.org/3/library/ast.html
+
+_op_names = {
+    # Binary operators.
+    'Add':       '+',
+    'BitAnd':    '&',
+    'BitOr':     '|',
+    'BitXor':    '^',
+    'Div':       '/',
+    'FloorDiv':  '//',
+    'LShift':    '<<',
+    'MatMult':   '@', # Python 3.5.
+    'Mod':       '%',
+    'Mult':      '*',
+    'Pow':       '**',
+    'RShift':    '>>',
+    'Sub':       '-',
+    # Boolean operators.
+    'And':   ' and ',
+    'Or':    ' or ',
+    # Comparison operators
+    'Eq':    '==',
+    'Gt':    '>',
+    'GtE':   '>=',
+    'In':    ' in ',
+    'Is':    ' is ',
+    'IsNot': ' is not ',
+    'Lt':    '<',
+    'LtE':   '<=',
+    'NotEq': '!=',
+    'NotIn': ' not in ',
+    # Context operators.
+    'AugLoad':  '<AugLoad>',
+    'AugStore': '<AugStore>',
+    'Del':      '<Del>',
+    'Load':     '<Load>',
+    'Param':    '<Param>',
+    'Store':    '<Store>',
+    # Unary operators.
+    'Invert':   '~',
+    'Not':      ' not ',
+    'UAdd':     '+',
+    'USub':     '-',
+}
+#@+node:ekr.20191225092852.1: *3* function: brief_dump
+def brief_dump(ast):
+    """Dump an ast node."""
+    return AstDumper().brief_dump(ast)
+#@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
+def compare_asts(ast1, ast2):
+    """Compare two ast trees. Return True if they are equal."""
+    import leo.core.leoGlobals as g
+    # Compare the two parse trees.
+    try:
+        _compare_asts(ast1, ast2)
+    except AstNotEqual:
+        dump_ast(ast1, tag='AST BEFORE')
+        dump_ast(ast2, tag='AST AFTER')
+        if g.unitTesting:
+            raise
+        return False
+    except Exception:
+        g.trace(f"Unexpected exception")
+        g.es_exception()
+        return False
+    return True
+#@+node:ekr.20191027071653.2: *4* function._compare_asts
+def _compare_asts(node1, node2):
     """
-    Simplified version of functions in leoGlobals.py.
+    Compare both nodes, and recursively compare their children.
+    
+    See also: http://stackoverflow.com/questions/3312989/
+    """
+    # Compare the nodes themselves.
+    _compare_nodes(node1, node2)
+    # Get the list of fields.
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
+    if fields1 != fields2:
+        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
+    # Recursively compare each field.
+    for field in fields1:
+        if field not in ('lineno', 'col_offset', 'ctx'):
+            attr1 = getattr(node1, field, None)
+            attr2 = getattr(node2, field, None)
+            if attr1.__class__.__name__ != attr2.__class__.__name__:
+                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
+            _compare_asts(attr1, attr2)
+#@+node:ekr.20191027071653.3: *4* function._compare_nodes
+def _compare_nodes(node1, node2):
+    """
+    Compare node1 and node2.
+    For lists and tuples, compare elements recursively.
+    Raise AstNotEqual if not equal.
+    """
+    # Class names must always match.
+    if node1.__class__.__name__ != node2.__class__.__name__:
+        raise AstNotEqual(
+            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+            f"node2.__class__.__name__: {node2.__class__.__name_}"
+        )
+    # Special cases for strings and None
+    if node1 is None:
+        return
+    if isinstance(node1, str):
+        if node1 != node2:
+            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
+    # Special cases for lists and tuples:
+    if isinstance(node1, (tuple, list)):
+        if len(node1) != len(node2):
+            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
+        for i, item1 in enumerate(node1):
+            item2 = node2[i]
+            if item1.__class__.__name__ != item2.__class__.__name__:
+                raise AstNotEqual(
+                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
+                )
+            _compare_asts(item1, item2)
+#@+node:ekr.20191121081439.1: *3* function: compare_lists
+def compare_lists(list1, list2):
+    """
+    Compare two lists of strings, showing the first mismatch.
+
+    Return the index of the first mismatched lines, or None if identical.
+    """
+    import itertools
+    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
+    for i, (s1, s2) in enumerate(it):
+        if s1 != s2:
+            return i
+    return None
+#@+node:ekr.20191027074436.1: *3* function: dump_ast
+def dump_ast(ast, tag=None):
+    """Utility to dump an ast tree."""
+    g.printObj(AstDumper().dump(ast), tag=tag)
+#@+node:ekr.20191109063033.1: *3* function: funcToMethod 
+
+def funcToMethod(f, theClass, name=None):
+    """
+    From the Python Cookbook...
+
+    The following method allows you to add a function as a method of
+    any class. That is, it converts the function to a method of the
+    class. The method just added is available instantly to all
+    existing instances of the class, and to all instances created in
+    the future.
+    
+    The function's first argument should be self.
+    
+    The newly created method has the same name as the function unless
+    the optional name argument is supplied, in which case that name is
+    used as the method name.
+    """
+    setattr(theClass, name or f.__name__, f)
+#@+node:ekr.20191226071135.1: *3* function: get_time
+def get_time():
+    return time.process_time()
+#@+node:ekr.20191119085222.1: *3* function: obj_id
+def obj_id(obj):
+    """Return the last four digits of id(obj), for dumps & traces."""
+    return str(id(obj))[-4:]
+#@+node:ekr.20191027075648.1: *3* function: parse_ast
+def parse_ast(s, headline=None, show_time=False):
+    """
+    Parse string s, catching & reporting all exceptions.
+    Return the ast node, or None.
     """
 
-    #@+others
-    #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
-    def callerName(self, n):
-        """Get the function name from the call stack."""
-        try:
-            f1 = sys._getframe(n)
-            code1 = f1.f_code
-            return code1.co_name
-        except Exception:
-            return ''
-    #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
-    def callers(self, n=4):
-        """
-        Return a string containing a comma-separated list of the callers
-        of the function that called g.callerList.
-        """
-        i, result = 2, []
-        while True:
-            s = self.callerName(n=i)
-            if s:
-                result.append(s)
-            if not s or len(result) >= n:
-                break
-            i += 1
-        return ','.join(reversed(result))
-    #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self):
-        typ, val, tb = sys.exc_info()
-        for line in traceback.format_exception(typ, val, tb):
-            print(line)
-        fileName, n = self.getLastTracebackFileAndLineNumber()
-        return fileName, n
-    #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
-    def getLastTracebackFileAndLineNumber(self):
-        typ, val, tb = sys.exc_info()
-        if typ == SyntaxError:
-            # IndentationError is a subclass of SyntaxError.
-            return val.filename, val.lineno
-        #
-        # Data is a list of tuples, one per stack entry.
-        # The tuples have the form (filename, lineNumber, functionName, text).
-        data = traceback.extract_tb(tb)
-        item = data[-1]  # Get the item at the top of the stack.
-        filename, n, functionName, text = item
-        return filename, n
-    #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
-    def plural(self, obj):
-        """Return "s" or "" depending on n."""
-        if isinstance(obj, (list, tuple, str)):
-            n = len(obj)
-        else:
-            n = obj
-        return '' if n == 1 else 's'
-    #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
-    def printObj(self, obj, indent='', tag=None):
-        """Simplified version of g.printObj."""
-        if tag:
-            print(f"{tag}...")
-        if isinstance(obj, list):
-            print('[')
-            for z in obj:
-                print(f"  {z!r}")
-            print(']')
-        elif isinstance(obj, tuple):
-            print('(')
-            for z in obj:
-                print(f"  {z!r}")
-            print(')')
-        else:
-            print(repr(obj))
+    def oops(message):
         print('')
-    #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
-    def splitLines(self, s):
-        """Split s into lines, preserving the number of lines and
-        the endings of all lines, including the last line."""
-        # g.stat()
-        if s:
-            return s.splitlines(True)
-                # This is a Python string function!
-        return []
-    #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
-    def toEncodedString(self, s, encoding='utf-8'):
-        """Convert unicode string to an encoded string."""
-        if not isinstance(s, str):
-            return s
-        try:
-            s = s.encode(encoding, "strict")
-        except UnicodeError:
-            s = s.encode(encoding, "replace")
-            print(f"toEncodedString: Error converting {s!r} to {encoding}")
-        return s
-    #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s, encoding='utf-8'):
-        """Convert bytes to unicode if necessary."""
-        if isinstance(s, str):
-            return s
-        tag = 'g.toUnicode'
-        try:
-            s = s.decode(encoding, 'strict')
-        except(UnicodeDecodeError, UnicodeError):
-            s = s.decode(encoding, 'replace')
-            print(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
-            g.trace(g.callers())
-        except Exception:
-            g.es_exception()
-            print(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
-            g.trace(g.callers())
-        return s
-    #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
-    def trace(self, *args):
-        """Print a tracing message."""
-        # Compute the caller name.
-        try:
-            f1 = sys._getframe(1)
-            code1 = f1.f_code
-            name = code1.co_name
-        except Exception:
-            name = ''
-        print(f"{name}: {','.join(str(z) for z in args)}")
-    #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
-    def truncate(self, s, n):
-        """Return s truncated to n characters."""
-        if len(s) <= n:
-            return s
-        s2 = s[: n - 3] + f'...({len(s)})'
-        return s2 + '\n' if s.endswith('\n') else s2
-    #@-others
+        if headline:
+            print(f"parse_ast: {message} in: {headline}")
+        else:
+            print(f"parse_ast: {message}")
+        print('')
+
+    try:
+        s1 = g.toEncodedString(s)
+        t1 = get_time()
+        tree = ast.parse(s1, filename='before', mode='exec')
+        t2 = get_time()
+        if show_time:
+            print(f"   parse_ast: {t2-t1:5.2f} sec.")
+        return tree
+    except IndentationError:
+        oops('Indentation Error')
+    except SyntaxError:
+        oops('Syntax Error')
+    except Exception:
+        oops('Unexpected Exception')
+        g.es_exception()
+    return None
+#@+node:ekr.20191113205051.1: *3* function: truncate
+def truncate(s, n):
+    if isinstance(s, str):
+        s = s.replace('\n','<NL>')
+    else:
+        s = repr(s)
+    return s if len(s) <  n else s[:n-3] + '...'
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     """
@@ -5091,6 +4894,805 @@ class HTMLReportTraverser:
         self.visit(node.value)
         self.end_div('statement')
     #@-others
+#@+node:ekr.20191226175251.1: ** class LeoGlobals
+#@@nosearch
+
+class LeoGlobals:
+    """
+    Simplified version of functions in leoGlobals.py.
+    """
+
+    #@+others
+    #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
+    def callerName(self, n):
+        """Get the function name from the call stack."""
+        try:
+            f1 = sys._getframe(n)
+            code1 = f1.f_code
+            return code1.co_name
+        except Exception:
+            return ''
+    #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
+    def callers(self, n=4):
+        """
+        Return a string containing a comma-separated list of the callers
+        of the function that called g.callerList.
+        """
+        i, result = 2, []
+        while True:
+            s = self.callerName(n=i)
+            if s:
+                result.append(s)
+            if not s or len(result) >= n:
+                break
+            i += 1
+        return ','.join(reversed(result))
+    #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
+    def es_exception(self):
+        typ, val, tb = sys.exc_info()
+        for line in traceback.format_exception(typ, val, tb):
+            print(line)
+        fileName, n = self.getLastTracebackFileAndLineNumber()
+        return fileName, n
+    #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
+    def getLastTracebackFileAndLineNumber(self):
+        typ, val, tb = sys.exc_info()
+        if typ == SyntaxError:
+            # IndentationError is a subclass of SyntaxError.
+            return val.filename, val.lineno
+        #
+        # Data is a list of tuples, one per stack entry.
+        # The tuples have the form (filename, lineNumber, functionName, text).
+        data = traceback.extract_tb(tb)
+        item = data[-1]  # Get the item at the top of the stack.
+        filename, n, functionName, text = item
+        return filename, n
+    #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
+    def plural(self, obj):
+        """Return "s" or "" depending on n."""
+        if isinstance(obj, (list, tuple, str)):
+            n = len(obj)
+        else:
+            n = obj
+        return '' if n == 1 else 's'
+    #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
+    def printObj(self, obj, indent='', tag=None):
+        """Simplified version of g.printObj."""
+        if tag:
+            print(f"{tag}...")
+        if isinstance(obj, list):
+            print('[')
+            for z in obj:
+                print(f"  {z!r}")
+            print(']')
+        elif isinstance(obj, tuple):
+            print('(')
+            for z in obj:
+                print(f"  {z!r}")
+            print(')')
+        else:
+            print(repr(obj))
+        print('')
+    #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
+    def splitLines(self, s):
+        """Split s into lines, preserving the number of lines and
+        the endings of all lines, including the last line."""
+        # g.stat()
+        if s:
+            return s.splitlines(True)
+                # This is a Python string function!
+        return []
+    #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
+    def toEncodedString(self, s, encoding='utf-8'):
+        """Convert unicode string to an encoded string."""
+        if not isinstance(s, str):
+            return s
+        try:
+            s = s.encode(encoding, "strict")
+        except UnicodeError:
+            s = s.encode(encoding, "replace")
+            print(f"toEncodedString: Error converting {s!r} to {encoding}")
+        return s
+    #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
+    def toUnicode(self, s, encoding='utf-8'):
+        """Convert bytes to unicode if necessary."""
+        if isinstance(s, str):
+            return s
+        tag = 'g.toUnicode'
+        try:
+            s = s.decode(encoding, 'strict')
+        except(UnicodeDecodeError, UnicodeError):
+            s = s.decode(encoding, 'replace')
+            print(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+            g.trace(g.callers())
+        except Exception:
+            g.es_exception()
+            print(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+            g.trace(g.callers())
+        return s
+    #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
+    def trace(self, *args):
+        """Print a tracing message."""
+        # Compute the caller name.
+        try:
+            f1 = sys._getframe(1)
+            code1 = f1.f_code
+            name = code1.co_name
+        except Exception:
+            name = ''
+        print(f"{name}: {','.join(str(z) for z in args)}")
+    #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
+    def truncate(self, s, n):
+        """Return s truncated to n characters."""
+        if len(s) <= n:
+            return s
+        s2 = s[: n - 3] + f'...({len(s)})'
+        return s2 + '\n' if s.endswith('\n') else s2
+    #@-others
+#@+node:ekr.20191225072008.1: ** class NodeTokens
+class NodeTokens:
+    """
+    A class returning a range of tokens for a single ast node.
+    """
+    #@+others
+    #@+node:ekr.20191225111222.1: *3* token_range
+    def token_range(self, node):
+        self.i, self.j = None, None
+        list(self.token_range_helper(node))
+        return self.i, self.j
+        
+    #@+node:ekr.20191225111141.1: *3* token_range_helper
+    def token_range_helper(self, node):
+        if isinstance(node, (list, tuple)):
+            for z in node:
+                yield from self.token_range_helper(z)
+        elif hasattr(node, '_fields'):
+            self.update_range(node)
+            for field in node._fields:
+                node2 = getattr(node, field)
+                self.update_range(node2)
+                yield from self.token_range_helper(node2)
+    #@+node:ekr.20191225125633.1: *3* update_range
+    def update_range(self, node):
+        token_list = getattr(node, 'token_list', None)
+        if not token_list:
+            return
+        if self.i is None:
+            self.i = token_list[0].index
+        else:
+            self.i = min(self.i, token_list[0].index)
+        if self.j is None:
+            self.j = token_list[-1].index
+        else:
+            self.j = max(self.j, token_list[-1].index)
+        if 0:
+            g.trace(
+                f"{node.__class__.__name__:>15}, "
+                f"{self.i:>2} {self.j:>2}")
+    #@-others
+#@+node:ekr.20191227051737.1: ** class TestLeoAst (TestCase)
+class TestLeoAst (unittest.TestCase):
+    """The foundation for tests of code in leoAst.py"""
+    #@+others
+    #@+node:ekr.20191227054856.1: *3*  Test.make_data
+    def make_data(self, contents=None, description=None):
+        if not contents:
+            return
+        self.contents = contents.strip() + '\n'
+        g.trace(self.contents)
+        # Create and remember the TOJ.
+        toj = TokenOrderInjector()
+        toj.trace_mode = False
+        # Tokenize.
+        self.tokens = toj.make_tokens(self.contents)
+        # Parse.
+        self.tree = parse_ast(self.contents)
+        # Insert links.
+        self.result = list(toj.create_links(self.tokens, self.tree,
+            file_name=description or ''))
+    #@+node:ekr.20191227103533.1: *3*  Test.make_file_data
+    def make_file_data(self, filename):
+        """Test the contents of the given file."""
+        if 0:
+            return ### Not ready yet.
+        with open(filename, 'r') as f:
+            contents = f.read()
+        self.make_data(contents=contents, description=filename)
+        
+    #@+node:ekr.20191227075951.1: *3* Test.test_end_of_line
+    def test_end_of_line(self):
+        self.make_data("""# Only a comment.""")
+    #@+node:ekr.20160521103254.1: *3* Test.test_vistors_exist
+    def test_vistors_exist(self):
+        """Ensure that visitors for all ast nodes exist."""
+        import _ast
+        # Compute all fields to test.
+        aList = sorted(dir(_ast))
+        remove = [
+            'Interactive', 'Suite',  # Not necessary.
+            'PyCF_ONLY_AST',  # A constant,
+            'AST',  # The base class,
+        ]
+        aList = [z for z in aList if not z[0].islower()]
+            # Remove base classe
+        aList = [z for z in aList
+            if not z.startswith('_') and not z in remove]
+        # Now test them.
+        table = (
+            AstFullTraverser,
+            AstFormatter,
+            AstPatternFormatter,
+            HTMLReportTraverser,
+        )
+        for class_ in table:
+            traverser = class_()
+            errors, nodes, ops = 0, 0, 0
+            for z in aList:
+                if hasattr(traverser, 'do_'+z):
+                    nodes += 1
+                elif _op_names.get(z):
+                    ops += 1
+                else:
+                    errors += 1
+                    print(
+                        f"Missing {traverser.__class__.__name__} visitor "
+                        f"for: {z}")
+        msg = f"{nodes} node types, {ops} op types, {errors} errors"
+        assert not errors, msg
+    #@+node:ekr.20191227052446.10: *3* Contexts...
+    #@+node:ekr.20191227052446.11: *4* test_ClassDef
+    def test_ClassDef(self):
+        contents = """\
+    class TestClass1:
+        pass
+        
+    def decorator():
+        pass
+        
+    @decorator
+    class TestClass2:
+        pass
+        
+    @decorator
+    class TestClass(base1, base2):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.12: *4* test_ClassDef2
+    def test_ClassDef2(self):
+        contents = '''\
+    """ds 1"""
+    class TestClass:
+        """ds 2"""
+        def long_name(a, b=2):
+            """ds 3"""
+            print('done')
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.13: *4* test_FunctionDef
+    def test_FunctionDef(self):
+        contents = """\
+    def run(fileName=None, pymacs=None, *args, **keywords):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.14: *3* Expressions & operators...
+    #@+node:ekr.20191227052446.15: *4* test_attribute
+    def test_attribute(self):
+        contents = """\
+    open(os.devnull, "w")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.16: *4* test_CompareOp
+    def test_CompareOp(self):
+        contents = """\
+    if a and not b and c:
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.17: *4* test_Dict
+    def test_Dict(self):
+        contents = """\
+    d = {
+        'a' if x else 'b': True,
+        }
+    f()
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.18: *4* test_DictComp
+    def test_DictComp(self):
+        # leoGlobals.py, line 3028.
+        contents = """\
+    d2 = {val: key for key, val in d.iteritems()}
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.19: *4* test_ListComp
+    def test_ListComp(self):
+        # ListComp and comprehension.
+        contents = """\
+    any([p2.isDirty() for p2 in p.subtree()])
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.20: *4* test_NameConstant
+    def test_NameConstant(self):
+        contents = """\
+    run(a=None, b=str)
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.21: *4* test_Operator: semicolon
+    def test_op_semicolon(self):
+        contents = """\
+    print('c');
+    print('d')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.22: *4* test_Operator: semicolon between statements
+    def test_op_semicolon2(self):
+        contents = """\
+    a = 1 ; b = 2
+    print('a') ; print('b')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.23: *4* test_UnaryOp
+    def test_UnaryOp(self):
+        contents = """\
+    print(-(2))
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.24: *3* Files...
+    #@+node:ekr.20191227052446.25: *4* test_leoApp.py
+    def test_leoApp(self):
+        self.make_file_data('leoApp.py')
+        
+    #@+node:ekr.20191227052446.26: *4* test_leoAst.py
+    def test_leoAst(self):
+        self.make_file_data('leoAst.py')
+       
+    #@+node:ekr.20191227052446.27: *4* test_leoDebugger.py
+    def test_leoDebugger(self):
+        self.make_file_data('leoDebugger.py')
+       
+    #@+node:ekr.20191227052446.28: *4* test_leoFind.py
+    def test_leoFind(self):
+        self.make_file_data('leoFind.py')
+       
+    #@+node:ekr.20191227052446.29: *4* test_leoGlobals.py
+    def test_leoGlobals(self):
+        self.make_file_data('leoGlobals.py')
+       
+    #@+node:ekr.20191227052446.30: *4* test_leoTips.py
+    def test_leoTips(self):
+        self.make_file_data('leoTips.py')
+       
+    #@+node:ekr.20191227052446.31: *4* test_runLeo.py
+    def test_runLeo(self):
+        self.make_file_data('runLeo.py')
+       
+    #@+node:ekr.20191227052446.32: *3* If...
+    #@+node:ekr.20191227052446.33: *4* test_from leoTips.py
+    def test_if1(self):
+        # Line 93, leoTips.py
+        contents = """\
+    self.make_data(contents)
+    unseen = [i for i in range(5) if i not in seen]
+    for issue in data:
+        for a in aList:
+            print('a')
+        else:
+            print('b')
+    if b:
+        print('c')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.34: *4* test_if + tuple
+    def test_if2(self):
+        contents = """\
+    for i, j in b:
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.35: *4* test_if + unary op
+    def test_if3(self):
+        contents = """\
+    if -(2):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.36: *4* test_if, elif
+    def test_if4(self):
+        contents = """\
+    if 1:
+        print('a')
+    elif 2:
+        print('b')
+    elif 3:
+        print('c')
+        print('d')
+    print('-')
+    if 1:
+        print('e')
+    elif 2:
+        print('f')
+        print('g')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.37: *4* test_if, elif + 2
+    def test_if5(self):
+        contents = """\
+    if 1:
+        pass
+    elif 2:
+        pass
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.38: *4* test_if, elif, else
+    def test_if6(self):
+        contents = """\
+    if (a):
+        print('a1')
+        print('a2')
+    elif b:
+        print('b1')
+        print('b2')
+    else:
+        print('c1')
+        print('c2')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.39: *4* test_if, else
+    def test_if7(self):
+        contents = """\
+    if 1:
+        print('a')
+    else:
+        print('b')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.40: *4* test_if, else, if
+    def test_if8(self):
+        contents = """\
+    if 1:
+        print('a')
+    else:
+        if 2:
+            print('b')
+    """
+        self.make_data(contents)
+
+    #@+node:ekr.20191227052446.41: *4* test_Nested If's
+    def test_if9(self):
+        contents = """\
+    if a:
+        if b:
+            print('b')
+    else:
+        if d:
+            print('d')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.42: *4* test_ternary + if
+    def test_if10(self):
+        contents = """\
+    if 1:
+        a = 'class' if cond else 'def'
+        # find_pattern = prefix + ' ' + word
+        print('1')
+    else:
+        print('2')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.43: *3* Statements...
+    #@+node:ekr.20191227052446.44: *4* test_Call
+    def test_Call(self):
+        contents = """\
+    f1(a,b=2)
+    f2(1 + 2)
+    f3(arg, *args, **kwargs)
+    f4(a='a', *args, **kwargs)
+    func(a, b, one='one', two='two', *args, **kwargs)
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.45: *4* test_Global
+    def test_if12(self):
+        # Line 1604, leoGlobals.py
+        contents = """
+    def spam():
+        global gg
+        print('')
+    """
+        self.make_data(contents)
+
+    #@+node:ekr.20191227052446.46: *4* test_Try
+    def test_Try(self):
+        contents = """\
+    try:
+        print('a1')
+        print('a2')
+    except ImportError:
+        print('b1')
+        print('b2')
+    except SyntaxError:
+        print('c1')
+        print('c2')
+    finally:
+        print('d1')
+        print('d2')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.47: *4* test_TryExceptElse
+    def test_Try2(self):
+        # Line 240: leoDebugger.py
+        contents = """\
+    try:
+        print('a')
+    except ValueError:
+        print('b')
+    else:
+        print('c')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.48: *4* test_With
+    def test_With(self):
+        # leoGlobals.py, line 1785.
+        contents = """\
+    with open(fn) as f:
+        pass
+    """
+        self.make_data(contents)
+
+    #@+node:ekr.20191227052446.49: *4* test_YieldFrom
+    def test_YieldFrom(self):
+        # Line 1046, leoAst.py
+        contents = """\
+    self.node = tree
+    yield from self.gen_token('newline', '\n')
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.50: *3* Plain Strings...
+    #@+node:ekr.20191227052446.52: *4* test_\x and \o escapes
+    def test_escapes(self):
+        # Line 4609, leoGlobals.py
+        contents = """\
+    print("\x7e" "\0777") # tilde.
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.53: *4* test_backslashes in docstring
+    def test_backslashes(self):
+        # leoGlobals.py.
+        contents = '''\
+    class SherlockTracer:
+        """before\\after"""
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.54: *4* test_bs/nl
+    def test_bs_nl(self):
+        contents = """\
+    print('hello\
+    world')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.55: *4* test_bytes bs-x
+    def test_bytes(self):
+        # Line 201, leoApp.py
+        contents = """\
+    print(b'\xfe')
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.56: *4* test_empty string
+    def test_empyt_string(self):
+        contents = """\
+    self.s = ''
+    self.i = 0
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.57: *4* test_escaped string delims
+    def test_escaped_delims(self):
+        contents = """\
+    print("a\"b")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.58: *4* test_escaped strings
+    def test_escaped_strings(self):
+        contents = """\
+    f1(a='\b', b='\n', t='\t')
+    f2(f='\f', r='\r', v='\v')
+    f3(bs='\\')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.59: *4* test_f-string join
+    def test_fstring_join(self):
+        # The first newline causes the fail.
+        contents = """\
+    print(f"a {old_id!r}\n" "b\n")
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.60: *4* test_raw docstring
+    def test_raw_docstring(self):
+        contents = '''\
+    # Line 1619 leoFind.py
+    print(r"""DS""")
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.61: *4* test_raw escaped strings
+    def test_raw_escapes(self):
+        contents = """\
+    r1(a=r'\b', b=r'\n', t=r'\t')
+    r2(f=r'\f', r=r'\r', v=r'\v')
+    r3(bs=r'\\')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.63: *4* test_string concatentation
+    def test_concatentation(self):
+        contents = """\
+    print('a' 'b')
+    print('c')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.62: *4* test_single quote
+    def test_single_quote(self):
+        # leoGlobals.py line 806.
+        contents = """\
+    print('"')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.64: *4* test_string with % op
+    def test_potential_fstring(self):
+        contents = """\
+    print('test %s=%s'%(a, 2))
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.65: *3* f-strings....
+    #@+node:ekr.20191227052446.66: *4* test_fstring01: complex Call
+    def test_fstring1(self):
+        # Line 1177, leoApp.py
+        contents = """\
+    print(
+        message = f"line 1: {old_id!r}\n" "line 2\n"
+    )
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.67: *4* test_fstring02: Ternary
+    def test_fstring2(self):
+        contents = """\
+    func(f"{b if not cond1 else ''}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.68: *4* test_fstring03: single f-string
+    def test_fstring3(self):
+        contents = """\
+    print(f'{7.1}')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.69: *4* test_fstring04: f-string + plain
+    def test_fstring4(self):
+        contents = """\
+    print(f'{7.1}' 'p7.2')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.70: *4* test_fstring05: plain + f-string
+    def test_fstring5(self):
+        contents = """\
+    print('p1' f'{f2}')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.71: *4* test_fstring06: f-string + fstring
+    def test_fstring6(self):
+        contents = """\
+    print(f'{f1}' f'{f2}')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.72: *4* test_fstring07: many
+    def test_fstring7(self):
+        contents = """\
+    print('s1', f'{f2}' f'f3' f'{f4}' 's5')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.73: *4* test_fstring08: ternary op
+    def test_fstring8(self):
+        # leoFind.py line 856
+        contents = """\
+    a = f"{'a' if x else 'b'}"
+    f()
+
+    # Pass
+    # print(f"{'a' if x else 'b'}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.74: *4* test_fstring09: leoFind.py line 856
+    def test_fstring9(self):
+        contents = """\
+    func(
+        "Isearch"
+        f"{' Backward' if True else ''}"
+    )
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.75: *4* test_fstring10: leoFind.py: line 861
+    def test_fstring10(self):
+        # leoFind.py: line 861
+        contents = """\
+    one(f"{'B'}" ": ")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.76: *4* test_fstring11: joins
+    def test_fstring11(self):
+        contents = """\
+    print(f'x3{e3+1}y3' f'x4{e4+2}y4')
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.77: *5* more
+    # Single f-strings.
+    # 'p1' ;
+    # f'f1' ;
+    # f'x1{e1}y1' ;
+    # f'x2{e2+1}y2{e2+2}z2' ;
+
+    # Concatentated strings...
+    # 'p2', 'p3' ;
+    # f'f2' 'f3' ;
+
+    # f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
+    #@+node:ekr.20191227052446.78: *4* test_fstring12: joins + 1 f-expr
+    def test_fstring12(self):
+        contents = """\
+    print(f'x1{e1}y1', 'p1')
+    print(f'x2{e2}y2', f'f2')
+    print(f'x3{e3}y3', f'x4{e4}y4')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.79: *4* test_fstring13: joins + 2 f-exprs
+    def test_fstring13(self):
+        contents = """\
+    print(f'x1{e1}y1{e2}z1', 'p1')
+    print(f'x2{e3}y2{e3}z2', f'f2')
+    print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.80: *4* test_fstring14: complex, with commas
+    def test_fstring14(self):
+        contents = """\
+    print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.81: *4* test_fstring15
+    def test_fstring15(self):
+        contents = """\
+    print(f"test {a}={2}")
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.83: *4* test_fstring16: simple
+    def test_fstring16(self):
+        contents = """\
+    'p1' ;
+    f'f1' ;
+    'done' ;
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.82: *4* test_regex_fstring
+    def test_regex_fstring(self):
+        # Line 7709, leoGlobals.py
+        contents = r'''\
+    fr"""{kinds}://[^\s'"]+[\w=/]"""
+    '''
+        self.make_data(contents)
+    #@-others
 #@+node:ekr.20191113133338.1: ** class TestRunner
 class TestRunner:
     """
@@ -6027,47 +6629,6 @@ class TokenSync:
             if i < len(aList) - 1:
                 tokens.append(sep)
         return tokens
-    #@-others
-#@+node:ekr.20191225072008.1: ** class NodeTokens
-class NodeTokens:
-    """
-    A class returning a range of tokens for a single ast node.
-    """
-    #@+others
-    #@+node:ekr.20191225111222.1: *3* token_range
-    def token_range(self, node):
-        self.i, self.j = None, None
-        list(self.token_range_helper(node))
-        return self.i, self.j
-        
-    #@+node:ekr.20191225111141.1: *3* token_range_helper
-    def token_range_helper(self, node):
-        if isinstance(node, (list, tuple)):
-            for z in node:
-                yield from self.token_range_helper(z)
-        elif hasattr(node, '_fields'):
-            self.update_range(node)
-            for field in node._fields:
-                node2 = getattr(node, field)
-                self.update_range(node2)
-                yield from self.token_range_helper(node2)
-    #@+node:ekr.20191225125633.1: *3* update_range
-    def update_range(self, node):
-        token_list = getattr(node, 'token_list', None)
-        if not token_list:
-            return
-        if self.i is None:
-            self.i = token_list[0].index
-        else:
-            self.i = min(self.i, token_list[0].index)
-        if self.j is None:
-            self.j = token_list[-1].index
-        else:
-            self.j = max(self.j, token_list[-1].index)
-        if 0:
-            g.trace(
-                f"{node.__class__.__name__:>15}, "
-                f"{self.i:>2} {self.j:>2}")
     #@-others
 #@-others
 g = LeoGlobals()
