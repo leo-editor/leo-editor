@@ -4903,6 +4903,19 @@ class LeoGlobals:
     """
 
     #@+others
+    #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
+    def adjustTripleString(self, s):
+        """Remove leading indentation from a triple-quoted string."""
+        lines = g.splitLines(s)
+        for line in lines:
+            if line.strip():
+                n = len(line)-len(line.lstrip())
+                lws = line[:n]
+                break
+        if not lws:
+            return s
+        return ''.join(
+            (z[n:] if z.startswith(lws) else z) for z in lines)
     #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
     def callerName(self, n):
         """Get the function name from the call stack."""
@@ -4960,6 +4973,8 @@ class LeoGlobals:
         """Simplified version of g.printObj."""
         if tag:
             print(f"{tag}...")
+        if isinstance(obj, str):
+            obj = g.splitLines(obj)
         if isinstance(obj, list):
             print('[')
             for z in obj:
@@ -5078,8 +5093,8 @@ class TestLeoAst (unittest.TestCase):
     def make_data(self, contents=None, description=None):
         if not contents:
             return
-        self.contents = contents.strip() + '\n'
-        g.trace(self.contents)
+        contents = g.adjustTripleString(contents)
+        self.contents = contents.rstrip() + '\n'
         # Create and remember the TOJ.
         toj = TokenOrderInjector()
         toj.trace_mode = False
@@ -5143,12 +5158,13 @@ class TestLeoAst (unittest.TestCase):
     #@+node:ekr.20191227052446.11: *4* test_ClassDef
     def test_ClassDef(self):
         contents = """\
+
     class TestClass1:
         pass
         
     def decorator():
         pass
-        
+
     @decorator
     class TestClass2:
         pass
