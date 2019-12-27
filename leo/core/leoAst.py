@@ -5099,24 +5099,26 @@ class TestLeoAst (unittest.TestCase):
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
         # Create and remember the TOJ.
-        toj = TokenOrderInjector()
+        toj = self.toj = TokenOrderInjector()
         toj.trace_mode = False
         # Tokenize.
         self.tokens = toj.make_tokens(self.contents)
         # Parse.
         self.tree = parse_ast(self.contents)
         # Insert links.
-        self.result = list(toj.create_links(self.tokens, self.tree,
+        list(toj.create_links(self.tokens, self.tree,
             file_name=description or ''))
     #@+node:ekr.20191227103533.1: *4*  Test.make_file_data
     def make_file_data(self, filename):
         """Test the contents of the given file."""
-        if 0:
-            return ### Not ready yet.
+        filename = os.path.join(r'c:\leo.repo\leo-editor\leo\core', filename)
         with open(filename, 'r') as f:
             contents = f.read()
         self.make_data(contents=contents, description=filename)
         
+    #@+node:ekr.20191227151220.1: *4*  Test.fstringify
+    def fstringify(self, filename=None):
+        self.toj.fstringify(self.tokens, self.tree, filename or '')
     #@+node:ekr.20191227052446.10: *3* Contexts...
     #@+node:ekr.20191227052446.11: *4* test_ClassDef
     def test_ClassDef(self):
@@ -5530,6 +5532,7 @@ class TestLeoAst (unittest.TestCase):
             AstFormatter,
             AstPatternFormatter,
             HTMLReportTraverser,
+            TokenOrderGenerator,
         )
         for class_ in table:
             traverser = class_()
@@ -5712,6 +5715,21 @@ class TestLeoAst (unittest.TestCase):
         print('done')
     """
         self.make_data(contents)
+    #@+node:ekr.20191227052446.84: *3* test_fstringify_with_TOG
+    def test_fstringify_with_TOG(self):
+        
+        if 1:
+            filename = r'c:\test\core\leoAtFile.py'
+            self.make_file_data(filename)
+        else:
+            filename = '<string>'
+            contents = """\
+    print('xxx %s=%s yyy'%(a * b, 2))
+    print('%s' % func(3))
+    """
+            self.make_data(contents)
+        self.fstringify(filename)
+        
     #@-others
 #@+node:ekr.20191113133338.1: ** class TestRunner
 class TestRunner:
