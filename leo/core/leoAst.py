@@ -1,10 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
-import leo.core.leoGlobals as g
 import ast
+import glob
+import os
 import re
+import sys
 import time
+import traceback
 import types
 #@+others
 #@+node:ekr.20160521104628.1: **   leoAst.py: top-level
@@ -72,7 +75,7 @@ def brief_dump(ast):
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
-    # import leo.core.leoGlobals as g
+    import leo.core.leoGlobals as g
     # Compare the two parse trees.
     try:
         _compare_asts(ast1, ast2)
@@ -83,7 +86,7 @@ def compare_asts(ast1, ast2):
             raise
         return False
     except Exception:
-        g.warning(f"Unexpected exception")
+        g.trace(f"Unexpected exception")
         g.es_exception()
         return False
     return True
@@ -155,7 +158,6 @@ def compare_lists(list1, list2):
 #@+node:ekr.20191027074436.1: *3* function: dump_ast
 def dump_ast(ast, tag=None):
     """Utility to dump an ast tree."""
-    # import leo.core.leoGlobals as g
     g.printObj(AstDumper().dump(ast), tag=tag)
 #@+node:ekr.20191109063033.1: *3* function: funcToMethod 
 
@@ -189,14 +191,13 @@ def parse_ast(s, headline=None, show_time=False):
     Parse string s, catching & reporting all exceptions.
     Return the ast node, or None.
     """
-    # import leo.core.leoGlobals as g
 
     def oops(message):
         print('')
         if headline:
-            g.warning(f"parse_ast: {message} in: {headline}")
+            print(f"parse_ast: {message} in: {headline}")
         else:
-            g.warning(f"parse_ast: {message}")
+            print(f"parse_ast: {message}")
         print('')
 
     try:
@@ -1074,7 +1075,6 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.11: *4* tog.report_coverage
     def report_coverage(self):
         """Report untested visitors."""
-        # import leo.core.leoGlobals as g
 
         def key(z):
             return z.lower()
@@ -1377,7 +1377,7 @@ class TokenOrderGenerator:
             # Unrecoverable sync failure.
             if 0:
                 g.trace('\nSync failed...')
-                g.printObj(tokens[max(0, px-5):], 'Tokens')
+                g.printObj(tokens[max(0, px-5):], tag='Tokens')
             val = g.truncate(val, 40)
             raise self.error(
                  f"Looking for: {kind}.{val}\n"
@@ -2567,6 +2567,141 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
+#@+node:ekr.20191226175251.1: ** class LeoGlobals
+#@@nosearch
+
+class LeoGlobals:
+    """
+    Simplified version of functions in leoGlobals.py.
+    """
+
+    #@+others
+    #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
+    def callerName(self, n):
+        """Get the function name from the call stack."""
+        try:
+            f1 = sys._getframe(n)
+            code1 = f1.f_code
+            return code1.co_name
+        except Exception:
+            return ''
+    #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
+    def callers(self, n=4):
+        """
+        Return a string containing a comma-separated list of the callers
+        of the function that called g.callerList.
+        """
+        i, result = 2, []
+        while True:
+            s = self.callerName(n=i)
+            if s:
+                result.append(s)
+            if not s or len(result) >= n:
+                break
+            i += 1
+        return ','.join(reversed(result))
+    #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
+    def es_exception(self):
+        typ, val, tb = sys.exc_info()
+        for line in traceback.format_exception(typ, val, tb):
+            print(line)
+        fileName, n = self.getLastTracebackFileAndLineNumber()
+        return fileName, n
+    #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
+    def getLastTracebackFileAndLineNumber(self):
+        typ, val, tb = sys.exc_info()
+        if typ == SyntaxError:
+            # IndentationError is a subclass of SyntaxError.
+            return val.filename, val.lineno
+        #
+        # Data is a list of tuples, one per stack entry.
+        # The tuples have the form (filename, lineNumber, functionName, text).
+        data = traceback.extract_tb(tb)
+        item = data[-1]  # Get the item at the top of the stack.
+        filename, n, functionName, text = item
+        return filename, n
+    #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
+    def plural(self, obj):
+        """Return "s" or "" depending on n."""
+        if isinstance(obj, (list, tuple, str)):
+            n = len(obj)
+        else:
+            n = obj
+        return '' if n == 1 else 's'
+    #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
+    def printObj(self, obj, indent='', tag=None):
+        """Simplified version of g.printObj."""
+        if tag:
+            print(f"{tag}...")
+        if isinstance(obj, list):
+            print('[')
+            for z in obj:
+                print(f"  {z!r}")
+            print(']')
+        elif isinstance(obj, tuple):
+            print('(')
+            for z in obj:
+                print(f"  {z!r}")
+            print(')')
+        else:
+            print(repr(obj))
+        print('')
+    #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
+    def splitLines(self, s):
+        """Split s into lines, preserving the number of lines and
+        the endings of all lines, including the last line."""
+        # g.stat()
+        if s:
+            return s.splitlines(True)
+                # This is a Python string function!
+        return []
+    #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
+    def toEncodedString(self, s, encoding='utf-8'):
+        """Convert unicode string to an encoded string."""
+        if not isinstance(s, str):
+            return s
+        try:
+            s = s.encode(encoding, "strict")
+        except UnicodeError:
+            s = s.encode(encoding, "replace")
+            print(f"toEncodedString: Error converting {s!r} to {encoding}")
+        return s
+    #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
+    def toUnicode(self, s, encoding='utf-8'):
+        """Convert bytes to unicode if necessary."""
+        if isinstance(s, str):
+            return s
+        tag = 'g.toUnicode'
+        try:
+            s = s.decode(encoding, 'strict')
+        except(UnicodeDecodeError, UnicodeError):
+            s = s.decode(encoding, 'replace')
+            print(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+            g.trace(g.callers())
+        except Exception:
+            g.es_exception()
+            print(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+            g.trace(g.callers())
+        return s
+    #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
+    def trace(self, *args):
+        """Print a tracing message."""
+        # Compute the caller name.
+        try:
+            f1 = sys._getframe(1)
+            code1 = f1.f_code
+            name = code1.co_name
+        except Exception:
+            name = ''
+        print(f"{name}: {','.join(str(z) for z in args)}")
+    #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
+    def truncate(self, s, n):
+        """Return s truncated to n characters."""
+        if len(s) <= n:
+            return s
+        s2 = s[: n - 3] + f'...({len(s)})'
+        return s2 + '\n' if s.endswith('\n') else s2
+    #@-others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     """
@@ -3592,7 +3727,7 @@ class Fstringify (TokenOrderGenerator):
         if len(aList) < 4:
             return True
         if not string_val:
-            g.es_print('no string_val!')
+            g.trace('no string_val!')
             return False
         delim = string_val[0]
         # Check tokens 0, 1 and -1.
@@ -3601,18 +3736,18 @@ class Fstringify (TokenOrderGenerator):
         token_last = aList[-1]
         for token in token0, token1, token_last:
             if token.kind != 'string':
-                g.es_print(f"unexpected token: {token!r}")
+                g.trace(f"unexpected token: {token!r}")
                 return False
         if token0.value != 'f':
-            g.es_print('token[0] error!', repr(token0))
+            g.trace('token[0] error!', repr(token0))
             return False
         val1 = token1.value and token1.value[0]
         if delim != val1:
-            g.es_print('token[1] error!', delim, val1, repr(token1))
+            g.trace('token[1] error!', delim, val1, repr(token1))
             return False
         val_last = token_last.value and token_last.value[-1]
         if delim != val_last:
-            g.es_print('token[-1] error!', delim, val_last, repr(token_last))
+            g.trace('token[-1] error!', delim, val_last, repr(token_last))
             return False
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
@@ -3623,7 +3758,7 @@ class Fstringify (TokenOrderGenerator):
         # Replace delim by delim2 in all inner tokens.
         for z in aList[2:-1]:
             if not isinstance(z, Token):
-                g.es_print('Bad token:', repr(z))
+                g.trace('Bad token:', repr(z))
                 return False
             z.value = z.value.replace(delim, delim2)
         return True
@@ -5044,11 +5179,13 @@ class TestRunner:
     #@+node:ekr.20191205172431.1: *4* TR.make_leo_tests
     def make_leo_tests(self):
         """
-        Return a list of tuples (contents, description) for all of Leo's core .py files.
+        Leo-specific code for unit tests.
+        
+        Return a list of tuples (contents, description) for all of Leo's core
+        .py files.
         """
-        import glob
-        import os
-        core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+        import leo.core.leoGlobals as leo_g
+        core_directory = leo_g.os_path_finalize_join(leo_g.app.loadDir, '..', 'core')
         assert os.path.exists(core_directory), core_directory
         paths = glob.glob(core_directory + os.path.sep + 'leo*.py')
         tests = []
@@ -5063,10 +5200,12 @@ class TestRunner:
     #@+node:ekr.20191205160754.2: *4* TR.make_tests
     def make_tests(self, root):
         """
-        Return a list of tuples (contents, description) found in all children of the
-        root, except this node.
+        Leo-specific code for unit tests.
+        
+        Return a list of tuples (contents, description) found in all children
+        of the root, except this node.
         """
-        import os
+        import leo.core.leoGlobals as leo_g
         tests = []
         contents_tag = 'test:'
         file_tag = 'file:'
@@ -5087,7 +5226,7 @@ class TestRunner:
             elif p.h.startswith(file_tag):
                 description = p.h
                 s = p.h[len(file_tag):].strip()
-                parts = [g.app.loadDir, '..'] + s.split('..')
+                parts = [leo_g.app.loadDir, '..'] + s.split('..')
                 path = os.path.sep.join(parts)
                 if os.path.exists(path):
                     with open(path, 'r') as f:
@@ -5905,6 +6044,7 @@ class NodeTokens:
                 f"{self.i:>2} {self.j:>2}")
     #@-others
 #@-others
+g = LeoGlobals()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
