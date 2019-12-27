@@ -2506,6 +2506,7 @@ def parse_ast(s, headline=None, show_time=False):
             print(f"parse_ast: {message} in: {headline}")
         else:
             print(f"parse_ast: {message}")
+        g.printObj(s)
         print('')
 
     try:
@@ -5089,10 +5090,12 @@ class NodeTokens:
 class TestLeoAst (unittest.TestCase):
     """The foundation for tests of code in leoAst.py"""
     #@+others
-    #@+node:ekr.20191227054856.1: *3*  Test.make_data
+    #@+node:ekr.20191227145643.1: *3*  Test helpers...
+    #@+node:ekr.20191227054856.1: *4*  Test.make_data
     def make_data(self, contents=None, description=None):
         if not contents:
             return
+        contents = contents.lstrip('\\\n')
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
         # Create and remember the TOJ.
@@ -5105,7 +5108,7 @@ class TestLeoAst (unittest.TestCase):
         # Insert links.
         self.result = list(toj.create_links(self.tokens, self.tree,
             file_name=description or ''))
-    #@+node:ekr.20191227103533.1: *3*  Test.make_file_data
+    #@+node:ekr.20191227103533.1: *4*  Test.make_file_data
     def make_file_data(self, filename):
         """Test the contents of the given file."""
         if 0:
@@ -5114,10 +5117,399 @@ class TestLeoAst (unittest.TestCase):
             contents = f.read()
         self.make_data(contents=contents, description=filename)
         
-    #@+node:ekr.20191227075951.1: *3* Test.test_end_of_line
+    #@+node:ekr.20191227052446.10: *3* Contexts...
+    #@+node:ekr.20191227052446.11: *4* test_ClassDef
+    def test_ClassDef(self):
+        contents = r"""\
+    class TestClass1:
+        pass
+        
+    def decorator():
+        pass
+
+    @decorator
+    class TestClass2:
+        pass
+        
+    @decorator
+    class TestClass(base1, base2):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.12: *4* test_ClassDef2
+    def test_ClassDef2(self):
+        contents = r'''\
+    """ds 1"""
+    class TestClass:
+        """ds 2"""
+        def long_name(a, b=2):
+            """ds 3"""
+            print('done')
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.13: *4* test_FunctionDef
+    def test_FunctionDef(self):
+        contents = r"""\
+    def run(fileName=None, pymacs=None, *args, **keywords):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.14: *3* Expressions & operators...
+    #@+node:ekr.20191227052446.15: *4* test_attribute
+    def test_attribute(self):
+        contents = r"""\
+    open(os.devnull, "w")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.16: *4* test_CompareOp
+    def test_CompareOp(self):
+        contents = r"""\
+    if a and not b and c:
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.17: *4* test_Dict
+    def test_Dict(self):
+        contents = r"""\
+    d = {
+        'a' if x else 'b': True,
+        }
+    f()
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.18: *4* test_DictComp
+    def test_DictComp(self):
+        # leoGlobals.py, line 3028.
+        contents = r"""\
+    d2 = {val: key for key, val in d.iteritems()}
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.19: *4* test_ListComp
+    def test_ListComp(self):
+        # ListComp and comprehension.
+        contents = r"""\
+    any([p2.isDirty() for p2 in p.subtree()])
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.20: *4* test_NameConstant
+    def test_NameConstant(self):
+        contents = r"""\
+    run(a=None, b=str)
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.21: *4* test_Operator: semicolon
+    def test_op_semicolon(self):
+        contents = r"""\
+    print('c');
+    print('d')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.22: *4* test_Operator: semicolon between statements
+    def test_op_semicolon2(self):
+        contents = r"""\
+    a = 1 ; b = 2
+    print('a') ; print('b')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.23: *4* test_UnaryOp
+    def test_UnaryOp(self):
+        contents = r"""\
+    print(-(2))
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.65: *3* f-strings....
+    #@+node:ekr.20191227052446.66: *4* test_fstring01: complex Call
+    def test_fstring1(self):
+        # Line 1177, leoApp.py
+        contents = r"""\
+    print(
+        message = f"line 1: {old_id!r}\n" "line 2\n"
+    )
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.67: *4* test_fstring02: Ternary
+    def test_fstring2(self):
+        contents = r"""\
+    func(f"{b if not cond1 else ''}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.68: *4* test_fstring03: single f-string
+    def test_fstring3(self):
+        contents = r"""\
+    print(f'{7.1}')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.69: *4* test_fstring04: f-string + plain
+    def test_fstring4(self):
+        contents = r"""\
+    print(f'{7.1}' 'p7.2')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.70: *4* test_fstring05: plain + f-string
+    def test_fstring5(self):
+        contents = r"""\
+    print('p1' f'{f2}')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.71: *4* test_fstring06: f-string + fstring
+    def test_fstring6(self):
+        contents = r"""\
+    print(f'{f1}' f'{f2}')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.72: *4* test_fstring07: many
+    def test_fstring7(self):
+        contents = r"""\
+    print('s1', f'{f2}' f'f3' f'{f4}' 's5')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.73: *4* test_fstring08: ternary op
+    def test_fstring8(self):
+        # leoFind.py line 856
+        contents = r"""\
+    a = f"{'a' if x else 'b'}"
+    f()
+
+    # Pass
+    # print(f"{'a' if x else 'b'}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.74: *4* test_fstring09: leoFind.py line 856
+    def test_fstring9(self):
+        contents = r"""\
+    func(
+        "Isearch"
+        f"{' Backward' if True else ''}"
+    )
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.75: *4* test_fstring10: leoFind.py: line 861
+    def test_fstring10(self):
+        # leoFind.py: line 861
+        contents = r"""\
+    one(f"{'B'}" ": ")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.76: *4* test_fstring11: joins
+    def test_fstring11(self):
+        contents = r"""\
+    print(f'x3{e3+1}y3' f'x4{e4+2}y4')
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.77: *5* more
+    # Single f-strings.
+    # 'p1' ;
+    # f'f1' ;
+    # f'x1{e1}y1' ;
+    # f'x2{e2+1}y2{e2+2}z2' ;
+
+    # Concatentated strings...
+    # 'p2', 'p3' ;
+    # f'f2' 'f3' ;
+
+    # f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
+    #@+node:ekr.20191227052446.78: *4* test_fstring12: joins + 1 f-expr
+    def test_fstring12(self):
+        contents = r"""\
+    print(f'x1{e1}y1', 'p1')
+    print(f'x2{e2}y2', f'f2')
+    print(f'x3{e3}y3', f'x4{e4}y4')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.79: *4* test_fstring13: joins + 2 f-exprs
+    def test_fstring13(self):
+        contents = r"""\
+    print(f'x1{e1}y1{e2}z1', 'p1')
+    print(f'x2{e3}y2{e3}z2', f'f2')
+    print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.80: *4* test_fstring14: complex, with commas
+    def test_fstring14(self):
+        contents = r"""\
+    print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.81: *4* test_fstring15
+    def test_fstring15(self):
+        contents = r"""\
+    print(f"test {a}={2}")
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.83: *4* test_fstring16: simple
+    def test_fstring16(self):
+        contents = r"""\
+    'p1' ;
+    f'f1' ;
+    'done' ;
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.82: *4* test_regex_fstring
+    def test_regex_fstring(self):
+        # Line 7709, leoGlobals.py
+        contents = r'''\
+    fr"""{kinds}://[^\s'"]+[\w=/]"""
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.24: *3* Files...
+    #@+node:ekr.20191227052446.25: *4* test_leoApp.py
+    def test_leoApp(self):
+        self.make_file_data('leoApp.py')
+        
+    #@+node:ekr.20191227052446.26: *4* test_leoAst.py
+    def test_leoAst(self):
+        self.make_file_data('leoAst.py')
+       
+    #@+node:ekr.20191227052446.27: *4* test_leoDebugger.py
+    def test_leoDebugger(self):
+        self.make_file_data('leoDebugger.py')
+       
+    #@+node:ekr.20191227052446.28: *4* test_leoFind.py
+    def test_leoFind(self):
+        self.make_file_data('leoFind.py')
+       
+    #@+node:ekr.20191227052446.29: *4* test_leoGlobals.py
+    def test_leoGlobals(self):
+        self.make_file_data('leoGlobals.py')
+       
+    #@+node:ekr.20191227052446.30: *4* test_leoTips.py
+    def test_leoTips(self):
+        self.make_file_data('leoTips.py')
+       
+    #@+node:ekr.20191227052446.31: *4* test_runLeo.py
+    def test_runLeo(self):
+        self.make_file_data('runLeo.py')
+       
+    #@+node:ekr.20191227052446.32: *3* If...
+    #@+node:ekr.20191227052446.33: *4* test_from leoTips.py
+    def test_if1(self):
+        # Line 93, leoTips.py
+        contents = r"""\
+    self.make_data(contents)
+    unseen = [i for i in range(5) if i not in seen]
+    for issue in data:
+        for a in aList:
+            print('a')
+        else:
+            print('b')
+    if b:
+        print('c')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.34: *4* test_if + tuple
+    def test_if2(self):
+        contents = r"""\
+    for i, j in b:
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.35: *4* test_if + unary op
+    def test_if3(self):
+        contents = r"""\
+    if -(2):
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.36: *4* test_if, elif
+    def test_if4(self):
+        contents = r"""\
+    if 1:
+        print('a')
+    elif 2:
+        print('b')
+    elif 3:
+        print('c')
+        print('d')
+    print('-')
+    if 1:
+        print('e')
+    elif 2:
+        print('f')
+        print('g')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.37: *4* test_if, elif + 2
+    def test_if5(self):
+        contents = r"""\
+    if 1:
+        pass
+    elif 2:
+        pass
+        pass
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.38: *4* test_if, elif, else
+    def test_if6(self):
+        contents = r"""\
+    if (a):
+        print('a1')
+        print('a2')
+    elif b:
+        print('b1')
+        print('b2')
+    else:
+        print('c1')
+        print('c2')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.39: *4* test_if, else
+    def test_if7(self):
+        contents = r"""\
+    if 1:
+        print('a')
+    else:
+        print('b')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.40: *4* test_if, else, if
+    def test_if8(self):
+        contents = r"""\
+    if 1:
+        print('a')
+    else:
+        if 2:
+            print('b')
+    """
+        self.make_data(contents)
+
+    #@+node:ekr.20191227052446.41: *4* test_Nested If's
+    def test_if9(self):
+        contents = r"""\
+    if a:
+        if b:
+            print('b')
+    else:
+        if d:
+            print('d')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.42: *4* test_ternary + if
+    def test_if10(self):
+        contents = r"""\
+    if 1:
+        a = 'class' if cond else 'def'
+        # find_pattern = prefix + ' ' + word
+        print('1')
+    else:
+        print('2')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227145620.1: *3* Miscellaneous...
+    #@+node:ekr.20191227075951.1: *4* test_end_of_line
     def test_end_of_line(self):
         self.make_data("""# Only a comment.""")
-    #@+node:ekr.20160521103254.1: *3* Test.test_vistors_exist
+    #@+node:ekr.20160521103254.1: *4* test_vistors_exist
     def test_vistors_exist(self):
         """Ensure that visitors for all ast nodes exist."""
         import _ast
@@ -5154,254 +5546,107 @@ class TestLeoAst (unittest.TestCase):
                         f"for: {z}")
         msg = f"{nodes} node types, {ops} op types, {errors} errors"
         assert not errors, msg
-    #@+node:ekr.20191227052446.10: *3* Contexts...
-    #@+node:ekr.20191227052446.11: *4* test_ClassDef
-    def test_ClassDef(self):
-        contents = """\
-
-    class TestClass1:
-        pass
-        
-    def decorator():
-        pass
-
-    @decorator
-    class TestClass2:
-        pass
-        
-    @decorator
-    class TestClass(base1, base2):
-        pass
+    #@+node:ekr.20191227052446.50: *3* Plain Strings...
+    #@+node:ekr.20191227052446.52: *4* test_\x and \o escapes
+    def test_escapes(self):
+        # Line 4609, leoGlobals.py
+        contents = r"""\
+    print("\x7e" "\0777") # tilde.
+    print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.12: *4* test_ClassDef2
-    def test_ClassDef2(self):
-        contents = '''\
-    """ds 1"""
-    class TestClass:
-        """ds 2"""
-        def long_name(a, b=2):
-            """ds 3"""
-            print('done')
+    #@+node:ekr.20191227052446.53: *4* test_backslashes in docstring
+    def test_backslashes(self):
+        # leoGlobals.py.
+        contents = r'''\
+    class SherlockTracer:
+        """before\\after"""
     '''
         self.make_data(contents)
-    #@+node:ekr.20191227052446.13: *4* test_FunctionDef
-    def test_FunctionDef(self):
-        contents = """\
-    def run(fileName=None, pymacs=None, *args, **keywords):
-        pass
+    #@+node:ekr.20191227052446.54: *4* test_bs/nl
+    def test_bs_nl(self):
+        contents = r"""\
+    print('hello\
+    world')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.14: *3* Expressions & operators...
-    #@+node:ekr.20191227052446.15: *4* test_attribute
-    def test_attribute(self):
-        contents = """\
-    open(os.devnull, "w")
+    #@+node:ekr.20191227052446.55: *4* test_bytes bs-x
+    def test_bytes(self):
+        # Line 201, leoApp.py
+        contents = r"""\
+    print(b'\xfe')
+    print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.16: *4* test_CompareOp
-    def test_CompareOp(self):
-        contents = """\
-    if a and not b and c:
-        pass
+    #@+node:ekr.20191227052446.56: *4* test_empty string
+    def test_empyt_string(self):
+        contents = r"""\
+    self.s = ''
+    self.i = 0
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.17: *4* test_Dict
-    def test_Dict(self):
-        contents = """\
-    d = {
-        'a' if x else 'b': True,
-        }
-    f()
+    #@+node:ekr.20191227052446.57: *4* test_escaped string delims
+    def test_escaped_delims(self):
+        contents = r"""\
+    print("a\"b")
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.18: *4* test_DictComp
-    def test_DictComp(self):
-        # leoGlobals.py, line 3028.
-        contents = """\
-    d2 = {val: key for key, val in d.iteritems()}
+    #@+node:ekr.20191227052446.58: *4* test_escaped strings
+    def test_escaped_strings(self):
+        contents = r"""\
+    f1(a='\b', b='\n', t='\t')
+    f2(f='\f', r='\r', v='\v')
+    f3(bs='\\')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.19: *4* test_ListComp
-    def test_ListComp(self):
-        # ListComp and comprehension.
-        contents = """\
-    any([p2.isDirty() for p2 in p.subtree()])
+    #@+node:ekr.20191227052446.59: *4* test_f-string join
+    def test_fstring_join(self):
+        # The first newline causes the fail.
+        contents = r"""\
+    print(f"a {old_id!r}\n" "b\n")
+    print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.20: *4* test_NameConstant
-    def test_NameConstant(self):
-        contents = """\
-    run(a=None, b=str)
+    #@+node:ekr.20191227052446.60: *4* test_raw docstring
+    def test_raw_docstring(self):
+        contents = r'''\
+    # Line 1619 leoFind.py
+    print(r"""DS""")
+    '''
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.61: *4* test_raw escaped strings
+    def test_raw_escapes(self):
+        contents = r"""\
+    r1(a=r'\b', b=r'\n', t=r'\t')
+    r2(f=r'\f', r=r'\r', v=r'\v')
+    r3(bs=r'\\')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.21: *4* test_Operator: semicolon
-    def test_op_semicolon(self):
-        contents = """\
-    print('c');
-    print('d')
+    #@+node:ekr.20191227052446.63: *4* test_string concatentation
+    def test_concatentation(self):
+        contents = r"""\
+    print('a' 'b')
+    print('c')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.22: *4* test_Operator: semicolon between statements
-    def test_op_semicolon2(self):
-        contents = """\
-    a = 1 ; b = 2
-    print('a') ; print('b')
+    #@+node:ekr.20191227052446.62: *4* test_single quote
+    def test_single_quote(self):
+        # leoGlobals.py line 806.
+        contents = r"""\
+    print('"')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.23: *4* test_UnaryOp
-    def test_UnaryOp(self):
-        contents = """\
-    print(-(2))
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.24: *3* Files...
-    #@+node:ekr.20191227052446.25: *4* test_leoApp.py
-    def test_leoApp(self):
-        self.make_file_data('leoApp.py')
-        
-    #@+node:ekr.20191227052446.26: *4* test_leoAst.py
-    def test_leoAst(self):
-        self.make_file_data('leoAst.py')
-       
-    #@+node:ekr.20191227052446.27: *4* test_leoDebugger.py
-    def test_leoDebugger(self):
-        self.make_file_data('leoDebugger.py')
-       
-    #@+node:ekr.20191227052446.28: *4* test_leoFind.py
-    def test_leoFind(self):
-        self.make_file_data('leoFind.py')
-       
-    #@+node:ekr.20191227052446.29: *4* test_leoGlobals.py
-    def test_leoGlobals(self):
-        self.make_file_data('leoGlobals.py')
-       
-    #@+node:ekr.20191227052446.30: *4* test_leoTips.py
-    def test_leoTips(self):
-        self.make_file_data('leoTips.py')
-       
-    #@+node:ekr.20191227052446.31: *4* test_runLeo.py
-    def test_runLeo(self):
-        self.make_file_data('runLeo.py')
-       
-    #@+node:ekr.20191227052446.32: *3* If...
-    #@+node:ekr.20191227052446.33: *4* test_from leoTips.py
-    def test_if1(self):
-        # Line 93, leoTips.py
-        contents = """\
-    self.make_data(contents)
-    unseen = [i for i in range(5) if i not in seen]
-    for issue in data:
-        for a in aList:
-            print('a')
-        else:
-            print('b')
-    if b:
-        print('c')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.34: *4* test_if + tuple
-    def test_if2(self):
-        contents = """\
-    for i, j in b:
-        pass
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.35: *4* test_if + unary op
-    def test_if3(self):
-        contents = """\
-    if -(2):
-        pass
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.36: *4* test_if, elif
-    def test_if4(self):
-        contents = """\
-    if 1:
-        print('a')
-    elif 2:
-        print('b')
-    elif 3:
-        print('c')
-        print('d')
-    print('-')
-    if 1:
-        print('e')
-    elif 2:
-        print('f')
-        print('g')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.37: *4* test_if, elif + 2
-    def test_if5(self):
-        contents = """\
-    if 1:
-        pass
-    elif 2:
-        pass
-        pass
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.38: *4* test_if, elif, else
-    def test_if6(self):
-        contents = """\
-    if (a):
-        print('a1')
-        print('a2')
-    elif b:
-        print('b1')
-        print('b2')
-    else:
-        print('c1')
-        print('c2')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.39: *4* test_if, else
-    def test_if7(self):
-        contents = """\
-    if 1:
-        print('a')
-    else:
-        print('b')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.40: *4* test_if, else, if
-    def test_if8(self):
-        contents = """\
-    if 1:
-        print('a')
-    else:
-        if 2:
-            print('b')
-    """
-        self.make_data(contents)
-
-    #@+node:ekr.20191227052446.41: *4* test_Nested If's
-    def test_if9(self):
-        contents = """\
-    if a:
-        if b:
-            print('b')
-    else:
-        if d:
-            print('d')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.42: *4* test_ternary + if
-    def test_if10(self):
-        contents = """\
-    if 1:
-        a = 'class' if cond else 'def'
-        # find_pattern = prefix + ' ' + word
-        print('1')
-    else:
-        print('2')
+    #@+node:ekr.20191227052446.64: *4* test_string with % op
+    def test_potential_fstring(self):
+        contents = r"""\
+    print('test %s=%s'%(a, 2))
+    print('done')
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *3* Statements...
     #@+node:ekr.20191227052446.44: *4* test_Call
     def test_Call(self):
-        contents = """\
+        contents = r"""\
     f1(a,b=2)
     f2(1 + 2)
     f3(arg, *args, **kwargs)
@@ -5412,7 +5657,7 @@ class TestLeoAst (unittest.TestCase):
     #@+node:ekr.20191227052446.45: *4* test_Global
     def test_if12(self):
         # Line 1604, leoGlobals.py
-        contents = """
+        contents = r"""
     def spam():
         global gg
         print('')
@@ -5421,7 +5666,7 @@ class TestLeoAst (unittest.TestCase):
 
     #@+node:ekr.20191227052446.46: *4* test_Try
     def test_Try(self):
-        contents = """\
+        contents = r"""\
     try:
         print('a1')
         print('a2')
@@ -5439,7 +5684,7 @@ class TestLeoAst (unittest.TestCase):
     #@+node:ekr.20191227052446.47: *4* test_TryExceptElse
     def test_Try2(self):
         # Line 240: leoDebugger.py
-        contents = """\
+        contents = r"""\
     try:
         print('a')
     except ValueError:
@@ -5451,7 +5696,7 @@ class TestLeoAst (unittest.TestCase):
     #@+node:ekr.20191227052446.48: *4* test_With
     def test_With(self):
         # leoGlobals.py, line 1785.
-        contents = """\
+        contents = r"""\
     with open(fn) as f:
         pass
     """
@@ -5460,253 +5705,12 @@ class TestLeoAst (unittest.TestCase):
     #@+node:ekr.20191227052446.49: *4* test_YieldFrom
     def test_YieldFrom(self):
         # Line 1046, leoAst.py
-        contents = """\
-    self.node = tree
-    yield from self.gen_token('newline', '\n')
-    print('done')
+        contents = r"""\
+    def gen_test():
+        self.node = tree
+        yield from self.gen_token('newline', '\n')
+        print('done')
     """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.50: *3* Plain Strings...
-    #@+node:ekr.20191227052446.52: *4* test_\x and \o escapes
-    def test_escapes(self):
-        # Line 4609, leoGlobals.py
-        contents = """\
-    print("\x7e" "\0777") # tilde.
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.53: *4* test_backslashes in docstring
-    def test_backslashes(self):
-        # leoGlobals.py.
-        contents = '''\
-    class SherlockTracer:
-        """before\\after"""
-    '''
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.54: *4* test_bs/nl
-    def test_bs_nl(self):
-        contents = """\
-    print('hello\
-    world')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.55: *4* test_bytes bs-x
-    def test_bytes(self):
-        # Line 201, leoApp.py
-        contents = """\
-    print(b'\xfe')
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.56: *4* test_empty string
-    def test_empyt_string(self):
-        contents = """\
-    self.s = ''
-    self.i = 0
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.57: *4* test_escaped string delims
-    def test_escaped_delims(self):
-        contents = """\
-    print("a\"b")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.58: *4* test_escaped strings
-    def test_escaped_strings(self):
-        contents = """\
-    f1(a='\b', b='\n', t='\t')
-    f2(f='\f', r='\r', v='\v')
-    f3(bs='\\')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.59: *4* test_f-string join
-    def test_fstring_join(self):
-        # The first newline causes the fail.
-        contents = """\
-    print(f"a {old_id!r}\n" "b\n")
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.60: *4* test_raw docstring
-    def test_raw_docstring(self):
-        contents = '''\
-    # Line 1619 leoFind.py
-    print(r"""DS""")
-    '''
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.61: *4* test_raw escaped strings
-    def test_raw_escapes(self):
-        contents = """\
-    r1(a=r'\b', b=r'\n', t=r'\t')
-    r2(f=r'\f', r=r'\r', v=r'\v')
-    r3(bs=r'\\')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.63: *4* test_string concatentation
-    def test_concatentation(self):
-        contents = """\
-    print('a' 'b')
-    print('c')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.62: *4* test_single quote
-    def test_single_quote(self):
-        # leoGlobals.py line 806.
-        contents = """\
-    print('"')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.64: *4* test_string with % op
-    def test_potential_fstring(self):
-        contents = """\
-    print('test %s=%s'%(a, 2))
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.65: *3* f-strings....
-    #@+node:ekr.20191227052446.66: *4* test_fstring01: complex Call
-    def test_fstring1(self):
-        # Line 1177, leoApp.py
-        contents = """\
-    print(
-        message = f"line 1: {old_id!r}\n" "line 2\n"
-    )
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.67: *4* test_fstring02: Ternary
-    def test_fstring2(self):
-        contents = """\
-    func(f"{b if not cond1 else ''}")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.68: *4* test_fstring03: single f-string
-    def test_fstring3(self):
-        contents = """\
-    print(f'{7.1}')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.69: *4* test_fstring04: f-string + plain
-    def test_fstring4(self):
-        contents = """\
-    print(f'{7.1}' 'p7.2')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.70: *4* test_fstring05: plain + f-string
-    def test_fstring5(self):
-        contents = """\
-    print('p1' f'{f2}')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.71: *4* test_fstring06: f-string + fstring
-    def test_fstring6(self):
-        contents = """\
-    print(f'{f1}' f'{f2}')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.72: *4* test_fstring07: many
-    def test_fstring7(self):
-        contents = """\
-    print('s1', f'{f2}' f'f3' f'{f4}' 's5')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.73: *4* test_fstring08: ternary op
-    def test_fstring8(self):
-        # leoFind.py line 856
-        contents = """\
-    a = f"{'a' if x else 'b'}"
-    f()
-
-    # Pass
-    # print(f"{'a' if x else 'b'}")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.74: *4* test_fstring09: leoFind.py line 856
-    def test_fstring9(self):
-        contents = """\
-    func(
-        "Isearch"
-        f"{' Backward' if True else ''}"
-    )
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.75: *4* test_fstring10: leoFind.py: line 861
-    def test_fstring10(self):
-        # leoFind.py: line 861
-        contents = """\
-    one(f"{'B'}" ": ")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.76: *4* test_fstring11: joins
-    def test_fstring11(self):
-        contents = """\
-    print(f'x3{e3+1}y3' f'x4{e4+2}y4')
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.77: *5* more
-    # Single f-strings.
-    # 'p1' ;
-    # f'f1' ;
-    # f'x1{e1}y1' ;
-    # f'x2{e2+1}y2{e2+2}z2' ;
-
-    # Concatentated strings...
-    # 'p2', 'p3' ;
-    # f'f2' 'f3' ;
-
-    # f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
-    #@+node:ekr.20191227052446.78: *4* test_fstring12: joins + 1 f-expr
-    def test_fstring12(self):
-        contents = """\
-    print(f'x1{e1}y1', 'p1')
-    print(f'x2{e2}y2', f'f2')
-    print(f'x3{e3}y3', f'x4{e4}y4')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.79: *4* test_fstring13: joins + 2 f-exprs
-    def test_fstring13(self):
-        contents = """\
-    print(f'x1{e1}y1{e2}z1', 'p1')
-    print(f'x2{e3}y2{e3}z2', f'f2')
-    print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.80: *4* test_fstring14: complex, with commas
-    def test_fstring14(self):
-        contents = """\
-    print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.81: *4* test_fstring15
-    def test_fstring15(self):
-        contents = """\
-    print(f"test {a}={2}")
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.83: *4* test_fstring16: simple
-    def test_fstring16(self):
-        contents = """\
-    'p1' ;
-    f'f1' ;
-    'done' ;
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.82: *4* test_regex_fstring
-    def test_regex_fstring(self):
-        # Line 7709, leoGlobals.py
-        contents = r'''\
-    fr"""{kinds}://[^\s'"]+[\w=/]"""
-    '''
         self.make_data(contents)
     #@-others
 #@+node:ekr.20191113133338.1: ** class TestRunner
