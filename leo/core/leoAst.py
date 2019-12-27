@@ -9,8 +9,9 @@ import sys
 import time
 import traceback
 import types
+import unittest
 #@+others
-#@+node:ekr.20160521104628.1: **   leoAst.py: top-level
+#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 #@+node:ekr.20191027072910.1: *3* exception classes
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
@@ -216,9 +217,17 @@ def parse_ast(s, headline=None, show_time=False):
         oops('Unexpected Exception')
         g.es_exception()
     return None
-#@+node:ekr.20160521103254.1: *3* function: unit_test
-def unit_test(raise_on_fail=True):
-    """Run basic unit tests for this file."""
+#@+node:ekr.20191113205051.1: *3* function: truncate
+def truncate(s, n):
+    if isinstance(s, str):
+        s = s.replace('\n','<NL>')
+    else:
+        s = repr(s)
+    return s if len(s) <  n else s[:n-3] + '...'
+#@+node:ekr.20191227052352.1: **  leoAst.py: unit tests
+#@+node:ekr.20160521103254.1: *3* function: test_vistors_exist
+def test_vistors_exist():
+    """Ensure that visitors for all ast nodes exist."""
     import _ast
     # Compute all fields to test.
     aList = sorted(dir(_ast))
@@ -229,7 +238,8 @@ def unit_test(raise_on_fail=True):
     ]
     aList = [z for z in aList if not z[0].islower()]
         # Remove base classe
-    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    aList = [z for z in aList
+        if not z.startswith('_') and not z in remove]
     # Now test them.
     table = (
         AstFullTraverser,
@@ -248,18 +258,8 @@ def unit_test(raise_on_fail=True):
             else:
                 errors += 1
                 print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
-    s = f"{nodes} node types, {ops} op types, {errors} errors"
-    if raise_on_fail:
-        assert not errors, s
-    else:
-        print(s)
-#@+node:ekr.20191113205051.1: *3* function: truncate
-def truncate(s, n):
-    if isinstance(s, str):
-        s = s.replace('\n','<NL>')
-    else:
-        s = repr(s)
-    return s if len(s) <  n else s[:n-3] + '...'
+    msg = f"{nodes} node types, {ops} op types, {errors} errors"
+    assert not errors, msg
 #@+node:ekr.20141012064706.18399: **  class AstFormatter
 class AstFormatter:
     """
@@ -2567,6 +2567,9 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
+#@+node:ekr.20191227051737.1: ** class Test (TestCase)
+class Test (unittest.TestCase):
+    """The foundation for tests of code in leoAst.py"""
 #@+node:ekr.20191226175251.1: ** class LeoGlobals
 #@@nosearch
 
