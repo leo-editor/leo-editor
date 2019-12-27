@@ -734,6 +734,43 @@ class AstFormatter:
         return self.indent(f'yield from %s\n' % (
             self.visit(node.value)))
     #@-others
+#@+node:ekr.20191227154302.1: **  class BaseTest (TestCase)
+class BaseTest (unittest.TestCase):
+    """
+    The base class of all tests of leoAst.py.
+    
+    This class contains only helpers.
+    """
+    #@+others
+    #@+node:ekr.20191227054856.1: *3*  Test.make_data
+    def make_data(self, contents=None, description=None):
+        if not contents:
+            return
+        contents = contents.lstrip('\\\n')
+        contents = g.adjustTripleString(contents)
+        self.contents = contents.rstrip() + '\n'
+        # Create and remember the TOJ.
+        toj = self.toj = TokenOrderInjector()
+        toj.trace_mode = False
+        # Tokenize.
+        self.tokens = toj.make_tokens(self.contents)
+        # Parse.
+        self.tree = parse_ast(self.contents)
+        # Insert links.
+        list(toj.create_links(self.tokens, self.tree,
+            file_name=description or ''))
+    #@+node:ekr.20191227103533.1: *3*  Test.make_file_data
+    def make_file_data(self, filename):
+        """Test the contents of the given file."""
+        filename = os.path.join(r'c:\leo.repo\leo-editor\leo\core', filename)
+        with open(filename, 'r') as f:
+            contents = f.read()
+        self.make_data(contents=contents, description=filename)
+        
+    #@+node:ekr.20191227151220.1: *3*  Test.fstringify
+    def fstringify(self, filename=None):
+        self.toj.fstringify(self.tokens, self.tree, filename or '')
+    #@-others
 #@+node:ekr.20191113063144.1: **  class TokenOrderGenerator
 class TokenOrderGenerator:
     """A class that traverses ast (parse) trees in token order."""
@@ -5086,39 +5123,10 @@ class NodeTokens:
                 f"{node.__class__.__name__:>15}, "
                 f"{self.i:>2} {self.j:>2}")
     #@-others
-#@+node:ekr.20191227051737.1: ** class TestLeoAst (TestCase)
-class TestLeoAst (unittest.TestCase):
-    """The foundation for tests of code in leoAst.py"""
+#@+node:ekr.20191227051737.1: ** class TestTOG (BaseTest)
+class TestTOG (BaseTest):
+    """Tests for the TokenOrderGenerator class."""
     #@+others
-    #@+node:ekr.20191227145643.1: *3*  Test helpers...
-    #@+node:ekr.20191227054856.1: *4*  Test.make_data
-    def make_data(self, contents=None, description=None):
-        if not contents:
-            return
-        contents = contents.lstrip('\\\n')
-        contents = g.adjustTripleString(contents)
-        self.contents = contents.rstrip() + '\n'
-        # Create and remember the TOJ.
-        toj = self.toj = TokenOrderInjector()
-        toj.trace_mode = False
-        # Tokenize.
-        self.tokens = toj.make_tokens(self.contents)
-        # Parse.
-        self.tree = parse_ast(self.contents)
-        # Insert links.
-        list(toj.create_links(self.tokens, self.tree,
-            file_name=description or ''))
-    #@+node:ekr.20191227103533.1: *4*  Test.make_file_data
-    def make_file_data(self, filename):
-        """Test the contents of the given file."""
-        filename = os.path.join(r'c:\leo.repo\leo-editor\leo\core', filename)
-        with open(filename, 'r') as f:
-            contents = f.read()
-        self.make_data(contents=contents, description=filename)
-        
-    #@+node:ekr.20191227151220.1: *4*  Test.fstringify
-    def fstringify(self, filename=None):
-        self.toj.fstringify(self.tokens, self.tree, filename or '')
     #@+node:ekr.20191227052446.10: *3* Contexts...
     #@+node:ekr.20191227052446.11: *4* test_ClassDef
     def test_ClassDef(self):
@@ -6133,6 +6141,11 @@ class TestRunner:
         self.times ['ast-tokens'] = old_time + (t2 - t1)
     #@-others
    
+#@+node:ekr.20191227152538.1: ** class TestTOT (BaseTest)
+class TestTOT (BaseTest):
+    
+    def test_tot_traverse(self):
+        g.trace('=====')
 #@+node:ekr.20191110080535.1: ** class Token
 class Token:
     """
@@ -6670,8 +6683,9 @@ class TokenSync:
     #@-others
 #@-others
 g = LeoGlobals()
-if __name__ == '__main__':
-    unittest.main()
+###
+    # if __name__ == '__main__':
+        # unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
