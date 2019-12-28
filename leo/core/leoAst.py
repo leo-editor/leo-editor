@@ -4543,13 +4543,13 @@ class TestTOT (BaseTest):
     def test_traverse(self):
         
         contents = """\
-a = f(2)
-print('%s = %s' % (2+3, 4*5))
-b = 10 % 11
+f(1)
+b = 2 + 3
 """
+# print('%s = %s' % (2+3, 4*5))
         # self.make_file_data('leoApp.py')
-        # self.dump_contents(contents)
         tokens, tree = self.make_data(contents)
+        # self.dump_contents(contents)
         # self.dump_tokens(tokens)
         self.dump_tree(tree)
         tot = TokenOrderTraverser()
@@ -6603,41 +6603,62 @@ class TokenOrderTraverser:
         
         Recursion is not allowed.
         """
+        
+        ### def has_next(node):
+            
         # The stack contains child indices.
         node, stack = tree, [0]
         limit = 0
-        while node and stack and limit < 50:
+        seen = set()
+        while node and stack and limit < 1000:
             limit += 1
             g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
+            # Visit the node.
+            assert node.node_index not in seen, node.node_index
+            seen.add(node.node_index)
+            self.visit(node)
+            # if p.v.children: p.moveToFirstChild()
             children = getattr(node, 'children', [])
-            i = stack[-1]
-            # Visit the node only once.
-            if i == 0:
-                stack[-1] += 1
-                self.visit(node)
-                if children:
-                    stack.append(0)
-                    node = children[0]
-                    continue
-            # Visit the next child.
-            elif i < len(children):
-                stack[-1] += 1
-                node = children[i]
+            if children:
+                # Move to the first child.
+                stack.append(0)
+                node = children[0]
+                g.trace(' child:', node.__class__.__name__, stack)
                 continue
-            # Set node to the next child of some parent.
-            while node and node.parent and stack:
-                node = node.parent
+            # elif p.hasNext(): p.moveToNext()
+            stack[-1] += 1
+            i = stack[-1]
+            parent = node.parent
+            if parent and parent.children and i < len(parent.children):
+                # Move to the next sibling.
+                node = parent.children[i]
+                g.trace('next: 1', node.__class__.__name__, stack)
+                continue
+            # else...
+            # p.moveToParent()
+            node = node.parent
+            stack.pop()
+            # while p:
+            while node and stack:
+                # if p.hasNext():
+                stack[-1] += 1
                 i = stack[-1]
-                if i < len(node.children):
-                    stack[-1] += 1
-                    node = node.children[i]
-                    g.trace('child:', i, node.__class__.__name__)
-                    break
-                else:
-                    g.trace('  pop:', node.__class__.__name__)
-                    stack.pop()
+                parent = node.parent
+                if parent and parent.children and i < len(parent.children):
+                    # p.moveToNext()
+                    # Move to the next sibling.
+                    node = parent.children[i]
+                    g.trace('next 2:', node.__class__.__name__, stack)
+                    break  # Found.
+                # p.moveToParent()
+                node = node.parent
+                stack.pop()
+                g.trace('parent:', node.__class__.__name__, stack)
+            # not found.
+            else:
+                break
         g.trace('done', 'limit', limit, node and node.__class__.__name__, stack)
         print('')
     #@+node:ekr.20191227160547.1: *4* TOT.visit
