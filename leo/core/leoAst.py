@@ -4547,8 +4547,10 @@ f(1)
 b = 2 + 3
 """
 # print('%s = %s' % (2+3, 4*5))
-        # self.make_file_data('leoApp.py')
-        tokens, tree = self.make_data(contents)
+        if 1:
+            tokens, tree = self.make_file_data('leoApp.py')
+        else:
+            tokens, tree = self.make_data(contents)
         # self.dump_contents(contents)
         # self.dump_tokens(tokens)
         self.dump_tree(tree)
@@ -6616,7 +6618,7 @@ class TokenOrderTraverser:
         node, stack = tree, [0]
         limit = 0
         seen = set()
-        while node and stack and limit < 1000:
+        while node and stack: ###  and limit < 2000:
             limit += 1
             if trace: g.trace(
                 f"{node.node_index:>3} "
