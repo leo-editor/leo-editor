@@ -3176,7 +3176,8 @@ class BaseTest (unittest.TestCase):
     This class contains only helpers.
     """
     
-    times = {}
+    # Statistics.
+    counts, times = {}, {}
 
     #@+others
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
@@ -3185,6 +3186,8 @@ class BaseTest (unittest.TestCase):
         contents = contents.lstrip('\\\n')
         if not contents:
             return None, None
+        tag = 'len(contents)'
+        self.counts[tag] = self.counts.get(tag, 0) + len(contents)
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
         # Create the TOJ.
@@ -3231,7 +3234,17 @@ class BaseTest (unittest.TestCase):
         print('Results...\n')
         print(''.join(z.to_string() for z in tokens))
         print('')
-    #@+node:ekr.20191228095945.12: *5* BaseTest.dump_times
+    #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
+    def dump_stats(self):
+        """Show all calculated statistics."""
+        self.dump_counts()
+        self.dump_times()
+    #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
+    def dump_counts(self):
+        """Show all calculated counts."""
+        for key, n in self.counts.items():
+            print(f"{key:>15}: {n}")
+    #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
     def dump_times(self):
         """Show all calculated times."""
         if not self.times:
@@ -3292,6 +3305,9 @@ class BaseTest (unittest.TestCase):
             t2 = get_time()
             old_t = self.times.get('create-links', 0.0)
             self.times ['create-links'] = old_t + (t2 - t1)
+            tag = 'nodes'
+            self.counts[tag] = self.counts.get(tag, 0) + toj.n_nodes
+
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -4569,7 +4585,7 @@ b = 2 + 3
             t2 = get_time()
             old_t = self.times.get('TONG.traverse', 0.0)
             self.times ['TONG.traverse'] = old_t + (t2 - t1)
-        self.dump_times()
+        self.dump_stats()
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
