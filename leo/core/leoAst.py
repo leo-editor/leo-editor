@@ -153,7 +153,7 @@ class LeoGlobals:
             name = code1.co_name
         except Exception:
             name = ''
-        print(f"{name}: {','.join(str(z) for z in args)}")
+        print(f"{name}: {' '.join(str(z) for z in args)}")
     #@+node:ekr.20191226190241.1: *4* LeoGlobals.truncate
     def truncate(self, s, n):
         """Return s truncated to n characters."""
@@ -6496,27 +6496,33 @@ class TokenOrderTraverser:
         Recursion is not allowed.
         """
         # The stack contains child indices.
-        node, stack = tree, []
-        limit = 0
-        while node and limit < 20:
-            limit += 1
+        node, stack = tree, [0]
+        ### limit = 0
+        while node and stack: ### and limit < 10:
+            ### limit += 1
             g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
-            self.visit(node)
-            children = getattr(node, 'children', None)
-            if children:
-                stack.append(0)
-                node = children[0]
+            if stack[-1] == 0:
+                stack[-1] += 1
+                self.visit(node)
+                children = getattr(node, 'children', None)
+                if children:
+                    stack.append(0)
+                    node = children[0]
                 continue
             # Traverse the next child of some parent.
-            while node.parent and stack:
+            while node and node.parent and stack:
                 node = node.parent
                 i = stack.pop() + 1
+                g.trace('pop:', node and node.__class__.__name__)
                 if i < len(node.children):
                     stack.append(i)
                     node = node.children[i]
                     break
+            if not node.parent:
+                break
+        g.trace('done', node and node.__class__.__name__, stack)
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
         pass
