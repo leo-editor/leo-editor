@@ -6604,7 +6604,13 @@ class TokenOrderTraverser:
         Recursion is not allowed.
         """
         
-        ### def has_next(node):
+        trace = False
+        
+        def has_next(i, node, stack):
+            """Return True if stack[i] is a valid child of node.parent."""
+            if trace: g.trace(node.__class__.__name__, stack)
+            parent = node.parent
+            return parent and parent.children and i < len(parent.children)
             
         # The stack contains child indices.
         node, stack = tree, [0]
@@ -6612,7 +6618,7 @@ class TokenOrderTraverser:
         seen = set()
         while node and stack and limit < 1000:
             limit += 1
-            g.trace(
+            if trace: g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
             # Visit the node.
@@ -6625,16 +6631,16 @@ class TokenOrderTraverser:
                 # Move to the first child.
                 stack.append(0)
                 node = children[0]
-                g.trace(' child:', node.__class__.__name__, stack)
+                if trace: g.trace(' child:', node.__class__.__name__, stack)
                 continue
             # elif p.hasNext(): p.moveToNext()
             stack[-1] += 1
             i = stack[-1]
-            parent = node.parent
-            if parent and parent.children and i < len(parent.children):
+            if has_next(i, node, stack):
+            ### parent = node.parent
+            ### if parent and parent.children and i < len(parent.children):
                 # Move to the next sibling.
-                node = parent.children[i]
-                g.trace('next: 1', node.__class__.__name__, stack)
+                node = node.parent.children[i]
                 continue
             # else...
             # p.moveToParent()
@@ -6645,25 +6651,27 @@ class TokenOrderTraverser:
                 # if p.hasNext():
                 stack[-1] += 1
                 i = stack[-1]
-                parent = node.parent
-                if parent and parent.children and i < len(parent.children):
+                if has_next(i, node, stack):
+                ### parent = node.parent
+                ### if parent and parent.children and i < len(parent.children):
                     # p.moveToNext()
                     # Move to the next sibling.
-                    node = parent.children[i]
-                    g.trace('next 2:', node.__class__.__name__, stack)
+                    node = node.parent.children[i]
                     break  # Found.
                 # p.moveToParent()
                 node = node.parent
                 stack.pop()
-                g.trace('parent:', node.__class__.__name__, stack)
+                if trace: g.trace('parent:', node.__class__.__name__, stack)
             # not found.
             else:
                 break
-        g.trace('done', 'limit', limit, node and node.__class__.__name__, stack)
+        if trace:
+            g.trace('done', 'limit', limit,
+                node and node.__class__.__name__, stack)
         print('')
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
-        g.trace('======', node.__class__.__name__)
+        g.trace(node.node_index, node.__class__.__name__)
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
