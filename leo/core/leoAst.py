@@ -3175,35 +3175,141 @@ class BaseTest (unittest.TestCase):
     
     This class contains only helpers.
     """
+    
+    times = {}
+
     #@+others
-    #@+node:ekr.20191227054856.1: *4*  Test.make_data
-    def make_data(self, contents=None, description=None):
-        if not contents:
-            return
+    #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
+    def make_data(self, contents, description=None, trace_mode=False):
+        """Return (tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
+        if not contents:
+            return None, None
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
-        # Create and remember the TOJ.
-        toj = self.toj = TokenOrderInjector()
-        toj.trace_mode = False
-        # Tokenize.
-        self.tokens = toj.make_tokens(self.contents)
-        # Parse.
-        self.tree = parse_ast(self.contents)
-        # Insert links.
-        list(toj.create_links(self.tokens, self.tree,
-            file_name=description or ''))
-    #@+node:ekr.20191227103533.1: *4*  Test.make_file_data
+        # Create the TOJ.
+        self.toj = TokenOrderInjector()
+        self.toj.trace_mode = trace_mode
+        # Pass 0: create the tokens and the tree.
+        tokens = self.make_tokens(contents, trace_mode=False)
+        tree = self.make_tree(contents)
+        # Pass 1: create the links.
+        self.create_links(tokens, tree)
+        return tokens, tree
+    #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
-        """Test the contents of the given file."""
+        """Return (tokens, tree) corresponding to the contents of the given file."""
         filename = os.path.join(r'c:\leo.repo\leo-editor\leo\core', filename)
         with open(filename, 'r') as f:
             contents = f.read()
-        self.make_data(contents=contents, description=filename)
+        return self.make_data(contents=contents, description=filename)
         
-    #@+node:ekr.20191227151220.1: *4*  Test.fstringify
-    def fstringify(self, filename=None):
-        self.toj.fstringify(self.tokens, self.tree, filename or '')
+    #@+node:ekr.20191228095945.1: *4* BaseTest: actions...
+    # Actions should fail by throwing an exception.
+    #@+node:ekr.20191228095945.4: *5* BaseTest.dump_contents
+    def dump_contents(self, contents):
+        print('')
+        print('Contents...\n')
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20191228095945.5: *5* BaseTest.dump_lines
+    def dump_lines(self, tokens):
+        print('')
+        print('TOKEN lines...\n')
+        for z in tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20191228095945.6: *5* BaseTest.dump_raw_tree
+    def dump_raw_tree(self, tree):
+        print('')
+        print('Raw tree...\n')
+        print(AstDumper().dump(tree))
+        print('')
+    #@+node:ekr.20191228095945.7: *5* BaseTest.dump_results
+    def dump_results(self, tokens):
+        print('')
+        print('Results...\n')
+        print(''.join(z.to_string() for z in tokens))
+        print('')
+    #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
+    def dump_tokens(self, tokens, brief=False):
+        print('')
+        print('Tokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+        for z in tokens:
+            print(z.dump(brief=brief))
+        print('')
+    #@+node:ekr.20191228095945.9: *5* BaseTest.dump_tree
+    def dump_tree(self, tree, brief=False):
+        print('\nTree...\n')
+        print(brief_dump(tree))
+    #@+node:ekr.20191228095945.12: *5* BaseTest.show_times
+    def show_times(self):
+        """Show all calculated times."""
+        if not self.times:
+            return
+        table = (
+            'ast-tokens',
+            'make-tokens', 'parse-ast',
+            'create-links', 'fstringify',
+        )
+        print('')
+        for key in table:
+            t = self.times.get(key)
+            if t is not None:
+                print(f"{key:>15}: {t:5.2f} sec.")
+    #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
+    #@+node:ekr.20191228095945.11: *5* BaseTest pass 0a: make_tokens
+    def make_tokens(self, contents, trace_mode=False):
+        """Make tokens from contents."""
+        t1 = get_time()
+        # Tokenize.
+        tokens = self.toj.make_tokens(contents, trace_mode=trace_mode)
+        t2 = get_time()
+        old_t = self.times.get('make-tokens', 0.0)
+        self.times ['make-tokens'] = old_t + (t2 - t1)
+        return tokens
+    #@+node:ekr.20191228102101.1: *5* BaseTest pass 0b: make_tree
+    def make_tree(self, contents):
+        """Pass 0: make the parse tree."""
+        t1 = get_time()
+        tree = parse_ast(contents)
+        t2 = get_time()
+        old_t = self.times.get('parse-ast', 0.0)
+        self.times ['parse-ast'] = old_t + (t2-t1)
+        return tree
+    #@+node:ekr.20191228101437.1: *5* BaseTest pass 1: create_links
+    def create_links(self, tokens, tree, filename='unit test'):
+        """Pass 1: TOG.create_links"""
+        toj = self.toj
+        # Catch exceptions so we can get data late.
+        try:
+            t1 = get_time()
+            # Yes, list *is* required here.
+            list(toj.create_links(tokens, tree, file_name=filename))
+            t2 = get_time()
+            old_t = self.times.get('create-links', 0.0)
+            self.times ['create-links'] = old_t + (t2 - t1)
+        except Exception as e:
+            g.trace(f"\nFAIL: make-tokens\n")
+            # Don't use g.trace.  It doesn't handle newlines properly.
+            print(e)
+            g.es_exception()
+            raise
+    #@+node:ekr.20191228095945.10: *5* BaseTest pass 2: fstringify
+    def fstringify(self, tokens, tree, filename='unit test'):
+        """Pass 2: TOG.fstringify."""
+        toj = self.toj
+        assert isinstance(toj, TokenOrderGenerator), repr(toj)
+        t1 = get_time()
+        toj.fstringify(tokens, tree, file_name=filename)
+        t2 = get_time()
+        old_time = self.times.get('fstringify', 0.0)
+        self.times ['fstringify'] = old_time + (t2 - t1)
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -4219,7 +4325,7 @@ class TestTOG (BaseTest):
     def test_vistors_exist(self):
         """Ensure that visitors for all ast nodes exist."""
         import _ast
-        # Compute all fields to test.
+        # Compute all fields to BaseTest.
         aList = sorted(dir(_ast))
         remove = [
             'Interactive', 'Suite',  # Not necessary.
@@ -4424,15 +4530,15 @@ class TestTOG (BaseTest):
         
         if 1:
             filename = r'c:\test\core\leoAtFile.py'
-            self.make_file_data(filename)
+            tokens, tree = self.make_file_data(filename)
         else:
             filename = '<string>'
             contents = """\
     print('xxx %s=%s yyy'%(a * b, 2))
     print('%s' % func(3))
     """
-            self.make_data(contents)
-        self.fstringify(filename)
+            tokens, tree = self.make_data(contents)
+        self.fstringify(tokens, tree, filename)
         
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
@@ -4447,9 +4553,9 @@ b = 10 % 11
 """
         # self.make_file_data('leoApp.py')
         g.printObj(contents, tag='Contents')
-        self.make_data(contents)
-        x = TokenOrderTraverser()
-        x.traverse(self.tree)
+        tokens, tree = self.make_data(contents)
+        tot = TokenOrderTraverser()
+        tot.traverse(tree)
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
