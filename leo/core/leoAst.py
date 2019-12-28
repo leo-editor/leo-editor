@@ -3237,8 +3237,10 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
     def dump_stats(self):
         """Show all calculated statistics."""
-        self.dump_counts()
-        self.dump_times()
+        if self.counts or self.times:
+            self.dump_counts()
+            self.dump_times()
+            print('')
     #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
     def dump_counts(self):
         """Show all calculated counts."""
@@ -3247,11 +3249,9 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
     def dump_times(self):
         """Show all calculated times."""
-        if self.times:
-            for key in sorted(self.times):
-                t = self.times.get(key)
-                print(f"{key:>20}: {t:6.2f} sec.")
-            print('')
+        for key in sorted(self.times):
+            t = self.times.get(key)
+            print(f"{key:>20}: {t:6.2f} sec.")
     #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
     def dump_tokens(self, tokens, brief=False):
         print('Tokens...\n')
