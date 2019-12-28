@@ -3243,24 +3243,15 @@ class BaseTest (unittest.TestCase):
     def dump_counts(self):
         """Show all calculated counts."""
         for key, n in self.counts.items():
-            print(f"{key:>15}: {n}")
+            print(f"{key:>20}: {n:>6}")
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
     def dump_times(self):
         """Show all calculated times."""
-        if not self.times:
-            return
-        table = (
-            'ast-tokens',
-            'make-tokens', 'parse-ast',
-            'create-links',
-            'TOT.traverse', 'TONG.traverse',
-            'fstringify',
-        )
-        for key in table:
-            t = self.times.get(key)
-            if t is not None:
-                print(f"{key:>15}: {t:5.2f} sec.")
-        print('')
+        if self.times:
+            for key in sorted(self.times):
+                t = self.times.get(key)
+                print(f"{key:>20}: {t:6.2f} sec.")
+            print('')
     #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
     def dump_tokens(self, tokens, brief=False):
         print('Tokens...\n')
@@ -3273,6 +3264,16 @@ class BaseTest (unittest.TestCase):
         print('Tree...\n')
         print(brief_dump(tree))
         print('')
+    #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
+    def update_counts(self, key, n):
+        """Update the count statistic given by key, n."""
+        old_n = self.times.get(key, 0)
+        self.counts [key] = old_n + n
+
+    def update_times(self, key, t):
+        """Update the timing statistic given by key, t."""
+        old_t = self.times.get(key, 0.0)
+        self.times [key] = old_t + t
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* BaseTest pass 0a: make_tokens
     def make_tokens(self, contents, trace_mode=False):
@@ -3281,8 +3282,7 @@ class BaseTest (unittest.TestCase):
         # Tokenize.
         tokens = self.toj.make_tokens(contents, trace_mode=trace_mode)
         t2 = get_time()
-        old_t = self.times.get('make-tokens', 0.0)
-        self.times ['make-tokens'] = old_t + (t2 - t1)
+        self.update_times('pass 0a: make-tokens', t2-t1)
         return tokens
     #@+node:ekr.20191228102101.1: *5* BaseTest pass 0b: make_tree
     def make_tree(self, contents):
@@ -3290,8 +3290,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         tree = parse_ast(contents)
         t2 = get_time()
-        old_t = self.times.get('parse-ast', 0.0)
-        self.times ['parse-ast'] = old_t + (t2-t1)
+        self.update_times('pass 0b:   parse_ast', t2-t1)
         return tree
     #@+node:ekr.20191228101437.1: *5* BaseTest pass 1: create_links
     def create_links(self, tokens, tree, filename='unit test'):
@@ -3303,11 +3302,8 @@ class BaseTest (unittest.TestCase):
             # Yes, list *is* required here.
             list(toj.create_links(tokens, tree, file_name=filename))
             t2 = get_time()
-            old_t = self.times.get('create-links', 0.0)
-            self.times ['create-links'] = old_t + (t2 - t1)
-            tag = 'nodes'
-            self.counts[tag] = self.counts.get(tag, 0) + toj.n_nodes
-
+            self.update_counts('nodes', toj.n_nodes)
+            self.update_times('pass 1: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -3322,8 +3318,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         toj.fstringify(tokens, tree, file_name=filename)
         t2 = get_time()
-        old_time = self.times.get('fstringify', 0.0)
-        self.times ['fstringify'] = old_time + (t2 - t1)
+        self.update_times('pass 3: fstringify', t2 - t1)
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -3542,6 +3537,8 @@ class TestRunner:
     """
     A testing framework for TokenOrderGenerator and related classes.
     """
+    
+    counts, times = {}, {}
     #@+<< define valid actions & flags >>
     #@+node:ekr.20191222064729.1: *4* << define valid actions & flags >>
     valid_actions = [
@@ -3776,6 +3773,16 @@ class TestRunner:
         return True
     #@+node:ekr.20191205160624.1: *4* TR: actions...
     # Actions should fail by throwing an exception.
+    #@+node:ekr.20191228183156.1: *5* TR.update_counts & update_times
+    def update_counts(self, key, n):
+        """Update the count statistic given by key, n."""
+        old_n = self.times.get(key, 0)
+        self.counts [key] = old_n + n
+
+    def update_times(self, key, t):
+        """Update the timing statistic given by key, t."""
+        old_t = self.times.get(key, 0.0)
+        self.times [key] = old_t + t
     #@+node:ekr.20191226064933.1: *5* TR.create_links (pass 1)
     def create_links(self):
         """Pass 1: TOG.create_links"""
@@ -3786,8 +3793,7 @@ class TestRunner:
             # Yes, list *is* required here.
             list(x.create_links(self.tokens, self.tree, file_name=self.description))
             t2 = get_time()
-            old_t = self.times.get('create-links', 0.0)
-            self.times ['create-links'] = old_t + (t2 - t1)
+            self.update_times('pass 1: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -3884,8 +3890,7 @@ class TestRunner:
         t1 = get_time()
         x.fstringify(x.tokens, x.tree, file_name='unit test')
         t2 = get_time()
-        old_time = self.times.get('fstringify', 0.0)
-        self.times ['fstringify'] = old_time + (t2 - t1)
+        self.update_times('pass 2: fstringify', t2 - t1)
     #@+node:ekr.20191226063007.1: *5* TR.make_tokens_and_tree (pass 0)
     def make_tokens_and_tree(self):
         """Pass 0: TOG.make_tokens."""
@@ -3898,13 +3903,11 @@ class TestRunner:
         self.tokens = x.make_tokens(contents,
             trace_mode='trace-tokenizer-tokens' in flags)
         t2 = get_time()
-        old_t = self.times.get('make-tokens', 0.0)
-        self.times ['make-tokens'] = old_t + (t2 - t1)
+        self.update_times('make-tokens', t2 - t1)
         # Parse.
         self.tree = parse_ast(contents)
         t3 = get_time()
-        old_t = self.times.get('parse-ast', 0.0)
-        self.times ['parse-ast'] = old_t + (t3 - t2)
+        self.update_times('parse-ast', t3 - t2)
         # Dump.
         if 'dump-tokens-first' in flags:
             self.dump_tokens(brief=True)
@@ -3915,16 +3918,10 @@ class TestRunner:
         """Show all calculated times."""
         if not self.times:
             return
-        table = (
-            'ast-tokens',
-            'make-tokens', 'parse-ast',
-            'create-links', 'fstringify',
-        )
         print('')
-        for key in table:
+        for key in sorted(self.times):
             t = self.times.get(key)
-            if t is not None:
-                print(f"{key:>15}: {t:5.2f} sec.")
+            print(f"{key:>20}: {t:5.2f} sec.")
     #@+node:ekr.20191226063942.1: *5* TR.run_ast_tokens
     def run_ast_tokens(self):
         # pylint: disable=import-error
@@ -3935,8 +3932,7 @@ class TestRunner:
         self.tree = atok.tree
         self.tokens = atok._tokens
         t2 = get_time()
-        old_time = self.times.get('ast-tokens', 0.0)
-        self.times ['ast-tokens'] = old_time + (t2 - t1)
+        self.update_times('pass 0a: ast-tokens', t2 - t1)
     #@-others
    
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
@@ -4576,15 +4572,13 @@ b = 2 + 3
         t1 = get_time()
         tot.traverse(tree)
         t2 = get_time()
-        old_t = self.times.get('TOT.traverse', 0.0)
-        self.times ['TOT.traverse'] = old_t + (t2 - t1)
+        self.update_times('TOT.traverse', t2 - t1)
         if 1:
             t1 = get_time()
             ng = TokenOrderNodeGenerator()
             ng.generate_nodes(tokens, tree)
             t2 = get_time()
-            old_t = self.times.get('TONG.traverse', 0.0)
-            self.times ['TONG.traverse'] = old_t + (t2 - t1)
+            self.update_times('TONG.traverse', t2 - t1)
         self.dump_stats()
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
