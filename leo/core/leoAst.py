@@ -3239,7 +3239,9 @@ class BaseTest (unittest.TestCase):
         table = (
             'ast-tokens',
             'make-tokens', 'parse-ast',
-            'create-links', 'fstringify',
+            'create-links',
+            'TOT.traverse', 'TONG.traverse',
+            'fstringify',
         )
         for key in table:
             t = self.times.get(key)
@@ -4553,10 +4555,21 @@ b = 2 + 3
             tokens, tree = self.make_data(contents)
         # self.dump_contents(contents)
         # self.dump_tokens(tokens)
-        self.dump_tree(tree)
+        # self.dump_tree(tree)
         tot = TokenOrderTraverser()
+        t1 = get_time()
         tot.traverse(tree)
-        # self.dump_times()
+        t2 = get_time()
+        old_t = self.times.get('TOT.traverse', 0.0)
+        self.times ['TOT.traverse'] = old_t + (t2 - t1)
+        if 1:
+            t1 = get_time()
+            ng = TokenOrderNodeGenerator()
+            ng.generate_nodes(tokens, tree)
+            t2 = get_time()
+            old_t = self.times.get('TONG.traverse', 0.0)
+            self.times ['TONG.traverse'] = old_t + (t2 - t1)
+        self.dump_times()
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
@@ -6569,28 +6582,53 @@ class TokenOrderInjector (TokenOrderGenerator):
 class TokenOrderNodeGenerator(TokenOrderGenerator):
     """A class that yields a stream of nodes."""
 
-    def generate_nodes(self, tree):
-        """Entry: yield a stream of nodes."""
-        
-        self.file_name = '<no file name>'
-        self.level = 0
-        self.node = None
-        self.tokens = []
-        self.tree = tree
-        yield from self.visitor(tree)
-        
-    # Override node visitors...
-    def begin_visitor(self, node):
-        if node:
-            yield node
-        
-    def end_visitor(self, node):
-        pass
-
     # Other overrides...
-
     def sync_token(self, kind, val):
         pass
+        
+    #@+others
+    #@+node:ekr.20191228153344.1: *4* tong.generate_nodes
+    def generate_nodes(self, tokens, tree, file_name=''):
+        """Entry: yield a stream of nodes."""
+        #
+        # Init all ivars.
+        self.file_name = file_name
+            # For tests.
+        self.level = 0
+            # Python indentation level.
+        self.node = None
+            # The node being visited.
+            # The parent of the about-to-be visited node.
+        self.tokens = tokens
+            # The immutable list of input tokens.
+        self.tree = tree
+            # The tree of ast.AST nodes.
+        #
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+    #@+node:ekr.20191228152949.1: *4* tong.begin/end_visitor
+    def begin_visitor(self, node):
+        """TONG.begin_visitor: Enter a visitor."""
+        # begin_visitor and end_visitor must be paired.
+        self.begin_end_stack.append(node.__class__.__name__)
+        # Push the previous node.
+        self.node_stack.append(self.node)
+        # Update self.node *last*.
+        self.node = node
+
+    def end_visitor(self, node):
+        """TONG.end_visitor: Leave a visitor."""
+        # begin_visitor and end_visitor must be paired.
+        entry_name = self.begin_end_stack.pop()
+        assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
+        assert self.node == node, (repr(self.node), repr(node))
+        # Restore self.node.
+        self.node = self.node_stack.pop()
+    #@-others
 #@+node:ekr.20191226195813.1: *3* class TokenOrderTraverser
 class TokenOrderTraverser:
     """
@@ -6616,10 +6654,8 @@ class TokenOrderTraverser:
             
         # The stack contains child indices.
         node, stack = tree, [0]
-        limit = 0
         seen = set()
-        while node and stack: ###  and limit < 2000:
-            limit += 1
+        while node and stack:
             if trace: g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
@@ -6668,12 +6704,12 @@ class TokenOrderTraverser:
             else:
                 break
         if trace:
-            g.trace('done', 'limit', limit,
-                node and node.__class__.__name__, stack)
+            g.trace('done', node and node.__class__.__name__, stack)
         print('')
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
-        g.trace(node.node_index, node.__class__.__name__)
+        if 0:
+            g.trace(node.node_index, node.__class__.__name__)
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
