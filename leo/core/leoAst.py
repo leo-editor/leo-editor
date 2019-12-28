@@ -4441,9 +4441,12 @@ class TestTOT (BaseTest):
     def test_traverse(self):
         
         contents = """\
+a = f(2)
 print('%s = %s' % (2+3, 4*5))
+b = 10 % 11
 """
         # self.make_file_data('leoApp.py')
+        g.printObj(contents, tag='Contents')
         self.make_data(contents)
         x = TokenOrderTraverser()
         x.traverse(self.tree)
@@ -6497,35 +6500,44 @@ class TokenOrderTraverser:
         """
         # The stack contains child indices.
         node, stack = tree, [0]
-        ### limit = 0
-        while node and stack: ### and limit < 10:
-            ### limit += 1
+        limit = 0
+        while node and stack and limit < 50:
+            limit += 1
             g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
-            if stack[-1] == 0:
+            children = getattr(node, 'children', [])
+            i = stack[-1]
+            # Visit the node only once.
+            if i == 0:
                 stack[-1] += 1
                 self.visit(node)
-                children = getattr(node, 'children', None)
                 if children:
                     stack.append(0)
                     node = children[0]
+                    continue
+            # Visit the next child.
+            elif i < len(children):
+                stack[-1] += 1
+                node = children[i]
                 continue
-            # Traverse the next child of some parent.
+            # Set node to the next child of some parent.
             while node and node.parent and stack:
                 node = node.parent
-                i = stack.pop() + 1
-                g.trace('pop:', node and node.__class__.__name__)
+                ### i = stack.pop() + 1
+                i = stack[-1]
                 if i < len(node.children):
-                    stack.append(i)
+                    stack[-1] += 1
                     node = node.children[i]
+                    g.trace('child:', i, node.__class__.__name__)
                     break
-            if not node.parent:
-                break
-        g.trace('done', node and node.__class__.__name__, stack)
+                else:
+                    g.trace('  pop:', node.__class__.__name__)
+                    stack.pop()
+        g.trace('done', 'limit', limit, node and node.__class__.__name__, stack)
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
-        pass
+        g.trace('======', node.__class__.__name__)
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
