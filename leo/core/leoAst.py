@@ -3208,14 +3208,12 @@ class BaseTest (unittest.TestCase):
     # Actions should fail by throwing an exception.
     #@+node:ekr.20191228095945.4: *5* BaseTest.dump_contents
     def dump_contents(self, contents):
-        print('')
         print('Contents...\n')
         for i, z in enumerate(g.splitLines(contents)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *5* BaseTest.dump_lines
     def dump_lines(self, tokens):
-        print('')
         print('TOKEN lines...\n')
         for z in tokens:
             if z.line.strip():
@@ -3225,30 +3223,16 @@ class BaseTest (unittest.TestCase):
         print('')
     #@+node:ekr.20191228095945.6: *5* BaseTest.dump_raw_tree
     def dump_raw_tree(self, tree):
-        print('')
         print('Raw tree...\n')
         print(AstDumper().dump(tree))
         print('')
     #@+node:ekr.20191228095945.7: *5* BaseTest.dump_results
     def dump_results(self, tokens):
-        print('')
         print('Results...\n')
         print(''.join(z.to_string() for z in tokens))
         print('')
-    #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
-    def dump_tokens(self, tokens, brief=False):
-        print('')
-        print('Tokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        for z in tokens:
-            print(z.dump(brief=brief))
-        print('')
-    #@+node:ekr.20191228095945.9: *5* BaseTest.dump_tree
-    def dump_tree(self, tree, brief=False):
-        print('\nTree...\n')
-        print(brief_dump(tree))
-    #@+node:ekr.20191228095945.12: *5* BaseTest.show_times
-    def show_times(self):
+    #@+node:ekr.20191228095945.12: *5* BaseTest.dump_times
+    def dump_times(self):
         """Show all calculated times."""
         if not self.times:
             return
@@ -3257,11 +3241,23 @@ class BaseTest (unittest.TestCase):
             'make-tokens', 'parse-ast',
             'create-links', 'fstringify',
         )
-        print('')
         for key in table:
             t = self.times.get(key)
             if t is not None:
                 print(f"{key:>15}: {t:5.2f} sec.")
+        print('')
+    #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
+    def dump_tokens(self, tokens, brief=False):
+        print('Tokens...\n')
+        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+        for z in tokens:
+            print(z.dump(brief=brief))
+        print('')
+    #@+node:ekr.20191228095945.9: *5* BaseTest.dump_tree
+    def dump_tree(self, tree, brief=False):
+        print('Tree...\n')
+        print(brief_dump(tree))
+        print('')
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* BaseTest pass 0a: make_tokens
     def make_tokens(self, contents, trace_mode=False):
@@ -4552,10 +4548,13 @@ print('%s = %s' % (2+3, 4*5))
 b = 10 % 11
 """
         # self.make_file_data('leoApp.py')
-        g.printObj(contents, tag='Contents')
+        # self.dump_contents(contents)
         tokens, tree = self.make_data(contents)
+        # self.dump_tokens(tokens)
+        self.dump_tree(tree)
         tot = TokenOrderTraverser()
         tot.traverse(tree)
+        # self.dump_times()
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
@@ -6630,7 +6629,6 @@ class TokenOrderTraverser:
             # Set node to the next child of some parent.
             while node and node.parent and stack:
                 node = node.parent
-                ### i = stack.pop() + 1
                 i = stack[-1]
                 if i < len(node.children):
                     stack[-1] += 1
@@ -6641,6 +6639,7 @@ class TokenOrderTraverser:
                     g.trace('  pop:', node.__class__.__name__)
                     stack.pop()
         g.trace('done', 'limit', limit, node and node.__class__.__name__, stack)
+        print('')
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
         g.trace('======', node.__class__.__name__)
