@@ -206,12 +206,9 @@ class Position:
             return False
         if p2 is None or p2.v is None:
             return p1.v is None
-        if isinstance(p2, self.__class__):
-            return (p1.v == p2.v and
-                p1._childIndex == p2._childIndex and
-                p1.stack == p2.stack)
-        # Do this only after testing for None.
-        return NotImplementedError
+        return (p1.v == p2.v and
+            p1._childIndex == p2._childIndex and
+            p1.stack == p2.stack)
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
