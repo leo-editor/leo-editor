@@ -4677,7 +4677,22 @@ class TokenOrderGenerator:
     #@+node:ekr.20191228184647.1: *5* tog.balance_tokens (entry)
     def balance_tokens(self, tokens):
         """Find matching paren tokens."""
-        g.trace(len(tokens))
+        count, stack = 0, []
+        for token in tokens:
+            if token.kind == 'op':
+                if token.value == '(':
+                    count += 1
+                    stack.append(token.index)
+                if token.value == ')':
+                    if stack:
+                        index = stack.pop()
+                        tokens[index].matching_paren = token.index
+                        tokens[token.index].matching_paren = index
+                    else:
+                        g.trace(f"unmatched ')' at index {token.index}")
+        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
+        if stack:
+            g.trace("unmatched '(' at {','.join(stack)}")
     #@+node:ekr.20191113063144.11: *5* tog.report_coverage
     def report_coverage(self):
         """Report untested visitors."""
