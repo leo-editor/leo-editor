@@ -4667,11 +4667,16 @@ class TokenOrderGenerator:
     #@+others
     #@+node:ekr.20191223052821.1: *4* tog: Entries
     # Called from testing framework.
-    #@+node:ekr.20191113063144.4: *5* tog.create_links (entry)
+    #@+node:ekr.20191113063144.4: *5* tog.create_links (pass 1)
     def create_links(self, tokens, tree, file_name=''):
         """
         Verify that traversing the given ast tree generates exactly the given
         tokens, in exact order.
+        
+        tokens: the list of Token instances for the input.
+                Created by self.make_tokens().
+        tree:   the ast tree for the input.
+                Created by the parse_ast() top-level function.
         """
         #
         # Init all ivars.
@@ -4699,16 +4704,14 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191222082453.1: *5* tog.fstringify (entry)
+    #@+node:ekr.20191222082453.1: *5* tog.fstringify (pass 2)
     def fstringify(self, tokens, tree, file_name):
         """
-        TOG.fstringify: Convert relevant % operators to fstrings.
-        
-        Pass 1 (TOG.create_links) should already have been called.
+        Convert relevant % operators to fstrings.
         """
-        # Pass 2: traverse the tree, replacing f-strings.
+        # The Fstringify class does all the work.
         Fstringify().fstringify(tokens, tree, file_name)
-    #@+node:ekr.20191113063144.6: *5* tog.make_tokens (entry)
+    #@+node:ekr.20191113063144.6: *5* tog.make_tokens (pass 0)
     def make_tokens(self, contents, trace_mode=False):
         """
         Return a list (not a generator) of Token objects corresponding to the
@@ -4738,7 +4741,7 @@ class TokenOrderGenerator:
         tokens = x.create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
-    #@+node:ekr.20191228184647.1: *5* tog.balance_tokens (entry)
+    #@+node:ekr.20191228184647.1: *5* tog.balance_tokens (pass 0)
     def balance_tokens(self, tokens):
         """Find matching paren tokens."""
         count, stack = 0, []
