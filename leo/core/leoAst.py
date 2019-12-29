@@ -2470,7 +2470,7 @@ class BaseTest (unittest.TestCase):
         try:
             t1 = get_time()
             # Yes, list *is* required here.
-            list(toi.create_links(tokens, tree, file_name=filename))
+            list(toi.create_links(tokens, tree))
             t2 = get_time()
             self.update_counts('nodes', toi.n_nodes)
             self.update_times('11: create-links', t2 - t1)
@@ -2494,7 +2494,7 @@ class BaseTest (unittest.TestCase):
         t2 = get_time()
         self.update_times('21: reassign-links', t2 - t1)
     #@+node:ekr.20191228095945.10: *5* 31: BaseTest.fstringify
-    def fstringify(self, tokens, tree, filename='unit test'):
+    def fstringify(self, tokens, tree, filename=''):
         """
         BaseTest.fstringify.
         
@@ -2503,7 +2503,7 @@ class BaseTest (unittest.TestCase):
         toi = self.toi
         assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        result_s = toi.fstringify(tokens, tree, file_name=filename)
+        result_s = toi.fstringify(tokens, tree)
         t2 = get_time()
         self.update_times('31: fstringify', t2 - t1)
         return result_s
@@ -3076,7 +3076,7 @@ class TestRunner:
         toi = self.toi
         assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        toi.fstringify(toi.tokens, toi.tree, file_name='unit test')
+        toi.fstringify(toi.tokens, toi.tree, filename='unit test')
         t2 = get_time()
         self.update_times('20: fstringify', t2 - t1)
     #@+node:ekr.20191226063007.1: *5* TR.make_tokens_and_tree (pass 0)
@@ -3797,21 +3797,32 @@ class TokenOrderGenerator:
     #@+node:ekr.20191229071517.1: *4* tog: Entries
     #@+node:ekr.20191229071733.1: *5* tog.create_links_in_file
     def create_links_in_file(self, filename):
-        """Fstringify the given file."""
+        """
+        Create the tokens and ast tree for the given file.
+        
+        Return (tokens, tree).
+        """
         try:
             with open(filename, 'r') as f:
                 s = f.read()
         except Exception as e:
-            g.trace(f"can not open {filename}\n{e}")
-        tokens, tree = self.create_links_in_string(s)
+            g.trace(f"can not open {filename}...\n{e}")
+        tokens, tree = self.create_links_in_string(s, filename=filename)
+        return tokens, tree
         
     #@+node:ekr.20191229071746.1: *5* tog.create_links_in_string
-    def create_links_in_string(self, s):
+    def create_links_in_string(self, s, filename=''):
         """
         Tokenize, parse and create links in the string s.
         
         Return (tokens, tree).
         """
+        self.filename = filename
+        tokens = self.make_tokens(s)
+        tree = self.make_tree(s)
+        self.create_links(tokens, tree)
+        self.balance_tokens(tokens)
+        return tokens, tree
     #@+node:ekr.20191229071619.1: *5* tog.fstringify_file
     def fstringify_file(self, filename):
         """Fstringify the given file."""
@@ -3830,8 +3841,14 @@ class TokenOrderGenerator:
         except Exception as e:
             g.trace(f"can not write {filename}\n{e}")
     #@+node:ekr.20191229071718.1: *5* tog.fstringify_string
-    def fstringify_string(self, s):
+    def fstringify_string(self, s, filename=''):
         """Return the results of fstingifing string s."""
+        tokens = self.make_tokens(s)
+        tree = self.make_tree(s)
+        self.create_links(tokens, tree)
+        self.balance_tokens(tokens)
+        result_s = self.fstringify(tokens, tree)
+        return result_s
     #@+node:ekr.20191113063144.11: *5* tog.report_coverage
     def report_coverage(self):
         """Report untested visitors."""
@@ -3953,11 +3970,11 @@ class TokenOrderGenerator:
         # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
         if stack:
             g.trace("unmatched '(' at {','.join(stack)}")
-    #@+node:ekr.20191229072907.1: *5* 21: tog.reassign_tokens
+    #@+node:ekr.20191229072907.1: *5* 21: tog.reassign_tokens (to do)
     def reassign_tokens(self, tokens, tree):
         """Reassign links between the given token list and ast-tree."""
     #@+node:ekr.20191222082453.1: *5* 31: tog.fstringify
-    def fstringify(self, tokens, tree, file_name=''):
+    def fstringify(self, tokens, tree, filename=''):
         """
         TOG.fstringify.
         
@@ -3966,7 +3983,7 @@ class TokenOrderGenerator:
         This method is a wrapper for unit tests.
         """
         # The Fstringify class does all the work.
-        return Fstringify().fstringify(tokens, tree, file_name)
+        return Fstringify().fstringify(tokens, tree, filename)
     #@+node:ekr.20191225061516.1: *4* tog: Replacers
     #@+node:ekr.20191224093336.1: *5* tog.match_parens
     def match_parens(self, tokens):
@@ -5441,7 +5458,7 @@ class Fstringify (TokenOrderGenerator):
     """A class to fstringify an existing ast tree."""
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify (entry)
-    def fstringify(self, tokens, tree, file_name):
+    def fstringify(self, tokens, tree, filename=''):
         """
         Fstringify.fstringify:
         The entry point for the Fstringify class.
@@ -5450,7 +5467,6 @@ class Fstringify (TokenOrderGenerator):
         All links have already been created.
         """
         # Init all ivars.
-        self.file_name = file_name
         self.level = 0
         self.node = None
         self.tokens = tokens
