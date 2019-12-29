@@ -4873,7 +4873,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('for')
         yield from self.gen(node.generators)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant (tested)
+    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
     def do_Name(self, node):
         
         yield from self.gen_name(node.id)
