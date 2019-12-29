@@ -3200,7 +3200,7 @@ class BaseTest (unittest.TestCase):
         # Pass 1: create the links.
         self.create_links(tokens, tree)
         t2 = get_time()
-        self.update_times('TOTAL', t2 - t1)
+        self.update_times('90: TOTAL', t2 - t1)
         return tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
@@ -3249,19 +3249,19 @@ class BaseTest (unittest.TestCase):
     def dump_counts(self):
         """Show all calculated counts."""
         for key, n in self.counts.items():
-            print(f"{key:>25}: {n:>6}")
+            print(f"{key:>16}: {n:>6}")
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
     def dump_times(self):
-        """Show all calculated times."""
+        """
+        Show all calculated times.
+        
+        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
+        """
         for key in sorted(self.times):
-            if key != 'TOTAL':
-                t = self.times.get(key)
-                print(f"{key:>25}: {t:6.2f} sec.")
-        # Print total last.
-        if 'TOTAL' in self.times:
-            key = 'TOTAL'
             t = self.times.get(key)
-            print(f"{key:>25}: {t:6.2f} sec.")
+            key2 = key[3:]
+            print(f"{key2:>16}: {t:6.2f} sec.")
+       
     #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
     def dump_tokens(self, tokens, brief=False):
         print('Tokens...\n')
@@ -3292,7 +3292,7 @@ class BaseTest (unittest.TestCase):
         # Tokenize.
         tokens = self.toj.make_tokens(contents, trace_mode=trace_mode)
         t2 = get_time()
-        self.update_times('pass 0a:    make-tokens', t2-t1)
+        self.update_times('00: make-tokens', t2-t1)
         return tokens
     #@+node:ekr.20191228102101.1: *5* BaseTest pass 0b: make_tree
     def make_tree(self, contents):
@@ -3300,7 +3300,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         tree = parse_ast(contents)
         t2 = get_time()
-        self.update_times('pass 0b:      parse_ast', t2-t1)
+        self.update_times('01: parse_ast', t2-t1)
         return tree
     #@+node:ekr.20191228185201.1: *5* BaseTest pass 0c: balance_tokens
     def balance_tokens(self, contents):
@@ -3308,7 +3308,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         tree = self.toj.balance_tokens(contents)
         t2 = get_time()
-        self.update_times('pass 0c: balance-tokens', t2-t1)
+        self.update_times('03: balance-tokens', t2-t1)
         return tree
     #@+node:ekr.20191228101437.1: *5* BaseTest pass 1: create_links
     def create_links(self, tokens, tree, filename='unit test'):
@@ -3321,7 +3321,7 @@ class BaseTest (unittest.TestCase):
             list(toj.create_links(tokens, tree, file_name=filename))
             t2 = get_time()
             self.update_counts('nodes', toj.n_nodes)
-            self.update_times('pass 1:    create-links', t2 - t1)
+            self.update_times('10: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -3336,7 +3336,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         toj.fstringify(tokens, tree, file_name=filename)
         t2 = get_time()
-        self.update_times('pass 3:      fstringify', t2 - t1)
+        self.update_times('20: fstringify', t2 - t1)
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -3570,9 +3570,9 @@ class TestRunner:
         'dump-lines',
         'dump-raw-tree',
         'dump-results',
+        'dump-times',
         'dump-tokens',
         'dump-tree',
-        'show-times',
     ]
 
     valid_flags = [
@@ -3757,8 +3757,8 @@ class TestRunner:
         print(
             f"\n{status} Ran "
             f"{len(tests)} test{g.plural(len(tests))}")
-        if not 'show-times' in self.flags:
-            self.show_times()
+        if not 'dump-times' in self.flags:
+            self.dump_times()
     #@+node:ekr.20191122021515.1: *4* TR.run_one_test
     def run_one_test(self, contents, description):
         """
@@ -3811,7 +3811,7 @@ class TestRunner:
             # Yes, list *is* required here.
             list(x.create_links(self.tokens, self.tree, file_name=self.description))
             t2 = get_time()
-            self.update_times('pass 1: create-links', t2 - t1)
+            self.update_times('10: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
@@ -3908,7 +3908,7 @@ class TestRunner:
         t1 = get_time()
         x.fstringify(x.tokens, x.tree, file_name='unit test')
         t2 = get_time()
-        self.update_times('pass 2: fstringify', t2 - t1)
+        self.update_times('20: fstringify', t2 - t1)
     #@+node:ekr.20191226063007.1: *5* TR.make_tokens_and_tree (pass 0)
     def make_tokens_and_tree(self):
         """Pass 0: TOG.make_tokens."""
@@ -3921,25 +3921,30 @@ class TestRunner:
         self.tokens = x.make_tokens(contents,
             trace_mode='trace-tokenizer-tokens' in flags)
         t2 = get_time()
-        self.update_times('make-tokens', t2 - t1)
+        self.update_times('01: make-tokens', t2 - t1)
         # Parse.
         self.tree = parse_ast(contents)
         t3 = get_time()
-        self.update_times('parse-ast', t3 - t2)
+        self.update_times('01: parse-ast', t3 - t2)
         # Dump.
         if 'dump-tokens-first' in flags:
             self.dump_tokens(brief=True)
         if 'dump-raw-tree-first' in flags:
             self.dump_raw_tree()
-    #@+node:ekr.20191226095129.1: *5* TR.show_times
-    def show_times(self):
-        """Show all calculated times."""
+    #@+node:ekr.20191226095129.1: *5* TR.dump_times
+    def dump_times(self):
+        """
+        Show all calculated times.
+        
+        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
+        """
         if not self.times:
             return
         print('')
         for key in sorted(self.times):
             t = self.times.get(key)
-            print(f"{key:>20}: {t:5.2f} sec.")
+            key2 = key[3:]
+            print(f"{key2:>16}: {t:5.2f} sec.")
     #@+node:ekr.20191226063942.1: *5* TR.run_ast_tokens
     def run_ast_tokens(self):
         # pylint: disable=import-error
@@ -3950,7 +3955,7 @@ class TestRunner:
         self.tree = atok.tree
         self.tokens = atok._tokens
         t2 = get_time()
-        self.update_times('pass 0a: ast-tokens', t2 - t1)
+        self.update_times('01: ast-tokens', t2 - t1)
     #@-others
    
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
@@ -4575,7 +4580,7 @@ class TestTOG (BaseTest):
     def test_zzz(self):
         """The last test."""
         t2 = get_time()
-        self.update_times('TOTAL', t2 - g.total_time)
+        self.update_times('90: TOTAL', t2 - g.total_time)
         self.dump_stats()
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
@@ -4599,13 +4604,13 @@ b = 2 + 3
         t1 = get_time()
         tot.traverse(tree)
         t2 = get_time()
-        self.update_times('TOT.traverse', t2 - t1)
+        self.update_times('50: TOT.traverse', t2 - t1)
         if 1:
             t1 = get_time()
             ng = TokenOrderNodeGenerator()
             ng.generate_nodes(tokens, tree)
             t2 = get_time()
-            self.update_times('TONG.traverse', t2 - t1)
+            self.update_times('51: TONG.traverse', t2 - t1)
         self.dump_stats()
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
