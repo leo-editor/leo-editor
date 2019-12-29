@@ -2330,9 +2330,9 @@ class BaseTest (unittest.TestCase):
         self.update_counts('len(contents)', len(contents))
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
-        # Create the TOJ.
-        self.toj = TokenOrderInjector()
-        self.toj.trace_mode = trace_mode
+        # Create the TOI instance.
+        self.toi = TokenOrderInjector()
+        self.toi.trace_mode = trace_mode
         # Pass 0: create the tokens and the tree.
         tokens = self.make_tokens(contents, trace_mode=False)
         tree = self.make_tree(contents)
@@ -2400,7 +2400,7 @@ class BaseTest (unittest.TestCase):
         for key in sorted(self.times):
             t = self.times.get(key)
             key2 = key[3:]
-            print(f"{key2:>16}: {t:6.2f} sec.")
+            print(f"{key2:>16}: {t:6.3f} sec.")
        
     #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
     def dump_tokens(self, tokens, brief=False):
@@ -2425,58 +2425,88 @@ class BaseTest (unittest.TestCase):
         old_t = self.times.get(key, 0.0)
         self.times [key] = old_t + t
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
-    #@+node:ekr.20191228095945.11: *5* BaseTest pass 01: make_tokens
+    #@+node:ekr.20191228095945.11: *5* 01: BaseTest.make_tokens
     def make_tokens(self, contents, trace_mode=False):
-        """Make tokens from contents."""
+        """BaseTest.make_tokens. Make tokens from contents."""
         t1 = get_time()
         # Tokenize.
-        tokens = self.toj.make_tokens(contents, trace_mode=trace_mode)
+        tokens = self.toi.make_tokens(contents, trace_mode=trace_mode)
         t2 = get_time()
-        self.update_times('00: make-tokens', t2-t1)
+        self.update_times('01: make-tokens', t2-t1)
         return tokens
-    #@+node:ekr.20191228102101.1: *5* BaseTest pass 02: make_tree
+    #@+node:ekr.20191228102101.1: *5* 02: BaseTest.make_tree
     def make_tree(self, contents):
-        """Pass 0: make the parse tree."""
+        """
+        BaseTest.make_tree.
+        
+        Return the parse tree for the given contents string.
+        """
         t1 = get_time()
-        tree = parse_ast(contents)
+        tree = self.toi.make_tree(contents)
         t2 = get_time()
-        self.update_times('01: parse_ast', t2-t1)
+        self.update_times('02: parse_ast', t2-t1)
         return tree
-    #@+node:ekr.20191228185201.1: *5* BaseTest pass 03: balance_tokens
-    def balance_tokens(self, contents):
-        """Insert links between corresponding parens."""
+    #@+node:ekr.20191228185201.1: *5* 03: BaseTest.balance_tokens
+    def balance_tokens(self, tokens):
+        """
+        BastTest.balance_tokens.
+        
+        Insert links between corresponding paren tokens.
+        """
         t1 = get_time()
-        tree = self.toj.balance_tokens(contents)
+        tree = self.toi.balance_tokens(tokens)
         t2 = get_time()
         self.update_times('03: balance-tokens', t2-t1)
         return tree
-    #@+node:ekr.20191228101437.1: *5* BaseTest pass 1: create_links
+    #@+node:ekr.20191228101437.1: *5* 11: BaseTest.create_links
     def create_links(self, tokens, tree, filename='unit test'):
-        """Pass 1: TOG.create_links"""
-        toj = self.toj
+        """
+        BaseTest.create_links.
+        
+        Insert two-way links between the tokens and ast tree.
+        """
+        toi = self.toi
         # Catch exceptions so we can get data late.
         try:
             t1 = get_time()
             # Yes, list *is* required here.
-            list(toj.create_links(tokens, tree, file_name=filename))
+            list(toi.create_links(tokens, tree, file_name=filename))
             t2 = get_time()
-            self.update_counts('nodes', toj.n_nodes)
-            self.update_times('10: create-links', t2 - t1)
+            self.update_counts('nodes', toi.n_nodes)
+            self.update_times('11: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
             print(e)
             g.es_exception()
             raise
-    #@+node:ekr.20191228095945.10: *5* BaseTest pass 2: fstringify
-    def fstringify(self, tokens, tree, filename='unit test'):
-        """Pass 2: TOG.fstringify."""
-        toj = self.toj
-        assert isinstance(toj, TokenOrderGenerator), repr(toj)
+    #@+node:ekr.20191229065358.1: *5* 21: BaseTest.reassign_tokens
+    def reassign_tokens(self, tokens, tree, filename='unit test'):
+        """
+        BaseTest.reassign_tokens.
+        
+        Reassign tokens to ast nodes. This pass is optional.
+        """
+        toi = self.toi
+        assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        toj.fstringify(tokens, tree, file_name=filename)
+        toi.reassign_tokens(tokens, tree)
         t2 = get_time()
-        self.update_times('20: fstringify', t2 - t1)
+        self.update_times('21: reassign-links', t2 - t1)
+    #@+node:ekr.20191228095945.10: *5* 31: BaseTest.fstringify
+    def fstringify(self, tokens, tree, filename='unit test'):
+        """
+        BaseTest.fstringify.
+        
+        Run TOG.fstringify and measure its time.
+        """
+        toi = self.toi
+        assert isinstance(toi, TokenOrderGenerator), repr(toi)
+        t1 = get_time()
+        result_s = toi.fstringify(tokens, tree, file_name=filename)
+        t2 = get_time()
+        self.update_times('31: fstringify', t2 - t1)
+        return result_s
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -2870,8 +2900,8 @@ class TestRunner:
         return tests
     #@+node:ekr.20191122025155.1: *5* TR.show_coverage
     def show_coverage(self):
-        if self.toj:
-            self.toj.report_coverage()
+        if self.toi:
+            self.toi.report_coverage()
     #@+node:ekr.20191205160754.5: *5* TR.show_status
     def show_status(self):
         """Show the preliminary status."""
@@ -2944,12 +2974,12 @@ class TestRunner:
     #@+node:ekr.20191226064933.1: *5* TR.create_links (pass 1)
     def create_links(self):
         """Pass 1: TOG.create_links"""
-        flags, toj = self.flags, self.toj
+        flags, toi = self.flags, self.toi
         # Catch exceptions so we can get data late.
         try:
             t1 = get_time()
             # Yes, list *is* required here.
-            list(toj.create_links(self.tokens, self.tree, file_name=self.description))
+            list(toi.create_links(self.tokens, self.tree, file_name=self.description))
             t2 = get_time()
             self.update_times('10: create-links', t2 - t1)
         except Exception as e:
@@ -2966,12 +2996,12 @@ class TestRunner:
                 if 'dump-tree-after-fail' in flags:
                     self.dump_tree()
             if 'no-trace-after-fail':
-                toj.trace_mode = False
+                toi.trace_mode = False
             raise
     #@+node:ekr.20191122022728.1: *5* TR.dump_all
     def dump_all(self):
 
-        if self.toj:
+        if self.toi:
             self.dump_contents()
             self.dump_tokens()
             self.dump_tree()
@@ -3009,7 +3039,7 @@ class TestRunner:
         print('\nTokens...\n')
         print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
         # pylint: disable=not-an-iterable
-        if self.toj:
+        if self.toi:
             for z in tokens:
                 print(z.dump(brief=brief))
             print('')
@@ -3022,7 +3052,7 @@ class TestRunner:
     def dump_tree(self, brief=False):
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree
-        if self.toj:
+        if self.toi:
             print(brief_dump(tree))
             return
         try:
@@ -3043,10 +3073,10 @@ class TestRunner:
     #@+node:ekr.20191222074711.1: *5* TR.fstringify (pass 2)
     def fstringify(self):
         """Pass 2: TOG.fstringify."""
-        toj = self.toj
-        assert isinstance(toj, TokenOrderGenerator), repr(toj)
+        toi = self.toi
+        assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        toj.fstringify(toj.tokens, toj.tree, file_name='unit test')
+        toi.fstringify(toi.tokens, toi.tree, file_name='unit test')
         t2 = get_time()
         self.update_times('20: fstringify', t2 - t1)
     #@+node:ekr.20191226063007.1: *5* TR.make_tokens_and_tree (pass 0)
@@ -3054,11 +3084,11 @@ class TestRunner:
         """Pass 0: TOG.make_tokens."""
         contents, flags = self.contents, self.flags
         t1 = get_time()
-        # Create and remember the TOJ.
-        toj = self.toj = TokenOrderInjector()
-        toj.trace_mode = 'set-trace-mode' in flags
+        # Create and remember the toi.
+        toi = self.toi = TokenOrderInjector()
+        toi.trace_mode = 'set-trace-mode' in flags
         # Tokenize.
-        self.tokens = toj.make_tokens(contents,
+        self.tokens = toi.make_tokens(contents,
             trace_mode='trace-tokenizer-tokens' in flags)
         t2 = get_time()
         self.update_times('01: make-tokens', t2 - t1)
@@ -3764,9 +3794,106 @@ class TokenOrderGenerator:
     trace_mode = False
 
     #@+others
-    #@+node:ekr.20191223052821.1: *4* tog: Entries
+    #@+node:ekr.20191229071517.1: *4* tog: Entries
+    #@+node:ekr.20191229071733.1: *5* tog.create_links_in_file
+    def create_links_in_file(self, filename):
+        """Fstringify the given file."""
+        try:
+            with open(filename, 'r') as f:
+                s = f.read()
+        except Exception as e:
+            g.trace(f"can not open {filename}\n{e}")
+        tokens, tree = self.create_links_in_string(s)
+        
+    #@+node:ekr.20191229071746.1: *5* tog.create_links_in_string
+    def create_links_in_string(self, s):
+        """
+        Tokenize, parse and create links in the string s.
+        
+        Return (tokens, tree).
+        """
+    #@+node:ekr.20191229071619.1: *5* tog.fstringify_file
+    def fstringify_file(self, filename):
+        """Fstringify the given file."""
+        try:
+            with open(filename, 'r') as f:
+                s = f.read()
+        except Exception as e:
+            g.trace(f"can not open {filename}\n{e}")
+        result_s = self.fstringify_string(s)
+        if not result_s:
+            g.trace(f"did not fstringify {filename}")
+            return
+        try:
+            with open(filename, 'w') as f:
+                f.write(result_s)
+        except Exception as e:
+            g.trace(f"can not write {filename}\n{e}")
+    #@+node:ekr.20191229071718.1: *5* tog.fstringify_string
+    def fstringify_string(self, s):
+        """Return the results of fstingifing string s."""
+    #@+node:ekr.20191113063144.11: *5* tog.report_coverage
+    def report_coverage(self):
+        """Report untested visitors."""
+
+        def key(z):
+            return z.lower()
+
+        covered = sorted(list(self.coverage_set), key=key)
+        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
+        missing = sorted([z for z in visitors if z not in covered], key=key)
+        #
+        # These are not likely ever to be covered.
+        not_covered = ['Interactive', 'Expression', 'FormattedValue']
+        for z in missing:
+            if z in not_covered:
+                missing.remove(z)
+        if 0:
+            print('Covered...\n')
+            g.printObj(covered)
+        if missing:
+            print('Missing...\n')
+            g.printObj(missing)
+        else:
+            print('All visitors covered')
+        print('')
+    #@+node:ekr.20191223052821.1: *4* tog: Passes
     # Called from testing framework.
-    #@+node:ekr.20191113063144.4: *5* tog.create_links (pass 1)
+    #@+node:ekr.20191113063144.6: *5* 01: tog.make_tokens
+    def make_tokens(self, contents, trace_mode=False):
+        """
+        Return a list (not a generator) of Token objects corresponding to the
+        list of 5-tuples generated by tokenize.tokenize.
+        """
+        import io
+        import tokenize
+        
+        def check(contents, tokens):
+            result = ''.join([z.to_string() for z in tokens])
+            ok = result == contents
+            if not ok:
+                print('\nRound-trip check FAILS')
+                print('Contents...\n')
+                g.printObj(contents)
+                print('\nResult...\n')
+                g.printObj(result)
+            return ok
+        try:
+            five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+        except Exception:
+            print('make_tokens: exception in tokenize.tokenize')
+            g.es_exception()
+            return None
+        x = Tokenizer()
+        x.trace_mode = trace_mode
+        tokens = x.create_input_tokens(contents, five_tuples)
+        assert check(contents, tokens)
+        return tokens
+    #@+node:ekr.20191229071141.1: *5* 02: tog.make_tree
+    def make_tree(self, contents):
+        """Pass 02: make the parse tree."""
+        return parse_ast(contents)
+    #@+node:ekr.20191113063144.4: *5* 11: tog.create_links
     def create_links(self, tokens, tree, file_name=''):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -3803,46 +3930,13 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191222082453.1: *5* tog.fstringify (pass 2)
-    def fstringify(self, tokens, tree, file_name):
-        """
-        Convert relevant % operators to fstrings.
-        """
-        # The Fstringify class does all the work.
-        Fstringify().fstringify(tokens, tree, file_name)
-    #@+node:ekr.20191113063144.6: *5* tog.make_tokens (pass 0)
-    def make_tokens(self, contents, trace_mode=False):
-        """
-        Return a list (not a generator) of Token objects corresponding to the
-        list of 5-tuples generated by tokenize.tokenize.
-        """
-        import io
-        import tokenize
-        
-        def check(contents, tokens):
-            result = ''.join([z.to_string() for z in tokens])
-            ok = result == contents
-            if not ok:
-                print('\nRound-trip check FAILS')
-                print('Contents...\n')
-                g.printObj(contents)
-                print('\nResult...\n')
-                g.printObj(result)
-            return ok
-        try:
-            five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
-        except Exception:
-            print('make_tokens: exception in tokenize.tokenize')
-            g.es_exception()
-            return None
-        x = Tokenizer()
-        x.trace_mode = trace_mode
-        tokens = x.create_input_tokens(contents, five_tuples)
-        assert check(contents, tokens)
-        return tokens
-    #@+node:ekr.20191228184647.1: *5* tog.balance_tokens (pass 0)
+    #@+node:ekr.20191228184647.1: *5* 12: tog.balance_tokens
     def balance_tokens(self, tokens):
-        """Find matching paren tokens."""
+        """
+        TOG.balance_tokens.
+        
+        Find matching paren tokens.
+        """
         count, stack = 0, []
         for token in tokens:
             if token.kind == 'op':
@@ -3859,31 +3953,20 @@ class TokenOrderGenerator:
         # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
         if stack:
             g.trace("unmatched '(' at {','.join(stack)}")
-    #@+node:ekr.20191113063144.11: *5* tog.report_coverage
-    def report_coverage(self):
-        """Report untested visitors."""
-
-        def key(z):
-            return z.lower()
-
-        covered = sorted(list(self.coverage_set), key=key)
-        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
-        missing = sorted([z for z in visitors if z not in covered], key=key)
-        #
-        # These are not likely ever to be covered.
-        not_covered = ['Interactive', 'Expression', 'FormattedValue']
-        for z in missing:
-            if z in not_covered:
-                missing.remove(z)
-        if 0:
-            print('Covered...\n')
-            g.printObj(covered)
-        if missing:
-            print('Missing...\n')
-            g.printObj(missing)
-        else:
-            print('All visitors covered')
-        print('')
+    #@+node:ekr.20191229072907.1: *5* 21: tog.reassign_tokens
+    def reassign_tokens(self, tokens, tree):
+        """Reassign links between the given token list and ast-tree."""
+    #@+node:ekr.20191222082453.1: *5* 31: tog.fstringify
+    def fstringify(self, tokens, tree, file_name=''):
+        """
+        TOG.fstringify.
+        
+        Convert relevant % operators to fstrings.
+        
+        This method is a wrapper for unit tests.
+        """
+        # The Fstringify class does all the work.
+        return Fstringify().fstringify(tokens, tree, file_name)
     #@+node:ekr.20191225061516.1: *4* tog: Replacers
     #@+node:ekr.20191224093336.1: *5* tog.match_parens
     def match_parens(self, tokens):
@@ -5378,6 +5461,7 @@ class Fstringify (TokenOrderGenerator):
                 next(self.visitor(tree))
         except StopIteration:
             pass
+        return ''.join(z.to_string() for z in self.tokens)
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring (top level) & helpers
     def make_fstring(self, node):
         """
