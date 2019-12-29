@@ -746,7 +746,7 @@ with open(path, 'r') as f:
     src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
-leoAst.AstFullTraverser().visit(node)
+# leoAst.AstFullTraverser().visit(node)
 s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
 assert s
 s = leoAst.AstFormatter().format(node,level=0)

@@ -1489,7 +1489,8 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20160318094003.1"># Most unit tests are now in leoAst.py itself.</t>
+<t tx="ekr.20160318094003.1"># Most unit tests are now in leoAst.py itself.
+</t>
 <t tx="ekr.20160318094009.1">import leo.core.leoAst as leoAst
 import leo.external.make_stub_files as msf
 import leo.external.py2cs as py2cs
@@ -1505,7 +1506,7 @@ with open(path, 'r') as f:
     src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
-leoAst.AstFullTraverser().visit(node)
+# leoAst.AstFullTraverser().visit(node)
 s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
 assert s
 s = leoAst.AstFormatter().format(node,level=0)
