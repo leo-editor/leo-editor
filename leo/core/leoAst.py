@@ -3128,6 +3128,25 @@ class TestRunner:
         self.update_times('01: ast-tokens', t2 - t1)
     #@-others
    
+#@+node:ekr.20191229083512.1: *3* class TestFstringify
+class TestFstringify (BaseTest):
+    """Tests for the TokenOrderGenerator class."""
+    #@+others
+    #@+node:ekr.20191227052446.84: *4* test_fstringify_with_TOG
+    def test_fstringify_with_TOG(self):
+        
+        if 1:
+            filename = r'c:\test\core\leoAtFile.py'
+            tokens, tree = self.make_file_data(filename)
+        else:
+            filename = '<string>'
+            contents = """\
+    print('xxx %s=%s yyy'%(a * b, 2))
+    print('%s' % func(3))
+    """
+            tokens, tree = self.make_data(contents)
+        self.fstringify(tokens, tree, filename)
+    #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
     """Tests for the TokenOrderGenerator class."""
@@ -3728,20 +3747,6 @@ class TestTOG (BaseTest):
         print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.84: *4* test_fstringify_with_TOG
-    def test_fstringify_with_TOG(self):
-        
-        if 1:
-            filename = r'c:\test\core\leoAtFile.py'
-            tokens, tree = self.make_file_data(filename)
-        else:
-            filename = '<string>'
-            contents = """\
-    print('xxx %s=%s yyy'%(a * b, 2))
-    print('%s' % func(3))
-    """
-            tokens, tree = self.make_data(contents)
-        self.fstringify(tokens, tree, filename)
     #@+node:ekr.20191228193740.1: *4* test_aa && zz
     def test_aaa(self):
         """The first test."""
