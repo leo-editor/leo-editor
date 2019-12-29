@@ -2327,7 +2327,7 @@ class BaseTest (unittest.TestCase):
         if not contents:
             return None, None
         t1 = get_time()
-        self.update_counts('len(contents)', len(contents))
+        self.update_counts('characters', len(contents))
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
         # Create the TOI instance.
@@ -2432,6 +2432,7 @@ class BaseTest (unittest.TestCase):
         # Tokenize.
         tokens = self.toi.make_tokens(contents, trace_mode=trace_mode)
         t2 = get_time()
+        self.update_counts('tokens', len(tokens))
         self.update_times('01: make-tokens', t2-t1)
         return tokens
     #@+node:ekr.20191228102101.1: *5* 02: BaseTest.make_tree
@@ -2454,10 +2455,11 @@ class BaseTest (unittest.TestCase):
         Insert links between corresponding paren tokens.
         """
         t1 = get_time()
-        tree = self.toi.balance_tokens(tokens)
+        count = self.toi.balance_tokens(tokens)
         t2 = get_time()
+        self.update_counts('paren-tokens', count)
         self.update_times('03: balance-tokens', t2-t1)
-        return tree
+        return count
     #@+node:ekr.20191228101437.1: *5* 11: BaseTest.create_links
     def create_links(self, tokens, tree, filename='unit test'):
         """
@@ -3114,7 +3116,7 @@ class TestRunner:
         for key in sorted(self.times):
             t = self.times.get(key)
             key2 = key[3:]
-            print(f"{key2:>16}: {t:5.2f} sec.")
+            print(f"{key2:>16}: {t:6.3f} sec.")
     #@+node:ekr.20191226063942.1: *5* TR.run_ast_tokens
     def run_ast_tokens(self):
         # pylint: disable=import-error
@@ -3777,8 +3779,9 @@ b = 2 + 3
         # self.dump_tree(tree)
         tot = TokenOrderTraverser()
         t1 = get_time()
-        tot.traverse(tree)
+        n_nodes = tot.traverse(tree)
         t2 = get_time()
+        self.update_counts('nodes', n_nodes)
         self.update_times('50: TOT.traverse', t2 - t1)
         if 1:
             t1 = get_time()
@@ -3975,6 +3978,7 @@ class TokenOrderGenerator:
         # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
         if stack:
             g.trace("unmatched '(' at {','.join(stack)}")
+        return count
     #@+node:ekr.20191229072907.1: *5* 21: tog.reassign_tokens (to do)
     def reassign_tokens(self, tokens, tree):
         """Reassign links between the given token list and ast-tree."""
@@ -5945,21 +5949,23 @@ class TokenOrderTraverser:
         Call visit, in token order, for all nodes in tree.
         
         Recursion is not allowed.
-        """
         
-        trace = False
+        The code follows p.moveToThreadNext exactly.
+        """
         
         def has_next(i, node, stack):
             """Return True if stack[i] is a valid child of node.parent."""
-            if trace: g.trace(node.__class__.__name__, stack)
+            # g.trace(node.__class__.__name__, stack)
             parent = node.parent
             return parent and parent.children and i < len(parent.children)
             
+        # Update stats
+        self.last_node_index = -1  # For visit
         # The stack contains child indices.
         node, stack = tree, [0]
         seen = set()
         while node and stack:
-            if trace: g.trace(
+            if False: g.trace(
                 f"{node.node_index:>3} "
                 f"{node.__class__.__name__:<12} {stack}")
             # Visit the node.
@@ -5972,15 +5978,12 @@ class TokenOrderTraverser:
                 # Move to the first child.
                 stack.append(0)
                 node = children[0]
-                if trace: g.trace(' child:', node.__class__.__name__, stack)
+                # g.trace(' child:', node.__class__.__name__, stack)
                 continue
             # elif p.hasNext(): p.moveToNext()
             stack[-1] += 1
             i = stack[-1]
             if has_next(i, node, stack):
-            ### parent = node.parent
-            ### if parent and parent.children and i < len(parent.children):
-                # Move to the next sibling.
                 node = node.parent.children[i]
                 continue
             # else...
@@ -5993,24 +5996,24 @@ class TokenOrderTraverser:
                 stack[-1] += 1
                 i = stack[-1]
                 if has_next(i, node, stack):
-                ### parent = node.parent
-                ### if parent and parent.children and i < len(parent.children):
-                    # p.moveToNext()
                     # Move to the next sibling.
                     node = node.parent.children[i]
                     break  # Found.
                 # p.moveToParent()
                 node = node.parent
                 stack.pop()
-                if trace: g.trace('parent:', node.__class__.__name__, stack)
+                # g.trace('parent:', node.__class__.__name__, stack)
             # not found.
             else:
                 break
-        if trace:
-            g.trace('done', node and node.__class__.__name__, stack)
-        print('')
+        # g.trace('done', node and node.__class__.__name__, stack)
+        return self.last_node_index
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
+
+        self.last_node_index += 1
+        assert self.last_node_index == node.node_index, (
+            self.last_node_index, node.node_index)
         if 0:
             g.trace(node.node_index, node.__class__.__name__)
     #@-others
