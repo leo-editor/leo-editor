@@ -3241,6 +3241,7 @@ class BaseTest (unittest.TestCase):
     def dump_stats(self):
         """Show all calculated statistics."""
         if self.counts or self.times:
+            print('')
             self.dump_counts()
             self.dump_times()
             print('')
@@ -3335,7 +3336,7 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         toj.fstringify(tokens, tree, file_name=filename)
         t2 = get_time()
-        self.update_times('pass 3:    fstringify', t2 - t1)
+        self.update_times('pass 3:      fstringify', t2 - t1)
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -4566,7 +4567,16 @@ class TestTOG (BaseTest):
     """
             tokens, tree = self.make_data(contents)
         self.fstringify(tokens, tree, filename)
+    #@+node:ekr.20191228193740.1: *4* test_aa && zz
+    def test_aaa(self):
+        """The first test."""
+        g.total_time = get_time()
         
+    def test_zzz(self):
+        """The last test."""
+        t2 = get_time()
+        self.update_times('TOTAL', t2 - g.total_time)
+        self.dump_stats()
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT (BaseTest):
@@ -6965,9 +6975,8 @@ class Tokenizer:
     #@-others
 #@-others
 g = LeoGlobals()
-###
-    # if __name__ == '__main__':
-        # unittest.main()
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
