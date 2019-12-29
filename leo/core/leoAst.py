@@ -3186,8 +3186,8 @@ class BaseTest (unittest.TestCase):
         contents = contents.lstrip('\\\n')
         if not contents:
             return None, None
-        tag = 'len(contents)'
-        self.counts[tag] = self.counts.get(tag, 0) + len(contents)
+        t1 = get_time()
+        self.update_counts('len(contents)', len(contents))
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
         # Create the TOJ.
@@ -3199,6 +3199,8 @@ class BaseTest (unittest.TestCase):
         self.balance_tokens(tokens)
         # Pass 1: create the links.
         self.create_links(tokens, tree)
+        t2 = get_time()
+        self.update_times('TOTAL', t2 - t1)
         return tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
@@ -3251,6 +3253,12 @@ class BaseTest (unittest.TestCase):
     def dump_times(self):
         """Show all calculated times."""
         for key in sorted(self.times):
+            if key != 'TOTAL':
+                t = self.times.get(key)
+                print(f"{key:>25}: {t:6.2f} sec.")
+        # Print total last.
+        if 'TOTAL' in self.times:
+            key = 'TOTAL'
             t = self.times.get(key)
             print(f"{key:>25}: {t:6.2f} sec.")
     #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
