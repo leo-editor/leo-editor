@@ -375,6 +375,47 @@ def truncate(s, n):
     else:
         s = repr(s)
     return s if len(s) <  n else s[:n-3] + '...'
+#@+node:ekr.20191229020834.1: *3* function: unit_test
+def unit_test(raise_on_fail=True):
+    """
+    Called from unitTest.leo.
+
+    Run basic unit tests for this file.
+    """
+    import _ast
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite',  # Not necessary.
+        'PyCF_ONLY_AST',  # A constant,
+        'AST',  # The base class,
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classe
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    table = (
+        AstFullTraverser,
+        AstFormatter,
+        AstPatternFormatter,
+        HTMLReportTraverser,
+    )
+    for class_ in table:
+        traverser = class_()
+        errors, nodes, ops = 0, 0, 0
+        for z in aList:
+            if hasattr(traverser, 'do_'+z):
+                nodes += 1
+            elif _op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
+    s = f"{nodes} node types, {ops} op types, {errors} errors"
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@+node:ekr.20191227170512.1: ** Legacy classes
 #@+node:ekr.20141012064706.18399: *3*  class AstFormatter
 class AstFormatter:
