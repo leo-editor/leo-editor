@@ -5436,9 +5436,12 @@ class Fstringify (TokenOrderGenerator):
             line = getattr(token, 'line', '<unknown>')
             n_specs, n_values = len(specs), len(values)
             print(
-                f"f-string mismatch at line {line_number}: "
-                f"{n_specs} specs, {n_values} values\n"
-                f"line: {line!r}")
+                f"\n"
+                f"f-string mismatch: "
+                f"{n_values} value{g.plural(n_values)}, "
+                f"{n_specs} spec{g.plural(n_specs)}\n"
+                f"      line number: {line_number}\n"
+                f"             line: {line.strip()!r}")
             if 0:
                 specs_s = ', '.join(m.group(0) for m in specs)
                 values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]"
@@ -5456,7 +5459,7 @@ class Fstringify (TokenOrderGenerator):
         print(
             f"\n"
             f"line number: {line_number}\n"
-            f"entire line: {line!r}\n"
+            f"       line: {line!r}\n"
             f"       from: {lt_s} % {rt_s}\n"
             f"         to: {result}")
         # Adjust the tree and the token list.
