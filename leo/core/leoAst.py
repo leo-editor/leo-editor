@@ -5419,11 +5419,17 @@ class Fstringify (TokenOrderGenerator):
         if not values:
             return
         if trace:
+            token0 = node.left.token_list[0]
+            line_number = token0.line_number
             tokens = []
             for aList in values:
-                tokens.append(''.join(z for z in aList))
+                tokens.append(''.join(z.to_string() for z in aList))
+            rt_s = ''.join(tokens)
             print('')
-            g.trace('  Entry:', lt_s, ''.join(tokens))
+            g.trace(
+                f"   {line_number:>3}: {token0.line.strip()!r}")
+            g.trace(
+                f"{' ':9}{lt_s} % {rt_s}")
             # print(f"right tree...\n{brief_dump(node.right)}")
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
