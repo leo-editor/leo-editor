@@ -5419,7 +5419,7 @@ class Fstringify (TokenOrderGenerator):
         """
         trace = False
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        lt_s = node.left.s ### ''.join([z.to_string() for z in node.left.token_list])
+        lt_s = node.left.s
         if trace:
             g.trace('...\n')
             print(f" left tree...\n{brief_dump(node.left)}")
@@ -5532,20 +5532,31 @@ class Fstringify (TokenOrderGenerator):
         token1 = aList[1]
         token_last = aList[-1]
         for token in token0, token1, token_last:
-            if token.kind != 'string':
-                g.trace(f"unexpected token: {token!r}")
+            # These are the only kinds of tokens we expect to generate.
+            ok = (
+                token.kind == 'string' or
+                token.kind == 'op' and token.value in '{}')
+            if not ok:
+                g.trace(
+                    f"unexpected token: {token.kind} {token.value}\n"
+                    f"string_val: {string_val!r}\n"
+                    f"line: {token0.line!r}")
+                g.printObj(aList, tag = 'aList')
                 return False
         if token0.value != 'f':
-            g.trace('token[0] error!', repr(token0))
+            g.trace('token[0]  error:', repr(token0))
             return False
-        val1 = token1.value and token1.value[0]
-        if delim != val1:
-            g.trace('token[1] error!', delim, val1, repr(token1))
-            return False
-        val_last = token_last.value and token_last.value[-1]
-        if delim != val_last:
-            g.trace('token[-1] error!', delim, val_last, repr(token_last))
-            return False
+        if 1: # These checks are important.
+            val1 = token1.value and token1.value[0]
+            if delim != val1:
+                g.trace('token[1]  error:', delim, val1, repr(token1))
+                g.printObj(aList, tag = 'aList')
+                return False
+            val_last = token_last.value and token_last.value[-1]
+            if delim != val_last:
+                g.trace('token[-1] error:', delim, val_last, repr(token_last))
+                g.printObj(aList, tag = 'aList')
+                return False
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
         token1.value = delim + token1.value[1:]
