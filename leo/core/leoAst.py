@@ -5844,6 +5844,9 @@ class TokenOrderInjector (TokenOrderGenerator):
         if not result_s:
             g.trace(f"did not fstringify {filename}")
             return
+        if s == result_s:
+            g.trace(f"no change: {filename}")
+            return
         try:
             with open(filename, 'w') as f:
                 f.write(result_s)
