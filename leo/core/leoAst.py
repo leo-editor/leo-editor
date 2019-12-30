@@ -5410,27 +5410,22 @@ class Fstringify (TokenOrderGenerator):
         Convert this tree to an f-string, if possible,
         replacing node's entire tree with a new ast.Str node.
         """
-        trace = True
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        # print(f"right tree...\n{brief_dump(node.right)}")
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = ''.join(z.to_string() for z in node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         if not values:
             return
-        if trace:
-            token0 = node.left.token_list[0]
-            line_number = token0.line_number
-            tokens = []
-            for aList in values:
-                tokens.append(''.join(z.to_string() for z in aList))
-            rt_s = ''.join(tokens)
-            print('')
-            g.trace(
-                f"   {line_number:>3}: {token0.line.strip()!r}")
-            g.trace(
-                f"{' ':9}{lt_s} % {rt_s}")
-            # print(f"right tree...\n{brief_dump(node.right)}")
+        # Compute rt_s, line and line_number for later.
+        token0 = node.left.token_list[0]
+        line_number = token0.line_number
+        line = token0.line.strip()
+        tokens = []
+        for aList in values:
+            tokens.append(''.join(z.to_string() for z in aList))
+        rt_s = ''.join(tokens)
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):
@@ -5451,14 +5446,16 @@ class Fstringify (TokenOrderGenerator):
             return
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
-        if trace:
-            # g.printObj(results)
-            g.trace('Results:', ''.join(z.to_string() for z in results))
         result = self.compute_result(lt_s, results)
         if not result:
             return
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
+        # Show the results
+        print('')
+        print(f"line {line_number:>5}: {line!r}")
+        print(f"      from: {lt_s} % {rt_s}")
+        print(f"        to: {result}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
