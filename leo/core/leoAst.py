@@ -2326,12 +2326,16 @@ class BaseTest (unittest.TestCase):
         # Create the TOI instance.
         self.toi = TokenOrderInjector()
         self.toi.trace_mode = trace_mode
-        # Pass 0: create the tokens and the tree.
+        # Pass 0.1: create the tokens.
         tokens = self.make_tokens(contents, trace_mode=False)
+        # Pass 0.2: make the tree.
         tree = self.make_tree(contents)
+        # Pass 0.3: balance the tokens.
         self.balance_tokens(tokens)
-        # Pass 1: create the links.
+        # Pass 1.1: create the links.
         self.create_links(tokens, tree)
+        # Pass 1.2: reassign paren tokens.
+        self.reassign_tokens(tokens, tree)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
         return tokens, tree
@@ -2418,7 +2422,7 @@ class BaseTest (unittest.TestCase):
         old_t = self.times.get(key, 0.0)
         self.times [key] = old_t + t
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
-    #@+node:ekr.20191228095945.11: *5* 01: BaseTest.make_tokens
+    #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
     def make_tokens(self, contents, trace_mode=False):
         """BaseTest.make_tokens. Make tokens from contents."""
         t1 = get_time()
@@ -2428,7 +2432,7 @@ class BaseTest (unittest.TestCase):
         self.update_counts('tokens', len(tokens))
         self.update_times('01: make-tokens', t2-t1)
         return tokens
-    #@+node:ekr.20191228102101.1: *5* 02: BaseTest.make_tree
+    #@+node:ekr.20191228102101.1: *5* 0.2: BaseTest.make_tree
     def make_tree(self, contents):
         """
         BaseTest.make_tree.
@@ -2440,7 +2444,7 @@ class BaseTest (unittest.TestCase):
         t2 = get_time()
         self.update_times('02: parse_ast', t2-t1)
         return tree
-    #@+node:ekr.20191228185201.1: *5* 03: BaseTest.balance_tokens
+    #@+node:ekr.20191228185201.1: *5* 0.3: BaseTest.balance_tokens
     def balance_tokens(self, tokens):
         """
         BastTest.balance_tokens.
@@ -2453,7 +2457,7 @@ class BaseTest (unittest.TestCase):
         self.update_counts('paren-tokens', count)
         self.update_times('03: balance-tokens', t2-t1)
         return count
-    #@+node:ekr.20191228101437.1: *5* 11: BaseTest.create_links
+    #@+node:ekr.20191228101437.1: *5* 1.1: BaseTest.create_links
     def create_links(self, tokens, tree, filename='unit test'):
         """
         BaseTest.create_links.
@@ -2475,7 +2479,7 @@ class BaseTest (unittest.TestCase):
             print(e)
             g.es_exception()
             raise
-    #@+node:ekr.20191229065358.1: *5* 21: BaseTest.reassign_tokens
+    #@+node:ekr.20191229065358.1: *5* 1.2: BaseTest.reassign_tokens
     def reassign_tokens(self, tokens, tree, filename='unit test'):
         """
         BaseTest.reassign_tokens.
@@ -2487,8 +2491,8 @@ class BaseTest (unittest.TestCase):
         t1 = get_time()
         toi.reassign_tokens(tokens, tree)
         t2 = get_time()
-        self.update_times('21: reassign-links', t2 - t1)
-    #@+node:ekr.20191228095945.10: *5* 31: BaseTest.fstringify
+        self.update_times('12: reassign-links', t2 - t1)
+    #@+node:ekr.20191228095945.10: *5* 3.1: BaseTest.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
         BaseTest.fstringify.
@@ -3128,20 +3132,32 @@ class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
     #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
-    def test_fstringify_leo_at_file(self):
+    def test_fstringify_leo_app(self):
         
         filename = r'c:\test\core\leoApp.py'
         tokens, tree = self.make_file_data(filename)
         self.fstringify(tokens, tree, filename)
-    #@+node:ekr.20191230150653.1: *4* test_call
+        self.dump_times()
+    #@+node:ekr.20191230150653.1: *4* test_fstringify_with_call
     def test_fstringify_with_call(self):
         
-        contents = "name='uninverted %s' % d.name()"
+        contents = "'%s' % d()" # d.name()
         tokens, tree = self.make_data(contents)
-        # self.dump_tokens(tokens)
+        self.dump_contents(contents)
+        self.dump_tokens(tokens)
         self.dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
-        # self.dump_tree(tree)
+        # self.dump_times()
+    #@+node:ekr.20191230183652.1: *4* test_fstringify_with_parens
+    def test_fstringify_with_parens(self):
+
+        contents = "print('%20s' % (ivar), val)"
+        tokens, tree = self.make_data(contents)
+        self.dump_contents(contents)
+        self.dump_tokens(tokens)
+        self.dump_tree(tree)
+        self.fstringify(tokens, tree, '<string>')
+        # self.dump_times()
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -3798,7 +3814,7 @@ class TokenOrderGenerator:
     #@+others
     #@+node:ekr.20191223052821.1: *4* tog: Passes
     # Called from testing framework.
-    #@+node:ekr.20191113063144.6: *5* 01: tog.make_tokens
+    #@+node:ekr.20191113063144.6: *5* 0.1: tog.make_tokens
     def make_tokens(self, contents, trace_mode=False):
         """
         Return a list (not a generator) of Token objects corresponding to the
@@ -3828,11 +3844,35 @@ class TokenOrderGenerator:
         tokens = x.create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
-    #@+node:ekr.20191229071141.1: *5* 02: tog.make_tree
+    #@+node:ekr.20191229071141.1: *5* 0.2: tog.make_tree
     def make_tree(self, contents):
         """Pass 02: make the parse tree."""
         return parse_ast(contents)
-    #@+node:ekr.20191113063144.4: *5* 11: tog.create_links
+    #@+node:ekr.20191228184647.1: *5* 0.3: tog.balance_tokens
+    def balance_tokens(self, tokens):
+        """
+        TOG.balance_tokens.
+        
+        Find matching paren tokens.
+        """
+        count, stack = 0, []
+        for token in tokens:
+            if token.kind == 'op':
+                if token.value == '(':
+                    count += 1
+                    stack.append(token.index)
+                if token.value == ')':
+                    if stack:
+                        index = stack.pop()
+                        tokens[index].matching_paren = token.index
+                        tokens[token.index].matching_paren = index
+                    else:
+                        g.trace(f"unmatched ')' at index {token.index}")
+        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
+        if stack:
+            g.trace("unmatched '(' at {','.join(stack)}")
+        return count
+    #@+node:ekr.20191113063144.4: *5* 1.1: tog.create_links
     def create_links(self, tokens, tree, file_name=''):
         """
         Verify that traversing the given ast tree generates exactly the given
@@ -3869,34 +3909,22 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191228184647.1: *5* 12: tog.balance_tokens
-    def balance_tokens(self, tokens):
-        """
-        TOG.balance_tokens.
-        
-        Find matching paren tokens.
-        """
-        count, stack = 0, []
-        for token in tokens:
-            if token.kind == 'op':
-                if token.value == '(':
-                    count += 1
-                    stack.append(token.index)
-                if token.value == ')':
-                    if stack:
-                        index = stack.pop()
-                        tokens[index].matching_paren = token.index
-                        tokens[token.index].matching_paren = index
-                    else:
-                        g.trace(f"unmatched ')' at index {token.index}")
-        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
-        if stack:
-            g.trace("unmatched '(' at {','.join(stack)}")
-        return count
-    #@+node:ekr.20191229072907.1: *5* 21: tog.reassign_tokens (to do)
+    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens
     def reassign_tokens(self, tokens, tree):
-        """Reassign links between the given token list and ast-tree."""
-    #@+node:ekr.20191222082453.1: *5* 31: tog.fstringify
+        """
+        Reassign links between the given token list and ast-tree.
+        
+        For now, we only need reassign parens.
+        """
+        g.trace()
+        last_sig_token = None
+        for token in tokens:
+            if self.is_significant_token(token):
+                assert token.node, repr(token)
+                last_sig_token = token
+            elif token.kind == 'op' and token.value in '()':
+                token.node = last_sig_token.node
+    #@+node:ekr.20191222082453.1: *5* 3.1: tog.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
         TOG.fstringify.
@@ -3908,12 +3936,14 @@ class TokenOrderGenerator:
         # The Fstringify class does all the work.
         return Fstringify().fstringify(tokens, tree, filename)
     #@+node:ekr.20191225061516.1: *4* tog: Replacers
-    #@+node:ekr.20191224093336.1: *5* tog.match_parens
+    #@+node:ekr.20191224093336.1: *5* tog.match_parens (hack)
     def match_parens(self, tokens):
         """
         Extend the tokens in the token list to include unmatched trailing
         closing parens.
         """
+        if True:
+            return tokens
         if not tokens:
             return tokens
         # Calculate paren level...
@@ -3935,7 +3965,9 @@ class TokenOrderGenerator:
                 i += 1
             tokens.extend(self.tokens[i1 + 1 : i + 1])
         if level != 0:
-            g.trace('FAIL:', ''.join(z.to_string() for z in tokens))
+            print('')
+            g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
+            print('')
         return tokens
     #@+node:ekr.20191225055616.1: *5* tog.replace_node
     def replace_node(self, new_node, old_node):
@@ -5871,11 +5903,12 @@ class TokenOrderInjector (TokenOrderGenerator):
     #@+node:ekr.20191229071718.1: *5* tog.fstringify_string
     def fstringify_string(self, s, filename=''):
         """Return the results of fstingifing string s."""
-        tokens = self.make_tokens(s)
-        tree = self.make_tree(s)
-        list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
-        result_s = self.fstringify(tokens, tree)
+        tokens = self.make_tokens(s)  # Pass 0.1
+        tree = self.make_tree(s)      # Pass 0.2
+        self.balance_tokens(tokens)   # Pass 0.3
+        list(self.create_links(tokens, tree))  # Pass 1.1
+        self.reassign_tokens(tokens, tree)     # Pass 2.1.
+        result_s = self.fstringify(tokens, tree)  # Pass 3.1
         return result_s
     #@+node:ekr.20191113063144.11: *5* tog.report_coverage
     def report_coverage(self):
@@ -6081,10 +6114,14 @@ class Token:
         if brief:
             return (
                 f"{self.index:>3} line: {self.line_number:<2} "
-                f"{self.kind:>11} {self.show_val(80)}")
+                f"{self.kind:>11} {self.show_val(100)}")
         # Let block.
         children = getattr(self.node, 'children', [])
-        node_id = obj_id(self.node) if self.node else ''
+        if self.node:
+            node_id = getattr(self.node, 'node_index', obj_id(self.node))
+        else:
+            node_id = ''
+        ### node_id = obj_id(self.node) if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
         parent = getattr(self.node, 'parent', None)
         parent_class = parent.__class__.__name__ if parent else ''
