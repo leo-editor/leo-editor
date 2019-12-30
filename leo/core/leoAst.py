@@ -5452,10 +5452,11 @@ class Fstringify (TokenOrderGenerator):
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
         # Show the results
-        print('')
-        print(f"line {line_number:>5}: {line!r}")
-        print(f"      from: {lt_s} % {rt_s}")
-        print(f"        to: {result}")
+        print(
+            f"\n"
+            f"line {line_number:>5}: {line!r}\n"
+            f"      from: {lt_s} % {rt_s}\n"
+            f"        to: {result}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
