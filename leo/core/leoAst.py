@@ -368,13 +368,6 @@ def parse_ast(s, headline=None, show_time=False):
         oops('Unexpected Exception')
         g.es_exception()
     return None
-#@+node:ekr.20191113205051.1: *3* function: truncate
-def truncate(s, n):
-    if isinstance(s, str):
-        s = s.replace('\n','<NL>')
-    else:
-        s = repr(s)
-    return s if len(s) <  n else s[:n-3] + '...'
 #@+node:ekr.20191229020834.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """
@@ -2626,7 +2619,7 @@ class AstDumper:
             val = f"ops={ops}"
         else:
             val = ''
-        return truncate(val, truncate_n)
+        return g.truncate(val, truncate_n)
 
     #@+node:ekr.20191114054726.1: *5* dumper.show_line_range
     def show_line_range(self, node):
@@ -2648,10 +2641,10 @@ class AstDumper:
         result = []
         for z in token_list:
             if z.kind == 'comment':
-                val = truncate(z.value,10) # Short is good.
+                val = g.truncate(z.value,10) # Short is good.
                 result.append(f"{z.kind}({val})")
             elif z.kind == 'name':
-                val = truncate(z.value,20)
+                val = g.truncate(z.value,20)
                 result.append(f"{z.kind}({val})")
             elif z.kind == 'newline':
                 result.append(f"{z.kind} ({z.line_number}:{len(z.line)})")
@@ -2660,7 +2653,7 @@ class AstDumper:
             elif z.kind == 'op':
                 result.append(f"{z.kind}{z.value}")
             elif z.kind == 'string':
-                val = truncate(z.value,30)
+                val = g.truncate(z.value,30)
                 result.append(f"{z.kind}({val})")
             elif z.kind == 'ws':
                 result.append(f"{z.kind}({len(z.value)})")
@@ -5417,19 +5410,21 @@ class Fstringify (TokenOrderGenerator):
         Convert this tree to an f-string, if possible,
         replacing node's entire tree with a new ast.Str node.
         """
-        trace = False
+        trace = True
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = ''.join(z.to_string() for z in node.left.token_list)
-        if trace:
-            g.trace('...\n')
-            print(f" left tree...\n{brief_dump(node.left)}")
-            print(f"right tree...\n{brief_dump(node.right)}")
-            g.trace(lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         if not values:
             return
+        if trace:
+            tokens = []
+            for aList in values:
+                tokens.append(''.join(z for z in aList))
+            print('')
+            g.trace('  Entry:', lt_s, ''.join(tokens))
+            # print(f"right tree...\n{brief_dump(node.right)}")
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):
@@ -5451,8 +5446,8 @@ class Fstringify (TokenOrderGenerator):
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
         if trace:
-            g.printObj(results)
-            g.trace(''.join(z.to_string() for z in results))
+            # g.printObj(results)
+            g.trace('Results:', ''.join(z.to_string() for z in results))
         result = self.compute_result(lt_s, results)
         if not result:
             return
@@ -6111,9 +6106,9 @@ class Token:
         elif self.kind == 'string':
             # Important: don't add a repr for 'string' tokens.
             # repr just adds another layer of confusion.
-            val = truncate(self.value, truncate_n)
+            val = g.truncate(self.value, truncate_n)
         else:
-            val = truncate(repr(self.value), truncate_n)
+            val = g.truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20191110165235.1: *3* class Tokenizer
@@ -6205,7 +6200,7 @@ class Tokenizer:
             if not self.trace_mode:
                 return
             show_header()
-            val_s = truncate(val, 28)
+            val_s = g.truncate(val, 28)
             if kind != 'string':
                 val_s = repr(val_s)
             print(
