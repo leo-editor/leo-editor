@@ -5434,11 +5434,13 @@ class Fstringify (TokenOrderGenerator):
         if len(values) != len(specs):
             token_list = getattr(node.left, 'token_list', None)
             token = token_list and token_list[0]
-            line = getattr(token, 'line_number', '<unknown>')
+            line_number = getattr(token, 'line_number', '<unknown>')
+            line = getattr(token, 'line', '<unknown>')
             n_specs, n_values = len(specs), len(values)
             print(
-                f"f-string mismatch at line {line}: "
-                f"{n_specs} specs, {n_values} values")
+                f"f-string mismatch at line {line_number}: "
+                f"{n_specs} specs, {n_values} values\n"
+                f"line: {line!r}")
             if 0:
                 specs_s = ', '.join(m.group(0) for m in specs)
                 values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]"
