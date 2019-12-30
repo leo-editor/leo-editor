@@ -3802,86 +3802,6 @@ class TokenOrderGenerator:
     trace_mode = False
 
     #@+others
-    #@+node:ekr.20191229071517.1: *4* tog: Entries
-    #@+node:ekr.20191229071733.1: *5* tog.create_links_in_file
-    def create_links_in_file(self, filename):
-        """
-        Create the tokens and ast tree for the given file.
-        
-        Return (tokens, tree).
-        """
-        try:
-            with open(filename, 'r') as f:
-                s = f.read()
-        except Exception as e:
-            g.trace(f"can not open {filename}...\n{e}")
-        tokens, tree = self.create_links_in_string(s, filename=filename)
-        return tokens, tree
-        
-    #@+node:ekr.20191229071746.1: *5* tog.create_links_in_string
-    def create_links_in_string(self, s, filename=''):
-        """
-        Tokenize, parse and create links in the string s.
-        
-        Return (tokens, tree).
-        """
-        self.filename = filename
-        tokens = self.make_tokens(s)
-        tree = self.make_tree(s)
-        self.create_links(tokens, tree)
-        self.balance_tokens(tokens)
-        return tokens, tree
-    #@+node:ekr.20191229071619.1: *5* tog.fstringify_file
-    def fstringify_file(self, filename):
-        """Fstringify the given file."""
-        try:
-            with open(filename, 'r') as f:
-                s = f.read()
-        except Exception as e:
-            g.trace(f"can not open {filename}\n{e}")
-        result_s = self.fstringify_string(s)
-        if not result_s:
-            g.trace(f"did not fstringify {filename}")
-            return
-        try:
-            with open(filename, 'w') as f:
-                f.write(result_s)
-        except Exception as e:
-            g.trace(f"can not write {filename}\n{e}")
-    #@+node:ekr.20191229071718.1: *5* tog.fstringify_string
-    def fstringify_string(self, s, filename=''):
-        """Return the results of fstingifing string s."""
-        tokens = self.make_tokens(s)
-        tree = self.make_tree(s)
-        self.create_links(tokens, tree)
-        self.balance_tokens(tokens)
-        result_s = self.fstringify(tokens, tree)
-        return result_s
-    #@+node:ekr.20191113063144.11: *5* tog.report_coverage
-    def report_coverage(self):
-        """Report untested visitors."""
-
-        def key(z):
-            return z.lower()
-
-        covered = sorted(list(self.coverage_set), key=key)
-        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
-        missing = sorted([z for z in visitors if z not in covered], key=key)
-        #
-        # These are not likely ever to be covered.
-        not_covered = ['Interactive', 'Expression', 'FormattedValue']
-        for z in missing:
-            if z in not_covered:
-                missing.remove(z)
-        if 0:
-            print('Covered...\n')
-            g.printObj(covered)
-        if missing:
-            print('Missing...\n')
-            g.printObj(missing)
-        else:
-            print('All visitors covered')
-        print('')
     #@+node:ekr.20191223052821.1: *4* tog: Passes
     # Called from testing framework.
     #@+node:ekr.20191113063144.6: *5* 01: tog.make_tokens
@@ -4113,7 +4033,7 @@ class TokenOrderGenerator:
             # Second, try the most common nodes w/o token_lists:
             if isinstance(node, ast.Call):
                 node = node.func
-            elif isinstance(node. ast.Tuple):
+            elif isinstance(node, ast.Tuple):
                 node = node.elts
             # Finally, try all other nodes.
             else:
@@ -5499,7 +5419,7 @@ class Fstringify (TokenOrderGenerator):
         """
         trace = False
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        lt_s = ''.join([z.to_string() for z in node.left.token_list])
+        lt_s = node.left.s ### ''.join([z.to_string() for z in node.left.token_list])
         if trace:
             g.trace('...\n')
             print(f" left tree...\n{brief_dump(node.left)}")
@@ -5866,7 +5786,7 @@ class TokenOrderInjector (TokenOrderGenerator):
     A class that injects data into tokens and ast nodes.
     """
     #@+others
-    #@+node:ekr.20191113054550.1: *4* to_inject.begin_visitor
+    #@+node:ekr.20191113054550.1: *4* toi.begin_visitor
     def begin_visitor(self, node):
         """
         TokenOrderInjector.begin_visitor.
@@ -5884,6 +5804,86 @@ class TokenOrderInjector (TokenOrderGenerator):
         #
         # *Now* update self.node, etc.
         super().begin_visitor(node)
+    #@+node:ekr.20191229071517.1: *4* toi: Entries
+    #@+node:ekr.20191229071733.1: *5* tog.create_links_in_file
+    def create_links_in_file(self, filename):
+        """
+        Create the tokens and ast tree for the given file.
+        
+        Return (tokens, tree).
+        """
+        try:
+            with open(filename, 'r') as f:
+                s = f.read()
+        except Exception as e:
+            g.trace(f"can not open {filename}...\n{e}")
+        tokens, tree = self.create_links_in_string(s, filename=filename)
+        return tokens, tree
+        
+    #@+node:ekr.20191229071746.1: *5* tog.create_links_in_string
+    def create_links_in_string(self, s, filename=''):
+        """
+        Tokenize, parse and create links in the string s.
+        
+        Return (tokens, tree).
+        """
+        self.filename = filename
+        tokens = self.make_tokens(s)
+        tree = self.make_tree(s)
+        self.create_links(tokens, tree)
+        self.balance_tokens(tokens)
+        return tokens, tree
+    #@+node:ekr.20191229071619.1: *5* tog.fstringify_file
+    def fstringify_file(self, filename):
+        """Fstringify the given file."""
+        try:
+            with open(filename, 'r') as f:
+                s = f.read()
+        except Exception as e:
+            g.trace(f"can not open {filename}\n{e}")
+        result_s = self.fstringify_string(s)
+        if not result_s:
+            g.trace(f"did not fstringify {filename}")
+            return
+        try:
+            with open(filename, 'w') as f:
+                f.write(result_s)
+        except Exception as e:
+            g.trace(f"can not write {filename}\n{e}")
+    #@+node:ekr.20191229071718.1: *5* tog.fstringify_string
+    def fstringify_string(self, s, filename=''):
+        """Return the results of fstingifing string s."""
+        tokens = self.make_tokens(s)
+        tree = self.make_tree(s)
+        self.create_links(tokens, tree)
+        self.balance_tokens(tokens)
+        result_s = self.fstringify(tokens, tree)
+        return result_s
+    #@+node:ekr.20191113063144.11: *5* tog.report_coverage
+    def report_coverage(self):
+        """Report untested visitors."""
+
+        def key(z):
+            return z.lower()
+
+        covered = sorted(list(self.coverage_set), key=key)
+        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
+        missing = sorted([z for z in visitors if z not in covered], key=key)
+        #
+        # These are not likely ever to be covered.
+        not_covered = ['Interactive', 'Expression', 'FormattedValue']
+        for z in missing:
+            if z in not_covered:
+                missing.remove(z)
+        if 0:
+            print('Covered...\n')
+            g.printObj(covered)
+        if missing:
+            print('Missing...\n')
+            g.printObj(missing)
+        else:
+            print('All visitors covered')
+        print('')
     #@-others
 #@+node:ekr.20191121122230.1: *3* class TokenOrderNodeGenerator (TOG)
 class TokenOrderNodeGenerator(TokenOrderGenerator):
