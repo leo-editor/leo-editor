@@ -5419,7 +5419,8 @@ class Fstringify (TokenOrderGenerator):
         """
         trace = False
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        lt_s = node.left.s
+        # Careful: use the tokens, not Str.s.  This preserves spelling.
+        lt_s = ''.join(z.to_string() for z in node.left.token_list)
         if trace:
             g.trace('...\n')
             print(f" left tree...\n{brief_dump(node.left)}")
@@ -5543,20 +5544,20 @@ class Fstringify (TokenOrderGenerator):
                     f"line: {token0.line!r}")
                 g.printObj(aList, tag = 'aList')
                 return False
+        # These checks are important...
         if token0.value != 'f':
             g.trace('token[0]  error:', repr(token0))
             return False
-        if 1: # These checks are important.
-            val1 = token1.value and token1.value[0]
-            if delim != val1:
-                g.trace('token[1]  error:', delim, val1, repr(token1))
-                g.printObj(aList, tag = 'aList')
-                return False
-            val_last = token_last.value and token_last.value[-1]
-            if delim != val_last:
-                g.trace('token[-1] error:', delim, val_last, repr(token_last))
-                g.printObj(aList, tag = 'aList')
-                return False
+        val1 = token1.value and token1.value[0]
+        if delim != val1:
+            g.trace('token[1]  error:', delim, val1, repr(token1))
+            g.printObj(aList, tag = 'aList')
+            return False
+        val_last = token_last.value and token_last.value[-1]
+        if delim != val_last:
+            g.trace('token[-1] error:', delim, val_last, repr(token_last))
+            g.printObj(aList, tag = 'aList')
+            return False
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
         token1.value = delim + token1.value[1:]
