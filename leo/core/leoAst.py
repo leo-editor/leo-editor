@@ -5686,15 +5686,12 @@ class Fstringify (TokenOrderGenerator):
     #@+node:ekr.20191222100303.1: *4* fs: Overrides...
     #@+node:ekr.20191222090221.1: *5* fs.begin/end_visitor
     begin_end_stack = []
-    node_index = 0  # The index into the node_stack.
     node_stack = []  # The stack of parent nodes.
-
-    # These methods support generators.
-
-    # Subclasses may/should override these methods.
 
     def begin_visitor(self, node):
         """Enter a visitor."""
+        # This class must be run after all links have been created.
+        assert hasattr(node, 'node_index'), repr(node)
         # begin_visitor and end_visitor must be paired.
         self.begin_end_stack.append(node.__class__.__name__)
         # Push the previous node.
@@ -5830,7 +5827,7 @@ class TokenOrderInjector (TokenOrderGenerator):
         self.filename = filename
         tokens = self.make_tokens(s)
         tree = self.make_tree(s)
-        self.create_links(tokens, tree)
+        list(self.create_links(tokens, tree))
         self.balance_tokens(tokens)
         return tokens, tree
     #@+node:ekr.20191229071619.1: *5* tog.fstringify_file
@@ -5855,7 +5852,7 @@ class TokenOrderInjector (TokenOrderGenerator):
         """Return the results of fstingifing string s."""
         tokens = self.make_tokens(s)
         tree = self.make_tree(s)
-        self.create_links(tokens, tree)
+        list(self.create_links(tokens, tree))
         self.balance_tokens(tokens)
         result_s = self.fstringify(tokens, tree)
         return result_s
