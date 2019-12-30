@@ -3127,20 +3127,21 @@ class TestRunner:
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
-    #@+node:ekr.20191227052446.84: *4* test_fstringify_with_TOG
-    def test_fstringify_with_TOG(self):
+    #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
+    def test_fstringify_leo_at_file(self):
         
-        if 1:
-            filename = r'c:\test\core\leoAtFile.py'
-            tokens, tree = self.make_file_data(filename)
-        else:
-            filename = '<string>'
-            contents = """\
-    print('xxx %s=%s yyy'%(a * b, 2))
-    print('%s' % func(3))
-    """
-            tokens, tree = self.make_data(contents)
+        filename = r'c:\test\core\leoApp.py'
+        tokens, tree = self.make_file_data(filename)
         self.fstringify(tokens, tree, filename)
+    #@+node:ekr.20191230150653.1: *4* test_call
+    def test_fstringify_with_call(self):
+        
+        contents = "name='uninverted %s' % d.name()"
+        tokens, tree = self.make_data(contents)
+        # self.dump_tokens(tokens)
+        self.dump_tree(tree)
+        self.fstringify(tokens, tree, '<string>')
+        # self.dump_tree(tree)
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -5454,9 +5455,10 @@ class Fstringify (TokenOrderGenerator):
         # Show the results
         print(
             f"\n"
-            f"line {line_number:>5}: {line!r}\n"
-            f"      from: {lt_s} % {rt_s}\n"
-            f"        to: {result}")
+            f"line number: {line_number}\n"
+            f"entire line: {line!r}\n"
+            f"       from: {lt_s} % {rt_s}\n"
+            f"         to: {result}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
