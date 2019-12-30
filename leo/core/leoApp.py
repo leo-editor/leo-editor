@@ -3240,11 +3240,9 @@ class LoadManager:
     def isValidPython(self):
         if sys.platform == 'cli':
             return True
-        message = """\
-    Leo requires Python %s or higher.
-    You may download Python from
-    http://python.org/download/
-    """ % g.minimum_python_version
+        message = (
+            f"Leo requires Python {g.minimum_python_version} or higher"
+            f"You may download Python from http://python.org/download/")
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
             ok = g.CheckVersion(version, g.minimum_python_version)
