@@ -5824,13 +5824,14 @@ class ReassignTokens (TokenOrderTraverser):
         if node.args:
             # Associate the () with the first and last args.
             arg0, arg9 = node.args[0], node.args[-1]
-            g.trace(arg0.node_index, arg9.node_index)
+            if 0: g.trace(arg0.node_index, arg9.node_index) ###
         else:
             # Associate () with the call node.
             i = tokens[-1].index
             j = find_paren_token(i + 1, self.tokens)
             if j is None: return
             k = find_paren_token(j + 1, self.tokens)
+            if k is None: return
             self.tokens[j].node = nca
             self.tokens[k].node = nca
             add_token_to_token_list(self.tokens[j], nca)
