@@ -3943,6 +3943,7 @@ class TokenOrderGenerator:
         closing parens.
         """
         if True: ###
+            g.trace('Disabled')
             return tokens
         if not tokens:
             return tokens
