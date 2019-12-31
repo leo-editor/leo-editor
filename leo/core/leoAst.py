@@ -5418,8 +5418,6 @@ class TokenOrderTraverser:
         self.last_node_index += 1
         assert self.last_node_index == node.node_index, (
             self.last_node_index, node.node_index)
-        if 0:
-            g.trace(node.node_index, node.__class__.__name__)
     #@-others
 #@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
 class Fstringify (TokenOrderTraverser):
@@ -5439,10 +5437,18 @@ class Fstringify (TokenOrderTraverser):
         self.tree = tree
         self.traverse(self.tree)
         return ''.join(z.to_string() for z in self.tokens)
-    #@+node:ekr.20191231055008.1: *4* fs.do_BinOp
-    def do_BinOp(self, node):
-        """Handle binary ops, including possible f-strings."""
-        if op_name(node.op) == '%' and isinstance(node.left, ast.Str):
+    #@+node:ekr.20191231055008.1: *4* fs.visit (override)
+    def visit(self, node):
+        """
+        FStringify.visit. (Overrides TOT visit).
+        
+        Handle binary ops, including possible f-strings.
+        """
+        if (
+            isinstance(node, ast.BinOp)
+            and op_name(node.op) == '%'
+            and isinstance(node.left, ast.Str)
+        ):
             self.make_fstring(node)
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring (top level) & helpers
     def make_fstring(self, node):
