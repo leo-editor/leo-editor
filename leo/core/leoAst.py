@@ -347,45 +347,6 @@ def is_ancestor(node, token):
             return True
         t_node = t_node.parent
     return False
-#@+node:ekr.20191224093336.1: *4* function: match_parens (hack, disabled)
-match_parens_message_given = False
-
-def match_parens(tokens):
-    """
-    Extend the tokens in the token list to include unmatched trailing
-    closing parens.
-    """
-    if True: ###
-        global match_parens_message_given
-        if not match_parens_message_given:
-            match_parens_message_given = True
-            g.trace('Disabled')
-        return tokens
-    if not tokens:
-        return tokens
-    # Calculate paren level...
-    level = 0
-    for token in tokens:
-        if token.kind == 'op' and token.value == '(':
-            level += 1
-        if token.kind == 'op' and token.value == ')':
-            level -= 1
-    # Find matching ')' tokens...
-    if level > 0:
-        i = i1 = tokens[-1].index
-        while level > 0 and i + 1 < len(tokens):
-            token = tokens[i+1]
-            if token.kind == 'op' and token.value == ')':
-                level -= 1
-            elif is_significant_token(token):
-                break
-            i += 1
-        tokens.extend(tokens[i1 + 1 : i + 1])
-    if level != 0:
-        print('')
-        g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
-        print('')
-    return tokens
 #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
 def nearest_common_ancestor(node1, node2):
     """
@@ -442,9 +403,11 @@ def tokens_for_node(node, tokens):
             else:
                 break
         j += 1
-    # Extend tokens to balance parens.
     results = tokens[last_i : last_j + 1]
-    return match_parens(results)  ### hack.
+    return results
+    ### No longer used
+        # Extend tokens to balance parens.
+        # return match_parens(results)
 #@+node:ekr.20191225061516.1: *3* node/token replacers...
 # Functions that replace tokens or nodes.
 #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -5701,8 +5664,7 @@ class Fstringify (TokenOrderTraverser):
         i, j = NodeTokens().token_range(node)
         i1 = i
         tokens = self.tokens[i:j+1]
-        tokens = match_parens(tokens) ### Hack.
-        ### replace_token(i, 'string', s)
+        ### tokens = match_parens(tokens) ### Hack.
         replace_token(self.tokens[i], 'string', s)
         j = 1
         while j < len(tokens):
@@ -5860,6 +5822,7 @@ class ReassignTokens (TokenOrderTraverser):
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
         if node.args:
+            # Associate the () with the first and last args.
             arg0, arg9 = node.args[0], node.args[-1]
             g.trace(arg0.node_index, arg9.node_index)
         else:
