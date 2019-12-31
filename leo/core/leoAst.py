@@ -229,14 +229,14 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20191231110051.1: *3* node/token dumpers...
-#@+node:ekr.20191225092852.1: *4* function: brief_dump
-def brief_dump(ast):
-    """Dump an ast node."""
-    return AstDumper().brief_dump(ast)
+#@+node:ekr.20191225092852.1: *4* function: dump_tree_and_links
+def dump_tree_and_links(ast):
+    """Dump an ast tree, showing links between tokens and ast nodes."""
+    return AstDumper().dump_tree_and_links(ast)
 #@+node:ekr.20191027074436.1: *4* function: dump_ast
 def dump_ast(ast, tag=None):
     """Utility to dump an ast tree."""
-    g.printObj(AstDumper().dump(ast), tag=tag)
+    g.printObj(AstDumper().dump_ast(ast), tag=tag)
 #@+node:ekr.20191228095945.4: *4* function: dump_contents
 def dump_contents(contents):
     print('Contents...\n')
@@ -252,27 +252,22 @@ def dump_lines(tokens):
         else:
             print(repr(z.line))
     print('')
-#@+node:ekr.20191228095945.6: *4* function: dump_raw_tree
-def dump_raw_tree(tree):
-    print('Raw tree...\n')
-    print(AstDumper().dump(tree))
-    print('')
 #@+node:ekr.20191228095945.7: *4* function: dump_results
 def dump_results(tokens):
     print('Results...\n')
     print(''.join(z.to_string() for z in tokens))
     print('')
 #@+node:ekr.20191228095945.8: *4* function: dump_tokens
-def dump_tokens(tokens, brief=False):
+def dump_tokens(tokens):
     print('Tokens...\n')
     print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
     for z in tokens:
-        print(z.dump(brief=brief))
+        print(z.dump())
     print('')
 #@+node:ekr.20191228095945.9: *4* function: dump_tree
-def dump_tree(tree, brief=False):
+def dump_tree(tree):
     print('Tree...\n')
-    print(brief_dump(tree))
+    print(dump_tree_and_links(tree))
     print('')
 #@+node:ekr.20191223095408.1: *3* node/token finders...
 # Functions that associate tokens with nodes.
@@ -2640,20 +2635,19 @@ class BaseTest (unittest.TestCase):
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
     """
-    Return a formatted dump (a string) of the AST node.
-
-    Adapted from Python's ast.dump.
+    A class supporting various kinds of dumps of ast nodes.
     """
 
     #@+others
-    #@+node:ekr.20191112033445.1: *4* dumper.brief_dump & helper
-    def brief_dump(self, node):
+    #@+node:ekr.20191112033445.1: *4* dumper.dump_tree_and_links & helper
+    def dump_tree_and_links(self, node):
         """Briefly show a tree, properly indented."""
         result = [self.show_header()]
-        self.brief_dump_helper(node, 0, result)
+        self.dump_tree_and_links_helper(node, 0, result)
         return ''.join(result)
-    #@+node:ekr.20191125035321.1: *5* dumper.brief_dump_helper
-    def brief_dump_helper(self, node, level, result):
+    #@+node:ekr.20191125035321.1: *5* dumper.dump_tree_and_links_helper
+    def dump_tree_and_links_helper(self, node, level, result):
+        """Return the list of lines in result."""
         if node is None:
             return
         # Let block.
@@ -2663,7 +2657,7 @@ class AstDumper:
         # Dump...
         if isinstance(node, (list, tuple)):
             for z in node:
-                self.brief_dump_helper(z, level, result)
+                self.dump_tree_and_links_helper(z, level, result)
         elif isinstance(node, str):
             result.append(f"{indent}{node.__class__.__name__:>8}:{node}\n")
         elif isinstance(node, ast.AST):
@@ -2671,23 +2665,9 @@ class AstDumper:
             result.append(node_s)
             # Children.
             for z in children:
-                self.brief_dump_helper(z, level+1, result)
+                self.dump_tree_and_links_helper(z, level+1, result)
         else:
             result.append(node_s)
-    #@+node:ekr.20191125033744.1: *4* dumper.brief_dump_one_node
-    def brief_dump_one_node(self, node, level=0):
-        
-        indent = ' ' * 2 * level
-        result = [] # [self.show_header()]
-        node_s = self.compute_node_string(node, level).rstrip()
-        if isinstance(node, str):
-            result.append(f"{indent}{node.__class__.__name__:>8}:{node}")
-        elif isinstance(node, ast.AST):
-            # Node and parent.
-            result.append(node_s)
-        else:
-            result.append(f"{indent}OOPS: {node.__class__.__name__}")
-        return ''.join(result)
     #@+node:ekr.20191125035600.1: *4* dumper.compute_node_string & helpers
     def compute_node_string(self, node, level):
         """Return a string summarizing the node."""
@@ -2814,18 +2794,20 @@ class AstDumper:
         return (
             f"{'parent':<16} {'lines':<10} {'node':<42} {'tokens'}\n"
             f"{'======':<16} {'=====':<10} {'====':<42} {'======'}\n")
-    #@+node:ekr.20141012064706.18392: *4* dumper.dump & helper
+    #@+node:ekr.20141012064706.18392: *4* dumper.dump_ast & helper
     annotate_fields=False
     include_attributes = False
     indent_ws = ' '
 
-    def dump(self, node, level=0):
-
+    def dump_ast(self, node, level=0):
+        """
+        Dump an ast tree. Adapted from ast.dump.
+        """
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
-            fields = [(a, self.dump(b, level+1)) for a, b in self.get_fields(node)]
+            fields = [(a, self.dump_ast(b, level+1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
-                fields.extend([(a, self.dump(getattr(node, a), level+1))
+                fields.extend([(a, self.dump_ast(getattr(node, a), level+1))
                     for a in node._attributes])
             if self.annotate_fields:
                 aList = [f'%s=%s' % (a, b) for a, b in fields]
@@ -2837,7 +2819,7 @@ class AstDumper:
         if isinstance(node, list):
             sep = sep1
             return f'LIST[%s]' % ''.join(
-                [f'%s%s' % (sep, self.dump(z, level+1)) for z in node])
+                [f'%s%s' % (sep, self.dump_ast(z, level+1)) for z in node])
         return repr(node)
     #@+node:ekr.20141012064706.18393: *5* dumper.get_fields
     def get_fields(self, node):
@@ -2865,9 +2847,9 @@ class TestRunner:
         'fstringify',           # Pass 2.
         # Dumps...
         'dump-all',
+        'dump-ast', # Was dump-raw-tree.
         'dump-contents',
         'dump-lines',
-        'dump-raw-tree',
         'dump-results',
         'dump-times',
         'dump-tokens',
@@ -2879,8 +2861,10 @@ class TestRunner:
         'all-leo-files',
         'coverage',
         'dump-all-after-fail',
+        'dump-ast-tree-first',
         'dump-results',
         'dump-tokens-after-fail',
+        'dump-tokens-first',
         'dump-tree-after-fail',
         'no-trace-after-fail',
         'set-trace-mode',
@@ -3090,16 +3074,6 @@ class TestRunner:
         return True
     #@+node:ekr.20191205160624.1: *4* TR: actions...
     # Actions should fail by throwing an exception.
-    #@+node:ekr.20191228183156.1: *5* TR.update_counts & update_times
-    def update_counts(self, key, n):
-        """Update the count statistic given by key, n."""
-        old_n = self.times.get(key, 0)
-        self.counts [key] = old_n + n
-
-    def update_times(self, key, t):
-        """Update the timing statistic given by key, t."""
-        old_t = self.times.get(key, 0.0)
-        self.times [key] = old_t + t
     #@+node:ekr.20191226064933.1: *5* TR.create_links (pass 1)
     def create_links(self):
         """Pass 1: TOG.create_links"""
@@ -3134,8 +3108,14 @@ class TestRunner:
             self.dump_contents()
             self.dump_tokens()
             self.dump_tree()
-            # self.dump_raw_tree()
+            # self.dump_ast()
 
+    #@+node:ekr.20191122025306.2: *5* TR.dump_ast
+    def dump_ast(self):
+        """Dump an ast tree.  Similar to ast.dump()."""
+        print('\nast tree...\n')
+        print(AstDumper().dump_ast(self.tree))
+        print('')
     #@+node:ekr.20191122025303.1: *5* TR.dump_contents
     def dump_contents(self):
         contents = self.contents
@@ -3152,25 +3132,34 @@ class TestRunner:
             else:
                 print(repr(z.line))
         print('')
-    #@+node:ekr.20191122025306.2: *5* TR.dump_raw_tree
-    def dump_raw_tree(self):
-        print('\nRaw tree...\n')
-        print(AstDumper().dump(self.tree))
-        print('')
     #@+node:ekr.20191225063758.1: *5* TR.dump_results
     def dump_results(self):
 
         print('\nResults...\n')
         print(''.join(z.to_string() for z in self.tokens))
+    #@+node:ekr.20191226095129.1: *5* TR.dump_times
+    def dump_times(self):
+        """
+        Show all calculated times.
+        
+        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
+        """
+        if not self.times:
+            return
+        print('')
+        for key in sorted(self.times):
+            t = self.times.get(key)
+            key2 = key[3:]
+            print(f"{key2:>16}: {t:6.3f} sec.")
     #@+node:ekr.20191122025418.1: *5* TR.dump_tokens
-    def dump_tokens(self, brief=False):
+    def dump_tokens(self):
         tokens = self.tokens
         print('\nTokens...\n')
         print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
         # pylint: disable=not-an-iterable
         if self.toi:
             for z in tokens:
-                print(z.dump(brief=brief))
+                print(z.dump())
             print('')
         else:
             import token as tm
@@ -3178,11 +3167,11 @@ class TestRunner:
                 kind = tm.tok_name[z.type].lower()
                 print(f"{z.index:4} {kind:>12} {z.string!r}")
     #@+node:ekr.20191122025419.1: *5* TR.dump_tree
-    def dump_tree(self, brief=False):
+    def dump_tree(self):
         print('\nPatched tree...\n')
         tokens, tree = self.tokens, self.tree
         if self.toi:
-            print(brief_dump(tree))
+            print(dump_tree_and_links(tree))
             return
         try:
             # pylint: disable=import-error
@@ -3227,23 +3216,9 @@ class TestRunner:
         self.update_times('01: parse-ast', t3 - t2)
         # Dump.
         if 'dump-tokens-first' in flags:
-            self.dump_tokens(brief=True)
-        if 'dump-raw-tree-first' in flags:
-            self.dump_raw_tree()
-    #@+node:ekr.20191226095129.1: *5* TR.dump_times
-    def dump_times(self):
-        """
-        Show all calculated times.
-        
-        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
-        """
-        if not self.times:
-            return
-        print('')
-        for key in sorted(self.times):
-            t = self.times.get(key)
-            key2 = key[3:]
-            print(f"{key2:>16}: {t:6.3f} sec.")
+            dump_tokens(self.tokens)
+        if 'dump-ast-tree-first' in flags:
+            dump_ast(self.tree)
     #@+node:ekr.20191226063942.1: *5* TR.run_ast_tokens
     def run_ast_tokens(self):
         # pylint: disable=import-error
@@ -3255,6 +3230,16 @@ class TestRunner:
         self.tokens = atok._tokens
         t2 = get_time()
         self.update_times('01: ast-tokens', t2 - t1)
+    #@+node:ekr.20191228183156.1: *5* TR.update_counts & update_times
+    def update_counts(self, key, n):
+        """Update the count statistic given by key, n."""
+        old_n = self.times.get(key, 0)
+        self.counts [key] = old_n + n
+
+    def update_times(self, key, t):
+        """Update the timing statistic given by key, t."""
+        old_t = self.times.get(key, 0.0)
+        self.times [key] = old_t + t
     #@-others
    
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
@@ -4043,7 +4028,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens (to do)
+    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens
     def reassign_tokens(self, tokens, tree):
         """
         Reassign links between the given token list and ast-tree.
@@ -4218,7 +4203,7 @@ class TokenOrderGenerator:
             if trace:
                 g.trace(
                     f"node: {node.__class__.__name__!s:16}"
-                    f"token: {token.dump(brief=True)}")
+                    f"token: {token.dump()}")
             #
             # Link the token to the ast node.
             token.node = node
@@ -4290,25 +4275,7 @@ class TokenOrderGenerator:
         if isinstance(val, types.GeneratorType):
             yield from val
     #@+node:ekr.20191223052953.1: *4* tog: Utils
-    #@+node:ekr.20191126074902.1: *5* tog.dump_one_node
-    header_has_been_shown = False
-
-    def dump_one_node(self, node, level, tag=None):
-        """
-        Dump one node using AstDumper().brief_dump_one_node.
-        
-        Precede the dump with the header if necessary.
-        """
-        dumper = AstDumper()
-        if self.header_has_been_shown:
-            print('')
-        else:
-            self.header_has_been_shown = True
-            if tag:
-                print(f"\ndump_one_node: {tag} {self.file_name}")
-            print(f"\n{dumper.show_header()}")
-        print(dumper.brief_dump_one_node(node, level))
-    #@+node:ekr.20191129044716.1: *5* tog.error
+    #@+node:ekr.20191129044716.1: *4* tog.error
     def error(self, message):
         """
         Prepend the caller to the message, print it, and return AssignLinksError.
@@ -5487,7 +5454,6 @@ class Fstringify (TokenOrderTraverser):
         replacing node's entire tree with a new ast.Str node.
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        # print(f"right tree...\n{brief_dump(node.right)}")
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = ''.join(z.to_string() for z in node.left.token_list)
         # Get the RHS values, a list of token lists.
@@ -5742,7 +5708,7 @@ class Fstringify (TokenOrderTraverser):
             if len(node.elts) != len(result):
                 if trace:
                     g.trace('list mismatch')
-                    brief_dump(node)
+                    dump_tree_and_links(node)
                 return []
             return result
         #
@@ -5750,7 +5716,7 @@ class Fstringify (TokenOrderTraverser):
         tokens = tokens_for_node(node, self.tokens)
         if trace and not tokens:
             g.trace('===== no token list', node.__class__.__name__)
-            brief_dump(node)
+            dump_tree_and_links(node)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
     def substitute_values(self, lt_s, specs, values):
@@ -5829,7 +5795,6 @@ class ReassignTokens (TokenOrderTraverser):
     #@+node:ekr.20191231084640.1: *4* reassign.reassign
     def reassign(self, tokens, tree):
         """The main entry point."""
-        g.trace('=====')
         self.tokens = tokens
         self.tree = tree
         # self.pass_n = 1
@@ -5840,9 +5805,10 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
-        g.trace(node.node_index,
-            node.__class__.__name__, node.args.__class__.__name__)
-        g.trace([str(z) for z in tokens_for_node(node, self.tokens)])
+        if 0:
+            g.trace(node.node_index,
+                node.__class__.__name__, node.args.__class__.__name__)
+            g.trace([str(z) for z in tokens_for_node(node, self.tokens)])
         # First, handle ast.Call nodes.
 
             # last_sig_token = None
@@ -6071,21 +6037,21 @@ class Token:
         return self.value if isinstance(self.value, str) else ''
         
     #@+others
+    #@+node:ekr.20191231114927.1: *4* token.brief_dump
+    def brief_dump(self):
+        """Dump a token."""
+        return (
+            f"{self.index:>3} line: {self.line_number:<2} "
+            f"{self.kind:>11} {self.show_val(100)}")
     #@+node:ekr.20191113095410.1: *4* token.dump
-    def dump(self, brief=False):
-        
-        """Dump a token node and related links."""
-        if brief:
-            return (
-                f"{self.index:>3} line: {self.line_number:<2} "
-                f"{self.kind:>11} {self.show_val(100)}")
+    def dump(self):
+        """Dump a token and related links."""
         # Let block.
         children = getattr(self.node, 'children', [])
         if self.node:
             node_id = getattr(self.node, 'node_index', obj_id(self.node))
         else:
             node_id = ''
-        ### node_id = obj_id(self.node) if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
         parent = getattr(self.node, 'parent', None)
         parent_class = parent.__class__.__name__ if parent else ''
@@ -6106,11 +6072,10 @@ class Token:
             node_s = "None"
         return(
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
-            # f"line: {self.line_number} level: {self.level} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *4* token.show_val
     def show_val(self, truncate_n=20):
-        
+        """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = len(self.value)
         elif self.kind == 'string':
