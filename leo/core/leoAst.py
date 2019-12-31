@@ -2511,7 +2511,7 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
     def update_counts(self, key, n):
         """Update the count statistic given by key, n."""
-        old_n = self.times.get(key, 0)
+        old_n = self.counts.get(key, 0)
         self.counts [key] = old_n + n
 
     def update_times(self, key, t):
@@ -5422,36 +5422,23 @@ class TokenOrderTraverser:
             g.trace(node.node_index, node.__class__.__name__)
     #@-others
 #@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
-class Fstringify (TokenOrderTraverser): ### Was TokenOrderGenerator
+class Fstringify (TokenOrderTraverser):
     """A class to fstringify an existing ast tree."""
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify (entry)
     def fstringify(self, tokens, tree, filename=''):
         """
         Fstringify.fstringify:
+            
         The entry point for the Fstringify class.
 
-        This is pass 2 of TOG.fstringify.
-        All links have already been created.
+        All links should already been created.
         """
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
         self.traverse(self.tree)
         return ''.join(z.to_string() for z in self.tokens)
-        ###
-            # # Init all ivars.
-            # self.level = 0
-            # self.node = None
-            # self.tokens = tokens
-            # self.tree = tree
-            # # Pass 2: traverse the tree, converting f-strings.
-            # try:
-                # while True:
-                    # next(self.visitor(tree))
-            # except StopIteration:
-                # pass
-            # return ''.join(z.to_string() for z in self.tokens)
     #@+node:ekr.20191231055008.1: *4* fs.do_BinOp
     def do_BinOp(self, node):
         """Handle binary ops, including possible f-strings."""
