@@ -3909,7 +3909,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens
+    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens (to do)
     def reassign_tokens(self, tokens, tree):
         """
         Reassign links between the given token list and ast-tree.
@@ -3942,7 +3942,7 @@ class TokenOrderGenerator:
         Extend the tokens in the token list to include unmatched trailing
         closing parens.
         """
-        if True:
+        if True: ###
             return tokens
         if not tokens:
             return tokens
