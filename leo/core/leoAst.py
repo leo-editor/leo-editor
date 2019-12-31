@@ -87,6 +87,17 @@ class LeoGlobals:
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
+    #@+node:ekr.20191231153754.1: *4* LeoGlobals.pdb
+    def pdb(self):
+        """Fall into pdb."""
+        import pdb
+        try:
+            import PyQt5.QtCore as QtCore
+            QtCore.pyqtRemoveInputHook()
+        except Exception:
+            print('can not import PyQt5.QtCore')
+            return
+        pdb.set_trace()
     #@+node:ekr.20191226190425.1: *4* LeoGlobals.plural
     def plural(self, obj):
         """Return "s" or "" depending on n."""
@@ -305,6 +316,17 @@ def find_node_with_token_list(node):
                 break
     g.trace('===== no token list', node1.__class__.__name__)
     return None
+#@+node:ekr.20191231160225.1: *4* function: find_paren_token
+def find_paren_token(i, tokens):
+    """Return i of the next paren token, starting at tokens[i]."""
+    while i < len(tokens):
+        token = tokens[i]
+        if token.kind == 'op' and token.value in '()':
+            return i
+        if is_significant_token(token):
+            break
+        i += 1
+    return None
 #@+node:ekr.20191223053247.1: *4* function: find_token
 def find_token(node):
     """Return any token descending from node."""
@@ -364,16 +386,14 @@ def match_parens(tokens):
         g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
         print('')
     return tokens
-#@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor (test)
+#@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
 def nearest_common_ancestor(node1, node2):
     """
     Return the nearest common ancestor nodes for the given nodes.
     
     The nodes must have parent links.
     """
-    if node1 == node2:
-        return node1
-        
+
     def parents(node):
         aList = []
         while node:
@@ -385,12 +405,13 @@ def nearest_common_ancestor(node1, node2):
     parents1 = parents(node1)
     parents2 = parents(node2)
     while parents1 and parents2:
-        parent1 = parents1.pop()
-        parent2 = parents2.pop()
+        parent1 = parents1.pop(0)
+        parent2 = parents2.pop(0)
         if parent1 == parent2:
             result = parent1
         else:
             break
+    g.trace(result and result.node_index or 'None')
     return result
 #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
 def tokens_for_node(node, tokens):
@@ -426,6 +447,21 @@ def tokens_for_node(node, tokens):
     return match_parens(results)  ### hack.
 #@+node:ekr.20191225061516.1: *3* node/token replacers...
 # Functions that replace tokens or nodes.
+#@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
+def add_token_to_token_list(token, node):
+    """Insert token in the proper location of node.token_list."""
+    token_i = token.index
+    token_list = getattr(node, 'token_list', [])
+    for i, t, in enumerate(token_list):
+        if t.index > token_i:
+            token_list.insert(i, token)
+            node.token_list = token_list
+            g.printObj(token_list, tag='token_list')
+            return
+    token_list.append(token)
+    node.token_list = token_list
+    g.printObj(token_list, tag='token_list')
+        
 #@+node:ekr.20191225055616.1: *4* function: replace_node
 def replace_node(new_node, old_node):
     
@@ -2842,7 +2878,9 @@ class TestReassignTokens (BaseTest):
         
         contents = """name='uninverted %s' % d.name()"""
         tokens, tree = self.make_data(contents)
+        dump_tokens(tokens)
         dump_tree(tree)
+        
     #@-others
 #@+node:ekr.20191113133338.1: *3* class TestRunner
 class TestRunner:
@@ -5818,19 +5856,22 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
-        if 0:
-            g.trace(node.node_index,
-                node.__class__.__name__, node.args.__class__.__name__)
-            g.trace([str(z) for z in tokens_for_node(node, self.tokens)])
-        # First, handle ast.Call nodes.
-
-            # last_sig_token = None
-            # for token in tokens:
-                # if is_significant_token(token):
-                    # assert token.node, repr(token)
-                    # last_sig_token = token
-                # elif token.kind == 'op' and token.value in '()':
-                    # token.node = last_sig_token.node
+        tokens = tokens_for_node(node, self.tokens)
+        node0, node9 = tokens[0].node, tokens[-1].node
+        nca = nearest_common_ancestor(node0, node9)
+        if node.args:
+            arg0, arg9 = node.args[0], node.args[-1]
+            g.trace(arg0.node_index, arg9.node_index)
+        else:
+            # Associate () with the call node.
+            i = tokens[-1].index
+            j = find_paren_token(i + 1, self.tokens)
+            if j is None: return
+            k = find_paren_token(j + 1, self.tokens)
+            self.tokens[j].node = nca
+            self.tokens[k].node = nca
+            add_token_to_token_list(self.tokens[j], nca)
+            add_token_to_token_list(self.tokens[k], nca)
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
 class TokenOrderFormatter (TokenOrderGenerator):
