@@ -12,6 +12,15 @@ import types
 import unittest
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
+#@+node:ekr.20191027072910.1: *3*  exception classes
+class AstNotEqual(Exception):
+    """The two given AST's are not equivalent."""
+
+class AssignLinksError(Exception):
+    """Assigning links to ast nodes failed."""
+    
+class FailFast(Exception):
+    """Abort tests in TestRunner class."""
 #@+node:ekr.20191226175251.1: *3* class LeoGlobals
 #@@nosearch
 
@@ -162,20 +171,317 @@ class LeoGlobals:
         s2 = s[: n - 3] + f'...({len(s)})'
         return s2 + '\n' if s.endswith('\n') else s2
     #@-others
-#@+node:ekr.20191027072910.1: *3* exception classes
-class AstNotEqual(Exception):
-    """The two given AST's are not equivalent."""
+#@+node:ekr.20191121081439.1: *3* function: compare_lists
+def compare_lists(list1, list2):
+    """
+    Compare two lists of strings, showing the first mismatch.
 
-class AssignLinksError(Exception):
-    """Assigning links to ast nodes failed."""
+    Return the index of the first mismatched lines, or None if identical.
+    """
+    import itertools
+    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
+    for i, (s1, s2) in enumerate(it):
+        if s1 != s2:
+            return i
+    return None
+#@+node:ekr.20191226071135.1: *3* function: get_time
+def get_time():
+    return time.process_time()
+#@+node:ekr.20191229020834.1: *3* function: unit_test
+def unit_test(raise_on_fail=True):
+    """
+    Called from unitTest.leo.
+
+    Run basic unit tests for this file.
+    """
+    import _ast
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite',  # Not necessary.
+        'PyCF_ONLY_AST',  # A constant,
+        'AST',  # The base class,
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classe
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    table = (
+        # AstFullTraverser,
+        AstFormatter,
+        AstPatternFormatter,
+        HTMLReportTraverser,
+    )
+    for class_ in table:
+        traverser = class_()
+        errors, nodes, ops = 0, 0, 0
+        for z in aList:
+            if hasattr(traverser, 'do_'+z):
+                nodes += 1
+            elif _op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
+    s = f"{nodes} node types, {ops} op types, {errors} errors"
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
+#@+node:ekr.20191223095408.1: *3* node/token finders...
+# Functions that associate tokens with nodes.
+#@+node:ekr.20191223053247.1: *4* tu.find_token
+def find_token(node):
+    """Return any token descending from node."""
+    node2 = find_node_with_token_list(node)
+    if node2:
+        token = node2.token_list[0]
+        return token
+    g.trace('===== no token list', node.__class__.__name__)
+    return None
+        
+#@+node:ekr.20191223093539.1: *4* tu.find_node_with_token_list
+def find_node_with_token_list(node):
+    """
+    Return any node in node's tree with a token_list.
+    """
+    # This table only has to cover fields for ast.Nodes that
+    # won't have any associated token.
+    fields = (
+        # Common...
+        'elt', 'elts', 'body', 'value',
+        # Less common...
+        'dims', 'ifs', 'names', 's',
+        'test', 'values', 'targets',
+    )
+    node1 = node
+    while node:
+        # First, try the node itself.
+        if getattr(node, 'token_list', None):
+            return node
+        # Second, try the most common nodes w/o token_lists:
+        if isinstance(node, ast.Call):
+            node = node.func
+        elif isinstance(node, ast.Tuple):
+            node = node.elts
+        # Finally, try all other nodes.
+        else:
+            # This will be used rarely.
+            for field in fields:
+                if getattr(node, field, None):
+                    node = getattr(node, field)
+                    break
+            else:
+                break
+    g.trace('===== no token list', node1.__class__.__name__)
+    return None
+#@+node:ekr.20191223054300.1: *4* tu.is_ancestor
+def is_ancestor(node, token):
+    """Return True if node is an ancestor of token."""
+    t_node = token.node
+    assert t_node, token
+    while t_node:
+        if t_node == node:
+            return True
+        t_node = t_node.parent
+    return False
+#@+node:ekr.20191225061516.1: *3* node/token replacers...
+# Functions that replace tokens or nodes.
+#@+node:ekr.20191224093336.1: *4* function:match_parens (hack, disabled)
+def match_parens(tokens):
+    """
+    Extend the tokens in the token list to include unmatched trailing
+    closing parens.
+    """
+    if True: ###
+        g.trace('Disabled')
+        return tokens
+    if not tokens:
+        return tokens
+    # Calculate paren level...
+    level = 0
+    for token in tokens:
+        if token.kind == 'op' and token.value == '(':
+            level += 1
+        if token.kind == 'op' and token.value == ')':
+            level -= 1
+    # Find matching ')' tokens...
+    if level > 0:
+        i = i1 = tokens[-1].index
+        while level > 0 and i + 1 < len(tokens):
+            token = tokens[i+1]
+            if token.kind == 'op' and token.value == ')':
+                level -= 1
+            elif is_significant_token(token):
+                break
+            i += 1
+        tokens.extend(tokens[i1 + 1 : i + 1])
+    if level != 0:
+        print('')
+        g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
+        print('')
+    return tokens
+#@+node:ekr.20191225055616.1: *4* function:replace_node
+def replace_node(new_node, old_node):
     
-class FailFast(Exception):
-    """Abort tests in TestRunner class."""
-#@+node:ekr.20160521104555.1: *3* function: _op_names
+    parent = old_node.parent
+    new_node.parent = parent
+    new_node.node_index = old_node.node_index
+    children = parent.children
+    i = children.index(old_node)
+    children[i] = new_node
+    fields = getattr(old_node, '_fields', None)
+    if fields:
+        for field in fields:
+            field = getattr(old_node, field)
+            if field == old_node:
+                setattr(old_node, field, new_node)
+                break
+#@+node:ekr.20191225055626.1: *4* function:replace_token
+### def replace_token(i, kind, value):
+def replace_token(token, kind, value): ###
+    """Replace kind and value of the given token."""
+    ### token = self.tokens[i]
+    if token.kind in ('endmarker', 'killed'):
+        return
+    token.kind = kind
+    token.value = value
+    token.node = None  # Should be filled later.
+#@+node:ekr.20191223053324.1: *4* function:tokens_for_node
+### def tokens_for_node(node):
+def tokens_for_node(node, tokens):
+    """Return the list of all tokens descending from node."""
+    # Find any token descending from node.
+    token = find_token(node)
+    if not token:
+        g.trace('===== no tokens', node.__class__.__name__)
+        return []
+    assert is_ancestor(node, token)
+    # Scan backward.
+    i = last_i = token.index
+    while i >= 0:
+        token2 = tokens[i-1]
+        if getattr(token2, 'node', None):
+            if is_ancestor(node, token2):
+                last_i = i - 1
+            else:
+                break
+        i -= 1
+    # Scan forward.
+    j = last_j = token.index
+    while j + 1 < len(tokens):
+        token2 = tokens[j+1]
+        if getattr(token2, 'node', None):
+            if is_ancestor(node, token2):
+                last_j = j + 1
+            else:
+                break
+        j += 1
+    # Extend tokens to balance parens.
+    results = tokens[last_i : last_j + 1]
+    return match_parens(results)  ### hack.
+#@+node:ekr.20191231072039.1: *3* node/token utils...
+# General utility functions on tokens and nodes.
+#@+node:ekr.20191225092852.1: *4* function: brief_dump
+def brief_dump(ast):
+    """Dump an ast node."""
+    return AstDumper().brief_dump(ast)
+#@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
+def compare_asts(ast1, ast2):
+    """Compare two ast trees. Return True if they are equal."""
+    import leo.core.leoGlobals as g
+    # Compare the two parse trees.
+    try:
+        _compare_asts(ast1, ast2)
+    except AstNotEqual:
+        dump_ast(ast1, tag='AST BEFORE')
+        dump_ast(ast2, tag='AST AFTER')
+        if g.unitTesting:
+            raise
+        return False
+    except Exception:
+        g.trace(f"Unexpected exception")
+        g.es_exception()
+        return False
+    return True
+#@+node:ekr.20191027071653.2: *5* function._compare_asts
+def _compare_asts(node1, node2):
+    """
+    Compare both nodes, and recursively compare their children.
+    
+    See also: http://stackoverflow.com/questions/3312989/
+    """
+    # Compare the nodes themselves.
+    _compare_nodes(node1, node2)
+    # Get the list of fields.
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
+    if fields1 != fields2:
+        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
+    # Recursively compare each field.
+    for field in fields1:
+        if field not in ('lineno', 'col_offset', 'ctx'):
+            attr1 = getattr(node1, field, None)
+            attr2 = getattr(node2, field, None)
+            if attr1.__class__.__name__ != attr2.__class__.__name__:
+                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
+            _compare_asts(attr1, attr2)
+#@+node:ekr.20191027071653.3: *5* function._compare_nodes
+def _compare_nodes(node1, node2):
+    """
+    Compare node1 and node2.
+    For lists and tuples, compare elements recursively.
+    Raise AstNotEqual if not equal.
+    """
+    # Class names must always match.
+    if node1.__class__.__name__ != node2.__class__.__name__:
+        raise AstNotEqual(
+            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+            f"node2.__class__.__name__: {node2.__class__.__name_}"
+        )
+    # Special cases for strings and None
+    if node1 is None:
+        return
+    if isinstance(node1, str):
+        if node1 != node2:
+            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
+    # Special cases for lists and tuples:
+    if isinstance(node1, (tuple, list)):
+        if len(node1) != len(node2):
+            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
+        for i, item1 in enumerate(node1):
+            item2 = node2[i]
+            if item1.__class__.__name__ != item2.__class__.__name__:
+                raise AstNotEqual(
+                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
+                )
+            _compare_asts(item1, item2)
+#@+node:ekr.20191027074436.1: *4* function: dump_ast
+def dump_ast(ast, tag=None):
+    """Utility to dump an ast tree."""
+    g.printObj(AstDumper().dump(ast), tag=tag)
+#@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
+def is_significant(kind, value):
+    """
+    Return True if (kind, value) represent a token that can be used for
+    syncing generated tokens with the token list.
+    """
+    # Making 'endmarker' significant ensures that all tokens are synced.
+    return (
+        kind in ('endmarker', 'name', 'number', 'string') or
+        kind == 'op' and value not in ',;()')
+
+def is_significant_token(token):
+    """Return True if the given token is a syncronizing token"""
+    return is_significant(token.kind, token.value)
+#@+node:ekr.20191119085222.1: *4* function: obj_id
+def obj_id(obj):
+    """Return the last four digits of id(obj), for dumps & traces."""
+    return str(id(obj))[-4:]
+#@+node:ekr.20191231060700.1: *4* function: op_name
 #@@nobeautify
 
-# Python 2: https://docs.python.org/2/library/ast.html
-# Python 3: https://docs.python.org/3/library/ast.html
+# https://docs.python.org/3/library/ast.html
 
 _op_names = {
     # Binary operators.
@@ -219,124 +525,13 @@ _op_names = {
     'UAdd':     '+',
     'USub':     '-',
 }
-#@+node:ekr.20191225092852.1: *3* function: brief_dump
-def brief_dump(ast):
-    """Dump an ast node."""
-    return AstDumper().brief_dump(ast)
-#@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
-def compare_asts(ast1, ast2):
-    """Compare two ast trees. Return True if they are equal."""
-    import leo.core.leoGlobals as g
-    # Compare the two parse trees.
-    try:
-        _compare_asts(ast1, ast2)
-    except AstNotEqual:
-        dump_ast(ast1, tag='AST BEFORE')
-        dump_ast(ast2, tag='AST AFTER')
-        if g.unitTesting:
-            raise
-        return False
-    except Exception:
-        g.trace(f"Unexpected exception")
-        g.es_exception()
-        return False
-    return True
-#@+node:ekr.20191027071653.2: *4* function._compare_asts
-def _compare_asts(node1, node2):
-    """
-    Compare both nodes, and recursively compare their children.
-    
-    See also: http://stackoverflow.com/questions/3312989/
-    """
-    # Compare the nodes themselves.
-    _compare_nodes(node1, node2)
-    # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])
-    fields2 = getattr(node2, "_fields", [])
-    if fields1 != fields2:
-        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
-    # Recursively compare each field.
-    for field in fields1:
-        if field not in ('lineno', 'col_offset', 'ctx'):
-            attr1 = getattr(node1, field, None)
-            attr2 = getattr(node2, field, None)
-            if attr1.__class__.__name__ != attr2.__class__.__name__:
-                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
-            _compare_asts(attr1, attr2)
-#@+node:ekr.20191027071653.3: *4* function._compare_nodes
-def _compare_nodes(node1, node2):
-    """
-    Compare node1 and node2.
-    For lists and tuples, compare elements recursively.
-    Raise AstNotEqual if not equal.
-    """
-    # Class names must always match.
-    if node1.__class__.__name__ != node2.__class__.__name__:
-        raise AstNotEqual(
-            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-            f"node2.__class__.__name__: {node2.__class__.__name_}"
-        )
-    # Special cases for strings and None
-    if node1 is None:
-        return
-    if isinstance(node1, str):
-        if node1 != node2:
-            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
-    # Special cases for lists and tuples:
-    if isinstance(node1, (tuple, list)):
-        if len(node1) != len(node2):
-            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
-        for i, item1 in enumerate(node1):
-            item2 = node2[i]
-            if item1.__class__.__name__ != item2.__class__.__name__:
-                raise AstNotEqual(
-                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
-                )
-            _compare_asts(item1, item2)
-#@+node:ekr.20191121081439.1: *3* function: compare_lists
-def compare_lists(list1, list2):
-    """
-    Compare two lists of strings, showing the first mismatch.
 
-    Return the index of the first mismatched lines, or None if identical.
-    """
-    import itertools
-    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
-    for i, (s1, s2) in enumerate(it):
-        if s1 != s2:
-            return i
-    return None
-#@+node:ekr.20191027074436.1: *3* function: dump_ast
-def dump_ast(ast, tag=None):
-    """Utility to dump an ast tree."""
-    g.printObj(AstDumper().dump(ast), tag=tag)
-#@+node:ekr.20191109063033.1: *3* function: funcToMethod 
-
-def funcToMethod(f, theClass, name=None):
-    """
-    From the Python Cookbook...
-
-    The following method allows you to add a function as a method of
-    any class. That is, it converts the function to a method of the
-    class. The method just added is available instantly to all
-    existing instances of the class, and to all instances created in
-    the future.
-    
-    The function's first argument should be self.
-    
-    The newly created method has the same name as the function unless
-    the optional name argument is supplied, in which case that name is
-    used as the method name.
-    """
-    setattr(theClass, name or f.__name__, f)
-#@+node:ekr.20191226071135.1: *3* function: get_time
-def get_time():
-    return time.process_time()
-#@+node:ekr.20191119085222.1: *3* function: obj_id
-def obj_id(obj):
-    """Return the last four digits of id(obj), for dumps & traces."""
-    return str(id(obj))[-4:]
-#@+node:ekr.20191027075648.1: *3* function: parse_ast
+def op_name(node):
+    """Return the print name of an operator node."""
+    class_name = node.__class__.__name__
+    assert class_name in _op_names, repr(class_name)
+    return _op_names [class_name].strip()
+#@+node:ekr.20191027075648.1: *4* function: parse_ast
 def parse_ast(s, headline=None, show_time=False):
     """
     Parse string s, catching & reporting all exceptions.
@@ -368,47 +563,6 @@ def parse_ast(s, headline=None, show_time=False):
         oops('Unexpected Exception')
         g.es_exception()
     return None
-#@+node:ekr.20191229020834.1: *3* function: unit_test
-def unit_test(raise_on_fail=True):
-    """
-    Called from unitTest.leo.
-
-    Run basic unit tests for this file.
-    """
-    import _ast
-    # Compute all fields to test.
-    aList = sorted(dir(_ast))
-    remove = [
-        'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
-        'AST',  # The base class,
-    ]
-    aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
-    aList = [z for z in aList if not z.startswith('_') and not z in remove]
-    # Now test them.
-    table = (
-        # AstFullTraverser,
-        AstFormatter,
-        AstPatternFormatter,
-        HTMLReportTraverser,
-    )
-    for class_ in table:
-        traverser = class_()
-        errors, nodes, ops = 0, 0, 0
-        for z in aList:
-            if hasattr(traverser, 'do_'+z):
-                nodes += 1
-            elif _op_names.get(z):
-                ops += 1
-            else:
-                errors += 1
-                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
-    s = f"{nodes} node types, {ops} op types, {errors} errors"
-    if raise_on_fail:
-        assert not errors, s
-    else:
-        print(s)
 #@+node:ekr.20191227170512.1: ** Legacy classes
 #@+node:ekr.20141012064706.18399: *3*  class AstFormatter
 class AstFormatter:
@@ -764,30 +918,23 @@ class AstFormatter:
         elts = [self.visit(z) for z in node.elts]
         return f'(%s)' % ','.join(elts)
     #@+node:ekr.20141012064706.18436: *4* f: Operators
-    #@+node:ekr.20160521104724.1: *5* f.op_name
-    def op_name(self, node, strict=True):
-        """Return the print name of an operator node."""
-        name = _op_names.get(node.__class__.__name__, f'<%s>' % node.__class__.__name__)
-        if strict: 
-            assert name, node.__class__.__name__
-        return name
     #@+node:ekr.20141012064706.18437: *5* f.BinOp
     def do_BinOp(self, node):
         return f'%s%s%s' % (
             self.visit(node.left),
-            self.op_name(node.op),
+            op_name(node.op),
             self.visit(node.right))
     #@+node:ekr.20141012064706.18438: *5* f.BoolOp
     def do_BoolOp(self, node):
-        op_name = self.op_name(node.op)
+        op_name_ = op_name(node.op)
         values = [self.visit(z).strip() for z in node.values]
-        return op_name.join(values)
+        return op_name_.join(values)
     #@+node:ekr.20141012064706.18439: *5* f.Compare
     def do_Compare(self, node):
         result = []
         lt = self.visit(node.left)
         # ops   = [self.visit(z) for z in node.ops]
-        ops = [self.op_name(z) for z in node.ops]
+        ops = [op_name(z) for z in node.ops]
         comps = [self.visit(z) for z in node.comparators]
         result.append(lt)
         assert len(ops) == len(comps), repr(node)
@@ -797,7 +944,7 @@ class AstFormatter:
     #@+node:ekr.20141012064706.18440: *5* f.UnaryOp
     def do_UnaryOp(self, node):
         return f'%s%s' % (
-            self.op_name(node.op),
+            op_name(node.op),
             self.visit(node.operand))
     #@+node:ekr.20141012064706.18441: *5* f.ifExp (ternary operator)
     def do_IfExp(self, node):
@@ -831,7 +978,7 @@ class AstFormatter:
     def do_AugAssign(self, node):
         return self.indent(f'%s%s=%s\n' % (
             self.visit(node.target),
-            self.op_name(node.op),  # Bug fix: 2013/03/08.
+            op_name(node.op),  # Bug fix: 2013/03/08.
             self.visit(node.value)))
     #@+node:ekr.20160523100504.1: *5* f.Await (Python 3)
     # Await(expr value)
@@ -1299,56 +1446,6 @@ class HTMLReportTraverser:
         if trailing:
             self.blank()
         # self.end_span('operation')
-    #@+node:ekr.20150723105951.1: *5* rt.op_name
-    #@@nobeautify
-
-    def op_name (self, node,strict=True):
-        """Return the print name of an operator node."""
-        d = {
-            # Binary operators.
-            'Add':       '+',
-            'BitAnd':    '&',
-            'BitOr':     '|',
-            'BitXor':    '^',
-            'Div':       '/',
-            'FloorDiv':  '//',
-            'LShift':    '<<',
-            'Mod':       '%',
-            'Mult':      '*',
-            'Pow':       '**',
-            'RShift':    '>>',
-            'Sub':       '-',
-            # Boolean operators.
-            'And':   ' and ',
-            'Or':    ' or ',
-            # Comparison operators
-            'Eq':    '==',
-            'Gt':    '>',
-            'GtE':   '>=',
-            'In':    ' in ',
-            'Is':    ' is ',
-            'IsNot': ' is not ',
-            'Lt':    '<',
-            'LtE':   '<=',
-            'NotEq': '!=',
-            'NotIn': ' not in ',
-            # Context operators.
-            'AugLoad':  '<AugLoad>',
-            'AugStore': '<AugStore>',
-            'Del':      '<Del>',
-            'Load':     '<Load>',
-            'Param':    '<Param>',
-            'Store':    '<Store>',
-            # Unary operators.
-            'Invert':   '~',
-            'Not':      ' not ',
-            'UAdd':     '+',
-            'USub':     '-',
-        }
-        kind = node.__class__.__name__
-        name = d.get(kind, kind)
-        if strict: assert name, kind
-        return name
     #@+node:ekr.20160315184954.1: *5* rt.string (code generator)
     def string(self, s):
 
@@ -1580,31 +1677,31 @@ class HTMLReportTraverser:
 
     def do_AugAssign(self, node):
 
-        op_name = self.op_name(node.op)
+        op_name_ = op_name(node.op)
         self.div('statement')
         self.visit(node.target)
-        self.op(op_name, leading=True)
+        self.op(op_name_, leading=True)
         self.visit(node.value)
         self.end_div('statement')
     #@+node:ekr.20150722204300.53: *5* rt.BinOp
     def do_BinOp(self, node):
 
-        op_name = self.op_name(node.op)
-        # self.span(op_name)
+        op_name_ = op_name(node.op)
+        # self.span(op_name_)
         self.visit(node.left)
-        self.op(op_name, leading=True)
+        self.op(op_name_, leading=True)
         self.visit(node.right)
-        # self.end_span(op_name)
+        # self.end_span(op_name_)
     #@+node:ekr.20150722204300.54: *5* rt.BoolOp
     def do_BoolOp(self, node):
 
-        op_name = self.op_name(node.op).strip()
-        self.span(op_name)
+        op_name_ = op_name(node.op).strip()
+        self.span(op_name_)
         for i, node2 in enumerate(node.values):
             if i > 0:
-                self.keyword(op_name)
+                self.keyword(op_name_)
             self.visit(node2)
-        self.end_span(op_name)
+        self.end_span(op_name_)
     #@+node:ekr.20150722204300.55: *5* rt.Break
     def do_Break(self, node):
 
@@ -1690,8 +1787,8 @@ class HTMLReportTraverser:
         # self.span('compare')
         self.visit(node.left)
         for i in range(len(node.ops)):
-            op_name = self.op_name(node.ops[i])
-            self.op(op_name, leading=True)
+            op_name_ = op_name(node.ops[i])
+            self.op(op_name_, leading=True)
             self.visit(node.comparators[i])
         # self.end_span('compare')
     #@+node:ekr.20150722204300.60: *5* rt.comprehension
@@ -2227,14 +2324,6 @@ class HTMLReportTraverser:
         self.clean_comma()
         self.gen(')')
         # self.end_span('tuple')
-    #@+node:ekr.20150722204300.93: *5* rt.UnaryOp
-    def do_UnaryOp(self, node):
-
-        op_name = self.op_name(node.op).strip()
-        # self.span(op_name)
-        self.op(op_name, trailing=False)
-        self.visit(node.operand)
-        # self.end_span(op_name)
     #@+node:ekr.20150722204300.94: *5* rt.While
     def do_While(self, node):
 
@@ -2250,6 +2339,14 @@ class HTMLReportTraverser:
             self.colon()
             self.div_body(node.orelse)
         self.end_div('statement')
+    #@+node:ekr.20150722204300.93: *5* rt.UnaryOp
+    def do_UnaryOp(self, node):
+
+        op_name_ = op_name(node.op).strip()
+        # self.span(op_name_)
+        self.op(op_name_, trailing=False)
+        self.visit(node.operand)
+        # self.end_span(op_name_)
     #@+node:ekr.20150722204300.95: *5* rt.With & AsyncWith (Python 3)
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
@@ -3875,8 +3972,12 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.4: *5* 1.1: tog.create_links
     def create_links(self, tokens, tree, file_name=''):
         """
-        Verify that traversing the given ast tree generates exactly the given
-        tokens, in exact order.
+        A generator creates two-way links between the given tokens and ast-tree.
+        
+        Callers should call this generator with list(tog.create_links(...))
+        
+        The sync_tokens method creates the links and verifies that the resulting
+        tree traversal generates exactly the given tokens in exact order.
         
         tokens: the list of Token instances for the input.
                 Created by self.make_tokens().
@@ -3916,10 +4017,9 @@ class TokenOrderGenerator:
         
         For now, we only need reassign parens.
         """
-        g.trace()
         last_sig_token = None
         for token in tokens:
-            if self.is_significant_token(token):
+            if is_significant_token(token):
                 assert token.node, repr(token)
                 last_sig_token = token
             elif token.kind == 'op' and token.value in '()':
@@ -3935,154 +4035,6 @@ class TokenOrderGenerator:
         """
         # The Fstringify class does all the work.
         return Fstringify().fstringify(tokens, tree, filename)
-    #@+node:ekr.20191225061516.1: *4* tog: Replacers
-    #@+node:ekr.20191224093336.1: *5* tog.match_parens (hack)
-    def match_parens(self, tokens):
-        """
-        Extend the tokens in the token list to include unmatched trailing
-        closing parens.
-        """
-        if True: ###
-            g.trace('Disabled')
-            return tokens
-        if not tokens:
-            return tokens
-        # Calculate paren level...
-        level = 0
-        for token in tokens:
-            if token.kind == 'op' and token.value == '(':
-                level += 1
-            if token.kind == 'op' and token.value == ')':
-                level -= 1
-        # Find matching ')' tokens...
-        if level > 0:
-            i = i1 = tokens[-1].index
-            while level > 0 and i + 1 < len(self.tokens):
-                token = self.tokens[i+1]
-                if token.kind == 'op' and token.value == ')':
-                    level -= 1
-                elif self.is_significant_token(token):
-                    break
-                i += 1
-            tokens.extend(self.tokens[i1 + 1 : i + 1])
-        if level != 0:
-            print('')
-            g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
-            print('')
-        return tokens
-    #@+node:ekr.20191225055616.1: *5* tog.replace_node
-    def replace_node(self, new_node, old_node):
-        
-        parent = old_node.parent
-        new_node.parent = parent
-        new_node.node_index = old_node.node_index
-        children = parent.children
-        i = children.index(old_node)
-        children[i] = new_node
-        fields = getattr(old_node, '_fields', None)
-        if fields:
-            for field in fields:
-                field = getattr(old_node, field)
-                if field == old_node:
-                    setattr(old_node, field, new_node)
-                    break
-    #@+node:ekr.20191225055626.1: *5* tog.replace_token
-    def replace_token(self, i, kind, value):
-        """Replace kind and value of self.tokens[i]"""
-        token = self.tokens[i]
-        if token.kind in ('endmarker', 'killed'):
-            return
-        token.kind = kind
-        token.value = value
-        token.node = None  # Should be filled later.
-    #@+node:ekr.20191223053324.1: *5* tog.tokens_for_node
-    def tokens_for_node(self, node):
-        """Return the list of all tokens descending from node."""
-        # Find any token descending from node.
-        token = self.find_token(node)
-        if not token:
-            g.trace('===== no tokens', node.__class__.__name__)
-            return []
-        assert self.is_ancestor(node, token)
-        # Scan backward.
-        i = last_i = token.index
-        while i >= 0:
-            token2 = self.tokens[i-1]
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_i = i - 1
-                else:
-                    break
-            i -= 1
-        # Scan forward.
-        j = last_j = token.index
-        while j + 1 < len(self.tokens):
-            token2 = self.tokens[j+1]
-            if getattr(token2, 'node', None):
-                if self.is_ancestor(node, token2):
-                    last_j = j + 1
-                else:
-                    break
-            j += 1
-        # Extend tokens to balance parens.
-        results = self.tokens[last_i : last_j + 1]
-        return self.match_parens(results)
-    #@+node:ekr.20191223095408.1: *4* tog: Token/Node finders
-    #@+node:ekr.20191223053247.1: *5* tog.find_token
-    def find_token(self, node):
-        """Return any token descending from node."""
-        node2 = self.find_node_with_token_list(node)
-        if node2:
-            token = node2.token_list[0]
-            return token
-        g.trace('===== no token list', node.__class__.__name__)
-        return None
-            
-    #@+node:ekr.20191223093539.1: *5* tog.find_node_with_token_list
-    def find_node_with_token_list(self, node):
-        """
-        Return any node in node's tree with a token_list.
-        """
-        # This table only has to cover fields for ast.Nodes that
-        # won't have any associated token.
-        fields = (
-            # Common...
-            'elt', 'elts', 'body', 'value',
-            # Less common...
-            'dims', 'ifs', 'names', 's',
-            'test', 'values', 'targets',
-        )
-        node1 = node
-        while node:
-            # First, try the node itself.
-            if getattr(node, 'token_list', None):
-                return node
-            # Second, try the most common nodes w/o token_lists:
-            if isinstance(node, ast.Call):
-                node = node.func
-            elif isinstance(node, ast.Tuple):
-                node = node.elts
-            # Finally, try all other nodes.
-            else:
-                # This will be used rarely.
-                for field in fields:
-                    if getattr(node, field, None):
-                        node = getattr(node, field)
-                        break
-                else:
-                    break
-        g.trace('===== no token list', node1.__class__.__name__)
-        return None
-    #@+node:ekr.20191223054300.1: *5* tog.is_ancestor
-    def is_ancestor(self, node, token):
-        """Return True if node is an ancestor of token."""
-        t_node = token.node
-        assert t_node, token
-        while t_node:
-            if t_node == node:
-                return True
-            t_node = t_node.parent
-        return False
     #@+node:ekr.20191223052749.1: *4* tog: Traversal
     #@+node:ekr.20191113063144.3: *5* tog.begin/end_visitor
     begin_end_stack = []
@@ -4139,20 +4091,6 @@ class TokenOrderGenerator:
         
     def gen_token(self, kind, val):
         yield from self.visitor(self.sync_token(kind, val))
-    #@+node:ekr.20191124123830.1: *5* tog.is_significant & is_significant_token
-    def is_significant(self, kind, value):
-        """
-        Return True if (kind, value) represent a token that can be used for
-        syncing generated tokens with the token list.
-        """
-        # Making 'endmarker' significant ensures that all tokens are synced.
-        return (
-            kind in ('endmarker', 'name', 'number', 'string') or
-            kind == 'op' and value not in ',;()')
-
-    def is_significant_token(self, token):
-        """Return True if the given token is a syncronizing token"""
-        return self.is_significant(token.kind, token.value)
     #@+node:ekr.20191113063144.7: *5* tog.sync_token & set_links
     px = -1 # Index of the previous *significant* token.
 
@@ -4177,7 +4115,7 @@ class TokenOrderGenerator:
             if trace: g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
         #
         # Leave all non-significant tokens for later.
-        if not self.is_significant(kind, val):
+        if not is_significant(kind, val):
             if trace: g.trace('\nENTRY: insignificant', self.px, kind, val)
             return
         #
@@ -4199,7 +4137,7 @@ class TokenOrderGenerator:
                 if trace: g.trace('   OK', px, token)
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
-            if self.is_significant_token(token):
+            if is_significant_token(token):
                 # Unrecoverable sync failure.
                 if 0:
                     pre_tokens = tokens[max(0, px-10):px+1]
@@ -4234,13 +4172,13 @@ class TokenOrderGenerator:
         #
         # Step three: Set links in the significant token.
         token = tokens[px]
-        if self.is_significant_token(token):
+        if is_significant_token(token):
             self.set_links(node, token)
         else:
             if trace: g.trace('Skip insignificant', px, token, g.callers())
         #
         # Step four. Advance.
-        if self.is_significant_token(token):
+        if is_significant_token(token):
             self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     def set_links(self, node, token):
@@ -4248,7 +4186,7 @@ class TokenOrderGenerator:
         assert token.node is None, (repr(token), g.callers())
         trace = True and self.trace_mode
         if (
-            self.is_significant_token(token)
+            is_significant_token(token)
             or token.kind in ('comment', 'newline')
         ):
             if trace:
@@ -4357,13 +4295,6 @@ class TokenOrderGenerator:
             print(message)
         return AssignLinksError(header+message)
     #@+node:ekr.20191113063144.13: *4* tog: Visitors
-    #@+node:ekr.20191113063144.54: *5* tog.op_name
-    def op_name(self, node):
-        """Return the print name of an operator node."""
-        # This is *not* a visitor.
-        class_name = node.__class__.__name__
-        assert class_name in _op_names, repr(class_name)
-        return _op_names [class_name].strip()
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -4919,9 +4850,9 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.55: *6* tog.BinOp
     def do_BinOp(self, node):
 
-        op_name = self.op_name(node.op)
+        op_name_ = op_name(node.op)
         yield from self.gen(node.left)
-        yield from self.gen_op(op_name)
+        yield from self.gen_op(op_name_)
         yield from self.gen(node.right)
     #@+node:ekr.20191113063144.56: *6* tog.BoolOp
     # boolop = And | Or
@@ -4929,11 +4860,11 @@ class TokenOrderGenerator:
     def do_BoolOp(self, node):
         
         # op.join(node.values)
-        op_name = self.op_name(node.op)
+        op_name_ = op_name(node.op)
         for i, z in enumerate(node.values):
             yield from self.gen(z)
             if i < len(node.values) - 1:
-                yield from self.gen_name(op_name)
+                yield from self.gen_name(op_name_)
     #@+node:ekr.20191113063144.57: *6* tog.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
 
@@ -4942,23 +4873,23 @@ class TokenOrderGenerator:
         assert len(node.ops) == len(node.comparators)
         yield from self.gen(node.left)
         for i, z in enumerate(node.ops):
-            op_name = self.op_name(node.ops[i])
-            if op_name in ('not in', 'is not'):
-                for z in op_name.split(' '):
+            op_name_ = op_name(node.ops[i])
+            if op_name_ in ('not in', 'is not'):
+                for z in op_name_.split(' '):
                     yield from self.gen_name(z)
-            elif op_name.isalpha():
-                yield from self.gen_name(op_name)
+            elif op_name_.isalpha():
+                yield from self.gen_name(op_name_)
             else:
-                yield from self.gen_op(op_name)
+                yield from self.gen_op(op_name_)
             yield from self.gen(node.comparators[i])
     #@+node:ekr.20191113063144.58: *6* tog.UnaryOp
     def do_UnaryOp(self, node):
 
-        op_name = self.op_name(node.op)
-        if op_name.isalpha():
-            yield from self.gen_name(op_name)
+        op_name_ = op_name(node.op)
+        if op_name_.isalpha():
+            yield from self.gen_name(op_name_)
         else:
-            yield from self.gen_op(op_name)
+            yield from self.gen_op(op_name_)
         yield from self.gen(node.operand)
     #@+node:ekr.20191113063144.59: *6* tog.IfExp (ternary operator)
     # IfExp(expr test, expr body, expr orelse)
@@ -5068,9 +4999,9 @@ class TokenOrderGenerator:
     def do_AugAssign(self, node):
         
         # %s%s=%s\n'
-        op_name = self.op_name(node.op)
+        op_name_ = op_name(node.op)
         yield from self.gen(node.target)
-        yield from self.gen_op(op_name+'=')
+        yield from self.gen_op(op_name_+'=')
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.67: *6* tog.Await
@@ -5409,8 +5340,89 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
-#@+node:ekr.20191222083453.1: *3* class Fstringify (TOG)
-class Fstringify (TokenOrderGenerator):
+#@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
+class TokenOrderTraverser:
+    """
+    Traverse an ast tree using the parent/child links created by the
+    TokenOrderInjector class.
+    """
+    #@+others
+    #@+node:ekr.20191226200154.1: *4* TOT.traverse
+    def traverse(self, tree):
+        """
+        Call visit, in token order, for all nodes in tree.
+        
+        Recursion is not allowed.
+        
+        The code follows p.moveToThreadNext exactly.
+        """
+        
+        def has_next(i, node, stack):
+            """Return True if stack[i] is a valid child of node.parent."""
+            # g.trace(node.__class__.__name__, stack)
+            parent = node.parent
+            return parent and parent.children and i < len(parent.children)
+            
+        # Update stats
+        self.last_node_index = -1  # For visit
+        # The stack contains child indices.
+        node, stack = tree, [0]
+        seen = set()
+        while node and stack:
+            if False: g.trace(
+                f"{node.node_index:>3} "
+                f"{node.__class__.__name__:<12} {stack}")
+            # Visit the node.
+            assert node.node_index not in seen, node.node_index
+            seen.add(node.node_index)
+            self.visit(node)
+            # if p.v.children: p.moveToFirstChild()
+            children = getattr(node, 'children', [])
+            if children:
+                # Move to the first child.
+                stack.append(0)
+                node = children[0]
+                # g.trace(' child:', node.__class__.__name__, stack)
+                continue
+            # elif p.hasNext(): p.moveToNext()
+            stack[-1] += 1
+            i = stack[-1]
+            if has_next(i, node, stack):
+                node = node.parent.children[i]
+                continue
+            # else...
+            # p.moveToParent()
+            node = node.parent
+            stack.pop()
+            # while p:
+            while node and stack:
+                # if p.hasNext():
+                stack[-1] += 1
+                i = stack[-1]
+                if has_next(i, node, stack):
+                    # Move to the next sibling.
+                    node = node.parent.children[i]
+                    break  # Found.
+                # p.moveToParent()
+                node = node.parent
+                stack.pop()
+                # g.trace('parent:', node.__class__.__name__, stack)
+            # not found.
+            else:
+                break
+        # g.trace('done', node and node.__class__.__name__, stack)
+        return self.last_node_index
+    #@+node:ekr.20191227160547.1: *4* TOT.visit
+    def visit(self, node):
+
+        self.last_node_index += 1
+        assert self.last_node_index == node.node_index, (
+            self.last_node_index, node.node_index)
+        if 0:
+            g.trace(node.node_index, node.__class__.__name__)
+    #@-others
+#@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
+class Fstringify (TokenOrderTraverser): ### Was TokenOrderGenerator
     """A class to fstringify an existing ast tree."""
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify (entry)
@@ -5422,18 +5434,29 @@ class Fstringify (TokenOrderGenerator):
         This is pass 2 of TOG.fstringify.
         All links have already been created.
         """
-        # Init all ivars.
-        self.level = 0
-        self.node = None
+        self.filename = filename
         self.tokens = tokens
         self.tree = tree
-        # Pass 2: traverse the tree, converting f-strings.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
+        self.traverse(self.tree)
         return ''.join(z.to_string() for z in self.tokens)
+        ###
+            # # Init all ivars.
+            # self.level = 0
+            # self.node = None
+            # self.tokens = tokens
+            # self.tree = tree
+            # # Pass 2: traverse the tree, converting f-strings.
+            # try:
+                # while True:
+                    # next(self.visitor(tree))
+            # except StopIteration:
+                # pass
+            # return ''.join(z.to_string() for z in self.tokens)
+    #@+node:ekr.20191231055008.1: *4* fs.do_BinOp
+    def do_BinOp(self, node):
+        """Handle binary ops, including possible f-strings."""
+        if op_name(node.op) == '%' and isinstance(node.left, ast.Str):
+            self.make_fstring(node)
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring (top level) & helpers
     def make_fstring(self, node):
         """
@@ -5517,7 +5540,7 @@ class Fstringify (TokenOrderGenerator):
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(string_val, tokens):
-            self.error('string contains backslashes')
+            print(f"string contains backslashes: {string_val!r}")
             return None
         return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
@@ -5536,13 +5559,13 @@ class Fstringify (TokenOrderGenerator):
                 elif val == '}':
                     level -= 1
                     if level < 0:
-                        self.error('curly bracket underflow')
+                        print('curly bracket underflow')
                         return False
             if '\\n' in val and level > 0:
-                self.error('f-expression would contain a backslash')
+                print('f-expression would contain a backslash')
                 return False
         if level > 0:
-            self.error('unclosed curly bracket')
+            print('unclosed curly bracket')
             return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
@@ -5642,16 +5665,18 @@ class Fstringify (TokenOrderGenerator):
         i, j = NodeTokens().token_range(node)
         i1 = i
         tokens = self.tokens[i:j+1]
-        tokens = self.match_parens(tokens)
-        self.replace_token(i, 'string', s)
+        tokens = match_parens(tokens) ### Hack.
+        ### replace_token(i, 'string', s)
+        replace_token(self.tokens[i], 'string', s)
         j = 1
         while j < len(tokens):
-            self.replace_token(i1 + j, 'killed', '')
+            ### replace_token(i1 + j, 'killed', '')
+            replace_token(self.tokens[i1 + j], 'killed', '')
             j += 1
         # Replace the node.
         new_node = ast.Str()
         new_node.s = s
-        self.replace_node(new_node, node)
+        replace_node(new_node, node)
         # Update the token.
         token = self.tokens[i1]
         token.node = new_node
@@ -5691,7 +5716,7 @@ class Fstringify (TokenOrderGenerator):
                 elts = node
             for elt in elts:
                 if hasattr(elt, 'token_list'):
-                    tokens = self.tokens_for_node(elt)
+                    tokens = tokens_for_node(elt, self.tokens)
                     result.append(tokens)
                 elif trace:
                     g.trace(f"No token list for {elt.__class__.__name__}")
@@ -5703,7 +5728,7 @@ class Fstringify (TokenOrderGenerator):
             return result
         #
         # Now we expect only one result. 
-        tokens = self.tokens_for_node(node)
+        tokens = tokens_for_node(node, self.tokens)
         if trace and not tokens:
             g.trace('===== no token list', node.__class__.__name__)
             brief_dump(node)
@@ -5734,46 +5759,6 @@ class Fstringify (TokenOrderGenerator):
         if tail:
             results.append(Token('string', tail))
         return results
-    #@+node:ekr.20191222100303.1: *4* fs: Overrides...
-    #@+node:ekr.20191222090221.1: *5* fs.begin/end_visitor
-    begin_end_stack = []
-    node_stack = []  # The stack of parent nodes.
-
-    def begin_visitor(self, node):
-        """Enter a visitor."""
-        # This class must be run after all links have been created.
-        assert hasattr(node, 'node_index'), repr(node)
-        # begin_visitor and end_visitor must be paired.
-        self.begin_end_stack.append(node.__class__.__name__)
-        # Push the previous node.
-        self.node_stack.append(self.node)
-        # Update self.node *last*.
-        self.node = node
-
-    def end_visitor(self, node):
-        """Leave a visitor."""
-        # begin_visitor and end_visitor must be paired.
-        entry_name = self.begin_end_stack.pop()
-        assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
-        assert self.node == node, (repr(self.node), repr(node))
-        # Restore self.node.
-        self.node = self.node_stack.pop()
-    #@+node:ekr.20191222084644.1: *5* fs.BinOp
-    def do_BinOp(self, node):
-        """Handle binary ops, including possible f-strings."""
-        op_name = self.op_name(node.op)
-        if op_name == '%' and isinstance(node.left, ast.Str):
-            self.make_fstring(node)
-        yield from self.gen(node.left)
-        yield from self.gen_op(op_name)
-        yield from self.gen(node.right)
-    #@+node:ekr.20191222091058.1: *5* fs.set_links
-    def set_links(self, node, token):
-        """Make two-way links between token and the given node."""
-        assert False, g.callers()
-    #@+node:ekr.20191225062643.1: *5* fs.sync_token
-    def sync_token(self, kind, val):
-        pass
     #@-others
 #@+node:ekr.20191225072008.1: *3* class NodeTokens
 class NodeTokens:
@@ -5815,6 +5800,13 @@ class NodeTokens:
             g.trace(
                 f"{node.__class__.__name__:>15}, "
                 f"{self.i:>2} {self.j:>2}")
+    #@-others
+#@+node:ekr.20191231063821.1: *3* class TokenUtils
+class TokenUtils:
+    """
+    A class containing token-oriented utilities.
+    """
+    #@+others
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
 class TokenOrderFormatter (TokenOrderGenerator):
@@ -5987,87 +5979,6 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@-others
-#@+node:ekr.20191226195813.1: *3* class TokenOrderTraverser
-class TokenOrderTraverser:
-    """
-    Traverse an ast tree using the parent/child links created by the
-    TokenOrderInjector class.
-    """
-    #@+others
-    #@+node:ekr.20191226200154.1: *4* TOT.traverse
-    def traverse(self, tree):
-        """
-        Call visit, in token order, for all nodes in tree.
-        
-        Recursion is not allowed.
-        
-        The code follows p.moveToThreadNext exactly.
-        """
-        
-        def has_next(i, node, stack):
-            """Return True if stack[i] is a valid child of node.parent."""
-            # g.trace(node.__class__.__name__, stack)
-            parent = node.parent
-            return parent and parent.children and i < len(parent.children)
-            
-        # Update stats
-        self.last_node_index = -1  # For visit
-        # The stack contains child indices.
-        node, stack = tree, [0]
-        seen = set()
-        while node and stack:
-            if False: g.trace(
-                f"{node.node_index:>3} "
-                f"{node.__class__.__name__:<12} {stack}")
-            # Visit the node.
-            assert node.node_index not in seen, node.node_index
-            seen.add(node.node_index)
-            self.visit(node)
-            # if p.v.children: p.moveToFirstChild()
-            children = getattr(node, 'children', [])
-            if children:
-                # Move to the first child.
-                stack.append(0)
-                node = children[0]
-                # g.trace(' child:', node.__class__.__name__, stack)
-                continue
-            # elif p.hasNext(): p.moveToNext()
-            stack[-1] += 1
-            i = stack[-1]
-            if has_next(i, node, stack):
-                node = node.parent.children[i]
-                continue
-            # else...
-            # p.moveToParent()
-            node = node.parent
-            stack.pop()
-            # while p:
-            while node and stack:
-                # if p.hasNext():
-                stack[-1] += 1
-                i = stack[-1]
-                if has_next(i, node, stack):
-                    # Move to the next sibling.
-                    node = node.parent.children[i]
-                    break  # Found.
-                # p.moveToParent()
-                node = node.parent
-                stack.pop()
-                # g.trace('parent:', node.__class__.__name__, stack)
-            # not found.
-            else:
-                break
-        # g.trace('done', node and node.__class__.__name__, stack)
-        return self.last_node_index
-    #@+node:ekr.20191227160547.1: *4* TOT.visit
-    def visit(self, node):
-
-        self.last_node_index += 1
-        assert self.last_node_index == node.node_index, (
-            self.last_node_index, node.node_index)
-        if 0:
-            g.trace(node.node_index, node.__class__.__name__)
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
