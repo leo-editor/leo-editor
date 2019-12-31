@@ -372,7 +372,7 @@ def nearest_common_ancestor(node1, node2):
             result = parent1
         else:
             break
-    g.trace(result and result.node_index or 'None')
+    ### g.trace(result and result.node_index or 'None')
     return result
 #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
 def tokens_for_node(node, tokens):
@@ -419,11 +419,11 @@ def add_token_to_token_list(token, node):
         if t.index > token_i:
             token_list.insert(i, token)
             node.token_list = token_list
-            g.printObj(token_list, tag='token_list')
+            ### g.printObj(token_list, tag='token_list')
             return
     token_list.append(token)
     node.token_list = token_list
-    g.printObj(token_list, tag='token_list')
+    ### g.printObj(token_list, tag='token_list')
         
 #@+node:ekr.20191225055616.1: *4* function: replace_node
 def replace_node(new_node, old_node):
@@ -2841,8 +2841,8 @@ class TestReassignTokens (BaseTest):
         
         contents = """name='uninverted %s' % d.name()"""
         tokens, tree = self.make_data(contents)
-        dump_tokens(tokens)
-        dump_tree(tree)
+        ### dump_tokens(tokens)
+        ### dump_tree(tree)
         
     #@-others
 #@+node:ekr.20191113133338.1: *3* class TestRunner
