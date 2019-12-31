@@ -229,12 +229,8 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20191231110051.1: *3* node/token dumpers...
-#@+node:ekr.20191225092852.1: *4* function: dump_tree_and_links
-def dump_tree_and_links(ast):
-    """Dump an ast tree, showing links between tokens and ast nodes."""
-    return AstDumper().dump_tree_and_links(ast)
 #@+node:ekr.20191027074436.1: *4* function: dump_ast
-def dump_ast(ast, tag=None):
+def dump_ast(ast, tag='dump_ast'):
     """Utility to dump an ast tree."""
     g.printObj(AstDumper().dump_ast(ast), tag=tag)
 #@+node:ekr.20191228095945.4: *4* function: dump_contents
@@ -245,7 +241,7 @@ def dump_contents(contents):
     print('')
 #@+node:ekr.20191228095945.5: *4* function: dump_lines
 def dump_lines(tokens):
-    print('TOKEN lines...\n')
+    print('Token lines...\n')
     for z in tokens:
         if z.line.strip():
             print(z.line.rstrip())
@@ -266,9 +262,12 @@ def dump_tokens(tokens):
     print('')
 #@+node:ekr.20191228095945.9: *4* function: dump_tree
 def dump_tree(tree):
-    print('Tree...\n')
-    print(dump_tree_and_links(tree))
+    
     print('')
+    print('Tree...\n')
+    print(AstDumper().dump_tree_and_links(tree))
+    
+dump_tree_and_links = dump_tree
 #@+node:ekr.20191223095408.1: *3* node/token finders...
 # Functions that associate tokens with nodes.
 #@+node:ekr.20191223093539.1: *4* function: find_node_with_token_list
@@ -2509,43 +2508,6 @@ class BaseTest (unittest.TestCase):
             contents = f.read()
         return self.make_data(contents=contents, description=filename)
         
-    #@+node:ekr.20191228095945.1: *4* BaseTest: actions...
-    # Actions should fail by throwing an exception.
-    #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
-    def dump_stats(self):
-        """Show all calculated statistics."""
-        if self.counts or self.times:
-            print('')
-            self.dump_counts()
-            self.dump_times()
-            print('')
-    #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
-    def dump_counts(self):
-        """Show all calculated counts."""
-        for key, n in self.counts.items():
-            print(f"{key:>16}: {n:>6}")
-    #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
-    def dump_times(self):
-        """
-        Show all calculated times.
-        
-        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
-        """
-        for key in sorted(self.times):
-            t = self.times.get(key)
-            key2 = key[3:]
-            print(f"{key2:>16}: {t:6.3f} sec.")
-       
-    #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
-    def update_counts(self, key, n):
-        """Update the count statistic given by key, n."""
-        old_n = self.counts.get(key, 0)
-        self.counts [key] = old_n + n
-
-    def update_times(self, key, t):
-        """Update the timing statistic given by key, t."""
-        old_t = self.times.get(key, 0.0)
-        self.times [key] = old_t + t
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
     def make_tokens(self, contents, trace_mode=False):
@@ -2631,6 +2593,43 @@ class BaseTest (unittest.TestCase):
         t2 = get_time()
         self.update_times('31: fstringify', t2 - t1)
         return result_s
+    #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
+    # Actions should fail by throwing an exception.
+    #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
+    def dump_stats(self):
+        """Show all calculated statistics."""
+        if self.counts or self.times:
+            print('')
+            self.dump_counts()
+            self.dump_times()
+            print('')
+    #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
+    def dump_counts(self):
+        """Show all calculated counts."""
+        for key, n in self.counts.items():
+            print(f"{key:>16}: {n:>6}")
+    #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
+    def dump_times(self):
+        """
+        Show all calculated times.
+        
+        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
+        """
+        for key in sorted(self.times):
+            t = self.times.get(key)
+            key2 = key[3:]
+            print(f"{key2:>16}: {t:6.3f} sec.")
+       
+    #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
+    def update_counts(self, key, n):
+        """Update the count statistic given by key, n."""
+        old_n = self.counts.get(key, 0)
+        self.counts [key] = old_n + n
+
+    def update_times(self, key, t):
+        """Update the timing statistic given by key, t."""
+        old_t = self.times.get(key, 0.0)
+        self.times [key] = old_t + t
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
@@ -2838,9 +2837,12 @@ class TestReassignTokens (BaseTest):
     #@+node:ekr.20191231130320.1: *4* test_reassign_tokens (to do)
     def test_reassign_tokens(self):
         pass
-    #@+node:ekr.20191231130334.1: *4* test_nearest_common_ancestor (to do)
+    #@+node:ekr.20191231130334.1: *4* test_nearest_common_ancestor
     def test_nearest_common_ancestor(self):
-        pass
+        
+        contents = """name='uninverted %s' % d.name()"""
+        tokens, tree = self.make_data(contents)
+        dump_tree(tree)
     #@-others
 #@+node:ekr.20191113133338.1: *3* class TestRunner
 class TestRunner:
