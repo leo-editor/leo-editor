@@ -288,13 +288,18 @@ def is_ancestor(node, token):
 #@+node:ekr.20191225061516.1: *3* node/token replacers...
 # Functions that replace tokens or nodes.
 #@+node:ekr.20191224093336.1: *4* function:match_parens (hack, disabled)
+match_parens_message_given = False
+
 def match_parens(tokens):
     """
     Extend the tokens in the token list to include unmatched trailing
     closing parens.
     """
     if True: ###
-        g.trace('Disabled')
+        global match_parens_message_given
+        if not match_parens_message_given:
+            match_parens_message_given = True
+            g.trace('Disabled')
         return tokens
     if not tokens:
         return tokens
@@ -531,6 +536,34 @@ def op_name(node):
     class_name = node.__class__.__name__
     assert class_name in _op_names, repr(class_name)
     return _op_names [class_name].strip()
+#@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor (test)
+def nearest_common_ancestor(node1, node2):
+    """
+    Return the nearest common ancestor nodes for the given nodes.
+    
+    The nodes must have parent links.
+    """
+    if node1 == node2:
+        return node1
+        
+    def parents(node):
+        aList = []
+        while node:
+            aList.append(node)
+            node = node.parent
+        return list(reversed(aList))
+        
+    result = None
+    parents1 = parents(node1)
+    parents2 = parents(node2)
+    while parents1 and parents2:
+        parent1 = parents1.pop()
+        parent2 = parents2.pop()
+        if parent1 == parent2:
+            result = parent1
+        else:
+            break
+    return result
 #@+node:ekr.20191027075648.1: *4* function: parse_ast
 def parse_ast(s, headline=None, show_time=False):
     """
@@ -4017,13 +4050,18 @@ class TokenOrderGenerator:
         
         For now, we only need reassign parens.
         """
-        last_sig_token = None
-        for token in tokens:
-            if is_significant_token(token):
-                assert token.node, repr(token)
-                last_sig_token = token
-            elif token.kind == 'op' and token.value in '()':
-                token.node = last_sig_token.node
+        if 1:
+            ReassignTokens().reassign(tokens, tree) ### To do.
+            
+            # First, handle ast.Call nodes.
+        else:
+            last_sig_token = None
+            for token in tokens:
+                if is_significant_token(token):
+                    assert token.node, repr(token)
+                    last_sig_token = token
+                elif token.kind == 'op' and token.value in '()':
+                    token.node = last_sig_token.node
     #@+node:ekr.20191222082453.1: *5* 3.1: tog.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
@@ -5794,12 +5832,27 @@ class NodeTokens:
                 f"{node.__class__.__name__:>15}, "
                 f"{self.i:>2} {self.j:>2}")
     #@-others
-#@+node:ekr.20191231063821.1: *3* class TokenUtils
-class TokenUtils:
-    """
-    A class containing token-oriented utilities.
-    """
+#@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
+class ReassignTokens (TokenOrderTraverser):
+    
+    """A class that reassigns tokens to more appropriate ast nodes."""
+    
     #@+others
+    #@+node:ekr.20191231084640.1: *4* reassign.reassign
+    def reassign(self, tokens, tree):
+        """The main entry point."""
+        g.trace('=====')
+        self.tokens = tokens
+        self.tree = tree
+        # self.pass_n = 1
+        self.traverse(tree)
+    #@+node:ekr.20191231084853.1: *4* reassign.visit
+    def visit(self, node):
+        """ReassignTokens.visit"""
+        # For now, just handle call nodes.
+        g.trace(node.node_index, node.__class__.__name__)
+        if isinstance(node, ast.Call):
+            g.trace('TO DO')
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
 class TokenOrderFormatter (TokenOrderGenerator):
@@ -5972,6 +6025,13 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
+    #@-others
+#@+node:ekr.20191231063821.1: *3* class TokenUtils
+class TokenUtils:
+    """
+    A class containing token-oriented utilities.
+    """
+    #@+others
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
