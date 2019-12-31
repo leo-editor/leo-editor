@@ -228,19 +228,55 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
+#@+node:ekr.20191231110051.1: *3* node/token dumpers...
+#@+node:ekr.20191225092852.1: *4* function: brief_dump
+def brief_dump(ast):
+    """Dump an ast node."""
+    return AstDumper().brief_dump(ast)
+#@+node:ekr.20191027074436.1: *4* function: dump_ast
+def dump_ast(ast, tag=None):
+    """Utility to dump an ast tree."""
+    g.printObj(AstDumper().dump(ast), tag=tag)
+#@+node:ekr.20191228095945.4: *4* function: dump_contents
+def dump_contents(contents):
+    print('Contents...\n')
+    for i, z in enumerate(g.splitLines(contents)):
+        print(f"{i+1:<3} ", z.rstrip())
+    print('')
+#@+node:ekr.20191228095945.5: *4* function: dump_lines
+def dump_lines(tokens):
+    print('TOKEN lines...\n')
+    for z in tokens:
+        if z.line.strip():
+            print(z.line.rstrip())
+        else:
+            print(repr(z.line))
+    print('')
+#@+node:ekr.20191228095945.6: *4* function: dump_raw_tree
+def dump_raw_tree(tree):
+    print('Raw tree...\n')
+    print(AstDumper().dump(tree))
+    print('')
+#@+node:ekr.20191228095945.7: *4* function: dump_results
+def dump_results(tokens):
+    print('Results...\n')
+    print(''.join(z.to_string() for z in tokens))
+    print('')
+#@+node:ekr.20191228095945.8: *4* function: dump_tokens
+def dump_tokens(tokens, brief=False):
+    print('Tokens...\n')
+    print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+    for z in tokens:
+        print(z.dump(brief=brief))
+    print('')
+#@+node:ekr.20191228095945.9: *4* function: dump_tree
+def dump_tree(tree, brief=False):
+    print('Tree...\n')
+    print(brief_dump(tree))
+    print('')
 #@+node:ekr.20191223095408.1: *3* node/token finders...
 # Functions that associate tokens with nodes.
-#@+node:ekr.20191223053247.1: *4* tu.find_token
-def find_token(node):
-    """Return any token descending from node."""
-    node2 = find_node_with_token_list(node)
-    if node2:
-        token = node2.token_list[0]
-        return token
-    g.trace('===== no token list', node.__class__.__name__)
-    return None
-        
-#@+node:ekr.20191223093539.1: *4* tu.find_node_with_token_list
+#@+node:ekr.20191223093539.1: *4* function: find_node_with_token_list
 def find_node_with_token_list(node):
     """
     Return any node in node's tree with a token_list.
@@ -275,7 +311,17 @@ def find_node_with_token_list(node):
                 break
     g.trace('===== no token list', node1.__class__.__name__)
     return None
-#@+node:ekr.20191223054300.1: *4* tu.is_ancestor
+#@+node:ekr.20191223053247.1: *4* function: find_token
+def find_token(node):
+    """Return any token descending from node."""
+    node2 = find_node_with_token_list(node)
+    if node2:
+        token = node2.token_list[0]
+        return token
+    g.trace('===== no token list', node.__class__.__name__)
+    return None
+        
+#@+node:ekr.20191223054300.1: *4* function: is_ancestor
 def is_ancestor(node, token):
     """Return True if node is an ancestor of token."""
     t_node = token.node
@@ -285,9 +331,7 @@ def is_ancestor(node, token):
             return True
         t_node = t_node.parent
     return False
-#@+node:ekr.20191225061516.1: *3* node/token replacers...
-# Functions that replace tokens or nodes.
-#@+node:ekr.20191224093336.1: *4* function:match_parens (hack, disabled)
+#@+node:ekr.20191224093336.1: *4* function: match_parens (hack, disabled)
 match_parens_message_given = False
 
 def match_parens(tokens):
@@ -326,34 +370,35 @@ def match_parens(tokens):
         g.trace('FAIL:', 'level', level, ''.join(z.to_string() for z in tokens))
         print('')
     return tokens
-#@+node:ekr.20191225055616.1: *4* function:replace_node
-def replace_node(new_node, old_node):
+#@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor (test)
+def nearest_common_ancestor(node1, node2):
+    """
+    Return the nearest common ancestor nodes for the given nodes.
     
-    parent = old_node.parent
-    new_node.parent = parent
-    new_node.node_index = old_node.node_index
-    children = parent.children
-    i = children.index(old_node)
-    children[i] = new_node
-    fields = getattr(old_node, '_fields', None)
-    if fields:
-        for field in fields:
-            field = getattr(old_node, field)
-            if field == old_node:
-                setattr(old_node, field, new_node)
-                break
-#@+node:ekr.20191225055626.1: *4* function:replace_token
-### def replace_token(i, kind, value):
-def replace_token(token, kind, value): ###
-    """Replace kind and value of the given token."""
-    ### token = self.tokens[i]
-    if token.kind in ('endmarker', 'killed'):
-        return
-    token.kind = kind
-    token.value = value
-    token.node = None  # Should be filled later.
-#@+node:ekr.20191223053324.1: *4* function:tokens_for_node
-### def tokens_for_node(node):
+    The nodes must have parent links.
+    """
+    if node1 == node2:
+        return node1
+        
+    def parents(node):
+        aList = []
+        while node:
+            aList.append(node)
+            node = node.parent
+        return list(reversed(aList))
+        
+    result = None
+    parents1 = parents(node1)
+    parents2 = parents(node2)
+    while parents1 and parents2:
+        parent1 = parents1.pop()
+        parent2 = parents2.pop()
+        if parent1 == parent2:
+            result = parent1
+        else:
+            break
+    return result
+#@+node:ekr.20191223053324.1: *4* function: tokens_for_node
 def tokens_for_node(node, tokens):
     """Return the list of all tokens descending from node."""
     # Find any token descending from node.
@@ -385,12 +430,36 @@ def tokens_for_node(node, tokens):
     # Extend tokens to balance parens.
     results = tokens[last_i : last_j + 1]
     return match_parens(results)  ### hack.
+#@+node:ekr.20191225061516.1: *3* node/token replacers...
+# Functions that replace tokens or nodes.
+#@+node:ekr.20191225055616.1: *4* function: replace_node
+def replace_node(new_node, old_node):
+    
+    parent = old_node.parent
+    new_node.parent = parent
+    new_node.node_index = old_node.node_index
+    children = parent.children
+    i = children.index(old_node)
+    children[i] = new_node
+    fields = getattr(old_node, '_fields', None)
+    if fields:
+        for field in fields:
+            field = getattr(old_node, field)
+            if field == old_node:
+                setattr(old_node, field, new_node)
+                break
+#@+node:ekr.20191225055626.1: *4* function: replace_token
+### def replace_token(i, kind, value):
+def replace_token(token, kind, value): ###
+    """Replace kind and value of the given token."""
+    ### token = self.tokens[i]
+    if token.kind in ('endmarker', 'killed'):
+        return
+    token.kind = kind
+    token.value = value
+    token.node = None  # Should be filled later.
 #@+node:ekr.20191231072039.1: *3* node/token utils...
 # General utility functions on tokens and nodes.
-#@+node:ekr.20191225092852.1: *4* function: brief_dump
-def brief_dump(ast):
-    """Dump an ast node."""
-    return AstDumper().brief_dump(ast)
 #@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
@@ -461,10 +530,6 @@ def _compare_nodes(node1, node2):
                     f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
                 )
             _compare_asts(item1, item2)
-#@+node:ekr.20191027074436.1: *4* function: dump_ast
-def dump_ast(ast, tag=None):
-    """Utility to dump an ast tree."""
-    g.printObj(AstDumper().dump(ast), tag=tag)
 #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
 def is_significant(kind, value):
     """
@@ -536,34 +601,6 @@ def op_name(node):
     class_name = node.__class__.__name__
     assert class_name in _op_names, repr(class_name)
     return _op_names [class_name].strip()
-#@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor (test)
-def nearest_common_ancestor(node1, node2):
-    """
-    Return the nearest common ancestor nodes for the given nodes.
-    
-    The nodes must have parent links.
-    """
-    if node1 == node2:
-        return node1
-        
-    def parents(node):
-        aList = []
-        while node:
-            aList.append(node)
-            node = node.parent
-        return list(reversed(aList))
-        
-    result = None
-    parents1 = parents(node1)
-    parents2 = parents(node2)
-    while parents1 and parents2:
-        parent1 = parents1.pop()
-        parent2 = parents2.pop()
-        if parent1 == parent2:
-            result = parent1
-        else:
-            break
-    return result
 #@+node:ekr.20191027075648.1: *4* function: parse_ast
 def parse_ast(s, headline=None, show_time=False):
     """
@@ -2479,31 +2516,6 @@ class BaseTest (unittest.TestCase):
         
     #@+node:ekr.20191228095945.1: *4* BaseTest: actions...
     # Actions should fail by throwing an exception.
-    #@+node:ekr.20191228095945.4: *5* BaseTest.dump_contents
-    def dump_contents(self, contents):
-        print('Contents...\n')
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20191228095945.5: *5* BaseTest.dump_lines
-    def dump_lines(self, tokens):
-        print('TOKEN lines...\n')
-        for z in tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20191228095945.6: *5* BaseTest.dump_raw_tree
-    def dump_raw_tree(self, tree):
-        print('Raw tree...\n')
-        print(AstDumper().dump(tree))
-        print('')
-    #@+node:ekr.20191228095945.7: *5* BaseTest.dump_results
-    def dump_results(self, tokens):
-        print('Results...\n')
-        print(''.join(z.to_string() for z in tokens))
-        print('')
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
     def dump_stats(self):
         """Show all calculated statistics."""
@@ -2529,18 +2541,6 @@ class BaseTest (unittest.TestCase):
             key2 = key[3:]
             print(f"{key2:>16}: {t:6.3f} sec.")
        
-    #@+node:ekr.20191228095945.8: *5* BaseTest.dump_tokens
-    def dump_tokens(self, tokens, brief=False):
-        print('Tokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        for z in tokens:
-            print(z.dump(brief=brief))
-        print('')
-    #@+node:ekr.20191228095945.9: *5* BaseTest.dump_tree
-    def dump_tree(self, tree, brief=False):
-        print('Tree...\n')
-        print(brief_dump(tree))
-        print('')
     #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
     def update_counts(self, key, n):
         """Update the count statistic given by key, n."""
@@ -3257,7 +3257,7 @@ class TestRunner:
         self.update_times('01: ast-tokens', t2 - t1)
     #@-others
    
-#@+node:ekr.20191229083512.1: *3* class TestFstringify
+#@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
@@ -3273,9 +3273,9 @@ class TestFstringify (BaseTest):
         
         contents = "'%s' % d()" # d.name()
         tokens, tree = self.make_data(contents)
-        self.dump_contents(contents)
-        self.dump_tokens(tokens)
-        self.dump_tree(tree)
+        dump_contents(contents)
+        dump_tokens(tokens)
+        dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
         # self.dump_times()
     #@+node:ekr.20191230183652.1: *4* test_fstringify_with_parens
@@ -3283,9 +3283,9 @@ class TestFstringify (BaseTest):
 
         contents = "print('%20s' % (ivar), val)"
         tokens, tree = self.make_data(contents)
-        self.dump_contents(contents)
-        self.dump_tokens(tokens)
-        self.dump_tree(tree)
+        dump_contents(contents)
+        dump_tokens(tokens)
+        dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
         # self.dump_times()
     #@-others
@@ -3914,9 +3914,9 @@ b = 2 + 3
             tokens, tree = self.make_file_data('leoApp.py')
         else:
             tokens, tree = self.make_data(contents)
-        # self.dump_contents(contents)
-        # self.dump_tokens(tokens)
-        # self.dump_tree(tree)
+        # dump_contents(contents)
+        # dump_tokens(tokens)
+        # dump_tree(tree)
         tot = TokenOrderTraverser()
         t1 = get_time()
         n_nodes = tot.traverse(tree)
@@ -4047,21 +4047,9 @@ class TokenOrderGenerator:
     def reassign_tokens(self, tokens, tree):
         """
         Reassign links between the given token list and ast-tree.
-        
-        For now, we only need reassign parens.
         """
-        if 1:
-            ReassignTokens().reassign(tokens, tree) ### To do.
+        ReassignTokens().reassign(tokens, tree)
             
-            # First, handle ast.Call nodes.
-        else:
-            last_sig_token = None
-            for token in tokens:
-                if is_significant_token(token):
-                    assert token.node, repr(token)
-                    last_sig_token = token
-                elif token.kind == 'op' and token.value in '()':
-                    token.node = last_sig_token.node
     #@+node:ekr.20191222082453.1: *5* 3.1: tog.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
@@ -5850,9 +5838,20 @@ class ReassignTokens (TokenOrderTraverser):
     def visit(self, node):
         """ReassignTokens.visit"""
         # For now, just handle call nodes.
-        g.trace(node.node_index, node.__class__.__name__)
-        if isinstance(node, ast.Call):
-            g.trace('TO DO')
+        if not isinstance(node, ast.Call):
+            return
+        g.trace(node.node_index,
+            node.__class__.__name__, node.args.__class__.__name__)
+        g.trace([str(z) for z in tokens_for_node(node, self.tokens)])
+        # First, handle ast.Call nodes.
+
+            # last_sig_token = None
+            # for token in tokens:
+                # if is_significant_token(token):
+                    # assert token.node, repr(token)
+                    # last_sig_token = token
+                # elif token.kind == 'op' and token.value in '()':
+                    # token.node = last_sig_token.node
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
 class TokenOrderFormatter (TokenOrderGenerator):
