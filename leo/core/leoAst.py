@@ -3303,26 +3303,34 @@ class TestFstringify (BaseTest):
         filename = r'c:\test\core\leoApp.py'
         tokens, tree = self.make_file_data(filename)
         self.fstringify(tokens, tree, filename)
-        self.dump_times()
+        # self.dump_times()
     #@+node:ekr.20191230150653.1: *4* test_fstringify_with_call
     def test_fstringify_with_call(self):
         
-        contents = "'%s' % d()" # d.name()
+        contents = """'%s' % d()"""
+        expected = '''f"{d()}"'''
         tokens, tree = self.make_data(contents)
-        dump_contents(contents)
-        dump_tokens(tokens)
-        dump_tree(tree)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
+        results = tokens_to_string(tokens)
+        assert results == expected, results
         # self.dump_times()
     #@+node:ekr.20191230183652.1: *4* test_fstringify_with_parens
     def test_fstringify_with_parens(self):
 
-        contents = "print('%20s' % (ivar), val)"
+        contents = """print('%20s' % (ivar), val)"""
+        expected = """print(f"{ivar:20}"), val)"""
         tokens, tree = self.make_data(contents)
-        dump_contents(contents)
-        dump_tokens(tokens)
-        dump_tree(tree)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
+        results = tokens_to_string(tokens)
+        assert results == expected, results
         # self.dump_times()
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
@@ -5867,7 +5875,7 @@ class ReassignTokens (TokenOrderTraverser):
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
         if not nca:
-            g.trace(f"no nca: {tokens_to_string(tokens)}")
+            # g.trace(f"no nca: {tokens_to_string(tokens)}")
             return
         if node.args:
             # Associate the () with the first and last args.
