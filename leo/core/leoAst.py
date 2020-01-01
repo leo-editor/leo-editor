@@ -3307,13 +3307,15 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
         results = tokens_to_string(tokens)
-        assert results == expected, results
+        assert results == expected, (
+            f"expected: {expected}\n"
+            f"     got: {results}")
         # self.dump_times()
     #@+node:ekr.20191230183652.1: *4* test_fstringify_with_parens
     def test_fstringify_with_parens(self):
 
         contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f"{ivar:20}"), val)"""
+        expected = """print(f"{ivar:20}", val)"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -3321,7 +3323,10 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(tokens, tree, '<string>')
         results = tokens_to_string(tokens)
-        assert results == expected, results
+        assert results == expected, (
+            f"\n"
+            f"expected: {expected}\n"
+            f"     got: {results}")
         # self.dump_times()
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
