@@ -2201,7 +2201,9 @@ class LoadManager:
                 val = settings_d2.d.get(key)
                 if val:
                     fn = g.shortFileName(val.path)
-                    g.es_print(f"--trace-setting: in {fn:20}: @{val.kind} {g.app.trace_setting}={val.val}")
+                    g.es_print(
+                        f"--trace-setting: in {fn:20}: "
+                        f"@{val.kind} {g.app.trace_setting}={val.val}")
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
@@ -2290,7 +2292,9 @@ class LoadManager:
             binding = g.app.trace_binding
             # First, see if the binding is for a command. (Doesn't work for plugin commands).
             if localFlag and binding in c.k.killedBindings:
-                g.es_print(f"--trace-binding: {c.shortFileName()} sets {binding} to None")
+                g.es_print(
+                    f"--trace-binding: {c.shortFileName()} "
+                    f"sets {binding} to None")
             elif localFlag and binding in c.commandsDict:
                  d = c.k.computeInverseBindingDict()
                  g.trace('--trace-binding: %20s binds %s to %s' % (
@@ -2786,7 +2790,7 @@ class LoadManager:
                 if sfn != '__init__.py':
                     try:
                         # Important: use importlib to give imported modules their fully qualified names.
-                        m = importlib.import_module(f"leo.plugins.writers.{sfn[: -3]}")
+                        m = importlib.import_module(f"leo.plugins.writers.{sfn[:-3]}")
                         self.parse_writer_dict(sfn, m)
                     except Exception:
                         g.es_exception()
@@ -3531,7 +3535,10 @@ class PreviousSettings:
         self.shortcutsDict = shortcutsDict
 
     def __repr__(self):
-        return f"<PreviousSettings\n{self.settingsDict}\n{self.shortcutsDict}\n>"
+        return (
+            f"<PreviousSettings\n"
+            f"{self.settingsDict}\n"
+            f"{self.shortcutsDict}\n>")
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
