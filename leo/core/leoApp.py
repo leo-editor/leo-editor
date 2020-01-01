@@ -2164,7 +2164,7 @@ class LoadManager:
                 'extensionsDir', 'globalConfigDir')
             for ivar in aList:
                 val = getattr(g.app, ivar)
-                g.trace('%20s' % (ivar), val)
+                g.trace(f"{ivar:20}", val)
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, c, path):
@@ -2201,8 +2201,7 @@ class LoadManager:
                 val = settings_d2.d.get(key)
                 if val:
                     fn = g.shortFileName(val.path)
-                    g.es_print('--trace-setting: in %20s: @%s %s=%s' % (
-                        fn, val.kind, g.app.trace_setting, val.val))
+                    g.es_print(f"--trace-setting: in {fn:20}: @{val.kind} {g.app.trace_setting}={val.val}")
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
@@ -2236,8 +2235,8 @@ class LoadManager:
         pre-reading fn.
         """
         lm = self
-        settingsName = 'settings dict for %s' % g.shortFileName(fn)
-        shortcutsName = 'shortcuts dict for %s' % g.shortFileName(fn)
+        settingsName = f"settings dict for {g.shortFileName(fn)}"
+        shortcutsName = f"shortcuts dict for {g.shortFileName(fn)}"
         # A special case: settings in leoSettings.leo do *not* override
         # the global settings, that is, settings in myLeoSettings.leo.
         isLeoSettings = g.shortFileName(fn).lower() == 'leosettings.leo'
@@ -2309,8 +2308,7 @@ class LoadManager:
                             pane = f" in {bi.pane} panes"
                         else:
                             pane = ''
-                        g.es_print('--trace-binding: %20s binds %s to %-20s%s' % (
-                            fn, stroke2, bi.commandName, pane))
+                        g.es_print(f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}")
                     print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
@@ -2343,8 +2341,7 @@ class LoadManager:
                 kind = 'duplicate, (not conflicting)' if len(bindings) == 1 else 'conflicting'
                 g.es_print(f"{kind} key bindings in {c.shortFileName()}")
                 for bi in aList2:
-                    g.es_print('%6s %s %s' % (
-                        bi.pane, bi.stroke.s, bi.commandName))
+                    g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
     #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
         """
@@ -2352,7 +2349,7 @@ class LoadManager:
         returning a dict whose keys are strokes.
         """
         result = g.TypedDict( # was TypedDictOfLists.
-            name='inverted %s' % d.name(),
+            name=f"inverted {d.name()}",
             keyType=g.KeyStroke,
             valType=g.BindingInfo,
         )
@@ -2371,7 +2368,7 @@ class LoadManager:
         """
         assert d.keyType == g.KeyStroke, d.keyType
         result = g.TypedDict( # was TypedDictOfLists.
-            name='uninverted %s' % d.name(),
+            name=f"uninverted {d.name()}",
             keyType=type('commandName'),
             valType=g.BindingInfo,
         )
@@ -2495,7 +2492,7 @@ class LoadManager:
             for key in sorted(list(d.keys())):
                 val = d.get(key)
                 # print('%20s %s' % (key,val.dump()))
-                print('%35s %s' % (key, [z.stroke for z in val]))
+                print(f"{key:35} {[z.stroke for z in val]}")
             if d: print('')
         else:
             print(d)
@@ -2543,7 +2540,7 @@ class LoadManager:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
             t2 = time.process_time()
-            g.es_print('startup time: %5.2f sec' % (t2 - t1))
+            g.es_print(f"startup time: {t2 - t1:5.2f} sec")
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
@@ -2734,7 +2731,7 @@ class LoadManager:
                         # Important: use importlib to give imported modules
                         # their fully qualified names.
                         m = importlib.import_module(
-                            'leo.plugins.importers.%s' % module_name)
+                            f"leo.plugins.importers.{module_name}")
                         self.parse_importer_dict(sfn, m)
                         # print('createImporterData', m.__name__)
                     except Exception:
@@ -2789,7 +2786,7 @@ class LoadManager:
                 if sfn != '__init__.py':
                     try:
                         # Important: use importlib to give imported modules their fully qualified names.
-                        m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
+                        m = importlib.import_module(f"leo.plugins.writers.{sfn[: -3]}")
                         self.parse_writer_dict(sfn, m)
                     except Exception:
                         g.es_exception()
@@ -3409,7 +3406,7 @@ class LoadManager:
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
             # Fix #1070: Use "newHeadline", not fn.
-            p.h = "newHeadline" if fn.endswith('.leo') else '@edit %s' % fn
+            p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
             c.selectPosition(p)
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.
@@ -3534,8 +3531,7 @@ class PreviousSettings:
         self.shortcutsDict = shortcutsDict
 
     def __repr__(self):
-        return '<PreviousSettings\n%s\n%s\n>' % (
-            self.settingsDict, self.shortcutsDict)
+        return f"<PreviousSettings\n{self.settingsDict}\n{self.shortcutsDict}\n>"
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
@@ -3868,7 +3864,7 @@ class RecentFilesManager:
                         if ok:
                             if not g.app.silentMode:
                                 # Fix #459:
-                                g.es_print('wrote recent file: %s' % fileName)
+                                g.es_print(f"wrote recent file: {fileName}")
                             written = True
                         else:
                             g.error(f"failed to write recent file: {fileName}")
