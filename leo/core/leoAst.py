@@ -5692,7 +5692,7 @@ class Fstringify (TokenOrderTraverser):
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail
-    #@+node:ekr.20191225054848.1: *5* fs.replace ***
+    #@+node:ekr.20191225054848.1: *5* fs.replace
     def replace(self, node, s, values):
         """
         Replace node with an ast.Str node for s.
@@ -5701,10 +5701,6 @@ class Fstringify (TokenOrderTraverser):
         # Replace the tokens...
         tokens = tokens_for_node(node, self.tokens)
         i1 = i = tokens[0].index
-        ###
-            # i, j = NodeTokens().token_range(node)
-            # i1 = i
-            # tokens = self.tokens[i:j+1]
         replace_token(self.tokens[i], 'string', s)
         j = 1
         while j < len(tokens):
