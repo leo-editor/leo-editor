@@ -5699,10 +5699,12 @@ class Fstringify (TokenOrderTraverser):
         Replace all tokens in the range of values with a single 'string' node.
         """
         # Replace the tokens...
-        i, j = NodeTokens().token_range(node)
-        i1 = i
-        tokens = self.tokens[i:j+1]
-        ### tokens = match_parens(tokens) ### Hack.
+        tokens = tokens_for_node(node, self.tokens)
+        i1 = i = tokens[0].index
+        ###
+            # i, j = NodeTokens().token_range(node)
+            # i1 = i
+            # tokens = self.tokens[i:j+1]
         replace_token(self.tokens[i], 'string', s)
         j = 1
         while j < len(tokens):
@@ -5793,47 +5795,6 @@ class Fstringify (TokenOrderTraverser):
         if tail:
             results.append(Token('string', tail))
         return results
-    #@-others
-#@+node:ekr.20191225072008.1: *3* class NodeTokens
-class NodeTokens:
-    """
-    A class returning a range of tokens for a single ast node.
-    """
-    #@+others
-    #@+node:ekr.20191225111222.1: *4* token_range
-    def token_range(self, node):
-        self.i, self.j = None, None
-        list(self.token_range_helper(node))
-        return self.i, self.j
-        
-    #@+node:ekr.20191225111141.1: *4* token_range_helper
-    def token_range_helper(self, node):
-        if isinstance(node, (list, tuple)):
-            for z in node:
-                yield from self.token_range_helper(z)
-        elif hasattr(node, '_fields'):
-            self.update_range(node)
-            for field in node._fields:
-                node2 = getattr(node, field)
-                self.update_range(node2)
-                yield from self.token_range_helper(node2)
-    #@+node:ekr.20191225125633.1: *4* update_range
-    def update_range(self, node):
-        token_list = getattr(node, 'token_list', None)
-        if not token_list:
-            return
-        if self.i is None:
-            self.i = token_list[0].index
-        else:
-            self.i = min(self.i, token_list[0].index)
-        if self.j is None:
-            self.j = token_list[-1].index
-        else:
-            self.j = max(self.j, token_list[-1].index)
-        if 0:
-            g.trace(
-                f"{node.__class__.__name__:>15}, "
-                f"{self.i:>2} {self.j:>2}")
     #@-others
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
