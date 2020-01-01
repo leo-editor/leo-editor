@@ -2870,8 +2870,8 @@ class TestReassignTokens (BaseTest):
         
         contents = """name='uninverted %s' % d.name()"""
         tokens, tree = self.make_data(contents)
-        ### dump_tokens(tokens)
-        ### dump_tree(tree)
+        # dump_tokens(tokens)
+        # dump_tree(tree)
         
     #@-others
 #@+node:ekr.20191113133338.1: *3* class TestRunner
@@ -5780,16 +5780,9 @@ class Fstringify (TokenOrderTraverser):
                     g.trace(f"item: {elt.__class__.__name__}")
                 tokens = tokens_for_node(elt, self.tokens)
                 result.append(tokens)
-                ###
-                    # if hasattr(elt, 'token_list'):
-                        # tokens = tokens_for_node(elt, self.tokens)
-                        # result.append(tokens)
-                    # elif trace:
-                        # g.trace(f"No token list for {elt.__class__.__name__}")
             return result
-        if trace: g.trace(node.__class__.__name__)
-        #
         # Now we expect only one result. 
+        if trace: g.trace(node.__class__.__name__)
         tokens = tokens_for_node(node, self.tokens)
         if trace and not tokens:
             g.trace('===== no token list', node.__class__.__name__)
@@ -5848,9 +5841,9 @@ class ReassignTokens (TokenOrderTraverser):
             # g.trace(f"no nca: {tokens_to_string(tokens)}")
             return
         if node.args:
-            # Associate the () with the first and last args.
-            arg0, arg9 = node.args[0], node.args[-1]
-            if 0: g.trace(arg0.node_index, arg9.node_index) ###
+            pass
+            # arg0, arg9 = node.args[0], node.args[-1]
+            # if 0: g.trace(arg0.node_index, arg9.node_index)
         else:
             # Associate () with the call node.
             i = tokens[-1].index
