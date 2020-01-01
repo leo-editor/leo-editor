@@ -262,7 +262,8 @@ def dump_lines(tokens):
 #@+node:ekr.20191228095945.7: *4* function: dump_results
 def dump_results(tokens):
     print('Results...\n')
-    print(''.join(z.to_string() for z in tokens))
+    ### print(''.join(z.to_string() for z in tokens))
+    print(tokens_to_string(tokens))
     print('')
 #@+node:ekr.20191228095945.8: *4* function: dump_tokens
 def dump_tokens(tokens):
@@ -403,11 +404,42 @@ def tokens_for_node(node, tokens):
             else:
                 break
         j += 1
+    last_j = match_parens(last_i, last_j, tokens)
     results = tokens[last_i : last_j + 1]
     return results
-    ### No longer used
-        # Extend tokens to balance parens.
-        # return match_parens(results)
+    
+#@+node:ekr.20191224093336.1: *4* function: match_parens
+match_parens_message_given = False
+
+def match_parens(i, j, tokens):
+    """
+    Match parens in tokens[i:j]. Return the new j.
+    """
+    if j >= len(tokens):
+        return len(tokens)
+    # Calculate paren level...
+    level = 0
+    for n in range(i, j+1):
+        token = tokens[n]
+        if token.kind == 'op' and token.value == '(':
+            level += 1
+        if token.kind == 'op' and token.value == ')':
+            level -= 1
+    # Find matching ')' tokens...
+    if level > 0:
+        while level > 0 and j + 1 < len(tokens):
+            token = tokens[j+1]
+            if token.kind == 'op' and token.value == ')':
+                level -= 1
+            elif is_significant_token(token):
+                break
+            j += 1
+    if level != 0:
+        print('')
+        # s = ''.join([z.to_string() for z in tokens[i:j+1]])
+        s = tokens_to_string(tokens[i:j+1])
+        g.trace(f"Unmatched tokens. level={level}, {s!r}\n")
+    return j
 #@+node:ekr.20191225061516.1: *3* node/token replacers...
 # Functions that replace tokens or nodes.
 #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -626,6 +658,10 @@ def parse_ast(s, headline=None, show_time=False):
         oops('Unexpected Exception')
         g.es_exception()
     return None
+#@+node:ekr.20200101030236.1: *4* function: tokens_to_string
+def tokens_to_string(tokens):
+    """Return the string represented by the list of tokens."""
+    return ''.join([z.to_string() for z in tokens])
 #@+node:ekr.20191227170512.1: ** Legacy classes
 #@+node:ekr.20141012064706.18399: *3*  class AstFormatter
 class AstFormatter:
@@ -3150,7 +3186,8 @@ class TestRunner:
     def dump_results(self):
 
         print('\nResults...\n')
-        print(''.join(z.to_string() for z in self.tokens))
+        ### print(''.join(z.to_string() for z in self.tokens))
+        print(tokens_to_string(self.tokens))
     #@+node:ekr.20191226095129.1: *5* TR.dump_times
     def dump_times(self):
         """
@@ -3953,7 +3990,8 @@ class TokenOrderGenerator:
         import tokenize
         
         def check(contents, tokens):
-            result = ''.join([z.to_string() for z in tokens])
+            ### result = ''.join([z.to_string() for z in tokens])
+            result = tokens_to_string(tokens)
             ok = result == contents
             if not ok:
                 print('\nRound-trip check FAILS')
@@ -5443,7 +5481,8 @@ class Fstringify (TokenOrderTraverser):
         self.tokens = tokens
         self.tree = tree
         self.traverse(self.tree)
-        return ''.join(z.to_string() for z in self.tokens)
+        ### return ''.join(z.to_string() for z in self.tokens)
+        return tokens_to_string(self.tokens)
     #@+node:ekr.20191231055008.1: *4* fs.visit (override)
     def visit(self, node):
         """
@@ -5469,7 +5508,8 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
-        lt_s = ''.join(z.to_string() for z in node.left.token_list)
+        ### lt_s = ''.join(z.to_string() for z in node.left.token_list)
+        lt_s = tokens_to_string(node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         if not values:
@@ -5478,9 +5518,11 @@ class Fstringify (TokenOrderTraverser):
         token0 = node.left.token_list[0]
         line_number = token0.line_number
         line = token0.line.strip()
+        ### To do: simplify.
         tokens = []
         for aList in values:
-            tokens.append(''.join(z.to_string() for z in aList))
+            ### tokens.append(''.join(z.to_string() for z in aList))
+            tokens.append(tokens_to_string(aList))
         rt_s = ''.join(tokens)
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
@@ -5541,7 +5583,8 @@ class Fstringify (TokenOrderTraverser):
         if not self.change_quotes(string_val, tokens):
             print(f"string contains backslashes: {string_val!r}")
             return None
-        return ''.join([z.to_string() for z in tokens])
+        ### return ''.join([z.to_string() for z in tokens])
+        return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
     def check_newlines(self, tokens):
         """
@@ -5736,7 +5779,8 @@ class Fstringify (TokenOrderTraverser):
         """Replace specifieriers with values in lt_s string."""
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
-            value = ''.join(z.to_string() for z in values[spec_i])
+            ### value = ''.join(z.to_string() for z in values[spec_i])
+            value = tokens_to_string(values[spec_i])
             # g.trace('item', spec_i, 'value', repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
@@ -5810,6 +5854,7 @@ class ReassignTokens (TokenOrderTraverser):
         """The main entry point."""
         self.tokens = tokens
         self.tree = tree
+        # For now, only one pass is needed.
         # self.pass_n = 1
         self.traverse(tree)
     #@+node:ekr.20191231084853.1: *4* reassign.visit
@@ -5821,6 +5866,9 @@ class ReassignTokens (TokenOrderTraverser):
         tokens = tokens_for_node(node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
+        if not nca:
+            g.trace(f"no nca: {tokens_to_string(tokens)}")
+            return
         if node.args:
             # Associate the () with the first and last args.
             arg0, arg9 = node.args[0], node.args[-1]
@@ -5848,7 +5896,8 @@ class TokenOrderFormatter (TokenOrderGenerator):
         tree = parse_ast(contents)
         ### To do...
         self.create_links(tokens, tree)
-        return ''.join([z.to_string() for z in self.tokens])
+        ### return ''.join([z.to_string() for z in self.tokens])
+        return tokens_to_string(self.tokens)
 #@+node:ekr.20191113054314.1: *3* class TokenOrderInjector (TOG)
 class TokenOrderInjector (TokenOrderGenerator):
     """
