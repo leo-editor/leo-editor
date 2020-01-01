@@ -5514,11 +5514,7 @@ class Fstringify (TokenOrderTraverser):
         token0 = node.left.token_list[0]
         line_number = token0.line_number
         line = token0.line.strip()
-        ### To do: simplify.
-        tokens = []
-        for aList in values:
-            tokens.append(tokens_to_string(aList))
-        rt_s = ''.join(tokens)
+        rt_s = ''.join(tokens_to_string(z) for z in values)
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):
