@@ -3330,13 +3330,13 @@ class TestFstringify (BaseTest):
         # self.dump_times()
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
-
+        # From LM.mergeShortcutsDicts.
         contents = (
             """g.trace('--trace-binding: %20s binds %s to %s' % ("""
             """   c.shortFileName(), binding, d.get(binding) or []))""")
         expected = (
-            """g.trace('--trace-binding: {c.shortFileName():20} """
-            """binds {binding} to {d.get(binding) or []})""")
+            """g.trace(f"--trace-binding: {c.shortFileName():20} """
+            '''binds {binding} to {d.get(binding) or []}")''')
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -5534,8 +5534,6 @@ class Fstringify (TokenOrderTraverser):
         lt_s = tokens_to_string(node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
-        if not values:
-            return
         # Compute rt_s, line and line_number for later.
         token0 = node.left.token_list[0]
         line_number = token0.line_number
@@ -5769,17 +5767,18 @@ class Fstringify (TokenOrderTraverser):
             else:
                 elts = node
             for elt in elts:
-                if hasattr(elt, 'token_list'):
-                    tokens = tokens_for_node(elt, self.tokens)
-                    result.append(tokens)
-                elif trace:
-                    g.trace(f"No token list for {elt.__class__.__name__}")
-            if len(node.elts) != len(result):
                 if trace:
-                    g.trace('list mismatch')
-                    dump_tree_and_links(node)
-                return []
+                    g.trace(f"item: {elt.__class__.__name__}")
+                tokens = tokens_for_node(elt, self.tokens)
+                result.append(tokens)
+                ###
+                    # if hasattr(elt, 'token_list'):
+                        # tokens = tokens_for_node(elt, self.tokens)
+                        # result.append(tokens)
+                    # elif trace:
+                        # g.trace(f"No token list for {elt.__class__.__name__}")
             return result
+        if trace: g.trace(node.__class__.__name__)
         #
         # Now we expect only one result. 
         tokens = tokens_for_node(node, self.tokens)
