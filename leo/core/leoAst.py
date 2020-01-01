@@ -5544,8 +5544,8 @@ class Fstringify (TokenOrderTraverser):
         if len(values) != len(specs):
             token_list = getattr(node.left, 'token_list', None)
             token = token_list and token_list[0]
-            line_number = getattr(token, 'line_number', '<unknown>')
-            line = getattr(token, 'line', '<unknown>')
+            line_number = token.line_number
+            line = token.line
             n_specs, n_values = len(specs), len(values)
             print(
                 f"\n"
@@ -5562,7 +5562,7 @@ class Fstringify (TokenOrderTraverser):
             return
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
-        result = self.compute_result(lt_s, results)
+        result = self.compute_result(line, line_number, lt_s, results)
         if not result:
             return
         # Remove whitespace before ! and :.
@@ -5585,7 +5585,7 @@ class Fstringify (TokenOrderTraverser):
         return s
 
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, string_val, tokens):
+    def compute_result(self, line, line_number, string_val, tokens):
         """
         Create the final result, with various kinds of munges.
 
@@ -5596,7 +5596,11 @@ class Fstringify (TokenOrderTraverser):
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(string_val, tokens):
-            print(f"string contains backslashes: {string_val!r}")
+            print(
+                f"\n"
+                f"can't create f-fstring: {string_val!r}\n"
+                f"           line number: {line_number}\n"
+                f"                  line: {line.strip()!r}")
             return None
         return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
@@ -5637,6 +5641,7 @@ class Fstringify (TokenOrderTraverser):
         aList[1]:  ('fstringify', a string starting with a quote)
         aList[-1]: ('fstringify', a string ending with a quote that matches aList[1])
         """
+        trace = False
         # Sanity checks.
         if len(aList) < 4:
             return True
@@ -5662,17 +5667,21 @@ class Fstringify (TokenOrderTraverser):
                 return False
         # These checks are important...
         if token0.value != 'f':
-            g.trace('token[0]  error:', repr(token0))
+            if trace:
+                g.trace('token[0]  error:', repr(token0))
             return False
         val1 = token1.value and token1.value[0]
         if delim != val1:
-            g.trace('token[1]  error:', delim, val1, repr(token1))
-            g.printObj(aList, tag = 'aList')
+            if trace:
+                g.trace('token[1]  error:', delim, val1, repr(token1))
+                g.printObj(aList, tag = 'aList')
             return False
         val_last = token_last.value and token_last.value[-1]
         if delim != val_last:
-            g.trace('token[-1] error:', delim, val_last, repr(token_last))
-            g.printObj(aList, tag = 'aList')
+            if trace:
+                g.trace('token[-1] error:',
+                    delim, val_last, repr(token_last))
+                g.printObj(aList, tag = 'aList')
             return False
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
