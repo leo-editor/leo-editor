@@ -1308,7 +1308,6 @@ class FstringifyTokens(NullTokenBeautifier):
         if delim != val_last:
             g.es_print('token[-1] error!', delim, val_last, repr(token_last))
             return False
-        # g.printObj(aList)
         # Regularize the outer tokens.
         delim, delim2 = '"', "'"
         token1.value = delim + token1.value[1:]
@@ -1318,7 +1317,6 @@ class FstringifyTokens(NullTokenBeautifier):
         #
         # Replace delim by delim2 in all inner tokens.
         for z in aList[2:-1]:
-            ### g.trace(z)
             if not isinstance(z, BeautifierToken):
                 g.es_print('Bad token:', repr(z))
                 return False

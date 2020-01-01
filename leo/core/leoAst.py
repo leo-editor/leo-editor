@@ -262,7 +262,6 @@ def dump_lines(tokens):
 #@+node:ekr.20191228095945.7: *4* function: dump_results
 def dump_results(tokens):
     print('Results...\n')
-    ### print(''.join(z.to_string() for z in tokens))
     print(tokens_to_string(tokens))
     print('')
 #@+node:ekr.20191228095945.8: *4* function: dump_tokens
@@ -373,7 +372,6 @@ def nearest_common_ancestor(node1, node2):
             result = parent1
         else:
             break
-    ### g.trace(result and result.node_index or 'None')
     return result
 #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
 def tokens_for_node(node, tokens):
@@ -451,12 +449,9 @@ def add_token_to_token_list(token, node):
         if t.index > token_i:
             token_list.insert(i, token)
             node.token_list = token_list
-            ### g.printObj(token_list, tag='token_list')
             return
     token_list.append(token)
     node.token_list = token_list
-    ### g.printObj(token_list, tag='token_list')
-        
 #@+node:ekr.20191225055616.1: *4* function: replace_node
 def replace_node(new_node, old_node):
     
@@ -474,10 +469,8 @@ def replace_node(new_node, old_node):
                 setattr(old_node, field, new_node)
                 break
 #@+node:ekr.20191225055626.1: *4* function: replace_token
-### def replace_token(i, kind, value):
-def replace_token(token, kind, value): ###
+def replace_token(token, kind, value):
     """Replace kind and value of the given token."""
-    ### token = self.tokens[i]
     if token.kind in ('endmarker', 'killed'):
         return
     token.kind = kind
@@ -3184,9 +3177,7 @@ class TestRunner:
         print('')
     #@+node:ekr.20191225063758.1: *5* TR.dump_results
     def dump_results(self):
-
         print('\nResults...\n')
-        ### print(''.join(z.to_string() for z in self.tokens))
         print(tokens_to_string(self.tokens))
     #@+node:ekr.20191226095129.1: *5* TR.dump_times
     def dump_times(self):
@@ -3998,7 +3989,6 @@ class TokenOrderGenerator:
         import tokenize
         
         def check(contents, tokens):
-            ### result = ''.join([z.to_string() for z in tokens])
             result = tokens_to_string(tokens)
             ok = result == contents
             if not ok:
@@ -5489,7 +5479,6 @@ class Fstringify (TokenOrderTraverser):
         self.tokens = tokens
         self.tree = tree
         self.traverse(self.tree)
-        ### return ''.join(z.to_string() for z in self.tokens)
         return tokens_to_string(self.tokens)
     #@+node:ekr.20191231055008.1: *4* fs.visit (override)
     def visit(self, node):
@@ -5516,7 +5505,6 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
-        ### lt_s = ''.join(z.to_string() for z in node.left.token_list)
         lt_s = tokens_to_string(node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
@@ -5529,7 +5517,6 @@ class Fstringify (TokenOrderTraverser):
         ### To do: simplify.
         tokens = []
         for aList in values:
-            ### tokens.append(''.join(z.to_string() for z in aList))
             tokens.append(tokens_to_string(aList))
         rt_s = ''.join(tokens)
         # Get the % specs in the LHS string.
@@ -5591,7 +5578,6 @@ class Fstringify (TokenOrderTraverser):
         if not self.change_quotes(string_val, tokens):
             print(f"string contains backslashes: {string_val!r}")
             return None
-        ### return ''.join([z.to_string() for z in tokens])
         return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
     def check_newlines(self, tokens):
@@ -5705,7 +5691,7 @@ class Fstringify (TokenOrderTraverser):
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail
-    #@+node:ekr.20191225054848.1: *5* fs.replace
+    #@+node:ekr.20191225054848.1: *5* fs.replace ***
     def replace(self, node, s, values):
         """
         Replace node with an ast.Str node for s.
@@ -5719,7 +5705,6 @@ class Fstringify (TokenOrderTraverser):
         replace_token(self.tokens[i], 'string', s)
         j = 1
         while j < len(tokens):
-            ### replace_token(i1 + j, 'killed', '')
             replace_token(self.tokens[i1 + j], 'killed', '')
             j += 1
         # Replace the node.
@@ -5787,9 +5772,7 @@ class Fstringify (TokenOrderTraverser):
         """Replace specifieriers with values in lt_s string."""
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
-            ### value = ''.join(z.to_string() for z in values[spec_i])
             value = tokens_to_string(values[spec_i])
-            # g.trace('item', spec_i, 'value', repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 results.append(Token('string', lt_s[i : start]))
