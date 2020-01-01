@@ -3295,7 +3295,7 @@ class TestFstringify (BaseTest):
         tokens, tree = self.make_file_data(filename)
         self.fstringify(tokens, tree, filename)
         # self.dump_times()
-    #@+node:ekr.20191230150653.1: *4* test_fstringify_with_call
+    #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
     def test_fstringify_with_call(self):
         
         contents = """'%s' % d()"""
@@ -3311,11 +3311,32 @@ class TestFstringify (BaseTest):
             f"expected: {expected}\n"
             f"     got: {results}")
         # self.dump_times()
-    #@+node:ekr.20191230183652.1: *4* test_fstringify_with_parens
+    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
     def test_fstringify_with_parens(self):
 
         contents = """print('%20s' % (ivar), val)"""
         expected = """print(f"{ivar:20}", val)"""
+        tokens, tree = self.make_data(contents)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(tokens, tree, '<string>')
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"\n"
+            f"expected: {expected}\n"
+            f"     got: {results}")
+        # self.dump_times()
+    #@+node:ekr.20200101060616.1: *4* test_complex_rhs
+    def test_complex_rhs(self):
+
+        contents = (
+            """g.trace('--trace-binding: %20s binds %s to %s' % ("""
+            """   c.shortFileName(), binding, d.get(binding) or []))""")
+        expected = (
+            """g.trace('--trace-binding: {c.shortFileName():20} """
+            """binds {binding} to {d.get(binding) or []})""")
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)

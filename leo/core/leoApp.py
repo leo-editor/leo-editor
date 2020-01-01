@@ -2297,8 +2297,9 @@ class LoadManager:
                     f"sets {binding} to None")
             elif localFlag and binding in c.commandsDict:
                  d = c.k.computeInverseBindingDict()
-                 g.trace('--trace-binding: %20s binds %s to %s' % (
-                    c.shortFileName(), binding, d.get(binding) or []))
+                 g.trace(
+                    f"--trace-binding: {c.shortFileName():20} "
+                    f"binds {binding} to {d.get(binding) or []}")
             else:
                 binding = g.app.trace_binding
                 stroke = g.KeyStroke(binding)
