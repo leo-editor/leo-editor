@@ -202,14 +202,17 @@ def get_time():
     return time.process_time()
 #@+node:ekr.20200103113417.1: *3* function: read_file
 def read_file(filename):
-    """Return the contents of the given file."""
+    """
+    Return the contents of the given file.
+    Print an error message and return None on error.
+    """
     try:
         with open(filename, 'rb') as f:
             s = f.read()
         return g.toUnicode(s)
     except Exception:
         print(f"read_file: can not read {filename}")
-    return None
+        return None
 #@+node:ekr.20191027075648.1: *3* function: parse_ast
 def parse_ast(s, headline=None, show_time=False):
     """
@@ -309,6 +312,14 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
+#@+node:ekr.20200103163100.1: *3* function: write_file
+def write_file(contents, filename):
+    """Write the contents to the file whose name is given."""
+    try:
+        with open(filename, 'w') as f:
+            f.write(contents)
+    except Exception as e:
+        g.trace(f"Did not write {filename}\n{e}")
 #@+node:ekr.20191231110051.1: *3* node/token dumpers...
 #@+node:ekr.20191027074436.1: *4* function: dump_ast
 def dump_ast(ast, tag='dump_ast'):
@@ -2541,7 +2552,7 @@ class BaseTest (unittest.TestCase):
 
     #@+others
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
-    def make_data(self, contents, description=None, trace_mode=False):
+    def make_data(self, contents, description=None):
         """Return (tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
@@ -2552,7 +2563,6 @@ class BaseTest (unittest.TestCase):
         self.contents = contents.rstrip() + '\n'
         # Create the TOI instance.
         self.toi = TokenOrderInjector()
-        self.toi.trace_mode = trace_mode
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         tree = self.make_tree(contents)
@@ -2566,14 +2576,14 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
         """Return (tokens, tree) corresponding to the contents of the given file."""
-        filename = os.path.join(r'c:\leo.repo\leo-editor\leo\core', filename)
-        with open(filename, 'r') as f:
-            contents = f.read()
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = os.path.join(directory, filename)
+        contents = read_file(filename)
         return self.make_data(contents=contents, description=filename)
         
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
-    def make_tokens(self, contents, trace_mode=False):
+    def make_tokens(self, contents):
         """BaseTest.make_tokens. Make tokens from contents."""
         t1 = get_time()
         # Tokenize.
@@ -2652,7 +2662,7 @@ class BaseTest (unittest.TestCase):
         toi = self.toi
         assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        result_s = toi.fstringify(tokens, tree)
+        result_s = Fstringify().fstringify(tokens, tree)
         t2 = get_time()
         self.update_times('21: fstringify', t2 - t1)
         return result_s
@@ -3624,13 +3634,13 @@ class TokenOrderGenerator:
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
     n_nodes = 0
-        
-    trace_mode = False
+    # These are set in TOI.init_from_file and TOI.init_from_string.
+    level = 0
+    tokens = []
+    tree = None
 
     #@+others
-    #@+node:ekr.20191223052821.1: *4* tog: Passes
-    # Called from testing framework.
-    #@+node:ekr.20191228184647.1: *5* 0.3: tog.balance_tokens
+    #@+node:ekr.20191228184647.1: *4* tog.balance_tokens
     def balance_tokens(self, tokens):
         """
         TOG.balance_tokens.
@@ -3654,66 +3664,44 @@ class TokenOrderGenerator:
         if stack:
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
-    #@+node:ekr.20191113063144.4: *5* 1.1: tog.create_links
-    def create_links(self, tokens, tree, file_name=''):
+    #@+node:ekr.20191129044716.1: *4* tog.error
+    def error(self, message):
         """
-        A generator creates two-way links between the given tokens and ast-tree.
-        
-        Callers should call this generator with list(tog.create_links(...))
-        
-        The sync_tokens method creates the links and verifies that the resulting
-        tree traversal generates exactly the given tokens in exact order.
-        
-        tokens: the list of Token instances for the input.
-                Created by make_tokens().
-        tree:   the ast tree for the input.
-                Created by parse_ast().
+        Prepend the caller to the message, print it, and return AssignLinksError.
         """
+        caller = g.callers(4).split(',')[-1]
+        header = f"AssignLinkError: caller: {caller}\n"
+        if 0:
+            print(f"\n{caller}: Error...\n")
+            # Don't change the message. It may contain aligned lines.
+            print(message)
+        return AssignLinksError(header+message)
+    #@+node:ekr.20191113063144.11: *4* tog.report_coverage
+    def report_coverage(self):
+        """Report untested visitors."""
+
+        def key(z):
+            return z.lower()
+
+        covered = sorted(list(self.coverage_set), key=key)
+        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
+        missing = sorted([z for z in visitors if z not in covered], key=key)
         #
-        # Init all ivars.
-        self.file_name = file_name
-            # For tests.
-        self.level = 0
-            # Python indentation level.
-        self.node = None
-            # The node being visited.
-            # The parent of the about-to-be visited node.
-        self.tokens = tokens
-            # The immutable list of input tokens.
-        self.tree = tree
-            # The tree of ast.AST nodes.
-        #
-        # Traverse the tree.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
-        #
-        # Patch the last tokens.
-        # Thise ensures that all tokens are patched.
-        self.node = tree
-        yield from self.gen_token('newline', '\n')
-        yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229072907.1: *5* 1.2: tog.reassign_tokens
-    def reassign_tokens(self, tokens, tree):
-        """
-        Reassign links between the given token list and ast-tree.
-        """
-        ReassignTokens().reassign(tokens, tree)
-            
-    #@+node:ekr.20191222082453.1: *5* 3.1: tog.fstringify
-    def fstringify(self, tokens, tree, filename=''):
-        """
-        TOG.fstringify.
-        
-        Convert relevant % operators to fstrings.
-        
-        This method is a wrapper for unit tests.
-        """
-        # The Fstringify class does all the work.
-        return Fstringify().fstringify(tokens, tree, filename)
-    #@+node:ekr.20191223052749.1: *4* tog: Traversal
+        # These are not likely ever to be covered.
+        not_covered = ['Interactive', 'Expression', 'FormattedValue']
+        for z in missing:
+            if z in not_covered:
+                missing.remove(z)
+        if 0:
+            print('Covered...\n')
+            g.printObj(covered)
+        if missing:
+            print('Missing...\n')
+            g.printObj(missing)
+        else:
+            print('All visitors covered')
+        print('')
+    #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin/end_visitor
     begin_end_stack = []
     node_index = 0  # The index into the node_stack.
@@ -3784,7 +3772,7 @@ class TokenOrderGenerator:
         4. Create two-way links between T and self.node.
         5. Advance by updating self.px.
         """
-        trace = False and self.trace_mode
+        trace = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace:
@@ -3862,7 +3850,7 @@ class TokenOrderGenerator:
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         assert token.node is None, (repr(token), g.callers())
-        trace = True and self.trace_mode
+        trace = False
         if (
             is_significant_token(token)
             or token.kind in ('comment', 'newline')
@@ -3941,20 +3929,7 @@ class TokenOrderGenerator:
         val = self.end_visitor(node)
         if isinstance(val, types.GeneratorType):
             yield from val
-    #@+node:ekr.20191223052953.1: *4* tog: Utils
-    #@+node:ekr.20191129044716.1: *4* tog.error
-    def error(self, message):
-        """
-        Prepend the caller to the message, print it, and return AssignLinksError.
-        """
-        caller = g.callers(4).split(',')[-1]
-        header = f"AssignLinkError: caller: {caller}\n"
-        if 0:
-            print(f"\n{caller}: Error...\n")
-            # Don't change the message. It may contain aligned lines.
-            print(message)
-        return AssignLinksError(header+message)
-    #@+node:ekr.20191113063144.13: *4* tog: Visitors
+    #@+node:ekr.20191113063144.13: *4* tog: Visitors...
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -4142,7 +4117,7 @@ class TokenOrderGenerator:
 
     def do_Call(self, node):
         
-        if False and self.trace_mode:
+        if False:
             #@+<< trace the ast.Call >>
             #@+node:ekr.20191204105344.1: *7* << trace the ast.Call >>
             dumper = AstDumper()
@@ -4372,7 +4347,7 @@ class TokenOrderGenerator:
         
         Do *not* update self.string_index here.
         """
-        trace = self.trace_mode
+        trace = False
         i, results = self.string_index, []
         i = self.next_str_index(i + 1)
         while i < len(self.tokens):
@@ -4477,7 +4452,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191128135521.1: *7* tog.next_str_index
     def next_str_index(self, i):
         """Return the index of the next 'string' token, or None."""
-        trace = False and self.trace_mode
+        trace = False
         i1 = i
         while i < len(self.tokens):
             token = self.tokens[i]
@@ -5000,6 +4975,110 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
+#@+node:ekr.20191113054314.1: *3*  class TokenOrderInjector (TOG)
+class TokenOrderInjector (TokenOrderGenerator):
+    """
+    A class that injects data into tokens and ast nodes.
+    """
+    #@+others
+    #@+node:ekr.20191113054550.1: *4* toi.begin_visitor
+    def begin_visitor(self, node):
+        """
+        TokenOrderInjector.begin_visitor.
+        
+        Enter a visitor, inject data into the ast node, and update stats.
+        """
+        #
+        # Do this first, *before* updating self.node.
+        self.coverage_set.add(node.__class__.__name__)
+        node.parent = self.node
+        if self.node:
+            children = getattr(self.node, 'children', [])
+            children.append(node)
+            self.node.children = children
+        #
+        # *Now* update self.node, etc.
+        super().begin_visitor(node)
+    #@+node:ekr.20191113063144.4: *4* toi.create_links
+    def create_links(self, tokens, tree, file_name=''):
+        """
+        A generator creates two-way links between the given tokens and ast-tree.
+        
+        Callers should call this generator with list(tog.create_links(...))
+        
+        The sync_tokens method creates the links and verifies that the resulting
+        tree traversal generates exactly the given tokens in exact order.
+        
+        tokens: the list of Token instances for the input.
+                Created by make_tokens().
+        tree:   the ast tree for the input.
+                Created by parse_ast().
+        """
+        #
+        # Init all ivars.
+        self.file_name = file_name
+            # For tests.
+        self.level = 0
+            # Python indentation level.
+        self.node = None
+            # The node being visited.
+            # The parent of the about-to-be visited node.
+        self.tokens = tokens
+            # The immutable list of input tokens.
+        self.tree = tree
+            # The tree of ast.AST nodes.
+        #
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+        #
+        # Patch the last tokens.
+        # Thise ensures that all tokens are patched.
+        self.node = tree
+        yield from self.gen_token('newline', '\n')
+        yield from self.gen_token('endmarker', '')
+    #@+node:ekr.20191229071733.1: *4* toi.init_from_file
+    def init_from_file(self, filename):
+        """
+        Create the tokens and ast tree for the given file.
+        
+        Return (contents, tokens, tree).
+        """
+        self.level = 0
+        self.filename = filename
+        contents = read_file(filename)
+        if contents is None:
+            return None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        self.tree = tree = parse_ast(contents)
+        list(self.create_links(tokens, tree))
+        self.balance_tokens(tokens)
+        return contents, tokens, tree
+    #@+node:ekr.20191229071746.1: *4* toi.init_from_string
+    def init_from_string(self, contents):
+        """
+        Tokenize, parse and create links in the contents string.
+        
+        Return (tokens, tree).
+        """
+        self.filename = '<string>'
+        self.level = 0
+        self.tokens = tokens = make_tokens(contents)
+        self.tree = tree = parse_ast(contents)
+        list(self.create_links(tokens, tree))
+        self.balance_tokens(tokens)
+        return tokens, tree
+    #@+node:ekr.20191229072907.1: *4* toi.reassign_tokens
+    def reassign_tokens(self, tokens, tree):
+        """
+        Reassign links between the given token list and ast-tree.
+        """
+        ReassignTokens().reassign(tokens, tree)
+            
+    #@-others
 #@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
 class TokenOrderTraverser:
     """
@@ -5081,9 +5160,9 @@ class TokenOrderTraverser:
     #@-others
 #@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
 class Fstringify (TokenOrderTraverser):
-    """A class to fstringify an existing ast tree."""
+    """A class to fstringify files."""
     #@+others
-    #@+node:ekr.20191222083947.1: *4* fs.fstringify (entry)
+    #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
         Fstringify.fstringify:
@@ -5106,13 +5185,10 @@ class Fstringify (TokenOrderTraverser):
         
         f-stringify the given external file with the Fstrinfify class.
         """
-        # Read the file into contents.
-        contents = read_file(filename)
-        if not contents:
-            return
-        # Create the tokens and the tree.
-        tokens, tree = self.init(contents)
-        if not tokens or not tree:
+        toi = TokenOrderInjector()
+        contents, tokens, tree = toi.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            print(f"Can not fstringify: {filename}")
             return
         # fstringify.
         self.fstringify(tokens, tree)
@@ -5128,13 +5204,10 @@ class Fstringify (TokenOrderTraverser):
         
         Print the diffs that would resulf from the fstringify-file command.
         """
-        # Read the file into contents.
-        contents = read_file(filename)
-        if not contents:
-            return
-        # Create the tokens and the tree.
-        tokens, tree = self.init(contents)
-        if not tokens or not tree:
+        toi = TokenOrderInjector()
+        contents, tokens, tree = toi.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            print(f"Can not fstringify-diff: {filename}")
             return
         # fstringify.
         self.fstringify(tokens, tree)
@@ -5148,38 +5221,6 @@ class Fstringify (TokenOrderTraverser):
             g.splitLines(contents),
             g.splitLines(results)))
         g.printObj(lines, f"diff {filename}")
-    #@+node:ekr.20200103114332.1: *4* fs.init
-    def init(self, contents):
-        """
-        Fstringify.init: init the tokens and parse tree.
-        
-        return (tokens, tree)
-        """
-        toi = TokenOrderInjector()
-        # Pass 0: create the tokens and the parse tree.
-        tokens = make_tokens(contents)
-        tree = parse_ast(contents)
-        if not tokens or not tree:
-            return None, None
-        toi.balance_tokens(tokens)
-        # Pass 1: Create links.
-        list(toi.create_links(tokens, tree))
-        toi.reassign_tokens(tokens, tree)
-        return tokens, tree
-        
-    #@+node:ekr.20191231055008.1: *4* fs.visit (override)
-    def visit(self, node):
-        """
-        FStringify.visit. (Overrides TOT visit).
-        
-        Handle binary ops, including possible f-strings.
-        """
-        if (
-            isinstance(node, ast.BinOp)
-            and op_name(node.op) == '%'
-            and isinstance(node.left, ast.Str)
-        ):
-            self.make_fstring(node)
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring (top level) & helpers
     def make_fstring(self, node):
         """
@@ -5474,6 +5515,19 @@ class Fstringify (TokenOrderTraverser):
         if tail:
             results.append(Token('string', tail))
         return results
+    #@+node:ekr.20191231055008.1: *4* fs.visit (override)
+    def visit(self, node):
+        """
+        FStringify.visit. (Overrides TOT visit).
+        
+        Handle binary ops, including possible f-strings.
+        """
+        if (
+            isinstance(node, ast.BinOp)
+            and op_name(node.op) == '%'
+            and isinstance(node.left, ast.Str)
+        ):
+            self.make_fstring(node)
     #@-others
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
@@ -5518,127 +5572,15 @@ class ReassignTokens (TokenOrderTraverser):
             add_token_to_token_list(self.tokens[k], nca)
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
-class TokenOrderFormatter (TokenOrderGenerator):
+class TokenOrderFormatter (TokenOrderInjector):
     
     def format(self, contents):
         """
         Format the tree into a string guaranteed to be generated in token order.
         """
-        tokens = make_tokens(contents)
-        tree = parse_ast(contents)
+        tokens, tree = self.init_from_string(contents)
         ### To do...
-        self.create_links(tokens, tree)
-        ### return ''.join([z.to_string() for z in self.tokens])
-        return tokens_to_string(self.tokens)
-#@+node:ekr.20191113054314.1: *3* class TokenOrderInjector (TOG)
-class TokenOrderInjector (TokenOrderGenerator):
-    """
-    A class that injects data into tokens and ast nodes.
-    """
-    #@+others
-    #@+node:ekr.20191113054550.1: *4* toi.begin_visitor
-    def begin_visitor(self, node):
-        """
-        TokenOrderInjector.begin_visitor.
-        
-        Enter a visitor, inject data into the ast node, and update stats.
-        """
-        #
-        # Do this first, *before* updating self.node.
-        self.coverage_set.add(node.__class__.__name__)
-        node.parent = self.node
-        if self.node:
-            children = getattr(self.node, 'children', [])
-            children.append(node)
-            self.node.children = children
-        #
-        # *Now* update self.node, etc.
-        super().begin_visitor(node)
-    #@+node:ekr.20191229071517.1: *4* toi: Entries
-    #@+node:ekr.20191229071733.1: *5* toi.create_links_in_file
-    def create_links_in_file(self, filename):
-        """
-        Create the tokens and ast tree for the given file.
-        
-        Return (tokens, tree).
-        """
-        try:
-            with open(filename, 'r') as f:
-                s = f.read()
-        except Exception as e:
-            g.trace(f"can not open {filename}...\n{e}")
-        tokens, tree = self.create_links_in_string(s, filename=filename)
-        return tokens, tree
-        
-    #@+node:ekr.20191229071746.1: *5* toi.create_links_in_string
-    def create_links_in_string(self, s, filename=''):
-        """
-        Tokenize, parse and create links in the string s.
-        
-        Return (tokens, tree).
-        """
-        self.filename = filename
-        tokens = make_tokens(s)
-        tree = parse_ast(s)
-        list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
-        return tokens, tree
-    #@+node:ekr.20191229071619.1: *5* toi.fstringify_file
-    def fstringify_file(self, filename):
-        """Fstringify the given file."""
-        try:
-            with open(filename, 'r') as f:
-                s = f.read()
-        except Exception as e:
-            g.trace(f"can not open {filename}\n{e}")
-        result_s = self.fstringify_string(s)
-        if not result_s:
-            g.trace(f"did not fstringify {filename}")
-            return
-        if s == result_s:
-            g.trace(f"no change: {filename}")
-            return
-        try:
-            with open(filename, 'w') as f:
-                f.write(result_s)
-        except Exception as e:
-            g.trace(f"can not write {filename}\n{e}")
-    #@+node:ekr.20191229071718.1: *5* toi.fstringify_string
-    def fstringify_string(self, s, filename=''):
-        """Return the results of fstingifing string s."""
-        tokens = make_tokens(s)       # Pass 0.1
-        tree = parse_ast(s)           # Pass 0.2
-        self.balance_tokens(tokens)   # Pass 0.3
-        list(self.create_links(tokens, tree))  # Pass 1.1
-        self.reassign_tokens(tokens, tree)     # Pass 2.1.
-        result_s = self.fstringify(tokens, tree)  # Pass 3.1
-        return result_s
-    #@+node:ekr.20191113063144.11: *5* toi.report_coverage
-    def report_coverage(self):
-        """Report untested visitors."""
-
-        def key(z):
-            return z.lower()
-
-        covered = sorted(list(self.coverage_set), key=key)
-        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
-        missing = sorted([z for z in visitors if z not in covered], key=key)
-        #
-        # These are not likely ever to be covered.
-        not_covered = ['Interactive', 'Expression', 'FormattedValue']
-        for z in missing:
-            if z in not_covered:
-                missing.remove(z)
-        if 0:
-            print('Covered...\n')
-            g.printObj(covered)
-        if missing:
-            print('Missing...\n')
-            g.printObj(missing)
-        else:
-            print('All visitors covered')
-        print('')
-    #@-others
+        return tokens_to_string(tokens)
 #@+node:ekr.20191121122230.1: *3* class TokenOrderNodeGenerator (TOG)
 class TokenOrderNodeGenerator(TokenOrderGenerator):
     """A class that yields a stream of nodes."""
@@ -5844,8 +5786,6 @@ class Tokenizer:
     #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
     header_has_been_shown = False
 
-    trace_mode = False
-
     def do_token(self, contents, five_tuple):
         """
         Handle the given token, optionally including between-token whitespace.
@@ -5871,18 +5811,17 @@ class Tokenizer:
             Show the given token.
             Regardless of kind, val is the ground truth, from tok_s.
             """
-            if not self.trace_mode:
-                return
-            show_header()
-            val_s = g.truncate(val, 28)
-            if kind != 'string':
-                val_s = repr(val_s)
-            print(
-                # starting line..ending line
-                f"{show_tuple((s_row, e_row))} "  
-                # starting offset..ending offset.
-                f"{show_tuple((s_offset, e_offset))} "  
-                f"{kind:>10} {val_s:30} {line!r}")
+            if 0:
+                show_header()
+                val_s = g.truncate(val, 28)
+                if kind != 'string':
+                    val_s = repr(val_s)
+                print(
+                    # starting line..ending line
+                    f"{show_tuple((s_row, e_row))} "  
+                    # starting offset..ending offset.
+                    f"{show_tuple((s_offset, e_offset))} "  
+                    f"{kind:>10} {val_s:30} {line!r}")
             
         def show_tuple(aTuple):
             s = f"{aTuple[0]}..{aTuple[1]}"
