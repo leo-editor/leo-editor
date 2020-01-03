@@ -103,6 +103,9 @@ def blacken_files_diff(event):
         if os.path.exists(filename):
             g.es_print(f"{tag}: {filename}")
             ### To do.
+                # print('=====', p.h)
+                # print(black.diff(
+                    # body, result, "old", "new")[16:].rstrip()+'\n')
         else:
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
