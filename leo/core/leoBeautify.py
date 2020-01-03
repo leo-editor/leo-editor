@@ -74,7 +74,7 @@ def blacken_files(event):
     if not black:
         g.es_print(f"{tag} can not import black")
         return
-    for root in g.findsRootWithPredicate(c, c.p):
+    for root in g.findRootsWithPredicate(c, c.p):
         filename = root.anyAtFileNodeName()
         if os.path.exists(filename):
             g.es_print(f"{tag}: {filename}")
@@ -115,7 +115,7 @@ def fstringify_files(event):
     if not c or not c.p:
         return
     tag = 'fstringify-files'
-    for root in g.findsRootWithPredicate(c, c.p):
+    for root in g.findRootsWithPredicate(c, c.p):
         filename = root.anyAtFileNodeName()
         if os.path.exists(filename):
             g.es_print(f"{tag}: {filename}")
@@ -135,7 +135,7 @@ def fstringify_diff_files(event):
     if not c or not c.p:
         return
     tag = 'fstringify-files-diff'
-    for root in g.findsRootWithPredicate(c, c.p):
+    for root in g.findRootsWithPredicate(c, c.p):
         filename = root.anyAtFileNodeName()
         if os.path.exists(filename):
             g.es_print(f"{tag}: {filename}")
