@@ -4135,7 +4135,7 @@ def find_word(s, word, i=0):
         i += len(word)
         assert progress < i
     return -1
-#@+node:ekr.20170220103251.1: *3* g.findRootWithPredicate
+#@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
 def findRootsWithPredicate(c, root, predicate=None):
     """
     Commands often want to find one or more **roots**, given a position p.
@@ -4156,7 +4156,6 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-
     for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
