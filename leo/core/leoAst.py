@@ -2,6 +2,7 @@
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 """AST (Abstract Syntax Tree) related classes."""
 import ast
+import difflib
 import glob
 import io
 import os
@@ -5549,7 +5550,14 @@ class Fstringify (TokenOrderTraverser):
         self.fstringify(tokens, tree)
         results = tokens_to_string(tokens)
         # Show the diffs.
-        g.trace(len(contents), len(results))
+        if contents == results:
+            g.es_print(f"Unchanged: {filename}")
+            return
+        # g.trace(len(contents), len(results))
+        lines = list(difflib.Differ().compare(
+            g.splitLines(contents),
+            g.splitLines(results)))
+        g.printObj(lines, f"diff {filename}")
     #@+node:ekr.20200103114332.1: *4* fs.init
     def init(self, contents):
         """
