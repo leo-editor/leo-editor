@@ -5506,6 +5506,27 @@ class Fstringify (TokenOrderTraverser):
         self.tree = tree
         self.traverse(self.tree)
         return tokens_to_string(self.tokens)
+    #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
+    def fstringify_file(self, filename):
+        """
+        Fstringify.fstringify_file.
+        
+        The entry point for the fstringify-file command.
+        
+        f-stringify the given external file with the Fstrinfify class.
+        """
+        g.trace(filename)
+    #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
+    def fstringify_file_diff(self, filename):
+        """
+        Fstringify.fstringify_file_diff.
+        
+        The entry point for the fstringify-fill-diff file command.
+        
+        Print the diffs that would resulf from the fstringify-file command.
+
+        """
+        g.trace(filename)
     #@+node:ekr.20191231055008.1: *4* fs.visit (override)
     def visit(self, node):
         """
