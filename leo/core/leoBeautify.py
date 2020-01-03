@@ -127,6 +127,7 @@ def fstringify_files(event):
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
+@g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
 def fstringify_diff_files(event):
     """
