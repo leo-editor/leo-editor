@@ -316,7 +316,8 @@ def unit_test(raise_on_fail=True):
 def write_file(filename, s):
     """Write the string s to the file whose name is given."""
     try:
-        with open(filename, 'w') as f:
+        # newline='' suppresses newline munging.
+        with open(filename, 'w', newline='') as f:
             f.write(s)
     except Exception as e:
         g.trace(f"Error writing {filename}\n{e}")
@@ -2982,6 +2983,32 @@ class TestFstringify (BaseTest):
             f"expected: {expected}\n"
             f"     got: {results}")
         # self.dump_times()
+    #@+node:ekr.20200104042705.1: *4* test_newlines
+    def test_newlines(self):
+
+        contents = (
+            """print("hello\r\n")"""
+            """print('world\r\n")"""
+            """print("hello\n")"""
+            """print('world\n")"""
+        )
+        expected = (
+            """print("hello\r\n")"""
+            """print('world\r\n")"""
+            """print("hello\n")"""
+            """print('world\n")"""
+        )
+        tokens, tree = self.make_data(contents)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(tokens, tree, '<string>')
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"\n"
+            f"expected: {expected}\n"
+            f"     got: {results}")
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -5160,15 +5187,20 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             print(f"{tag}: Can not fstringify: {filename}")
             return
+        ### g.printObj(g.splitLines(contents)[:20], tag='Contents[:20]')
+        ### g.printObj(tokens[:20], tag='1: Tokens[:20]')
         # fstringify.
         self.fstringify(tokens, tree)
+        ### g.printObj(tokens[:20], tag='2: Tokens[:20]')
         results = tokens_to_string(tokens)
+        ### g.printObj(g.splitLines(results)[:20], tag='Results[:20]')
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return
         # Write the results
         print(f"{tag}: Wrote {filename}")
-        write_file(filename, results)
+        if 1:
+            write_file(filename, results)
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
     def fstringify_file_diff(self, filename):
         """
