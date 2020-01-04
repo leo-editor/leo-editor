@@ -5195,6 +5195,7 @@ class Fstringify (TokenOrderTraverser):
         f-stringify the given external file with the Fstrinfify class.
         """
         tag = 'fstringify-file'
+        self.filename = filename
         tog = TokenOrderGenerator()
         contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
@@ -5223,19 +5224,21 @@ class Fstringify (TokenOrderTraverser):
         
         Print the diffs that would resulf from the fstringify-file command.
         """
+        tag = 'diff-fstringify-file'
+        self.filename = filename
         tog = TokenOrderGenerator()
         contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
-            print(f"Can not fstringify-diff: {filename}")
             return
         # fstringify.
         self.fstringify(tokens, tree)
         results = tokens_to_string(tokens)
         # Show the diffs.
         if contents == results:
-            print(f"Unchanged: {filename}")
+            print(f"{tag}: Unchanged: {filename}")
             return
         # g.trace(len(contents), len(results))
+        ### This produces way too much.
         lines = list(difflib.Differ().compare(
             g.splitLines(contents),
             g.splitLines(results)))
