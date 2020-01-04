@@ -327,8 +327,8 @@ def dump_ast(ast, tag='dump_ast'):
     """Utility to dump an ast tree."""
     g.printObj(AstDumper().dump_ast(ast), tag=tag)
 #@+node:ekr.20191228095945.4: *4* function: dump_contents
-def dump_contents(contents):
-    print('Contents...\n')
+def dump_contents(contents, tag='Contents'):
+    print(f"{tag}...\n")
     for i, z in enumerate(g.splitLines(contents)):
         print(f"{i+1:<3} ", z.rstrip())
     print('')
@@ -2576,11 +2576,12 @@ class BaseTest (unittest.TestCase):
         return tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
-        """Return (tokens, tree) corresponding to the contents of the given file."""
+        """Return (contents, tokens, tree) corresponding to the contents of the given file."""
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = os.path.join(directory, filename)
         contents = read_file(filename)
-        return self.make_data(contents=contents, description=filename)
+        tokens, tree = self.make_data(contents=contents, description=filename)
+        return contents, tokens, tree
         
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
@@ -2656,12 +2657,12 @@ class BaseTest (unittest.TestCase):
         t2 = get_time()
         self.update_times('12: reassign-links', t2 - t1)
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
-    def fstringify(self, tokens, tree, filename=''):
+    def fstringify(self, contents, filename, tokens, tree):
         """
         BaseTest.fstringify.
         """
         t1 = get_time()
-        result_s = Fstringify().fstringify(tokens, tree)
+        result_s = Fstringify().fstringify(contents, filename, tokens, tree)
         t2 = get_time()
         self.update_times('21: fstringify', t2 - t1)
         return result_s
@@ -2932,7 +2933,7 @@ class TestFstringify (BaseTest):
             dump_contents(contents)
             dump_tokens(tokens)
             dump_tree(tree)
-        self.fstringify(tokens, tree, '<string>')
+        self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, (
             f"expected: {expected}\n"
@@ -2942,14 +2943,14 @@ class TestFstringify (BaseTest):
     def test_fstringify_with_call_2(self):
         
         # From LM.traceSettingsDict
-        contents = """print('%s %s' % (d.name(), len(d.d.keys())))"""
-        expected = '''print(f"{d.name()} {len(d.d.keys())}")'''
+        contents = """print('%s' % (len(d.keys())))"""
+        expected = '''print(f"{len(d.keys())}")'''
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
             dump_tokens(tokens)
             dump_tree(tree)
-        self.fstringify(tokens, tree, '<string>')
+        self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, (
             f"expected: {expected}\n"
@@ -2969,7 +2970,7 @@ class TestFstringify (BaseTest):
             dump_contents(contents)
             dump_tokens(tokens)
             dump_tree(tree)
-        self.fstringify(tokens, tree, '<string>')
+        self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, (
             f"\n"
@@ -2981,8 +2982,8 @@ class TestFstringify (BaseTest):
         
         if 0: ###
             filename = r'c:\test\core\leoApp.py'
-            tokens, tree = self.make_file_data(filename)
-            self.fstringify(tokens, tree, filename)
+            contents, tokens, tree = self.make_file_data(filename)
+            self.fstringify(contents, filename, tokens, tree)
         # self.dump_times()
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
@@ -2999,7 +3000,7 @@ class TestFstringify (BaseTest):
             dump_contents(contents)
             dump_tokens(tokens)
             dump_tree(tree)
-        self.fstringify(tokens, tree, '<string>')
+        self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, (
             f"\n"
@@ -3015,7 +3016,7 @@ class TestFstringify (BaseTest):
             dump_contents(contents)
             dump_tokens(tokens)
             dump_tree(tree)
-        self.fstringify(tokens, tree, '<string>')
+        self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, (
             f"\n"
@@ -3645,7 +3646,7 @@ b = 2 + 3
 """
 # print('%s = %s' % (2+3, 4*5))
         if 1:
-            tokens, tree = self.make_file_data('leoApp.py')
+            contents, tokens, tree = self.make_file_data('leoApp.py')
         else:
             tokens, tree = self.make_data(contents)
         # dump_contents(contents)
@@ -5172,7 +5173,7 @@ class Fstringify (TokenOrderTraverser):
     """A class to fstringify files."""
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
-    def fstringify(self, tokens, tree, filename=''):
+    def fstringify(self, contents, filename, tokens, tree):
         """
         Fstringify.fstringify:
             
@@ -5180,11 +5181,25 @@ class Fstringify (TokenOrderTraverser):
         
         Return the resulting string.
         """
+        try:
+            import leo.core.leoGlobals as g
+            trace = 'beauty' in g.app.debug
+        except Exception as e:
+            # print(e)
+            trace = False
+        if trace:
+            dump_tokens(tokens)
+            dump_tree(tree)
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
         self.traverse(self.tree)
-        return tokens_to_string(self.tokens)
+        results = tokens_to_string(self.tokens)
+        if trace:
+            dump_tokens(tokens)
+            dump_tree(tree)
+            dump_contents(results, tag='Results')
+        return results
     #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
     def fstringify_file(self, filename):
         """
@@ -5201,20 +5216,15 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             print(f"{tag}: Can not fstringify: {filename}")
             return
-        ### g.printObj(g.splitLines(contents)[:20], tag='Contents[:20]')
-        ### g.printObj(tokens[:20], tag='1: Tokens[:20]')
         # fstringify.
-        self.fstringify(tokens, tree)
-        ### g.printObj(tokens[:20], tag='2: Tokens[:20]')
+        self.fstringify(contents, filename, tokens, tree)
         results = tokens_to_string(tokens)
-        ### g.printObj(g.splitLines(results)[:20], tag='Results[:20]')
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return
         # Write the results
         print(f"{tag}: Wrote {filename}")
-        if 1:
-            write_file(filename, results)
+        write_file(filename, results)
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
     def fstringify_file_diff(self, filename):
         """
@@ -5231,14 +5241,12 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return
         # fstringify.
-        self.fstringify(tokens, tree)
+        self.fstringify(contents, filename, tokens, tree)
         results = tokens_to_string(tokens)
         # Show the diffs.
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return
-        # g.trace(len(contents), len(results))
-        ### This produces way too much.
         lines = list(difflib.Differ().compare(
             g.splitLines(contents),
             g.splitLines(results)))
