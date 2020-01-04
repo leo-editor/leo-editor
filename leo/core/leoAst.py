@@ -313,13 +313,13 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20200103163100.1: *3* function: write_file
-def write_file(contents, filename):
-    """Write the contents to the file whose name is given."""
+def write_file(filename, s):
+    """Write the string s to the file whose name is given."""
     try:
         with open(filename, 'w') as f:
-            f.write(contents)
+            f.write(s)
     except Exception as e:
-        g.trace(f"Did not write {filename}\n{e}")
+        g.trace(f"Error writing {filename}\n{e}")
 #@+node:ekr.20191231110051.1: *3* node/token dumpers...
 #@+node:ekr.20191027074436.1: *4* function: dump_ast
 def dump_ast(ast, tag='dump_ast'):
@@ -5136,9 +5136,9 @@ class Fstringify (TokenOrderTraverser):
         """
         Fstringify.fstringify:
             
-        The entry point for the Fstringify class.
-
-        All links should already been created.
+        f-stringify the sources given by (tokens, tree).
+        
+        Return the resulting string.
         """
         self.filename = filename
         self.tokens = tokens
@@ -5154,22 +5154,27 @@ class Fstringify (TokenOrderTraverser):
         
         f-stringify the given external file with the Fstrinfify class.
         """
+        tag = 'fstringify-file'
         tog = TokenOrderGenerator()
         contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
-            print(f"Can not fstringify: {filename}")
+            print(f"{tag}: Can not fstringify: {filename}")
             return
         # fstringify.
         self.fstringify(tokens, tree)
         results = tokens_to_string(tokens)
-        # Write the results, if different.
-        g.trace(len(contents), len(results))
+        if contents == results:
+            print(f"{tag}: Unchanged: {filename}")
+            return
+        # Write the results
+        print(f"{tag}: Wrote {filename}")
+        write_file(filename, results)
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
     def fstringify_file_diff(self, filename):
         """
         Fstringify.fstringify_file_diff.
         
-        The entry point for the fstringify-fill-diff file command.
+        The entry point for the diff-fstringify-file command.
         
         Print the diffs that would resulf from the fstringify-file command.
         """
@@ -5190,22 +5195,23 @@ class Fstringify (TokenOrderTraverser):
             g.splitLines(contents),
             g.splitLines(results)))
         g.printObj(lines, f"diff {filename}")
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring (top level) & helpers
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
         """
-        node is BinOp node for the '%' operator.
+        node is BinOp node representing an '%' operator.
         node.left is an ast.Str node.
-        node.right should be an ast.Tuple or an ast.Str.
+        node.right reprsents the RHS of the '%' operator.
 
-        Convert this tree to an f-string, if possible,
-        replacing node's entire tree with a new ast.Str node.
+        Convert this tree to an f-string, if possible.
+        Replace the node's entire tree with a new ast.Str node.
+        Replace all the relevant tokens with a single new 'string' token.
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = tokens_to_string(node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
-        # Compute rt_s, line and line_number for later.
+        # Compute rt_s, line and line_number for later messages.
         token0 = node.left.token_list[0]
         line_number = token0.line_number
         line = token0.line.strip()
@@ -5484,12 +5490,13 @@ class Fstringify (TokenOrderTraverser):
         if tail:
             results.append(Token('string', tail))
         return results
-    #@+node:ekr.20191231055008.1: *4* fs.visit (override)
+    #@+node:ekr.20191231055008.1: *4* fs.visit
     def visit(self, node):
         """
         FStringify.visit. (Overrides TOT visit).
         
-        Handle binary ops, including possible f-strings.
+        Call fs.makes_fstring if node is a BinOp that might be converted to an
+        f-string.
         """
         if (
             isinstance(node, ast.BinOp)
