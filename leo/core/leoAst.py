@@ -3634,10 +3634,6 @@ class TokenOrderGenerator:
     coverage_set = set()
         # The set of node.__class__.__name__ that have been visited.
     n_nodes = 0
-    # These are set in TOI.init_from_file and TOI.init_from_string.
-    level = 0
-    tokens = []
-    tree = None
 
     #@+others
     #@+node:ekr.20191228184647.1: *4* tog.balance_tokens
@@ -3701,6 +3697,88 @@ class TokenOrderGenerator:
         else:
             print('All visitors covered')
         print('')
+    #@+node:ekr.20200103174914.1: *4* tog: Init...
+    # These are actually used by the TOI class.
+    # however, it's convenient to define them here.
+    #@+node:ekr.20191113063144.4: *5* toi.create_links
+    def create_links(self, tokens, tree, file_name=''):
+        """
+        A generator creates two-way links between the given tokens and ast-tree.
+        
+        Callers should call this generator with list(tog.create_links(...))
+        
+        The sync_tokens method creates the links and verifies that the resulting
+        tree traversal generates exactly the given tokens in exact order.
+        
+        tokens: the list of Token instances for the input.
+                Created by make_tokens().
+        tree:   the ast tree for the input.
+                Created by parse_ast().
+        """
+        #
+        # Init all ivars.
+        self.file_name = file_name
+            # For tests.
+        self.level = 0
+            # Python indentation level.
+        self.node = None
+            # The node being visited.
+            # The parent of the about-to-be visited node.
+        self.tokens = tokens
+            # The immutable list of input tokens.
+        self.tree = tree
+            # The tree of ast.AST nodes.
+        #
+        # Traverse the tree.
+        try:
+            while True:
+                next(self.visitor(tree))
+        except StopIteration:
+            pass
+        #
+        # Patch the last tokens.
+        # Thise ensures that all tokens are patched.
+        self.node = tree
+        yield from self.gen_token('newline', '\n')
+        yield from self.gen_token('endmarker', '')
+    #@+node:ekr.20191229071733.1: *5* toi.init_from_file
+    def init_from_file(self, filename):
+        """
+        Create the tokens and ast tree for the given file.
+        
+        Return (contents, tokens, tree).
+        """
+        self.level = 0
+        self.filename = filename
+        contents = read_file(filename)
+        if contents is None:
+            return None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        self.tree = tree = parse_ast(contents)
+        list(self.create_links(tokens, tree))
+        self.balance_tokens(tokens)
+        return contents, tokens, tree
+    #@+node:ekr.20191229071746.1: *5* toi.init_from_string
+    def init_from_string(self, contents):
+        """
+        Tokenize, parse and create links in the contents string.
+        
+        Return (tokens, tree).
+        """
+        self.filename = '<string>'
+        self.level = 0
+        self.tokens = tokens = make_tokens(contents)
+        self.tree = tree = parse_ast(contents)
+        list(self.create_links(tokens, tree))
+        self.balance_tokens(tokens)
+        return tokens, tree
+    #@+node:ekr.20191229072907.1: *5* toi.reassign_tokens
+    def reassign_tokens(self, tokens, tree):
+        """
+        Reassign links between the given token list and ast-tree.
+        """
+        ReassignTokens().reassign(tokens, tree)
+            
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin/end_visitor
     begin_end_stack = []
@@ -4978,7 +5056,7 @@ class TokenOrderGenerator:
 #@+node:ekr.20191113054314.1: *3*  class TokenOrderInjector (TOG)
 class TokenOrderInjector (TokenOrderGenerator):
     """
-    A class that injects data into tokens and ast nodes.
+    A class that injects parent/child data into tokens and ast nodes.
     """
     #@+others
     #@+node:ekr.20191113054550.1: *4* toi.begin_visitor
@@ -4999,85 +5077,6 @@ class TokenOrderInjector (TokenOrderGenerator):
         #
         # *Now* update self.node, etc.
         super().begin_visitor(node)
-    #@+node:ekr.20191113063144.4: *4* toi.create_links
-    def create_links(self, tokens, tree, file_name=''):
-        """
-        A generator creates two-way links between the given tokens and ast-tree.
-        
-        Callers should call this generator with list(tog.create_links(...))
-        
-        The sync_tokens method creates the links and verifies that the resulting
-        tree traversal generates exactly the given tokens in exact order.
-        
-        tokens: the list of Token instances for the input.
-                Created by make_tokens().
-        tree:   the ast tree for the input.
-                Created by parse_ast().
-        """
-        #
-        # Init all ivars.
-        self.file_name = file_name
-            # For tests.
-        self.level = 0
-            # Python indentation level.
-        self.node = None
-            # The node being visited.
-            # The parent of the about-to-be visited node.
-        self.tokens = tokens
-            # The immutable list of input tokens.
-        self.tree = tree
-            # The tree of ast.AST nodes.
-        #
-        # Traverse the tree.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
-        #
-        # Patch the last tokens.
-        # Thise ensures that all tokens are patched.
-        self.node = tree
-        yield from self.gen_token('newline', '\n')
-        yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229071733.1: *4* toi.init_from_file
-    def init_from_file(self, filename):
-        """
-        Create the tokens and ast tree for the given file.
-        
-        Return (contents, tokens, tree).
-        """
-        self.level = 0
-        self.filename = filename
-        contents = read_file(filename)
-        if contents is None:
-            return None, None, None
-        self.tokens = tokens = make_tokens(contents)
-        self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
-        return contents, tokens, tree
-    #@+node:ekr.20191229071746.1: *4* toi.init_from_string
-    def init_from_string(self, contents):
-        """
-        Tokenize, parse and create links in the contents string.
-        
-        Return (tokens, tree).
-        """
-        self.filename = '<string>'
-        self.level = 0
-        self.tokens = tokens = make_tokens(contents)
-        self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
-        return tokens, tree
-    #@+node:ekr.20191229072907.1: *4* toi.reassign_tokens
-    def reassign_tokens(self, tokens, tree):
-        """
-        Reassign links between the given token list and ast-tree.
-        """
-        ReassignTokens().reassign(tokens, tree)
-            
     #@-others
 #@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
 class TokenOrderTraverser:
