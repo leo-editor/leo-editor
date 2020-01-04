@@ -2561,8 +2561,8 @@ class BaseTest (unittest.TestCase):
         self.update_counts('characters', len(contents))
         contents = g.adjustTripleString(contents)
         self.contents = contents.rstrip() + '\n'
-        # Create the TOI instance.
-        self.toi = TokenOrderInjector()
+        # Create the TOG instance.
+        self.tog = TokenOrderGenerator()
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         tree = self.make_tree(contents)
@@ -2584,7 +2584,11 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
     def make_tokens(self, contents):
-        """BaseTest.make_tokens. Make tokens from contents."""
+        """
+        BaseTest.make_tokens.
+        
+        Make tokens from contents.
+        """
         t1 = get_time()
         # Tokenize.
         tokens = make_tokens(contents)
@@ -2612,7 +2616,7 @@ class BaseTest (unittest.TestCase):
         Insert links between corresponding paren tokens.
         """
         t1 = get_time()
-        count = self.toi.balance_tokens(tokens)
+        count = self.tog.balance_tokens(tokens)
         t2 = get_time()
         self.update_counts('paren-tokens', count)
         self.update_times('03: balance-tokens', t2-t1)
@@ -2624,14 +2628,14 @@ class BaseTest (unittest.TestCase):
         
         Insert two-way links between the tokens and ast tree.
         """
-        toi = self.toi
+        tog = self.tog
         # Catch exceptions so we can get data late.
         try:
             t1 = get_time()
             # Yes, list *is* required here.
-            list(toi.create_links(tokens, tree))
+            list(tog.create_links(tokens, tree))
             t2 = get_time()
-            self.update_counts('nodes', toi.n_nodes)
+            self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
             g.trace(f"\nFAIL: make-tokens\n")
@@ -2646,21 +2650,15 @@ class BaseTest (unittest.TestCase):
         
         Reassign tokens to ast nodes. This pass is optional.
         """
-        toi = self.toi
-        assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
-        toi.reassign_tokens(tokens, tree)
+        self.tog.reassign_tokens(tokens, tree)
         t2 = get_time()
         self.update_times('12: reassign-links', t2 - t1)
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, tokens, tree, filename=''):
         """
         BaseTest.fstringify.
-        
-        Run TOG.fstringify and measure its time.
         """
-        toi = self.toi
-        assert isinstance(toi, TokenOrderGenerator), repr(toi)
         t1 = get_time()
         result_s = Fstringify().fstringify(tokens, tree)
         t2 = get_time()
@@ -3636,30 +3634,6 @@ class TokenOrderGenerator:
     n_nodes = 0
 
     #@+others
-    #@+node:ekr.20191228184647.1: *4* tog.balance_tokens
-    def balance_tokens(self, tokens):
-        """
-        TOG.balance_tokens.
-        
-        Find matching paren tokens.
-        """
-        count, stack = 0, []
-        for token in tokens:
-            if token.kind == 'op':
-                if token.value == '(':
-                    count += 1
-                    stack.append(token.index)
-                if token.value == ')':
-                    if stack:
-                        index = stack.pop()
-                        tokens[index].matching_paren = token.index
-                        tokens[token.index].matching_paren = index
-                    else:
-                        g.trace(f"unmatched ')' at index {token.index}")
-        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
-        if stack:
-            g.trace("unmatched '(' at {','.join(stack)}")
-        return count
     #@+node:ekr.20191129044716.1: *4* tog.error
     def error(self, message):
         """
@@ -3698,9 +3672,31 @@ class TokenOrderGenerator:
             print('All visitors covered')
         print('')
     #@+node:ekr.20200103174914.1: *4* tog: Init...
-    # These are actually used by the TOI class.
-    # however, it's convenient to define them here.
-    #@+node:ekr.20191113063144.4: *5* toi.create_links
+    #@+node:ekr.20191228184647.1: *5* tog.balance_tokens
+    def balance_tokens(self, tokens):
+        """
+        TOG.balance_tokens.
+        
+        Find matching paren tokens.
+        """
+        count, stack = 0, []
+        for token in tokens:
+            if token.kind == 'op':
+                if token.value == '(':
+                    count += 1
+                    stack.append(token.index)
+                if token.value == ')':
+                    if stack:
+                        index = stack.pop()
+                        tokens[index].matching_paren = token.index
+                        tokens[token.index].matching_paren = index
+                    else:
+                        g.trace(f"unmatched ')' at index {token.index}")
+        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
+        if stack:
+            g.trace("unmatched '(' at {','.join(stack)}")
+        return count
+    #@+node:ekr.20191113063144.4: *5* tog.create_links
     def create_links(self, tokens, tree, file_name=''):
         """
         A generator creates two-way links between the given tokens and ast-tree.
@@ -3741,7 +3737,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229071733.1: *5* toi.init_from_file
+    #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename):
         """
         Create the tokens and ast tree for the given file.
@@ -3758,7 +3754,7 @@ class TokenOrderGenerator:
         list(self.create_links(tokens, tree))
         self.balance_tokens(tokens)
         return contents, tokens, tree
-    #@+node:ekr.20191229071746.1: *5* toi.init_from_string
+    #@+node:ekr.20191229071746.1: *5* tog.init_from_string
     def init_from_string(self, contents):
         """
         Tokenize, parse and create links in the contents string.
@@ -3772,7 +3768,7 @@ class TokenOrderGenerator:
         list(self.create_links(tokens, tree))
         self.balance_tokens(tokens)
         return tokens, tree
-    #@+node:ekr.20191229072907.1: *5* toi.reassign_tokens
+    #@+node:ekr.20191229072907.1: *5* tog.reassign_tokens
     def reassign_tokens(self, tokens, tree):
         """
         Reassign links between the given token list and ast-tree.
@@ -3780,23 +3776,22 @@ class TokenOrderGenerator:
         ReassignTokens().reassign(tokens, tree)
             
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
-    #@+node:ekr.20191113063144.3: *5* tog.begin/end_visitor
+    #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
     begin_end_stack = []
     node_index = 0  # The index into the node_stack.
     node_stack = []  # The stack of parent nodes.
 
-    # These methods support generators.
-
-    # Subclasses may/should override these methods.
-
     def begin_visitor(self, node):
-        """TOG.begin_visitor: Enter a visitor."""
-        if 0:
-            g.trace(node.__class__.__name__)
-            g.printObj([z.__class__.__name__ for z in self.node_stack])
+        """Enter a visitor."""
         # Update the stats.
-        self.coverage_set.add(node.__class__.__name__)
         self.n_nodes += 1
+        self.coverage_set.add(node.__class__.__name__)
+        # Do this first, *before* updating self.node.
+        node.parent = self.node
+        if self.node:
+            children = getattr(self.node, 'children', [])
+            children.append(node)
+            self.node.children = children
         # Inject the node_index field.
         assert not hasattr(node, 'node_index'), g.callers()
         node.node_index = self.node_index
@@ -3807,7 +3802,7 @@ class TokenOrderGenerator:
         self.node_stack.append(self.node)
         # Update self.node *last*.
         self.node = node
-
+    #@+node:ekr.20200104032811.1: *5* tog.end_visitor
     def end_visitor(self, node):
         """Leave a visitor."""
         if 0:
@@ -5053,31 +5048,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@-others
-#@+node:ekr.20191113054314.1: *3*  class TokenOrderInjector (TOG)
-class TokenOrderInjector (TokenOrderGenerator):
-    """
-    A class that injects parent/child data into tokens and ast nodes.
-    """
-    #@+others
-    #@+node:ekr.20191113054550.1: *4* toi.begin_visitor
-    def begin_visitor(self, node):
-        """
-        TokenOrderInjector.begin_visitor.
-        
-        Enter a visitor, inject data into the ast node, and update stats.
-        """
-        #
-        # Do this first, *before* updating self.node.
-        self.coverage_set.add(node.__class__.__name__)
-        node.parent = self.node
-        if self.node:
-            children = getattr(self.node, 'children', [])
-            children.append(node)
-            self.node.children = children
-        #
-        # *Now* update self.node, etc.
-        super().begin_visitor(node)
-    #@-others
 #@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
 class TokenOrderTraverser:
     """
@@ -5184,8 +5154,8 @@ class Fstringify (TokenOrderTraverser):
         
         f-stringify the given external file with the Fstrinfify class.
         """
-        toi = TokenOrderInjector()
-        contents, tokens, tree = toi.init_from_file(filename)
+        tog = TokenOrderGenerator()
+        contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
             print(f"Can not fstringify: {filename}")
             return
@@ -5203,8 +5173,8 @@ class Fstringify (TokenOrderTraverser):
         
         Print the diffs that would resulf from the fstringify-file command.
         """
-        toi = TokenOrderInjector()
-        contents, tokens, tree = toi.init_from_file(filename)
+        tog = TokenOrderGenerator()
+        contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
             print(f"Can not fstringify-diff: {filename}")
             return
@@ -5571,7 +5541,7 @@ class ReassignTokens (TokenOrderTraverser):
             add_token_to_token_list(self.tokens[k], nca)
     #@-others
 #@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
-class TokenOrderFormatter (TokenOrderInjector):
+class TokenOrderFormatter (TokenOrderGenerator):
     
     def format(self, contents):
         """

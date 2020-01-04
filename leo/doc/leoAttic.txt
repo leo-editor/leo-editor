@@ -3451,6 +3451,30 @@ def checkPath(self, fileName):
         return at.isWritable(fileName)
     return True
 #@+node:ekr.20191229062845.1: ** From leoAst.py
+#@+node:ekr.20191113054314.1: *3*  class TokenOrderInjector (TOG)
+class TokenOrderInjector (TokenOrderGenerator):
+    """
+    A class that injects parent/child data into tokens and ast nodes.
+    """
+    @others
+#@+node:ekr.20191113054550.1: *4* toi.begin_visitor
+def begin_visitor(self, node):
+    """
+    TokenOrderInjector.begin_visitor.
+    
+    Enter a visitor, inject data into the ast node, and update stats.
+    """
+    #
+    # Do this first, *before* updating self.node.
+    self.coverage_set.add(node.__class__.__name__)
+    node.parent = self.node
+    if self.node:
+        children = getattr(self.node, 'children', [])
+        children.append(node)
+        self.node.children = children
+    #
+    # *Now* update self.node, etc.
+    super().begin_visitor(node)
 #@+node:ekr.20191228113510.1: *3* @@test TOG master test
 """
 The master unit test for leoAst.TokenOrderGenerator and related classes.
