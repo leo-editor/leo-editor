@@ -2922,13 +2922,6 @@ class TestReassignTokens (BaseTest):
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
-    #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
-    def test_fstringify_leo_app(self):
-        
-        filename = r'c:\test\core\leoApp.py'
-        tokens, tree = self.make_file_data(filename)
-        self.fstringify(tokens, tree, filename)
-        # self.dump_times()
     #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
     def test_fstringify_with_call(self):
         
@@ -2945,11 +2938,12 @@ class TestFstringify (BaseTest):
             f"expected: {expected}\n"
             f"     got: {results}")
         # self.dump_times()
-    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
-    def test_fstringify_with_parens(self):
-
-        contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f"{ivar:20}", val)"""
+    #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2 (fails)
+    def test_fstringify_with_call_2(self):
+        
+        # From LM.traceSettingsDict
+        contents = """print('%s %s' % (d.name(), len(d.d.keys())))"""
+        expected = '''print(f"{d.name()} {len(d.d.keys())}")'''
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -2958,7 +2952,6 @@ class TestFstringify (BaseTest):
         self.fstringify(tokens, tree, '<string>')
         results = tokens_to_string(tokens)
         assert results == expected, (
-            f"\n"
             f"expected: {expected}\n"
             f"     got: {results}")
         # self.dump_times()
@@ -2983,21 +2976,40 @@ class TestFstringify (BaseTest):
             f"expected: {expected}\n"
             f"     got: {results}")
         # self.dump_times()
+    #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
+    def test_fstringify_leo_app(self):
+        
+        if 0: ###
+            filename = r'c:\test\core\leoApp.py'
+            tokens, tree = self.make_file_data(filename)
+            self.fstringify(tokens, tree, filename)
+        # self.dump_times()
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
 
-        contents = (
-            """print("hello\r\n")"""
-            """print('world\r\n")"""
-            """print("hello\n")"""
-            """print('world\n")"""
-        )
-        expected = (
-            """print("hello\r\n")"""
-            """print('world\r\n")"""
-            """print("hello\n")"""
-            """print('world\n")"""
-        )
+        contents = r"""\
+    print("hello\n")
+    print('world\n')
+    print("hello\r\n")
+    print('world\r\n')
+    """
+        tokens, tree = self.make_data(contents)
+        expected = self.contents  # After munging.
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(tokens, tree, '<string>')
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"\n"
+            f"expected: {expected}\n"
+            f"     got: {results}")
+    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
+    def test_fstringify_with_parens(self):
+
+        contents = """print('%20s' % (ivar), val)"""
+        expected = """print(f"{ivar:20}", val)"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -3009,6 +3021,7 @@ class TestFstringify (BaseTest):
             f"\n"
             f"expected: {expected}\n"
             f"     got: {results}")
+        # self.dump_times()
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
