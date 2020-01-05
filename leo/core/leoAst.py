@@ -470,10 +470,10 @@ def tokens_for_node(node, tokens):
     # Find any token descending from node.
     token = find_anchor_token(node)
     if not token:
-        ### A good trace, for now...
-        print('')
-        g.trace('===== no tokens', node.__class__.__name__)
-        g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
+        if 0: ### A good trace, for now...
+            print('')
+            g.trace('===== no tokens', node.__class__.__name__)
+            g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
         return []
     assert is_ancestor(node, token)
     # Scan backward.
@@ -2954,65 +2954,8 @@ class TestFstringify (BaseTest):
     #@+node:ekr.20200105073155.1: *4* test_call_attribute
     def test_fstringify_with_attribute(self):
         
-        contents = """\
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
-        found = False
-        while p and p != after:
-            if (
-                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-                and (p.isDirty() or not writeDirtyOnly)
-            ):
-                ok = at.writeOneAtShadowNode(p)
-                if ok:
-                    found = True
-                    g.blue('wrote %s' % p.atShadowFileNodeName())
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @shadow nodes in the selected tree")
-            else:
-                g.es("no @shadow nodes in the selected tree")
-        return found
-    """
-
-        ### g.blue(f"wrote {p.atShadowFileNodeName()}")
-        expected = """\
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
-        found = False
-        while p and p != after:
-            if (
-                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-                and (p.isDirty() or not writeDirtyOnly)
-            ):
-                ok = at.writeOneAtShadowNode(p)
-                if ok:
-                    found = True
-                    g.blue(f"wrote {p.atShadowFileNodeName()}")
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @shadow nodes in the selected tree")
-            else:
-                g.es("no @shadow nodes in the selected tree")
-        return found
-    """
-        expected = g.adjustTripleString(expected)
+        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
+        expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -3862,7 +3805,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229071733.1: *5* tog.init_from_file (** changed)
+    #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename):
         """
         Create the tokens and ast tree for the given file.
@@ -3877,10 +3820,9 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        ### self.balance_tokens(tokens)
         self.reassign_tokens(tokens, tree)
         return contents, tokens, tree
-    #@+node:ekr.20191229071746.1: *5* tog.init_from_string (** changed)
+    #@+node:ekr.20191229071746.1: *5* tog.init_from_string
     def init_from_string(self, contents):
         """
         Tokenize, parse and create links in the contents string.
@@ -3892,7 +3834,6 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        #### self.balance_tokens(tokens)
         self.reassign_tokens(tokens, tree)
         return tokens, tree
     #@+node:ekr.20191229072907.1: *5* tog.reassign_tokens
@@ -5586,7 +5527,7 @@ class Fstringify (TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (** changed)
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
     def scan_rhs(self, node):
         """
         Scan the right-hand side of a potential f-string.
@@ -5678,12 +5619,9 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
-        ### g.trace('(ReassignTokens)')
         tokens = tokens_for_node(node, self.tokens)
-        ### g.printObj(tokens, tag='ReassignTokens.visit: tokens')
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
-        ### g.trace('nca', nca.__class__.__name__)
         if not nca:
             # g.trace(f"no nca: {tokens_to_string(tokens)}")
             return
