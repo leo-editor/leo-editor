@@ -118,12 +118,15 @@ def fstringify_files(event):
     if not c or not c.p:
         return
     tag = 'fstringify-files'
+    g.es(f"{tag}...")
     for root in g.findRootsWithPredicate(c, c.p):
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
-            g.es_print(f"{tag}: {g.shortFileName(filename)}")
-            leoAst.Fstringify().fstringify_file(filename)
+            print(f"{tag}: {g.shortFileName(filename)}")
+            changed = leoAst.Fstringify().fstringify_file(filename)
+            changed_s = 'changed' if changed else 'unchanged'
+            g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
             print(f"{tag}: file not found:{filename}")
@@ -142,15 +145,19 @@ def fstringify_diff_files(event):
     if not c or not c.p:
         return
     tag = 'fstringify-files-diff'
+    g.es(f"{tag}...")
     for root in g.findRootsWithPredicate(c, c.p):
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
-            g.es_print(f"{tag}: {g.shortFileName(filename)}")
-            leoAst.Fstringify().fstringify_file_diff(filename)
+            print(f"{tag}: {g.shortFileName(filename)}")
+            changed = leoAst.Fstringify().fstringify_file_diff(filename)
+            changed_s = 'changed' if changed else 'unchanged'
+            g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
+            print('')
             print(f"{tag}: file not found:{filename}")
-            g.es(f"{tag}: file not found:\n{filename}")
+            g.es(f"file not found:\n{filename}")
     g.es(f"{tag}: done")
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
