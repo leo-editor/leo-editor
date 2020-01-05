@@ -368,11 +368,23 @@ def dump_tree(tree):
 dump_tree_and_links = dump_tree
 #@+node:ekr.20191223095408.1: *3* node/token finders...
 # Functions that associate tokens with nodes.
-#@+node:ekr.20191223093539.1: *4* function: find_node_with_token_list
-def find_node_with_token_list(node):
+#@+node:ekr.20191223093539.1: *4* function: find_anchor_token
+def find_anchor_token(node):
     """
-    Return any node in node's tree with a token_list.
+    Return the anchor_token for node, a token such that token.node == node.
     """
+    
+    node1 = node
+    
+    def anchor_token(node):
+        """Return the anchor token in node.token_list"""
+        token_list = getattr(node, 'token_list', [])
+        for token in token_list:
+            # Careful: some tokens in the token list may have been killed.
+            if token.node == node1:
+                return token
+        return None
+        
     # This table only has to cover fields for ast.Nodes that
     # won't have any associated token.
     fields = (
@@ -382,14 +394,11 @@ def find_node_with_token_list(node):
         'dims', 'ifs', 'names', 's',
         'test', 'values', 'targets',
     )
-    node1 = node
     while node:
         # First, try the node itself.
-        token_list = getattr(node, 'token_list', [])
-        for z in token_list:
-            # Careful: some tokens in the token list may have been killed.
-            if z.node == node:
-                return node
+        token = anchor_token(node)
+        if token:
+            return node, token
         # Second, try the most common nodes w/o token_lists:
         if isinstance(node, ast.Call):
             node = node.func
@@ -401,14 +410,12 @@ def find_node_with_token_list(node):
             for field in fields:
                 node = getattr(node, field, None)
                 if node:
-                    token_list = getattr(node, 'token_list', None)
-                    for z in token_list:
-                        # Careful: some tokens in the token list may have been killed.
-                        if z.node == node:
-                            return node
+                    token = anchor_token(node)
+                    if token:
+                        return token
             else:
                 break
-    g.trace('===== no token list', node1.__class__.__name__)
+    g.trace('===== fail', node1.__class__.__name__)
     return None
 #@+node:ekr.20191231160225.1: *4* function: find_paren_token
 def find_paren_token(i, tokens):
@@ -421,20 +428,6 @@ def find_paren_token(i, tokens):
             break
         i += 1
     return None
-#@+node:ekr.20191223053247.1: *4* function: find_token
-def find_token(node):
-    """Return any token descending from node."""
-    node2 = find_node_with_token_list(node)
-    if node2:
-        ### token = node2.token_list[0]
-        for token in node2.token_list:
-            # Careful: some tokens in the token list may have been killed.
-            if token.node == node:
-                return token
-        ### return token
-    g.trace('===== no token list', node.__class__.__name__)
-    return None
-        
 #@+node:ekr.20191223054300.1: *4* function: is_ancestor
 def is_ancestor(node, token):
     """Return True if node is an ancestor of token."""
@@ -475,9 +468,11 @@ def nearest_common_ancestor(node1, node2):
 def tokens_for_node(node, tokens):
     """Return the list of all tokens descending from node."""
     # Find any token descending from node.
-    token = find_token(node)
+    token = find_anchor_token(node)
     if not token:
+        print('')
         g.trace('===== no tokens', node.__class__.__name__)
+        g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
         return []
     assert is_ancestor(node, token)
     # Scan backward.
@@ -5232,7 +5227,7 @@ class Fstringify (TokenOrderTraverser):
         contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
             print(f"{tag}: Can not fstringify: {filename}")
-            return
+            return False
         # fstringify.
         self.fstringify(contents, filename, tokens, tree)
         results = tokens_to_string(tokens)
@@ -5259,7 +5254,7 @@ class Fstringify (TokenOrderTraverser):
         tog = TokenOrderGenerator()
         contents, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
-            return
+            return False
         # fstringify.
         self.fstringify(contents, filename, tokens, tree)
         results = tokens_to_string(tokens)
