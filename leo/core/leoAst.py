@@ -5246,7 +5246,7 @@ class Fstringify (TokenOrderTraverser):
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return
-        lines = list(difflib.Differ().compare(
+        lines = list(difflib.unified_diff(
             g.splitLines(contents),
             g.splitLines(results)))
         g.printObj(lines, f"diff {filename}")
