@@ -380,8 +380,11 @@ def find_node_with_token_list(node):
     node1 = node
     while node:
         # First, try the node itself.
-        if getattr(node, 'token_list', None):
-            return node
+        token_list = getattr(node, 'token_list', [])
+        for z in token_list:
+            # Careful: some tokens in the token list may have been killed.
+            if z.node == node:
+                return node
         # Second, try the most common nodes w/o token_lists:
         if isinstance(node, ast.Call):
             node = node.func
@@ -391,9 +394,13 @@ def find_node_with_token_list(node):
         else:
             # This will be used rarely.
             for field in fields:
-                if getattr(node, field, None):
-                    node = getattr(node, field)
-                    break
+                node = getattr(node, field, None)
+                if node:
+                    token_list = getattr(node, 'token_list', None)
+                    for z in token_list:
+                        # Careful: some tokens in the token list may have been killed.
+                        if z.node == node:
+                            return node
             else:
                 break
     g.trace('===== no token list', node1.__class__.__name__)
@@ -414,8 +421,12 @@ def find_token(node):
     """Return any token descending from node."""
     node2 = find_node_with_token_list(node)
     if node2:
-        token = node2.token_list[0]
-        return token
+        ### token = node2.token_list[0]
+        for token in node2.token_list:
+            # Careful: some tokens in the token list may have been killed.
+            if token.node == node:
+                return token
+        ### return token
     g.trace('===== no token list', node.__class__.__name__)
     return None
         
@@ -5207,6 +5218,8 @@ class Fstringify (TokenOrderTraverser):
         The entry point for the fstringify-file command.
         
         f-stringify the given external file with the Fstrinfify class.
+        
+        Return True if the file was changed.
         """
         tag = 'fstringify-file'
         self.filename = filename
@@ -5220,10 +5233,11 @@ class Fstringify (TokenOrderTraverser):
         results = tokens_to_string(tokens)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
-            return
+            return False
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results)
+        return True
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
     def fstringify_file_diff(self, filename):
         """
@@ -5232,6 +5246,8 @@ class Fstringify (TokenOrderTraverser):
         The entry point for the diff-fstringify-file command.
         
         Print the diffs that would resulf from the fstringify-file command.
+        
+        Return True if the file would be changed.
         """
         tag = 'diff-fstringify-file'
         self.filename = filename
@@ -5245,11 +5261,12 @@ class Fstringify (TokenOrderTraverser):
         # Show the diffs.
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
-            return
+            return False
         lines = list(difflib.unified_diff(
             g.splitLines(contents),
             g.splitLines(results)))
         g.printObj(lines, f"diff {filename}")
+        return True
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
         """
