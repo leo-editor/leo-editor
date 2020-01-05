@@ -464,16 +464,23 @@ def tokens_for_node(node, tokens):
         g.trace('===== no tokens', node.__class__.__name__)
         return []
     assert is_ancestor(node, token)
+    ### g.trace(f"node: {node.node_index}.{node.__class__.__name__} root token: {token!s}")
     # Scan backward.
-    i = last_i = token.index
+    i = first_i = token.index
     while i >= 0:
         token2 = tokens[i-1]
         if getattr(token2, 'node', None):
             if is_ancestor(node, token2):
-                last_i = i - 1
+                first_i = i - 1
             else:
+                ### 
+                    # g.trace(
+                        # f"node {node.node_index:<2} "
+                        # f"is not an ancestor of "
+                        # f"node {token2.node.node_index:<2}")
                 break
         i -= 1
+    ### g.trace(f"first token: {tokens[i]!s}")
     # Scan forward.
     j = last_j = token.index
     while j + 1 < len(tokens):
@@ -482,12 +489,20 @@ def tokens_for_node(node, tokens):
             if is_ancestor(node, token2):
                 last_j = j + 1
             else:
+                ### 
+                    # g.trace(
+                        # f"node {node.node_index:<2} "
+                        # f"is not an ancestor of "
+                        # f"node {token2.node.node_index:<2}")
                 break
         j += 1
-    last_j = match_parens(last_i, last_j, tokens)
-    results = tokens[last_i : last_j + 1]
+    ### g.trace(f"last token: {tokens[last_j]!s}")
+    ### g.printObj(tokens[first_i : last_j+1], tag='Before match_parens')
+    last_j = match_parens(first_i, last_j, tokens)
+    results = tokens[first_i : last_j + 1]
+    ### g.trace(node.__class__.__name__)
+    ### g.printObj(results)
     return results
-    
 #@+node:ekr.20191224093336.1: *4* function: match_parens
 match_parens_message_given = False
 
@@ -495,6 +510,7 @@ def match_parens(i, j, tokens):
     """
     Match parens in tokens[i:j]. Return the new j.
     """
+    ### g.trace(f"Entry: {i} {j} {tokens[i:j+1]!s}")
     if j >= len(tokens):
         return len(tokens)
     # Calculate paren level...
@@ -505,13 +521,17 @@ def match_parens(i, j, tokens):
             level += 1
         if token.kind == 'op' and token.value == ')':
             level -= 1
+    ### g.trace(f"level: {level}")
     # Find matching ')' tokens...
     if level > 0:
         while level > 0 and j + 1 < len(tokens):
             token = tokens[j+1]
             if token.kind == 'op' and token.value == ')':
                 level -= 1
+            elif token.kind == 'op' and token.value == '(': # Bug fix.
+                level += 1
             elif is_significant_token(token):
+                ### g.trace(f"break at {j+1} {tokens[j+1]!s}")
                 break
             j += 1
     if level != 0:
@@ -519,6 +539,7 @@ def match_parens(i, j, tokens):
         # s = ''.join([z.to_string() for z in tokens[i:j+1]])
         s = tokens_to_string(tokens[i:j+1])
         g.trace(f"Unmatched tokens. level={level}, {s!r}\n")
+    ### g.trace(f" Exit: {i} {j} {tokens[i:j+1]!s}")
     return j
 #@+node:ekr.20191225061516.1: *3* node/token replacers...
 # Functions that replace tokens or nodes.
@@ -2743,17 +2764,18 @@ class AstDumper:
     #@+node:ekr.20191125035600.1: *4* dumper.compute_node_string & helpers
     def compute_node_string(self, node, level):
         """Return a string summarizing the node."""
-        index_ivar = 'node_index'
         indent = ' ' * 2 * level
         parent = getattr(node, 'parent', None)
-        node_id = getattr(node, index_ivar, '??')
-        parent_id = getattr(parent, index_ivar, '??')
-        parent_s = f"{parent_id:<3} {parent.__class__.__name__}" if parent else ''
+        node_id = getattr(node, 'node_index', '??')
+        parent_id = getattr(parent, 'node_index', '??')
+        parent_s = f"{parent_id:>3}.{parent.__class__.__name__} " if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = class_name + ': ' + self.show_fields(class_name, node, 22)
+        ### descriptor_s = class_name + ': ' + self.show_fields(class_name, node, 22)
+        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(class_name, node, 22)
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
-        full_s1 = f"{parent_s:<16} {lines:<10} {node_id:<3} {indent}{descriptor_s} "
+        ### full_s1 = f"{parent_s:<16} {lines:<10} {node_id:<3} {indent}{descriptor_s} "
+        full_s1 = f"{parent_s:<16} {lines:<10} {indent}{descriptor_s} "
         node_s =  f"{full_s1:<70} {tokens_s}\n"
         return node_s
     #@+node:ekr.20191113223424.1: *5* dumper.show_fields
@@ -2826,23 +2848,24 @@ class AstDumper:
         token_list = getattr(node, 'token_list', [])
         result = []
         for z in token_list:
+            ###result.append(f"{z.index}.")
             if z.kind == 'comment':
                 val = g.truncate(z.value,10) # Short is good.
-                result.append(f"{z.kind}({val})")
+                result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'name':
                 val = g.truncate(z.value,20)
-                result.append(f"{z.kind}({val})")
+                result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'newline':
-                result.append(f"{z.kind} ({z.line_number}:{len(z.line)})")
+                result.append(f"{z.kind}.{z.index}({z.line_number}:{len(z.line)})")
             elif z.kind == 'number':
-                result.append(f"{z.kind}({z.value})")
+                result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'op':
-                result.append(f"{z.kind}{z.value}")
+                result.append(f"{z.kind}.{z.index}={z.value}")
             elif z.kind == 'string':
                 val = g.truncate(z.value,30)
-                result.append(f"{z.kind}({val})")
+                result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'ws':
-                result.append(f"{z.kind}({len(z.value)})")
+                result.append(f"{z.kind}.{z.index}({len(z.value)})")
             else:
                 # Indent, dedent, encoding, etc.
                 # Don't put a blank.
@@ -5498,7 +5521,7 @@ class Fstringify (TokenOrderTraverser):
         
         Return a list of the token lists for each element.
         """
-        trace = False
+        trace = True
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
             return [node.token_list]
@@ -5508,17 +5531,18 @@ class Fstringify (TokenOrderTraverser):
                 elts = node.elts
             else:
                 elts = node
-            for elt in elts:
-                if trace:
-                    g.trace(f"item: {elt.__class__.__name__}")
+            for i, elt in enumerate(elts):
                 tokens = tokens_for_node(elt, self.tokens)
                 result.append(tokens)
+                if trace:
+                    g.trace(f"item: {i}: {elt.__class__.__name__}")
+                    g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
         # Now we expect only one result. 
-        if trace: g.trace(node.__class__.__name__)
         tokens = tokens_for_node(node, self.tokens)
-        if trace and not tokens:
-            g.trace('===== no token list', node.__class__.__name__)
+        if trace:
+            g.trace('One node:', node.__class__.__name__)
+            dump_tokens(tokens)
             dump_tree_and_links(node)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
@@ -5700,10 +5724,11 @@ class Token:
         self.node = None
 
     def __repr__(self):
-        return f"{self.kind:>11} {self.show_val(80)}"
+        s = f"{self.kind:}.{self.index:<3}"
+        return f"{s:>15} {self.show_val(80)}"
 
     def __str__(self):
-        return f"{self.kind} {self.show_val(80)}"
+        return f"{self.kind}.{self.index:<3} {self.show_val(80)}"
 
     def to_string(self):
         """Return the contribution of the token to the source file."""
@@ -5720,21 +5745,19 @@ class Token:
     def dump(self):
         """Dump a token and related links."""
         # Let block.
-        children = getattr(self.node, 'children', [])
-        if self.node:
-            node_id = getattr(self.node, 'node_index', obj_id(self.node))
-        else:
-            node_id = ''
+        ### children = getattr(self.node, 'children', [])
+        node_id = self.node.node_index if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
         parent = getattr(self.node, 'parent', None)
         parent_class = parent.__class__.__name__ if parent else ''
-        parent_id = obj_id(parent) if parent else ''
+        parent_id = parent.node_index if parent else ''
+        kind_s = f"{self.kind}.{self.index:<3}"
         return (
-            f"{self.index:>3} {self.kind:>11} {self.show_val(15):<15} "
-            f"line: {self.line_number:<2} level: {self.level:<2} "
+            f"{kind_s:>15} {self.show_val(15):<15} "
+            f"line: {self.line_number:<2} "
+            # f"level: {self.level:<2} "
             f"{node_id:4} {node_cn:16} "
-            f"children: {len(children)} "
-            f"parent: {parent_id:4} {parent_class}")
+            f"parent: {parent_id:>4} {parent_class}")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):
         """Dump a token or result node for error message."""
