@@ -2485,11 +2485,11 @@ class LoadManager:
             print(d)
             for key in sorted(list(d.keys())):
                 gs = d.get(key)
-                print('%35s %17s %s' % (key, g.shortFileName(gs.path), gs.val))
+                print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
             if d: print('')
         else:
             # print(d)
-            print('%s %s' % (d.name(), len(d.d.keys())))
+            print(f"{d.name} {len(d.d.keys())}")
     #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
     def traceShortcutsDict(self, d, verbose=False):
         if verbose:
