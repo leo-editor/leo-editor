@@ -3862,7 +3862,7 @@ class TokenOrderGenerator:
         self.node = tree
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
-    #@+node:ekr.20191229071733.1: *5* tog.init_from_file
+    #@+node:ekr.20191229071733.1: *5* tog.init_from_file (** changed)
     def init_from_file(self, filename):
         """
         Create the tokens and ast tree for the given file.
@@ -3877,9 +3877,10 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
+        ### self.balance_tokens(tokens)
+        self.reassign_tokens(tokens, tree)
         return contents, tokens, tree
-    #@+node:ekr.20191229071746.1: *5* tog.init_from_string
+    #@+node:ekr.20191229071746.1: *5* tog.init_from_string (** changed)
     def init_from_string(self, contents):
         """
         Tokenize, parse and create links in the contents string.
@@ -3891,7 +3892,8 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        self.balance_tokens(tokens)
+        #### self.balance_tokens(tokens)
+        self.reassign_tokens(tokens, tree)
         return tokens, tree
     #@+node:ekr.20191229072907.1: *5* tog.reassign_tokens
     def reassign_tokens(self, tokens, tree):
@@ -5584,7 +5586,7 @@ class Fstringify (TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (** changed)
     def scan_rhs(self, node):
         """
         Scan the right-hand side of a potential f-string.
@@ -5608,16 +5610,7 @@ class Fstringify (TokenOrderTraverser):
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
                     g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
-        # Special case ast.Call to handle empty argument lists.
-        if isinstance(node, ast.Call) and not node.args:
-            tokens = tokens_for_node(node, self.tokens)
-            i, j = tokens[0].index, tokens[-1].index
-            i = max(0, i-10)
-            j = min(len(self.tokens),j+10)
-            dump_tree_and_links(node)
-            dump_tokens(self.tokens[i:j])
-            # g.printObj(tokens, tag='empty call tokens')
-            
+        
         # Now we expect only one result. 
         tokens = tokens_for_node(node, self.tokens)
         if trace:
@@ -5685,9 +5678,12 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
+        ### g.trace('(ReassignTokens)')
         tokens = tokens_for_node(node, self.tokens)
+        ### g.printObj(tokens, tag='ReassignTokens.visit: tokens')
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
+        ### g.trace('nca', nca.__class__.__name__)
         if not nca:
             # g.trace(f"no nca: {tokens_to_string(tokens)}")
             return
