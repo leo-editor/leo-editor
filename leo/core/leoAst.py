@@ -470,6 +470,7 @@ def tokens_for_node(node, tokens):
     # Find any token descending from node.
     token = find_anchor_token(node)
     if not token:
+        ### A good trace, for now...
         print('')
         g.trace('===== no tokens', node.__class__.__name__)
         g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
@@ -2760,11 +2761,11 @@ class AstDumper:
         parent_id = getattr(parent, 'node_index', '??')
         parent_s = f"{parent_id:>3}.{parent.__class__.__name__} " if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(class_name, node, 22)
+        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(class_name, node, 30)
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<10} {indent}{descriptor_s} "
-        node_s =  f"{full_s1:<70} {tokens_s}\n"
+        node_s =  f"{full_s1:<62} {tokens_s}\n"
         return node_s
     #@+node:ekr.20191113223424.1: *5* dumper.show_fields
     def show_fields(self, class_name, node, truncate_n):
@@ -2861,6 +2862,8 @@ class AstDumper:
         #
         # split the line if it is too long.
         # g.printObj(result, tag='show_tokens')
+        if 1:
+            return ''.join(result)
         line, lines = [], []
         for r in result:
             line.append(r)
@@ -2874,8 +2877,8 @@ class AstDumper:
     def show_header(self):
         """Return a header string, but only the fist time."""
         return (
-            f"{'parent':<16} {'lines':<10} {'node':<42} {'tokens'}\n"
-            f"{'======':<16} {'=====':<10} {'====':<42} {'======'}\n")
+            f"{'parent':<16} {'lines':<10} {'node':<34} {'tokens'}\n"
+            f"{'======':<16} {'=====':<10} {'====':<34} {'======'}\n")
     #@+node:ekr.20141012064706.18392: *4* dumper.dump_ast & helper
     annotate_fields=False
     include_attributes = False
@@ -2948,8 +2951,79 @@ class TestFstringify (BaseTest):
         assert results == expected, (
             f"expected: {expected}\n"
             f"     got: {results}")
-        # self.dump_times()
-    #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2 (fails)
+    #@+node:ekr.20200105073155.1: *4* test_call_attribute
+    def test_fstringify_with_attribute(self):
+        
+        contents = """\
+    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
+        at = self; c = at.c
+        p = c.p; after = p.nodeAfterTree()
+        found = False
+        while p and p != after:
+            if (
+                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
+                and (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtShadowNode(p)
+                if ok:
+                    found = True
+                    g.blue('wrote %s' % p.atShadowFileNodeName())
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @shadow nodes in the selected tree")
+            else:
+                g.es("no @shadow nodes in the selected tree")
+        return found
+    """
+
+        ### g.blue(f"wrote {p.atShadowFileNodeName()}")
+        expected = """\
+    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
+        at = self; c = at.c
+        p = c.p; after = p.nodeAfterTree()
+        found = False
+        while p and p != after:
+            if (
+                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
+                and (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtShadowNode(p)
+                if ok:
+                    found = True
+                    g.blue(f"wrote {p.atShadowFileNodeName()}")
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @shadow nodes in the selected tree")
+            else:
+                g.es("no @shadow nodes in the selected tree")
+        return found
+    """
+        expected = g.adjustTripleString(expected)
+        tokens, tree = self.make_data(contents)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(contents, '<string>', tokens, tree)
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"expected: {expected}\n"
+            f"     got: {results}")
+    #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
     def test_fstringify_with_call_2(self):
         
         # From LM.traceSettingsDict
@@ -5264,7 +5338,10 @@ class Fstringify (TokenOrderTraverser):
             return False
         lines = list(difflib.unified_diff(
             g.splitLines(contents),
-            g.splitLines(results)))
+            g.splitLines(results),
+            fromfile='Old',
+            tofile='New',
+        ))
         g.printObj(lines, f"diff {filename}")
         return True
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
@@ -5531,6 +5608,16 @@ class Fstringify (TokenOrderTraverser):
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
                     g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
+        # Special case ast.Call to handle empty argument lists.
+        if isinstance(node, ast.Call) and not node.args:
+            tokens = tokens_for_node(node, self.tokens)
+            i, j = tokens[0].index, tokens[-1].index
+            i = max(0, i-10)
+            j = min(len(self.tokens),j+10)
+            dump_tree_and_links(node)
+            dump_tokens(self.tokens[i:j])
+            # g.printObj(tokens, tag='empty call tokens')
+            
         # Now we expect only one result. 
         tokens = tokens_for_node(node, self.tokens)
         if trace:
@@ -5745,7 +5832,7 @@ class Token:
         parent_id = parent.node_index if parent else ''
         kind_s = f"{self.kind}.{self.index:<3}"
         return (
-            f"{kind_s:>15} {self.show_val(15):<15} "
+            f"{kind_s:>15} {self.show_val(20):<24} "
             f"line: {self.line_number:<2} "
             f"{node_id:4} {node_cn:16} "
             f"parent: {parent_id:>4} {parent_class}")
@@ -5761,7 +5848,7 @@ class Token:
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *4* token.show_val
-    def show_val(self, truncate_n=20):
+    def show_val(self, truncate_n):
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = len(self.value)
