@@ -63,7 +63,7 @@ def beautifyPythonTree(event):
     c = event.get('c')
     if c:
         PythonTokenBeautifier(c).beautify_tree(c.p)
-#@+node:ekr.20200103055814.1: *4* blacken-files (to do)
+#@+node:ekr.20200103055814.1: *4* blacken-files
 @g.command('blacken-files')
 def blacken_files(event):
     """Run black on one or more files at c.p."""
@@ -83,7 +83,7 @@ def blacken_files(event):
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
 
-#@+node:ekr.20200103060057.1: *4* blacken-files-diff (to do)
+#@+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
 def blacken_files_diff(event):
     """
@@ -119,13 +119,16 @@ def fstringify_files(event):
         return
     tag = 'fstringify-files'
     for root in g.findRootsWithPredicate(c, c.p):
-        filename = root.anyAtFileNodeName()
+        filename = g.fullPath(c, root)
         if os.path.exists(filename):
-            g.es_print(f"{tag}: {filename}")
+            print('')
+            g.es_print(f"{tag}: {g.shortFileName(filename)}")
             leoAst.Fstringify().fstringify_file(filename)
         else:
+            print('')
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
+    g.es(f"{tag}: done")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
@@ -140,13 +143,15 @@ def fstringify_diff_files(event):
         return
     tag = 'fstringify-files-diff'
     for root in g.findRootsWithPredicate(c, c.p):
-        filename = root.anyAtFileNodeName()
+        filename = g.fullPath(c, root)
         if os.path.exists(filename):
-            g.es_print(f"{tag}: {filename}")
+            print('')
+            g.es_print(f"{tag}: {g.shortFileName(filename)}")
             leoAst.Fstringify().fstringify_file_diff(filename)
         else:
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
+    g.es(f"{tag}: done")
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
 import unittest
