@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
+#@@first
 """AST (Abstract Syntax Tree) related classes."""
+#@+<< imports >>
+#@+node:ekr.20200105054219.1: ** << imports >>
 import ast
 import difflib
 import io
@@ -12,6 +16,7 @@ import tokenize
 import traceback
 import types
 import unittest
+#@-<< imports >>
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 #@+node:ekr.20191027072910.1: *3*  exception classes
