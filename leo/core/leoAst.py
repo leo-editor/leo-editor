@@ -378,10 +378,9 @@ def find_anchor_token(node):
     
     def anchor_token(node):
         """Return the anchor token in node.token_list"""
-        token_list = getattr(node, 'token_list', [])
-        for token in token_list:
-            # Careful: some tokens in the token list may have been killed.
-            if token.node == node1:
+        # Careful: some tokens in the token list may have been killed.
+        for token in getattr(node, 'token_list', []):
+            if is_ancestor(node1, token):
                 return token
         return None
         
@@ -398,7 +397,7 @@ def find_anchor_token(node):
         # First, try the node itself.
         token = anchor_token(node)
         if token:
-            return node, token
+            return token
         # Second, try the most common nodes w/o token_lists:
         if isinstance(node, ast.Call):
             node = node.func
@@ -415,7 +414,6 @@ def find_anchor_token(node):
                         return token
             else:
                 break
-    g.trace('===== fail', node1.__class__.__name__)
     return None
 #@+node:ekr.20191231160225.1: *4* function: find_paren_token
 def find_paren_token(i, tokens):
@@ -432,7 +430,9 @@ def find_paren_token(i, tokens):
 def is_ancestor(node, token):
     """Return True if node is an ancestor of token."""
     t_node = token.node
-    assert t_node, token
+    if not t_node:
+        assert token.kind == 'killed', repr(token)
+        return False
     while t_node:
         if t_node == node:
             return True
