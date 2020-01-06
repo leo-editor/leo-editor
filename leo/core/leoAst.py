@@ -317,11 +317,11 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20200103163100.1: *3* function: write_file
-def write_file(filename, s):
+def write_file(filename, s, encoding='utf-8'):
     """Write the string s to the file whose name is given."""
     try:
         # newline='' suppresses newline munging.
-        with open(filename, 'w', newline='') as f:
+        with open(filename, 'w', encoding=encoding, newline='') as f:
             f.write(s)
     except Exception as e:
         g.trace(f"Error writing {filename}\n{e}")
@@ -2949,7 +2949,7 @@ class TestFstringify (BaseTest):
     def test_call_in_rhs(self):
         
         contents = """'%s' % d()"""
-        expected = '''f"{d()}"'''
+        expected = """f'{d()}'"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -2963,7 +2963,7 @@ class TestFstringify (BaseTest):
         
         # From LM.traceSettingsDict
         contents = """print('%s' % (len(d.keys())))"""
-        expected = '''print(f"{len(d.keys())}")'''
+        expected = """print(f'{len(d.keys())}')"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -2971,12 +2971,12 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, self.expected_got(expected, results)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
         
         contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
-        expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")"""
+        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -2992,8 +2992,8 @@ class TestFstringify (BaseTest):
             """g.trace('--trace-binding: %20s binds %s to %s' % ("""
             """   c.shortFileName(), binding, d.get(binding) or []))""")
         expected = (
-            """g.trace(f"--trace-binding: {c.shortFileName():20} """
-            '''binds {binding} to {d.get(binding) or []}")''')
+            """g.trace(f'--trace-binding: {c.shortFileName():20} """
+            """binds {binding} to {d.get(binding) or []}')""")
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -3063,7 +3063,7 @@ class TestFstringify (BaseTest):
     def test_parens_in_rhs(self):
 
         contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f"{ivar:20}", val)"""
+        expected = """print(f'{ivar:20}', val)"""
         tokens, tree = self.make_data(contents)
         if 0:
             dump_contents(contents)
@@ -3094,7 +3094,6 @@ class TestFstringify (BaseTest):
             if results != expected:
                 expected_got(expected, results)
                 fails.append(description)
-            (expected, results)
         assert not fails, fails
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)

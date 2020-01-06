@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
+#@@first
 """Leo's fundamental data classes."""
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
