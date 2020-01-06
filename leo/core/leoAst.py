@@ -5404,8 +5404,6 @@ class Fstringify (TokenOrderTraverser):
                 f"             line: {line.strip()!r}")
             return
         # Replace specs with values.
-        ### g.printObj(specs, tag='specs')
-        ### g.printObj(values, tag='values')
         results = self.substitute_values(lt_s, specs, values)
         result = self.compute_result(line, line_number, lt_s, results)
         if not result:
@@ -5633,7 +5631,11 @@ class Fstringify (TokenOrderTraverser):
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
     def substitute_values(self, lt_s, specs, values):
-        """Replace specifieriers with values in lt_s string."""
+        """
+        Replace specifieriers with values in lt_s string.
+        
+        Double { and } as needed.
+        """
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = tokens_to_string(values[spec_i])
