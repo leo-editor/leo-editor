@@ -132,7 +132,7 @@ def fstringify_files(event):
             g.es(f"{tag}: file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)}{g.plural(len(roots))} files in {t2 - t1:f5.2} sec.")
+    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
@@ -163,7 +163,7 @@ def fstringify_diff_files(event):
             g.es(f"file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)}{g.plural(len(roots))} files in {t2 - t1:f5.2} sec.")
+    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
