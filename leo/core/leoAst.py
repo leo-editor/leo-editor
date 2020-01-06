@@ -4389,7 +4389,7 @@ class TokenOrderGenerator:
             kwarg = kwarg_arg[0]
             assert isinstance(kwarg, ast.keyword)
             yield from self.arg_helper(kwarg)
-    #@+node:ekr.20191113063144.33: *6* tog.comprehension (changed)
+    #@+node:ekr.20191113063144.33: *6* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
     def do_comprehension(self, node):
@@ -4545,7 +4545,7 @@ class TokenOrderGenerator:
         yield from self.gen_op('[')
         yield from self.gen(node.elts)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.43: *6* tog.ListComp (changed)
+    #@+node:ekr.20191113063144.43: *6* tog.ListComp
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
@@ -5347,6 +5347,7 @@ class Fstringify (TokenOrderTraverser):
                 f"f-string mismatch: "
                 f"{n_values} value{g.plural(n_values)}, "
                 f"{n_specs} spec{g.plural(n_specs)}\n"
+                f"             file: {self.filename}\n"
                 f"      line number: {line_number}\n"
                 f"             line: {line.strip()!r}")
             if 0:
@@ -5365,6 +5366,7 @@ class Fstringify (TokenOrderTraverser):
         # Show the results
         print(
             f"\n"
+            f"       file: {self.filename}\n"
             f"line number: {line_number}\n"
             f"       line: {line!r}\n"
             f"       from: {lt_s} % {rt_s}\n"
