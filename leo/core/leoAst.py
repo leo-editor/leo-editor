@@ -469,7 +469,7 @@ def tokens_for_node(node, tokens):
     # Find any token descending from node.
     token = find_anchor_token(node)
     if not token:
-        if 0: ### A good trace, for now...
+        if 0: # A good trace for debugging.
             print('')
             g.trace('===== no tokens', node.__class__.__name__)
             g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
@@ -3002,14 +3002,6 @@ class TestFstringify (BaseTest):
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
-    def test_fstringify_leo_app(self):
-        
-        if 0: ###
-            filename = r'c:\test\core\leoApp.py'
-            contents, tokens, tree = self.make_file_data(filename)
-            self.fstringify(contents, filename, tokens, tree)
-        # self.dump_times()
     #@+node:ekr.20200106085608.1: *4* test_ImportFrom
     def test_ImportFrom(self):
         
@@ -5530,13 +5522,6 @@ class Fstringify (TokenOrderTraverser):
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag = 'aList')
             return False
-        ###
-            # Regularize the outer tokens.
-            # delim, delim2 = '"', "'"
-            # token1.value = delim + token1.value[1:]
-            # aList[1] = token1
-            # token_last.value = token_last.value[:-1] + delim
-            # aList[-1] = token_last
         # Escape delim in all inner tokens.
         for z in aList[2:-1]:
             z.value = z.value.replace(delim, '\\' + delim)
