@@ -18,11 +18,8 @@ except ImportError:
 
     g.command = command
 
-### import ast
 import io
-### import optparse
 import os
-### import sys
 import time
 import token as token_module
 import tokenize
@@ -117,9 +114,11 @@ def fstringify_files(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    t1 = time.process_time()
     tag = 'fstringify-files'
     g.es(f"{tag}...")
-    for root in g.findRootsWithPredicate(c, c.p):
+    roots = g.findRootsWithPredicate(c, c.p)
+    for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
@@ -131,7 +130,9 @@ def fstringify_files(event):
             print('')
             print(f"{tag}: file not found:{filename}")
             g.es(f"{tag}: file not found:\n{filename}")
-    g.es(f"{tag}: done")
+    t2 = time.process_time()
+    print('')
+    g.es_print(f"{tag}: {len(roots)}{g.plural(len(roots))} files in {t2 - t1:f5.2} sec.")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
@@ -144,9 +145,11 @@ def fstringify_diff_files(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    t1 = time.process_time()
     tag = 'fstringify-files-diff'
     g.es(f"{tag}...")
-    for root in g.findRootsWithPredicate(c, c.p):
+    roots = g.findRootsWithPredicate(c, c.p)
+    for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
@@ -158,7 +161,10 @@ def fstringify_diff_files(event):
             print('')
             print(f"{tag}: file not found:{filename}")
             g.es(f"file not found:\n{filename}")
-    g.es(f"{tag}: done")
+    t2 = time.process_time()
+    print('')
+    g.es_print(f"{tag}: {len(roots)}{g.plural(len(roots))} files in {t2 - t1:f5.2} sec.")
+
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
 import unittest
