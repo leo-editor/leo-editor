@@ -3007,7 +3007,8 @@ class TestFstringify (BaseTest):
         
         table = (
             """from .globals import a, b""",
-            """from ..globals import x, y, y""",
+            """from ..globals import x, y, z""",
+            """from . import j""",
         )
         for contents in table:
             if 0: # The crash happened in make_data, so do the dumps first.
@@ -5036,7 +5037,8 @@ class TokenOrderGenerator:
         yield from self.gen_name('from')
         for i in range(node.level):
             yield from self.gen_op('.')
-        yield from self.gen_name(node.module)
+        if node.module:
+            yield from self.gen_name(node.module)
         yield from self.gen_name('import')
         # No need to put commas.
         for alias in node.names:
