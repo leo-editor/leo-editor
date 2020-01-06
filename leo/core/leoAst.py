@@ -3050,20 +3050,26 @@ class TestFstringify (BaseTest):
             f"     got: {results}")
     #@+node:ekr.20200106042452.1: *4* test_crash_in_sync_tokens
     def test_crash_in_sync_tokens(self):
-
-        contents = """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]"""
-        tokens, tree = self.make_data(contents)
-        expected = self.contents
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"\n"
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        
+        table = (
+            """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]""",
+            """[L for L in x for c in y]""",
+            """[L for L in x for c in y if L if not c]""",
+        )
+        for contents in table:
+            if 0: # The crash happened in make_data, so do the dumps first.
+                tokens = self.make_tokens(contents)
+                tree = self.make_tree(contents)
+                dump_contents(contents)
+                dump_tokens(tokens)
+                dump_ast(tree)
+            tokens, tree = self.make_data(contents)
+            self.fstringify(contents, '<string>', tokens, tree)
+            results = tokens_to_string(tokens)
+            assert results == contents, (
+                f"\n"
+                f"expected: {contents!r}\n"
+                f"     got: {results!r}")
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -4383,7 +4389,7 @@ class TokenOrderGenerator:
             kwarg = kwarg_arg[0]
             assert isinstance(kwarg, ast.keyword)
             yield from self.arg_helper(kwarg)
-    #@+node:ekr.20191113063144.33: *6* tog.comprehension
+    #@+node:ekr.20191113063144.33: *6* tog.comprehension (changed)
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
     def do_comprehension(self, node):
@@ -4392,10 +4398,10 @@ class TokenOrderGenerator:
         yield from self.gen(node.target) # A name
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
-        if node.ifs:
+        for z in node.ifs or []:
             self.advance_if()
             yield from self.gen_name('if')
-            yield from self.gen(node.ifs)
+            yield from self.gen(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
     def do_Constant(self, node):
         
@@ -4539,15 +4545,16 @@ class TokenOrderGenerator:
         yield from self.gen_op('[')
         yield from self.gen(node.elts)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.43: *6* tog.ListComp
+    #@+node:ekr.20191113063144.43: *6* tog.ListComp (changed)
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
        
         yield from self.gen_op('[')
         yield from self.gen(node.elt)
-        yield from self.gen_name('for')
-        yield from self.gen(node.generators)
+        for z in node.generators:
+            yield from self.gen_name('for')
+            yield from self.gen(z)
         yield from self.gen_op(']')
     #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
     def do_Name(self, node):
