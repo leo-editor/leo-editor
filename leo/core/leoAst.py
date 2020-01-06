@@ -2945,6 +2945,16 @@ class TestReassignTokens (BaseTest):
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
+    #@+node:ekr.20200106163535.1: *4* test_braces
+    def test_braces(self):
+
+        # From pr.construct_stylesheet in leoPrinting.py
+        contents = r"""'h1 {font-family: %s}' % (family)"""
+        expected = r"""f'h1 {{font-family: {family}}}'"""
+        tokens, tree = self.make_data(contents)
+        self.fstringify(contents, 'test_braces', tokens, tree)
+        results = tokens_to_string(tokens)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
     def test_call_in_rhs(self):
         
@@ -5369,7 +5379,6 @@ class Fstringify (TokenOrderTraverser):
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = tokens_to_string(node.left.token_list)
-        g.trace(lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         # Compute rt_s, line and line_number for later messages.
@@ -5393,13 +5402,10 @@ class Fstringify (TokenOrderTraverser):
                 f"             file: {self.filename}\n"
                 f"      line number: {line_number}\n"
                 f"             line: {line.strip()!r}")
-            if 0:
-                specs_s = ', '.join(m.group(0) for m in specs)
-                values_s = ', '.join(','.join(f"[{z2.kind}: {z2.value}]"
-                    for z2 in z) for z in values)
-                print(f"specs: {specs_s!r} values: {values_s}")
             return
         # Replace specs with values.
+        ### g.printObj(specs, tag='specs')
+        ### g.printObj(values, tag='values')
         results = self.substitute_values(lt_s, specs, values)
         result = self.compute_result(line, line_number, lt_s, results)
         if not result:
@@ -5633,7 +5639,8 @@ class Fstringify (TokenOrderTraverser):
             value = tokens_to_string(values[spec_i])
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
-                results.append(Token('string', lt_s[i : start]))
+                val = lt_s[i : start].replace('{', '{{').replace('}', '}}')
+                results.append(Token('string', val))
             head, tail = self.munge_spec(spec)
             results.append(Token('op', '{'))
             results.append(Token('string', value))
@@ -5648,6 +5655,7 @@ class Fstringify (TokenOrderTraverser):
         # Add the tail.
         tail = lt_s[i:]
         if tail:
+            tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
         return results
     #@+node:ekr.20191231055008.1: *4* fs.visit
