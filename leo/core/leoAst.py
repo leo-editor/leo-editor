@@ -19,15 +19,6 @@ import unittest
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
-#@+node:ekr.20191027072910.1: *3*  exception classes
-class AstNotEqual(Exception):
-    """The two given AST's are not equivalent."""
-
-class AssignLinksError(Exception):
-    """Assigning links to ast nodes failed."""
-    
-class FailFast(Exception):
-    """Abort tests in TestRunner class."""
 #@+node:ekr.20191226175251.1: *3* class LeoGlobals
 #@@nosearch
 
@@ -717,6 +708,15 @@ def op_name(node):
 def tokens_to_string(tokens):
     """Return the string represented by the list of tokens."""
     return ''.join([z.to_string() for z in tokens])
+#@+node:ekr.20191027072910.1: ** Exception classes
+class AssignLinksError(Exception):
+    """Assigning links to ast nodes failed."""
+
+class AstNotEqual(Exception):
+    """The two given AST's are not equivalent."""
+    
+class FailFast(Exception):
+    """Abort tests in TestRunner class."""
 #@+node:ekr.20191227170512.1: ** Legacy classes
 #@+node:ekr.20141012064706.18399: *3*  class AstFormatter
 class AstFormatter:
@@ -3707,13 +3707,11 @@ class TokenOrderGenerator:
         """
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
-        caller = g.callers(4).split(',')[-1]
-        header = f"AssignLinkError: caller: {caller}\n"
-        if 0:
-            print(f"\n{caller}: Error...\n")
-            # Don't change the message. It may contain aligned lines.
-            print(message)
-        return AssignLinksError(header+message)
+        # Don't change the message. It may contain aligned lines.
+        caller = g.callers(4).split(',')[-2]
+        i = message.find(':')
+        pad = '' if i == -1 else ' ' * max(0, i - 6)
+        return AssignLinksError(f"\n{pad}caller: {caller}\n{message}")
     #@+node:ekr.20191113063144.11: *4* tog.report_coverage
     def report_coverage(self):
         """Report untested visitors."""
@@ -3954,6 +3952,7 @@ class TokenOrderGenerator:
                 line_s = f"line {token.line_number}:"
                 val = g.truncate(val, 40)
                 raise self.error(
+                    f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
                     f"      found: {token.kind}.{g.truncate(token.value, 80)}")
