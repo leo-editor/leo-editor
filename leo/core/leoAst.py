@@ -193,6 +193,14 @@ def compare_lists(list1, list2):
         if s1 != s2:
             return i
     return None
+#@+node:ekr.20200106094631.1: *3* function: expected_got
+def expected_got(expected, got):
+    """Return a message, mostly for unit tests."""
+    return (
+        f"\n"
+        f"expected: {expected!s}\n"
+        f"     got: {got!s}"
+    )
 #@+node:ekr.20191226071135.1: *3* function: get_time
 def get_time():
     return time.process_time()
@@ -2949,9 +2957,7 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
     def test_call_with_attribute_2(self):
         
@@ -2965,9 +2971,7 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, self.expected_got(expected, results)
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
         
@@ -2980,9 +2984,7 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -2999,10 +3001,7 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"\n"
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
     def test_fstringify_leo_app(self):
         
@@ -3028,10 +3027,7 @@ class TestFstringify (BaseTest):
             tokens, tree = self.make_data(contents)
             self.fstringify(contents, '<string>', tokens, tree)
             results = tokens_to_string(tokens)
-            assert results == contents, (
-                f"\n"
-                f"expected: {contents!r}\n"
-                f"     got: {results!r}")
+            assert results == contents, expected_got(contents, results)
     #@+node:ekr.20200106042452.1: *4* test_ListComp
     def test_ListComp(self):
         
@@ -3049,11 +3045,9 @@ class TestFstringify (BaseTest):
                 dump_ast(tree)
             tokens, tree = self.make_data(contents)
             self.fstringify(contents, '<string>', tokens, tree)
+            expected = contents
             results = tokens_to_string(tokens)
-            assert results == contents, (
-                f"\n"
-                f"expected: {contents!r}\n"
-                f"     got: {results!r}")
+            assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
 
@@ -3071,10 +3065,7 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"\n"
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
     def test_parens_in_rhs(self):
 
@@ -3087,10 +3078,30 @@ class TestFstringify (BaseTest):
             dump_tree(tree)
         self.fstringify(contents, '<string>', tokens, tree)
         results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"\n"
-            f"expected: {expected}\n"
-            f"     got: {results}")
+        assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200106091740.1: *4* test_single_quotes
+    def test_single_quotes(self):
+        
+        table = (
+            ("""print('%r "default"' % style_name)""",
+             """print(f'{style_name!r} "default"')"""),
+            ("""print('%r' % "val")""",
+             """print(f'{"val"!r}')"""),
+            ("""print("%r" % "val")""",
+             """print(f"{\\"val\\"!r}")"""),
+        )
+        fails = []
+        for i, data in enumerate(table):
+            contents, expected = data
+            tokens, tree = self.make_data(contents)
+            description = f"test_single_quotes: {i}"
+            self.fstringify(contents, description, tokens, tree)
+            results = tokens_to_string(tokens)
+            if results != expected:
+                expected_got(expected, results)
+                fails.append(description)
+            (expected, results)
+        assert not fails, fails
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -5364,6 +5375,7 @@ class Fstringify (TokenOrderTraverser):
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_s = tokens_to_string(node.left.token_list)
+        g.trace(lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         # Compute rt_s, line and line_number for later messages.
@@ -5419,7 +5431,7 @@ class Fstringify (TokenOrderTraverser):
         return s
 
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, line, line_number, string_val, tokens):
+    def compute_result(self, line, line_number, lt_s, tokens):
         """
         Create the final result, with various kinds of munges.
 
@@ -5429,10 +5441,10 @@ class Fstringify (TokenOrderTraverser):
         if not self.check_newlines(tokens):
             return None
         # Ensure consistent quotes.
-        if not self.change_quotes(string_val, tokens):
+        if not self.change_quotes(lt_s, tokens):
             print(
                 f"\n"
-                f"can't create f-fstring: {string_val!r}\n"
+                f"can't create f-fstring: {lt_s!r}\n"
                 f"           line number: {line_number}\n"
                 f"                  line: {line.strip()!r}")
             return None
@@ -5463,7 +5475,7 @@ class Fstringify (TokenOrderTraverser):
             return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, string_val, aList):
+    def change_quotes(self, lt_s, aList):
         """
         Carefully change quotes in all "inner" tokens as necessary.
         
@@ -5471,18 +5483,20 @@ class Fstringify (TokenOrderTraverser):
         
         We expect the following "outer" tokens.
             
-        aList[0]:  ('fstringify', 'f')
-        aList[1]:  ('fstringify', a string starting with a quote)
-        aList[-1]: ('fstringify', a string ending with a quote that matches aList[1])
+        aList[0]:  ('string', 'f')
+        aList[1]:  ('string', a string starting with a quote)
+        aList[-1]: ('string', a string ending with a quote that matches aList[1])
         """
         trace = False
         # Sanity checks.
         if len(aList) < 4:
             return True
-        if not string_val:
-            g.trace('no string_val!')
+        if not lt_s:
+            g.trace('no lt_s!')
             return False
-        delim = string_val[0]
+        g.trace(f"lt_s: {lt_s!s}")
+        g.printObj(aList, tag='aList')
+        delim = lt_s[0]
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
         token1 = aList[1]
@@ -5495,8 +5509,8 @@ class Fstringify (TokenOrderTraverser):
             if not ok:
                 g.trace(
                     f"unexpected token: {token.kind} {token.value}\n"
-                    f"string_val: {string_val!r}\n"
-                    f"line: {token0.line!r}")
+                    f"            lt_s: {lt_s!r}\n"
+                    f"            line: {token0.line!r}")
                 g.printObj(aList, tag = 'aList')
                 return False
         # These checks are important...
@@ -5513,22 +5527,19 @@ class Fstringify (TokenOrderTraverser):
         val_last = token_last.value and token_last.value[-1]
         if delim != val_last:
             if trace:
-                g.trace('token[-1] error:',
-                    delim, val_last, repr(token_last))
+                g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag = 'aList')
             return False
-        # Regularize the outer tokens.
-        delim, delim2 = '"', "'"
-        token1.value = delim + token1.value[1:]
-        aList[1] = token1
-        token_last.value = token_last.value[:-1] + delim
-        aList[-1] = token_last
-        # Replace delim by delim2 in all inner tokens.
+        ###
+            # Regularize the outer tokens.
+            # delim, delim2 = '"', "'"
+            # token1.value = delim + token1.value[1:]
+            # aList[1] = token1
+            # token_last.value = token_last.value[:-1] + delim
+            # aList[-1] = token_last
+        # Escape delim in all inner tokens.
         for z in aList[2:-1]:
-            if not isinstance(z, Token):
-                g.trace('Bad token:', repr(z))
-                return False
-            z.value = z.value.replace(delim, delim2)
+            z.value = z.value.replace(delim, '\\' + delim)
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
     def munge_spec(self, spec):
