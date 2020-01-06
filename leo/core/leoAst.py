@@ -5488,8 +5488,9 @@ class Fstringify (TokenOrderTraverser):
         if not lt_s:
             g.trace('no lt_s!')
             return False
-        g.trace(f"lt_s: {lt_s!s}")
-        g.printObj(aList, tag='aList')
+        if trace:
+            g.trace(f"lt_s: {lt_s!s}")
+            g.printObj(aList, tag='aList')
         delim = lt_s[0]
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
