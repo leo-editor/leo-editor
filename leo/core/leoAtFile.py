@@ -484,7 +484,7 @@ class AtFile:
         if not g.unitTesting:
             if files:
                 t2 = time.time()
-                g.es('read %s files in %2.2f seconds' % (len(files), t2 - t1))
+                g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
             elif force:
                 g.es("no @<file> nodes in the selected tree")
         c.changed = old_changed
@@ -564,7 +564,7 @@ class AtFile:
         at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
         if not g.os_path_exists(fileName):
-            g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
+            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
             return p
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
@@ -625,7 +625,7 @@ class AtFile:
         else:
             language = ic.languageForExtension(ext)
             if language and language != 'unknown_language':
-                head = '@language %s\n' % language
+                head = f"@language {language}\n"
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
@@ -657,7 +657,10 @@ class AtFile:
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
         if not g.os_path_exists(fileName):
-            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL(with_proto=True))
+            g.es_print(
+                f"not found: {fileName}",
+                color='red',
+                nodeLink=root.get_UNL(with_proto=True))
             return False
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
@@ -687,7 +690,7 @@ class AtFile:
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
         """Dump all lines."""
-        print('***** %s lines...\n' % tag)
+        print(f"***** {tag} lines...\n")
         for s in lines:
             print(s.rstrip())
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
@@ -1026,7 +1029,7 @@ class AtFile:
                 ok = at.writeOneAtShadowNode(p)
                 if ok:
                     found = True
-                    g.blue('wrote %s' % p.atShadowFileNodeName())
+                    g.blue(f"wrote {p.atShadowFileNodeName()}")
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -1238,9 +1241,11 @@ class AtFile:
             return
         ok = at.promptForDangerousWrite(
             fileName=None,
-            message='%s\n%s' % (
-                g.tr('path changed for %s' % (p.h)),
-                g.tr('write this file anyway?')))
+            message=(
+                f"{g.tr('path changed for %s' % (p.h))}\n"
+                f"{g.tr('write this file anyway?')}"
+            ),
+        )
         if not ok:
             raise IOError
         at.setPathUa(p, newPath) # Remember that we have changed paths.
@@ -1810,7 +1815,7 @@ class AtFile:
             at.putSentinel("@@raw")
         elif kind == at.endRawDirective:
             # Fix bug 784920: @raw mode does not ignore directives
-            at.error('unmatched @end_raw directive: %s' % p.h)
+            at.error(f"unmatched @end_raw directive: {p.h}")
         elif kind == at.startVerbatim:
             # Fix bug 778204: @verbatim not a valid Leo directive.
             if g.unitTesting:
@@ -2005,8 +2010,8 @@ class AtFile:
         if not ref and not hasattr(at, 'allow_undefined_refs'):
             # Do give this error even if unit testing.
             at.writeError(
-                "undefined section: %s\n\treferenced from: %s" % (
-                    g.truncate(name, 60), g.truncate(p.h, 60)))
+                f"undefined section: {g.truncate(name, 60)}\n"
+                f"  referenced from: {g.truncate(p.h, 60)}")
         return ref
     #@+node:ekr.20041005105605.199: *7* at.findSectionName
     def findSectionName(self, s, i):
@@ -2141,7 +2146,7 @@ class AtFile:
         level = 1 + p.level() - self.root.level()
         if level > 2:
             return f"{gnx}: *{level}* {h}"
-        return "%s: %s %s" % (gnx, '*' * level, h)
+        return f"{gnx}: {'*' * level} {h}"
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
         '''
@@ -2192,7 +2197,7 @@ class AtFile:
             encoding = at.encoding.lower()
             if encoding != "utf-8":
                 # New in 4.2: encoding fields end in ",."
-                s = s + "-encoding=%s,." % (encoding)
+                s = s + f"-encoding={encoding},."
             at.putSentinel(s)
     #@+node:ekr.20041005105605.193: *5* at.putOpenNodeSentinel
     def putOpenNodeSentinel(self, p, inAtAll=False):
@@ -2293,12 +2298,11 @@ class AtFile:
         for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
             if j == i:
                 mark = '*'
-                node_link = "%s,-%d" % (
-                    p.get_UNL(with_proto=True, with_count=True), j+1)
+                node_link = f"{p.get_UNL(with_proto=True, with_count=True)},-{j+1:d}"
             else:
                 mark = ' '
                 node_link = None
-            text = '%5s:%s %s' % (j+1, mark, lines[j].rstrip())
+            text = f"{j+1:5}:{mark} {lines[j].rstrip()}"
             g.es_print(text, nodeLink=node_link)
             if j == i:
                 g.es_print(' ' * (7 + offset) + '^')
@@ -2599,25 +2603,25 @@ class AtFile:
         elif g.match_word(s, k, "@last"):
             # #1307.
             if p.isAtCleanNode():
-                at.error('ignoring @last directive in %r' % p.h)
+                at.error(f"ignoring @last directive in {p.h!r}")
                 g.es_print('@last is not valid in @clean nodes')
             # #1297.
             elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@last")
                     # Convert to an verbatim line _without_ anything else.
             else:
-                at.error('ignoring @last directive in %r' % p.h)
+                at.error(f"ignoring @last directive in {p.h!r}")
         elif g.match_word(s, k, "@first"):
             # #1307.
             if p.isAtCleanNode():
-                at.error('ignoring @first directive in %r' % p.h)
+                at.error(f"ignoring @first directive in {p.h!r}")
                 g.es_print('@first is not valid in @clean nodes')
             # #1297.
             elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
                 self.putSentinel("@@first")
                     # Convert to an verbatim line _without_ anything else.
             else:
-                at.error('ignoring @first directive in %r' % p.h)
+                at.error(f"ignoring @first directive in {p.h!r}")
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
@@ -2918,10 +2922,10 @@ class AtFile:
                     c.redraw()
                     return False
         if message is None:
-            message = '%s\n%s\n%s' % (
-                g.splitLongFileName(fileName),
-                g.tr('already exists.'),
-                g.tr('Overwrite this file?'))
+            message = (
+                f"{g.splitLongFileName(fileName)}\n"
+                f"{g.tr('already exists.')}\n"
+                f"{g.tr('Overwrite this file?')}")
         result = g.app.gui.runAskYesNoCancelDialog(c,
             title='Overwrite existing file?',
             yesToAllMessage="Yes To &All",
@@ -3087,9 +3091,11 @@ class AtFile:
                     if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
             aSet = d.get(fn, set())
-            if trace: g.trace(f"Return {p.h not in aSet()}: p.h not in aSet(): {sfn}")
+            if trace:
+                g.trace(f"Return {p.h not in aSet()}: p.h not in aSet(): {sfn}")
             return p.h not in aSet
-        if trace: g.trace('Return True: never read:', sfn)
+        if trace:
+            g.trace('Return True: never read:', sfn)
         return True
             # The file was never read.
     #@+node:ekr.20041005105605.20: *4* at.warnOnReadOnlyFile
@@ -3295,7 +3301,7 @@ class FastAtRead:
             print('[')
             for i, data in enumerate(level_stack):
                 v2, in_tree = data
-                print('%2s %5s %s' % (i+1, in_tree, v2.h))
+                print(f"{i+1:2} {in_tree:5} {v2.h}")
             print(']')
             print('PARENT.CHILDREN...')
             g.printObj([v3.h for v3 in parent_v.children])
@@ -3360,7 +3366,7 @@ class FastAtRead:
             if m:
                 in_doc = False
                 if m.group(2) == '+': # opening sentinel
-                    body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+                    body.append(f"{m.group(1)}@others{m.group(3) or ''}\n")
                     stack.append((gnx, indent, body))
                     indent += m.end(1) # adjust current identation
                 else: # closing sentinel.
@@ -3479,7 +3485,7 @@ class FastAtRead:
                     doc = '@doc' if m.group(1) == 'doc' else '@'
                     doc2 = m.group(2) or '' # Trailing text.
                     if doc2:
-                        body.append('%s%s\n'%(doc, doc2))
+                        body.append(f"{doc}{doc2}\n")
                     else:
                         body.append(doc + '\n')
                     # Enter @doc mode.
@@ -3494,7 +3500,7 @@ class FastAtRead:
                 # Here, in the read code, we merely need to add it to the body.
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
                 if m.group(2) == '+': # opening sentinel
-                    body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+                    body.append(f"{m.group(1)}@all{m.group(3) or ''}\n")
                     stack.append((gnx, indent, body))
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
@@ -3519,7 +3525,7 @@ class FastAtRead:
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                 else:
-                    g.trace('\ntoo many @first lines: %s' %  path)
+                    g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')
                     g.printObj(lines[start:i+2], tag='lines[start:i+2]')
@@ -3537,7 +3543,7 @@ class FastAtRead:
                 # <1, 2 or 3 comment delims>
                 delims = m.group(1).strip()
                 # Whatever happens, retain the @delims line.
-                body.append('@comment %s\n' % delims)
+                body.append(f"@comment {delims}\n")
                 delim1, delim2, delim3 = g.set_delims_from_string(delims)
                     # delim1 is always the single-line delimiter.
                 if delim1:
@@ -3571,13 +3577,13 @@ class FastAtRead:
                 # Get 1 or 2 comment delims
                 # Whatever happens, retain the original @delims line.
                 delims = m.group(1).strip()
-                body.append('@delims %s\n' % delims)
+                body.append(f"@delims {delims}\n")
                 #
                 # Parse the delims.
                 delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
                 m2 = delims_pat.match(delims)
                 if not m2:
-                    g.trace('Ignoring invalid @comment: %r' % line)
+                    g.trace(f"Ignoring invalid @comment: {line!r}")
                     continue
                 delim_start = m2.group(1)
                 delim_end = m2.group(2) or ''
@@ -3686,7 +3692,7 @@ class FastAtRead:
             delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.process_time()
-            g.trace('%5.2f sec. %s' % ((t2-t1), path))
+            g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
 #@-others
