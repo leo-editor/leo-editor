@@ -3011,6 +3011,49 @@ class TestFstringify (BaseTest):
             contents, tokens, tree = self.make_file_data(filename)
             self.fstringify(contents, filename, tokens, tree)
         # self.dump_times()
+    #@+node:ekr.20200106085608.1: *4* test_ImportFrom
+    def test_ImportFrom(self):
+        
+        table = (
+            """from .globals import a, b""",
+            """from ..globals import x, y, y""",
+        )
+        for contents in table:
+            if 0: # The crash happened in make_data, so do the dumps first.
+                tokens = self.make_tokens(contents)
+                tree = self.make_tree(contents)
+                dump_contents(contents)
+                dump_tokens(tokens)
+                dump_ast(tree)
+            tokens, tree = self.make_data(contents)
+            self.fstringify(contents, '<string>', tokens, tree)
+            results = tokens_to_string(tokens)
+            assert results == contents, (
+                f"\n"
+                f"expected: {contents!r}\n"
+                f"     got: {results!r}")
+    #@+node:ekr.20200106042452.1: *4* test_ListComp
+    def test_ListComp(self):
+        
+        table = (
+            """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]""",
+            """[L for L in x for c in y]""",
+            """[L for L in x for c in y if L if not c]""",
+        )
+        for contents in table:
+            if 0: # The crash happened in make_data, so do the dumps first.
+                tokens = self.make_tokens(contents)
+                tree = self.make_tree(contents)
+                dump_contents(contents)
+                dump_tokens(tokens)
+                dump_ast(tree)
+            tokens, tree = self.make_data(contents)
+            self.fstringify(contents, '<string>', tokens, tree)
+            results = tokens_to_string(tokens)
+            assert results == contents, (
+                f"\n"
+                f"expected: {contents!r}\n"
+                f"     got: {results!r}")
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
 
@@ -3048,28 +3091,6 @@ class TestFstringify (BaseTest):
             f"\n"
             f"expected: {expected}\n"
             f"     got: {results}")
-    #@+node:ekr.20200106042452.1: *4* test_crash_in_sync_tokens
-    def test_crash_in_sync_tokens(self):
-        
-        table = (
-            """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]""",
-            """[L for L in x for c in y]""",
-            """[L for L in x for c in y if L if not c]""",
-        )
-        for contents in table:
-            if 0: # The crash happened in make_data, so do the dumps first.
-                tokens = self.make_tokens(contents)
-                tree = self.make_tree(contents)
-                dump_contents(contents)
-                dump_tokens(tokens)
-                dump_ast(tree)
-            tokens, tree = self.make_data(contents)
-            self.fstringify(contents, '<string>', tokens, tree)
-            results = tokens_to_string(tokens)
-            assert results == contents, (
-                f"\n"
-                f"expected: {contents!r}\n"
-                f"     got: {results!r}")
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -5005,9 +5026,13 @@ class TokenOrderGenerator:
                 yield from self.gen_name(alias.asname)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.77: *6* tog.ImportFrom
+    # ImportFrom(identifier? module, alias* names, int? level)
+
     def do_ImportFrom(self, node):
 
         yield from self.gen_name('from')
+        for i in range(node.level):
+            yield from self.gen_op('.')
         yield from self.gen_name(node.module)
         yield from self.gen_name('import')
         # No need to put commas.
