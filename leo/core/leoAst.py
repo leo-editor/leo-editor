@@ -2576,6 +2576,7 @@ class BaseTest (unittest.TestCase):
         self.contents = contents.rstrip() + '\n'
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
+        self.tog.filename = description or '<unit test>'
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         tree = self.make_tree(contents)
@@ -2937,7 +2938,7 @@ class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
     #@+others
     #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
-    def test_fstringify_with_call(self):
+    def test_call_in_rhs(self):
         
         contents = """'%s' % d()"""
         expected = '''f"{d()}"'''
@@ -2951,23 +2952,8 @@ class TestFstringify (BaseTest):
         assert results == expected, (
             f"expected: {expected}\n"
             f"     got: {results}")
-    #@+node:ekr.20200105073155.1: *4* test_call_attribute
-    def test_fstringify_with_attribute(self):
-        
-        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
-        expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")"""
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
-        assert results == expected, (
-            f"expected: {expected}\n"
-            f"     got: {results}")
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
-    def test_fstringify_with_call_2(self):
+    def test_call_with_attribute_2(self):
         
         # From LM.traceSettingsDict
         contents = """print('%s' % (len(d.keys())))"""
@@ -2982,7 +2968,21 @@ class TestFstringify (BaseTest):
         assert results == expected, (
             f"expected: {expected}\n"
             f"     got: {results}")
-        # self.dump_times()
+    #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
+    def test_call_with_attribute(self):
+        
+        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
+        expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")"""
+        tokens, tree = self.make_data(contents)
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(contents, '<string>', tokens, tree)
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"expected: {expected}\n"
+            f"     got: {results}")
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -3003,7 +3003,6 @@ class TestFstringify (BaseTest):
             f"\n"
             f"expected: {expected}\n"
             f"     got: {results}")
-        # self.dump_times()
     #@+node:ekr.20191227052446.84: *4* test_fstringify_leo_app
     def test_fstringify_leo_app(self):
         
@@ -3034,7 +3033,7 @@ class TestFstringify (BaseTest):
             f"expected: {expected}\n"
             f"     got: {results}")
     #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
-    def test_fstringify_with_parens(self):
+    def test_parens_in_rhs(self):
 
         contents = """print('%20s' % (ivar), val)"""
         expected = """print(f"{ivar:20}", val)"""
@@ -3049,7 +3048,22 @@ class TestFstringify (BaseTest):
             f"\n"
             f"expected: {expected}\n"
             f"     got: {results}")
-        # self.dump_times()
+    #@+node:ekr.20200106042452.1: *4* test_crash_in_sync_tokens
+    def test_crash_in_sync_tokens(self):
+
+        contents = """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]"""
+        tokens, tree = self.make_data(contents)
+        expected = self.contents
+        if 0:
+            dump_contents(contents)
+            dump_tokens(tokens)
+            dump_tree(tree)
+        self.fstringify(contents, '<string>', tokens, tree)
+        results = tokens_to_string(tokens)
+        assert results == expected, (
+            f"\n"
+            f"expected: {expected}\n"
+            f"     got: {results}")
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
