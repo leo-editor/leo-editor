@@ -3080,8 +3080,9 @@ class TestFstringify (BaseTest):
              """print(f'{style_name!r} "default"')"""),
             ("""print('%r' % "val")""",
              """print(f'{"val"!r}')"""),
+            # f-strings can't contain backslashes.
             ("""print("%r" % "val")""",
-             """print(f"{\\"val\\"!r}")"""),
+             """print("%r" % "val")"""),
         )
         fails = []
         for i, data in enumerate(table):
@@ -5439,6 +5440,7 @@ class Fstringify (TokenOrderTraverser):
             print(
                 f"\n"
                 f"can't create f-fstring: {lt_s!r}\n"
+                f"                  file: {self.filename}\n"
                 f"           line number: {line_number}\n"
                 f"                  line: {line.strip()!r}")
             return None
@@ -5471,9 +5473,9 @@ class Fstringify (TokenOrderTraverser):
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
     def change_quotes(self, lt_s, aList):
         """
-        Carefully change quotes in all "inner" tokens as necessary.
+        Carefully check quotes in all "inner" tokens as necessary.
         
-        Return True if all went well.
+        Return False if the f-string would contain backslashes.
         
         We expect the following "outer" tokens.
             
@@ -5525,9 +5527,10 @@ class Fstringify (TokenOrderTraverser):
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag = 'aList')
             return False
-        # Escape delim in all inner tokens.
+        # Return False if any inner token contains the delim or a backslash.
         for z in aList[2:-1]:
-            z.value = z.value.replace(delim, '\\' + delim)
+            if delim in z.value or '\\' in z.value:
+                return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
     def munge_spec(self, spec):
