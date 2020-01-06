@@ -5277,6 +5277,15 @@ class Fstringify (TokenOrderTraverser):
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
+        # Show the diffs.
+        lines = list(difflib.unified_diff(
+            g.splitLines(contents),
+            g.splitLines(results),
+            fromfile=f"Old {self.filename}",
+            tofile=f"New {self.filename}",
+        ))
+        print('')
+        g.printObj(lines, f"diffs for {filename}")
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results)
@@ -5301,17 +5310,18 @@ class Fstringify (TokenOrderTraverser):
         # fstringify.
         self.fstringify(contents, filename, tokens, tree)
         results = tokens_to_string(tokens)
-        # Show the diffs.
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
+        # Show the diffs.
         lines = list(difflib.unified_diff(
             g.splitLines(contents),
             g.splitLines(results),
-            fromfile='Old',
-            tofile='New',
+            fromfile=f"Old {self.filename}",
+            tofile=f"New {self.filename}",
         ))
-        g.printObj(lines, f"diff {filename}")
+        print('')
+        g.printObj(lines, f"diffs for {filename}")
         return True
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
