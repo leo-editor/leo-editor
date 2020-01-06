@@ -438,7 +438,7 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
-    regex = r'^.*:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
+    link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
         # m.group(1) is the line number.
         # m.group(2) is the (unused) test name.
 
@@ -538,13 +538,14 @@ class PylintCommand:
         command = (f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)
+        g.trace(command)
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern=self.regex,
+            link_pattern=self.link_pattern,
             link_root=p,
         )
 

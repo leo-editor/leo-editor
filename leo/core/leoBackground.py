@@ -177,7 +177,6 @@ class BackgroundProcessManager:
         try:
             m = link_pattern.match(s)
         except Exception:
-            # g.es_exception()
             m = None
         if not m:
             log.put(s + '\n')
