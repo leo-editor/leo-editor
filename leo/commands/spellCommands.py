@@ -430,11 +430,11 @@ class EnchantWrapper(BaseSpellWrapper):
     def show_info(self):
 
         g.es_print('pyenchant spell checker')
-        g.es_print('user dictionary:   %s' % self.find_user_dict())
+        g.es_print(f"user dictionary:   {self.find_user_dict()}")
         try:
             aList = enchant.list_dicts()
             aList2 = [a for a, b in aList]
-            g.es_print('main dictionaries: %s' % ', '.join(aList2))
+            g.es_print(f"main dictionaries: {', '.join(aList2)}")
         except Exception:
             g.es_exception()
 
