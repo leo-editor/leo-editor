@@ -4439,9 +4439,10 @@ class TokenOrderGenerator:
         yield from self.gen(node.key)
         yield from self.gen_op(':')
         yield from self.gen(node.value)
-        yield from self.gen_name('for')
-        yield from self.gen(node.generators)
-        yield from self.gen_token('op', '}')
+        for z in node.generators or []:
+            yield from self.gen_name('for')
+            yield from self.gen(z)
+            yield from self.gen_token('op', '}')
     #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
     def do_Ellipsis(self, node):
         
@@ -4580,8 +4581,9 @@ class TokenOrderGenerator:
     def do_SetComp(self, node):
 
         yield from self.gen(node.elt)
-        yield from self.gen_name('for')
-        yield from self.gen(node.generators)
+        for z in node.generators or []:
+            yield from self.gen_name('for')
+            yield from self.gen(z)
     #@+node:ekr.20191113063144.49: *6* tog.Slice
     def do_Slice(self, node):
 
