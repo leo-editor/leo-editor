@@ -3966,6 +3966,7 @@ class TokenOrderGenerator:
                 g.printObj(tokens[max(0, px-5):], tag='Tokens')
             val = g.truncate(val, 40)
             raise self.error(
+                 f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
         #
@@ -4447,7 +4448,9 @@ class TokenOrderGenerator:
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
-        raise self.error(f"do_FormattedValue called from {g.callers()}")
+        raise self.error(
+            f"       file: {self.filename}\n"
+            f"do_FormattedValue should never be called")
         
         # pylint: disable=unreachable
        
@@ -4498,7 +4501,9 @@ class TokenOrderGenerator:
                 # The 'endmarker' token ensures we will have a token.
                 if not results:
                     raise self.error(
-                        f"line {token.line_number} string_index: {i} "
+                        f"        file: {self.filename}\n"
+                        f"        line: {token.line_number}\n"
+                        f"string_index: {i}\n"
                         f"expected 'string' token, got {token!s}")
                 break
             else:
@@ -4882,7 +4887,8 @@ class TokenOrderGenerator:
         # This sanity check is important. It has failed in the past.
         if token.value not in ('if', 'elif'):
             raise self.error(
-                f"line {token.line_number}: "
+                f"file: {self.filename}\n"
+                f"line: {token.line_number}\n"
                 f"expected 'if' or 'elif' (name) token, got '{token!s}")
         #
         # If or elif line...
