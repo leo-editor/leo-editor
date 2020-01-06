@@ -663,7 +663,7 @@ assert not fails, 'old gui: %s: null g.app ivars in %s...\n%s' % (
 import re
 import leo.commands.checkerCommands as checkerCommands
 x = checkerCommands.PylintCommand(c)
-pattern = re.compile(x.regex)
+pattern = re.compile(x.link_pattern)
 table = (
     r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',
     r'c:\test\pylint_links_test.py:6:3: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)',
