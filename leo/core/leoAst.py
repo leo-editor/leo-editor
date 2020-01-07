@@ -3209,7 +3209,14 @@ class TestFstringify (BaseTest):
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
-    """Tests for the TokenOrderGenerator class."""
+    """
+    Tests for the TokenOrderGenerator class.
+    
+    These tests call BaseTest.make_data, which creates the two-way links
+    between tokens and the parse tree.
+    
+    The asserts in tog.sync_tokens suffice to create strong unit tests.
+    """
     #@+others
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
@@ -3820,6 +3827,10 @@ class TestTOG (BaseTest):
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT (BaseTest):
+    
+    """
+    Tests for the TokenOrderTraverser class.
+    """
     
     def test_traverse(self):
         
