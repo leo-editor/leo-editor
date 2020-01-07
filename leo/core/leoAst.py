@@ -184,50 +184,7 @@ class LeoGlobals:
     #@-others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
-#@+node:ekr.20200103113417.1: *4* function: read_file
-def read_file(filename):
-    """
-    Return the contents of the given file.
-    Print an error message and return None on error.
-    """
-    tag = 'read_file'
-    try:
-        with open(filename, 'rb') as f:
-            s = f.read()
-        return g.toUnicode(s)
-    except Exception:
-        print(f"{tag}: can not read {filename}")
-        return None
-#@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding & helpers
-def read_file_with_encoding(filename):
-    """
-    Read the file, returning (e, s).
-
-    s is the string, converted to unicode, or None if there was an error.
-    
-    e is the encoding of s, computed in the following order:
-
-    - The BOM encoding if the file starts with a BOM mark.
-    - The encoding given in the # -*- coding: utf-8 -*- line.
-    - The encoding given by the 'encoding' keyword arg.
-    - 'utf-8'.
-    """
-    # First, read the file.
-    tag = 'read_with_encoding'
-    try:
-        with open(filename, 'rb') as f:
-            bb = f.read()
-    except Exception:
-        print(f"{tag}: can not read {filename}")
-    if not bb:
-        return 'UTF-8', ''
-    # Look for the BOM.
-    e, bb = strip_BOM(bb)
-    if not e:
-        # Python's encoding comments override everything else. 
-        e = get_encoding_directive(bb)
-    return e, g.toUnicode(bb, encoding=e)
-#@+node:ekr.20200106171502.1: *5* function: get_encoding_directive
+#@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
 encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
     # This is the pattern in PEP 263.
 
@@ -258,7 +215,50 @@ def get_encoding_directive(bb):
         except Exception:
             pass
     return 'UTF-8'
-#@+node:ekr.20200106174158.1: *5* function: strip_BOM
+#@+node:ekr.20200103113417.1: *4* function: read_file
+def read_file(filename):
+    """
+    Return the contents of the given file.
+    Print an error message and return None on error.
+    """
+    tag = 'read_file'
+    try:
+        with open(filename, 'rb') as f:
+            s = f.read()
+        return g.toUnicode(s)
+    except Exception:
+        print(f"{tag}: can not read {filename}")
+        return None
+#@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding
+def read_file_with_encoding(filename):
+    """
+    Read the file, returning (e, s).
+
+    s is the string, converted to unicode, or None if there was an error.
+    
+    e is the encoding of s, computed in the following order:
+
+    - The BOM encoding if the file starts with a BOM mark.
+    - The encoding given in the # -*- coding: utf-8 -*- line.
+    - The encoding given by the 'encoding' keyword arg.
+    - 'utf-8'.
+    """
+    # First, read the file.
+    tag = 'read_with_encoding'
+    try:
+        with open(filename, 'rb') as f:
+            bb = f.read()
+    except Exception:
+        print(f"{tag}: can not read {filename}")
+    if not bb:
+        return 'UTF-8', ''
+    # Look for the BOM.
+    e, bb = strip_BOM(bb)
+    if not e:
+        # Python's encoding comments override everything else. 
+        e = get_encoding_directive(bb)
+    return e, g.toUnicode(bb, encoding=e)
+#@+node:ekr.20200106174158.1: *4* function: strip_BOM
 def strip_BOM(bb):
     """
     bb must be the bytes contents of a file.
@@ -297,15 +297,12 @@ def write_file(filename, s, encoding='utf-8'):
 #@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
 def compare_asts(ast1, ast2):
     """Compare two ast trees. Return True if they are equal."""
-    import leo.core.leoGlobals as g
     # Compare the two parse trees.
     try:
         _compare_asts(ast1, ast2)
     except AstNotEqual:
         dump_ast(ast1, tag='AST BEFORE')
         dump_ast(ast2, tag='AST AFTER')
-        if g.unitTesting:
-            raise
         return False
     except Exception:
         g.trace(f"Unexpected exception")
@@ -2657,7 +2654,7 @@ class HTMLReportTraverser:
         self.visit(node.value)
         self.end_div('statement')
     #@-others
-#@+node:ekr.20191227170540.1: ** Test classes
+#@+node:ekr.20191227170540.1: ** Test classes...
 #@+node:ekr.20191227154302.1: *3*  class BaseTest (TestCase)
 class BaseTest (unittest.TestCase):
     """
@@ -2825,9 +2822,7 @@ class BaseTest (unittest.TestCase):
     #@-others
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:
-    """
-    A class supporting various kinds of dumps of ast nodes.
-    """
+    """A class supporting various kinds of dumps of ast nodes."""
 
     #@+others
     #@+node:ekr.20191112033445.1: *4* dumper.dump_tree_and_links & helper
@@ -3824,10 +3819,7 @@ class TestTOG (BaseTest):
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT (BaseTest):
-    
-    """
-    Tests for the TokenOrderTraverser class.
-    """
+    """Tests for the TokenOrderTraverser class."""
     
     def test_traverse(self):
         
@@ -3856,6 +3848,36 @@ b = 2 + 3
             t2 = get_time()
             self.update_times('51: TONG.traverse', t2 - t1)
         self.dump_stats()
+#@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
+class TestTopLevelFunctions (BaseTest):
+    """Tests for the top-level functions in leoAst.py."""
+    #@+others
+    #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
+    def test_get_encoding_directive(self):
+        
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = os.path.join(directory, 'leoAst.py')
+        if not os.path.exists(filename):
+            self.skipTest(f"not found: {filename}")
+        with open(filename, 'rb') as f:
+            bb = f.read()
+        e = get_encoding_directive(bb)
+        assert e.lower() == 'utf-8', repr(e)
+    #@+node:ekr.20200107150857.1: *4* test_strip_BOM
+    def test_strip_BOM(self):
+        
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = os.path.join(directory, 'leoAst.py')
+        assert os.path.exists(filename), filename
+        with open(filename, 'rb') as f:
+            bb = f.read()
+        assert bb, filename
+        e, s = strip_BOM(bb)
+        if e is not None:
+            assert e.lower() == 'utf-8', repr(e)
+        
+    #@-others
+    
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
@@ -5385,13 +5407,7 @@ class Fstringify (TokenOrderTraverser):
         
         Return the resulting string.
         """
-        try:
-            import leo.core.leoGlobals as g
-            trace = 'beauty' in g.app.debug
-        except Exception as e:
-            # print(e)
-            trace = False
-        if trace:
+        if False:
             dump_tokens(tokens)
             dump_tree(tree)
         self.filename = filename
@@ -5399,7 +5415,7 @@ class Fstringify (TokenOrderTraverser):
         self.tree = tree
         self.traverse(self.tree)
         results = tokens_to_string(self.tokens)
-        if trace:
+        if False:
             dump_tokens(tokens)
             dump_tree(tree)
             dump_contents(results, tag='Results')
@@ -6030,41 +6046,40 @@ class Tokenizer:
         
         This is part of the "gem".
         """
-        # import leo.core.leoGlobals as g
         import token as token_module
-        
-        #@+<< define trace functions >>
-        #@+node:ekr.20191128074051.1: *5* << define trace functions >>
-        def show_header():
-            if self.header_has_been_shown:
-                return
-            self.header_has_been_shown = True
-            print("\nTokenizer tokens...\n")
-            print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-            print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
-            print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
+        if 0:
+            #@+<< define trace functions >>
+            #@+node:ekr.20191128074051.1: *5* << define trace functions >>
+            def show_header():
+                if self.header_has_been_shown:
+                    return
+                self.header_has_been_shown = True
+                print("\nTokenizer tokens...\n")
+                print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+                print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
+                print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
 
-        def show_token(kind, val):
-            """
-            Show the given token.
-            Regardless of kind, val is the ground truth, from tok_s.
-            """
-            if 0:
-                show_header()
-                val_s = g.truncate(val, 28)
-                if kind != 'string':
-                    val_s = repr(val_s)
-                print(
-                    # starting line..ending line
-                    f"{show_tuple((s_row, e_row))} "  
-                    # starting offset..ending offset.
-                    f"{show_tuple((s_offset, e_offset))} "  
-                    f"{kind:>10} {val_s:30} {line!r}")
-            
-        def show_tuple(aTuple):
-            s = f"{aTuple[0]}..{aTuple[1]}"
-            return f"{s:8}"
-        #@-<< define trace functions >>
+            def show_token(kind, val):
+                """
+                Show the given token.
+                Regardless of kind, val is the ground truth, from tok_s.
+                """
+                if 0:
+                    show_header()
+                    val_s = g.truncate(val, 28)
+                    if kind != 'string':
+                        val_s = repr(val_s)
+                    print(
+                        # starting line..ending line
+                        f"{show_tuple((s_row, e_row))} "  
+                        # starting offset..ending offset.
+                        f"{show_tuple((s_offset, e_offset))} "  
+                        f"{kind:>10} {val_s:30} {line!r}")
+                
+            def show_tuple(aTuple):
+                s = f"{aTuple[0]}..{aTuple[1]}"
+                return f"{s:8}"
+            #@-<< define trace functions >>
 
         # Unpack..
         tok_type, val, start, end, line = five_tuple

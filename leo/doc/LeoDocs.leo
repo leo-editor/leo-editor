@@ -2364,6 +2364,7 @@
 </v>
 <v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
 <v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
+<v t="ekr.20200107143607.1"><vh>Running unit tests</vh></v>
 <v t="ekr.20200107110111.1"><vh>An annotated example</vh></v>
 <v t="ekr.20200107110057.1"><vh>Notable functions</vh>
 <v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
@@ -31355,6 +31356,10 @@ def init_from_file(self, filename):
     list(self.create_links(tokens, tree))
     self.reassign_tokens(tokens, tree)
     return contents, encoding, tokens, tree
+</t>
+<t tx="ekr.20200107143607.1">The following runs all unit tests for leoAst.py::
+
+    python -m leo.core.leoAst
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
