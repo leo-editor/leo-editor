@@ -5464,7 +5464,7 @@ class Fstringify (TokenOrderTraverser):
         tag = 'diff-fstringify-file'
         self.filename = filename
         tog = TokenOrderGenerator()
-        contents, tokens, tree = tog.init_from_file(filename)
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
             return False
         # fstringify.
@@ -5883,12 +5883,57 @@ class Orange(TokenOrderTraverser):
         """
         self.push_state('file-start')
     #@+node:ekr.20200107165250.8: *4* orange: Entries
-    #@+node:ekr.20200107172450.1: *5* orange.beautify_file (to do)
+    #@+node:ekr.20200107173542.1: *5* orange.beautify
+    def beautify(self, contents, filename, tokens, tree):
+        g.trace(filename)
+    #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):
-        g.trace(filename)
-    #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (to do)
+        """
+        Orange: Beautify the the given external file.
+        
+        Return True if the file was changed.
+        """
+        tag = 'orange-file'
+        self.filename = filename
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            print(f"{tag}: Can not fstringify: {filename}")
+            return False
+        # Beautify.
+        self.beautify(contents, filename, tokens, tree)
+        results = tokens_to_string(tokens)
+        if contents == results:
+            print(f"{tag}: Unchanged: {filename}")
+            return False
+        # Show the diffs.
+        show_diffs(contents, results, filename=filename)
+        # Write the results
+        print(f"{tag}: Wrote {filename}")
+        write_file(filename, results, encoding=encoding)
+        return True
+    #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
     def beautify_file_diff(self, filename):
-        g.trace(filename)
+        """
+        Orange: Print the diffs that would resulf from the orange-file command.
+        
+        Return True if the file would be changed.
+        """
+        tag = 'diff-orange-file'
+        self.filename = filename
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            return False
+        # fstringify.
+        self.beautify(contents, filename, tokens, tree)
+        results = tokens_to_string(tokens)
+        if contents == results:
+            print(f"{tag}: Unchanged: {filename}")
+            return False
+        # Show the diffs.
+        show_diffs(contents, results, filename=filename)
+        return True
     #@+node:ekr.20200107165250.12: *5* orange.scan_all_beautifier_tokens
     def scan_all_beautifier_tokens(self, tokens):
         """
