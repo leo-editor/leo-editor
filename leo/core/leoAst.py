@@ -21,8 +21,7 @@ import types
 import unittest
 #@-<< imports >>
 #@+others
-#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
-#@+node:ekr.20191226175251.1: *3* class LeoGlobals
+#@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
 
 class LeoGlobals:
@@ -31,7 +30,7 @@ class LeoGlobals:
     """
 
     #@+others
-    #@+node:ekr.20191227114503.1: *4* LeoGlobals.adjustTripleString
+    #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
     def adjustTripleString(self, s):
         """Remove leading indentation from a triple-quoted string."""
         lines = g.splitLines(s)
@@ -44,7 +43,7 @@ class LeoGlobals:
             return s
         return ''.join(
             (z[n:] if z.startswith(lws) else z) for z in lines)
-    #@+node:ekr.20191226175903.1: *4* LeoGlobals.callerName
+    #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
     def callerName(self, n):
         """Get the function name from the call stack."""
         try:
@@ -53,7 +52,7 @@ class LeoGlobals:
             return code1.co_name
         except Exception:
             return ''
-    #@+node:ekr.20191226175426.1: *4* LeoGlobals.callers
+    #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
     def callers(self, n=4):
         """
         Return a string containing a comma-separated list of the callers
@@ -68,14 +67,14 @@ class LeoGlobals:
                 break
             i += 1
         return ','.join(reversed(result))
-    #@+node:ekr.20191226190709.1: *4* leoGlobals.es_exception & helper
+    #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
     def es_exception(self):
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
         fileName, n = self.getLastTracebackFileAndLineNumber()
         return fileName, n
-    #@+node:ekr.20191226192030.1: *5* LeoGlobals.getLastTracebackFileAndLineNumber
+    #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
     def getLastTracebackFileAndLineNumber(self):
         typ, val, tb = sys.exc_info()
         if typ == SyntaxError:
@@ -88,7 +87,7 @@ class LeoGlobals:
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
-    #@+node:ekr.20191231153754.1: *4* LeoGlobals.pdb
+    #@+node:ekr.20191231153754.1: *3* LeoGlobals.pdb
     def pdb(self):
         """Fall into pdb."""
         import pdb
@@ -99,7 +98,7 @@ class LeoGlobals:
             print('can not import PyQt5.QtCore')
             return
         pdb.set_trace()
-    #@+node:ekr.20191226190425.1: *4* LeoGlobals.plural
+    #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
     def plural(self, obj):
         """Return "s" or "" depending on n."""
         if isinstance(obj, (list, tuple, str)):
@@ -107,7 +106,7 @@ class LeoGlobals:
         else:
             n = obj
         return '' if n == 1 else 's'
-    #@+node:ekr.20191226175441.1: *4* LeoGlobals.printObj
+    #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
     def printObj(self, obj, indent='', tag=None):
         """Simplified version of g.printObj."""
         if tag:
@@ -127,7 +126,7 @@ class LeoGlobals:
         else:
             print(repr(obj))
         print('')
-    #@+node:ekr.20191226190131.1: *4* LeoGlobals.splitLines
+    #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
     def splitLines(self, s):
         """Split s into lines, preserving the number of lines and
         the endings of all lines, including the last line."""
@@ -136,7 +135,7 @@ class LeoGlobals:
             return s.splitlines(True)
                 # This is a Python string function!
         return []
-    #@+node:ekr.20191226190844.1: *4* LeoGlobals.toEncodedString
+    #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
     def toEncodedString(self, s, encoding='utf-8'):
         """Convert unicode string to an encoded string."""
         if not isinstance(s, str):
@@ -147,7 +146,7 @@ class LeoGlobals:
             s = s.encode(encoding, "replace")
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
-    #@+node:ekr.20191226190006.1: *4* LeoGlobals.toUnicode
+    #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
     def toUnicode(self, s, encoding='utf-8'):
         """Convert bytes to unicode if necessary."""
         if isinstance(s, str):
@@ -164,7 +163,7 @@ class LeoGlobals:
             print(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
             g.trace(g.callers())
         return s
-    #@+node:ekr.20191226175436.1: *4* LeoGlobals.trace
+    #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
     def trace(self, *args):
         """Print a tracing message."""
         # Compute the caller name.
@@ -175,7 +174,7 @@ class LeoGlobals:
         except Exception:
             name = ''
         print(f"{name}: {' '.join(str(z) for z in args)}")
-    #@+node:ekr.20191226190241.1: *4* LeoGlobals.truncate
+    #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
     def truncate(self, s, n):
         """Return s truncated to n characters."""
         if len(s) <= n:
@@ -183,89 +182,9 @@ class LeoGlobals:
         s2 = s[: n - 3] + f'...({len(s)})'
         return s2 + '\n' if s.endswith('\n') else s2
     #@-others
-#@+node:ekr.20191121081439.1: *3* function: compare_lists
-def compare_lists(list1, list2):
-    """
-    Compare two lists of strings, showing the first mismatch.
-
-    Return the index of the first mismatched lines, or None if identical.
-    """
-    import itertools
-    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
-    for i, (s1, s2) in enumerate(it):
-        if s1 != s2:
-            return i
-    return None
-#@+node:ekr.20200106094631.1: *3* function: expected_got
-def expected_got(expected, got):
-    """Return a message, mostly for unit tests."""
-    return (
-        f"\n"
-        f"expected: {expected!s}\n"
-        f"     got: {got!s}"
-    )
-#@+node:ekr.20191226071135.1: *3* function: get_time
-def get_time():
-    return time.process_time()
-#@+node:ekr.20200103082049.1: *3* function: make_tokens
-def make_tokens(contents):
-    """
-    Return a list (not a generator) of Token objects corresponding to the
-    list of 5-tuples generated by tokenize.tokenize.
-    """
-    
-    def check(contents, tokens):
-        result = tokens_to_string(tokens)
-        ok = result == contents
-        if not ok:
-            print('\nRound-trip check FAILS')
-            print('Contents...\n')
-            g.printObj(contents)
-            print('\nResult...\n')
-            g.printObj(result)
-        return ok
-    try:
-        five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
-    except Exception:
-        print('make_tokens: exception in tokenize.tokenize')
-        g.es_exception()
-        return None
-    tokens = Tokenizer().create_input_tokens(contents, five_tuples)
-    assert check(contents, tokens)
-    return tokens
-#@+node:ekr.20191027075648.1: *3* function: parse_ast
-def parse_ast(s, headline=None, show_time=False):
-    """
-    Parse string s, catching & reporting all exceptions.
-    Return the ast node, or None.
-    """
-
-    def oops(message):
-        print('')
-        if headline:
-            print(f"parse_ast: {message} in: {headline}")
-        else:
-            print(f"parse_ast: {message}")
-        g.printObj(s)
-        print('')
-
-    try:
-        s1 = g.toEncodedString(s)
-        t1 = get_time()
-        tree = ast.parse(s1, filename='before', mode='exec')
-        t2 = get_time()
-        if show_time:
-            print(f"   parse_ast: {t2-t1:5.2f} sec.")
-        return tree
-    except IndentationError:
-        oops('Indentation Error')
-    except SyntaxError:
-        oops('Syntax Error')
-    except Exception:
-        oops('Unexpected Exception')
-        g.es_exception()
-    return None
-#@+node:ekr.20200103113417.1: *3* function: read_file
+#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
+#@+node:ekr.20200107114409.1: *3* functions: reading & writing files
+#@+node:ekr.20200103113417.1: *4* function: read_file
 def read_file(filename):
     """
     Return the contents of the given file.
@@ -279,7 +198,7 @@ def read_file(filename):
     except Exception:
         print(f"{tag}: can not read {filename}")
         return None
-#@+node:ekr.20200106173430.1: *3* function: read_file_with_encoding & helpers
+#@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding & helpers
 def read_file_with_encoding(filename):
     """
     Read the file, returning (e, s).
@@ -287,8 +206,9 @@ def read_file_with_encoding(filename):
     s is the string, converted to unicode, or None if there was an error.
     
     e is the encoding of s, computed in the following order:
+
     - The BOM encoding if the file starts with a BOM mark.
-    - The encoding given in the # -*- coding: utf-8 -*- line for python files.
+    - The encoding given in the # -*- coding: utf-8 -*- line.
     - The encoding given by the 'encoding' keyword arg.
     - 'utf-8'.
     """
@@ -307,7 +227,7 @@ def read_file_with_encoding(filename):
         # Python's encoding comments override everything else. 
         e = get_encoding_directive(bb)
     return e, g.toUnicode(bb, encoding=e)
-#@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
+#@+node:ekr.20200106171502.1: *5* function: get_encoding_directive
 encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
     # This is the pattern in PEP 263.
 
@@ -338,7 +258,7 @@ def get_encoding_directive(bb):
         except Exception:
             pass
     return 'UTF-8'
-#@+node:ekr.20200106174158.1: *4* function: strip_BOM
+#@+node:ekr.20200106174158.1: *5* function: strip_BOM
 def strip_BOM(bb):
     """
     bb must be the bytes contents of a file.
@@ -364,19 +284,108 @@ def strip_BOM(bb):
         if bom == bb[: len(bom)]:
             return e, bb[len(bom):]
     return None, bb
-#@+node:ekr.20200107040729.1: *3* function: show_diffs
-def show_diffs(s1, s2, filename=''):
-    """Print diffs between strings s1 and s2."""
-    lines = list(difflib.unified_diff(
-        g.splitLines(s1),
-        g.splitLines(s2),
-        fromfile=f"Old {filename}",
-        tofile=f"New {filename}",
-    ))
-    print('')
-    tag = f"Diffs for {filename}" if filename else 'Diffs'
-    g.printObj(lines, tag=tag)
-#@+node:ekr.20191229020834.1: *3* function: unit_test
+#@+node:ekr.20200103163100.1: *4* function: write_file
+def write_file(filename, s, encoding='utf-8'):
+    """Write the string s to the file whose name is given."""
+    try:
+        # newline='' suppresses newline munging.
+        with open(filename, 'w', encoding=encoding, newline='') as f:
+            f.write(s)
+    except Exception as e:
+        g.trace(f"Error writing {filename}\n{e}")
+#@+node:ekr.20200107114620.1: *3* functions: unit testing
+#@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
+def compare_asts(ast1, ast2):
+    """Compare two ast trees. Return True if they are equal."""
+    import leo.core.leoGlobals as g
+    # Compare the two parse trees.
+    try:
+        _compare_asts(ast1, ast2)
+    except AstNotEqual:
+        dump_ast(ast1, tag='AST BEFORE')
+        dump_ast(ast2, tag='AST AFTER')
+        if g.unitTesting:
+            raise
+        return False
+    except Exception:
+        g.trace(f"Unexpected exception")
+        g.es_exception()
+        return False
+    return True
+#@+node:ekr.20191027071653.2: *5* function._compare_asts
+def _compare_asts(node1, node2):
+    """
+    Compare both nodes, and recursively compare their children.
+    
+    See also: http://stackoverflow.com/questions/3312989/
+    """
+    # Compare the nodes themselves.
+    _compare_nodes(node1, node2)
+    # Get the list of fields.
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
+    if fields1 != fields2:
+        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
+    # Recursively compare each field.
+    for field in fields1:
+        if field not in ('lineno', 'col_offset', 'ctx'):
+            attr1 = getattr(node1, field, None)
+            attr2 = getattr(node2, field, None)
+            if attr1.__class__.__name__ != attr2.__class__.__name__:
+                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
+            _compare_asts(attr1, attr2)
+#@+node:ekr.20191027071653.3: *5* function._compare_nodes
+def _compare_nodes(node1, node2):
+    """
+    Compare node1 and node2.
+    For lists and tuples, compare elements recursively.
+    Raise AstNotEqual if not equal.
+    """
+    # Class names must always match.
+    if node1.__class__.__name__ != node2.__class__.__name__:
+        raise AstNotEqual(
+            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+            f"node2.__class__.__name__: {node2.__class__.__name_}"
+        )
+    # Special cases for strings and None
+    if node1 is None:
+        return
+    if isinstance(node1, str):
+        if node1 != node2:
+            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
+    # Special cases for lists and tuples:
+    if isinstance(node1, (tuple, list)):
+        if len(node1) != len(node2):
+            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
+        for i, item1 in enumerate(node1):
+            item2 = node2[i]
+            if item1.__class__.__name__ != item2.__class__.__name__:
+                raise AstNotEqual(
+                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
+                )
+            _compare_asts(item1, item2)
+#@+node:ekr.20191121081439.1: *4* function: compare_lists
+def compare_lists(list1, list2):
+    """
+    Compare two lists of strings, showing the first mismatch.
+
+    Return the index of the first mismatched lines, or None if identical.
+    """
+    import itertools
+    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
+    for i, (s1, s2) in enumerate(it):
+        if s1 != s2:
+            return i
+    return None
+#@+node:ekr.20200106094631.1: *4* function: expected_got
+def expected_got(expected, got):
+    """Return a message, mostly for unit tests."""
+    return (
+        f"\n"
+        f"expected: {expected!s}\n"
+        f"     got: {got!s}"
+    )
+#@+node:ekr.20191229020834.1: *4* function: unit_test
 def unit_test(raise_on_fail=True):
     """
     Called from unitTest.leo.
@@ -417,15 +426,145 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
-#@+node:ekr.20200103163100.1: *3* function: write_file
-def write_file(filename, s, encoding='utf-8'):
-    """Write the string s to the file whose name is given."""
+#@+node:ekr.20191231072039.1: *3* functions: utils...
+# General utility functions on tokens and nodes.
+#@+node:ekr.20191226071135.1: *4* function: get_time
+def get_time():
+    return time.process_time()
+#@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
+def is_significant(kind, value):
+    """
+    Return True if (kind, value) represent a token that can be used for
+    syncing generated tokens with the token list.
+    """
+    # Making 'endmarker' significant ensures that all tokens are synced.
+    return (
+        kind in ('endmarker', 'name', 'number', 'string') or
+        kind == 'op' and value not in ',;()')
+
+def is_significant_token(token):
+    """Return True if the given token is a syncronizing token"""
+    return is_significant(token.kind, token.value)
+#@+node:ekr.20191119085222.1: *4* function: obj_id
+def obj_id(obj):
+    """Return the last four digits of id(obj), for dumps & traces."""
+    return str(id(obj))[-4:]
+#@+node:ekr.20191231060700.1: *4* function: op_name
+#@@nobeautify
+
+# https://docs.python.org/3/library/ast.html
+
+_op_names = {
+    # Binary operators.
+    'Add':       '+',
+    'BitAnd':    '&',
+    'BitOr':     '|',
+    'BitXor':    '^',
+    'Div':       '/',
+    'FloorDiv':  '//',
+    'LShift':    '<<',
+    'MatMult':   '@', # Python 3.5.
+    'Mod':       '%',
+    'Mult':      '*',
+    'Pow':       '**',
+    'RShift':    '>>',
+    'Sub':       '-',
+    # Boolean operators.
+    'And':   ' and ',
+    'Or':    ' or ',
+    # Comparison operators
+    'Eq':    '==',
+    'Gt':    '>',
+    'GtE':   '>=',
+    'In':    ' in ',
+    'Is':    ' is ',
+    'IsNot': ' is not ',
+    'Lt':    '<',
+    'LtE':   '<=',
+    'NotEq': '!=',
+    'NotIn': ' not in ',
+    # Context operators.
+    'AugLoad':  '<AugLoad>',
+    'AugStore': '<AugStore>',
+    'Del':      '<Del>',
+    'Load':     '<Load>',
+    'Param':    '<Param>',
+    'Store':    '<Store>',
+    # Unary operators.
+    'Invert':   '~',
+    'Not':      ' not ',
+    'UAdd':     '+',
+    'USub':     '-',
+}
+
+def op_name(node):
+    """Return the print name of an operator node."""
+    class_name = node.__class__.__name__
+    assert class_name in _op_names, repr(class_name)
+    return _op_names [class_name].strip()
+#@+node:ekr.20200101030236.1: *4* function: tokens_to_string
+def tokens_to_string(tokens):
+    """Return the string represented by the list of tokens."""
+    return ''.join([z.to_string() for z in tokens])
+#@+node:ekr.20200107114452.1: *3* node/token creators...
+#@+node:ekr.20200103082049.1: *4* function: make_tokens
+def make_tokens(contents):
+    """
+    Return a list (not a generator) of Token objects corresponding to the
+    list of 5-tuples generated by tokenize.tokenize.
+    """
+    
+    def check(contents, tokens):
+        result = tokens_to_string(tokens)
+        ok = result == contents
+        if not ok:
+            print('\nRound-trip check FAILS')
+            print('Contents...\n')
+            g.printObj(contents)
+            print('\nResult...\n')
+            g.printObj(result)
+        return ok
     try:
-        # newline='' suppresses newline munging.
-        with open(filename, 'w', encoding=encoding, newline='') as f:
-            f.write(s)
-    except Exception as e:
-        g.trace(f"Error writing {filename}\n{e}")
+        five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+    except Exception:
+        print('make_tokens: exception in tokenize.tokenize')
+        g.es_exception()
+        return None
+    tokens = Tokenizer().create_input_tokens(contents, five_tuples)
+    assert check(contents, tokens)
+    return tokens
+#@+node:ekr.20191027075648.1: *4* function: parse_ast
+def parse_ast(s, headline=None, show_time=False):
+    """
+    Parse string s, catching & reporting all exceptions.
+    Return the ast node, or None.
+    """
+
+    def oops(message):
+        print('')
+        if headline:
+            print(f"parse_ast: {message} in: {headline}")
+        else:
+            print(f"parse_ast: {message}")
+        g.printObj(s)
+        print('')
+
+    try:
+        s1 = g.toEncodedString(s)
+        t1 = get_time()
+        tree = ast.parse(s1, filename='before', mode='exec')
+        t2 = get_time()
+        if show_time:
+            print(f"   parse_ast: {t2-t1:5.2f} sec.")
+        return tree
+    except IndentationError:
+        oops('Indentation Error')
+    except SyntaxError:
+        oops('Syntax Error')
+    except Exception:
+        oops('Unexpected Exception')
+        g.es_exception()
+    return None
 #@+node:ekr.20191231110051.1: *3* node/token dumpers...
 #@+node:ekr.20191027074436.1: *4* function: dump_ast
 def dump_ast(ast, tag='dump_ast'):
@@ -466,6 +605,18 @@ def dump_tree(tree):
     print(AstDumper().dump_tree_and_links(tree))
     
 dump_tree_and_links = dump_tree
+#@+node:ekr.20200107040729.1: *4* function: show_diffs
+def show_diffs(s1, s2, filename=''):
+    """Print diffs between strings s1 and s2."""
+    lines = list(difflib.unified_diff(
+        g.splitLines(s1),
+        g.splitLines(s2),
+        fromfile=f"Old {filename}",
+        tofile=f"New {filename}",
+    ))
+    print('')
+    tag = f"Diffs for {filename}" if filename else 'Diffs'
+    g.printObj(lines, tag=tag)
 #@+node:ekr.20191223095408.1: *3* node/token finders...
 # Functions that associate tokens with nodes.
 #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
@@ -648,7 +799,7 @@ def add_token_to_token_list(token, node):
     node.token_list = token_list
 #@+node:ekr.20191225055616.1: *4* function: replace_node
 def replace_node(new_node, old_node):
-    
+    """Replace new_node by old_node in the parse tree."""
     parent = old_node.parent
     new_node.parent = parent
     new_node.node_index = old_node.node_index
@@ -670,153 +821,6 @@ def replace_token(token, kind, value):
     token.kind = kind
     token.value = value
     token.node = None  # Should be filled later.
-#@+node:ekr.20191231072039.1: *3* node/token utils...
-# General utility functions on tokens and nodes.
-#@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
-def compare_asts(ast1, ast2):
-    """Compare two ast trees. Return True if they are equal."""
-    import leo.core.leoGlobals as g
-    # Compare the two parse trees.
-    try:
-        _compare_asts(ast1, ast2)
-    except AstNotEqual:
-        dump_ast(ast1, tag='AST BEFORE')
-        dump_ast(ast2, tag='AST AFTER')
-        if g.unitTesting:
-            raise
-        return False
-    except Exception:
-        g.trace(f"Unexpected exception")
-        g.es_exception()
-        return False
-    return True
-#@+node:ekr.20191027071653.2: *5* function._compare_asts
-def _compare_asts(node1, node2):
-    """
-    Compare both nodes, and recursively compare their children.
-    
-    See also: http://stackoverflow.com/questions/3312989/
-    """
-    # Compare the nodes themselves.
-    _compare_nodes(node1, node2)
-    # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])
-    fields2 = getattr(node2, "_fields", [])
-    if fields1 != fields2:
-        raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
-    # Recursively compare each field.
-    for field in fields1:
-        if field not in ('lineno', 'col_offset', 'ctx'):
-            attr1 = getattr(node1, field, None)
-            attr2 = getattr(node2, field, None)
-            if attr1.__class__.__name__ != attr2.__class__.__name__:
-                raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
-            _compare_asts(attr1, attr2)
-#@+node:ekr.20191027071653.3: *5* function._compare_nodes
-def _compare_nodes(node1, node2):
-    """
-    Compare node1 and node2.
-    For lists and tuples, compare elements recursively.
-    Raise AstNotEqual if not equal.
-    """
-    # Class names must always match.
-    if node1.__class__.__name__ != node2.__class__.__name__:
-        raise AstNotEqual(
-            f"node1.__class__.__name__: {node1.__class__.__name__}\n"
-            f"node2.__class__.__name__: {node2.__class__.__name_}"
-        )
-    # Special cases for strings and None
-    if node1 is None:
-        return
-    if isinstance(node1, str):
-        if node1 != node2:
-            raise AstNotEqual(f"node1: {node1!r}\n" f"node2: {node2!r}")
-    # Special cases for lists and tuples:
-    if isinstance(node1, (tuple, list)):
-        if len(node1) != len(node2):
-            raise AstNotEqual(f"node1: {node1}\n" f"node2: {node2}")
-        for i, item1 in enumerate(node1):
-            item2 = node2[i]
-            if item1.__class__.__name__ != item2.__class__.__name__:
-                raise AstNotEqual(
-                    f"list item1: {i} {item1}\n" f"list item2: {i} {item2}"
-                )
-            _compare_asts(item1, item2)
-#@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
-def is_significant(kind, value):
-    """
-    Return True if (kind, value) represent a token that can be used for
-    syncing generated tokens with the token list.
-    """
-    # Making 'endmarker' significant ensures that all tokens are synced.
-    return (
-        kind in ('endmarker', 'name', 'number', 'string') or
-        kind == 'op' and value not in ',;()')
-
-def is_significant_token(token):
-    """Return True if the given token is a syncronizing token"""
-    return is_significant(token.kind, token.value)
-#@+node:ekr.20191119085222.1: *4* function: obj_id
-def obj_id(obj):
-    """Return the last four digits of id(obj), for dumps & traces."""
-    return str(id(obj))[-4:]
-#@+node:ekr.20191231060700.1: *4* function: op_name
-#@@nobeautify
-
-# https://docs.python.org/3/library/ast.html
-
-_op_names = {
-    # Binary operators.
-    'Add':       '+',
-    'BitAnd':    '&',
-    'BitOr':     '|',
-    'BitXor':    '^',
-    'Div':       '/',
-    'FloorDiv':  '//',
-    'LShift':    '<<',
-    'MatMult':   '@', # Python 3.5.
-    'Mod':       '%',
-    'Mult':      '*',
-    'Pow':       '**',
-    'RShift':    '>>',
-    'Sub':       '-',
-    # Boolean operators.
-    'And':   ' and ',
-    'Or':    ' or ',
-    # Comparison operators
-    'Eq':    '==',
-    'Gt':    '>',
-    'GtE':   '>=',
-    'In':    ' in ',
-    'Is':    ' is ',
-    'IsNot': ' is not ',
-    'Lt':    '<',
-    'LtE':   '<=',
-    'NotEq': '!=',
-    'NotIn': ' not in ',
-    # Context operators.
-    'AugLoad':  '<AugLoad>',
-    'AugStore': '<AugStore>',
-    'Del':      '<Del>',
-    'Load':     '<Load>',
-    'Param':    '<Param>',
-    'Store':    '<Store>',
-    # Unary operators.
-    'Invert':   '~',
-    'Not':      ' not ',
-    'UAdd':     '+',
-    'USub':     '-',
-}
-
-def op_name(node):
-    """Return the print name of an operator node."""
-    class_name = node.__class__.__name__
-    assert class_name in _op_names, repr(class_name)
-    return _op_names [class_name].strip()
-#@+node:ekr.20200101030236.1: *4* function: tokens_to_string
-def tokens_to_string(tokens):
-    """Return the string represented by the list of tokens."""
-    return ''.join([z.to_string() for z in tokens])
 #@+node:ekr.20191027072910.1: ** Exception classes
 class AssignLinksError(Exception):
     """Assigning links to ast nodes failed."""
@@ -5657,29 +5661,6 @@ class Fstringify (TokenOrderTraverser):
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail
-    #@+node:ekr.20191225054848.1: *5* fs.replace
-    def replace(self, node, s, values):
-        """
-        Replace node with an ast.Str node for s.
-        Replace all tokens in the range of values with a single 'string' node.
-        """
-        # Replace the tokens...
-        tokens = tokens_for_node(node, self.tokens)
-        i1 = i = tokens[0].index
-        replace_token(self.tokens[i], 'string', s)
-        j = 1
-        while j < len(tokens):
-            replace_token(self.tokens[i1 + j], 'killed', '')
-            j += 1
-        # Replace the node.
-        new_node = ast.Str()
-        new_node.s = s
-        replace_node(new_node, node)
-        # Update the token.
-        token = self.tokens[i1]
-        token.node = new_node
-        # Update the token list.
-        new_node.token_list = [token]
     #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
@@ -5758,6 +5739,29 @@ class Fstringify (TokenOrderTraverser):
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
         return results
+    #@+node:ekr.20191225054848.1: *4* fs.replace
+    def replace(self, node, s, values):
+        """
+        Replace node with an ast.Str node for s.
+        Replace all tokens in the range of values with a single 'string' node.
+        """
+        # Replace the tokens...
+        tokens = tokens_for_node(node, self.tokens)
+        i1 = i = tokens[0].index
+        replace_token(self.tokens[i], 'string', s)
+        j = 1
+        while j < len(tokens):
+            replace_token(self.tokens[i1 + j], 'killed', '')
+            j += 1
+        # Replace the node.
+        new_node = ast.Str()
+        new_node.s = s
+        replace_node(new_node, node)
+        # Update the token.
+        token = self.tokens[i1]
+        token.node = new_node
+        # Update the token list.
+        new_node.token_list = [token]
     #@+node:ekr.20191231055008.1: *4* fs.visit
     def visit(self, node):
         """
