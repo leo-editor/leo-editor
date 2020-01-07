@@ -364,6 +364,18 @@ def strip_BOM(bb):
         if bom == bb[: len(bom)]:
             return e, bb[len(bom):]
     return None, bb
+#@+node:ekr.20200107040729.1: *3* function: show_diffs
+def show_diffs(s1, s2, filename=''):
+    """Print diffs between strings s1 and s2."""
+    lines = list(difflib.unified_diff(
+        g.splitLines(s1),
+        g.splitLines(s2),
+        fromfile=f"Old {filename}",
+        tofile=f"New {filename}",
+    ))
+    print('')
+    tag = f"Diffs for {filename}" if filename else 'Diffs'
+    g.printObj(lines, tag=tag)
 #@+node:ekr.20191229020834.1: *3* function: unit_test
 def unit_test(raise_on_fail=True):
     """
@@ -5409,14 +5421,7 @@ class Fstringify (TokenOrderTraverser):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
-        lines = list(difflib.unified_diff(
-            g.splitLines(contents),
-            g.splitLines(results),
-            fromfile=f"Old {self.filename}",
-            tofile=f"New {self.filename}",
-        ))
-        print('')
-        g.printObj(lines, f"diffs for {filename}")
+        show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results, encoding=encoding)
@@ -5445,14 +5450,7 @@ class Fstringify (TokenOrderTraverser):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
-        lines = list(difflib.unified_diff(
-            g.splitLines(contents),
-            g.splitLines(results),
-            fromfile=f"Old {self.filename}",
-            tofile=f"New {self.filename}",
-        ))
-        print('')
-        g.printObj(lines, f"diffs for {filename}")
+        show_diffs(contents, results, filename=filename)
         return True
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
