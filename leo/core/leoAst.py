@@ -418,7 +418,7 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20200103163100.1: *3* function: write_file
-def write_file(filename, s, encoding):
+def write_file(filename, s, encoding='utf-8'):
     """Write the string s to the file whose name is given."""
     try:
         # newline='' suppresses newline munging.
