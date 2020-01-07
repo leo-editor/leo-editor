@@ -164,7 +164,63 @@ def fstringify_diff_files(event):
     t2 = time.process_time()
     print('')
     g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
-
+#@+node:ekr.20200107165628.1: *4* orange-file-diff
+@g.command('diff-orange-files')
+@g.command('orange-files-diff')
+def orange_diff_files(event):
+    """
+    Show the diffs that would result from fstringifying the external files at
+    c.p.
+    """
+    import leo.core.leoAst as leoAst
+    c = event.get('c')
+    if not c or not c.p:
+        return
+    t1 = time.process_time()
+    tag = 'orange-files-diff'
+    g.es(f"{tag}...")
+    roots = g.findRootsWithPredicate(c, c.p)
+    for root in roots:
+        filename = g.fullPath(c, root)
+        if os.path.exists(filename):
+            print('')
+            print(f"{tag}: {g.shortFileName(filename)}")
+            changed = leoAst.Orange().beautify_file_diff(filename)
+            changed_s = 'changed' if changed else 'unchanged'
+            g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
+        else:
+            print('')
+            print(f"{tag}: file not found:{filename}")
+            g.es(f"file not found:\n{filename}")
+    t2 = time.process_time()
+    print('')
+    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+#@+node:ekr.20200107165603.1: *4* orange-files
+@g.command('orange-files')
+def orange_files(event):
+    """fstringify one or more files at c.p."""
+    c = event.get('c')
+    if not c or not c.p:
+        return
+    t1 = time.process_time()
+    tag = 'orange-files'
+    g.es(f"{tag}...")
+    roots = g.findRootsWithPredicate(c, c.p)
+    for root in roots:
+        filename = g.fullPath(c, root)
+        if os.path.exists(filename):
+            print('')
+            print(f"{tag}: {g.shortFileName(filename)}")
+            changed = leoAst.Orange().beautify_file(filename)
+            changed_s = 'changed' if changed else 'unchanged'
+            g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
+        else:
+            print('')
+            print(f"{tag}: file not found:{filename}")
+            g.es(f"{tag}: file not found:\n{filename}")
+    t2 = time.process_time()
+    print('')
+    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
 import unittest

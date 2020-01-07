@@ -3018,22 +3018,6 @@ class AstDumper:
                 if a not in ['ctx',] and b not in (None, [])
         )
     #@-others
-#@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
-class TestReassignTokens (BaseTest):
-    """Test cases for the ReassignTokens class."""
-    #@+others
-    #@+node:ekr.20191231130320.1: *4* test_reassign_tokens (to do)
-    def test_reassign_tokens(self):
-        pass
-    #@+node:ekr.20191231130334.1: *4* test_nearest_common_ancestor
-    def test_nearest_common_ancestor(self):
-        
-        contents = """name='uninverted %s' % d.name()"""
-        tokens, tree = self.make_data(contents)
-        # dump_tokens(tokens)
-        # dump_tree(tree)
-        
-    #@-others
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
@@ -3198,6 +3182,22 @@ class TestFstringify (BaseTest):
                 expected_got(expected, results)
                 fails.append(description)
         assert not fails, fails
+    #@-others
+#@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
+class TestReassignTokens (BaseTest):
+    """Test cases for the ReassignTokens class."""
+    #@+others
+    #@+node:ekr.20191231130320.1: *4* test_reassign_tokens (to do)
+    def test_reassign_tokens(self):
+        pass
+    #@+node:ekr.20191231130334.1: *4* test_nearest_common_ancestor
+    def test_nearest_common_ancestor(self):
+        
+        contents = """name='uninverted %s' % d.name()"""
+        tokens, tree = self.make_data(contents)
+        # dump_tokens(tokens)
+        # dump_tree(tree)
+        
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG (BaseTest):
@@ -3817,6 +3817,36 @@ class TestTOG (BaseTest):
         self.update_times('90: TOTAL', t2 - g.total_time)
         self.dump_stats()
     #@-others
+#@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
+class TestTopLevelFunctions (BaseTest):
+    """Tests for the top-level functions in leoAst.py."""
+    #@+others
+    #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
+    def test_get_encoding_directive(self):
+        
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = os.path.join(directory, 'leoAst.py')
+        if not os.path.exists(filename):
+            self.skipTest(f"not found: {filename}")
+        with open(filename, 'rb') as f:
+            bb = f.read()
+        e = get_encoding_directive(bb)
+        assert e.lower() == 'utf-8', repr(e)
+    #@+node:ekr.20200107150857.1: *4* test_strip_BOM
+    def test_strip_BOM(self):
+        
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = os.path.join(directory, 'leoAst.py')
+        assert os.path.exists(filename), filename
+        with open(filename, 'rb') as f:
+            bb = f.read()
+        assert bb, filename
+        e, s = strip_BOM(bb)
+        if e is not None:
+            assert e.lower() == 'utf-8', repr(e)
+        
+    #@-others
+    
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT (BaseTest):
     """Tests for the TokenOrderTraverser class."""
@@ -3848,36 +3878,6 @@ b = 2 + 3
             t2 = get_time()
             self.update_times('51: TONG.traverse', t2 - t1)
         self.dump_stats()
-#@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
-class TestTopLevelFunctions (BaseTest):
-    """Tests for the top-level functions in leoAst.py."""
-    #@+others
-    #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
-    def test_get_encoding_directive(self):
-        
-        directory = r'c:\leo.repo\leo-editor\leo\core'
-        filename = os.path.join(directory, 'leoAst.py')
-        if not os.path.exists(filename):
-            self.skipTest(f"not found: {filename}")
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        e = get_encoding_directive(bb)
-        assert e.lower() == 'utf-8', repr(e)
-    #@+node:ekr.20200107150857.1: *4* test_strip_BOM
-    def test_strip_BOM(self):
-        
-        directory = r'c:\leo.repo\leo-editor\leo\core'
-        filename = os.path.join(directory, 'leoAst.py')
-        assert os.path.exists(filename), filename
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        assert bb, filename
-        e, s = strip_BOM(bb)
-        if e is not None:
-            assert e.lower() == 'utf-8', repr(e)
-        
-    #@-others
-    
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
@@ -5786,6 +5786,789 @@ class Fstringify (TokenOrderTraverser):
         ):
             self.make_fstring(node)
     #@-others
+#@+node:ekr.20200107165250.1: *3* class Orange(TOT)
+class Orange(TokenOrderTraverser):
+    """Orange is the new black."""
+
+    undo_type = "Pretty Print"
+
+    #@+others
+    #@+node:ekr.20200107165250.2: *4* orange.ctor
+    def __init__(self):
+        """Ctor for Orange class."""
+        #
+        # State vars...
+        self.decorator_seen = False
+            # Set by do_name as a flag to do_op.
+        self.in_arg_list = 0
+            # > 0 if in an argument list of a function definition.
+        self.level = 0
+            # indentation level. Set only by do_indent and do_dedent.
+            # do_name calls: push_state('indent', self.level)
+        self.lws = ''
+            # Leading whitespace.
+            # Typically ' '*self.tab_width*self.level,
+            # but may be changed for continued lines.
+        self.state_stack = []
+            # Stack of ParseState objects.
+        self.val = None
+            # The string containing the input token's value.
+        #
+        # Counts of unmatched brackets and parentheses.
+        self.paren_level = 0
+            # Number of unmatched '(' tokens.
+        self.square_brackets_level = 0
+            # Number of unmatched '[' tokens.
+        self.curly_brackets_level = 0
+            # Number of unmatched '{' tokens.
+        self.changed = False
+            ### For undo.
+        #
+        # Settings.
+        self.delete_blank_lines = True
+        self.max_join_line_length = 88
+        self.max_split_line_length = 88
+        self.orange = False  # Split or join lines only if orange is True.
+        self.tab_width = 4
+    #@+node:ekr.20200107165250.3: *4* orange.reload_settings
+    def reloadSettings(self):
+      
+            self.delete_blank_lines = True
+            self.max_join_line_length = 88
+            self.max_split_line_length = 88
+            self.tab_width = 4
+        
+    #@+node:ekr.20200107165250.4: *4* orange: Overrides
+    # These override methods of the NullTokenBeautifier class.
+    #@+node:ekr.20200107170523.1: *5* orange.add_token
+    def add_token(self, kind, value=''):
+        """Add a token to the code list."""
+        tok = Token(kind, value)
+        self.code_list.append(tok)
+        self.prev_output_token = self.code_list[-1]
+    #@+node:ekr.20200107165250.5: *5* orange.do_token (override)
+    def oops(self):
+        g.trace('unknown kind', self.kind)
+
+    def do_token(self, token):
+        """
+        Handle one token.
+        
+        Token handlers may call this method to do look-ahead processing.
+        """
+        assert isinstance(token, Token), (repr(token), g.callers())
+        # Remembering token.line is necessary, because dedent tokens
+        # can happen *after* comment lines that should be dedented!
+        self.kind, self.val, self.line = token.kind, token.value, token.line
+        func = getattr(self, f"do_{token.kind}", self.oops)
+        func()
+    #@+node:ekr.20200107165250.6: *5* orange.file_end (override)
+    def file_end(self):
+        """
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        """
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
+    #@+node:ekr.20200107165250.7: *5* orange.file_start (override)
+    def file_start(self):
+        """
+        Do any start-of-file processing.
+        
+        May be overridden in subclasses.
+        
+        The file-start *token* has already been added to self.code_list.
+        """
+        self.push_state('file-start')
+    #@+node:ekr.20200107165250.8: *4* orange: Entries
+    #@+node:ekr.20200107172450.1: *5* orange.beautify_file (to do)
+    def beautify_file(self, filename):
+        g.trace(filename)
+    #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (to do)
+    def beautify_file_diff(self, filename):
+        g.trace(filename)
+    #@+node:ekr.20200107165250.12: *5* orange.scan_all_beautifier_tokens
+    def scan_all_beautifier_tokens(self, tokens):
+        """
+        A helper for the fstringify class, similar to null_b.scan_all_tokens.
+        
+        Differences:
+            
+        1. tokens is a list of BeautifierTokens, not a list of 5-tuples.
+        2. This method adds no end-of-file tokens.
+        3. This method returns a list of BeautifierTokens, not a string.
+        """
+        self.tokens = tokens
+        self.code_list = []
+        self.add_token('file-start')
+        self.push_state('file-start')
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        return self.code_list
+    #@+node:ekr.20200107165250.13: *4* orange: Input token Handlers
+    #@+node:ekr.20200107165250.14: *5* orange.do_comment
+    def do_comment(self):
+        """Handle a comment token."""
+        self.clean('blank')
+        entire_line = self.line.lstrip().startswith('#')
+        if entire_line:
+            self.clean('line-indent')
+            val = self.line.rstrip()
+        else:
+            # Exactly two spaces before trailing comments.
+            val = '  ' + self.val.rstrip()
+        self.add_token('comment', val)
+    #@+node:ekr.20200107165250.15: *5* orange.do_encoding
+    def do_encoding(self):
+        """
+        Handle the encoding token.
+        """
+        pass
+    #@+node:ekr.20200107165250.16: *5* orange.do_endmarker
+    def do_endmarker(self):
+        """Handle an endmarker token."""
+        pass
+    #@+node:ekr.20200107165250.17: *5* orange.do_errortoken
+    def do_errortoken(self):
+        """Handle an errortoken token."""
+        # This code is executed for versions of Python earlier than 2.4
+        if self.val == '@':
+            self.op(self.val)
+    #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent
+    def do_dedent(self):
+        """Handle dedent token."""
+        self.level -= 1
+        self.lws = self.level * self.tab_width * ' '
+        self.line_indent()
+        state = self.state_stack[-1]
+        if state.kind == 'indent' and state.value == self.level:
+            self.state_stack.pop()
+            state = self.state_stack[-1]
+            if state.kind in ('class', 'def'):
+                self.state_stack.pop()
+                self.blank_lines(1)
+                    # Most Leo nodes aren't at the top level of the file.
+                    # self.blank_lines(2 if self.level == 0 else 1)
+
+    def do_indent(self):
+        """Handle indent token."""
+        new_indent = self.val
+        old_indent = self.level * self.tab_width * ' '
+        if new_indent > old_indent:
+            self.level += 1
+        elif new_indent < old_indent:
+            g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+        self.lws = new_indent
+        self.line_indent()
+    #@+node:ekr.20200107165250.19: *5* orange.do_fstringify
+    def do_fstringify(self):
+        """
+        A helper for the FstringifyTokens class.
+        
+        This class creates synthetic "fstringify" tokens.
+        """
+        self.add_token('fstringify', self.val)
+    #@+node:ekr.20200107165250.20: *5* orange.do_name
+    def do_name(self):
+        """Handle a name token."""
+        name = self.val
+        if name in ('class', 'def'):
+            self.decorator_seen = False
+            state = self.state_stack[-1]
+            if state.kind == 'decorator':
+                self.clean_blank_lines()
+                self.line_end()
+                self.state_stack.pop()
+            else:
+                self.blank_lines(1)
+                # self.blank_lines(2 if self.level == 0 else 1)
+            self.push_state(name)
+            self.push_state('indent', self.level)
+                # For trailing lines after inner classes/defs.
+            self.word(name)
+        elif name in ('and', 'in', 'not', 'not in', 'or', 'for'):
+            self.word_op(name)
+        else:
+            self.word(name)
+    #@+node:ekr.20200107165250.21: *5* orange.do_newline & do_nl
+    def do_newline(self):
+        """Handle a regular newline."""
+        # Retain any sidecar ws in the newline.
+        self.line_end(self.val)
+
+    def do_nl(self):
+        """Handle a continuation line."""
+        # Retain any sidecar ws in the newline.
+        self.line_end(self.val)
+    #@+node:ekr.20200107165250.22: *5* orange.do_number
+    def do_number(self):
+        """Handle a number token."""
+        assert isinstance(self.val, str), repr(self.val)
+        self.add_token('number', self.val)
+    #@+node:ekr.20200107165250.23: *5* orange.do_op
+    def do_op(self):
+        """Handle an op token."""
+        val = self.val
+        if val == '.':
+            self.op_no_blanks(val)
+        elif val == '@':
+            if not self.decorator_seen:
+                self.blank_lines(1)
+                self.decorator_seen = True
+            self.op_no_blanks(val)
+            self.push_state('decorator')
+        elif val == ':':
+            # Treat slices differently.
+            self.colon(val)
+        elif val in ',;':
+            # Pep 8: Avoid extraneous whitespace immediately before
+            # comma, semicolon, or colon.
+            self.op_blank(val)
+        elif val in '([{':
+            # Pep 8: Avoid extraneous whitespace immediately inside
+            # parentheses, brackets or braces.
+            self.lt(val)
+        elif val in ')]}':
+            # Ditto.
+            self.rt(val)
+        elif val == '=':
+            # Pep 8: Don't use spaces around the = sign when used to indicate
+            # a keyword argument or a default parameter value.
+            if self.paren_level:
+                self.op_no_blanks(val)
+            else:
+                self.op(val)
+        elif val in '~+-':
+            self.possible_unary_op(val)
+        elif val == '*':
+            self.star_op()
+        elif val == '**':
+            self.star_star_op()
+        else:
+            # Pep 8: always surround binary operators with a single space.
+            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
+            # '^','~','*','**','&','|','/','//',
+            # Pep 8: If operators with different priorities are used,
+            # consider adding whitespace around the operators with the lowest priority(ies).
+            self.op(val)
+    #@+node:ekr.20200107165250.24: *5* orange.do_string (sets backslash_seen)
+    def do_string(self):
+        """Handle a 'string' token."""
+        self.add_token('string', self.val)
+        self.blank()
+    #@+node:ekr.20200107165250.25: *5* orange.do_ws
+    def do_ws(self):
+        """
+        Handle the "ws" pseudo-token.
+        
+        Put the whitespace only if if ends with backslash-newline.
+        """
+        # Short-circuit if there is no ws to add.
+        if not self.val:
+            return
+        #
+        # Handle backslash-newline.
+        if '\\\n' in self.val:
+            # Prepend a *real* blank, so later code won't add any more ws.
+            self.clean('blank')
+            self.add_token('blank', ' ')
+            self.add_token('ws', self.val.lstrip())
+            if self.val.endswith((' ', '\t')):
+                # Add a *empty* blank, so later code won't add any more ws.
+                self.add_token('blank', '')
+            return
+        #
+        # Handle start-of-line whitespace.
+        prev = self.code_list[-1]
+        inner = self.paren_level or self.square_brackets_level or self.curly_brackets_level
+        if prev.kind == 'line-indent' and inner:
+            # Retain the indent that won't be cleaned away.
+            self.clean('line-indent')
+            self.add_token('hard-blank', self.val)
+    #@+node:ekr.20200107165250.26: *4* orange: Output token generators
+    #@+node:ekr.20200107165250.27: *5* orange.blank
+    def blank(self):
+        """Add a blank request to the code list."""
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'hard-blank', # Unique to orange.
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
+    #@+node:ekr.20200107165250.28: *5* orange.blank_before_end_line_comment
+    def blank_before_end_line_comment(self):
+        """Add two blanks before an end-of-line comment."""
+        prev = self.code_list[-1]
+        self.clean('blank')
+        if prev.kind not in ('blank-lines', 'file-start', 'line-end', 'line-indent'):
+            self.add_token('blank', ' ')
+            self.add_token('blank', ' ')
+    #@+node:ekr.20200107165250.29: *5* orange.blank_lines
+    def blank_lines(self, n):
+        """
+        Add a request for n blank lines to the code list.
+        Multiple blank-lines request yield at least the maximum of all requests.
+        """
+        self.clean_blank_lines()
+        kind = self.code_list[-1].kind
+        if kind == 'file-start':
+            self.add_token('blank-lines', n)
+            return
+        for i in range(0, n+1):
+            self.add_token('line-end', '\n')
+        # Retain the token (intention) for debugging.
+        self.add_token('blank-lines', n)
+        self.line_indent()
+    #@+node:ekr.20200107165250.30: *5* orange.clean
+    def clean(self, kind):
+        """Remove the last item of token list if it has the given kind."""
+        prev = self.code_list[-1]
+        if prev.kind == kind:
+            self.code_list.pop()
+    #@+node:ekr.20200107165250.31: *5* orange.clean_blank_lines
+    def clean_blank_lines(self):
+        """Remove all vestiges of previous lines."""
+        table = ('blank-lines', 'line-end', 'line-indent')
+        while self.code_list[-1].kind in table:
+            self.code_list.pop()
+    #@+node:ekr.20200107165250.32: *5* orange.colon
+    def colon(self, val):
+        """Handle a colon."""
+        if self.square_brackets_level > 0:
+            # Put blanks on either side of the colon,
+            # but not between commas, and not next to [.
+            self.clean('blank')
+            prev = self.code_list[-1]
+            if prev.value == '[':
+                # Never put a blank after "[:"
+                self.add_token('op', val)
+            elif prev.value == ':':
+                self.add_token('op', val)
+                self.blank()
+            else:
+                self.op(val)
+        else:
+            self.op_blank(val)
+    #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
+    def line_end(self, ws=''):
+        """Add a line-end request to the code list."""
+        prev = self.code_list[-1]
+        if prev.kind == 'file-start':
+            return
+        self.clean('blank')  # Important!
+        if self.delete_blank_lines:
+            self.clean_blank_lines()
+        self.clean('line-indent')
+        self.add_token('line-end', '\n')
+        if self.orange:
+            allow_join = True
+            if self.max_split_line_length > 0:
+                allow_join = not self.break_line()
+            if allow_join and self.max_join_line_length > 0:
+                self.join_lines()
+        self.line_indent()
+            # Add the indentation for all lines
+            # until the next indent or unindent token.
+    #@+node:ekr.20200107165250.34: *6* orange.break_line (new) & helpers
+    def break_line(self):
+        """
+        Break the preceding line, if necessary.
+        
+        Return True if the line was broken into two or more lines.
+        """
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+            # Must be called just after inserting the line-end token.
+        #
+        # Find the tokens of the previous lines.
+        line_tokens = self.find_prev_line()
+        # g.printObj(line_tokens, tag='PREV LINE')
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
+            return False
+        #
+        # Return if the previous line has no opening delim: (, [ or {.
+        if not any([z.kind == 'lt' for z in line_tokens]):
+            return False
+        prefix = self.find_line_prefix(line_tokens)
+        #
+        # Calculate the tail before cleaning the prefix.
+        tail = line_tokens[len(prefix):]
+        if prefix[0].kind == 'line-indent':
+            prefix = prefix[1:]
+        # g.printObj(prefix, tag='PREFIX')
+        # g.printObj(tail, tag='TAIL')
+        #
+        # Cut back the token list
+        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
+            # -1 for the trailing line-end.
+        # g.printObj(self.code_list, tag='CUT CODE LIST')
+        #
+        # Append the tail, splitting it further, as needed.
+        self.append_tail(prefix, tail)
+        #
+        # Add the line-end token deleted by find_line_prefix.
+        self.add_token('line-end', '\n')
+        return True
+    #@+node:ekr.20200107165250.35: *7* orange.append_tail
+    def append_tail(self, prefix, tail):
+        """Append the tail tokens, splitting the line further as necessary."""
+        g.trace('='*20)
+        tail_s = ''.join([z.to_string() for z in tail])
+        if len(tail_s) < self.max_split_line_length:
+            # Add the prefix.
+            self.code_list.extend(prefix)
+            # Start a new line and increase the indentation.
+            self.add_token('line-end', '\n')
+            self.add_token('line-indent', self.lws+' '*4)
+            self.code_list.extend(tail)
+            return
+        #
+        # Still too long.  Split the line at commas.
+        self.code_list.extend(prefix)
+        # Start a new line and increase the indentation.
+        self.add_token('line-end', '\n')
+        self.add_token('line-indent', self.lws+' '*4)
+        open_delim = Token(kind='lt', value=prefix[-1].value)
+        close_delim = Token(
+            kind='rt',
+            value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
+        )
+        delim_count = 1
+        lws = self.lws + ' ' * 4
+        for i, t in enumerate(tail):
+            # g.trace(delim_count, str(t))
+            if t.kind == 'op' and t.value == ',':
+                if delim_count == 1:
+                    # Start a new line.
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', lws)
+                    # Kill a following blank.
+                    if i + 1 < len(tail):
+                        next_t = tail[i + 1]
+                        if next_t.kind == 'blank':
+                            next_t.kind = 'no-op'
+                            next_t.value = ''
+                else:
+                    self.code_list.append(t)
+            elif t.kind == close_delim.kind and t.value == close_delim.value:
+                # Done if the delims match.
+                delim_count -= 1
+                if delim_count == 0:
+                    if 0:
+                        # Create an error, on purpose.
+                        # This test passes: proper dumps are created,
+                        # and the body is not updated.
+                        self.add_token('line-end', '\n')
+                        self.add_token('op', ',')
+                        self.add_token('number', '666')
+                    # Start a new line
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', self.lws)
+                    self.code_list.extend(tail[i:])
+                    return
+                lws = lws[:-4]
+                self.code_list.append(t)
+            elif t.kind == open_delim.kind and t.value == open_delim.value:
+                delim_count += 1
+                lws = lws + ' ' * 4
+                self.code_list.append(t)
+            else:
+                self.code_list.append(t)
+        g.trace('BAD DELIMS', delim_count)
+    #@+node:ekr.20200107165250.36: *7* orange.find_prev_line (new)
+    def find_prev_line(self):
+        """Return the previous line, as a list of tokens."""
+        line = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind == 'line-end':
+                break
+            line.append(t)
+        return list(reversed(line))
+    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix (new)
+    def find_line_prefix(self, token_list):
+        """
+        Return all tokens up to and including the first lt token.
+        Also add all lt tokens directly following the first lt token.
+        """
+        result = []
+        for i, t in enumerate(token_list):
+            result.append(t)
+            if t.kind == 'lt':
+                for t in token_list[i + 1:]:
+                    if t.kind == 'blank' or self.is_any_lt(t):
+                    # if t.kind in ('lt', 'blank'):
+                        result.append(t)
+                    else:
+                        break
+                break
+        return result
+    #@+node:ekr.20200107165250.38: *7* orange.is_any_lt
+    def is_any_lt(self, output_token):
+        """Return True if the given token is any lt token"""
+        return (
+            output_token == 'lt'
+            or output_token.kind == 'op-no-blanks'
+            and output_token.value in "{[("
+        )
+    #@+node:ekr.20200107165250.39: *6* orange.join_lines (new) & helpers
+    def join_lines(self):
+        """
+        Join preceding lines, if the result would be short enough.
+        Should be called only at the end of a line.
+        """
+        # Must be called just after inserting the line-end token.
+        trace = False
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        line_tokens = self.find_prev_line()
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        if trace:
+            g.trace(line_s)
+        # Don't bother trying if the line is already long.
+        if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
+            return
+        # Terminating long lines must have ), ] or }
+        if not any([z.kind == 'rt' for z in line_tokens]):
+            return
+        # To do...
+        #   Scan back, looking for the first line with all balanced delims.
+        #   Do nothing if it is this line.
+    #@+node:ekr.20200107165250.40: *5* orange.line_indent
+    def line_indent(self):
+        """Add a line-indent token."""
+        self.clean('line-indent')
+            # Defensive. Should never happen.
+        self.add_token('line-indent', self.lws)
+    #@+node:ekr.20200107165250.41: *5* orange.lt & rt
+    #@+node:ekr.20200107165250.42: *6* orange.lt
+    def lt(self, s):
+        """Generate code for a left paren or curly/square bracket."""
+        assert s in '([{', repr(s)
+        if s == '(':
+            self.paren_level += 1
+        elif s == '[':
+            self.square_brackets_level += 1
+        else:
+            self.curly_brackets_level += 1
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind in ('op', 'word-op'):
+            self.blank()
+            self.add_token('lt', s)
+        elif prev.kind == 'word':
+            # Only suppress blanks before '(' or '[' for non-keyworks.
+            if s == '{' or prev.value in ('if', 'else', 'return', 'for'):
+                self.blank()
+            elif s == '(':
+                self.in_arg_list += 1
+            self.add_token('lt', s)
+        elif prev.kind == 'op':
+            self.op(s)
+        else:
+            self.op_no_blanks(s)
+    #@+node:ekr.20200107165250.43: *6* orange.rt
+    def rt(self, s):
+        """Generate code for a right paren or curly/square bracket."""
+        assert s in ')]}', repr(s)
+        if s == ')':
+            self.paren_level -= 1
+            self.in_arg_list = max(0, self.in_arg_list-1)
+        elif s == ']':
+            self.square_brackets_level -= 1
+        else:
+            self.curly_brackets_level -= 1
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind == 'arg-end' or (prev.kind, prev.value) == ('op', ':'):
+            # # Remove a blank token preceding the arg-end or ')' token.
+            prev = self.code_list.pop()
+            self.clean('blank')
+            self.code_list.append(prev)
+        self.add_token('rt', s)
+    #@+node:ekr.20200107165250.44: *5* orange.op*
+    def op(self, s):
+        """Add op token to code list."""
+        assert s and isinstance(s, str), repr(s)
+        if self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
+            # Treat arithmetic ops differently.
+            self.clean('blank')
+            self.add_token('op', s)
+        else:
+            self.blank()
+            self.add_token('op', s)
+            self.blank()
+
+    def op_blank(self, s):
+        """Remove a preceding blank token, then add op and blank tokens."""
+        assert s and isinstance(s, str), repr(s)
+        self.clean('blank')
+        if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
+            self.add_token('op', s)
+        else:
+            self.add_token('op', s)
+            self.blank()
+
+    def op_no_blanks(self, s):
+        """Add an operator *not* surrounded by blanks."""
+        self.clean('blank')
+        self.add_token('op-no-blanks', s)
+    #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
+    def possible_unary_op(self, s):
+        """Add a unary or binary op to the token list."""
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
+            self.unary_op(s)
+        elif prev.kind == 'word' and prev.value in (
+            'elif', 'else', 'if', 'return', 'while',
+        ):
+            self.unary_op(s)
+        else:
+            self.op(s)
+
+    def unary_op(self, s):
+        """Add an operator request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        self.clean('blank')
+        prev = self.code_list[-1]
+        prev2 = self.code_list[-2]
+        if prev.kind == 'lt':
+            self.add_token('unary-op', s)
+            return
+        if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
+            self.add_token('unary-op', s)
+            return
+        self.blank()
+        self.add_token('unary-op', s)
+    #@+node:ekr.20200107165250.46: *5* orange.star_op (no change)
+    def star_op(self):
+        """Put a '*' op, with special cases for *args."""
+        val = '*'
+        if self.paren_level > 0:
+            i = len(self.code_list) - 1
+            if self.code_list[i].kind == 'blank':
+                i -= 1
+            token = self.code_list[i]
+            if token.kind == 'lt':
+                self.op_no_blanks(val)
+            elif token.value == ',':
+                self.blank()
+                self.add_token('op-no-blanks', val)
+            else:
+                self.op(val)
+        else:
+            self.op(val)
+    #@+node:ekr.20200107165250.47: *5* orange.star_star_op (no changed)
+    def star_star_op(self):
+        """Put a ** operator, with a special case for **kwargs."""
+        val = '**'
+        if self.paren_level > 0:
+            i = len(self.code_list) - 1
+            if self.code_list[i].kind == 'blank':
+                i -= 1
+            token = self.code_list[i]
+            if token.value == ',':
+                self.blank()
+                self.add_token('op-no-blanks', val)
+            else:
+                self.op(val)
+        else:
+            self.op(val)
+    #@+node:ekr.20200107165250.48: *5* orange.word & word_op
+    def word(self, s):
+        """Add a word request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        if self.in_arg_list > 0:
+            pass
+        else:
+            self.blank()
+        self.add_token('word', s)
+        self.blank()
+
+    def word_op(self, s):
+        """Add a word-op request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        self.blank()
+        self.add_token('word-op', s)
+        self.blank()
+    #@+node:ekr.20200107165250.49: *4* orange: Utils
+    #@+node:ekr.20200107165250.50: *5* orange.find_delims (new)
+    def find_delims(self, tokens):
+        """
+        Compute the net number of each kind of delim in the given range of tokens.
+        
+        Return (curlies, parens, squares)
+        """
+        parens, curlies, squares = 0, 0, 0
+        for token in tokens:
+            value = token.value
+            if token.kind == 'lt':
+                assert value in '([{', f"Bad lt value: {token.kind} {value}"
+                if value == '{':
+                    curlies += 1
+                elif value == '(':
+                    parens += 1
+                elif value == '[':
+                    squares += 1
+            elif token.kind == 'rt':
+                assert value in ')]}', f"Bad rt value: {token.kind} {value}"
+                if value == ')':
+                    parens -= 1
+                elif value == ']':
+                    squares -= 1
+                elif value == '}':
+                    curlies += 1
+        return curlies, parens, squares
+    #@+node:ekr.20200107165250.51: *5* orange.push_state
+    def push_state(self, kind, value=None):
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
+    #@-others
+#@+node:ekr.20200107170847.1: *3* class OrangeSettings
+class OrangeSettings:
+    
+    pass
+#@+node:ekr.20200107170126.1: *3* class ParseState
+class ParseState:
+    """
+    A class representing items in the parse state stack.
+    
+    The present states:
+        
+    'file-start': Ensures the stack stack is never empty.
+        
+    'decorator': The last '@' was a decorator.
+        
+        do_op():    push_state('decorator')
+        do_name():  pops the stack if state.kind == 'decorator'.
+                    
+    'indent': The indentation level for 'class' and 'def' names.
+    
+        do_name():      push_state('indent', self.level)
+        do_dendent():   pops the stack once or twice if state.value == self.level.
+
+    """
+
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self):
+        return f"State: {self.kind} {self.value!r}"
+
+    __str__ = __repr__
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
     
@@ -5888,13 +6671,6 @@ class TokenOrderNodeGenerator(TokenOrderGenerator):
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
-    #@-others
-#@+node:ekr.20191231063821.1: *3* class TokenUtils
-class TokenUtils:
-    """
-    A class containing token-oriented utilities.
-    """
-    #@+others
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
