@@ -5814,9 +5814,6 @@ class Fstringify (TokenOrderTraverser):
 #@+node:ekr.20200107165250.1: *3* class Orange(TOT)
 class Orange(TokenOrderTraverser):
     """Orange is the new black."""
-
-    undo_type = "Pretty Print"
-
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self):
@@ -5855,14 +5852,6 @@ class Orange(TokenOrderTraverser):
         self.max_split_line_length = 88
         self.orange = False  # Split or join lines only if orange is True.
         self.tab_width = 4
-    #@+node:ekr.20200107165250.3: *4* orange.reload_settings
-    def reloadSettings(self):
-      
-            self.delete_blank_lines = True
-            self.max_join_line_length = 88
-            self.max_split_line_length = 88
-            self.tab_width = 4
-        
     #@+node:ekr.20200107165250.4: *4* orange: Overrides
     # These override methods of the NullTokenBeautifier class.
     #@+node:ekr.20200107170523.1: *5* orange.add_token
@@ -5910,8 +5899,17 @@ class Orange(TokenOrderTraverser):
     #@+node:ekr.20200107165250.8: *4* orange: Entries
     #@+node:ekr.20200107173542.1: *5* orange.beautify
     def beautify(self, contents, filename, tokens, tree):
-        g.trace(filename)
-        dump_tokens(tokens)
+        ### g.trace(filename)
+        ### dump_tokens(tokens)
+        ### Was scan_all_beautifier_tokens.
+        self.tokens = tokens
+        self.code_list = []
+        self.add_token('file-start')
+        self.push_state('file-start')
+        while self.tokens:
+            token = self.tokens.pop(0)
+            self.do_token(token)
+        return self.code_list
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):
         """
@@ -5927,8 +5925,8 @@ class Orange(TokenOrderTraverser):
             print(f"{tag}: Can not fstringify: {filename}")
             return False
         # Beautify.
-        self.beautify(contents, filename, tokens, tree)
-        results = tokens_to_string(tokens)
+        output_tokens = self.beautify(contents, filename, tokens, tree)
+        results = tokens_to_string(output_tokens)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -5952,33 +5950,14 @@ class Orange(TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        self.beautify(contents, filename, tokens, tree)
-        results = tokens_to_string(tokens)
+        output_tokens = self.beautify(contents, filename, tokens, tree)
+        results = tokens_to_string(output_tokens)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
         show_diffs(contents, results, filename=filename)
         return True
-    #@+node:ekr.20200107165250.12: *5* orange.scan_all_beautifier_tokens
-    def scan_all_beautifier_tokens(self, tokens):
-        """
-        A helper for the fstringify class, similar to null_b.scan_all_tokens.
-        
-        Differences:
-            
-        1. tokens is a list of BeautifierTokens, not a list of 5-tuples.
-        2. This method adds no end-of-file tokens.
-        3. This method returns a list of BeautifierTokens, not a string.
-        """
-        self.tokens = tokens
-        self.code_list = []
-        self.add_token('file-start')
-        self.push_state('file-start')
-        while self.tokens:
-            token = self.tokens.pop(0)
-            self.do_token(token)
-        return self.code_list
     #@+node:ekr.20200107165250.13: *4* orange: Input token Handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     def do_comment(self):

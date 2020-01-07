@@ -3475,6 +3475,36 @@ def begin_visitor(self, node):
     #
     # *Now* update self.node, etc.
     super().begin_visitor(node)
+#@+node:ekr.20191128074051.1: *3* << define trace functions >> (from do_token)
+def show_header():
+    if self.header_has_been_shown:
+        return
+    self.header_has_been_shown = True
+    print("\nTokenizer tokens...\n")
+    print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+    print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
+    print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
+
+def show_token(kind, val):
+    """
+    Show the given token.
+    Regardless of kind, val is the ground truth, from tok_s.
+    """
+    if 0:
+        show_header()
+        val_s = g.truncate(val, 28)
+        if kind != 'string':
+            val_s = repr(val_s)
+        print(
+            # starting line..ending line
+            f"{show_tuple((s_row, e_row))} "  
+            # starting offset..ending offset.
+            f"{show_tuple((s_offset, e_offset))} "  
+            f"{kind:>10} {val_s:30} {line!r}")
+    
+def show_tuple(aTuple):
+    s = f"{aTuple[0]}..{aTuple[1]}"
+    return f"{s:8}"
 #@+node:ekr.20191228113510.1: *3* @@test TOG master test
 """
 The master unit test for leoAst.TokenOrderGenerator and related classes.
@@ -4467,46 +4497,6 @@ def visit_list(self, aList):
         return None
     assert isinstance(aList, ast.AST), repr(aList)
     return self.visit(aList)
-#@+node:ekr.20191225072008.1: *3* class NodeTokens
-class NodeTokens:
-    """
-    A class returning a range of tokens for a single ast node.
-    """
-    @others
-#@+node:ekr.20191225111222.1: *4* token_range
-def token_range(self, node):
-    self.i, self.j = None, None
-    list(self.token_range_helper(node))
-    return self.i, self.j
-    
-#@+node:ekr.20191225111141.1: *4* token_range_helper
-def token_range_helper(self, node):
-    if isinstance(node, (list, tuple)):
-        for z in node:
-            yield from self.token_range_helper(z)
-    elif hasattr(node, '_fields'):
-        self.update_range(node)
-        for field in node._fields:
-            node2 = getattr(node, field)
-            self.update_range(node2)
-            yield from self.token_range_helper(node2)
-#@+node:ekr.20191225125633.1: *4* update_range
-def update_range(self, node):
-    token_list = getattr(node, 'token_list', None)
-    if not token_list:
-        return
-    if self.i is None:
-        self.i = token_list[0].index
-    else:
-        self.i = min(self.i, token_list[0].index)
-    if self.j is None:
-        self.j = token_list[-1].index
-    else:
-        self.j = max(self.j, token_list[-1].index)
-    if 0:
-        g.trace(
-            f"{node.__class__.__name__:>15}, "
-            f"{self.i:>2} {self.j:>2}")
 #@+node:ekr.20191113133338.1: *3* class TestRunner
 class TestRunner:
     """
