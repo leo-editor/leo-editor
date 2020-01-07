@@ -6047,39 +6047,38 @@ class Tokenizer:
         This is part of the "gem".
         """
         import token as token_module
-        if 0:
-            #@+<< define trace functions >>
-            #@+node:ekr.20191128074051.1: *5* << define trace functions >>
-            def show_header():
-                if self.header_has_been_shown:
-                    return
-                self.header_has_been_shown = True
-                print("\nTokenizer tokens...\n")
-                print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-                print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
-                print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
+        #@+<< define trace functions >>
+        #@+node:ekr.20191128074051.1: *5* << define trace functions >>
+        def show_header():
+            if self.header_has_been_shown:
+                return
+            self.header_has_been_shown = True
+            print("\nTokenizer tokens...\n")
+            print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
+            print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
+            print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
 
-            def show_token(kind, val):
-                """
-                Show the given token.
-                Regardless of kind, val is the ground truth, from tok_s.
-                """
-                if 0:
-                    show_header()
-                    val_s = g.truncate(val, 28)
-                    if kind != 'string':
-                        val_s = repr(val_s)
-                    print(
-                        # starting line..ending line
-                        f"{show_tuple((s_row, e_row))} "  
-                        # starting offset..ending offset.
-                        f"{show_tuple((s_offset, e_offset))} "  
-                        f"{kind:>10} {val_s:30} {line!r}")
-                
-            def show_tuple(aTuple):
-                s = f"{aTuple[0]}..{aTuple[1]}"
-                return f"{s:8}"
-            #@-<< define trace functions >>
+        def show_token(kind, val):
+            """
+            Show the given token.
+            Regardless of kind, val is the ground truth, from tok_s.
+            """
+            if 0:
+                show_header()
+                val_s = g.truncate(val, 28)
+                if kind != 'string':
+                    val_s = repr(val_s)
+                print(
+                    # starting line..ending line
+                    f"{show_tuple((s_row, e_row))} "  
+                    # starting offset..ending offset.
+                    f"{show_tuple((s_offset, e_offset))} "  
+                    f"{kind:>10} {val_s:30} {line!r}")
+            
+        def show_tuple(aTuple):
+            s = f"{aTuple[0]}..{aTuple[1]}"
+            return f"{s:8}"
+        #@-<< define trace functions >>
 
         # Unpack..
         tok_type, val, start, end, line = five_tuple
