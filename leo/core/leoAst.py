@@ -306,7 +306,6 @@ def read_file_with_encoding(filename):
     if not e:
         # Python's encoding comments override everything else. 
         e = get_encoding_directive(bb)
-    g.trace(e, filename)
     return e, g.toUnicode(bb, encoding=e)
 #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
 encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
@@ -409,7 +408,6 @@ def unit_test(raise_on_fail=True):
 #@+node:ekr.20200103163100.1: *3* function: write_file
 def write_file(filename, s, encoding):
     """Write the string s to the file whose name is given."""
-    g.trace(filename, encoding)
     try:
         # newline='' suppresses newline munging.
         with open(filename, 'w', encoding=encoding, newline='') as f:
