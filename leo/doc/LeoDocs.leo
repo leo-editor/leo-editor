@@ -31281,7 +31281,7 @@ def nearest_common_ancestor(node1, node2):
     The nodes must have parent links.
     """
 
-def parse_ast(s, headline=None, show_time=False):
+def parse_ast(s):
     """
     Parse string s, catching &amp; reporting all exceptions.
     Return the ast node, or None.

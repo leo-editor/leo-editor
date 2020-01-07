@@ -534,7 +534,7 @@ def make_tokens(contents):
     assert check(contents, tokens)
     return tokens
 #@+node:ekr.20191027075648.1: *4* function: parse_ast
-def parse_ast(s, headline=None, show_time=False):
+def parse_ast(s):
     """
     Parse string s, catching & reporting all exceptions.
     Return the ast node, or None.
@@ -542,20 +542,13 @@ def parse_ast(s, headline=None, show_time=False):
 
     def oops(message):
         print('')
-        if headline:
-            print(f"parse_ast: {message} in: {headline}")
-        else:
-            print(f"parse_ast: {message}")
+        print(f"parse_ast: {message}")
         g.printObj(s)
         print('')
 
     try:
         s1 = g.toEncodedString(s)
-        t1 = get_time()
         tree = ast.parse(s1, filename='before', mode='exec')
-        t2 = get_time()
-        if show_time:
-            print(f"   parse_ast: {t2-t1:5.2f} sec.")
         return tree
     except IndentationError:
         oops('Indentation Error')
