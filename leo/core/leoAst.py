@@ -2782,6 +2782,16 @@ class BaseTest (unittest.TestCase):
         t2 = get_time()
         self.update_times('21: fstringify', t2 - t1)
         return result_s
+    #@+node:ekr.20200107175223.1: *5* 2.2: BaseTest.beautify
+    def beautify(self, contents, filename, tokens, tree):
+        """
+        BaseTest.beautify.
+        """
+        t1 = get_time()
+        result_s = Orange().beautify(contents, filename, tokens, tree)
+        t2 = get_time()
+        self.update_times('22: beautify', t2 - t1)
+        return result_s
     #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
     # Actions should fail by throwing an exception.
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
@@ -3183,6 +3193,21 @@ class TestFstringify (BaseTest):
                 fails.append(description)
         assert not fails, fails
     #@-others
+#@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
+class TestOrange (BaseTest):
+    """Tests for the Orange class."""
+    #@+others
+    #@+node:ekr.20200107174742.1: *4* test_small_contents
+    def test_small_contents(self):
+
+        contents = r"""print('hi')"""
+        expected = r"""print('hi')"""
+        tokens, tree = self.make_data(contents)
+        self.beautify(contents, 'test_braces', tokens, tree)
+        results = tokens_to_string(tokens)
+        assert results == expected, expected_got(expected, results)
+    #@-others
+    
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
 class TestReassignTokens (BaseTest):
     """Test cases for the ReassignTokens class."""
@@ -5886,6 +5911,7 @@ class Orange(TokenOrderTraverser):
     #@+node:ekr.20200107173542.1: *5* orange.beautify
     def beautify(self, contents, filename, tokens, tree):
         g.trace(filename)
+        dump_tokens(tokens)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):
         """
