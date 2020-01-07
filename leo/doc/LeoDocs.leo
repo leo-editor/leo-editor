@@ -2363,6 +2363,7 @@
 <v t="ekr.20191206062108.1"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
+<v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
 <v t="ekr.20200107110111.1"><vh>An annotated example</vh></v>
 <v t="ekr.20200107110057.1"><vh>Notable functions</vh>
 <v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
@@ -2372,6 +2373,7 @@
 </v>
 <v t="ekr.20200107113403.1"><vh>Notable methods</vh>
 <v t="ekr.20200107113446.1"><vh>Fstringify.replace</vh></v>
+<v t="ekr.20200107142833.1"><vh>TokenOrderGenerator.init_from_file</vh></v>
 </v>
 </v>
 </vnodes>
@@ -31321,6 +31323,39 @@ def replace(self, node, s, values):
     Replace node with an ast.Str node for s.
     Replace all tokens in the range of values with a single 'string' node.
     """</t>
+<t tx="ekr.20200107142458.1">leoAst.py is completely self contained. It imports only standard library
+modules.
+
+To access the code, do one of the following::
+
+    import leoAst
+    import leo.core.leoAst as leoAst
+    
+You can then run the fstringify commands as follows:
+
+    changed = leoAst.Fstringify().fstringify_file(filename)
+    changed = leoAst.Fstringify().fstringify_diff_files(filename)</t>
+<t tx="ekr.20200107142833.1">This method creates the tokens list and the parse tree and adds all links
+between tokens and parse tree nodes.  Here it is:
+
+
+def init_from_file(self, filename):
+    """
+    Create the tokens and ast tree for the given file.
+    
+    Return (contents, encoding, tokens, tree).
+    """
+    self.level = 0
+    self.filename = filename
+    encoding, contents = read_file_with_encoding(filename)
+    if contents is None:
+        return None, None, None, None
+    self.tokens = tokens = make_tokens(contents)
+    self.tree = tree = parse_ast(contents)
+    list(self.create_links(tokens, tree))
+    self.reassign_tokens(tokens, tree)
+    return contents, encoding, tokens, tree
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
