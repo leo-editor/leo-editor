@@ -2682,7 +2682,11 @@ class BaseTest (unittest.TestCase):
         self.tog.filename = description or '<unit test>'
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
+        if not tokens:
+            return None, None
         tree = self.make_tree(contents)
+        if not tree:
+            return None, None
         self.balance_tokens(tokens)
         # Pass 1: create the links
         self.create_links(tokens, tree)
@@ -3203,6 +3207,19 @@ class TestOrange (BaseTest):
         contents = """print('hi')"""
         expected = """print('hi')\n"""
         tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_braces', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
+    def test_leo_sentinels(self):
+
+        contents = r"""\
+    #@verbatim
+    #@+node:ekr.20200105143308.54: ** test\n'
+    def spam():
+        pass
+    """
+        tokens, tree = self.make_data(contents)
+        expected = self.contents + '\n'
         results = self.beautify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
@@ -5811,7 +5828,7 @@ class Fstringify (TokenOrderTraverser):
             self.make_fstring(node)
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
-class Orange: ### (TokenOrderTraverser):
+class Orange:
     """Orange is the new black."""
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
@@ -6023,7 +6040,7 @@ class Orange: ### (TokenOrderTraverser):
                 self.line_end()
                 self.state_stack.pop()
             else:
-                self.blank_lines(1)
+                self.blank_lines(2 if name == 'class' else 1)
                 # self.blank_lines(2 if self.level == 0 else 1)
             self.push_state(name)
             self.push_state('indent', self.level)
@@ -6166,10 +6183,13 @@ class Orange: ### (TokenOrderTraverser):
         Multiple blank-lines request yield at least the maximum of all requests.
         """
         self.clean_blank_lines()
-        kind = self.code_list[-1].kind
-        if kind == 'file-start':
+        prev = self.code_list[-1]
+        if prev.kind == 'file-start':
             self.add_token('blank-lines', n)
             return
+        # Special case for Leo comments that start a node.
+        if prev.kind == 'comment' and prev.value.startswith('#@+node:'):
+            n = 0
         for i in range(0, n+1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
