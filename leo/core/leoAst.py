@@ -2672,35 +2672,34 @@ class BaseTest (unittest.TestCase):
         """Return (tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
-            return None, None
+            return None, None, None
         t1 = get_time()
         self.update_counts('characters', len(contents))
-        contents = g.adjustTripleString(contents)
-        self.contents = contents.rstrip() + '\n'
+        contents = g.adjustTripleString(contents).rstrip()
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
         self.tog.filename = description or '<unit test>'
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:
-            return None, None
+            return None, None, None
         tree = self.make_tree(contents)
         if not tree:
-            return None, None
+            return None, None, None
         self.balance_tokens(tokens)
         # Pass 1: create the links
         self.create_links(tokens, tree)
         self.reassign_tokens(tokens, tree)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
-        return tokens, tree
+        return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
         """Return (contents, tokens, tree) corresponding to the contents of the given file."""
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = os.path.join(directory, filename)
         contents = read_file(filename)
-        tokens, tree = self.make_data(contents=contents, description=filename)
+        contents, tokens, tree = self.make_data(contents, filename)
         return contents, tokens, tree
         
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
@@ -3042,22 +3041,16 @@ class TestFstringify (BaseTest):
         # From pr.construct_stylesheet in leoPrinting.py
         contents = r"""'h1 {font-family: %s}' % (family)"""
         expected = r"""f'h1 {{font-family: {family}}}'"""
-        tokens, tree = self.make_data(contents)
-        self.fstringify(contents, 'test_braces', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
     def test_call_in_rhs(self):
         
         contents = """'%s' % d()"""
         expected = """f'{d()}'"""
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
     def test_call_with_attribute_2(self):
@@ -3065,26 +3058,16 @@ class TestFstringify (BaseTest):
         # From LM.traceSettingsDict
         contents = """print('%s' % (len(d.keys())))"""
         expected = """print(f'{len(d.keys())}')"""
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
         
         contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
         expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')"""
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
@@ -3095,13 +3078,8 @@ class TestFstringify (BaseTest):
         expected = (
             """g.trace(f'--trace-binding: {c.shortFileName():20} """
             """binds {binding} to {d.get(binding) or []}')""")
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106085608.1: *4* test_ImportFrom
     def test_ImportFrom(self):
@@ -3112,15 +3090,8 @@ class TestFstringify (BaseTest):
             """from . import j""",
         )
         for contents in table:
-            if 0: # The crash happened in make_data, so do the dumps first.
-                tokens = self.make_tokens(contents)
-                tree = self.make_tree(contents)
-                dump_contents(contents)
-                dump_tokens(tokens)
-                dump_ast(tree)
-            tokens, tree = self.make_data(contents)
-            self.fstringify(contents, '<string>', tokens, tree)
-            results = tokens_to_string(tokens)
+            contents, tokens, tree = self.make_data(contents)
+            results = self.fstringify(contents, '<string>', tokens, tree)
             assert results == contents, expected_got(contents, results)
     #@+node:ekr.20200106042452.1: *4* test_ListComp
     def test_ListComp(self):
@@ -3131,16 +3102,9 @@ class TestFstringify (BaseTest):
             """[L for L in x for c in y if L if not c]""",
         )
         for contents in table:
-            if 0: # The crash happened in make_data, so do the dumps first.
-                tokens = self.make_tokens(contents)
-                tree = self.make_tree(contents)
-                dump_contents(contents)
-                dump_tokens(tokens)
-                dump_ast(tree)
-            tokens, tree = self.make_data(contents)
-            self.fstringify(contents, '<string>', tokens, tree)
+            contents, tokens, tree = self.make_data(contents)
+            results = self.fstringify(contents, '<string>', tokens, tree)
             expected = contents
-            results = tokens_to_string(tokens)
             assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
@@ -3151,27 +3115,17 @@ class TestFstringify (BaseTest):
     print("hello\r\n")
     print('world\r\n')
     """
-        tokens, tree = self.make_data(contents)
-        expected = self.contents  # After munging.
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
     def test_parens_in_rhs(self):
 
         contents = """print('%20s' % (ivar), val)"""
         expected = """print(f'{ivar:20}', val)"""
-        tokens, tree = self.make_data(contents)
-        if 0:
-            dump_contents(contents)
-            dump_tokens(tokens)
-            dump_tree(tree)
-        self.fstringify(contents, '<string>', tokens, tree)
-        results = tokens_to_string(tokens)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106091740.1: *4* test_single_quotes
     def test_single_quotes(self):
@@ -3188,10 +3142,9 @@ class TestFstringify (BaseTest):
         fails = []
         for i, data in enumerate(table):
             contents, expected = data
-            tokens, tree = self.make_data(contents)
+            contents, tokens, tree = self.make_data(contents)
             description = f"test_single_quotes: {i}"
-            self.fstringify(contents, description, tokens, tree)
-            results = tokens_to_string(tokens)
+            results = self.fstringify(contents, description, tokens, tree)
             if results != expected:
                 expected_got(expected, results)
                 fails.append(description)
@@ -3206,7 +3159,7 @@ class TestOrange (BaseTest):
 
         contents = """print('hi')"""
         expected = """print('hi')\n"""
-        tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108082833.1: *4* test_lines_before_class
@@ -3224,7 +3177,7 @@ class TestOrange (BaseTest):
     class aClass:
         pass
     """
-        tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents)
         contents = g.adjustTripleString(contents)
         expected = g.adjustTripleString(expected) + '\n'
         results = self.beautify(contents, 'test_lines_before_class', tokens, tree)
@@ -3240,9 +3193,8 @@ class TestOrange (BaseTest):
     def spam():
         pass
     """
-        contents = g.adjustTripleString(contents)
-        tokens, tree = self.make_data(contents)
-        expected = contents + '\n'
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
@@ -3258,7 +3210,7 @@ class TestReassignTokens (BaseTest):
     def test_nearest_common_ancestor(self):
         
         contents = """name='uninverted %s' % d.name()"""
-        tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents)
         # dump_tokens(tokens)
         # dump_tree(tree)
         
@@ -3925,7 +3877,7 @@ b = 2 + 3
         if 1:
             contents, tokens, tree = self.make_file_data('leoApp.py')
         else:
-            tokens, tree = self.make_data(contents)
+            contents, tokens, tree = self.make_data(contents)
         # dump_contents(contents)
         # dump_tokens(tokens)
         # dump_tree(tree)
@@ -5471,18 +5423,11 @@ class Fstringify (TokenOrderTraverser):
         
         Return the resulting string.
         """
-        if False:
-            dump_tokens(tokens)
-            dump_tree(tree)
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
         self.traverse(self.tree)
         results = tokens_to_string(self.tokens)
-        if False:
-            dump_tokens(tokens)
-            dump_tree(tree)
-            dump_contents(results, tag='Results')
         return results
     #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
     def fstringify_file(self, filename):
@@ -5503,8 +5448,8 @@ class Fstringify (TokenOrderTraverser):
             print(f"{tag}: Can not fstringify: {filename}")
             return False
         # fstringify.
-        self.fstringify(contents, filename, tokens, tree)
-        results = tokens_to_string(tokens)
+        results = self.fstringify(contents, filename, tokens, tree)
+        ### results = tokens_to_string(tokens)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -5532,8 +5477,7 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        self.fstringify(contents, filename, tokens, tree)
-        results = tokens_to_string(tokens)
+        results = self.fstringify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
