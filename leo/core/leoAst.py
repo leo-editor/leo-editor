@@ -5817,12 +5817,21 @@ class Orange: ### (TokenOrderTraverser):
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
         """Ctor for Orange class."""
-        # Settings.
-        self.delete_blank_lines = True
-        self.max_join_line_length = 88
-        self.max_split_line_length = 88
-        self.orange = False  # Split or join lines only if orange is True.
-        self.tab_width = 4
+        if settings is None:
+            settings = {}
+        defaults = {
+            'delete_blank_lines': True,
+            'max_join_line_length': 88,
+            'max_split_line_length': 88,
+            'orange': False,  # Split or join lines only if orange is True.
+            'tab_width': 4
+        }
+        for key in defaults:
+            if settings.get(key) is not None:
+                val = settings.get(key)
+            else:
+                val = defaults.get(key)
+            setattr(self, key, val)
     #@+node:ekr.20200107165250.50: *4* orange.find_delims
     def find_delims(self, tokens):
         """
@@ -5861,7 +5870,9 @@ class Orange: ### (TokenOrderTraverser):
         g.trace(f"Unknown kind: {self.token.kind}")
 
     def beautify(self, contents, filename, tokens, tree):
-        """The main line."""
+        """
+        The main line. Create output tokens and return the result as a string.
+        """
         # State vars...
         self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
@@ -5883,7 +5894,6 @@ class Orange: ### (TokenOrderTraverser):
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
-        ### return self.code_list
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):
