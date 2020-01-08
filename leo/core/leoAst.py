@@ -3209,18 +3209,40 @@ class TestOrange (BaseTest):
         tokens, tree = self.make_data(contents)
         results = self.beautify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
-    def test_leo_sentinels(self):
+    #@+node:ekr.20200108082833.1: *4* test_lines_before_class
+    def test_lines_before_class(self):
 
-        contents = r"""\
-    #@verbatim
-    #@+node:ekr.20200105143308.54: ** test\n'
+        contents = """\
+    a = 2
+    class aClass:
+        pass
+    """
+        expected = """\
+    a = 2
+
+
+    class aClass:
+        pass
+    """
+        tokens, tree = self.make_data(contents)
+        contents = g.adjustTripleString(contents)
+        expected = g.adjustTripleString(expected) + '\n'
+        results = self.beautify(contents, 'test_lines_before_class', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
+    def xxxtest_leo_sentinels(self):
+
+        # Careful: don't put a sentinel into the file directly.
+        # That would corrupt leoAst.py.
+        sentinel = '@+node:ekr.20200105143308.54: ** test\n'
+        contents = sentinel + """\
     def spam():
         pass
     """
         tokens, tree = self.make_data(contents)
-        expected = self.contents + '\n'
-        results = self.beautify(contents, 'test_braces', tokens, tree)
+        contents = g.adjustTripleString(contents)
+        expected = contents + '\n'
+        results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
     
