@@ -5819,19 +5819,26 @@ class Orange: ### (TokenOrderTraverser):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
-        defaults = {
-            'delete_blank_lines': True,
-            'max_join_line_length': 88,
-            'max_split_line_length': 88,
-            'orange': False,  # Split or join lines only if orange is True.
-            'tab_width': 4
-        }
-        for key in defaults:
-            if settings.get(key) is not None:
-                val = settings.get(key)
+        valid_keys = (
+            'delete_blank_lines',
+            'max_join_line_length',
+            'max_split_line_length',
+            'orange',
+            'tab_width',
+        )
+        # Default settings...
+        self.delete_blank_lines = True
+        self.max_join_line_length = 88
+        self.max_split_line_length = 88
+        self.orange = False  # Split or join lines only if orange is True.
+        self.tab_width = 4
+        # Override from settings dict...
+        for key in settings:
+            value = settings.get(key)
+            if key in valid_keys and value is not None:
+                setattr(self, key, value)
             else:
-                val = defaults.get(key)
-            setattr(self, key, val)
+                g.trace(f"Unexpected setting: {key} = {value!r}")
     #@+node:ekr.20200107165250.50: *4* orange.find_delims
     def find_delims(self, tokens):
         """
@@ -5867,7 +5874,7 @@ class Orange: ### (TokenOrderTraverser):
     #@+node:ekr.20200107165250.8: *4* orange: Entries
     #@+node:ekr.20200107173542.1: *5* orange.beautify
     def oops(self):
-        g.trace(f"Unknown kind: {self.token.kind}")
+        g.trace(f"Unknown kind: {self.kind}")
 
     def beautify(self, contents, filename, tokens, tree):
         """
@@ -5910,8 +5917,7 @@ class Orange: ### (TokenOrderTraverser):
             print(f"{tag}: Can not fstringify: {filename}")
             return False
         # Beautify.
-        output_tokens = self.beautify(contents, filename, tokens, tree)
-        results = tokens_to_string(output_tokens)
+        results = self.beautify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -5935,8 +5941,7 @@ class Orange: ### (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        output_tokens = self.beautify(contents, filename, tokens, tree)
-        results = tokens_to_string(output_tokens)
+        results = self.beautify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False

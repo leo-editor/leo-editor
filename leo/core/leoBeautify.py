@@ -179,13 +179,14 @@ def orange_diff_files(event):
     t1 = time.process_time()
     tag = 'orange-files-diff'
     g.es(f"{tag}...")
+    settings = orange_settings(c)
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
-            changed = leoAst.Orange().beautify_file_diff(filename)
+            changed = leoAst.Orange(settings=settings).beautify_file_diff(filename)
             changed_s = 'changed' if changed else 'unchanged'
             g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -205,13 +206,14 @@ def orange_files(event):
     t1 = time.process_time()
     tag = 'orange-files'
     g.es(f"{tag}...")
+    settings = orange_settings(c)
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
-            changed = leoAst.Orange().beautify_file(filename)
+            changed = leoAst.Orange(settings=settings).beautify_file(filename)
             changed_s = 'changed' if changed else 'unchanged'
             g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -221,6 +223,24 @@ def orange_files(event):
     t2 = time.process_time()
     print('')
     g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+#@+node:ekr.20200108045048.1: *4* orange_settings
+def orange_settings(c):
+    """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
+    keep_blank_lines = c.config.getBool('beautify-keep-blank-lines', default=True)
+    n_max_join = c.config.getInt('beautify-max-join-line-length')
+    max_join_line_length = 88 if n_max_join is None else n_max_join
+    n_max_split = c.config.getInt('beautify-max-split-line-length')
+    max_split_line_length = 88 if n_max_split is None else n_max_split
+    # Join <= Split.
+    if max_join_line_length > max_split_line_length:
+        max_join_line_length = max_split_line_length
+    return {
+        'delete_blank_lines': not keep_blank_lines,
+        'max_join_line_length': max_join_line_length,
+        'max_split_line_length': max_split_line_length,
+        'orange': True,
+        'tab_width': abs(c.tab_width),
+    }
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
 import unittest
@@ -1122,7 +1142,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         # Replace Leonine syntax with special comments.
         comment_string, s0 = self.sanitizer.comment_leo_lines(p=p)
         check_result = True
-        node1 = leoAst.parse_ast(s0, headline=p.h)
+        node1 = leoAst.parse_ast(s0)
         if not node1:
             self.errors += 1
             if g.unitTesting:
@@ -1145,7 +1165,7 @@ class PythonTokenBeautifier(NullTokenBeautifier):
         assert isinstance(s2, str), s2.__class__.__name__
         t4 = time.process_time()
         if check_result:
-            node2 = leoAst.parse_ast(s2, headline='result')
+            node2 = leoAst.parse_ast(s2)
             if not node2:
                 self.errors += 1
                 if g.unitTesting:
