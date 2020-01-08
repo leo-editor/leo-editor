@@ -3230,17 +3230,18 @@ class TestOrange (BaseTest):
         results = self.beautify(contents, 'test_lines_before_class', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
-    def xxxtest_leo_sentinels(self):
+    def test_leo_sentinels(self):
 
         # Careful: don't put a sentinel into the file directly.
         # That would corrupt leoAst.py.
-        sentinel = '@+node:ekr.20200105143308.54: ** test\n'
-        contents = sentinel + """\
+        sentinel = '#@+node:ekr.20200105143308.54: ** test'
+        contents = f"""\
+    {sentinel}
     def spam():
         pass
     """
-        tokens, tree = self.make_data(contents)
         contents = g.adjustTripleString(contents)
+        tokens, tree = self.make_data(contents)
         expected = contents + '\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -6849,14 +6850,15 @@ class Tokenizer:
 
         # Split the results into lines.
         result = ''.join([z.to_string() for z in self.results])
-        result_lines = result.splitlines(True)
+        result_lines = g.splitLines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
         assert ok, (
-            f"result:   {result!r}\n"
-            f"contents: {contents!r}\n"
+            f"\n"
+            f"      result: {result!r}\n"
+            f"    contents: {contents!r}\n"
             f"result_lines: {result_lines}\n"
-            f"lines:        {self.lines}"
+            f"       lines: {self.lines}"
         )
     #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
     def create_input_tokens(self, contents, tokens):
