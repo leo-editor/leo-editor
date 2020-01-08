@@ -3200,12 +3200,11 @@ class TestOrange (BaseTest):
     #@+node:ekr.20200107174742.1: *4* test_small_contents
     def test_small_contents(self):
 
-        contents = r"""print('hi')"""
-        expected = r"""print('hi')"""
+        contents = """print('hi')"""
+        expected = """print('hi')\n"""
         tokens, tree = self.make_data(contents)
-        self.beautify(contents, 'test_braces', tokens, tree)
-        results = tokens_to_string(tokens)
-        assert results == expected, expected_got(expected, results)
+        results = self.beautify(contents, 'test_braces', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
@@ -5811,105 +5810,81 @@ class Fstringify (TokenOrderTraverser):
         ):
             self.make_fstring(node)
     #@-others
-#@+node:ekr.20200107165250.1: *3* class Orange(TOT)
-class Orange(TokenOrderTraverser):
+#@+node:ekr.20200107165250.1: *3* class Orange
+class Orange: ### (TokenOrderTraverser):
     """Orange is the new black."""
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self):
+    def __init__(self, settings=None):
         """Ctor for Orange class."""
-        #
-        # State vars...
-        self.decorator_seen = False
-            # Set by do_name as a flag to do_op.
-        self.in_arg_list = 0
-            # > 0 if in an argument list of a function definition.
-        self.level = 0
-            # indentation level. Set only by do_indent and do_dedent.
-            # do_name calls: push_state('indent', self.level)
-        self.lws = ''
-            # Leading whitespace.
-            # Typically ' '*self.tab_width*self.level,
-            # but may be changed for continued lines.
-        self.state_stack = []
-            # Stack of ParseState objects.
-        self.val = None
-            # The string containing the input token's value.
-        #
-        # Counts of unmatched brackets and parentheses.
-        self.paren_level = 0
-            # Number of unmatched '(' tokens.
-        self.square_brackets_level = 0
-            # Number of unmatched '[' tokens.
-        self.curly_brackets_level = 0
-            # Number of unmatched '{' tokens.
-        self.changed = False
-            ### For undo.
-        #
         # Settings.
         self.delete_blank_lines = True
         self.max_join_line_length = 88
         self.max_split_line_length = 88
         self.orange = False  # Split or join lines only if orange is True.
         self.tab_width = 4
-    #@+node:ekr.20200107165250.4: *4* orange: Overrides
-    # These override methods of the NullTokenBeautifier class.
-    #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind, value=''):
-        """Add a token to the code list."""
-        tok = Token(kind, value)
-        self.code_list.append(tok)
-        self.prev_output_token = self.code_list[-1]
-    #@+node:ekr.20200107165250.5: *5* orange.do_token (override)
-    def oops(self):
-        g.trace('unknown kind', self.kind)
-
-    def do_token(self, token):
+    #@+node:ekr.20200107165250.50: *4* orange.find_delims
+    def find_delims(self, tokens):
         """
-        Handle one token.
+        Compute the net number of each kind of delim in the given range of tokens.
         
-        Token handlers may call this method to do look-ahead processing.
+        Return (curlies, parens, squares)
         """
-        assert isinstance(token, Token), (repr(token), g.callers())
-        # Remembering token.line is necessary, because dedent tokens
-        # can happen *after* comment lines that should be dedented!
-        self.kind, self.val, self.line = token.kind, token.value, token.line
-        func = getattr(self, f"do_{token.kind}", self.oops)
-        func()
-    #@+node:ekr.20200107165250.6: *5* orange.file_end (override)
-    def file_end(self):
-        """
-        Add a file-end token to the code list.
-        Retain exactly one line-end token.
-        """
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
-    #@+node:ekr.20200107165250.7: *5* orange.file_start (override)
-    def file_start(self):
-        """
-        Do any start-of-file processing.
-        
-        May be overridden in subclasses.
-        
-        The file-start *token* has already been added to self.code_list.
-        """
-        self.push_state('file-start')
+        parens, curlies, squares = 0, 0, 0
+        for token in tokens:
+            value = token.value
+            if token.kind == 'lt':
+                assert value in '([{', f"Bad lt value: {token.kind} {value}"
+                if value == '{':
+                    curlies += 1
+                elif value == '(':
+                    parens += 1
+                elif value == '[':
+                    squares += 1
+            elif token.kind == 'rt':
+                assert value in ')]}', f"Bad rt value: {token.kind} {value}"
+                if value == ')':
+                    parens -= 1
+                elif value == ']':
+                    squares -= 1
+                elif value == '}':
+                    curlies += 1
+        return curlies, parens, squares
+    #@+node:ekr.20200107165250.51: *4* orange.push_state
+    def push_state(self, kind, value=None):
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
     #@+node:ekr.20200107165250.8: *4* orange: Entries
     #@+node:ekr.20200107173542.1: *5* orange.beautify
+    def oops(self):
+        g.trace(f"Unknown kind: {self.token.kind}")
+
     def beautify(self, contents, filename, tokens, tree):
-        ### g.trace(filename)
-        ### dump_tokens(tokens)
-        ### Was scan_all_beautifier_tokens.
-        self.tokens = tokens
-        self.code_list = []
+        """The main line."""
+        # State vars...
+        self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
+        self.decorator_seen = False  # Set by do_name for do_op.
+        self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.level = 0  # Set only by do_indent and do_dedent.
+        self.lws = ''  # Leading whitespace.
+        self.paren_level = 0  # Number of unmatched '(' tokens.
+        self.square_brackets_level = 0  # Number of unmatched '[' tokens.
+        self.state_stack = []  # Stack of ParseState objects.
+        self.val = None  # The input token's value (a string).
+        #
+        # Init output list and state...
+        self.code_list = []  # The list of output tokens.
+        self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start')
         self.push_state('file-start')
         while self.tokens:
             token = self.tokens.pop(0)
-            self.do_token(token)
-        return self.code_list
+            self.kind, self.val, self.line = token.kind, token.value, token.line
+            func = getattr(self, f"do_{token.kind}", self.oops)
+            func()
+        ### return self.code_list
+        return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):
         """
@@ -5958,7 +5933,7 @@ class Orange(TokenOrderTraverser):
         # Show the diffs.
         show_diffs(contents, results, filename=filename)
         return True
-    #@+node:ekr.20200107165250.13: *4* orange: Input token Handlers
+    #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     def do_comment(self):
         """Handle a comment token."""
@@ -5987,6 +5962,14 @@ class Orange(TokenOrderTraverser):
         # This code is executed for versions of Python earlier than 2.4
         if self.val == '@':
             self.op(self.val)
+    #@+node:ekr.20200107165250.19: *5* orange.do_fstringify
+    def do_fstringify(self):
+        """
+        A helper for the FstringifyTokens class.
+        
+        This class creates synthetic "fstringify" tokens.
+        """
+        self.add_token('fstringify', self.val)
     #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent
     def do_dedent(self):
         """Handle dedent token."""
@@ -6013,14 +5996,6 @@ class Orange(TokenOrderTraverser):
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
-    #@+node:ekr.20200107165250.19: *5* orange.do_fstringify
-    def do_fstringify(self):
-        """
-        A helper for the FstringifyTokens class.
-        
-        This class creates synthetic "fstringify" tokens.
-        """
-        self.add_token('fstringify', self.val)
     #@+node:ekr.20200107165250.20: *5* orange.do_name
     def do_name(self):
         """Handle a name token."""
@@ -6139,6 +6114,12 @@ class Orange(TokenOrderTraverser):
             self.clean('line-indent')
             self.add_token('hard-blank', self.val)
     #@+node:ekr.20200107165250.26: *4* orange: Output token generators
+    #@+node:ekr.20200107170523.1: *5* orange.add_token
+    def add_token(self, kind, value=''):
+        """Add an output token to the code list."""
+        tok = Token(kind, value)
+        self.code_list.append(tok)
+        self.prev_output_token = self.code_list[-1]
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -6209,6 +6190,16 @@ class Orange(TokenOrderTraverser):
                 self.op(val)
         else:
             self.op_blank(val)
+    #@+node:ekr.20200107165250.6: *5* orange.file_end
+    def file_end(self):
+        """
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        """
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
+        self.add_token('line-end', '\n')
+        self.add_token('file-end')
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
@@ -6501,7 +6492,7 @@ class Orange(TokenOrderTraverser):
             return
         self.blank()
         self.add_token('unary-op', s)
-    #@+node:ekr.20200107165250.46: *5* orange.star_op (no change)
+    #@+node:ekr.20200107165250.46: *5* orange.star_op
     def star_op(self):
         """Put a '*' op, with special cases for *args."""
         val = '*'
@@ -6519,7 +6510,7 @@ class Orange(TokenOrderTraverser):
                 self.op(val)
         else:
             self.op(val)
-    #@+node:ekr.20200107165250.47: *5* orange.star_star_op (no changed)
+    #@+node:ekr.20200107165250.47: *5* orange.star_star_op
     def star_star_op(self):
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
@@ -6552,39 +6543,6 @@ class Orange(TokenOrderTraverser):
         self.blank()
         self.add_token('word-op', s)
         self.blank()
-    #@+node:ekr.20200107165250.49: *4* orange: Utils
-    #@+node:ekr.20200107165250.50: *5* orange.find_delims (new)
-    def find_delims(self, tokens):
-        """
-        Compute the net number of each kind of delim in the given range of tokens.
-        
-        Return (curlies, parens, squares)
-        """
-        parens, curlies, squares = 0, 0, 0
-        for token in tokens:
-            value = token.value
-            if token.kind == 'lt':
-                assert value in '([{', f"Bad lt value: {token.kind} {value}"
-                if value == '{':
-                    curlies += 1
-                elif value == '(':
-                    parens += 1
-                elif value == '[':
-                    squares += 1
-            elif token.kind == 'rt':
-                assert value in ')]}', f"Bad rt value: {token.kind} {value}"
-                if value == ')':
-                    parens -= 1
-                elif value == ']':
-                    squares -= 1
-                elif value == '}':
-                    curlies += 1
-        return curlies, parens, squares
-    #@+node:ekr.20200107165250.51: *5* orange.push_state
-    def push_state(self, kind, value=None):
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
