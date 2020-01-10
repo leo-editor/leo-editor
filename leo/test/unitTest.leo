@@ -189,17 +189,17 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e342e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e342e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160318094003.1"><vh>leoAst</vh>
-<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
-<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 <v t="ekr.20191121163350.1"><vh>@@test nodes: tog vs asttokens (fails)</vh></v>
-<v t="ekr.20191125235556.1"><vh>@@test TOG: Leo's core files (long)</vh></v>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+<v t="ekr.20191121063148.1"><vh>@test tokens: tog vs asttokens</vh></v>
 </v>
-<v t="ekr.20150521123343.1"><vh>@ignore leoBeautify</vh>
+<v t="ekr.20150521123343.1"><vh>leoBeautify (most will be deleted)</vh>
 <v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
 <v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
 </v>
-<v t="ekr.20190912065312.1"><vh>@test SyntaxSanitizer</vh>
+<v t="ekr.20200110014555.1"><vh>To be deleted</vh>
+<v t="ekr.20190912065312.1"><vh>@@test SyntaxSanitizer</vh>
 <v t="ekr.20190912105517.1"><vh>basic test</vh></v>
 <v t="ekr.20190912160752.1"><vh>@others &amp; sections references</vh></v>
 <v t="ekr.20190912071608.1"><vh>fast_at.scan_lines</vh>
@@ -223,11 +223,11 @@
 <v t="ekr.20190912071608.19"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20150610064911.1"><vh>@test beautifier (small) </vh>
+<v t="ekr.20150610064911.1"><vh>@@test beautifier (small) </vh>
 <v t="ekr.20150610064930.1"><vh>before</vh></v>
 <v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
-<v t="ekr.20190914104955.1"><vh>@test black</vh>
+<v t="ekr.20190914104955.1"><vh>@@test black</vh>
 <v t="ekr.20190914104955.2"><vh>basic test</vh></v>
 <v t="ekr.20190914104955.3"><vh>@others &amp; sections references</vh></v>
 <v t="ekr.20190914104955.4"><vh>fast_at.scan_lines</vh>
@@ -251,7 +251,7 @@
 <v t="ekr.20190914104955.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20190914105123.1"><vh>@test ptb (large)</vh>
+<v t="ekr.20190914105123.1"><vh>@@test ptb (large)</vh>
 <v t="ekr.20190914105123.2"><vh>basic test</vh></v>
 <v t="ekr.20190914105123.3"><vh>@others &amp; sections references</vh></v>
 <v t="ekr.20190914105123.4"><vh>fast_at.scan_lines</vh>
@@ -275,7 +275,7 @@
 <v t="ekr.20190914105123.22"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20190914111357.1"><vh>@test ptb (pet peeves) </vh>
+<v t="ekr.20190914111357.1"><vh>@@test ptb (pet peeves) </vh>
 <v t="ekr.20190915083933.1"><vh>peeve: two spaces before a trailing comment</vh>
 <v t="ekr.20190915083945.1"><vh>test</vh></v>
 <v t="ekr.20190915084039.1"><vh>expected</vh></v>
@@ -321,7 +321,7 @@
 <v t="ekr.20190914115304.1"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20190914132845.1"><vh>@test black (pet peeves) </vh>
+<v t="ekr.20190914132845.1"><vh>@@test black (pet peeves) </vh>
 <v t="ekr.20190914132845.2"><vh>peeve: ws in slices</vh>
 <v t="ekr.20190914132845.3"><vh>test</vh></v>
 <v t="ekr.20190914132845.4"><vh>expected</vh></v>
@@ -347,9 +347,10 @@
 <v t="ekr.20190914132845.19"><vh>expected</vh></v>
 </v>
 </v>
-<v t="ekr.20191106035017.1"><vh>@test all beautifiers (bs-nl &amp; indentation)</vh></v>
-<v t="ekr.20191106072009.1"><vh>@test fstringify tests</vh></v>
-<v t="ekr.20191106195303.1"><vh>@test fstringify should fail</vh></v>
+<v t="ekr.20191106035017.1"><vh>@@test all beautifiers (bs-nl &amp; indentation)</vh></v>
+<v t="ekr.20191106072009.1"><vh>@@test fstringify tests</vh></v>
+<v t="ekr.20191106195303.1"><vh>@@test fstringify should fail</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1907,7 +1908,8 @@ finally:
 
     &lt;|code|&gt;
 </t>
-<t tx="ekr.20150521123343.1"></t>
+<t tx="ekr.20150521123343.1"># These tests are now in leoAst.py.
+</t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
@@ -1936,8 +1938,7 @@ finally:
 </t>
 <t tx="ekr.20160318094003.1"># Most unit tests are now in leoAst.py itself.
 </t>
-<t tx="ekr.20160318094009.1">import leo.core.leoAst as leoAst
-import leo.external.make_stub_files as msf
+<t tx="ekr.20160318094009.1">import leo.external.make_stub_files as msf
 import leo.external.py2cs as py2cs
 import ast, tokenize
 path = g.os_path_finalize_join(g.app.loadDir,
@@ -1951,20 +1952,12 @@ with open(path, 'r') as f:
     src = f.read()
 readlines = g.ReadLinesClass(src).next
 tokens = list(tokenize.generate_tokens(readlines))
-# leoAst.AstFullTraverser().visit(node)
-s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-assert s
-s = leoAst.AstFormatter().format(node,level=0)
-assert s
 s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
 assert s
 controller = msf.StandAloneMakeStubFile()
 msf.StubTraverser(controller).visit(node)
 </t>
 <t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
-
-import leo.core.leoAst as leoAst
-leoAst.unit_test(raise_on_fail=True)
 
 import leo.external.make_stub_files as msf
 msf.unit_test(raise_on_fail=True)
@@ -4237,45 +4230,6 @@ for file_name in file_names[:1]:
             f"compare nodes: {t4-t3:4.2f}")
     assert ok
 </t>
-<t tx="ekr.20191125235556.1">"""
-A unit test that tests TOG on all of Leo's sources.
-"""
-import time
-import leo.core.leoAst as leoAst
-if 0: # Not for production.
-    import importlib
-    importlib.reload(leoAst)
-if 0: # Not for production.
-    g.cls()
-#
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    'all-leo-files',
-    'coverage',
-    'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
-
-    # 'dump-tokens-after-fail',
-    # 'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    'summarize',
-    # 'trace-times',    # Only for'file:' tests.
-    # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
-]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
-</t>
 <t tx="ekr.20191207060251.1">@language python
 @tabwidth -4
 @others
@@ -4292,5 +4246,6 @@ leoAst.TestRunner().run_tests(flags, root=c.p)
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
+<t tx="ekr.20200110014555.1"></t>
 </tnodes>
 </leo_file>

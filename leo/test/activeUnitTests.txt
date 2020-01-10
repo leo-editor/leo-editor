@@ -730,116 +730,6 @@ os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20160318094003.1: *3* leoAst
 # Most unit tests are now in leoAst.py itself.
-#@+node:ekr.20160318094009.1: *4* @test Python3 features
-import leo.core.leoAst as leoAst
-import leo.external.make_stub_files as msf
-import leo.external.py2cs as py2cs
-import ast, tokenize
-path = g.os_path_finalize_join(g.app.loadDir,
-    '..', 'test', 'unittest', 'python3_test.py')
-assert g.os_path_exists(path), path
-fn = g.shortFileName(path)
-with open(path, 'r') as f:
-    source = f.read()
-node = ast.parse(source, filename=fn, mode='exec')
-with open(path, 'r') as f:
-    src = f.read()
-readlines = g.ReadLinesClass(src).next
-tokens = list(tokenize.generate_tokens(readlines))
-# leoAst.AstFullTraverser().visit(node)
-s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-assert s
-s = leoAst.AstFormatter().format(node,level=0)
-assert s
-s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
-assert s
-controller = msf.StandAloneMakeStubFile()
-msf.StubTraverser(controller).visit(node)
-#@+node:ekr.20160523094102.1: *4* @test leoAst traverser classes
-# Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
-
-import leo.core.leoAst as leoAst
-leoAst.unit_test(raise_on_fail=True)
-
-import leo.external.make_stub_files as msf
-msf.unit_test(raise_on_fail=True)
-
-import leo.external.py2cs as py2cs
-py2cs.unit_test(raise_on_fail=True)
-
-#@+node:ekr.20191121063148.1: *4* @test tokens: tog vs asttokens
-import leo.core.leoAst as leoAst
-if 0: ###
-    import importlib
-    importlib.reload(leoAst)
-try:
-    import asttokens
-except Exception:
-    self.skipTest('requires asttokens')
-import glob
-import os
-import time
-import token as tm
-# Calculate files
-core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
-assert os.path.exists(core_directory), core_directory
-file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
-for file_name in file_names[:1]:
-    path = g.os_path_finalize_join(core_directory, file_name)
-    assert os.path.exists(path), path
-    with open(path, 'r') as f:
-        contents = f.read()
-    # Setup asttokens data.
-    t1 = time.process_time()
-    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
-    ast_tree = atok.tree
-    ast_tokens = atok._tokens
-    # Setup TOG data.
-    t2 = time.process_time()
-    x = leoAst.TokenOrderGenerator() # Use the base class.
-    tog_tokens = x.make_tokens(contents)
-    tog_tree = leoAst.parse_ast(contents)
-    # Compare tokens
-    t3 = time.process_time()
-    def ast_key(t):
-        kind = tm.tok_name[t.type].lower()
-        return f"{kind}:{t.string}"
-
-    def token_filter(t):
-        return t.kind not in ('encoding', 'ws')
-    
-    ast_list = [ast_key(z) for z in ast_tokens]
-    tog_compare_list = list(filter(token_filter, tog_tokens))
-    tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
-    # Compare.
-    i = leoAst.compare_lists(ast_list, tog_list)
-    t4 = time.process_time()
-    ok = i is None
-    if not ok:
-        print('Token mismatch at', i)
-        print('ast', repr(ast_list[i]))
-        print('tog', repr(tog_compare_list[i]))
-    # Print tokens.
-    if 0:
-        import token as tm
-        print('asttokens.tokens...')
-        for z in ast_tokens[:10]:
-            kind = tm.tok_name[z.type].lower()
-            print(f"{z.index:4} {kind:>12} {z.string!r}")
-        print('tog.tokens...')
-        for z in tog_tokens[:10]:
-            print(f"{z.index:4} {z.kind:>12} {z.value!r}")
-    # Print summary.
-    if not ok:
-        print(
-            f"{g.shortFileName(file_name)}:\n"
-            f"ast_tokens: {len(ast_tokens):>5} "
-            f"{t2-t1:4.2f} sec.\n"
-            f"tog.tokens: {len(tog_tokens):>5} "
-            f"{t3-t2:4.2f} sec.\n"
-            f"compare tokens: {t4-t3:4.2f}")
-    assert ok
-            
 #@+node:ekr.20191121163350.1: *4* @@test nodes: tog vs asttokens (fails)
 import leo.core.leoAst as leoAst
 if 0:
@@ -914,45 +804,107 @@ for file_name in file_names[:1]:
             f"{t3-t2:5.2f} sec.\n"
             f"compare nodes: {t4-t3:4.2f}")
     assert ok
-#@+node:ekr.20191125235556.1: *4* @@test TOG: Leo's core files (long)
-"""
-A unit test that tests TOG on all of Leo's sources.
-"""
-import time
+#@+node:ekr.20160523094102.1: *4* @test leoAst traverser classes
+# Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
+#@+node:ekr.20160318094009.1: *4* @test Python3 features
+import leo.external.make_stub_files as msf
+import leo.external.py2cs as py2cs
+import ast, tokenize
+path = g.os_path_finalize_join(g.app.loadDir,
+    '..', 'test', 'unittest', 'python3_test.py')
+assert g.os_path_exists(path), path
+fn = g.shortFileName(path)
+with open(path, 'r') as f:
+    source = f.read()
+node = ast.parse(source, filename=fn, mode='exec')
+with open(path, 'r') as f:
+    src = f.read()
+readlines = g.ReadLinesClass(src).next
+tokens = list(tokenize.generate_tokens(readlines))
+s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+assert s
+controller = msf.StandAloneMakeStubFile()
+msf.StubTraverser(controller).visit(node)
+#@+node:ekr.20191121063148.1: *4* @test tokens: tog vs asttokens
 import leo.core.leoAst as leoAst
-if 0: # Not for production.
+if 0: ###
     import importlib
     importlib.reload(leoAst)
-if 0: # Not for production.
-    g.cls()
-#
-# Flags for TR.run_tests.
-flags = [
-    # New flags.
-    'all-leo-files',
-    'coverage',
-    'show-test-kind', # all vs selected.
-    # 'dump-sources-first',
-    # 'dump-raw-tree-first',
-    # 'dump-tokens-first',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    # 'show-exception-after-fail',
+try:
+    import asttokens
+except Exception:
+    self.skipTest('requires asttokens')
+import glob
+import os
+import time
+import token as tm
+# Calculate files
+core_directory = g.os_path_finalize_join(g.app.loadDir, '..', 'core')
+assert os.path.exists(core_directory), core_directory
+file_names = glob.glob(core_directory + os.path.sep + 'leo*.py')
+for file_name in file_names[:1]:
+    path = g.os_path_finalize_join(core_directory, file_name)
+    assert os.path.exists(path), path
+    with open(path, 'r') as f:
+        contents = f.read()
+    # Setup asttokens data.
+    t1 = time.process_time()
+    atok = asttokens.ASTTokens(contents, parse=True, filename=file_name)
+    ast_tree = atok.tree
+    ast_tokens = atok._tokens
+    # Setup TOG data.
+    t2 = time.process_time()
+    x = leoAst.TokenOrderGenerator() # Use the base class.
+    tog_tokens = x.make_tokens(contents)
+    tog_tree = leoAst.parse_ast(contents)
+    # Compare tokens
+    t3 = time.process_time()
+    def ast_key(t):
+        kind = tm.tok_name[t.type].lower()
+        return f"{kind}:{t.string}"
 
-    # 'dump-tokens-after-fail',
-    # 'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'dump-contents',
-    # 'dump-raw-tree',
-    # 'dump-tokens',
-    # 'dump-tree',
-    'summarize',
-    # 'trace-times',    # Only for'file:' tests.
-    # 'trace-tokenizer-tokens',
-    # 'use-asttokens',
-]
-# Reload (if enabled), then make tests, run tests, and summarize.
-leoAst.TestRunner().run_tests(flags, root=c.p)
-
+    def token_filter(t):
+        return t.kind not in ('encoding', 'ws')
+    
+    ast_list = [ast_key(z) for z in ast_tokens]
+    tog_compare_list = list(filter(token_filter, tog_tokens))
+    tog_list = [f"{z.kind}:{z.value}" for z in tog_compare_list]
+    # Compare.
+    i = leoAst.compare_lists(ast_list, tog_list)
+    t4 = time.process_time()
+    ok = i is None
+    if not ok:
+        print('Token mismatch at', i)
+        print('ast', repr(ast_list[i]))
+        print('tog', repr(tog_compare_list[i]))
+    # Print tokens.
+    if 0:
+        import token as tm
+        print('asttokens.tokens...')
+        for z in ast_tokens[:10]:
+            kind = tm.tok_name[z.type].lower()
+            print(f"{z.index:4} {kind:>12} {z.string!r}")
+        print('tog.tokens...')
+        for z in tog_tokens[:10]:
+            print(f"{z.index:4} {z.kind:>12} {z.value!r}")
+    # Print summary.
+    if not ok:
+        print(
+            f"{g.shortFileName(file_name)}:\n"
+            f"ast_tokens: {len(ast_tokens):>5} "
+            f"{t2-t1:4.2f} sec.\n"
+            f"tog.tokens: {len(tog_tokens):>5} "
+            f"{t3-t2:4.2f} sec.\n"
+            f"compare tokens: {t4-t3:4.2f}")
+    assert ok
+            
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
@@ -1728,7 +1680,8 @@ assert d.get('pagewidth') == 120
 #@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoAtFile tests')
-#@+node:ekr.20150521123343.1: *3* @ignore leoBeautify
+#@+node:ekr.20150521123343.1: *3* leoBeautify (most will be deleted)
+# These tests are now in leoAst.py.
 #@+node:ekr.20111104171708.3843: *4* @test leoBeautify.CPrettyPrinter
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
@@ -1994,7 +1947,8 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
+#@+node:ekr.20200110014555.1: *4* To be deleted
+#@+node:ekr.20190912065312.1: *5* @@test SyntaxSanitizer
 from leo.core.leoBeautify import  SyntaxSanitizer
 for child in p.subtree():
     child_s = child.b
@@ -2009,7 +1963,7 @@ for child in p.subtree():
             f"{g.objToString(child_s, tag='child_s')}\n"
             f"{g.objToString(result1, tag='result1')}\n"
             f"{g.objToString(result2, tag='result2')}")
-#@+node:ekr.20190912105517.1: *5* basic test
+#@+node:ekr.20190912105517.1: *6* basic test
 @language python
 @
 This is a doc part.
@@ -2022,7 +1976,7 @@ def spam():
             # Indented comment.
     else:
         pass
-#@+node:ekr.20190912160752.1: *5* @others & sections references
+#@+node:ekr.20190912160752.1: *6* @others & sections references
 a = 1
 << section ref >>
 b = 2
@@ -2036,7 +1990,7 @@ if 1:
         # <section ref>
     # ):
         # pass
-#@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
+#@+node:ekr.20190912071608.1: *6* fast_at.scan_lines
 @language python
 
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
@@ -2074,7 +2028,7 @@ def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
     self.post_pass(gnx2body, gnx2vnode, root_v)
     return root_v, last_lines
-#@+node:ekr.20190912071608.2: *6* << init scan_lines >>
+#@+node:ekr.20190912071608.2: *7* << init scan_lines >>
 #
 # Simple vars...
 afterref = False
@@ -2154,7 +2108,7 @@ gnx2body[gnx] = body = first_lines
 after_pat, all_pat, code_pat, comment_pat, delims_pat,\
 doc_pat, end_raw_pat, first_pat, last_pat, \
 node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
-#@+node:ekr.20190912071608.3: *6* << define dump_v >>
+#@+node:ekr.20190912071608.3: *7* << define dump_v >>
 def dump_v():
     '''Dump the level stack and v.'''
     print('----- LEVEL', level, v.h)
@@ -2168,7 +2122,7 @@ def dump_v():
     g.printObj([v3.h for v3 in parent_v.children])
     print('PARENTS...')
     g.printObj([v4.h for v4 in v.parents])
-#@+node:ekr.20190912071608.4: *6* << 1. common code for all lines >>
+#@+node:ekr.20190912071608.4: *7* << 1. common code for all lines >>
 if verbatim:
     # We are in raw mode, or other special situation.
     # Previous line was verbatim sentinel. Append this line as it is.
@@ -2204,7 +2158,7 @@ if is_cweb and line.startswith(sentinel):
 # Adjust indentation.
 if indent and line[:indent].isspace() and len(line) > indent:
     line = line[indent:]
-#@+node:ekr.20190912071608.5: *6* << 2. short-circuit later tests >>
+#@+node:ekr.20190912071608.5: *7* << 2. short-circuit later tests >>
 # This is valid because all following sections are either:
 # 1. guarded by 'if in_doc' or
 # 2. guarded by a pattern that matches the start of the sentinel.   
@@ -2213,7 +2167,7 @@ if not in_doc and not strip_line.startswith(sentinel):
     # lstrip() is faster than using a regex!
     body.append(line)
     continue
-#@+node:ekr.20190912071608.6: *6* << 3. handle @others >>
+#@+node:ekr.20190912071608.6: *7* << 3. handle @others >>
 m = others_pat.match(line)
 if m:
     in_doc = False
@@ -2225,7 +2179,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190912071608.7: *6* << 4. handle section refs >>
+#@+node:ekr.20190912071608.7: *7* << 4. handle section refs >>
 m = ref_pat.match(line)
 if m:
     in_doc = False
@@ -2239,7 +2193,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190912071608.8: *6* << handle node_start >>
+#@+node:ekr.20190912071608.8: *7* << handle node_start >>
 m = node_start_pat.match(line)
 if m:
     in_doc, in_raw = False, False
@@ -2303,7 +2257,7 @@ if m:
     v.parents.append(parent_v)
     # dump_v()
     continue
-#@+node:ekr.20190912071608.9: *6* << handle end of @doc & @code parts >>
+#@+node:ekr.20190912071608.9: *7* << handle end of @doc & @code parts >>
 if in_doc:
     # When delim_end exists the doc block:
     # - begins with the opening delim, alonw on its own line
@@ -2332,7 +2286,7 @@ else:
         # Enter @doc mode.
         in_doc = True
         continue
-#@+node:ekr.20190912071608.10: *6* << handle @all >>
+#@+node:ekr.20190912071608.10: *7* << handle @all >>
 m = all_pat.match(line)
 if m:
     # @all tells Leo's *write* code not to check for undefined sections.
@@ -2346,14 +2300,14 @@ if m:
         gnx, indent, body = stack.pop()
         gnx2body[gnx] = body
     continue
-#@+node:ekr.20190912071608.11: *6* << handle afterref >>
+#@+node:ekr.20190912071608.11: *7* << handle afterref >>
 m = after_pat.match(line)
 if m:
     afterref = True
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190912071608.12: *6* << handle @first and @last >>
+#@+node:ekr.20190912071608.12: *7* << handle @first and @last >>
 m = first_pat.match(line)
 if m:
     if 0 <= first_i < len(first_lines):
@@ -2369,7 +2323,7 @@ m = last_pat.match(line)
 if m:
     n_last_lines += 1
     continue
-#@+node:ekr.20190912071608.13: *6* << handle @comment >>
+#@+node:ekr.20190912071608.13: *7* << handle @comment >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = comment_pat.match(line)
 if m:
@@ -2402,7 +2356,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190912071608.14: *6* << handle @delims >>
+#@+node:ekr.20190912071608.14: *7* << handle @delims >>
 m = delims_pat.match(line)
 if m:
     # Get 1 or 2 comment delims
@@ -2437,7 +2391,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190912071608.15: *6* << handle @raw >>
+#@+node:ekr.20190912071608.15: *7* << handle @raw >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = raw_pat.match(line)
 if m:
@@ -2445,11 +2399,11 @@ if m:
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190912071608.16: *6* << handle @-leo >>
+#@+node:ekr.20190912071608.16: *7* << handle @-leo >>
 if line.startswith(delim_start + '@-leo'):
     i += 1
     break
-#@+node:ekr.20190912071608.17: *6* << Last 1. handle remaining @@ lines >>
+#@+node:ekr.20190912071608.17: *7* << Last 1. handle remaining @@ lines >>
 # @first, @last, @delims and @comment generate @@ sentinels,
 # So this must follow all of those.
 if line.startswith(delim_start + '@@'):
@@ -2457,7 +2411,7 @@ if line.startswith(delim_start + '@@'):
     jj = line.rfind(delim_end) if delim_end else -1
     body.append(line[ii:jj] + '\n')
     continue
-#@+node:ekr.20190912071608.18: *6* << Last 2. handle remaining @doc lines >>
+#@+node:ekr.20190912071608.18: *7* << Last 2. handle remaining @doc lines >>
 if in_doc:
     if delim_end:
         # doc lines are unchanged.
@@ -2466,7 +2420,7 @@ if in_doc:
         # Doc lines start with start_delim + one blank.
         body.append(line[len(delim_start)+1:])
     continue
-#@+node:ekr.20190912071608.19: *6* << Last 3. handle remaining @ lines >>
+#@+node:ekr.20190912071608.19: *7* << Last 3. handle remaining @ lines >>
 # Handle an apparent sentinel line.
 # This *can* happen, as the result of the git-diff command.
 #
@@ -2476,7 +2430,7 @@ assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
 # This trace is less important, but interesting.
 g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
-#@+node:ekr.20150610064911.1: *4* @test beautifier (small) 
+#@+node:ekr.20150610064911.1: *5* @@test beautifier (small) 
 # This tests only recent bugs.
 p1 = p.firstChild()
 s = p1.b
@@ -2491,15 +2445,15 @@ finally:
     p1.b = s
     ### c.setChanged(False)
     c.clearChanged()
-#@+node:ekr.20150610064930.1: *5* before
+#@+node:ekr.20150610064930.1: *6* before
 def spam():
     if - 1 < 2:
         pass
-#@+node:ekr.20150610065241.1: *5* after
+#@+node:ekr.20150610065241.1: *6* after
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20190914104955.1: *4* @test black
+#@+node:ekr.20190914104955.1: *5* @@test black
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:
     import black
@@ -2526,7 +2480,7 @@ for child in p.subtree():
     finally:
         child.b = child_s
         c.selectPosition(p)
-#@+node:ekr.20190914104955.2: *5* basic test
+#@+node:ekr.20190914104955.2: *6* basic test
 @language python
 @
 This is a doc part.
@@ -2540,7 +2494,7 @@ def spam():
             # Indented comment.
     else:
         pass
-#@+node:ekr.20190914104955.3: *5* @others & sections references
+#@+node:ekr.20190914104955.3: *6* @others & sections references
 a = 1
 << section ref >>
 b = 2
@@ -2554,7 +2508,7 @@ if 1:
         # <section ref>
     # ):
         # pass
-#@+node:ekr.20190914104955.4: *5* fast_at.scan_lines
+#@+node:ekr.20190914104955.4: *6* fast_at.scan_lines
 @language python
 
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
@@ -2592,7 +2546,7 @@ def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
     self.post_pass(gnx2body, gnx2vnode, root_v)
     return root_v, last_lines
-#@+node:ekr.20190914104955.5: *6* << init scan_lines >>
+#@+node:ekr.20190914104955.5: *7* << init scan_lines >>
 #
 # Simple vars...
 afterref = False
@@ -2672,7 +2626,7 @@ gnx2body[gnx] = body = first_lines
 after_pat, all_pat, code_pat, comment_pat, delims_pat,\
 doc_pat, end_raw_pat, first_pat, last_pat, \
 node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
-#@+node:ekr.20190914104955.6: *6* << define dump_v >>
+#@+node:ekr.20190914104955.6: *7* << define dump_v >>
 def dump_v():
     '''Dump the level stack and v.'''
     print('----- LEVEL', level, v.h)
@@ -2686,7 +2640,7 @@ def dump_v():
     g.printObj([v3.h for v3 in parent_v.children])
     print('PARENTS...')
     g.printObj([v4.h for v4 in v.parents])
-#@+node:ekr.20190914104955.7: *6* << 1. common code for all lines >>
+#@+node:ekr.20190914104955.7: *7* << 1. common code for all lines >>
 if verbatim:
     # We are in raw mode, or other special situation.
     # Previous line was verbatim sentinel. Append this line as it is.
@@ -2722,7 +2676,7 @@ if is_cweb and line.startswith(sentinel):
 # Adjust indentation.
 if indent and line[:indent].isspace() and len(line) > indent:
     line = line[indent:]
-#@+node:ekr.20190914104955.8: *6* << 2. short-circuit later tests >>
+#@+node:ekr.20190914104955.8: *7* << 2. short-circuit later tests >>
 # This is valid because all following sections are either:
 # 1. guarded by 'if in_doc' or
 # 2. guarded by a pattern that matches the start of the sentinel.   
@@ -2731,7 +2685,7 @@ if not in_doc and not strip_line.startswith(sentinel):
     # lstrip() is faster than using a regex!
     body.append(line)
     continue
-#@+node:ekr.20190914104955.9: *6* << 3. handle @others >>
+#@+node:ekr.20190914104955.9: *7* << 3. handle @others >>
 m = others_pat.match(line)
 if m:
     in_doc = False
@@ -2743,7 +2697,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190914104955.10: *6* << 4. handle section refs >>
+#@+node:ekr.20190914104955.10: *7* << 4. handle section refs >>
 m = ref_pat.match(line)
 if m:
     in_doc = False
@@ -2757,7 +2711,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190914104955.11: *6* << handle node_start >>
+#@+node:ekr.20190914104955.11: *7* << handle node_start >>
 m = node_start_pat.match(line)
 if m:
     in_doc, in_raw = False, False
@@ -2821,7 +2775,7 @@ if m:
     v.parents.append(parent_v)
     # dump_v()
     continue
-#@+node:ekr.20190914104955.12: *6* << handle end of @doc & @code parts >>
+#@+node:ekr.20190914104955.12: *7* << handle end of @doc & @code parts >>
 if in_doc:
     # When delim_end exists the doc block:
     # - begins with the opening delim, alonw on its own line
@@ -2850,7 +2804,7 @@ else:
         # Enter @doc mode.
         in_doc = True
         continue
-#@+node:ekr.20190914104955.13: *6* << handle @all >>
+#@+node:ekr.20190914104955.13: *7* << handle @all >>
 m = all_pat.match(line)
 if m:
     # @all tells Leo's *write* code not to check for undefined sections.
@@ -2864,14 +2818,14 @@ if m:
         gnx, indent, body = stack.pop()
         gnx2body[gnx] = body
     continue
-#@+node:ekr.20190914104955.14: *6* << handle afterref >>
+#@+node:ekr.20190914104955.14: *7* << handle afterref >>
 m = after_pat.match(line)
 if m:
     afterref = True
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190914104955.15: *6* << handle @first and @last >>
+#@+node:ekr.20190914104955.15: *7* << handle @first and @last >>
 m = first_pat.match(line)
 if m:
     if 0 <= first_i < len(first_lines):
@@ -2887,7 +2841,7 @@ m = last_pat.match(line)
 if m:
     n_last_lines += 1
     continue
-#@+node:ekr.20190914104955.16: *6* << handle @comment >>
+#@+node:ekr.20190914104955.16: *7* << handle @comment >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = comment_pat.match(line)
 if m:
@@ -2920,7 +2874,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190914104955.17: *6* << handle @delims >>
+#@+node:ekr.20190914104955.17: *7* << handle @delims >>
 m = delims_pat.match(line)
 if m:
     # Get 1 or 2 comment delims
@@ -2955,7 +2909,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190914104955.18: *6* << handle @raw >>
+#@+node:ekr.20190914104955.18: *7* << handle @raw >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = raw_pat.match(line)
 if m:
@@ -2963,11 +2917,11 @@ if m:
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190914104955.19: *6* << handle @-leo >>
+#@+node:ekr.20190914104955.19: *7* << handle @-leo >>
 if line.startswith(delim_start + '@-leo'):
     i += 1
     break
-#@+node:ekr.20190914104955.20: *6* << Last 1. handle remaining @@ lines >>
+#@+node:ekr.20190914104955.20: *7* << Last 1. handle remaining @@ lines >>
 # @first, @last, @delims and @comment generate @@ sentinels,
 # So this must follow all of those.
 if line.startswith(delim_start + '@@'):
@@ -2975,7 +2929,7 @@ if line.startswith(delim_start + '@@'):
     jj = line.rfind(delim_end) if delim_end else -1
     body.append(line[ii:jj] + '\n')
     continue
-#@+node:ekr.20190914104955.21: *6* << Last 2. handle remaining @doc lines >>
+#@+node:ekr.20190914104955.21: *7* << Last 2. handle remaining @doc lines >>
 if in_doc:
     if delim_end:
         # doc lines are unchanged.
@@ -2984,7 +2938,7 @@ if in_doc:
         # Doc lines start with start_delim + one blank.
         body.append(line[len(delim_start)+1:])
     continue
-#@+node:ekr.20190914104955.22: *6* << Last 3. handle remaining @ lines >>
+#@+node:ekr.20190914104955.22: *7* << Last 3. handle remaining @ lines >>
 # Handle an apparent sentinel line.
 # This *can* happen, as the result of the git-diff command.
 #
@@ -2994,7 +2948,7 @@ assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
 # This trace is less important, but interesting.
 g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
-#@+node:ekr.20190914105123.1: *4* @test ptb (large)
+#@+node:ekr.20190914105123.1: *5* @@test ptb (large)
 from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
 
 for child in p.subtree():
@@ -3013,7 +2967,7 @@ for child in p.subtree():
     finally:
         child.b = child_s
         c.selectPosition(p)
-#@+node:ekr.20190914105123.2: *5* basic test
+#@+node:ekr.20190914105123.2: *6* basic test
 @language python
 @
 This is a doc part.
@@ -3026,7 +2980,7 @@ def spam():
             # Indented comment.
     else:
         pass
-#@+node:ekr.20190914105123.3: *5* @others & sections references
+#@+node:ekr.20190914105123.3: *6* @others & sections references
 a = 1
 << section ref >>
 b = 2
@@ -3040,7 +2994,7 @@ if 1:
         # <section ref>
     # ):
         # pass
-#@+node:ekr.20190914105123.4: *5* fast_at.scan_lines
+#@+node:ekr.20190914105123.4: *6* fast_at.scan_lines
 @language python
 
 def scan_lines(self, delims, first_lines, lines, path, start, test=False):
@@ -3078,7 +3032,7 @@ def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
     self.post_pass(gnx2body, gnx2vnode, root_v)
     return root_v, last_lines
-#@+node:ekr.20190914105123.5: *6* << init scan_lines >>
+#@+node:ekr.20190914105123.5: *7* << init scan_lines >>
 #
 # Simple vars...
 afterref = False
@@ -3158,7 +3112,7 @@ gnx2body[gnx] = body = first_lines
 after_pat, all_pat, code_pat, comment_pat, delims_pat,\
 doc_pat, end_raw_pat, first_pat, last_pat, \
 node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
-#@+node:ekr.20190914105123.6: *6* << define dump_v >>
+#@+node:ekr.20190914105123.6: *7* << define dump_v >>
 def dump_v():
     '''Dump the level stack and v.'''
     print('----- LEVEL', level, v.h)
@@ -3172,7 +3126,7 @@ def dump_v():
     g.printObj([v3.h for v3 in parent_v.children])
     print('PARENTS...')
     g.printObj([v4.h for v4 in v.parents])
-#@+node:ekr.20190914105123.7: *6* << 1. common code for all lines >>
+#@+node:ekr.20190914105123.7: *7* << 1. common code for all lines >>
 if verbatim:
     # We are in raw mode, or other special situation.
     # Previous line was verbatim sentinel. Append this line as it is.
@@ -3208,7 +3162,7 @@ if is_cweb and line.startswith(sentinel):
 # Adjust indentation.
 if indent and line[:indent].isspace() and len(line) > indent:
     line = line[indent:]
-#@+node:ekr.20190914105123.8: *6* << 2. short-circuit later tests >>
+#@+node:ekr.20190914105123.8: *7* << 2. short-circuit later tests >>
 # This is valid because all following sections are either:
 # 1. guarded by 'if in_doc' or
 # 2. guarded by a pattern that matches the start of the sentinel.   
@@ -3217,7 +3171,7 @@ if not in_doc and not strip_line.startswith(sentinel):
     # lstrip() is faster than using a regex!
     body.append(line)
     continue
-#@+node:ekr.20190914105123.9: *6* << 3. handle @others >>
+#@+node:ekr.20190914105123.9: *7* << 3. handle @others >>
 m = others_pat.match(line)
 if m:
     in_doc = False
@@ -3229,7 +3183,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190914105123.10: *6* << 4. handle section refs >>
+#@+node:ekr.20190914105123.10: *7* << 4. handle section refs >>
 m = ref_pat.match(line)
 if m:
     in_doc = False
@@ -3243,7 +3197,7 @@ if m:
         # m.group(2) is '-' because the pattern matched.
         gnx, indent, body = stack.pop()
     continue
-#@+node:ekr.20190914105123.11: *6* << handle node_start >>
+#@+node:ekr.20190914105123.11: *7* << handle node_start >>
 m = node_start_pat.match(line)
 if m:
     in_doc, in_raw = False, False
@@ -3307,7 +3261,7 @@ if m:
     v.parents.append(parent_v)
     # dump_v()
     continue
-#@+node:ekr.20190914105123.12: *6* << handle end of @doc & @code parts >>
+#@+node:ekr.20190914105123.12: *7* << handle end of @doc & @code parts >>
 if in_doc:
     # When delim_end exists the doc block:
     # - begins with the opening delim, alonw on its own line
@@ -3336,7 +3290,7 @@ else:
         # Enter @doc mode.
         in_doc = True
         continue
-#@+node:ekr.20190914105123.13: *6* << handle @all >>
+#@+node:ekr.20190914105123.13: *7* << handle @all >>
 m = all_pat.match(line)
 if m:
     # @all tells Leo's *write* code not to check for undefined sections.
@@ -3350,14 +3304,14 @@ if m:
         gnx, indent, body = stack.pop()
         gnx2body[gnx] = body
     continue
-#@+node:ekr.20190914105123.14: *6* << handle afterref >>
+#@+node:ekr.20190914105123.14: *7* << handle afterref >>
 m = after_pat.match(line)
 if m:
     afterref = True
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190914105123.15: *6* << handle @first and @last >>
+#@+node:ekr.20190914105123.15: *7* << handle @first and @last >>
 m = first_pat.match(line)
 if m:
     if 0 <= first_i < len(first_lines):
@@ -3373,7 +3327,7 @@ m = last_pat.match(line)
 if m:
     n_last_lines += 1
     continue
-#@+node:ekr.20190914105123.16: *6* << handle @comment >>
+#@+node:ekr.20190914105123.16: *7* << handle @comment >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = comment_pat.match(line)
 if m:
@@ -3406,7 +3360,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190914105123.17: *6* << handle @delims >>
+#@+node:ekr.20190914105123.17: *7* << handle @delims >>
 m = delims_pat.match(line)
 if m:
     # Get 1 or 2 comment delims
@@ -3441,7 +3395,7 @@ if m:
         node_start_pat, others_pat, raw_pat, ref_pat
     ) = self.get_patterns(delims)
     continue
-#@+node:ekr.20190914105123.18: *6* << handle @raw >>
+#@+node:ekr.20190914105123.18: *7* << handle @raw >>
 # http://leoeditor.com/directives.html#part-4-dangerous-directives
 m = raw_pat.match(line)
 if m:
@@ -3449,11 +3403,11 @@ if m:
     verbatim = True
         # Avoid an extra test in the main loop.
     continue
-#@+node:ekr.20190914105123.19: *6* << handle @-leo >>
+#@+node:ekr.20190914105123.19: *7* << handle @-leo >>
 if line.startswith(delim_start + '@-leo'):
     i += 1
     break
-#@+node:ekr.20190914105123.20: *6* << Last 1. handle remaining @@ lines >>
+#@+node:ekr.20190914105123.20: *7* << Last 1. handle remaining @@ lines >>
 # @first, @last, @delims and @comment generate @@ sentinels,
 # So this must follow all of those.
 if line.startswith(delim_start + '@@'):
@@ -3461,7 +3415,7 @@ if line.startswith(delim_start + '@@'):
     jj = line.rfind(delim_end) if delim_end else -1
     body.append(line[ii:jj] + '\n')
     continue
-#@+node:ekr.20190914105123.21: *6* << Last 2. handle remaining @doc lines >>
+#@+node:ekr.20190914105123.21: *7* << Last 2. handle remaining @doc lines >>
 if in_doc:
     if delim_end:
         # doc lines are unchanged.
@@ -3470,7 +3424,7 @@ if in_doc:
         # Doc lines start with start_delim + one blank.
         body.append(line[len(delim_start)+1:])
     continue
-#@+node:ekr.20190914105123.22: *6* << Last 3. handle remaining @ lines >>
+#@+node:ekr.20190914105123.22: *7* << Last 3. handle remaining @ lines >>
 # Handle an apparent sentinel line.
 # This *can* happen, as the result of the git-diff command.
 #
@@ -3480,7 +3434,7 @@ assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
 # This trace is less important, but interesting.
 g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
 body.append(line)
-#@+node:ekr.20190914111357.1: *4* @test ptb (pet peeves) 
+#@+node:ekr.20190914111357.1: *5* @@test ptb (pet peeves) 
 from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
 errors, fails, tests = [], [], []
 try:
@@ -3523,108 +3477,108 @@ if fails or errors:
     self.fail("\n"
         f"{g.objToString(fails,  tag='Failures')}\n"
         f"{g.objToString(errors, tag='  Errors')}")
-#@+node:ekr.20190915083933.1: *5* peeve: two spaces before a trailing comment
-#@+node:ekr.20190915083945.1: *6* test
+#@+node:ekr.20190915083933.1: *6* peeve: two spaces before a trailing comment
+#@+node:ekr.20190915083945.1: *7* test
 a = b # comment
 c = d# comment
 e - f   # comment
 # Single-line comment.
-#@+node:ekr.20190915084039.1: *6* expected
+#@+node:ekr.20190915084039.1: *7* expected
 a = b  # comment
 c = d  # comment
 e - f  # comment
 # Single-line comment.
-#@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
-#@+node:ekr.20190914111357.2: *6* test
+#@+node:ekr.20190914112029.1: *6* peeve: ws after unary minus
+#@+node:ekr.20190914111357.2: *7* test
 def spam():
     if - 1 < 2:
         pass
-#@+node:ekr.20190914111357.3: *6* expected
+#@+node:ekr.20190914111357.3: *7* expected
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20190915074109.1: *5* peeve: ws around arithmetic ops in argument lists
-#@+node:ekr.20190915074201.1: *6* test
+#@+node:ekr.20190915074109.1: *6* peeve: ws around arithmetic ops in argument lists
+#@+node:ekr.20190915074201.1: *7* test
 def foo(a, b):
     foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
     bar(2 + baz)
-#@+node:ekr.20190915074205.1: *6* expected
+#@+node:ekr.20190915074205.1: *7* expected
 def foo(a, b):
     foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
     bar(2+baz)
-#@+node:ekr.20190915083243.1: *5* peeve: ws around word ops
-#@+node:ekr.20190915083412.1: *6* test
+#@+node:ekr.20190915083243.1: *6* peeve: ws around word ops
+#@+node:ekr.20190915083412.1: *7* test
 b =    ('and', 'in', 'not', 'not in', 'or')
 # def foo():
     # return ''.join([z.to_string() for z in self.code_list])
-#@+node:ekr.20190915083418.1: *6* expected
+#@+node:ekr.20190915083418.1: *7* expected
 b = ('and', 'in', 'not', 'not in', 'or')
 # def foo():
     # return ''.join([z.to_string() for z in self.code_list])
-#@+node:ekr.20190914120318.1: *5* peeve: ws before comma, semicolon, colon
-#@+node:ekr.20190914120402.1: *6* test
+#@+node:ekr.20190914120318.1: *6* peeve: ws before comma, semicolon, colon
+#@+node:ekr.20190914120402.1: *7* test
 if x == 4: pass
 if x == 4 : pass
 print (x, y); x, y = y, x
 print (x , y) ; x , y = y , x
 x, y = y, x
 x , y = y , x
-#@+node:ekr.20190914120406.1: *6* expected
+#@+node:ekr.20190914120406.1: *7* expected
 if x == 4: pass
 if x == 4: pass
 print(x, y); x, y = y, x
 print(x, y); x, y = y, x
 x, y = y, x
 x, y = y, x
-#@+node:ekr.20190914123001.1: *5* peeve: ws before parens
-#@+node:ekr.20190914123101.1: *6* test
+#@+node:ekr.20190914123001.1: *6* peeve: ws before parens
+#@+node:ekr.20190914123101.1: *7* test
 spam(1)
 spam ( 1 )
 dct ['key'] = lst [index]
 dct['key'] = lst[index]
-#@+node:ekr.20190914123104.1: *6* expected
+#@+node:ekr.20190914123104.1: *7* expected
 spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
-#@+node:ekr.20190914115821.1: *5* peeve: ws between trailing comma & close paren
-#@+node:ekr.20190914120010.1: *6* test
+#@+node:ekr.20190914115821.1: *6* peeve: ws between trailing comma & close paren
+#@+node:ekr.20190914120010.1: *7* test
 foo = (0,)
 bar = (0, )
-#@+node:ekr.20190914120016.1: *6* expected
+#@+node:ekr.20190914120016.1: *7* expected
 foo = (0,)
 bar = (0,)
-#@+node:ekr.20190914181159.1: *5* peeve: ws in slices: arithmetic ops
-#@+node:ekr.20190914181159.2: *6* test
+#@+node:ekr.20190914181159.1: *6* peeve: ws in slices: arithmetic ops
+#@+node:ekr.20190914181159.2: *7* test
 ham[lower + offset: upper + offset]
 ham[lower+offset : upper+offset]
-#@+node:ekr.20190914181159.3: *6* expected
+#@+node:ekr.20190914181159.3: *7* expected
 ham[lower + offset : upper + offset]
 ham[lower + offset : upper + offset]
-#@+node:ekr.20190914181344.1: *5* peeve: ws in slices: function calls
-#@+node:ekr.20190914181344.2: *6* test
+#@+node:ekr.20190914181344.1: *6* peeve: ws in slices: function calls
+#@+node:ekr.20190914181344.2: *7* test
 ham[ : upper_fn(x) : step_fn(x)]
 ham[ : : step_fn(x)]
-#@+node:ekr.20190914181344.3: *6* expected
+#@+node:ekr.20190914181344.3: *7* expected
 ham[: upper_fn(x) : step_fn(x)]
 ham[:: step_fn(x)]
-#@+node:ekr.20190914122333.1: *5* peeve: ws in slices: numbers & words
-#@+node:ekr.20190914122356.1: *6* test
+#@+node:ekr.20190914122333.1: *6* peeve: ws in slices: numbers & words
+#@+node:ekr.20190914122356.1: *7* test
 ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
 ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
 ham[: upper]
-#@+node:ekr.20190914122359.1: *6* expected
+#@+node:ekr.20190914122359.1: *7* expected
 ham[1 : 9], ham[1 : 9 : 3], ham[:9 : 3], ham[1 :: 3], ham[1 : 9:]
 ham[lower : upper], ham[lower : upper:], ham[lower :: step]
 ham[: upper]
-#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
-#@+node:ekr.20190914115300.1: *6* test
+#@+node:ekr.20190914115215.1: *6* peeve: ws inside parentheses, brackets or braces.
+#@+node:ekr.20190914115300.1: *7* test
 spam(ham[1], {eggs: 2})
 spam( ham[ 1 ], { eggs: 2 } )
-#@+node:ekr.20190914115304.1: *6* expected
+#@+node:ekr.20190914115304.1: *7* expected
 spam(ham[1], {eggs: 2})
 spam(ham[1], {eggs: 2})
-#@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
+#@+node:ekr.20190914132845.1: *5* @@test black (pet peeves) 
 from leo.core.leoBeautify import BlackCommand, should_beautify
 try:
     import black
@@ -3665,7 +3619,7 @@ finally:
     ### c.setChanged(False)
     c.clearChanged()
 assert not fails, g.objToString(fails, tag='FAILED tests')
-#@+node:ekr.20190914132845.2: *5* peeve: ws in slices
+#@+node:ekr.20190914132845.2: *6* peeve: ws in slices
 # Avoid extraneous whitespace in the following situations:
 
 # However, in a slice the colon acts like a binary operator,
@@ -3686,7 +3640,7 @@ ham[lower + offset: upper + offset]
 ham[1: 9], ham[1: 9], ham[1: 9: 3]
 ham[lower:: upper]
 ham[: upper]
-#@+node:ekr.20190914132845.3: *6* test
+#@+node:ekr.20190914132845.3: *7* test
 # FAIL
 ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
 ham[lower + offset: upper + offset]
@@ -3700,7 +3654,7 @@ ham[lower:upper], ham[lower:upper:], ham[lower::step]
 ham[lower+offset : upper+offset]
 ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
 ham[lower + offset : upper + offset]
-#@+node:ekr.20190914132845.4: *6* expected
+#@+node:ekr.20190914132845.4: *7* expected
 # FAIL
 ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
 ham[lower + offset : upper + offset]
@@ -3714,7 +3668,7 @@ ham[lower:upper], ham[lower:upper:], ham[lower::step]
 ham[lower + offset : upper + offset]
 ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
 ham[lower + offset : upper + offset]
-#@+node:ekr.20190914132845.5: *5* peeve: ws after unary minus
+#@+node:ekr.20190914132845.5: *6* peeve: ws after unary minus
 # Avoid extraneous whitespace in the following situations:
 
 # Immediately inside parentheses, brackets or braces.
@@ -3722,15 +3676,15 @@ ham[lower + offset : upper + offset]
 # Yes: spam(ham[1], {eggs: 2})
 # No:  spam( ham[ 1 ], { eggs: 2 } )
 spam(ham[1], {eggs: 2})
-#@+node:ekr.20190914132845.6: *6* test
+#@+node:ekr.20190914132845.6: *7* test
 def spam():
     if - 1 < 2:
         pass
-#@+node:ekr.20190914132845.7: *6* expected
+#@+node:ekr.20190914132845.7: *7* expected
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20190914132845.8: *5* peeve: ws between trailing comma & close paren
+#@+node:ekr.20190914132845.8: *6* peeve: ws between trailing comma & close paren
 # Avoid extraneous whitespace in the following situations:
 
 # Between a trailing comma and a following close parenthesis.
@@ -3738,26 +3692,26 @@ def spam():
 # Yes: foo = (0,)
 # No:  bar = (0, )
 bar = (0,)
-#@+node:ekr.20190914132845.9: *6* test
+#@+node:ekr.20190914132845.9: *7* test
 foo = (0,)
 bar = (0, )
-#@+node:ekr.20190914132845.10: *6* expected
+#@+node:ekr.20190914132845.10: *7* expected
 foo = (0,)
 bar = (0,)
-#@+node:ekr.20190914132845.11: *5* peeve: ws inside parentheses, brackets or braces.
+#@+node:ekr.20190914132845.11: *6* peeve: ws inside parentheses, brackets or braces.
 # Avoid extraneous whitespace in the following situations:
     
 # Immediately inside parentheses, brackets or braces.
 
 # Yes: spam(ham[1], {eggs: 2})
 # No:  spam( ham[ 1 ], { eggs: 2 } )
-#@+node:ekr.20190914132845.12: *6* test
+#@+node:ekr.20190914132845.12: *7* test
 spam(ham[1], {eggs: 2})
 spam( ham[ 1 ], { eggs: 2 } )
-#@+node:ekr.20190914132845.13: *6* expected
+#@+node:ekr.20190914132845.13: *7* expected
 spam(ham[1], {eggs: 2})
 spam(ham[1], {eggs: 2})
-#@+node:ekr.20190914132845.14: *5* peeve: ws before comma, semicolon, colon
+#@+node:ekr.20190914132845.14: *6* peeve: ws before comma, semicolon, colon
 # Avoid extraneous whitespace in the following situations:
 
 # Immediately before a comma, semicolon, or colon:
@@ -3769,14 +3723,14 @@ if x == 4: pass
 # YES: print (x, y); x, y = y, x)
 # NO: print (x , y) ; x , y = y , x
 print(x, y); x, y = y, x
-#@+node:ekr.20190914132845.15: *6* test
+#@+node:ekr.20190914132845.15: *7* test
 if x == 4: pass
 if x == 4 : pass
 print (x, y); x, y = y, x
 print (x , y) ; x , y = y , x
 x, y = y, x
 x , y = y , x
-#@+node:ekr.20190914132845.16: *6* expected
+#@+node:ekr.20190914132845.16: *7* expected
 if x == 4:
     pass
 if x == 4:
@@ -3787,7 +3741,7 @@ print(x, y)
 x, y = y, x
 x, y = y, x
 x, y = y, x
-#@+node:ekr.20190914132845.17: *5* peeve:  ws before parens
+#@+node:ekr.20190914132845.17: *6* peeve:  ws before parens
 # Avoid extraneous whitespace in the following situations:
     
 # Immediately before the open parenthesis that starts the argument list of a function call:
@@ -3799,17 +3753,17 @@ spam(1)
 
 # Yes: dct['key'] = lst[index]
 dct['key'] = lst[index]
-#@+node:ekr.20190914132845.18: *6* test
+#@+node:ekr.20190914132845.18: *7* test
 spam(1)
 spam ( 1 )
 dct ['key'] = lst [index]
 dct['key'] = lst[index]
-#@+node:ekr.20190914132845.19: *6* expected
+#@+node:ekr.20190914132845.19: *7* expected
 spam(1)
 spam(1)
 dct['key'] = lst[index]
 dct['key'] = lst[index]
-#@+node:ekr.20191106035017.1: *4* @test all beautifiers (bs-nl & indentation)
+#@+node:ekr.20191106035017.1: *5* @@test all beautifiers (bs-nl & indentation)
 import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
@@ -3908,7 +3862,7 @@ for i, contents in enumerate(table):
                 print(f"{j:2}: {s!r}")
             assert False, f"FAIL: Test {i} for {name}"
 # print('done')
-#@+node:ekr.20191106072009.1: *4* @test fstringify tests
+#@+node:ekr.20191106072009.1: *5* @@test fstringify tests
 import io
 import tokenize
 import leo.core.leoBeautify as leoBeautify
@@ -4015,7 +3969,7 @@ for i, data in enumerate(table):
         for j, s in enumerate(g.splitLines(results.strip())):
             print(f"{j:2}: {s.rstrip()}")
         assert False, f"FAIL"
-#@+node:ekr.20191106195303.1: *4* @test fstringify should fail
+#@+node:ekr.20191106195303.1: *5* @@test fstringify should fail
 '''These tests cover potential fstrings that can't be automatically converted.'''
 
 import io
@@ -28133,173 +28087,6 @@ s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 with open(name,'w',encoding='utf-8') as f:
     f.write(s)
 assert g.os_path_exists(name)
-#@+node:ekr.20191101152519.1: ** unit tests for python's tokenize.module
-# 
-#@+node:ekr.20191103013911.1: *3* These tests use only python's tokenize module
-#@+node:ekr.20191101152519.3: *4* @test bad input order 
-from tokenize import Untokenizer
-u = Untokenizer()
-u.prev_row = 2
-u.prev_col = 2
-with self.assertRaises(ValueError) as cm:
-    u.add_whitespace((1,3))
-self.assertEqual(cm.exception.args[0],
-    'start (1,3) precedes previous end (2,2)')
-# raise if previous column in row
-self.assertRaises(ValueError, u.add_whitespace, (2,1))
-#@+node:ekr.20191101152519.4: *4* @@@test backslash continuation
-from tokenize import Untokenizer
-import test.test_tokenize as tt
-u = Untokenizer()
-u.prev_row = 1
-u.prev_col =  1
-u.tokens = []
-u.add_whitespace((2, 0))
-self.assertEqual(u.tokens, ['\\\n'])
-u.prev_row = 2
-u.add_whitespace((4, 4))
-self.assertEqual(u.tokens, ['\\\n', '\\\n\\\n', '    '])
-tt.TestRoundtrip.check_roundtrip(self, 'a\n  b\n    c\n  \\\n  c\n')
-#@+node:ekr.20191101152519.5: *4* @test iter compat
-from tokenize import untokenize, Untokenizer, NAME, ENCODING
-
-u = Untokenizer()
-token = (NAME, 'Hello')
-tokens = [(ENCODING, 'utf-8'), token]
-u.compat(token, iter([]))
-self.assertEqual(u.tokens, ["Hello "])
-u = Untokenizer()
-self.assertEqual(u.untokenize(iter([token])), 'Hello ')
-u = Untokenizer()
-self.assertEqual(u.untokenize(iter(tokens)), 'Hello ')
-self.assertEqual(u.encoding, 'utf-8')
-self.assertEqual(untokenize(iter(tokens)), b'Hello ')
-    # *not* u.untokenize.
-#@+node:ekr.20191101152519.6: *3* @test EKR bug
-# Test https://bugs.python.org/issue38663.
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-
-check_roundtrip(
-    "print \\\n"
-    "    ('abc')\n",
-    expect_failure = True
-)
-#@+node:ekr.20191101152519.7: *3* @test TestRoundTrip.test_roundtrip
-from tokenize import tokenize, untokenize
-from test import support
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-
-# There are some standard formatting practices that are easy to get right.
-
-check_roundtrip(
-    "if x == 1:\n"
-    "    print(x)\n")
-
-check_roundtrip(
-    "# This is a comment\n"
-    "# This also\n")
-
-# Some people use different formatting conventions, which makes
-# untokenize a little trickier. Note that this test involves trailing
-# whitespace after the colon. Note that we use hex escapes to make the
-# two trailing blanks apparent in the expected output.
-
-check_roundtrip(
-    "if x == 1 : \n"
-    "  print(x)\n")
-
-if 0: # Fails.
-    fn = support.findfile("tokenize_tests.txt")
-    with open(fn, 'rb') as f:
-        check_roundtrip(f)
-
-check_roundtrip(
-    "if x == 1:\n"
-    "    # A comment by itself.\n"
-    "    print(x) # Comment here, too.\n"
-    "    # Another comment.\n"
-    "after_if = True\n")
-
-check_roundtrip(
-    "if (x # The comments need to go in the right place\n"
-    "    == 1):\n"
-    "    print('x==1')\n")
-
-check_roundtrip(
-    "class Test: # A comment here\n"
-    "  # A comment with weird indent\n"
-    "  after_com = 5\n"
-    "  def x(m): return m*5 # a one liner\n"
-    "  def y(m): # A whitespace after the colon\n"
-    "     return y*4 # 3-space indent\n")
-
-# Some error-handling code
-check_roundtrip(
-    "try: import somemodule\n"
-    "except ImportError: # comment\n"
-    "    print('Can not import' # comment2\n)"
-    "else:   print('Loaded')\n")
-#@+node:ekr.20191101152519.8: *3* @test TestRoutnTrip.test_continuation
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-
-check_roundtrip(
-    "a = (3,4, \n"
-    "5,6)\n"
-    "y = [3, 4,\n"
-    "5]\n"
-    "z = {'a': 5,\n"
-    "'b':15, 'c':True}\n"
-    "x = len(y) + 5 - a[\n"
-    "3] - a[2]\n"
-    "+ len(z) - z[\n"
-    "'b']\n")
-    
-#@+node:ekr.20191101152519.9: *3* @test TestRoutnTrip.test_backslash_continuation
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-
-# Backslash means line continuation, except for comments
-check_roundtrip(
-    "x=1+\\\n"
-    "1\n"
-    "# This is a comment\\\n"
-    "# This also\n")
-    
-check_roundtrip(
-    "# Comment \\\n"
-    "x = 0")
-
-#@+node:ekr.20191101152519.10: *3* @test TestRoutnTrip.test_string_concatenation
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-
-# Two string literals on the same line
-check_roundtrip("'' ''")
-
-#@+node:ekr.20191101152519.11: *3* @test TestRoutnTrip.test_indentation_semantics_retained
-"""
-Ensure that although whitespace might be mutated in a roundtrip,
-the semantic meaning of the indentation remains consistent.
-"""
-
-import leo.core.leoBeautify as leoBeautify
-check_roundtrip = leoBeautify.check_roundtrip
-from tokenize import tokenize, untokenize
-from io import BytesIO
-
-def roundtrip(code):
-    if isinstance(code, str):
-        code = code.encode('utf-8')
-    return untokenize(tokenize(BytesIO(code).readline)).decode('utf-8')
-
-code = "if False:\n\tx=3\n\tx=3\n"
-### codelines = self.roundtrip(code).split('\n')
-codelines = roundtrip(code).split('\n')
-self.assertEqual(codelines[1], codelines[2])
-check_roundtrip(code)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
 g.pr('\nall unit tests done',color='blue')
