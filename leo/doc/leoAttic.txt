@@ -6710,6 +6710,16 @@ def update_times(self, key, t):
     """Update the timing statistic given by key, t."""
     old_t = self.times.get(key, 0.0)
     self.times [key] = old_t + t
+#@+node:ekr.20191111152653.1: *3* class TokenOrderFormatter
+class TokenOrderFormatter (TokenOrderGenerator):
+    
+    def format(self, contents):
+        """
+        Format the tree into a string guaranteed to be generated in token order.
+        """
+        tokens, tree = self.init_from_string(contents)
+        ### To do...
+        return tokens_to_string(tokens)
 #@+node:ekr.20191113054314.1: *3* class TokenOrderInjector (TOG)
 class TokenOrderInjector (TokenOrderGenerator):
     """
