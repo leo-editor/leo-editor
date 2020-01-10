@@ -794,9 +794,15 @@ class BaseTest (unittest.TestCase):
     counts, times = {}, {}
 
     #@+others
+    #@+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
+    def check_roundtrip(self, contents):
+        """Check that the tokenizer round-trips the given contents."""
+        contents, tokens, tree = self.make_data(contents)
+        results = tokens_to_string(tokens)
+        assert contents == results, expected_got(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
     def make_data(self, contents, description=None):
-        """Return (tokens, tree) for the given contents."""
+        """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:  # pragma: no cover
             return None, None, None
@@ -1161,6 +1167,7 @@ class AstDumper:  # pragma: no cover
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
+
     #@+others
     #@+node:ekr.20200106163535.1: *4* test_braces
     def test_braces(self):
@@ -1280,6 +1287,7 @@ class TestFstringify (BaseTest):
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange (BaseTest):
     """Tests for the Orange class."""
+
     #@+others
     #@+node:ekr.20200107174742.1: *4* test_small_contents
     def test_small_contents(self):
@@ -1329,6 +1337,7 @@ class TestOrange (BaseTest):
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
 class TestReassignTokens (BaseTest):
     """Test cases for the ReassignTokens class."""
+
     #@+others
     #@+node:ekr.20191231130320.1: *4* test_reassign_tokens (to do)
     def test_reassign_tokens(self):
@@ -1352,6 +1361,7 @@ class TestTOG (BaseTest):
     
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
+
     #@+others
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
@@ -1956,9 +1966,56 @@ class TestTOG (BaseTest):
         self.update_times('90: TOTAL', t2 - g.total_time)
         self.dump_stats()
     #@-others
+#@+node:ekr.20200110093802.1: *3* class TestTokens (BaseTest)
+class TestTokens (BaseTest):
+    """Unit tests for tokenizing."""
+
+    #@+others
+    #@+node:ekr.20200110015014.6: *4* test_bs_nl_tokens
+    def test_bs_nl_tokens(self):
+        # Test https://bugs.python.org/issue38663.
+
+        contents = """\
+    print \
+        ('abc')
+    """
+        self.check_roundtrip(contents)
+    #@+node:ekr.20200110015014.8: *4* test_continuation
+    def test_continuation(self):
+        
+        contents = """\
+    a = (3,4,
+        5,6)
+    y = [3, 4,
+        5]
+    z = {'a': 5,
+        'b':15, 'c':True}
+    x = len(y) + 5 - a[
+        3] - a[2] + len(z) - z[
+        'b']
+    """
+        self.check_roundtrip(contents)
+        # Backslash means line continuation, except for comments
+        contents = """\
+    x=1+\\\n2
+    # This is a comment\\\n# This also
+    """
+        self.check_roundtrip(contents)
+        contents = """\
+    # Comment \\\n
+    x = 0
+    """
+        self.check_roundtrip(contents)
+    #@+node:ekr.20200110015014.10: *4* test_string_concatenation
+    def test_string_concatentation(self):
+        # Two string literals on the same line
+        self.check_roundtrip("'' ''")
+
+    #@-others
 #@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
 class TestTopLevelFunctions (BaseTest):
     """Tests for the top-level functions in leoAst.py."""
+
     #@+others
     #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
     def test_get_encoding_directive(self):
