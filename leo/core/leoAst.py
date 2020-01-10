@@ -17,7 +17,6 @@ import sys
 import time
 import tokenize
 import traceback
-import types
 import unittest
 #@-<< imports >>
 #@+others
@@ -2371,18 +2370,9 @@ class TokenOrderGenerator:
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
         # Allow begin/end visitor to be generators.
-        val = self.begin_visitor(node)
-        if isinstance(val, types.GeneratorType):
-            yield from val
-        # method(node) is a generator, not a recursive call!
-        val = method(node)
-        if isinstance(val, types.GeneratorType):
-            yield from method(node)
-        else:
-            raise ValueError(f"Visitor is not a generator: {method!r}")
-        val = self.end_visitor(node)
-        if isinstance(val, types.GeneratorType): # pragma: no cover
-            yield from val
+        self.begin_visitor(node)
+        yield from method(node)
+        self.end_visitor(node)
     #@+node:ekr.20191113063144.13: *4* tog: Visitors...
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
