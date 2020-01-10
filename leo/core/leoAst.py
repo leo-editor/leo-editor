@@ -821,11 +821,18 @@ class BaseTest (unittest.TestCase):
         if not tokens:  # pragma: no cover
             return None, None, None
         tree = self.make_tree(contents)
+        ### dump_contents(contents)
+        ### dump_ast(tree)
+        ### dump_tokens(tokens)
         if not tree:  # pragma: no cover
             return None, None, None
         self.balance_tokens(tokens)
         # Pass 1: create the links
-        self.create_links(tokens, tree)
+        try:
+            self.create_links(tokens, tree)
+        except Exception as e:
+            ### g.trace('Error', e)
+            return None, None, None
         self.reassign_tokens(tokens, tree)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
@@ -896,10 +903,11 @@ class BaseTest (unittest.TestCase):
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
-            g.trace(f"\nFAIL: make-tokens\n")
+            print('')
+            g.trace(f"Exception...\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
             print(e)
-            g.es_exception()
+            # g.es_exception()
             raise
     #@+node:ekr.20191229065358.1: *5* 1.2: BaseTest.reassign_tokens
     def reassign_tokens(self, tokens, tree, filename='unit test'):
@@ -1353,7 +1361,7 @@ class TestOrange (BaseTest):
         expected = self.adjust_expected(expected) + '\n'
             # Add newline because of def.
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_unary_minus', tokens, tree)
+        results = self.beautify(contents, 'test_ws_after_unary_minus', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.80: *5* test_ws_around_arith_op_in_args
     def test_ws_around_arith_op_in_args(self):
@@ -1472,48 +1480,86 @@ class TestOrange (BaseTest):
     def test_ws_in_slices_1(self):
         # Pet peeve.
         contents = """\
-    ham[lower + offset: upper + offset]
-    ham[lower+offset : upper+offset]
+    a1[lower + offset: upper + offset]
     """
+    # a2[lower+offset : upper+offset]
         expected = """\
-    ham[lower + offset : upper + offset]
-    ham[lower + offset : upper + offset]
+    a1[lower + offset : upper + offset]
     """
+    # a2[lower + offset : upper + offset]
+        tag = 'test_ws_in_slices_1'
         expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.98: *5* test_ws_in_slices_2
     def test_ws_in_slices_2(self):
         # Pet peeve.
         contents = """\
     ham[ : upper_fn(x) : step_fn(x)]
-    ham[ : : step_fn(x)]
     """
         expected = """\
     ham[: upper_fn(x) : step_fn(x)]
-    ham[:: step_fn(x)]
     """
+        tag = 'test_ws_in_slices_2'
         expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.101: *5* Fail: test_ws_in_slices_3
-    def xxx_test_ws_in_slices_3(self):
+    #@+node:ekr.20200110122249.1: *5* test_ws_in_slices_3
+    def test_ws_in_slices_3(self):
         # Pet peeve.
         contents = """\
-    ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
-    ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
-    ham[: upper]
+    ham[ : : step_fn(x)]
     """
         expected = """\
-    ham[1 : 9], ham[1 : 9 : 3], ham[:9 : 3], ham[1 :: 3], ham[1 : 9:]
-    ham[lower : upper], ham[lower : upper:], ham[lower :: step]
-    ham[: upper]
+    ham[:: step_fn(x)]
     """
+        tag = 'test_ws_in_slices_3'
         expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110121819.1: *5* test_ws_in_slices_4
+    def test_ws_in_slices_4(self):
+        # Pet peeve.
+        contents = """empty [ : ]"""
+        expected = """empty[:]"""
+        tag = 'test_ws_in_slice_4'
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.101: *5* test_ws_in_slices_5
+    def test_ws_in_slices_5(self):
+        # Pet peeve.
+        contents = """\
+    a1[1: 9], a2[1: 9: 3]
+    """
+    # a1[1: 9], a2[1: 9: 3], a3[: 9: 3], a4[1:: 3]
+    # a5[ lower: upper ], a6[lower :: step]
+    # a7[: upper]
+        expected = """\
+    a1[1 : 9], a2[1 : 9 : 3]
+    """
+    # a1[1 : 9], a2[1 : 9 : 3], a3[:9 : 3], a4[1 :: 3]
+    # a5[lower : upper], a6[lower :: step]
+    # a7[: upper]
+        tag = 'test_ws_in_slices_5'
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110124656.1: *5* test_ws_in_slices_6
+    def test_ws_in_slices_6(self):
+        # Pet peeve.
+        # Empty step.
+        contents = """a1[1: 9: ], a2[lower : upper: ]"""
+        expected = """a1[1 : 9:], a2[lower : upper:]"""
+        tag = 'test_ws_in_slices_6'
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents, tag)
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.104: *5* test_ws_inside_parens_etc
     def test_ws_inside_parens_etc(self):
@@ -2282,16 +2328,6 @@ class TokenOrderGenerator:
     n_nodes = 0
 
     #@+others
-    #@+node:ekr.20191129044716.1: *4* tog.error
-    def error(self, message):  # pragma: no cover
-        """
-        Prepend the caller to the message, print it, and return AssignLinksError.
-        """
-        # Don't change the message. It may contain aligned lines.
-        caller = g.callers(4).split(',')[-2]
-        i = message.find(':')
-        pad = '' if i == -1 else ' ' * max(0, i - 6)
-        return AssignLinksError(f"\n{pad}caller: {caller}\n{message}")
     #@+node:ekr.20191113063144.11: *4* tog.report_coverage
     def report_coverage(self):  # pragma: no cover
         """Report untested visitors."""
@@ -2457,6 +2493,21 @@ class TokenOrderGenerator:
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
+    #@+node:ekr.20200110162044.1: *5* tog.find_next_significant_token
+    def find_next_significant_token(self):
+        """
+        Scan from *after* the previous significant token looking
+        for the next significant token.
+        
+        Return the token, or None. Never change self.px.
+        """
+        px = self.px + 1
+        while px < len(self.tokens):
+            token = self.tokens[px]
+            px += 1
+            if is_significant_token(token):
+                return token
+        return None
     #@+node:ekr.20191121180100.1: *5* tog.gen*
     # Useful wrappers.
 
@@ -2493,13 +2544,14 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace:
-            # Don't add needless repr's!
-            val_s = val if kind in ('name', 'string') else repr(val)
-            if trace: g.trace(f"\n{self.node.__class__.__name__} {kind}.{val_s}")
+            print('')
+            g.trace('Ignore:', self.px, kind, val)
         #
         # Leave all non-significant tokens for later.
         if not is_significant(kind, val):
-            if trace: g.trace('\nENTRY: insignificant', self.px, kind, val)
+            if trace:
+                print('')
+                g.trace('  Scan:', self.px, kind, val)
             return
         #
         # Step one: Scan from *after* the previous significant token,
@@ -2529,7 +2581,7 @@ class TokenOrderGenerator:
                         print(s)
                 line_s = f"line {token.line_number}:"
                 val = g.truncate(val, 40)
-                raise self.error(
+                raise AssignLinksError(
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
                     f"Looking for: {kind}.{val}\n"
@@ -2543,7 +2595,7 @@ class TokenOrderGenerator:
                 g.trace('\nSync failed...')
                 g.printObj(tokens[max(0, px-5):], tag='Tokens')
             val = g.truncate(val, 40)
-            raise self.error(
+            raise AssignLinksError(
                  f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{val}\n"
                  f"      found: end of token list")
@@ -2568,8 +2620,16 @@ class TokenOrderGenerator:
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
-        assert token.node is None, (repr(token), g.callers())
         trace = False
+        if token.node is not None:
+            line_s = f"line {token.line_number}:"
+            raise AssignLinksError(
+                    f"       file: {self.filename}\n"
+                    f"{line_s:>12} {token.line.strip()}\n"
+                    f"token index: {self.px}\n"
+                    f"token.node is not None\n"
+                    f" token.node: {token.node.__class__.__name__}\n"
+                    f"    callers: {g.callers()}")
         if (
             is_significant_token(token)
             or token.kind in ('comment', 'newline')
@@ -2578,10 +2638,8 @@ class TokenOrderGenerator:
                 g.trace(
                     f"node: {node.__class__.__name__!s:16}"
                     f"token: {token.dump()}")
-            #
             # Link the token to the ast node.
             token.node = node
-            #
             # Add the token to node's token_list.
             token_list = getattr(node, 'token_list', [])
             node.token_list = token_list + [token]
@@ -3009,7 +3067,7 @@ class TokenOrderGenerator:
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
-        raise self.error(
+        raise AssignLinksError(
             f"       file: {self.filename}\n"
             f"do_FormattedValue should never be called")
         
@@ -3061,7 +3119,7 @@ class TokenOrderGenerator:
             elif token.kind in ('endmarker', 'name', 'number', 'op'):
                 # The 'endmarker' token ensures we will have a token.
                 if not results:
-                    raise self.error(
+                    raise AssignLinksError(
                         f"        file: {self.filename}\n"
                         f"        line: {token.line_number}\n"
                         f"string_index: {i}\n"
@@ -3072,7 +3130,7 @@ class TokenOrderGenerator:
             i += 1
         if i >= len(self.tokens):
             g.trace('token overrun', i)
-            raise self.error(f"token overrun")
+            raise AssignLinksError(f"token overrun")
         if trace:
             g.trace('\nresults...')
             for z in results:
@@ -3125,15 +3183,25 @@ class TokenOrderGenerator:
             yield from self.gen_name('for')
             yield from self.gen(z)
     #@+node:ekr.20191113063144.49: *6* tog.Slice
+    # slice = Slice(expr? lower, expr? upper, expr? step)
+
     def do_Slice(self, node):
 
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
-        yield from self.gen(lower)
+        if lower is not None:
+            yield from self.gen(lower)
+        # Always put the colon between upper and lower.
         yield from self.gen_op(':')
-        yield from self.gen(upper)
-        if step is not None:
+        if upper is not None:
+            yield from self.gen(upper)
+        # Put the second colon if it exists in the token list.
+        if step is None:
+            token = self.find_next_significant_token()
+            if token and token.value == ':':
+                yield from self.gen_op(':')
+        else:
             yield from self.gen_op(':')
             yield from self.gen(step)
     #@+node:ekr.20191113063144.50: *6* tog.Str & helpers
@@ -3153,7 +3221,7 @@ class TokenOrderGenerator:
         i = self.string_index
         i = self.next_str_index(i + 1)
         if i >= len(self.tokens):
-            raise self.error(f"End of tokens")
+            raise AssignLinksError(f"End of tokens")
         token = self.tokens[i]
         self.string_index = i
         return token
@@ -3449,7 +3517,7 @@ class TokenOrderGenerator:
         #
         # This sanity check is important. It has failed in the past.
         if token.value not in ('if', 'elif'):
-            raise self.error(
+            raise AssignLinksError(
                 f"file: {self.filename}\n"
                 f"line: {token.line_number}\n"
                 f"expected 'if' or 'elif' (name) token, got '{token!s}")
