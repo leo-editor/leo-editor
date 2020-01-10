@@ -794,6 +794,10 @@ class BaseTest (unittest.TestCase):
     counts, times = {}, {}
 
     #@+others
+    #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
+    def adjust_expected(self, s):
+        """Adjust leading indentation in the expected string s."""
+        return g.adjustTripleString(s.lstrip('\\\n')).rstrip() + '\n'
     #@+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
     def check_roundtrip(self, contents):
         """Check that the tokenizer round-trips the given contents."""
@@ -1331,6 +1335,44 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.26: *4* test_unary_minus
+    def test_unary_minus(self):
+
+        contents = """\
+    def spam():
+        if - 1 < 2:
+            pass
+    """
+        expected = """\
+    def spam():
+        if -1 < 2:
+            pass
+    """
+        expected = self.adjust_expected(expected) + '\n'  # Add newline because of def.
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_unary_minus', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110102248.1: *4* Pet peeves...
+    #@+node:ekr.20200110014220.74: *5* test_spaces_before_trailing_comment
+    def test_spaces_before_trailing_comment(self):
+        # Pet peeve.
+        contents = """\
+    a = b # comment
+    c = d# comment
+    e - f   # comment
+    # Single-line comment.
+    """
+        expected = """\
+    a = b  # comment
+    c = d  # comment
+    e - f  # comment
+    # Single-line comment.
+    """
+
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
     
