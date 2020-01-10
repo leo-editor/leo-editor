@@ -2029,7 +2029,7 @@ class TokenOrderGenerator:
 
     #@+others
     #@+node:ekr.20191129044716.1: *4* tog.error
-    def error(self, message):  # pragma no cover
+    def error(self, message):  # pragma: no cover
         """
         Prepend the caller to the message, print it, and return AssignLinksError.
         """
@@ -2039,7 +2039,7 @@ class TokenOrderGenerator:
         pad = '' if i == -1 else ' ' * max(0, i - 6)
         return AssignLinksError(f"\n{pad}caller: {caller}\n{message}")
     #@+node:ekr.20191113063144.11: *4* tog.report_coverage
-    def report_coverage(self):  # pragma no cover
+    def report_coverage(self):  # pragma: no cover
         """Report untested visitors."""
 
         def key(z):
@@ -2130,7 +2130,7 @@ class TokenOrderGenerator:
         yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
-    def init_from_file(self, filename):  # pragma no cover
+    def init_from_file(self, filename):  # pragma: no cover
         """
         Create the tokens and ast tree for the given file.
         
@@ -2147,7 +2147,7 @@ class TokenOrderGenerator:
         self.reassign_tokens(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
-    def init_from_string(self, contents):  # pragma no cover
+    def init_from_string(self, contents):  # pragma: no cover
         """
         Tokenize, parse and create links in the contents string.
         
