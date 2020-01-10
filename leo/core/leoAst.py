@@ -1336,8 +1336,9 @@ class TestOrange (BaseTest):
         expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.26: *4* test_unary_minus
-    def test_unary_minus(self):
+    #@+node:ekr.20200110102248.1: *4* Pet peeves...
+    #@+node:ekr.20200110014220.26: *5* test_ws_after_unary_minus
+    def test_ws_after_unary_minus(self):
 
         contents = """\
     def spam():
@@ -1349,13 +1350,54 @@ class TestOrange (BaseTest):
         if -1 < 2:
             pass
     """
-        expected = self.adjust_expected(expected) + '\n'  # Add newline because of def.
+        expected = self.adjust_expected(expected) + '\n'
+            # Add newline because of def.
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, 'test_unary_minus', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110102248.1: *4* Pet peeves...
-    #@+node:ekr.20200110014220.74: *5* test_spaces_before_trailing_comment
-    def test_spaces_before_trailing_comment(self):
+    #@+node:ekr.20200110014220.80: *5* test_ws_around_arith_op_in_args
+    def test_ws_around_arith_op_in_args(self):
+        # Pet peeve.
+        contents = """\
+    def foo(a, b):
+        foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+        bar(2 + baz)
+    """
+        expected = """\
+    def foo(a, b):
+        foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+        bar(2+baz)
+    """
+        expected = self.adjust_expected(expected) + '\n'
+            # Add newline because of def.
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.86: *5* test_ws_before_comma_semicolon_colon
+    def test_ws_before_comma_semicolon_colon(self):
+        # Pet peeve.
+        contents = """\
+    if x == 4: pass
+    if x == 4 : pass
+    print (x, y); x, y = y, x
+    print (x , y) ; x , y = y , x
+    x, y = y, x
+    x , y = y , x
+    """
+        expected = """\
+    if x == 4: pass
+    if x == 4: pass
+    print(x, y); x, y = y, x
+    print(x, y); x, y = y, x
+    x, y = y, x
+    x, y = y, x
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.74: *5* test_ws_before_trailing_comment
+    def test_ws_before_trailing_comment(self):
         # Pet peeve.
         contents = """\
     a = b # comment
@@ -1369,7 +1411,121 @@ class TestOrange (BaseTest):
     e - f  # comment
     # Single-line comment.
     """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.83: *5* test_ws_before_word_ops
+    def test_ws_before_word_ops(self):
+        # Pet peeve.
+        contents = """\
+    b =    ('and', 'in', 'not', 'not in', 'or')
+    # def foo():
+        # return ''.join([z.to_string() for z in self.code_list])
 
+    """
+        expected = """\
+    b = ('and', 'in', 'not', 'not in', 'or')
+    # def foo():
+        # return ''.join([z.to_string() for z in self.code_list])
+
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.89: *5* test_ws_in_parens_1
+    def test_ws_in_parens_1(self):
+        # Pet peeve.
+        contents = """\
+    spam(1)
+    spam ( 1 )
+    dct ['key'] = lst [index]
+    dct['key'] = lst[index]
+    """
+        expected = """\
+    spam(1)
+    spam(1)
+    dct['key'] = lst[index]
+    dct['key'] = lst[index]
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.92: *5* test_ws_in_parens_2
+    def test_ws_in_parens_2(self):
+        # Pet peeve.
+        contents = """\
+    foo = (0,)
+    bar = (0, )
+    """
+        expected = """\
+    foo = (0,)
+    bar = (0,)
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.95: *5* test_ws_in_slices_1
+    def test_ws_in_slices_1(self):
+        # Pet peeve.
+        contents = """\
+    ham[lower + offset: upper + offset]
+    ham[lower+offset : upper+offset]
+    """
+        expected = """\
+    ham[lower + offset : upper + offset]
+    ham[lower + offset : upper + offset]
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.98: *5* test_ws_in_slices_2
+    def test_ws_in_slices_2(self):
+        # Pet peeve.
+        contents = """\
+    ham[ : upper_fn(x) : step_fn(x)]
+    ham[ : : step_fn(x)]
+    """
+        expected = """\
+    ham[: upper_fn(x) : step_fn(x)]
+    ham[:: step_fn(x)]
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.101: *5* Fail: test_ws_in_slices_3
+    def xxx_test_ws_in_slices_3(self):
+        # Pet peeve.
+        contents = """\
+    ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+    ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
+    ham[: upper]
+    """
+        expected = """\
+    ham[1 : 9], ham[1 : 9 : 3], ham[:9 : 3], ham[1 :: 3], ham[1 : 9:]
+    ham[lower : upper], ham[lower : upper:], ham[lower :: step]
+    ham[: upper]
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.104: *5* test_ws_inside_parens_etc
+    def test_ws_inside_parens_etc(self):
+        # Pet peeve.
+        contents = """\
+    spam(ham[1], {eggs: 2})
+    spam( ham[ 1 ], { eggs: 2 } )
+    """
+        expected = """\
+    spam(ham[1], {eggs: 2})
+    spam(ham[1], {eggs: 2})
+    """
         expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
