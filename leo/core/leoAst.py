@@ -184,6 +184,10 @@ class LeoGlobals: # pragma: no cover
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 if 1: # pragma: no cover
     #@+others
+    #@+node:ekr.20200101030236.1: *3* function: tokens_to_string
+    def tokens_to_string(tokens):
+        """Return the string represented by the list of tokens."""
+        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
@@ -459,10 +463,6 @@ if 1: # pragma: no cover
         class_name = node.__class__.__name__
         assert class_name in _op_names, repr(class_name)
         return _op_names [class_name].strip()
-    #@+node:ekr.20200101030236.1: *4* function: tokens_to_string
-    def tokens_to_string(tokens):
-        """Return the string represented by the list of tokens."""
-        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20200107114452.1: *3* node/token creators...
     #@+node:ekr.20200103082049.1: *4* function: make_tokens
     def make_tokens(contents):
@@ -821,9 +821,6 @@ class BaseTest (unittest.TestCase):
         if not tokens:  # pragma: no cover
             return None, None, None
         tree = self.make_tree(contents)
-        ### dump_contents(contents)
-        ### dump_ast(tree)
-        ### dump_tokens(tokens)
         if not tree:  # pragma: no cover
             return None, None, None
         self.balance_tokens(tokens)
