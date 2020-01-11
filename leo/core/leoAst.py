@@ -3170,6 +3170,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *6* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
+        # This loop is necessary to handle string concatenation.
         while True:
             token = self.find_next_significant_token()
             if token.kind == 'string':
