@@ -2552,7 +2552,8 @@ class TokenOrderGenerator:
             px += 1
             if is_significant_token(token):
                 return token
-        return None
+        # This will never be taken. because endtoken is significant.
+        return None  # pragma: no cover
     #@+node:ekr.20191121180100.1: *5* tog.gen*
     # Useful wrappers.
 
