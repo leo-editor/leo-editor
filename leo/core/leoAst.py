@@ -2995,7 +2995,7 @@ class TokenOrderGenerator:
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
         for z in node.ifs or []:
-            self.advance_if()
+            ### self.advance_if()
             yield from self.gen_name('if')
             yield from self.gen(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
@@ -3199,7 +3199,7 @@ class TokenOrderGenerator:
         # Put the second colon if it exists in the token list.
         if step is None:
             token = self.find_next_significant_token()
-            assert token.kind == 'op' and token.value in ':]', token
+            ### assert token.kind == 'op' and token.value in ':]', token
             if token and token.value == ':':
                 yield from self.gen_op(':')
         else:
@@ -3310,10 +3310,10 @@ class TokenOrderGenerator:
         
         #'%s if %s else %s'
         yield from self.gen(node.body)
-        self.advance_if()
+        ### self.advance_if()
         yield from self.gen_name('if')
         yield from self.gen(node.test)
-        self.advance_if()
+        ### self.advance_if()
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *5* tog: Statements
@@ -3394,7 +3394,7 @@ class TokenOrderGenerator:
         if node.orelse:
             # 'else:\n'
             # Consume the 'else' if-item.
-            self.advance_if()
+            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3477,7 +3477,7 @@ class TokenOrderGenerator:
         # 'else:\n'
         if node.orelse:
             # Consume the 'else' if-item.
-            self.advance_if()
+            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3514,16 +3514,15 @@ class TokenOrderGenerator:
         #@-<< do_If docstring >>
         #
         # Consume the if-item.
-        ### token = self.advance_if()
         token = self.find_next_significant_token()
-        ### assert token.kind == 'name' and token.value in ('if', 'elif'), token
         #
         # This sanity check is important. It has failed in the past.
-        if token.value not in ('if', 'elif'):
-            raise AssignLinksError(
-                f"file: {self.filename}\n"
-                f"line: {token.line_number}\n"
-                f"expected 'if' or 'elif' (name) token, got '{token!s}")
+        if 0:
+            if token.value not in ('if', 'elif'):
+                raise AssignLinksError(
+                    # f"file: {self.filename}\n"
+                    f"line: {token.line_number}\n"
+                    f"expected 'if' or 'elif' (name) token, got '{token!s}")
         #
         # If or elif line...
             # if %s:\n
@@ -3541,72 +3540,15 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            ### val = self.peek_if().value
             token = self.find_next_significant_token()
-            ### if val == 'else':
             if token.value == 'else':
-                # Consume the 'else' if-item.
-                ### self.advance_if()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
                 yield from self.gen(node.orelse)
             else:
-                # Do *not* consume an if-item here.
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191123152511.1: *7* tog.advance_if
-    if_index = -1
-
-    def is_if_token(self, token):
-        return token.kind == 'name' and token.value in ('if', 'elif', 'else')
-        
-    def advance_if(self):
-        """
-        Set token to the the *present* if-related token,
-        initiing .if_index if necessary.
-        
-        Advance .if_index to the *next* if-related token, if any.
-        
-        Return the token.
-        """
-        trace = False # An excellent trace
-        #
-        # Don't even *think* of omitting this check.
-        # Doing so would create time bombs.
-        i = self.if_index
-        if i == -1:
-            i = self.find_next_if_token(i)
-        #
-        # Set token to the *present* if-related token.
-        token = self.tokens[i] if i < len(self.tokens) else None
-        if trace:
-            line = token.line_number if token else ' '
-            token_s = token or 'No more tokens'
-            g.trace(f"line {line:>4} next i: {i:>5} {token_s!s:<12} {g.callers(1)}")
-        #
-        # Advance to the *next* if-related token.
-        i = self.find_next_if_token(i + 1)
-        self.if_index = i
-        return token
-    #@+node:ekr.20191204014042.1: *7* tog.find_next_if_token
-    def find_next_if_token(self, i):
-        """Advance i to the if-related token *after* self.tokens[i]."""
-        while i < len(self.tokens):
-            if self.is_if_token(self.tokens[i]):
-                # g.trace(f" {i:>3} {self.tokens[i]}")
-                break
-            i += 1
-        return i
-    #@+node:ekr.20191204012319.1: *7* tog.peek_if
-    def peek_if(self):
-        """Return the current if-related token."""
-        # Init, if necessary.
-        if self.if_index == -1:  # pragma: no cover
-            self.if_index = self.find_next_if_token(0)
-        # IndexError is a sanity check.
-        assert self.if_index < len(self.tokens)
-        return self.tokens[self.if_index]
     #@+node:ekr.20191113063144.76: *6* tog.Import & helper
     def do_Import(self, node):
         
@@ -3684,7 +3626,7 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         yield from self.gen(node.handlers)
         if node.orelse:
-            self.advance_if()
+            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3710,7 +3652,7 @@ class TokenOrderGenerator:
         # Else clause...
         if node.orelse:
             # Consume the 'else' if-item.
-            self.advance_if()
+            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen_newline()
