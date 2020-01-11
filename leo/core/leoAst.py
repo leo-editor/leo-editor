@@ -19,7 +19,6 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
-new = True
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -2861,12 +2860,9 @@ class TokenOrderGenerator:
         
         """
         It's invalid to mix bytes and non-bytes literals, so just
-        advancing over the next 'string' token suffices.
+        advancing to the next 'string' token suffices.
         """
-        if new:
-            token = self.find_next_significant_token()
-        else:
-            token = self.advance_str()
+        token = self.find_next_significant_token()
         yield from self.gen_token('string', token.value)
     #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
@@ -3098,53 +3094,12 @@ class TokenOrderGenerator:
         
         Instead, we get the tokens *from the token list itself*!
         """
-        if 1:
-            while True:
-                token = self.find_next_significant_token()
-                if token.kind == 'string':
-                    yield from self.gen_token(token.kind, token.value)
-                else:
-                    break
-        else: 
-            for z in self.get_concatenated_string_tokens():
-                self.advance_str()
-                yield from self.gen_token(z.kind, z.value)
-    #@+node:ekr.20191205053536.1: *7* tog.get_concatenated_tokens
-    def get_concatenated_string_tokens(self):
-        """
-        Return the next 'string' token and all 'string' tokens concatentaed to
-        it.
-        
-        Do *not* update self.string_index here.
-        """
-        trace = False
-        i, results = self.string_index, []
-        i = self.next_str_index(i + 1)
-        while i < len(self.tokens):
-            token = self.tokens[i]
+        while True:
+            token = self.find_next_significant_token()
             if token.kind == 'string':
-                results.append(token)
-            elif token.kind in ('endmarker', 'name', 'number', 'op'):
-                # The 'endmarker' token ensures we will have a token.
-                if not results:
-                    raise AssignLinksError(
-                        f"        file: {self.filename}\n"
-                        f"        line: {token.line_number}\n"
-                        f"string_index: {i}\n"
-                        f"expected 'string' token, got {token!s}")
-                break
+                yield from self.gen_token(token.kind, token.value)
             else:
-                pass # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-            i += 1
-        if i >= len(self.tokens):
-            g.trace('token overrun', i)
-            raise AssignLinksError(f"token overrun")
-        if trace:
-            g.trace('\nresults...')
-            for z in results:
-                print(f"  {z!s}")
-            print('')
-        return results
+                break
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node):
 
@@ -3212,48 +3167,15 @@ class TokenOrderGenerator:
         else:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str & helpers
+    #@+node:ekr.20191113063144.50: *6* tog.Str
     def do_Str(self, node):
         """This node represents a string constant."""
-        if 1:
-            while True:
-                token = self.find_next_significant_token()
-                if token.kind == 'string':
-                    yield from self.gen_token(token.kind, token.value)
-                else:
-                    break
-        else: 
-            for z in self.get_concatenated_string_tokens():
-                self.advance_str()
-                yield from self.gen_token(z.kind, z.value)
-    #@+node:ekr.20191126074503.1: *7* tog.advance_str
-    # The index in self.tokens of the previously scanned 'string' token.
-    string_index = -1 
-
-    def advance_str(self):
-        """
-        Advance over exactly one 'string' token, and return it.
-        """
-        i = self.string_index
-        i = self.next_str_index(i + 1)
-        if i >= len(self.tokens):
-            raise AssignLinksError(f"End of tokens")
-        token = self.tokens[i]
-        self.string_index = i
-        return token
-    #@+node:ekr.20191128135521.1: *7* tog.next_str_index
-    def next_str_index(self, i):
-        """Return the index of the next 'string' token, or None."""
-        trace = False
-        i1 = i
-        while i < len(self.tokens):
-            token = self.tokens[i]
+        while True:
+            token = self.find_next_significant_token()
             if token.kind == 'string':
-                if trace:
-                    g.trace(f"{i1:>2}-->{i:<2} {self.tokens[i]}")
+                yield from self.gen_token(token.kind, token.value)
+            else:
                 break
-            i += 1
-        return i
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
