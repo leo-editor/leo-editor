@@ -19,6 +19,7 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
+new = True
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -2862,7 +2863,10 @@ class TokenOrderGenerator:
         It's invalid to mix bytes and non-bytes literals, so just
         advancing over the next 'string' token suffices.
         """
-        token = self.advance_str()
+        if new:
+            token = self.find_next_significant_token()
+        else:
+            token = self.advance_str()
         yield from self.gen_token('string', token.value)
     #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
@@ -3094,9 +3098,17 @@ class TokenOrderGenerator:
         
         Instead, we get the tokens *from the token list itself*!
         """
-        for z in self.get_concatenated_string_tokens():
-            self.advance_str()
-            yield from self.gen_token(z.kind, z.value)
+        if 1:
+            while True:
+                token = self.find_next_significant_token()
+                if token.kind == 'string':
+                    yield from self.gen_token(token.kind, token.value)
+                else:
+                    break
+        else: 
+            for z in self.get_concatenated_string_tokens():
+                self.advance_str()
+                yield from self.gen_token(z.kind, z.value)
     #@+node:ekr.20191205053536.1: *7* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self):
         """
@@ -3203,9 +3215,17 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.50: *6* tog.Str & helpers
     def do_Str(self, node):
         """This node represents a string constant."""
-        for z in self.get_concatenated_string_tokens():
-            self.advance_str()
-            yield from self.gen_token(z.kind, z.value)
+        if 1:
+            while True:
+                token = self.find_next_significant_token()
+                if token.kind == 'string':
+                    yield from self.gen_token(token.kind, token.value)
+                else:
+                    break
+        else: 
+            for z in self.get_concatenated_string_tokens():
+                self.advance_str()
+                yield from self.gen_token(z.kind, z.value)
     #@+node:ekr.20191126074503.1: *7* tog.advance_str
     # The index in self.tokens of the previously scanned 'string' token.
     string_index = -1 
