@@ -2663,7 +2663,7 @@ class TokenOrderGenerator:
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         trace = False
-        if token.node is not None:
+        if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
             raise AssignLinksError(
                     f"       file: {self.filename}\n"
@@ -3250,7 +3250,7 @@ class TokenOrderGenerator:
             # Skip over *all* insignificant tokens!
             if is_significant_token(token):
                 break
-        if not token or token.kind != 'string':
+        if not token or token.kind != 'string':  # pragma: no cover
             if not token:
                 token = self.tokens[-1]
             filename = getattr(self, 'filename', '<no filename>')
@@ -3888,7 +3888,7 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
-        if not hasattr(node.left, 'token_list'):
+        if not hasattr(node.left, 'token_list'):  # pragma: no cover
             print('')
             g.trace('Error: no token list in Str')
             dump_tree(node)
