@@ -2992,7 +2992,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
         for z in node.ifs or []:
-            ### self.advance_if()
             yield from self.gen_name('if')
             yield from self.gen(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
@@ -3306,10 +3305,8 @@ class TokenOrderGenerator:
         
         #'%s if %s else %s'
         yield from self.gen(node.body)
-        ### self.advance_if()
         yield from self.gen_name('if')
         yield from self.gen(node.test)
-        ### self.advance_if()
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *5* tog: Statements
@@ -3376,7 +3373,6 @@ class TokenOrderGenerator:
     def do_AsyncFor(self, node):
         
         # The def line...
-        # 'async for %s in %s:\n' % (
         yield from self.gen_name('async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
@@ -3388,9 +3384,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         # Else clause...
         if node.orelse:
-            # 'else:\n'
-            # Consume the 'else' if-item.
-            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3460,7 +3453,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.73: *6* tog.For
     def do_For(self, node):
 
-        #'for %s in %s:\n'
+        # The def line...
         yield from self.gen_name('for')
         yield from self.gen(node.target)
         yield from self.gen_name('in')
@@ -3470,10 +3463,8 @@ class TokenOrderGenerator:
         # Body...
         self.level += 1
         yield from self.gen(node.body)
-        # 'else:\n'
+        # Else clause...
         if node.orelse:
-            # Consume the 'else' if-item.
-            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3608,8 +3599,8 @@ class TokenOrderGenerator:
         self.level += 1
         yield from self.gen(node.body)
         yield from self.gen(node.handlers)
+        # Else...
         if node.orelse:
-            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
@@ -3634,8 +3625,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         # Else clause...
         if node.orelse:
-            # Consume the 'else' if-item.
-            ### self.advance_if()
             yield from self.gen_name('else')
             yield from self.gen_op(':')
             yield from self.gen_newline()
