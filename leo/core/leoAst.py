@@ -1638,11 +1638,6 @@ class TestTOG (BaseTest):
 
     #@+others
     #@+node:ekr.20200111042805.1: *4* Bugs...
-    #@+node:ekr.20200111042825.1: *5* test_tog.test_crash_1
-    def test_crash_1(self):
-        # leoCheck.py.
-        contents = """return self.Type('error', 'no member %s' % ivar)"""
-        self.make_data(contents)
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
@@ -1680,6 +1675,15 @@ class TestTOG (BaseTest):
         pass
     """
         self.make_data(contents)
+    #@+node:ekr.20200111171738.1: *5* test_FunctionDef_with_annotations
+    def test_FunctionDef_with_annotations(self):
+        contents = r"""\
+    def foo(a: 'x', b: 5 + 6, c: list) -> max(2, 9):
+        pass
+    """
+        self.make_data(contents)
+        # contents, tokens, tree = self.make_data(contents)
+        # dump_ast(tree)
     #@+node:ekr.20191227052446.14: *4* Expressions & operators...
     #@+node:ekr.20191227052446.15: *5* test_attribute
     def test_attribute(self):
@@ -2130,6 +2134,13 @@ class TestTOG (BaseTest):
     print('done')
     """
         self.make_data(contents)
+    #@+node:ekr.20191227052446.64: *5* test_potential_fstring
+    def test_potential_fstring(self):
+        contents = r"""\
+    print('test %s=%s'%(a, 2))
+    print('done')
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.60: *5* test_raw docstring
     def test_raw_docstring(self):
         contents = r'''\
@@ -2145,13 +2156,6 @@ class TestTOG (BaseTest):
     r3(bs=r'\\')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.63: *5* test_string concatentation
-    def test_concatentation(self):
-        contents = r"""\
-    print('a' 'b')
-    print('c')
-    """
-        self.make_data(contents)
     #@+node:ekr.20191227052446.62: *5* test_single quote
     def test_single_quote(self):
         # leoGlobals.py line 806.
@@ -2159,12 +2163,17 @@ class TestTOG (BaseTest):
     print('"')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.64: *5* test_string with % op
-    def test_potential_fstring(self):
+    #@+node:ekr.20191227052446.63: *5* test_string concatenation_1
+    def test_concatenation_1(self):
         contents = r"""\
-    print('test %s=%s'%(a, 2))
-    print('done')
+    print('a' 'b')
+    print('c')
     """
+        self.make_data(contents)
+    #@+node:ekr.20200111042825.1: *5* test_string_concatenation_2
+    def test_string_concatenation_2(self):
+        # Crash in leoCheck.py.
+        contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
     #@+node:ekr.20191227052446.44: *5* test_Call
@@ -2735,12 +2744,11 @@ class TokenOrderGenerator:
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
-        
         """This is one argument of a list of ast.Function or ast.Lambda arguments."""
-
         yield from self.gen_name(node.arg)
         annotation = getattr(node, 'annotation', None)
-        if annotation is not None: ###
+        if annotation is not None:
+            yield from self.gen_op(':')
             yield from self.gen(node.annotation)
     #@+node:ekr.20191113063144.27: *6*  tog.arguments
     #arguments = (
@@ -2829,6 +2837,13 @@ class TokenOrderGenerator:
         yield from self.gen(node.body)
         self.level -= 1
     #@+node:ekr.20191113063144.17: *6* tog.FunctionDef
+    # FunctionDef(
+    #   identifier name, arguments args,
+    #   stmt* body,
+    #   expr* decorator_list,
+    #   expr? returns,
+    #   string? type_comment)
+
     def do_FunctionDef(self, node):
         
         # Guards...
@@ -2840,17 +2855,17 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             yield from self.gen_newline()
         # Signature...
-            # def name(args): returns\n
+            # def name(args): -> returns\n
             # def name(args):\n
         yield from self.gen_name('def')
         yield from self.gen_name(node.name) # A string.
         yield from self.gen_op('(')
         yield from self.gen(node.args)
         yield from self.gen_op(')')
-        yield from self.gen_op(':')
         if returns is not None:
             yield from self.gen_op('->')
             yield from self.gen(node.returns)
+        yield from self.gen_op(':')
         yield from self.gen_newline()
         # Body...
         self.level += 1
