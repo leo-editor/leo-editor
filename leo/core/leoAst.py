@@ -3199,7 +3199,6 @@ class TokenOrderGenerator:
         # Put the second colon if it exists in the token list.
         if step is None:
             token = self.find_next_significant_token()
-            ### assert token.kind == 'op' and token.value in ':]', token
             if token and token.value == ':':
                 yield from self.gen_op(':')
         else:
@@ -3512,21 +3511,8 @@ class TokenOrderGenerator:
         Instead, we scan the tokens list for the next 'if', 'else' or 'elif' token.
         """
         #@-<< do_If docstring >>
-        #
-        # Consume the if-item.
+        # Use the next significant token to distinguish between 'if' and 'elif'.
         token = self.find_next_significant_token()
-        #
-        # This sanity check is important. It has failed in the past.
-        if 0:
-            if token.value not in ('if', 'elif'):
-                raise AssignLinksError(
-                    # f"file: {self.filename}\n"
-                    f"line: {token.line_number}\n"
-                    f"expected 'if' or 'elif' (name) token, got '{token!s}")
-        #
-        # If or elif line...
-            # if %s:\n
-            # elif %s: \n
         yield from self.gen_name(token.value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
