@@ -1206,28 +1206,11 @@ class TestFstringify (BaseTest):
             # 'defs: %s calls: %s undefined calls: %s returns: %s'
         # )
         contents = r"""'files: %s\n' 'defs: %s'"""
-    # format = (
-        # 'files: %s\n'
-        # 'defs: %s'
-    # )
-    ###
-        # summary = format % (
-            # len(self.files),
-            # "{:,}".format(self.tot_lines),
-            # "{:,}".format(self.tot_s),
-            # "{:,}".format(len(self.classes_d.keys())),
-            # "{:,}".format(len(self.defs_d.keys())),
-            # "{:,}".format(len(self.calls_d.keys())),
-            # "{:,}".format(self.n_undefined_calls),
-            # "{:,}".format(len(self.returns_d.keys())),
-        # )
         expected = contents
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(expected, results)
 
-
-     
     #@+node:ekr.20200106163535.1: *4* test_braces
     def test_braces(self):
 
@@ -3244,17 +3227,6 @@ class TokenOrderGenerator:
         # This loop is necessary to handle string concatenation.
         for z in self.get_concatenated_string_tokens():
             yield from self.gen_token(z.kind, z.value)
-        ### Fails.
-        if 0:
-            # This loop is necessary to handle string concatenation.
-            g.trace('Entry', node.s)
-            while True:
-                token = self.find_next_significant_token()
-                if token.kind == 'string':
-                    g.trace(token.line_number, token)
-                    yield from self.gen_token(token.kind, token.value)
-                else:
-                    break
     #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens (revised)
     def get_concatenated_string_tokens(self):
         """
