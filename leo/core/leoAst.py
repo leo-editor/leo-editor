@@ -3199,6 +3199,7 @@ class TokenOrderGenerator:
         # Put the second colon if it exists in the token list.
         if step is None:
             token = self.find_next_significant_token()
+            assert token.kind == 'op' and token.value in ':]', token
             if token and token.value == ':':
                 yield from self.gen_op(':')
         else:
@@ -3513,7 +3514,9 @@ class TokenOrderGenerator:
         #@-<< do_If docstring >>
         #
         # Consume the if-item.
-        token = self.advance_if()
+        ### token = self.advance_if()
+        token = self.find_next_significant_token()
+        ### assert token.kind == 'name' and token.value in ('if', 'elif'), token
         #
         # This sanity check is important. It has failed in the past.
         if token.value not in ('if', 'elif'):
@@ -3538,10 +3541,12 @@ class TokenOrderGenerator:
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
-            val = self.peek_if().value
-            if val == 'else':
+            ### val = self.peek_if().value
+            token = self.find_next_significant_token()
+            ### if val == 'else':
+            if token.value == 'else':
                 # Consume the 'else' if-item.
-                self.advance_if()
+                ### self.advance_if()
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
                 yield from self.gen_newline()
