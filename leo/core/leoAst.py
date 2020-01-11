@@ -187,6 +187,12 @@ if 1: # pragma: no cover
     #@+node:ekr.20200101030236.1: *3* function: tokens_to_string
     def tokens_to_string(tokens):
         """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== token list is None ===== ')
+            print('')
+            return ''
         return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
@@ -522,12 +528,14 @@ if 1: # pragma: no cover
         g.printObj(AstDumper().dump_ast(ast), tag=tag)
     #@+node:ekr.20191228095945.4: *4* function: dump_contents
     def dump_contents(contents, tag='Contents'):
+        print('')
         print(f"{tag}...\n")
         for i, z in enumerate(g.splitLines(contents)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *4* function: dump_lines
     def dump_lines(tokens):
+        print('')
         print('Token lines...\n')
         for z in tokens:
             if z.line.strip():
@@ -537,11 +545,13 @@ if 1: # pragma: no cover
         print('')
     #@+node:ekr.20191228095945.7: *4* function: dump_results
     def dump_results(tokens):
+        print('')
         print('Results...\n')
         print(tokens_to_string(tokens))
         print('')
     #@+node:ekr.20191228095945.8: *4* function: dump_tokens
     def dump_tokens(tokens):
+        print('')
         print('Tokens...\n')
         print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
         for z in tokens:
@@ -549,12 +559,9 @@ if 1: # pragma: no cover
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
     def dump_tree(tree):
-        
         print('')
         print('Tree...\n')
-        print(AstDumper().dump_tree_and_links(tree))
-        
-    dump_tree_and_links = dump_tree
+        print(AstDumper().dump_tree(tree))
     #@+node:ekr.20200107040729.1: *4* function: show_diffs
     def show_diffs(s1, s2, filename=''):
         """Print diffs between strings s1 and s2."""
@@ -823,12 +830,16 @@ class BaseTest (unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return None, None, None
+        if 0: # Excellent traces for tracking down mysteries.
+            dump_contents(contents)
+            dump_ast(tree)
+            dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
         try:
             self.create_links(tokens, tree)
         except Exception as e:
-            ### g.trace('Error', e)
+            # The caller will give the error.
             return None, None, None
         self.reassign_tokens(tokens, tree)
         t2 = get_time()
@@ -980,8 +991,8 @@ class AstDumper:  # pragma: no cover
     """A class supporting various kinds of dumps of ast nodes."""
 
     #@+others
-    #@+node:ekr.20191112033445.1: *4* dumper.dump_tree_and_links & helper
-    def dump_tree_and_links(self, node):
+    #@+node:ekr.20191112033445.1: *4* dumper.dump_tree & helper
+    def dump_tree(self, node):
         """Briefly show a tree, properly indented."""
         result = [self.show_header()]
         self.dump_tree_and_links_helper(node, 0, result)
@@ -1187,6 +1198,36 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200111075114.1: *5* test_fs.test_crash_2
+    def test_crash_2(self):
+        # leoCheck.py, line 1704.
+        # format = 
+            # 'files: %s lines: %s chars: %s classes: %s\n'
+            # 'defs: %s calls: %s undefined calls: %s returns: %s'
+        # )
+        contents = r"""'files: %s\n' 'defs: %s'"""
+    # format = (
+        # 'files: %s\n'
+        # 'defs: %s'
+    # )
+    ###
+        # summary = format % (
+            # len(self.files),
+            # "{:,}".format(self.tot_lines),
+            # "{:,}".format(self.tot_s),
+            # "{:,}".format(len(self.classes_d.keys())),
+            # "{:,}".format(len(self.defs_d.keys())),
+            # "{:,}".format(len(self.calls_d.keys())),
+            # "{:,}".format(self.n_undefined_calls),
+            # "{:,}".format(len(self.returns_d.keys())),
+        # )
+        expected = contents
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, 'test_braces', tokens, tree)
+        assert results == expected, expected_got(expected, results)
+
+
+     
     #@+node:ekr.20200106163535.1: *4* test_braces
     def test_braces(self):
 
@@ -2236,8 +2277,8 @@ class TestTokens (BaseTest):
         ('abc')
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200110015014.8: *4* test_continuation
-    def test_continuation(self):
+    #@+node:ekr.20200110015014.8: *4* test_continuation_1
+    def test_continuation_1(self):
         
         contents = """\
     a = (3,4,
@@ -2251,21 +2292,34 @@ class TestTokens (BaseTest):
         'b']
     """
         self.check_roundtrip(contents)
+    #@+node:ekr.20200111085210.1: *4* test_continuation_2
+    def test_continuation_2(self):
         # Backslash means line continuation, except for comments
         contents = """\
     x=1+\\\n2
     # This is a comment\\\n# This also
     """
         self.check_roundtrip(contents)
+    #@+node:ekr.20200111085211.1: *4* test_continuation_3
+    def test_continuation_3(self):
+
         contents = """\
     # Comment \\\n
     x = 0
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200110015014.10: *4* test_string_concatenation
-    def test_string_concatentation(self):
-        # Two string literals on the same line
-        self.check_roundtrip("'' ''")
+    #@+node:ekr.20200110015014.10: *4* test_string_concatenation_1
+    def test_string_concatentation_1(self):
+        # Two *plain* string literals on the same line
+        self.check_roundtrip("""'abc' 'xyz'""")
+    #@+node:ekr.20200111081801.1: *4* test_string_concatenation_2
+    def test_string_concatentation_2(self):
+        # f-string followed by plain string on the same line
+        self.check_roundtrip("""f'abc' 'xyz'""")
+    #@+node:ekr.20200111081832.1: *4* test_string_concatenation_3
+    def test_string_concatentation_3(self):
+        # plain string followed by f-string on the same line
+        self.check_roundtrip("""'abc' f'xyz'""")
     #@-others
 #@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
 class TestTopLevelFunctions (BaseTest):
@@ -3105,14 +3159,18 @@ class TokenOrderGenerator:
         
         Instead, we get the tokens *from the token list itself*!
         """
-        # g.trace('Entry', node)
-        while True:
-            token = self.find_next_significant_token()
-            # g.trace(token.line_number, token)
-            if token.kind == 'string':
-                yield from self.gen_token(token.kind, token.value)
-            else:
-                break
+        for z in self.get_concatenated_string_tokens():
+            ### self.advance_str()
+            yield from self.gen_token(z.kind, z.value)
+        if 0: ###
+            # g.trace('Entry', node)
+            while True:
+                token = self.find_next_significant_token()
+                # g.trace(token.line_number, token)
+                if token.kind == 'string':
+                    yield from self.gen_token(token.kind, token.value)
+                else:
+                    break
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node):
 
@@ -3180,15 +3238,15 @@ class TokenOrderGenerator:
         else:
             yield from self.gen_op(':')
             yield from self.gen(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str
+    #@+node:ekr.20191113063144.50: *6* tog.Str & helper
     def do_Str(self, node):
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
-        token = self.find_next_significant_token()
-        assert token.kind == 'string', token
-        # g.trace(token.line_number, token)
-        yield from self.gen_token(token.kind, token.value)
+        for z in self.get_concatenated_string_tokens():
+            yield from self.gen_token(z.kind, z.value)
+        ### Fails.
         if 0:
+            # This loop is necessary to handle string concatenation.
             g.trace('Entry', node.s)
             while True:
                 token = self.find_next_significant_token()
@@ -3197,6 +3255,62 @@ class TokenOrderGenerator:
                     yield from self.gen_token(token.kind, token.value)
                 else:
                     break
+    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens (revised)
+    def get_concatenated_string_tokens(self):
+        """
+        Return the next 'string' token and all 'string' tokens concatenated to
+        it. *Never* update self.px here.
+        """
+        trace = False
+        tag = 'tog.get_concatenated_string_tokens'
+        i = self.px
+        if i > -1:
+            # self.px should point at a significant token.
+            token = self.tokens[i]
+            assert is_significant_token(token), (i, token)
+        #
+        # First, find the next significant token.  It should be a string.
+        i, token = i + 1, None
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                # Rescan the string.
+                i -= 1
+                break
+            # Skip over *all* insignificant tokens!
+            if is_significant_token(token):
+                break
+        if not token or token.kind != 'string':
+            if not token:
+                token = self.tokens[-1]
+            filename = getattr(self, 'filename', '<no filename>')
+            raise AssignLinksError(
+                f"\n"
+                f"{tag}...\n"
+                f"file: {filename}\n"
+                f"line: {token.line_number}\n"
+                f"   i: {i}\n"
+                f"expected 'string' token, got {token!s}")
+        #
+        # Accumulate string tokens.
+        assert self.tokens[i].kind == 'string'
+        results = []
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                results.append(token)
+            elif token.kind in ('endmarker', 'name', 'number', 'op'):
+                # Note 1: Unlike is_significant_token, *any* op will halt the scan.
+                #         This is valid because ')' surely will halt string concatenation.
+                #
+                # Note 2: The 'endmarker' token ensures we will have a token.
+                break
+            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        if trace:
+            g.printObj(results, tag=f"{tag}: Results")
+        return results
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4038,7 +4152,7 @@ class Fstringify (TokenOrderTraverser):
         if trace:
             g.trace('One node:', node.__class__.__name__)
             dump_tokens(tokens)
-            dump_tree_and_links(node)
+            dump_tree(node)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
     def substitute_values(self, lt_s, specs, values):
