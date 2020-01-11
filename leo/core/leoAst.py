@@ -1182,8 +1182,8 @@ class TestFstringify (BaseTest):
     #@+node:ekr.20200111043311.2: *5* test_fs.test_crash_1
     def test_crash_1(self):
         # leoCheck.py.
-        contents = """return self.Type('error', 'no member %s' % ivar)"""
-        expected = """return self.Type('error', f'no member {ivar}')"""
+        contents = """return ('error', 'no member %s' % ivar)"""
+        expected = """return ('error', f'no member {ivar}')"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -2266,7 +2266,6 @@ class TestTokens (BaseTest):
     def test_string_concatentation(self):
         # Two string literals on the same line
         self.check_roundtrip("'' ''")
-
     #@-others
 #@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
 class TestTopLevelFunctions (BaseTest):
@@ -2556,14 +2555,12 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace:
-            print('')
-            g.trace('Ignore:', self.px, kind, val)
+            g.trace('Ignore:', self.px, kind, repr(val))
         #
         # Leave all non-significant tokens for later.
         if not is_significant(kind, val):
             if trace:
-                print('')
-                g.trace('  Scan:', self.px, kind, val)
+                g.trace('  Scan:', self.px, kind, repr(val))
             return
         #
         # Step one: Scan from *after* the previous significant token,
@@ -2573,7 +2570,6 @@ class TokenOrderGenerator:
         #           Special case: because of JoinedStr's, syncing a
         #           string may jump over *many* significant tokens.
         old_px = px = self.px + 1
-        if trace: g.trace('\nEntry', px, kind, val)
         while px < len(self.tokens):
             token = tokens[px]
             if trace: g.trace('Token', px, token)
@@ -3188,14 +3184,19 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
-        # g.trace('Entry', node.s)
-        while True:
-            token = self.find_next_significant_token()
-            # g.trace(token.line_number, token)
-            if token.kind == 'string':
-                yield from self.gen_token(token.kind, token.value)
-            else:
-                break
+        token = self.find_next_significant_token()
+        assert token.kind == 'string', token
+        # g.trace(token.line_number, token)
+        yield from self.gen_token(token.kind, token.value)
+        if 0:
+            g.trace('Entry', node.s)
+            while True:
+                token = self.find_next_significant_token()
+                if token.kind == 'string':
+                    g.trace(token.line_number, token)
+                    yield from self.gen_token(token.kind, token.value)
+                else:
+                    break
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
