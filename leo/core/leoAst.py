@@ -2338,14 +2338,15 @@ class TestTopLevelFunctions (BaseTest):
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT (BaseTest):
     """Tests for the TokenOrderTraverser class."""
-    
+    #@+others
+    #@+node:ekr.20200111115318.1: *4* test_tot.test_traverse
     def test_traverse(self):
-        
+            
         contents = """\
-f(1)
-b = 2 + 3
-"""
-# print('%s = %s' % (2+3, 4*5))
+    f(1)
+    b = 2 + 3
+    """
+    # print('%s = %s' % (2+3, 4*5))
         if 1:
             contents, tokens, tree = self.make_file_data('leoApp.py')
         else:
@@ -2359,13 +2360,9 @@ b = 2 + 3
         t2 = get_time()
         self.update_counts('nodes', n_nodes)
         self.update_times('50: TOT.traverse', t2 - t1)
-        if 1:
-            t1 = get_time()
-            ng = TokenOrderNodeGenerator()
-            ng.generate_nodes(tokens, tree)
-            t2 = get_time()
-            self.update_times('51: TONG.traverse', t2 - t1)
         self.dump_stats()
+    #@-others
+    
 #@+node:ekr.20191227170628.1: ** TOG classes
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
@@ -5007,57 +5004,6 @@ class ReassignTokens (TokenOrderTraverser):
             self.tokens[k].node = nca
             add_token_to_token_list(self.tokens[j], nca)
             add_token_to_token_list(self.tokens[k], nca)
-    #@-others
-#@+node:ekr.20191121122230.1: *3* class TokenOrderNodeGenerator (TOG)
-class TokenOrderNodeGenerator(TokenOrderGenerator):
-    """A class that yields a stream of nodes."""
-
-    # Other overrides...
-    def sync_token(self, kind, val):
-        pass
-        
-    #@+others
-    #@+node:ekr.20191228153344.1: *4* tong.generate_nodes
-    def generate_nodes(self, tokens, tree, file_name=''):
-        """Entry: yield a stream of nodes."""
-        #
-        # Init all ivars.
-        self.file_name = file_name
-            # For tests.
-        self.level = 0
-            # Python indentation level.
-        self.node = None
-            # The node being visited.
-            # The parent of the about-to-be visited node.
-        self.tokens = tokens
-            # The immutable list of input tokens.
-        self.tree = tree
-            # The tree of ast.AST nodes.
-        #
-        # Traverse the tree.
-        try:
-            while True:
-                next(self.visitor(tree))
-        except StopIteration:
-            pass
-    #@+node:ekr.20191228152949.1: *4* tong.begin/end_visitor
-    def begin_visitor(self, node):
-        """TONG.begin_visitor: Enter a visitor."""
-        # begin_visitor and end_visitor must be paired.
-        self.begin_end_stack.append(node.__class__.__name__)
-        # Push the previous node.
-        self.node_stack.append(self.node)
-        # Update self.node *last*.
-        self.node = node
-
-    def end_visitor(self, node):
-        """TONG.end_visitor: Leave a visitor."""
-        # begin_visitor and end_visitor must be paired.
-        entry_name = self.begin_end_stack.pop()
-        assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
-        assert self.node == node, (repr(self.node), repr(node))
-        # Restore self.node.
-        self.node = self.node_stack.pop()
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token

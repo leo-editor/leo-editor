@@ -6744,6 +6744,56 @@ def begin_visitor(self, node):
     #
     # *Now* update self.node, etc.
     super().begin_visitor(node)
+#@+node:ekr.20191121122230.1: *3* class TokenOrderNodeGenerator (TOG)
+class TokenOrderNodeGenerator(TokenOrderGenerator):
+    """A class that yields a stream of nodes."""
+
+    # Other overrides...
+    def sync_token(self, kind, val):
+        pass
+        
+    @others
+#@+node:ekr.20191228153344.1: *4* tong.generate_nodes
+def generate_nodes(self, tokens, tree, file_name=''):
+    """Entry: yield a stream of nodes."""
+    #
+    # Init all ivars.
+    self.file_name = file_name
+        # For tests.
+    self.level = 0
+        # Python indentation level.
+    self.node = None
+        # The node being visited.
+        # The parent of the about-to-be visited node.
+    self.tokens = tokens
+        # The immutable list of input tokens.
+    self.tree = tree
+        # The tree of ast.AST nodes.
+    #
+    # Traverse the tree.
+    try:
+        while True:
+            next(self.visitor(tree))
+    except StopIteration:
+        pass
+#@+node:ekr.20191228152949.1: *4* tong.begin/end_visitor
+def begin_visitor(self, node):
+    """TONG.begin_visitor: Enter a visitor."""
+    # begin_visitor and end_visitor must be paired.
+    self.begin_end_stack.append(node.__class__.__name__)
+    # Push the previous node.
+    self.node_stack.append(self.node)
+    # Update self.node *last*.
+    self.node = node
+
+def end_visitor(self, node):
+    """TONG.end_visitor: Leave a visitor."""
+    # begin_visitor and end_visitor must be paired.
+    entry_name = self.begin_end_stack.pop()
+    assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
+    assert self.node == node, (repr(self.node), repr(node))
+    # Restore self.node.
+    self.node = self.node_stack.pop()
 #@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
 class TokenSync:
     """A class to sync and remember tokens."""
