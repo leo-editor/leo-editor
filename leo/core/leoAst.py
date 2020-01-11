@@ -1178,6 +1178,15 @@ class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
 
     #@+others
+    #@+node:ekr.20200111043311.1: *4* Bugs...
+    #@+node:ekr.20200111043311.2: *5* test_fs.test_crash_1
+    def test_crash_1(self):
+        # leoCheck.py.
+        contents = """return self.Type('error', 'no member %s' % ivar)"""
+        expected = """return self.Type('error', f'no member {ivar}')"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, 'test_braces', tokens, tree)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106163535.1: *4* test_braces
     def test_braces(self):
 
@@ -1604,6 +1613,12 @@ class TestTOG (BaseTest):
     """
 
     #@+others
+    #@+node:ekr.20200111042805.1: *4* Bugs...
+    #@+node:ekr.20200111042825.1: *5* test_tog.test_crash_1
+    def test_crash_1(self):
+        # leoCheck.py.
+        contents = """return self.Type('error', 'no member %s' % ivar)"""
+        self.make_data(contents)
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
@@ -3094,10 +3109,10 @@ class TokenOrderGenerator:
         
         Instead, we get the tokens *from the token list itself*!
         """
-        g.trace('Entry', node)
+        # g.trace('Entry', node)
         while True:
             token = self.find_next_significant_token()
-            g.trace(token.line_number, token)
+            # g.trace(token.line_number, token)
             if token.kind == 'string':
                 yield from self.gen_token(token.kind, token.value)
             else:
@@ -3173,10 +3188,10 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
-        g.trace('Entry', node.s)
+        # g.trace('Entry', node.s)
         while True:
             token = self.find_next_significant_token()
-            g.trace(token.line_number, token)
+            # g.trace(token.line_number, token)
             if token.kind == 'string':
                 yield from self.gen_token(token.kind, token.value)
             else:
