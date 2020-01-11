@@ -37,13 +37,13 @@ def main(files):
             api.check(s, sfn, r)
     t2 = time.time()
     n = len(files)
-    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2 - t1))
+    print(f'{n} file{g.plural(n)}, time: {t2 - t1:5.2f} sec.')
 #@+node:ekr.20160518000549.14: ** report_version
 def report_version():
     try:
         import flake8
 
-        print('flake8 version: %s' % flake8.__version__)
+        print(f'flake8 version: {flake8.__version__}')
     except Exception:
         g.trace('can not import flake8')
 #@+node:ekr.20160518000549.15: ** scanOptions

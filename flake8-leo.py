@@ -35,7 +35,7 @@ def main(files):
         check_all(files, style)
         t2 = time.time()
         n = len(files)
-        print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2 - t1))
+        print(f'{n} file{g.plural(n)}, time: {t2 - t1:5.2f} sec.')
 #@+node:ekr.20160517222900.1: *3* get_home
 def get_home():
     """Returns the user's home directory."""
@@ -83,7 +83,7 @@ def report_version():
     try:
         import flake8
 
-        print('flake8 version: %s' % flake8.__version__)
+        print(f'flake8 version: {flake8.__version__}')
     except ImportError:
         g.trace('can not import flake8')
 #@+node:ekr.20160517182239.15: ** scanOptions

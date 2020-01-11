@@ -29,7 +29,7 @@ import time
 def main(files, verbose):
     """Call run on all tables in tables_table."""
     n = len(files)
-    print('pylint: %s file%s' % (n, g.plural(n)))
+    print(f'pylint: {n} file{g.plural(n)}')
     try:
         from pylint import lint
         assert lint
@@ -42,7 +42,7 @@ def main(files, verbose):
         if not verbose and sys.platform.startswith('win'):
             print('.',sep='', end='')
     t2 = time.time()
-    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
+    print(f'{n} file{g.plural(n)}, time: {t2-t1:5.2f} sec.')
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 #@@nobeautify
 
@@ -72,23 +72,21 @@ def run(fn, verbose):
         path = g.os_path_dirname(fn)
         dirs = path.split(os.sep)
         theDir = dirs and dirs[-1] or ''
-        print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
+        print(f'pylint-leo.py: {theDir}{os.sep}{g.shortFileName(fn)}')
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     if 1: # Invoke pylint directly.
         # Escaping args is harder here because we are creating an args array.
         is_win = sys.platform.startswith('win')
-        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn)])
+        args =  ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
         if is_win:
             args = args.replace('\\','\\\\')
-        command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
-            sys.executable, args)
+        command = f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"'
         if not is_win:
             command = shlex.split(command)
     else:
         # Use g.run_pylint.
-        args = ','.join(["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn)])
-        command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-            sys.executable, args)
+        args = ','.join([f"fn=r'{fn}'", f"rc=r'{rc_fn}'"])
+        command = f'{sys.executable} -c "import leo.core.leoGlobals as g; g.run_pylint({args})"'
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()
@@ -106,7 +104,7 @@ def report_version():
     for rc_fn in table:
         try:
             rc_fn = rc_fn.replace('\\', '/')
-            lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
+            lint.Run([f"--rcfile={rc_fn}", '--version',])
         except OSError:
             pass
     g.trace('no rc file found in')
