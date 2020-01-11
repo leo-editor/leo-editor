@@ -3094,8 +3094,10 @@ class TokenOrderGenerator:
         
         Instead, we get the tokens *from the token list itself*!
         """
+        g.trace('Entry', node)
         while True:
             token = self.find_next_significant_token()
+            g.trace(token.line_number, token)
             if token.kind == 'string':
                 yield from self.gen_token(token.kind, token.value)
             else:
@@ -3171,8 +3173,10 @@ class TokenOrderGenerator:
     def do_Str(self, node):
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
+        g.trace('Entry', node.s)
         while True:
             token = self.find_next_significant_token()
+            g.trace(token.line_number, token)
             if token.kind == 'string':
                 yield from self.gen_token(token.kind, token.value)
             else:
@@ -3785,6 +3789,13 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
+        if not hasattr(node.left, 'token_list'):
+            print('')
+            g.trace('Error: no token list in Str')
+            dump_tree(node)
+            print('')
+            return
+                
         lt_s = tokens_to_string(node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
