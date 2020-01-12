@@ -214,20 +214,26 @@ def fstringify_files_silent(event):
     t1 = time.process_time()
     tag = 'silent-fstringify-files'
     g.es(f"{tag}...")
+    n_changed = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             changed = leoAst.Fstringify().fstringify_file_silent(filename)
-            changed_s = 'changed' if changed else 'unchanged'
-            print(f"{changed_s:>9}: {g.shortFileName(filename)}")
+            if changed:
+                n_changed += 1
+            # changed_s = 'changed' if changed else 'unchanged'
+            # print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
             print(f"File not found:{filename}")
             g.es(f"File not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    n_tot = len(roots)
+    g.es_print(
+        f"{n_tot:<3} total file{g.plural(len(roots))}, "
+        f"{n_changed:<3} changed file{g.plural(n_changed)} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
 def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
