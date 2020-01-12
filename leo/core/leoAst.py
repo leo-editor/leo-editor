@@ -673,7 +673,7 @@ if 1: # pragma: no cover
                 break
         return result
     #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
-    def tokens_for_node(node, tokens):
+    def tokens_for_node(filename, node, tokens):
         """Return the list of all tokens descending from node."""
         # Find any token descending from node.
         token = find_anchor_token(node)
@@ -704,13 +704,13 @@ if 1: # pragma: no cover
                 else:
                     break
             j += 1
-        last_j = match_parens(first_i, last_j, tokens)
+        last_j = match_parens(filename, first_i, last_j, tokens)
         results = tokens[first_i : last_j + 1]
         return results
     #@+node:ekr.20191224093336.1: *4* function: match_parens
     match_parens_message_given = False
 
-    def match_parens(i, j, tokens):
+    def match_parens(filename, i, j, tokens):
         """
         Match parens in tokens[i:j]. Return the new j.
         """
@@ -741,6 +741,7 @@ if 1: # pragma: no cover
             raise AssignLinksError(
                 f"\n"
                 f"Unmatched parens: level={level}, {s!s}\n"
+                f"            file: {filename}\n"
                 f"            line: {line_n}\n")
         return j
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
@@ -2545,13 +2546,13 @@ class TokenOrderGenerator:
         self.reassign_tokens(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
-    def init_from_string(self, contents):  # pragma: no cover
+    def init_from_string(self, contents, filename):  # pragma: no cover
         """
         Tokenize, parse and create links in the contents string.
         
         Return (tokens, tree).
         """
-        self.filename = '<string>'
+        self.filename = filename
         self.level = 0
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
@@ -2563,7 +2564,7 @@ class TokenOrderGenerator:
         """
         Reassign links between the given token list and ast-tree.
         """
-        ReassignTokens().reassign(tokens, tree)
+        ReassignTokens().reassign(self.filename, tokens, tree)
             
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
@@ -4209,7 +4210,7 @@ class Fstringify (TokenOrderTraverser):
             result = []
             elts = node.elts if isinstance(node, ast.Tuple) else node
             for i, elt in enumerate(elts):
-                tokens = tokens_for_node(elt, self.tokens)
+                tokens = tokens_for_node(self.filename, elt, self.tokens)
                 result.append(tokens)
                 if trace:
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
@@ -4217,7 +4218,7 @@ class Fstringify (TokenOrderTraverser):
             return result
         
         # Now we expect only one result. 
-        tokens = tokens_for_node(node, self.tokens)
+        tokens = tokens_for_node(self.filename, node, self.tokens)
         if trace:
             g.trace('One node:', node.__class__.__name__)
             dump_tokens(tokens)
@@ -4261,7 +4262,7 @@ class Fstringify (TokenOrderTraverser):
         Replace all tokens in the range of values with a single 'string' node.
         """
         # Replace the tokens...
-        tokens = tokens_for_node(node, self.tokens)
+        tokens = tokens_for_node(self.filename, node, self.tokens)
         i1 = i = tokens[0].index
         replace_token(self.tokens[i], 'string', s)
         j = 1
@@ -5066,12 +5067,15 @@ class ParseState:
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
     
+    ### filename = '<no file name>'
+    
     """A class that reassigns tokens to more appropriate ast nodes."""
     
     #@+others
     #@+node:ekr.20191231084640.1: *4* reassign.reassign
-    def reassign(self, tokens, tree):
+    def reassign(self, filename, tokens, tree):
         """The main entry point."""
+        self.filename = filename
         self.tokens = tokens
         self.tree = tree
         # For now, only one pass is needed.
@@ -5083,7 +5087,7 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
-        tokens = tokens_for_node(node, self.tokens)
+        tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
         if not nca:
