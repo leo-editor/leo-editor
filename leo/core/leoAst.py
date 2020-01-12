@@ -2750,14 +2750,14 @@ class TokenOrderGenerator:
         yield from method(node)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.13: *4* tog: Visitors...
-    #@+node:ekr.20191113063144.32: *5*  tog.keyword: not called
+    #@+node:ekr.20191113063144.32: *5*  tog.keyword: not called!
     # keyword arguments supplied to call (NULL identifier for **kwargs)
 
     # keyword = (identifier? arg, expr value)
 
     def do_keyword(self, node):
         """A keyword arg in an ast.Call."""
-        filename = getattr(self, 'filename', '<no file>')
+        filename = getattr(self, 'filename', '<no file>')  # pragma: no cover
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_keyword should never be called")
@@ -3150,7 +3150,7 @@ class TokenOrderGenerator:
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
-        filename = getattr(self, 'filename', '<no file>')
+        filename = getattr(self, 'filename', '<no file>')  # pragma: no cover
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_FormattedValue should never be called")
