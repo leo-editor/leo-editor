@@ -833,6 +833,7 @@ class BaseTest (unittest.TestCase):
         if 0: # Excellent traces for tracking down mysteries.
             dump_contents(contents)
             dump_ast(tree)
+        if 0: # Sometimes useful.
             dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
@@ -2206,16 +2207,15 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
-    #@+node:ekr.20200112071833.1: *5* test_AsyncFor (disabled)
-    def xx_test_AsyncFor(self):
+    #@+node:ekr.20200112071833.1: *5* test_AsyncFor
+    def test_AsyncFor(self):
         # This may require Python 3.7.
         contents = """\
-    async def count():
-        print("One")
-        await asyncio.sleep(1)
-        
-    async for doc in get_docs(None):
-        pass
+    async def commit(session, data):
+        async for z in session.transaction():
+            await z(data)
+        else:
+            print('oops')
     """
         self.make_data(contents)
     # async def get_docs(page):
@@ -3486,15 +3486,16 @@ class TokenOrderGenerator:
             yield from self.gen_op('=')
         yield from self.gen(node.value)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.64: *6* tog.AsyncFor (python 3.7)
-    def do_AsyncFor(self, node):  # pragma: no cover
+    #@+node:ekr.20191113063144.64: *6* tog.AsyncFor
+    def do_AsyncFor(self, node):
         
         # The def line...
-        yield from self.gen_name('async')
+        yield from self.gen_token('async', 'async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
-        yield from self.gen_op(':')
+        yield from self.gen_name('in')
         yield from self.gen(node.iter)
+        yield from self.gen_op(':')
         yield from self.gen_newline()
         # Body...
         self.level += 1
