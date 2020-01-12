@@ -218,11 +218,7 @@ def fstringify_files_silent(event):
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
-            # print('')
-            # print(f"{tag}: {g.shortFileName(filename)}")
             leoAst.Fstringify().fstringify_file_silent(filename)
-            # changed_s = 'changed' if changed else 'unchanged'
-            # g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
             print(f"{tag}: file not found:{filename}")
