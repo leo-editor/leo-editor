@@ -2206,6 +2206,27 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
+    #@+node:ekr.20200112071833.1: *5* test_AsyncFor
+    def xx_test_AsyncFor(self):
+        # This may require Python 3.7.
+        contents = """\
+    async def count():
+        print("One")
+        await asyncio.sleep(1)
+        
+    async for doc in get_docs(None):
+        pass
+    """
+        self.make_data(contents)
+    # async def get_docs(page):
+        # page = await fetch_page()
+        # while page:
+            # for doc in page:
+                # yield doc
+            # page = await fetch_page()
+
+    # async for doc in get_docs(None):
+        # pass
     #@+node:ekr.20200111175043.1: *5* test_AsyncFunctionDef
     def test_AsyncFunctionDef(self):
         contents = """\
@@ -3448,8 +3469,8 @@ class TokenOrderGenerator:
             yield from self.gen_op('=')
         yield from self.gen(node.value)
         yield from self.gen_newline()
-    #@+node:ekr.20191113063144.64: *6* tog.AsyncFor
-    def do_AsyncFor(self, node):
+    #@+node:ekr.20191113063144.64: *6* tog.AsyncFor (python 3.7)
+    def do_AsyncFor(self, node):  # pragma: no cover
         
         # The def line...
         yield from self.gen_name('async')
