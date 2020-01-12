@@ -737,7 +737,6 @@ if 1: # pragma: no cover
                 j += 1
         if level != 0:  # pragma: no cover.
             line_n = tokens[i].line_number
-            ### s = tokens_to_string(tokens[i:j+1]).strip()
             raise AssignLinksError(
                 f"\n"
                 f"Unmatched parens: level={level}\n"
@@ -3112,7 +3111,6 @@ class TokenOrderGenerator:
             assert len(kwarg_arg) == 1
             kwarg = kwarg_arg[0]
             assert isinstance(kwarg, ast.keyword)
-            ### yield from self.arg_helper(kwarg)
             yield from self.gen_op('**')
             yield from self.gen(kwarg.value)
     #@+node:ekr.20191113063144.33: *6* tog.comprehension
@@ -3547,11 +3545,6 @@ class TokenOrderGenerator:
         if getattr(node, 'name', None):
             yield from self.gen_name('as')
             yield from self.gen_name(node.name)
-            ###
-                # if isinstance(node.name, ast.AST):
-                    # yield from self.gen(node.name)
-                # else:
-                    # yield from self.gen_name(node.name)
         yield from self.gen_op(':')
         yield from self.gen_newline()
         # Body...
@@ -3757,12 +3750,6 @@ class TokenOrderGenerator:
             if optional_vars is not None:
                 yield from self.gen_name('as')
                 yield from self.gen(item.optional_vars)
-                ###
-                    # try:
-                        # for z in item.optional_vars:
-                            # yield from self.gen(z)
-                    # except TypeError:  # Not iterable.
-                        # yield from self.gen(item.optional_vars)
         # End the line.
         yield from self.gen_op(':')
         yield from self.gen_newline()
@@ -5076,9 +5063,6 @@ class ParseState:
     __str__ = __repr__
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
-    
-    ### filename = '<no file name>'
-    
     """A class that reassigns tokens to more appropriate ast nodes."""
     
     #@+others
