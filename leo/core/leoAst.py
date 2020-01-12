@@ -4003,14 +4003,23 @@ class Fstringify (TokenOrderTraverser):
         Return the result string, or None if there are errors.
         """
         # Fail if there is a backslash within { and }.
-        if not self.check_newlines(tokens):
-            return None
-        # Ensure consistent quotes.
-        if not self.change_quotes(lt_s, tokens):
-            if not self.silent:  # pragma: no cover
+        if not self.check_newlines(tokens):  # pragma: no cover
+            if not self.silent:
                 print(
                     f"\n"
                     f"can't create f-fstring: {lt_s!r}\n"
+                    f"string contains a backslash\n"
+                    f"                  file: {self.filename}\n"
+                    f"           line number: {line_number}\n"
+                    f"                  line: {line.strip()!r}")
+            return None
+        # Ensure consistent quotes.
+        if not self.change_quotes(lt_s, tokens):  # pragma: no cover
+            if not self.silent:
+                print(
+                    f"\n"
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"can't escape string delims\n"
                     f"                  file: {self.filename}\n"
                     f"           line number: {line_number}\n"
                     f"                  line: {line.strip()!r}")
@@ -4035,7 +4044,6 @@ class Fstringify (TokenOrderTraverser):
                         print('curly bracket underflow')
                         return False
             if '\\n' in val and level > 0:
-                print('f-expression would contain a backslash')
                 return False
         if level > 0:  # pragma: no cover
             print('unclosed curly bracket')
