@@ -3279,8 +3279,8 @@ class TokenOrderGenerator:
                 # Rescan the string.
                 i -= 1
                 break
-            # Skip over *all* insignificant tokens!
-            if is_significant_token(token):
+            # An error.
+            if is_significant_token(token):  # pragma: no cover
                 break
         #
         # Raise an error if we didn't find the expected 'string' token.
@@ -3504,10 +3504,12 @@ class TokenOrderGenerator:
             yield from self.gen(node.type)
         if getattr(node, 'name', None):
             yield from self.gen_name('as')
-            if isinstance(node.name, ast.AST):
-                yield from self.gen(node.name)
-            else:
-                yield from self.gen_name(node.name)
+            yield from self.gen_name(node.name)
+            ###
+                # if isinstance(node.name, ast.AST):
+                    # yield from self.gen(node.name)
+                # else:
+                    # yield from self.gen_name(node.name)
         yield from self.gen_op(':')
         yield from self.gen_newline()
         # Body...
@@ -3712,11 +3714,13 @@ class TokenOrderGenerator:
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 yield from self.gen_name('as')
-                try:
-                    for z in item.optional_vars:
-                        yield from self.gen(z)
-                except TypeError:  # Not iterable.
-                    yield from self.gen(item.optional_vars)
+                yield from self.gen(item.optional_vars)
+                ###
+                    # try:
+                        # for z in item.optional_vars:
+                            # yield from self.gen(z)
+                    # except TypeError:  # Not iterable.
+                        # yield from self.gen(item.optional_vars)
         # End the line.
         yield from self.gen_op(':')
         yield from self.gen_newline()
@@ -3824,7 +3828,7 @@ class TokenOrderTraverser:
 class Fstringify (TokenOrderTraverser):
     """A class to fstringify files."""
     
-    silent = False
+    silent = True  # for pytest. Defined in all entries.
     
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
@@ -3867,7 +3871,7 @@ class Fstringify (TokenOrderTraverser):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
-        if not self.silent:
+        if not self.silent:  # pragma: no cover
             show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"{tag}: Wrote {filename}")
@@ -3955,7 +3959,7 @@ class Fstringify (TokenOrderTraverser):
             line_number = token.line_number
             line = token.line
             n_specs, n_values = len(specs), len(values)
-            if not self.silent:
+            if not self.silent:  # pragma: no cover
                 print(
                     f"\n"
                     f"f-string mismatch: "
@@ -3973,7 +3977,7 @@ class Fstringify (TokenOrderTraverser):
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
         # Show the results
-        if not self.silent:
+        if not self.silent:  # pragma: no cover
             print(
                 f"\n"
                 f"       file: {self.filename}\n"
@@ -4003,7 +4007,7 @@ class Fstringify (TokenOrderTraverser):
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(lt_s, tokens):
-            if not self.silent:
+            if not self.silent:  # pragma: no cover
                 print(
                     f"\n"
                     f"can't create f-fstring: {lt_s!r}\n"
