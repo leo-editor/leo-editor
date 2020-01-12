@@ -3256,7 +3256,7 @@ class TokenOrderGenerator:
         # This loop is necessary to handle string concatenation.
         for z in self.get_concatenated_string_tokens():
             yield from self.gen_token(z.kind, z.value)
-    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens (revised)
+    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self):
         """
         Return the next 'string' token and all 'string' tokens concatenated to
