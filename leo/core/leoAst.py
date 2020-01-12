@@ -830,10 +830,10 @@ class BaseTest (unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return None, None, None
-        if 0: # Excellent traces for tracking down mysteries.
+        if 1: # Excellent traces for tracking down mysteries.
             dump_contents(contents)
             dump_ast(tree)
-            dump_tokens(tokens)
+            # dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
         try:
@@ -1717,6 +1717,10 @@ class TestTOG (BaseTest):
     d2 = {val: key for key, val in d.iteritems()}
     """
         self.make_data(contents)
+    #@+node:ekr.20200112042410.1: *5* test_ExtSlice
+    def test_ExtSlice(self):
+        contents = r"""a [1, 2: 3]"""
+        self.make_data(contents)
     #@+node:ekr.20191227052446.19: *5* test_ListComp
     def test_ListComp(self):
         # ListComp and comprehension.
@@ -2198,13 +2202,11 @@ class TestTOG (BaseTest):
         self.make_data(contents)
     #@+node:ekr.20191227052446.44: *5* test_Call
     def test_Call(self):
-        contents = r"""\
-    f1(a,b=2)
-    f2(1 + 2)
-    f3(arg, *args, **kwargs)
-    f4(a='a', *args, **kwargs)
-    func(a, b, one='one', two='two', *args, **kwargs)
-    """
+        contents = r"""func(a, b, one='one', two='two', *args, **kwargs)"""
+    # f1(a,b=2)
+    # f2(1 + 2)
+    # f3(arg, *args, **kwargs)
+    # f4(a='a', *args, **kwargs)
         self.make_data(contents)
     #@+node:ekr.20200111175335.1: *5* test_For
     def test_For(self):
@@ -3133,6 +3135,10 @@ class TokenOrderGenerator:
         
         yield from self.gen_op('...')
     #@+node:ekr.20191113063144.38: *6* tog.ExtSlice
+    # https://docs.python.org/3/reference/expressions.html#slicings
+
+    # ExtSlice(slice* dims)
+
     def do_ExtSlice(self, node):
         
         # ':'.join(node.dims)
