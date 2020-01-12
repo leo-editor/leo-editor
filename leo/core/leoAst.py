@@ -3094,14 +3094,6 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             if value is not None:
                 yield from self.gen(value)
-                ###
-                    # try:
-                        # # Zero or more expressions.
-                        # for z in value:
-                            # yield from self.gen(z)
-                    # except TypeError:
-                        # # Not an error.
-                        # yield from self.gen(value)
         yield from self.gen_op('}')
     #@+node:ekr.20191113063144.36: *6* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
