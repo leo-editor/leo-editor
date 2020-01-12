@@ -4045,9 +4045,10 @@ class Fstringify (TokenOrderTraverser):
                 elif val == '}':
                     level -= 1
                     if level < 0:  # pragma: no cover
-                        print('curly bracket underflow')
+                        if not self.silent:
+                            print('curly bracket underflow')
                         return False
-            if '\\n' in val and level > 0:
+            if '\\n' in val and level > 0:  # pragma: no cover
                 return False
         if level > 0:  # pragma: no cover
             print('unclosed curly bracket')
@@ -4167,10 +4168,7 @@ class Fstringify (TokenOrderTraverser):
             return [node.token_list]
         if isinstance(node, (list, tuple, ast.Tuple)):
             result = []
-            if isinstance(node, ast.Tuple):
-                elts = node.elts
-            else:
-                elts = [] ### Found by coverage.
+            elts = node.elts if isinstance(node, ast.Tuple) else node
             for i, elt in enumerate(elts):
                 tokens = tokens_for_node(elt, self.tokens)
                 result.append(tokens)
