@@ -1308,6 +1308,27 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200112163031.1: *4* test_munge_spec
+    def test_munge_spec(self):
+        
+        # !head:tail or :tail
+        table = (
+            ('+1s', '', '+1'),
+            ('-2s', '', '>2'),
+            ('3s', '', '3'),
+            ('4r', 'r', '4'),
+        )
+        for spec, e_head, e_tail in table:
+            head, tail = Fstringify().munge_spec(spec)
+            assert (head, tail) == (e_head, e_tail), (
+                f"\n"
+                f"         spec: {spec}\n"
+                f"expected head: {e_head}\n"
+                f"     got head: {head}\n"
+                f"expected tail: {e_tail}\n"
+                f"     got tail: {tail}\n")
+
+            
     #@+node:ekr.20200106091740.1: *4* test_single_quotes
     def test_single_quotes(self):
         
@@ -2782,8 +2803,8 @@ class TokenOrderGenerator:
             for z in node or []:
                 if isinstance(z, ast.AST):
                     yield from self.visitor(z)
-                else:
-                    # Some fields contain ints or strings.
+                else:  # pragma: no cover
+                    # Some fields may contain ints or strings.
                     assert isinstance(z, (int, str)), z.__class__.__name__
             return
         # We *do* want to crash if the visitor doesn't exist.
