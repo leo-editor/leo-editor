@@ -1698,13 +1698,16 @@ class TestTOG (BaseTest):
         pass
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.17: *5* test_Dict
+    #@+node:ekr.20191227052446.17: *5* test_Dict_1
     def test_Dict(self):
         contents = r"""\
-    d = {
-        'a' if x else 'b': True,
-        }
-    f()
+    d = {'a' if x else 'b': True,}
+    """
+        self.make_data(contents)
+    #@+node:ekr.20200111191153.1: *5* test_Dict_2
+    def test_Dict_2(self):
+        contents = r"""\
+    d = {}
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.18: *5* test_DictComp
@@ -3090,13 +3093,15 @@ class TokenOrderGenerator:
             yield from self.gen(key) # a Str node.
             yield from self.gen_op(':')
             if value is not None:
-                try:
-                    # Zero or more expressions.
-                    for z in value:
-                        yield from self.gen(z)
-                except TypeError:
-                    # Not an error.
-                    yield from self.gen(value)
+                yield from self.gen(value)
+                ###
+                    # try:
+                        # # Zero or more expressions.
+                        # for z in value:
+                            # yield from self.gen(z)
+                    # except TypeError:
+                        # # Not an error.
+                        # yield from self.gen(value)
         yield from self.gen_op('}')
     #@+node:ekr.20191113063144.36: *6* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
