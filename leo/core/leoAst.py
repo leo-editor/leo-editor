@@ -2052,6 +2052,20 @@ class TestTOG (BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227145620.1: *4* Miscellaneous...
+    #@+node:ekr.20200112065944.1: *5* test_ellipsis_1
+    def test_ellipsis_1(self):
+        contents = """
+    def spam():
+        ...
+    """
+        self.make_data(contents)
+    #@+node:ekr.20200112070228.1: *5* test_ellipsis_2
+    def test_ellipsis_2(self):
+        contents = """
+    def partial(func: Callable[..., str], *args):
+        pass
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227075951.1: *5* test_end_of_line
     def test_end_of_line(self):
         self.make_data("""# Only a comment.""")
