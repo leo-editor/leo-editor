@@ -830,10 +830,10 @@ class BaseTest (unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return None, None, None
-        if 1: # Excellent traces for tracking down mysteries.
+        if 0: # Excellent traces for tracking down mysteries.
             dump_contents(contents)
             dump_ast(tree)
-            # dump_tokens(tokens)
+            dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
         try:
@@ -3131,11 +3131,11 @@ class TokenOrderGenerator:
 
     def do_ExtSlice(self, node):
         
-        # ':'.join(node.dims)
+        # ','.join(node.dims)
         for i, z in enumerate(node.dims):
             yield from self.gen(z)
             if i < len(node.dims) - 1:
-                yield from self.gen_op(':')
+                yield from self.gen_op(',')
     #@+node:ekr.20191113063144.40: *6* tog.Index
     def do_Index(self, node):
 
@@ -3623,7 +3623,8 @@ class TokenOrderGenerator:
         # nonlocal %s\n' % ','.join(node.names))
         # No need to put commas.
         yield from self.gen_name('nonlocal')
-        yield from self.gen(node.names)
+        for z in node.names:
+            yield from self.gen_name(z)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.79: *6* tog.Pass
     def do_Pass(self, node):
@@ -3861,12 +3862,12 @@ class Fstringify (TokenOrderTraverser):
             return False
         # fstringify.
         results = self.fstringify(contents, filename, tokens, tree)
-        ### results = tokens_to_string(tokens)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
-        show_diffs(contents, results, filename=filename)
+        if not self.silent:
+            show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results, encoding=encoding)
