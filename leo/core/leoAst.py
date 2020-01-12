@@ -3909,7 +3909,11 @@ class Fstringify (TokenOrderTraverser):
             print(f"{tag}: Can not fstringify: {filename}")
             return False
         # fstringify.
-        results = self.fstringify(contents, filename, tokens, tree)
+        try:
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -3939,7 +3943,11 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        results = self.fstringify(contents, filename, tokens, tree)
+        try:
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -3964,7 +3972,11 @@ class Fstringify (TokenOrderTraverser):
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        results = self.fstringify(contents, filename, tokens, tree)
+        try:
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return
          # Write the results
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
