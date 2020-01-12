@@ -406,7 +406,7 @@ if 1: # pragma: no cover
         """
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
-            kind in ('endmarker', 'name', 'number', 'string') or
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
             kind == 'op' and value not in ',;()')
 
     def is_significant_token(token):
@@ -2176,6 +2176,14 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
+    #@+node:ekr.20200111175043.1: *5* test_AsyncDef
+    def test_AsyncDef(self):
+        contents = r"""\
+    async def count():
+        print("One")
+        await asyncio.sleep(1)
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.44: *5* test_Call
     def test_Call(self):
         contents = r"""\
@@ -2184,6 +2192,13 @@ class TestTOG (BaseTest):
     f3(arg, *args, **kwargs)
     f4(a='a', *args, **kwargs)
     func(a, b, one='one', two='two', *args, **kwargs)
+    """
+        self.make_data(contents)
+    #@+node:ekr.20200111175335.1: *5* test_For
+    def test_For(self):
+        contents = r"""\
+    for a in b:
+        pass
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.45: *5* test_Global
@@ -2787,12 +2802,11 @@ class TokenOrderGenerator:
             yield from self.gen_op('**')
             yield from self.gen(kwarg)
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
-    # 2: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-    # 3: AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
     def do_AsyncFunctionDef(self, node):
-        
+
         if node.decorator_list:
             for z in node.decorator_list:
                 # '@%s\n'
@@ -2801,7 +2815,8 @@ class TokenOrderGenerator:
                 yield from self.gen_newline()
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        yield from self.gen_name('asynch')
+        yield from self.gen_token('async', 'async')
+        yield from self.gen_name('def')
         yield from self.gen_name(node.name) # A string
         yield from self.gen_op('(')
         yield from self.gen(node.args)
@@ -3473,7 +3488,7 @@ class TokenOrderGenerator:
     def do_Await(self, node):
         
         #'await %s\n'
-        yield from self.gen_name('await')
+        yield from self.gen_token('await', 'await')
         yield from self.gen(node.value)
         yield from self.gen_newline()
     #@+node:ekr.20191113063144.68: *6* tog.Break
