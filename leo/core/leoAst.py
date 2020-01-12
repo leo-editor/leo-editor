@@ -3824,8 +3824,6 @@ class TokenOrderTraverser:
 class Fstringify (TokenOrderTraverser):
     """A class to fstringify files."""
     
-    silent = True  # True: suppress all informational messages.
-    
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, contents, filename, tokens, tree):
@@ -3855,6 +3853,7 @@ class Fstringify (TokenOrderTraverser):
         """
         tag = 'fstringify-file'
         self.filename = filename
+        self.silent = False
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
@@ -3885,6 +3884,7 @@ class Fstringify (TokenOrderTraverser):
         """
         tag = 'diff-fstringify-file'
         self.filename = filename
+        self.silent = False
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
@@ -3897,6 +3897,26 @@ class Fstringify (TokenOrderTraverser):
         # Show the diffs.
         show_diffs(contents, results, filename=filename)
         return True
+    #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
+    def fstringify_file_silent(self, filename):  # pragma: no cover
+        """
+        Fstringify.fstringify_file_silent.
+        
+        The entry point for the silent-fstringify-file command.
+        
+        fstringify the given file, suppressing all but serious error messages.
+        
+        Return True if the file would be changed.
+        """
+        self.filename = filename
+        self.silent = True
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            return False
+        # fstringify.
+        results = self.fstringify(contents, filename, tokens, tree)
+        return contents == results
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
         """

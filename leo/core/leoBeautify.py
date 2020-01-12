@@ -202,6 +202,34 @@ def fstringify_diff_files(event):
     t2 = time.process_time()
     print('')
     g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+#@+node:ekr.20200112060001.1: *4* fstringify-files-silent
+@g.command('silent-fstringify-files')
+@g.command('fstringify-files-silent')
+def fstringify_files_silent(event):
+    """Silently fstringifying the external files at c.p."""
+    import leo.core.leoAst as leoAst
+    c = event.get('c')
+    if not c or not c.p:
+        return
+    t1 = time.process_time()
+    tag = 'silent-fstringify-files'
+    g.es(f"{tag}...")
+    roots = g.findRootsWithPredicate(c, c.p)
+    for root in roots:
+        filename = g.fullPath(c, root)
+        if os.path.exists(filename):
+            # print('')
+            # print(f"{tag}: {g.shortFileName(filename)}")
+            leoAst.Fstringify().fstringify_file_silent(filename)
+            # changed_s = 'changed' if changed else 'unchanged'
+            # g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
+        else:
+            print('')
+            print(f"{tag}: file not found:{filename}")
+            g.es(f"file not found:\n{filename}")
+    t2 = time.process_time()
+    print('')
+    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
 def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
