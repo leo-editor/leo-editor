@@ -2206,7 +2206,7 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
-    #@+node:ekr.20200112071833.1: *5* test_AsyncFor
+    #@+node:ekr.20200112071833.1: *5* test_AsyncFor (disabled)
     def xx_test_AsyncFor(self):
         # This may require Python 3.7.
         contents = """\
@@ -2236,6 +2236,23 @@ class TestTOG (BaseTest):
         await asyncio.sleep(1)
     """
         self.make_data(contents)
+    #@+node:ekr.20200112073151.1: *5* test_AsyncWith
+    def test_AsyncWith(self):
+        contents = """\
+    async def commit(session, data):
+        async with session.transaction():
+            await session.update(data)
+    """
+        self.make_data(contents)
+    # async def get_docs(page):
+        # page = await fetch_page()
+        # while page:
+            # for doc in page:
+                # yield doc
+            # page = await fetch_page()
+
+    # async for doc in get_docs(None):
+        # pass
     #@+node:ekr.20191227052446.44: *5* test_Call
     def test_Call(self):
         contents = """func(a, b, one='one', two=2, three=4+5, *args, **kwargs)"""
@@ -3492,7 +3509,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
         
-        yield from self.gen_name('async')
+        yield from self.gen_token('async', 'async')
         yield from self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
