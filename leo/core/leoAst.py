@@ -3824,6 +3824,8 @@ class TokenOrderTraverser:
 class Fstringify (TokenOrderTraverser):
     """A class to fstringify files."""
     
+    silent = False
+    
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, contents, filename, tokens, tree):
