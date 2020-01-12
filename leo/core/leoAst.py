@@ -1744,6 +1744,15 @@ class TestTOG (BaseTest):
     print('a') ; print('b')
     """
         self.make_data(contents)
+    #@+node:ekr.20200111194454.1: *5* test_Set
+    def test_Set(self):
+        contents = """{'a', 'b'}"""
+        self.make_data(contents)
+    #@+node:ekr.20200111195654.1: *5* test_SetComp
+    def test_SetComp(self):
+        contents = """aSet = { (x, y) for x in r for y in r if x < y }"""
+        self.make_data(contents)
+
     #@+node:ekr.20191227052446.23: *5* test_UnaryOp
     def test_UnaryOp(self):
         contents = r"""\
@@ -3214,16 +3223,20 @@ class TokenOrderGenerator:
 
     def do_Set(self, node):
 
+        yield from self.gen_op('{')
         yield from self.gen(node.elts)
+        yield from self.gen_op('}')
     #@+node:ekr.20191113063144.48: *6* tog.SetComp
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
 
+        yield from self.gen_op('{')
         yield from self.gen(node.elt)
         for z in node.generators or []:
             yield from self.gen_name('for')
             yield from self.gen(z)
+        yield from self.gen_op('}')
     #@+node:ekr.20191113063144.49: *6* tog.Slice
     # slice = Slice(expr? lower, expr? upper, expr? step)
 
