@@ -2202,7 +2202,8 @@ class TestTOG (BaseTest):
         self.make_data(contents)
     #@+node:ekr.20191227052446.44: *5* test_Call
     def test_Call(self):
-        contents = r"""func(a, b, one='one', two='two', *args, **kwargs)"""
+        contents = """func(a, b, one='one', two=2, three=4+5, *args, **kwargs)"""
+        # contents = """func(*args, **kwargs)"""
     # f1(a,b=2)
     # f2(1 + 2)
     # f3(arg, *args, **kwargs)
@@ -2415,36 +2416,10 @@ class TestTOT (BaseTest):
 class TokenOrderGenerator:
     """A class that traverses ast (parse) trees in token order."""
 
-    coverage_set = set()
-        # The set of node.__class__.__name__ that have been visited.
-    n_nodes = 0
+    n_nodes = 0  # The number of nodes that have been visited.
+    silent = True  # True: suppress all informational messages.
 
     #@+others
-    #@+node:ekr.20191113063144.11: *4* tog.report_coverage
-    def report_coverage(self):  # pragma: no cover
-        """Report untested visitors."""
-
-        def key(z):
-            return z.lower()
-
-        covered = sorted(list(self.coverage_set), key=key)
-        visitors = [z[3:] for z in dir(self) if z.startswith('do_')]
-        missing = sorted([z for z in visitors if z not in covered], key=key)
-        #
-        # These are not likely ever to be covered.
-        not_covered = ['Interactive', 'Expression', 'FormattedValue']
-        for z in missing:
-            if z in not_covered:
-                missing.remove(z)
-        if 0:
-            print('Covered...\n')
-            g.printObj(covered)
-        if missing:
-            print('Missing...\n')
-            g.printObj(missing)
-        else:
-            print('All visitors covered')
-        print('')
     #@+node:ekr.20200103174914.1: *4* tog: Init...
     #@+node:ekr.20191228184647.1: *5* tog.balance_tokens
     def balance_tokens(self, tokens):
@@ -2559,7 +2534,6 @@ class TokenOrderGenerator:
         """Enter a visitor."""
         # Update the stats.
         self.n_nodes += 1
-        self.coverage_set.add(node.__class__.__name__)
         # Do this first, *before* updating self.node.
         node.parent = self.node
         if self.node:
@@ -2777,6 +2751,25 @@ class TokenOrderGenerator:
         yield from method(node)
         self.end_visitor(node)
     #@+node:ekr.20191113063144.13: *4* tog: Visitors...
+    #@+node:ekr.20191113063144.32: *5*  tog.keyword: not called
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+
+    # keyword = (identifier? arg, expr value)
+
+    def do_keyword(self, node):
+        """A keyword arg in an ast.Call."""
+        filename = getattr(self, 'filename', '<no file>')
+        raise AssignLinksError(
+            f"file: {filename}\n"
+            f"do_keyword should never be called")
+            
+        # if node.arg:
+            # yield from self.gen_name(node.arg)
+            # yield from self.gen_op('=')
+            # yield from self.gen(node.value)
+        # else:
+            # yield from self.gen_op('**')
+            # yield from self.gen(node.value)
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -3005,11 +2998,7 @@ class TokenOrderGenerator:
         Yield the node, with a special case for strings.
         """
         if 0:
-            def show_fields(node):
-                class_name = 'None' if node is None else node.__class__.__name__
-                return AstDumper().show_fields(class_name, node, 40)
-        
-            g.trace(show_fields(node))
+            g.trace(AstDumper().show_fields(node.__class__.__name__, node, 40))
 
         if isinstance(node, str):
             yield from self.gen_token('name', node)
@@ -3080,7 +3069,9 @@ class TokenOrderGenerator:
             assert len(kwarg_arg) == 1
             kwarg = kwarg_arg[0]
             assert isinstance(kwarg, ast.keyword)
-            yield from self.arg_helper(kwarg)
+            ### yield from self.arg_helper(kwarg)
+            yield from self.gen_op('**')
+            yield from self.gen(kwarg.value)
     #@+node:ekr.20191113063144.33: *6* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
@@ -3160,24 +3151,20 @@ class TokenOrderGenerator:
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
+        filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
-            f"       file: {self.filename}\n"
+            f"file: {filename}\n"
             f"do_FormattedValue should never be called")
-        
-        # pylint: disable=unreachable
-       
-        if 0: # This code has no chance of being useful.
-            # Let block.
-            conv = node.conversion
-            spec = node.format_spec
-            # Traverse all the subtrees
-            yield from self.gen(node.value)
-            if conv is not None:
-                # The default conv appears to be -1.
-                assert isinstance(conv, int), (repr(conv), g.callers())
-                yield from self.gen_token('number', conv)
-            if spec is not None:
-                yield from self.gen(node.format_spec)
+
+        # This code has no chance of being useful...
+
+            # conv = node.conversion
+            # spec = node.format_spec
+            # yield from self.gen(node.value)
+            # if conv is not None:
+                # yield from self.gen_token('number', conv)
+            # if spec is not None:
+                # yield from self.gen(node.format_spec)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helpers
     # JoinedStr(expr* values)
 
@@ -3192,17 +3179,7 @@ class TokenOrderGenerator:
         Instead, we get the tokens *from the token list itself*!
         """
         for z in self.get_concatenated_string_tokens():
-            ### self.advance_str()
             yield from self.gen_token(z.kind, z.value)
-        if 0: ###
-            # g.trace('Entry', node)
-            while True:
-                token = self.find_next_significant_token()
-                # g.trace(token.line_number, token)
-                if token.kind == 'string':
-                    yield from self.gen_token(token.kind, token.value)
-                else:
-                    break
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node):
 
@@ -3412,22 +3389,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
     #@+node:ekr.20191113063144.60: *5* tog: Statements
-    #@+node:ekr.20191113063144.32: *6*  tog.keyword
-    # keyword arguments supplied to call (NULL identifier for **kwargs)
-
-    # keyword = (identifier? arg, expr value)
-
-    def do_keyword(self, node):
-        
-        """A keyword arg in an ast.Call."""
-
-        if node.arg:
-            yield from self.gen_name(node.arg)
-            yield from self.gen_op('=')
-            yield from self.gen(node.value)
-        else:
-            yield from self.gen_op('**') 
-            yield from self.gen(node.value)
     #@+node:ekr.20191113063144.83: *6*  tog.Starred
     # Starred(expr value, expr_context ctx)
 
