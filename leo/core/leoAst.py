@@ -2207,6 +2207,10 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
+    #@+node:ekr.20200112075707.1: *5* test_AnnAssign
+    def test_AnnAssign(self):
+        contents = """x: int = 0"""
+        self.make_data(contents)
     #@+node:ekr.20200112071833.1: *5* test_AsyncFor
     def test_AsyncFor(self):
         # This may require Python 3.7.
@@ -2218,15 +2222,6 @@ class TestTOG (BaseTest):
             print('oops')
     """
         self.make_data(contents)
-    # async def get_docs(page):
-        # page = await fetch_page()
-        # while page:
-            # for doc in page:
-                # yield doc
-            # page = await fetch_page()
-
-    # async for doc in get_docs(None):
-        # pass
     #@+node:ekr.20200111175043.1: *5* test_AsyncFunctionDef
     def test_AsyncFunctionDef(self):
         contents = """\
@@ -2244,15 +2239,6 @@ class TestTOG (BaseTest):
             await session.update(data)
     """
         self.make_data(contents)
-    # async def get_docs(page):
-        # page = await fetch_page()
-        # while page:
-            # for doc in page:
-                # yield doc
-            # page = await fetch_page()
-
-    # async for doc in get_docs(None):
-        # pass
     #@+node:ekr.20191227052446.44: *5* test_Call
     def test_Call(self):
         contents = """func(a, b, one='one', two=2, three=4+5, *args, **kwargs)"""
@@ -3447,10 +3433,7 @@ class TokenOrderGenerator:
     # Starred(expr value, expr_context ctx)
 
     def do_Starred(self, node):
-        
         """A starred argument to an ast.Call"""
-        
-        # g.trace(f"\n{node.value.__class__.__name__}")
         yield from self.gen_op('*')
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.61: *6* tog.AnnAssign
