@@ -2417,7 +2417,6 @@ class TokenOrderGenerator:
     """A class that traverses ast (parse) trees in token order."""
 
     n_nodes = 0  # The number of nodes that have been visited.
-    silent = True  # True: suppress all informational messages.
 
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
@@ -3821,6 +3820,9 @@ class TokenOrderTraverser:
 #@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
 class Fstringify (TokenOrderTraverser):
     """A class to fstringify files."""
+    
+    silent = True  # True: suppress all informational messages.
+    
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, contents, filename, tokens, tree):
@@ -3928,14 +3930,15 @@ class Fstringify (TokenOrderTraverser):
             line_number = token.line_number
             line = token.line
             n_specs, n_values = len(specs), len(values)
-            print(
-                f"\n"
-                f"f-string mismatch: "
-                f"{n_values} value{g.plural(n_values)}, "
-                f"{n_specs} spec{g.plural(n_specs)}\n"
-                f"             file: {self.filename}\n"
-                f"      line number: {line_number}\n"
-                f"             line: {line.strip()!r}")
+            if not self.silent:
+                print(
+                    f"\n"
+                    f"f-string mismatch: "
+                    f"{n_values} value{g.plural(n_values)}, "
+                    f"{n_specs} spec{g.plural(n_specs)}\n"
+                    f"             file: {self.filename}\n"
+                    f"      line number: {line_number}\n"
+                    f"             line: {line.strip()!r}")
             return
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
@@ -3945,13 +3948,14 @@ class Fstringify (TokenOrderTraverser):
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
         # Show the results
-        print(
-            f"\n"
-            f"       file: {self.filename}\n"
-            f"line number: {line_number}\n"
-            f"       line: {line!r}\n"
-            f"       from: {lt_s} % {rt_s}\n"
-            f"         to: {result}")
+        if not self.silent:
+            print(
+                f"\n"
+                f"       file: {self.filename}\n"
+                f"line number: {line_number}\n"
+                f"       line: {line!r}\n"
+                f"       from: {lt_s} % {rt_s}\n"
+                f"         to: {result}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
@@ -3974,12 +3978,13 @@ class Fstringify (TokenOrderTraverser):
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(lt_s, tokens):
-            print(
-                f"\n"
-                f"can't create f-fstring: {lt_s!r}\n"
-                f"                  file: {self.filename}\n"
-                f"           line number: {line_number}\n"
-                f"                  line: {line.strip()!r}")
+            if not self.silent:
+                print(
+                    f"\n"
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"                  file: {self.filename}\n"
+                    f"           line number: {line_number}\n"
+                    f"                  line: {line.strip()!r}")
             return None
         return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
