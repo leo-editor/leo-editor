@@ -737,6 +737,7 @@ if 1: # pragma: no cover
                 j += 1
         if level != 0:
             s = tokens_to_string(tokens[i:j+1])
+            print('')
             g.trace(f"Unmatched tokens. level={level}, {s!r}\n")
         return j
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
