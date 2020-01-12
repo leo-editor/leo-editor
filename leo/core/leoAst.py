@@ -2206,10 +2206,11 @@ class TestTOG (BaseTest):
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* Statements...
-    #@+node:ekr.20200111175043.1: *5* test_AsyncDef
-    def test_AsyncDef(self):
-        contents = r"""\
-    async def count():
+    #@+node:ekr.20200111175043.1: *5* test_AsyncFunctionDef
+    def test_AsyncFunctionDef(self):
+        contents = """\
+    @my_decorator
+    async def count() -> 42:
         print("One")
         await asyncio.sleep(1)
     """
@@ -2850,11 +2851,11 @@ class TokenOrderGenerator:
         yield from self.gen_op('(')
         yield from self.gen(node.args)
         yield from self.gen_op(')')
-        yield from self.gen_op(':')
         returns = getattr(node, 'returns', None)
         if returns is not None:
             yield from self.gen_op('->')
             yield from self.gen(node.returns)
+        yield from self.gen_op(':')
         yield from self.gen_newline()
         self.level += 1
         yield from self.gen(node.body)
