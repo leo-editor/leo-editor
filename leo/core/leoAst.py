@@ -2799,9 +2799,9 @@ class TokenOrderGenerator:
 
     # keyword = (identifier? arg, expr value)
 
-    def do_keyword(self, node):
+    def do_keyword(self, node):  # pragma: no cover
         """A keyword arg in an ast.Call."""
-        filename = getattr(self, 'filename', '<no file>')  # pragma: no cover
+        filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_keyword should never be called")
@@ -3187,14 +3187,14 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.39: *6* tog.FormattedValue: not called!
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node):
+    def do_FormattedValue(self, node):  # pragma: no cover
         """
         This node represents the *components* of a *single* f-string.
         
         Happily, JoinedStr nodes *also* represent *all* f-strings,
         so the TOG should *never visit this node!
         """
-        filename = getattr(self, 'filename', '<no file>')  # pragma: no cover
+        filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_FormattedValue should never be called")
