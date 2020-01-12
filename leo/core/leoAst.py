@@ -3282,6 +3282,8 @@ class TokenOrderGenerator:
             # Skip over *all* insignificant tokens!
             if is_significant_token(token):
                 break
+        #
+        # Raise an error if we didn't find the expected 'string' token.
         if not token or token.kind != 'string':  # pragma: no cover
             if not token:
                 token = self.tokens[-1]
@@ -3302,13 +3304,13 @@ class TokenOrderGenerator:
             i += 1
             if token.kind == 'string':
                 results.append(token)
-            elif token.kind in ('endmarker', 'name', 'number', 'op'):
-                # Note 1: Unlike is_significant_token, *any* op will halt the scan.
-                #         This is valid because ')' surely will halt string concatenation.
-                #
-                # Note 2: The 'endmarker' token ensures we will have a token.
+            elif token.kind == 'op' or is_significant_token(token):
+                # Any significant token *or* any op will halt string concatenation.
                 break
             # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        #
+        # The (significant) 'endmarker' token ensures we will have result.
+        assert results
         if trace:
             g.printObj(results, tag=f"{tag}: Results")
         return results
