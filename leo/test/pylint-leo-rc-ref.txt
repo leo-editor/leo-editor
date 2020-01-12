@@ -54,10 +54,8 @@ disable=
         global-statement, #  Assume we know what we are doing.
         global-variable-not-assigned, # not helpful.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
-        import-error, # A really stupid test.
         misplaced-comparison-constant, # pedantic.
-        missing-docstring,
-            # Some other time :-)  Instead, use Leo's find-missing-docstrings command.
+        missing-docstring, # Instead, use Leo's find-missing-docstrings command.
         no-self-use, # so what?
         protected-access,
         redefined-argument-from-local, # I do this all the time.
@@ -83,6 +81,7 @@ disable=
         # deprecated-module,
         # chained-comparison,
         # len-as-condition,
+        # import-error, # Warns when an import fails: useful now that we are only using python 3.
         # inconsistent-return-statements,
         # line-too-long,
             # Not enabled because it is a format test.

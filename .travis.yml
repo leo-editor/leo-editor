@@ -8,6 +8,7 @@ install:
     ## Using PEP-518 (pypoject.toml) requires pip >v10 
     - python -m pip install --upgrade pip
     - pip --version
+    - pip install setupext-janitor
 script:
     ## Test: Unit tests
     - python run_travis_unit_tests.py

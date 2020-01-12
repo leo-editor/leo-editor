@@ -89,7 +89,7 @@ class Org_Importer(Importer):
         self.inject_lines_ivar(child)
         if body:
             self.add_line(child, body)
-        assert g.isString(headline), repr(headline)
+        assert isinstance(headline, str), repr(headline)
         child.h = headline
             # #1037: do rstrip, not strip.
             # #1087: do not strip at all!

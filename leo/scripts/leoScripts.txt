@@ -14340,17 +14340,10 @@ opt_print_elements = False
 main()
 #@+node:ekr.20060824111500.109: *4* << imports >>
 import glob
+import os
 import string
 import xml.sax
 import xml.sax.saxutils
-
-# if g.isPython3:
-    # import io # Python 3.x
-    # StringIO = io.StringIO
-    # BytesIO = io.BytesIO
-# else:
-    # import cStringIO # Python 2.x
-    # StringIO = cStringIO.StringIO
 #@+node:ekr.20060824111500.110: *4* << to do >>
 @nocolor
 @
@@ -14377,7 +14370,8 @@ errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print(s)
 if 1: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('test',)]
+    short_files = ['asciidoc']
+    files = [rf"{theDir}{os.path.sep}{z}.xml" for z in short_files]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
@@ -14407,23 +14401,6 @@ def cleanSaxInputString(s):
         transtable = string.maketrans(flatten, pad)
     return s.translate(transtable)
 # for i in range(32): print i,repr(chr(i))
-#@+node:ekr.20060824111500.114: *5* convert
-def convert (c,inputFileName,outputFileName):
-
-    junk, fn = g.os_path_split(inputFileName)
-    language, junk = g.os_path_splitext(fn)
-    g.es_print('convert: %s' % (language))
-    mode = parse_jEdit_file(inputFileName,language)
-    if mode:
-        try:
-            f = open(outputFileName,'w')
-        except IOError:
-            g.trace('can not create %s' % outputFileName)
-            return
-        try:
-            mode.write(f,language)
-        finally:
-            f.close()
 #@+node:ekr.20060824111500.115: *5* parse_jEdit_file
 def parse_jEdit_file(inputFileName,language):
 
@@ -14461,6 +14438,21 @@ def parse_jEdit_file(inputFileName,language):
     finally:
         f.close()
         return mode
+#@+node:ekr.20060824111500.114: *5* convert
+def convert (c,inputFileName, outputFileName):
+
+    junk, fn = g.os_path_split(inputFileName)
+    language, junk = g.os_path_splitext(fn)
+    mode = parse_jEdit_file(inputFileName, language)
+    if not mode:
+        g.trace('FAIL: no mode', language, inputFileName)
+        return
+    with open(outputFileName,'w') as f:
+        try:
+            mode.write(f, language)
+            g.es_print('wrote', outputFileName)
+        except IOError:
+            g.es_print('can not create', outputFileName)
 #@+node:ekr.20060824111500.116: *5* munge
 def munge(s):
 
@@ -14476,14 +14468,14 @@ def main():
         return
     for path1 in files:
         if path1 in errors:
-            print('skipping %s' % path1)
-        else:
-            path2 = path1[:-3] + 'py'
-            try:
-                convert (c,path1,path2)
-            except Exception:
-                print('Exception creating', path2)
-                g.es_exception()
+            print(f"skipping {path1}")
+            continue
+        path2 = path1[:-3] + 'py'
+        try:
+            convert (c, path1, path2)
+        except Exception:
+            print('Exception creating', path2)
+            g.es_exception()
     g.es_print('done')
 #@+node:ekr.20060824111500.117: *4* class modeClass
 class modeClass:
@@ -14609,8 +14601,6 @@ def putAttributes (self):
                 else: val = g.choose(val,val,'')
             # if val: g.trace(key,repr(val))
             d [key] = val
-
-
         self.putDict('%s_attributes_dict' % (prefix),d)
         dd [ prefix ] = '%s_attributes_dict' % (prefix)
 
@@ -14621,19 +14611,20 @@ def putDict (self,name,theDict,escape=True):
 
     esc = self.escapeString
     esc2 = g.choose(escape,self.escapeString,lambda a: a)
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
-    s = ''.join(['\t%s: %s,\n' % (esc(key),esc2(theDict.get(key))) for key in keys])
-    if s: s = '\n' + s
+    keys = list(set((theDict.keys())))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
+    s = ''.join([
+        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
+            for key in keys])
+    if s:
+        s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
 
 def putDictOfLists (self,name,theDict,strings=False):
 
     esc = self.escapeString
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
+    keys = list(set(theDict.keys()))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
     theList = []
     for key in keys:
         if strings:
@@ -14674,26 +14665,23 @@ def putKeywordsData (self):
         prefix = '%s_%s' % (self.modeName,ruleset.name)
         prefix = g.toUnicode(prefix)
         ignore_case = ruleset.attributes.get('ignore_case','false')
-        if type(ignore_case) != type(True): # Bug fix: 2013/08/03.
+        if not isinstance(ignore_case, bool):
             ignore_case = ignore_case.lower() == 'false'
         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             if rule.name == 'keywords':
-                d = rule.keywordsDict
-                # g.trace([z for z in d.keys() if not g.isString(z)])
-                for key in list(d.keys()):
-                    key = g.toUnicode(key)
-                    if not key.strip():
-                        if key in d:
-                            del d [key]
-                    elif key.find(' ') != -1 or key.find('\t') != -1:
+                # d = rule.keywordsDict
+                d = { g.toUnicode(key): g.toUnicode(val)
+                    for key, val in rule.keywordsDict.items() if key.strip() }
+                # g.trace()
+                # g.printObj(d)
+                for key in sorted(set(d.keys())):
+                    if ' ' in key or '\t' in key:
                         del d [key]
-                        g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
-                            repr(key)))
+                        g.es_print(f"Ignoring keyword containing whitespace: {key!r}")
                     elif ignore_case: # New in 4.4.1 final.
                         # Downcase all keys.
                         val = d.get(key)
-                        val = g.toUnicode(val)
                         key2 = key.lower()
                         if key2 != key:
                             if key in d: del d[key]
@@ -14719,7 +14707,7 @@ def putList (self,name,theList,escape=True,lineCount=0):
 
     result = []
     n = len(theList)
-    for i in xrange(n):
+    for i in range(n):
         result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
 
     vals = ''.join(result)
@@ -15011,11 +14999,8 @@ def putRules (self):
     d = {} ; d2Count = 0
     for ruleset in self.rulesets:
         d2 = {}
-        start_count = self.handlerCount
-        # prefix = '%s::%s' % (self.modeName,ruleset.name)
-        prefix2 = '%s_%s_rules' % (self.modeName,ruleset.name)
-        prefix3 = '%s_%s'% (self.modeName,ruleset.name)
-        self.put('# Rules for %s ruleset.\n' % (prefix3))
+        prefix = '%s_%s'% (self.modeName,ruleset.name)
+        self.put('# Rules for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             ch = self.putRule(rule)
             self.put('\n')
@@ -15029,13 +15014,14 @@ def putRules (self):
                 theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
                 d2 [ch] = theList
         # Create the rules dict for the ruleset.
-        self.put('\n# Rules dict for %s ruleset.\n' % (prefix3))
-        d2Count += 1 ; name = 'rulesDict%d' % d2Count
+        self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
+        d2Count += 1
+        name = 'rulesDict%d' % d2Count
         self.putDictOfLists(name,d2)
-        d [prefix3] = name
+        d [prefix] = name
     # Create rulesDictDict.
     self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
-    self.putDict('rulesDictDict',d,escape=False)
+    self.putDict('rulesDictDict', d, escape=False)
 #@+node:ekr.20060824111500.143: *6* write
 def write (self,theFile,language):
 
@@ -15051,9 +15037,7 @@ def write (self,theFile,language):
                         self.keywordChars.append(ch)
         
     # g.trace('keywordChars',repr(self.keywordChars))
-    self.keywordChars = ''.join(self.keywordChars)
-    
-
+    self.keywordChars = ''.join(list(set(self.keywordChars)))
     self.outputFile = theFile
     self.put('# Leo colorizer control file for %s mode.\n' % language)
     self.put('# This file is in the public domain.\n\n')
@@ -15578,13 +15562,14 @@ def doEndElement (self,elementName):
         print('</' + self.clean(elementName).strip() + '>')
 
     if elementName.lower() == 'mode':
-        if opt_print_summary: self.mode.printSummary()
+        if opt_print_summary:
+            self.mode.printSummary()
     elif self.mode:
         self.mode.endElement(elementName)
     else:
         self.error('End element appears outside of Mode:%s' % elementName)
-        for bunch in self.attrsToList(attrs):
-            self.error('Attribute appears outside of Mode:%s' %bunch.name)
+        # for bunch in self.attrsToList(attrs):
+        #    self.error('Attribute appears outside of Mode:%s' %bunch.name)
 #@+node:ekr.20060824111500.181: *5* getMode
 def getMode (self):
 

@@ -3311,6 +3311,28 @@
 <v t="ekr.20190122052932.28"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
 <v t="ekr.20190617074238.1"><vh>Leo 6.0: Python 3, dock-based gui</vh></v>
+<v t="ekr.20191026200311.1"><vh>Leo 6.1: Pyzo, markup support</vh>
+<v t="ekr.20191026200311.2"><vh>6.1: Major features</vh>
+<v t="ekr.20191026200311.3"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+<v t="ekr.20191026200311.4"><vh>#1093: pyzo_in_leo plugin</vh></v>
+<v t="ekr.20191026200311.5"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
+<v t="ekr.20191026200311.6"><vh>Support for asciidoc and asciidoctor</vh></v>
+<v t="ekr.20191026200311.7"><vh>Support for pandoc, including @language pandoc</vh></v>
+<v t="ekr.20191026200311.8"><vh>Support for black</vh></v>
+<v t="ekr.20191026200311.9"><vh>Support for sphinx</vh></v>
+</v>
+<v t="ekr.20191026200311.10"><vh>6.1: Bugs</vh>
+<v t="ekr.20191026200311.11"><vh>Minor bugs</vh></v>
+<v t="ekr.20191026200311.12"><vh>#1338: {{ conflicts</vh></v>
+</v>
+<v t="ekr.20191026200311.13"><vh>6.1: Code features</vh></v>
+<v t="ekr.20191026200311.14"><vh>6.1: Features</vh></v>
+<v t="ekr.20191026200311.15"><vh>6.1: Settings, directives, command-line arguments</vh>
+<v t="ekr.20191026200311.16"><vh>#1263: --window-spot</vh></v>
+<v t="ekr.20191026200311.17"><vh>#1289: --global-docks</vh></v>
+<v t="ekr.20191026200311.18"><vh>#1306: @nopyflakes</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -25798,7 +25820,7 @@ https://github.com/leo-editor/leo-editor/issues/690
 <t tx="ekr.20190122052932.8">https://github.com/leo-editor/leo-editor/issues/1023
 </t>
 <t tx="ekr.20190122052932.9">https://github.com/leo-editor/leo-editor/issues/1032</t>
-<t tx="ekr.20190617074238.1">Leo 6.0 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190617074238.1">Leo 6.0 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -25826,6 +25848,256 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20191026200311.1">Leo 6.1 http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.1**
+
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
+- Added support for pandoc and sphinx.
+- Added support for black.
+- The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
+
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20191026200311.10">This page shows all bugs related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Abug</t>
+<t tx="ekr.20191026200311.11">#0490: scroll wheel problems
+https://github.com/leo-editor/leo-editor/issues/490
+
+#1273: dashed border after dialog
+https://github.com/leo-editor/leo-editor/issues/1273
+
+#1274: leoQt.py should return None for everything when in bridge
+https://github.com/leo-editor/leo-editor/issues/1274
+
+#1276: clear-*-uas don't set outline dirty
+https://github.com/leo-editor/leo-editor/issues/1276
+
+#1285: Control-clicks can find definitions in the wrong outline
+https://github.com/leo-editor/leo-editor/issues/1285
+
+#1295: too many @first lines
+https://github.com/leo-editor/leo-editor/issues/1295
+
+#1307: @first/last invalid in @clean
+https://github.com/leo-editor/leo-editor/issues/1307
+
+#1318: better arrangement for docks in new windows
+https://github.com/leo-editor/leo-editor/issues/1318
+
+#1327: Missing outlines for non-existent files
+https://github.com/leo-editor/leo-editor/issues/1327
+
+#1333: undo glitch
+https://github.com/leo-editor/leo-editor/issues/1333
+
+#1334: @language C crashes Leo
+https://github.com/leo-editor/leo-editor/issues/1334
+
+#1335: ipython--exec
+https://github.com/leo-editor/leo-editor/issues/1336
+
+#1340: body/outline ratio in new files
+https://github.com/leo-editor/leo-editor/issues/1344
+
+#1345: unit tests fail from bridge
+https://github.com/leo-editor/leo-editor/issues/1345
+
+#1347: @asis problems
+https://github.com/leo-editor/leo-editor/issues/1347
+
+#1349: Find Status
+https://github.com/leo-editor/leo-editor/issues/1349
+
+#1361: at.precheck is broken
+https://github.com/leo-editor/leo-editor/issues/1361
+
+#1362: crash when reloading
+https://github.com/leo-editor/leo-editor/issues/1362
+
+#1373: Adoc writes to Scripts folder instead of .leo folder when no @path given
+https://github.com/leo-editor/leo-editor/issues/1373
+
+#1379: Crash on saving workbook while simulating a new user's experience
+https://github.com/leo-editor/leo-editor/issues/1378
+
+#1380: Opening workbook for new user selects top-level nodes repeatedly
+https://github.com/leo-editor/leo-editor/issues/1380
+
+#1381: Crash on reloading workbook while simulating newbie experience
+https://github.com/leo-editor/leo-editor/issues/1381
+
+#1385: Console gui doesn't ask to create leoid
+https://github.com/leo-editor/leo-editor/issues/1385
+
+#1392: external file not always saved
+https://github.com/leo-editor/leo-editor/issues/1392
+
+#1403: Catch exceptions during startup
+https://github.com/leo-editor/leo-editor/issues/1403
+
+#1404: ensure well-formed gnx's
+https://github.com/leo-editor/leo-editor/issues/1404
+
+#1415: crash when .leo doesn't exist
+https://github.com/leo-editor/leo-editor/issues/1415
+
+#1416: select first .leo file on the command line
+https://github.com/leo-editor/leo-editor/issues/1416
+</t>
+<t tx="ekr.20191026200311.12">https://github.com/leo-editor/leo-editor/issues/1338
+
+g.getUrlFromNode was expanding path expressions in body text!
+
+This was a serious bug that could lead to the execution of unchecked code.
+
+See also: #1341: limit path expressions
+https://github.com/leo-editor/leo-editor/issues/1341</t>
+<t tx="ekr.20191026200311.13">#1316: unify g.TypedDict classes
+https://github.com/leo-editor/leo-editor/issues/1316
+
+#1323: convert to fstrings
+https://github.com/leo-editor/leo-editor/issues/1323
+
+#1350: LeoBridge option to not use the cache
+https://github.com/leo-editor/leo-editor/issues/1350
+
+#1364: Use """ for all docstrings
+https://github.com/leo-editor/leo-editor/issues/1364
+
+#1394: External file not always saved
+https://github.com/leo-editor/leo-editor/issues/1394
+- p.setDirty() is now much faster than before.
+- Added c.all_positions_for_v generator.
+
+</t>
+<t tx="ekr.20191026200311.14">This page shows all enhancements related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aenhancement
+
+#1253: Support @language asciidoc
+https://github.com/leo-editor/leo-editor/issues/1253
+
+#1297: warnings about @first &amp; @last
+https://github.com/leo-editor/leo-editor/issues/1297
+
+#1342: use labels in Find Tab
+https://github.com/leo-editor/leo-editor/issues/1342
+
+#1351: removed click/drag commands
+https://github.com/leo-editor/leo-editor/issues/1351
+
+#1353: new cursor commands
+https://github.com/leo-editor/leo-editor/issues/1353
+
+#1371: support pandoc and @language pandoc
+https://github.com/leo-editor/leo-editor/issues/1371
+
+#1383: Expand ~ in all paths
+https://github.com/leo-editor/leo-editor/issues/1383
+
+#1398: Support path expressions in @rst, @adoc, @pandoc and @sphinx nodes
+https://github.com/leo-editor/leo-editor/issues/1398
+
+New show-clone-ancestors and show-clone-parents commands</t>
+<t tx="ekr.20191026200311.15"></t>
+<t tx="ekr.20191026200311.16">https://github.com/leo-editor/leo-editor/issues/1263
+</t>
+<t tx="ekr.20191026200311.17">https://github.com/leo-editor/leo-editor/issues/1289</t>
+<t tx="ekr.20191026200311.18">https://github.com/leo-editor/leo-editor/issues/1306
+</t>
+<t tx="ekr.20191026200311.2"></t>
+<t tx="ekr.20191026200311.3">https://github.com/leo-editor/leo-editor/issues/1281</t>
+<t tx="ekr.20191026200311.4">https://github.com/leo-editor/leo-editor/issues/1093
+The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
+</t>
+<t tx="ekr.20191026200311.5">https://github.com/leo-editor/leo-editor/issues/1315</t>
+<t tx="ekr.20191026200311.6">Issues related to asciidoc:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
+
+**Background**
+
+asciidoc3 is a python tool. asciidoctor is a ruby tool, claiming to be 100
+times faster than asciidoc.
+
+The asciidoc markup language is virtually identical, regardless of the tool
+used. For full details, see the asciidoctor User manual:
+https://asciidoctor.org/docs/user-manual/
+
+Here are the recent improvements...
+
+**Live rendering of asciidoc and pandoc markup**
+
+The VR plugin recognizes @adoc node and @language md. The VR plugin renders only p.b.
+
+**Improved adoc command**
+
+Given an @adoc node of the form @adoc &lt;full path&gt;, this command does the following:
+
+1. Scan the @adoc tree, writing the result to adoc_test.adoc.
+
+The scan converts headlines to section markup. See help-for-command for adoc for more details.
+
+2. Calls asciidoctor or asciidoc3 to convert adoc_test to adoc.html.
+
+This command prefers asciidoctor to to asciidoc3 if both exist. 
+
+**New adoc-with-preview command**
+
+Runs the adoc command, then shows the resulting html in the default browser.
+
+</t>
+<t tx="ekr.20191026200311.7">**Background**
+
+pandoc is a tool for converting pandoc markup (a variant of markdown) to html, and many other formats.
+
+**Support for @language pandoc**
+
+leo/modes/pandoc.py is based on leo/modes/md.py.
+
+**Live rendering of pandoc markup**
+
+The VR plugin recognizes @pandoc nodes (see below) and @language pandoc.
+
+The VR plugin renders only p.b.
+
+**New pandoc and pandoc-with-preview commands**
+
+Much like the corresponding adoc commands, but uses pandoc markup, which is a variant of markdown.
+
+The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
+<t tx="ekr.20191026200311.8">#1266: orange (beautify &amp; blacken)
+https://github.com/leo-editor/leo-editor/issues/1266
+
+#1272: Added support for black (https://pypi.org/project/black/)
+https://github.com/leo-editor/leo-editor/issues/1272
+
+#1325: black keeps overindent comments:
+https://github.com/leo-editor/leo-editor/issues/1325
+</t>
+<t tx="ekr.20191026200311.9">https://github.com/leo-editor/leo-editor/issues/1388
 </t>
 </tnodes>
 </leo_file>

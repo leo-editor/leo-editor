@@ -2,25 +2,25 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150624112334.1: * @file ../commands/gotoCommands.py
 #@@first
-'''Leo's goto commands.'''
+"""Leo's goto commands."""
 import leo.core.leoGlobals as g
 # import os
 import re
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands
 class GoToCommands:
-    '''A class implementing goto-global-line.'''
+    """A class implementing goto-global-line."""
     #@+others
     #@+node:ekr.20100216141722.5621: *3* goto.ctor
     def __init__(self, c):
-        '''Ctor for GoToCommands class.'''
+        """Ctor for GoToCommands class."""
         self.c = c
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
     def find_file_line(self, n, p=None):
-        '''
+        """
         Place the cursor on the n'th line (one-based) of an external file.
         Return (p, offset, found) for unit testing.
-        '''
+        """
         c = self.c
         if n < 0:
             return None, -1, False
@@ -48,7 +48,7 @@ class GoToCommands:
         return self.find_script_line(n, p)
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start
     def find_node_start(self, p, s=None):
-        '''Return the global line number of the first line of p.b'''
+        """Return the global line number of the first line of p.b"""
         # See #283.
         root, fileName = self.find_root(p)
         if not root:
@@ -66,10 +66,10 @@ class GoToCommands:
         return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n, root):
-        '''
+        """
         Go to line n (zero based) of the script with the given root.
         Return p, offset, found for unit testing.
-        '''
+        """
         c = self.c
         if n < 0:
             return None, -1, False
@@ -83,12 +83,12 @@ class GoToCommands:
             return p, offset, True
         self.fail(lines, n, root)
         return None, -1, False
-    #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line (new)
+    #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line
     def node_offset_to_file_line(self, target_offset, target_p, root):
-        '''
+        """
         Given a zero-based target_offset within target_p.b, return the line
         number of the corresponding line within root's file.
-        '''
+        """
         delim1, delim2 = self.get_delims(root)
         file_s = self.get_external_file_with_sentinels(root)
         gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
@@ -125,7 +125,7 @@ class GoToCommands:
         return None
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
     def scan_nonsentinel_lines(self, lines, n, root):
-        '''
+        """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.
 
@@ -136,7 +136,7 @@ class GoToCommands:
         gnx:    the gnx of the #@+node
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
-        '''
+        """
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
@@ -174,7 +174,7 @@ class GoToCommands:
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
     def scan_sentinel_lines(self, lines, n, root):
-        '''
+        """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.
 
@@ -182,7 +182,7 @@ class GoToCommands:
         gnx:    the gnx of the #@+node
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
-        '''
+        """
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
@@ -210,7 +210,7 @@ class GoToCommands:
     #@+node:ekr.20150624142449.1: *3* goto.Utils
     #@+node:ekr.20150625133523.1: *4* goto.fail
     def fail(self, lines, n, root):
-        '''Select the last line of the last node of root's tree.'''
+        """Select the last line of the last node of root's tree."""
         c = self.c
         w = c.frame.body.wrapper
         c.selectPosition(root)
@@ -221,17 +221,17 @@ class GoToCommands:
             else:
                 g.warning('line', n, 'not found')
         c.frame.clearStatusLine()
-        c.frame.putStatusLine('goto-global-line not found: %s' % (n))
+        c.frame.putStatusLine(f"goto-global-line not found: {n}")
         # Put the cursor on the last line of body text.
         w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
         w.seeInsertPoint()
     #@+node:ekr.20100216141722.5626: *4* goto.find_gnx
     def find_gnx(self, root, gnx, vnodeName):
-        '''
+        """
         Scan root's tree for a node with the given gnx and vnodeName.
         return (p,found)
-        '''
+        """
         if gnx:
             gnx = g.toUnicode(gnx)
             for p in root.self_and_subtree(copy=False):
@@ -242,10 +242,10 @@ class GoToCommands:
         return root, False
     #@+node:ekr.20100216141722.5627: *4* goto.find_root
     def find_root(self, p):
-        '''
+        """
         Find the closest ancestor @<file> node, except @all nodes and @edit nodes.
         return root, fileName.
-        '''
+        """
         c = self.c; p1 = p.copy()
         # First look for ancestor @file node.
         for p in p.self_and_parents(copy=False):
@@ -265,7 +265,7 @@ class GoToCommands:
         return None, None
     #@+node:ekr.20150625123747.1: *4* goto.get_delims
     def get_delims(self, root):
-        '''Return the deliminters in effect at root.'''
+        """Return the deliminters in effect at root."""
         c = self.c
         old_target_language = c.target_language
         try:
@@ -277,14 +277,14 @@ class GoToCommands:
         if delims1:
             return delims1, None
         return delims2, delims3
-    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels (changed)
+    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root):
-        '''
+        """
         root is an @<file> node.
 
         Return the result of writing the file *with* sentinels, even if the
         external file would normally *not* have sentinels.
-        '''
+        """
         c = self.c
         if root.isAtAutoNode():
             # Special case @auto nodes:
@@ -306,7 +306,7 @@ class GoToCommands:
             useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
-        '''Return the gnx and headline of a #@+node.'''
+        """Return the gnx and headline of a #@+node."""
         i = s.find(':', 0)
         j = s.find(':', i + 1)
         if i == -1 or j == -1:
@@ -320,7 +320,7 @@ class GoToCommands:
         return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
     def is_sentinel(self, delim1, delim2, s):
-        '''Return True if s is a sentinel line with the given delims.'''
+        """Return True if s is a sentinel line with the given delims."""
         assert delim1
         i = s.find(delim1 + '@')
         if delim2:
@@ -345,7 +345,7 @@ class GoToCommands:
         return s[i:]
     #@+node:ekr.20100216141722.5638: *4* goto.success
     def success(self, lines, n, n2, p):
-        '''Place the cursor on line n2 of p.b.'''
+        """Place the cursor on line n2 of p.b."""
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.
@@ -356,7 +356,7 @@ class GoToCommands:
         s = w.getAllText()
         ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
         c.frame.clearStatusLine()
-        c.frame.putStatusLine('goto-global-line found: %s' % (n2))
+        c.frame.putStatusLine(f"goto-global-line found: {n2}")
         w.setInsertPoint(ins)
         c.bodyWantsFocus()
         w.seeInsertPoint()

@@ -132,6 +132,8 @@ def init():
 #@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
 def attachToCommander(t,k):
+    
+    # pylint: disable=simplifiable-if-statement
     c = k.get('c')
     event = c.config.getString('active-path-event') or "headdclick1"
     # pylint: disable=unnecessary-lambda
@@ -212,7 +214,7 @@ def checkIncExc(item,inc,exc,regEx):
         return inAny(item,inc,regEx)
     if exc and not inc:
         return not inAny(item,exc,regEx)
-    return exc and inc
+    return True
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
     for pat in lst:
@@ -227,13 +229,16 @@ def subDir(d, p):
         if len(p) != 2:
             return None
         p = p[1]
+
     elif p.b.strip().startswith('@path'):
         p = p.b.split('\n',1)[0].split(None,1)
         if len(p) != 2:
             return None
         p = p[1]
+
     else:
         p = p.h.strip(' /')
+
     return os.path.join(d,p)
 #@+node:tbrown.20080613095157.4: ** onSelect
 def onSelect (tag,keywords):

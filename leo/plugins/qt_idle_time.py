@@ -2,19 +2,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
 #@@first
-'''Leo's Qt idle-time code.'''
+"""Leo's Qt idle-time code."""
 import leo.core.leoGlobals as g
 import time
 from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
 class IdleTime:
-    '''
+    """
     A class that executes a handler with a given delay at idle time. The
     handler takes a single argument, the IdleTime instance::
 
         def handler(timer):
-            """IdleTime handler.  timer is an IdleTime instance."""
+            '''IdleTime handler.  timer is an IdleTime instance.'''
             delta_t = timer.time-timer.starting_time
             g.trace(timer.count,timer.c.shortFileName(),'%2.4f' % (delta_t))
             if timer.count >= 5:
@@ -46,11 +46,11 @@ class IdleTime:
         if timer1 and timer2:
             timer1.start()
             timer2.start()
-    '''
+    """
     #@+others
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
     def __init__(self, handler, delay=500, tag=None):
-        '''ctor for IdleTime class.'''
+        """ctor for IdleTime class."""
         # For use by handlers...
         self.count = 0
             # The number of times handler has been called.
@@ -78,16 +78,16 @@ class IdleTime:
         g.app.idle_timers.append(self)
     #@+node:ekr.20140825102404.18525: *3* IdleTime.__repr__
     def __repr__(self):
-        '''IdleTime repr.'''
+        """IdleTime repr."""
         tag = self.tag
         if tag:
-            return '<IdleTime: %s>' % (tag if g.isString(tag) else repr(tag))
+            return '<IdleTime: %s>' % (tag if isinstance(tag, str) else repr(tag))
         return '<IdleTime: id: %s>' % id(self)
 
     __str__ = __repr__
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
-        '''Call self.handler not more than once every self.delay msec.'''
+        """Call self.handler not more than once every self.delay msec."""
         if g.app.killed:
             self.stop()
         elif self.enabled:
@@ -104,7 +104,7 @@ class IdleTime:
             self.timer.stop()
     #@+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
     def call_handler(self):
-        '''Carefully call the handler.'''
+        """Carefully call the handler."""
         try:
             self.count += 1
             self.time = time.time()
@@ -114,12 +114,12 @@ class IdleTime:
             self.stop()
     #@+node:ekr.20140825080012.18529: *3* IdleTime.destroy_self
     def destroy_self(self):
-        '''Remove the instance from g.app.idle_timers.'''
+        """Remove the instance from g.app.idle_timers."""
         if not g.app.killed and self in g.app.idle_timers:
             g.app.idle_timers.remove(self)
     #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
     def start(self):
-        '''Start idle-time processing'''
+        """Start idle-time processing"""
         self.enabled = True
         if self.starting_time is None:
             self.starting_time = time.time()
@@ -128,7 +128,7 @@ class IdleTime:
         self.timer.start(self.delay)
 
     def stop(self):
-        '''Stop idle-time processing. May be called during shutdown.'''
+        """Stop idle-time processing. May be called during shutdown."""
         self.enabled = False
         if hasattr(self, 'timer') and self.timer.isActive():
             self.timer.stop()

@@ -16,6 +16,8 @@ class TS_Importer(Importer):
     #
     # The pattern table. Order matters!
     function_patterns = (
+        (1, re.compile(r'(interface\s+\w+)')),
+            # interface name
         (1, re.compile(r'(class\s+\w+)')),
             # class name
         (1, re.compile(r'export\s+(class\s+\w+)')),
@@ -104,6 +106,10 @@ class TS_Importer(Importer):
             if pattern.match(line) is not None:
                 return True
         return False
+    #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names (new)
+    def add_class_names(self, p):
+        '''Add class names to headlines for all descendant nodes.'''
+        return 
     #@-others
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:

@@ -90,6 +90,8 @@
 <v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base4</vh></v>
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base0</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
+<v t="chris.20190621150105.1"><vh>@color status-bg = @dark-base3</vh></v>
+<v t="chris.20190621150110.1"><vh>@color status-fg = @dark-base0</vh></v>
 </v>
 <v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
@@ -186,7 +188,7 @@
 <t tx="chris.20180313181652.11"></t>
 <t tx="chris.20180313181652.110">bold or regular</t>
 <t tx="chris.20180313181652.111"></t>
-<t tx="chris.20180313181652.112">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
+<t tx="chris.20180313181652.112" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
     
     leo/Icons/nodes-dark/plusminus/
     leo/Icons/nodes-dark/triangles/
@@ -2531,7 +2533,7 @@ gray90: #E5E5E5
 
 Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.67"></t>
-<t tx="chris.20180313181652.68"></t>
+<t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
 <t tx="chris.20180313181652.69"></t>
 <t tx="chris.20180313181652.7"></t>
 <t tx="chris.20180313181652.70"></t>
@@ -2540,7 +2542,7 @@ Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.73"></t>
 <t tx="chris.20180313181652.74"></t>
 <t tx="chris.20180313181652.75"></t>
-<t tx="chris.20180313181652.79"></t>
+<t tx="chris.20180313181652.79" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
 <t tx="chris.20180313181652.8"></t>
 <t tx="chris.20180313181652.80"></t>
 <t tx="chris.20180313181652.81"></t>
@@ -2642,8 +2644,10 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315125925.1"></t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
-<t tx="chris.20180322072943.1"></t>
+<t tx="chris.20180322072943.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
 <t tx="chris.20180322154730.1"></t>
+<t tx="chris.20190621150105.1"></t>
+<t tx="chris.20190621150110.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
 
 </t>

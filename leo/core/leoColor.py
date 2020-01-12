@@ -32,6 +32,7 @@ will return None.
 """
 #@-<< docstring >>
 import leo.core.leoGlobals as g
+assert g
 # import re
 # import string
 #@+<< define leo_color_database >>
@@ -751,7 +752,7 @@ def getColor(name, default=None):
     If 'name' is not in global_color_database then getColor(default, None)
     is called and that result returned.
     """
-    if not g.isString(name):
+    if not isinstance(name, str):
         return name
     if name[0] == '#':
         return name

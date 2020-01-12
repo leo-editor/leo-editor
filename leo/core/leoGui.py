@@ -23,11 +23,10 @@ class LeoGui:
     #@+others
     #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName):
-        '''Ctor for the LeoGui class.'''
+        """Ctor for the LeoGui class."""
         self.active = None # Used only by qt_gui.
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
-        self.globalFindDialog = None
         self.globalFindTab = None
         self.idleTimeClass = None
         self.isNullGui = False
@@ -249,20 +248,19 @@ class LeoGui:
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
 class LeoKeyEvent:
-    '''A gui-independent wrapper for gui events.'''
+    """A gui-independent wrapper for gui events."""
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
     def __init__(self, c, char, event, binding, w,
         x=None, y=None, x_root=None, y_root=None
     ):
-        '''Ctor for LeoKeyEvent class.'''
+        """Ctor for LeoKeyEvent class."""
         if g.isStroke(binding):
             g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
             stroke = binding
         else:
             stroke = g.KeyStroke(binding) if binding else None
-        assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
-            repr(stroke), g.callers())
+        assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
         if 'keys' in g.app.debug:
             print('LeoKeyEvent: binding: %s, stroke: %s, char: %r' % (
                 binding, stroke, char))
@@ -286,11 +284,11 @@ class LeoKeyEvent:
         return 'LeoKeyEvent:\n%s' % g.objToString(d)
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
     def get(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
+        """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
     def __getitem__(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
+        """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
     #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type
     def type(self):
@@ -302,7 +300,7 @@ class NullGui(LeoGui):
     #@+others
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName='nullGui'):
-        '''ctor for the NullGui class.'''
+        """ctor for the NullGui class."""
         super().__init__(guiName)
         self.clipboardContents = ''
         self.focusWidget = None
@@ -392,12 +390,13 @@ class NullGui(LeoGui):
     def get_window_info(self, window): return 600, 500, 20, 20
     def onActivateEvent(self, *args, **keys): pass
     def onDeactivateEvent(self, *args, **keys): pass
+    def set_top_geometry(self, w, h, x, y): pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True # Must be True for unit tests.
 
     def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
     def oops(self):
@@ -429,9 +428,9 @@ class NullGui(LeoGui):
     #@-others
 #@+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
 class NullScriptingControllerClass:
-    '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
+    """A default, do-nothing class to be overridden by mod_scripting or other plugins.
 
-    This keeps pylint happy.'''
+    This keeps pylint happy."""
 
     def __init__(self, c, iconBar=None):
         self.c = c
@@ -441,7 +440,7 @@ class NullScriptingControllerClass:
         pass
 #@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
 class StringCheckBox:
-    '''Simulate a QCheckBox.'''
+    """Simulate a QCheckBox."""
     
     def __init__(self, name, label):
         self.label = label
@@ -461,10 +460,10 @@ class StringCheckBox:
         self.value = not self.value
 #@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
 class StringGui(LeoGui):
-    '''
+    """
     A class representing all on-screen objects using subclasses of the
     leoFrame.StringTextWrapper class.
-    '''
+    """
     #@+others
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
@@ -477,7 +476,7 @@ class StringGui(LeoGui):
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
 class StringLineEdit:
     
-    '''Simulate a QLineEdit.'''
+    """Simulate a QLineEdit."""
         
     def __init__(self, name, disabled):
         self.disabled = disabled
@@ -503,7 +502,7 @@ class StringLineEdit:
 #@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
 class StringRadioButton:
     
-    '''Simulate QRadioButton.'''
+    """Simulate QRadioButton."""
     
     def __init__(self, name, label):
         self.label = label
@@ -522,12 +521,12 @@ class StringRadioButton:
    
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
-    '''A gui class for use by unit tests.'''
+    """A gui class for use by unit tests."""
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
     def __init__(self, theDict=None):
-        '''ctor for the UnitTestGui class.'''
+        """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")
         self.theDict = {} if theDict is None else theDict
@@ -542,10 +541,10 @@ class UnitTestGui(NullGui):
     if 1: # Huh?
 
         def runAtIdle(self, aFunc):
-            '''Run aFunc immediately for a unit test.
+            """Run aFunc immediately for a unit test.
 
             This is a kludge, but it is probably the best that can be done.
-            '''
+            """
             aFunc()
     #@-others
 #@-others

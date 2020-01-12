@@ -1,6 +1,8 @@
 # Leo colorizer control file for tex mode.
 # This file is in the public domain.
 
+# print('tex.py')
+
 # Properties for tex mode.
 properties = {
     "lineComment": "%",
@@ -72,13 +74,20 @@ def tex_rule1(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="tex::math",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
+        
+#
+# #1088: A new, general backslash rule.
+#             To be applied last, after all other backslash rules
+        
+def tex_general_backslash_rule(colorer, s, i):
+    return colorer.match_tex_backslash(s, i, kind='markup')
 
 def tex_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="\\[", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="tex::math",exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+        return colorer.match_span(s, i, kind="markup", begin="\\[", end="\\]",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="tex::math",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+        
 def tex_rule3(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword1", seq="\\$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -108,10 +117,12 @@ def tex_rule8(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="tex::verbatim",exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
+        
+if 0: # Use tex_general_backslash_rule instead.
 
-def tex_rule9(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword1", pattern="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    def tex_rule9(colorer, s, i):
+        return colorer.match_mark_following(s, i, kind="keyword1", pattern="\\",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
 def tex_rule10(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="%",
@@ -139,7 +150,12 @@ rulesDict1 = {
     "$": [tex_rule0,tex_rule1,],
     "%": [tex_rule10,],
     "[": [tex_rule13,],
-    "\\": [tex_rule2,tex_rule3,tex_rule4,tex_rule5,tex_rule6,tex_rule7,tex_rule8,tex_rule9,],
+    "\\": [
+            tex_rule2,tex_rule3,tex_rule4,tex_rule5,tex_rule6,tex_rule7,tex_rule8,
+                # Previous rules.
+            tex_general_backslash_rule,
+                # New, general rule. Replaces tex_rule9,
+        ],
     "]": [tex_rule14,],
     "{": [tex_rule11,],
     "}": [tex_rule12,],

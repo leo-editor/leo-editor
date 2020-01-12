@@ -262,8 +262,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
-        trace = False and not g.unitTesting
-        if trace: g.trace('===== (_FormBase)', self.display)
+        
+        # g.trace('===== (_FormBase)', self.display)
         self.curses_pad.redrawwin()
         self.erase()
         self.display()
@@ -337,7 +337,6 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             w = self._widgets__[n]
             g.trace('(_FormBase:%s) FOUND: %s --> %s %s' % (
                 self.__class__.__name__, old_n, n, w.__class__.__name__))
-            # g.trace('CALLERS', g.callers(verbose=True))
         self.display()
     #@+node:ekr.20170428084207.201: *3* _FormBase.find_previous_editable
     def find_previous_editable(self, *args):

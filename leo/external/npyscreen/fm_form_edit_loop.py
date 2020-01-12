@@ -34,7 +34,7 @@ class FormNewEditLoop:
     #@+node:ekr.20170428084207.317: *3* FormNewEditLoop.edit_loop
     def edit_loop(self):
         
-        g.trace('===== (FormNewEditLoop)')
+        # g.trace('===== (FormNewEditLoop)')
         self.editing = True
         self.display()
         while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
@@ -58,7 +58,8 @@ class FormNewEditLoop:
 
     #@+node:ekr.20170428084207.318: *3* FormNewEditLoop.edit
     def edit(self):
-        g.trace('===== (FormNewEditLoop)')
+
+        # g.trace('===== (FormNewEditLoop)')
         self.pre_edit_loop()
         self.edit_loop()
         self.post_edit_loop()
@@ -73,9 +74,7 @@ class FormDefaultEditLoop:
         Edit the fields until the user selects the ok button added in the lower
         right corner. Button will be removed when editing finishes
         """
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('===== (FormDefaultEditLoop:%s)' % self.__class__.__name__)
+        # g.trace('===== (FormDefaultEditLoop:%s)' % self.__class__.__name__)
         # Add ok button. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
         my, mx = self.curses_pad.getmaxyx()

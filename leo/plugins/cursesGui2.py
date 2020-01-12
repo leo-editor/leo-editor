@@ -33,13 +33,10 @@ import logging.handlers
 import re
 import sys
 try:
-    from tkinter import Tk # Python 3
+    from tkinter import Tk
 except ImportError:
-    try:
-        from Tkinter import Tk # Python 2
-    except ImportError:
-        print('cursesGui.py: Tk required for clipboard handling.')
-        raise
+    print('cursesGui.py: Tk required for clipboard handling.')
+    Tk = None
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
@@ -56,6 +53,8 @@ npyscreen = g.importExtension(
     verbose=True, # Issue a warning if the import fails.
 )
 if npyscreen:
+    # pylint: disable=import-error
+        # These imports *will* work, because we are using g.importExtension.
     import npyscreen.utilNotify as utilNotify
     assert utilNotify
     from npyscreen.wgwidget import  EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP
@@ -338,7 +337,7 @@ class LeoTreeData(npyscreen.TreeData):
         '''Return the n'th item in this tree.'''
         aList = self.get_tree_as_list()
         data = aList[n] if n < len(aList) else None
-        g.trace(n, len(aList), repr(data))
+        # g.trace(n, len(aList), repr(data))
         return data
     #@+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
     def is_ancestor_of(self, node):
@@ -385,10 +384,9 @@ class LeoTreeData(npyscreen.TreeData):
         Return the result of converting this node and its *visible* descendants
         to a list of LeoTreeData nodes.
         '''
-        trace = False
         assert g.callers(1) == '_getValues', g.callers()
         aList = [z for z in self.walk_tree(only_expanded=True)]
-        if trace: g.trace('LeoTreeData', len(aList))
+        # g.trace('LeoTreeData', len(aList))
         return aList
     #@+node:ekr.20170516085427.4: *5* LeoTreeData.new_child
     def new_child(self, *args, **keywords):
@@ -403,7 +401,7 @@ class LeoTreeData(npyscreen.TreeData):
     #@+node:ekr.20170516085742.1: *5* LeoTreeData.new_child_at
     def new_child_at(self, index, *args, **keywords):
         '''Same as new_child, with insert(index, c) instead of append(c)'''
-        g.trace('LeoTreeData', g.callers())
+        # g.trace('LeoTreeData')
         if self.CHILDCLASS:
             cld = self.CHILDCLASS
         else:
@@ -416,7 +414,7 @@ class LeoTreeData(npyscreen.TreeData):
 
         if native:
             p = self.content
-            g.trace('LeoTreeData', p.h, g.callers())
+            # g.trace('LeoTreeData', p.h, g.callers())
             p.doDelete()
         else:
             self._children = [z for z in self._children if z != child]
@@ -427,7 +425,7 @@ class LeoTreeData(npyscreen.TreeData):
         if native:
             if content is None:
                 self.content = None
-            elif g.isString(content):
+            elif isinstance(content, str):
                 # This is a dummy node, not actually used.
                 assert content == '<HIDDEN>', repr(content)
                 self.content = content
@@ -451,11 +449,10 @@ class LeoTreeData(npyscreen.TreeData):
             sort=None,
             sort_function=None,
         ):
-            trace = False
             p = self.content.copy()
                 # Never change the stored position!
                 # LeoTreeData(p) makes a copy of p.
-            if trace: g.trace('LeoTreeData: only_expanded:', only_expanded, p.h)
+            # g.trace('LeoTreeData: only_expanded:', only_expanded, p.h)
             if not ignore_root:
                 yield self # The hidden root. Probably not needed.
             if only_expanded:
@@ -574,7 +571,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        g.trace('==== LeoTreeLine')
+        # g.trace('LeoTreeLine 1')
         self.editing = True
         # self._pre_edit()
         self.highlight = True
@@ -746,7 +743,7 @@ def init():
             s = "Can't install text gui: previous gui installed"
             g.es_print(s, color="red")
         return False
-    return curses and not g.app.gui and not g.app.unitTesting
+    return curses and not g.app.unitTesting
         # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
@@ -821,9 +818,9 @@ def trace(*args, **keys):
     # Munge *args into s.
     result = [name] if name else []
     for arg in args:
-        if g.isString(arg):
+        if isinstance(arg, str):
             pass
-        elif g.isBytes(arg):
+        elif isinstance(arg, bytes):
             arg = g.toUnicode(arg)
         else:
             arg = repr(arg)
@@ -1013,7 +1010,6 @@ class StringFindTabManager:
 
     def toggle_checkbox(self,checkbox_name):
         '''Toggle the value of the checkbox whose name is given.'''
-        trace = False and not g.unitTesting
         c = self.c
         fc = c.findCommands
         if not fc:
@@ -1033,7 +1029,7 @@ class StringFindTabManager:
         assert hasattr(fc, checkbox_name),checkbox_name
         setattr(fc, checkbox_name, not getattr(fc, checkbox_name))
         w.toggle() # Only toggles w's internal value.
-        if trace: g.trace(checkbox_name, getattr(fc, checkbox_name, None))
+        # g.trace(checkbox_name, getattr(fc, checkbox_name, None))
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent:
@@ -1047,10 +1043,9 @@ class KeyEvent:
         y_root=None,
     ):
         '''Ctor for KeyEvent class.'''
-        trace = False
         assert not g.isStroke(shortcut), g.callers()
         stroke = g.KeyStroke(shortcut) if shortcut else None
-        if trace: g.trace('KeyEvent: stroke', stroke)
+        # g.trace('KeyEvent: stroke', stroke)
         self.c = c
         self.char = char or ''
         self.event = event
@@ -1089,7 +1084,6 @@ class KeyHandler:
         Return True if the event was completely handled.
         '''
         #  This is a rewrite of LeoQtEventFilter code.
-        trace = False and not g.unitTesting
         c = g.app.log and g.app.log.c
         k = c and c.k
         if not c:
@@ -1101,7 +1095,7 @@ class KeyHandler:
                 ch = '<no ch>'
             char, shortcut = self.to_key(ch_i)
             if g.app.gui.in_dialog:
-                if trace: g.trace('(CKey) dialog key', ch)
+                if 0: g.trace('(CKey) dialog key', ch)
             elif shortcut:
                 try:
                     w = c.frame.body.wrapper
@@ -1578,15 +1572,16 @@ class LeoCursesGui(leoGui.LeoGui):
         '''
         Create and run the top-level curses form.
         '''
-        trace = False and not g.unitTesting
         self.top_form = self.createCursesTop()
-        if trace: g.trace('(CGui) top_form', self.top_form)
+        # g.trace('(CGui) top_form', self.top_form)
         self.top_form.edit()
     #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
     # Yes, using Tkinter seems to be the standard way.
     #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
+        if not Tk:
+            return ''
         root = Tk()
         root.withdraw()
         try:
@@ -1598,6 +1593,8 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
+        if not Tk:
+            return
         root = Tk()
         root.withdraw()
         root.clipboard_clear()
@@ -1699,7 +1696,6 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run an askYesNoCancel dialog ."""
         if g.unitTesting:
             return False
-        g.trace(g.callers())
         self.in_dialog = True
         val = utilNotify.notify_yes_no(message=message,title=title)
             # Important: don't use notify_ok_cancel.
@@ -2556,14 +2552,15 @@ class CoreTree (leoFrame.LeoTree):
         Officially change a headline.   
         This is c.frame.tree.onHeadChanged.
         '''
-        trace = False and not g.unitTesting
+        trace = False
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
+            if trace: g.trace('NO wrapper')
             return # Startup.
         if not self.revertVnode:
-            # This is a hack, but all unit tests pass.
             if trace: g.trace('no headline ever edited')
-            return
+            self.revertHeadline = ''
+                # Fix #1238: A hack to force an update.
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
@@ -2692,7 +2689,7 @@ class CoreStatusLine:
 
     def __init__(self, c, parentFrame):
         '''Ctor for CoreStatusLine class.'''
-        g.trace('(CoreStatusLine)', c)
+        # g.trace('(CoreStatusLine)', c)
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
@@ -2811,9 +2808,12 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
     def delete_line_value(self, ch_i=None):
 
+        c = self.leo_c
         if self.values:
             del self.values[self.cursor_line]
             self.display()
+            # #1224:
+            c.p.b = ''.join(self.values)
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
         '''
@@ -2821,11 +2821,10 @@ class LeoBody (npyscreen.MultiLineEditable):
         Make widgets and inject the leo_parent ivar for later access to leo_c.
         '''
         # pylint: disable=no-member
-        trace = False
         trace_widgets = False
         self._my_widgets = []
         height = self.height // self.__class__._contained_widget_height
-        if trace: g.trace(self.__class__.__name__, height)
+        # g.trace(self.__class__.__name__, height)
         for h in range(height):
             self._my_widgets.append(
                 self._contained_widgets(
@@ -2868,8 +2867,9 @@ class LeoBody (npyscreen.MultiLineEditable):
         # Don't recolor the body.
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        if not c.changed: c.setChanged(True)
-        self.updateEditors()
+        if not c.changed:
+            c.setChanged(True)
+        ### self.updateEditors()
         p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
@@ -3217,13 +3217,12 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Handle the return key in the minibuffer.
         Send the contents to k.masterKeyHandler.
         '''
-        trace = False and not g.unitTesting
         c = self.leo_c
         k = c.k
         val = self.value.strip()
         self.value = ''
         self.update()
-        if trace: g.trace('===== inState: %r val: %r' % (k.inState(), val))
+        # g.trace('===== inState: %r val: %r' % (k.inState(), val))
         commandName = val
         c.frame.tree.set_status_line(c.p)
             # This may be changed by the command.
@@ -3249,7 +3248,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
         # Do a full redraw, with c.p as the first visible node.
-        if trace: g.trace('----- after command')
+        # g.trace('----- after command')
         g.app.gui.redraw_in_context(c)
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
@@ -4238,7 +4237,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-        g.trace('=====', event)
+        if 0: g.trace('=====', event)
     #@-others
 #@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
 class HeadWrapper(leoFrame.StringTextWrapper):

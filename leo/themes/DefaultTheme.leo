@@ -188,7 +188,6 @@
 </v>
 <v t="chris.20180322171328.16"><vh>Rendering pane</vh></v>
 <v t="chris.20180322171328.17"><vh>Splitter</vh></v>
-<v t="chris.20180322171328.18"><vh>Vim mode borders</vh></v>
 <v t="chris.20180322171328.19"><vh>Status areas</vh></v>
 </v>
 </v>
@@ -2679,24 +2678,11 @@ QSplitter::handle:hover {
     background-color:   @splitter-hover-bg;
 }
 </t>
-<t tx="chris.20180322171328.18">/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
-}
-</t>
 <t tx="chris.20180322171328.19">/* Status areas. */
 
 QLineEdit#status1, QLineEdit#status2 {
-    background-color:   @status-bg;
+    /* at-color status-bg overrides this! */
+    /* background-color:   @status-bg; */
     color:              @status-fg;
     border-color:       @status-border-color;
     border-width:       @status-border-width;
@@ -2707,15 +2693,17 @@ QLineEdit#status1, QLineEdit#status2 {
     font-style:         @status-font-style;
 }
 
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
-    background-color:   @find-found-bg;
-    color:              @find-found-fg;
-}
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
-    background-color:   @find-not-found-bg;
-    color:              @find-not-found-fg;
-}
+/* ===== Don't use this!
+  QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
+      background-color:   @find-found-bg;
+      color:              @find-found-fg;
+  }
+  
+  QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
+      background-color:   @find-not-found-bg;
+      color:              @find-not-found-fg;
+  }
+===== */
 </t>
 <t tx="chris.20180322171328.2">/* ========== Widgets ========== */
 
@@ -3407,9 +3395,7 @@ QMenu::separator
     margin-left: 1ex;
     margin-right: 0.5ex;
 }</t>
-<t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
-
-</t>
+<t tx="ekr.20180312111155.1"></t>
 <t tx="ekr.20190531140324.1">QMainWindow::separator {
     /* The separator between QDockWidget's. */
     background: @dark-base01;

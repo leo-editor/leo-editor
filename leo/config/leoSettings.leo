@@ -406,9 +406,10 @@
 <v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
 </v>
 <v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
-<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
-<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
-<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = border: 3px solid white</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = border: 3px solid red</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = border: 3px solid gray</vh></v>
+<v t="ekr.20190622093004.1"><vh>@string vim-mode-unfocused-border = border: 3px dashed white</vh></v>
 </v>
 </v>
 <v t="edward.20150615144141.1"><vh>Outline indicators</vh>
@@ -518,12 +519,21 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
+<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20150602160413.1"><vh>@bool tidy-autobeautify = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool tidy-keep-blank-lines = True</vh></v>
+<v t="ekr.20190926110021.1"><vh>@bool beautify-autobeautify = False</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
+<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
+<v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
 </v>
-<v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
+<v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
+<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
+</v>
+<v t="ekr.20110611092035.16488"><vh>Bracket matching settings</vh>
 <v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
 <v t="ekr.20060804095015"><vh>@string open-flash-brackets = ([{</vh></v>
 </v>
@@ -532,15 +542,15 @@
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
-<v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
+<v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
+<v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
-<v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
+<v t="ekr.20160127043440.1"><vh>make-stub-files settings</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
 <v t="ekr.20160318061607.3"><vh>@bool stub-trace-matches = False</vh></v>
 <v t="ekr.20160318061607.4"><vh>@bool stub-trace-patterns = False</vh></v>
@@ -559,7 +569,7 @@
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 command</vh>
+<v t="ekr.20071213060239"><vh>rst3 command settings</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3-http-server-support = False</vh></v>
@@ -600,7 +610,13 @@
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16477"><vh>Undo</vh>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
+</v>
+<v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
@@ -633,9 +649,10 @@
 </v>
 </v>
 <v t="ekr.20190613024818.1"><vh>Docks</vh>
-<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 <v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
 <v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
+<v t="ekr.20190808031525.1"><vh>@data pyzo_tool_ids</vh></v>
+<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
@@ -685,7 +702,6 @@
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
-<v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
@@ -996,7 +1012,7 @@
 <v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
-<v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
+<v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
@@ -1300,7 +1316,7 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
-<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
@@ -1334,17 +1350,21 @@
 <v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
 <v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
 </v>
+<v t="lkj.20190714020301.1"><vh>@item open-desktop-integration-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
 <v t="ekr.20131213135427.21966"><vh>@item &amp;delete-node</vh></v>
 <v t="ekr.20131213135427.21968"><vh>@item &amp;insert-node</vh></v>
 <v t="ekr.20131213135427.21969"><vh>@item insert-child</vh></v>
-<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
+<v t="ekr.20191008030417.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21962"><vh>@item c&amp;ut-node</vh></v>
 <v t="ekr.20131213135427.21963"><vh>@item c&amp;opy-node</vh></v>
 <v t="ekr.20131213135427.21964"><vh>@item &amp;paste-node</vh></v>
 <v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
+<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22014"><vh>@item demote</vh></v>
+<v t="ekr.20131213135427.22013"><vh>@item promote</vh></v>
 <v t="ekr.20180405112755.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
 <v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
@@ -1422,9 +1442,6 @@
 <v t="ekr.20131213135427.22009"><vh>@item move-outline-left</vh></v>
 <v t="ekr.20131213135427.22010"><vh>@item move-outline-right</vh></v>
 <v t="ekr.20131213135427.22011"><vh>@item move-outline-up</vh></v>
-<v t="ekr.20131213135427.22012"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22013"><vh>@item &amp;promote</vh></v>
-<v t="ekr.20131213135427.22014"><vh>@item &amp;demote</vh></v>
 </v>
 <v t="ekr.20180403123734.1"><vh>@menu &amp;Sort Nodes</vh>
 <v t="ekr.20131213135427.21971"><vh>@item sort-childre&amp;n</vh></v>
@@ -1492,6 +1509,11 @@
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20190724171032.1"><vh>@item -</vh></v>
+<v t="ekr.20190724173715.1"><vh>@item show-hide-body-dock</vh></v>
+<v t="ekr.20190724173724.1"><vh>@item show-hide-outline-dock</vh></v>
+<v t="ekr.20190724173733.1"><vh>@item show-hide-render-dock</vh></v>
+<v t="ekr.20190724171039.1"><vh>@item show-hide-tabs-dock</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -1918,6 +1940,7 @@
 <v t="ekr.20181018080344.1"><vh>@int fts-max-hits = 30</vh></v>
 </v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
+<v t="ekr.20190712053127.1"><vh>@bool bookmarks-grab-dblclick = False</vh></v>
 <v t="tbrown.20140102100730.27778"><vh>@int bookmarks-levels = 1</vh></v>
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
@@ -1937,6 +1960,9 @@
 </v>
 <v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
 <v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
+</v>
+<v t="vitalije.20190928173155.1"><vh>history_tracer plugin</vh>
+<v t="vitalije.20190928173236.1"><vh>@int history-tracer-port=8087</vh></v>
 </v>
 <v t="ekr.20181018105515.1"><vh>leo_babel plugin</vh>
 <v t="ekr.20181018105529.1"><vh>@bool Leo-Babel-Node-Creation-Default = True</vh></v>
@@ -2023,9 +2049,6 @@
 </v>
 <v t="peckj.20140218151502.4819"><vh>sftp plugin</vh>
 <v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
-</v>
-<v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
-<v t="tbrown.20130310101647.34744"><vh>@bool valuespace-vs-eval-redirect = True</vh></v>
 </v>
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
 <v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
@@ -2123,7 +2146,7 @@
 <v t="ekr.20190325052226.1"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
-<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
 <v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
 <v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
@@ -2344,7 +2367,8 @@ This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
 
-The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
+The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.
+</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.14">This option affects how Leo treats body text in @root trees.
@@ -3132,9 +3156,7 @@ configuration value.</t>
 
 Clicks
 
-click-headline
 click-icon-box
-double-click-headline
 double-click-icon-box
 
 Cursor moves and selection (Basic Emacs commands)
@@ -3431,7 +3453,8 @@ aquamarine1</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
-php_keyword1_font_size = None
+php_keyword1_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 php_keyword1_font_slant = roman
     # roman, italic
 php_keyword1_font_weight = normal
@@ -3493,10 +3516,19 @@ goto-global-line                    = Alt-g
 # match-brackets                    = Ctrl-K    # kill-line
 move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
 move-past-close-extend-selection    = None
+
+# Brian Theado
+# next-or-end-of-line                 ! text = Down
+# next-or-end-of-line-extend-selection ! text = Shift-Down
+
 # next-line                         = Ctrl-N
 # next-line-extend-selection        = Ctrl-Shift-N
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
+
+# Brian Theado
+# previous-or-beginning-of-line                   ! text = Up
+# previous-or-beginning-of-line-extend-selection  ! text = Shift-Up
 select-all                          = Ctrl-a</t>
 <t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
 # expand-pane         = Alt-Ctrl-=
@@ -3740,13 +3772,10 @@ free_layout.py
 contextmenu.py
     # This is required by the vim.py and xemacs.py plugins.
 leo_to_html.py
-livecode.py
 mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
-# python_terminal.py
-    # #1009: python_terminal can segfault.
 screen_capture.py
 settings_finder.py
 stickynotes.py
@@ -3770,7 +3799,6 @@ viewrendered.py
 # bookmarks.py
 # bzr_qcommands.py
 # chapter_hoist.py
-# codewisecompleter.py
 # colorize_headlines.py
 # contextmenu.py
 # ctagscompleter.py
@@ -4540,30 +4568,42 @@ right clicks in the body pane.
 <t tx="ekr.20080703111151.12"># bold words in forth
 
 forth_keyword3_family = None
-forth_keyword3_font_size = None
+forth_keyword3_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword3_font_slant = roman
+    # roman, italic
 forth_keyword3_font_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.14"># bold-italic words in forth
 
 forth_keyword4_family = None
-forth_keyword4_size = None
+forth_keyword4_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword4_slant = slant
+    # roman, italic
 forth_keyword4_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.15"># italic words in forth
 
 forth_keyword5_family = None
-forth_keyword5_size = None
+forth_keyword5_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword5_slant = slant
+    # roman, italic
 forth_keyword5_weight = normal
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.17"># defining words in forth
 
 forth_keyword2_family = None
-forth_keyword2_size = None
+forth_keyword2_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword2_slant = None
+    # roman, italic
 forth_keyword2_weight = None
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.18">@language text</t>
 <t tx="ekr.20080703111151.21"># bold keywords defined in forth-bold-words</t>
@@ -5080,7 +5120,7 @@ To set fonts in Leo's widgets, change Leo's master style sheet::
     
     family: a font family name.
             None is the default, indicating the default font.
-    size:   an integer, optinally followed by px or pt.
+    size:   an integer.  Leo will ignore suffixes like pt and px.
     weight: bold, normal, None.'
             Default is normal.
     slant:  roman, italic, None.
@@ -5092,22 +5132,22 @@ To set fonts in Leo's widgets, change Leo's master style sheet::
 Example 1: Sets the comment1 font, for python only:
 
 python_comment1_family = None
-python_comment1_size = 12pt
+python_comment1_size = 12
 python_comment1_slant = italic
 python_comment1_weight = None
 
 Example 2: Sets the comment1 font for all languages:
 
 comment1_family = None
-comment1_size = 12pt
+comment1_size = 12
 comment1_slant = italic
 comment1_weight = bold
 
 Example 3: Combining the previous two examples:
 
-python_comment1_size = 12pt
+python_comment1_size = 12
 python_comment1_slant = italic
-comment1_size = 12pt
+comment1_size = 12
 comment1_slant = italic
 
 Use the show-fonts command to pick fonts, then copy the values shown by the
@@ -5967,9 +6007,8 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22009">Move &amp;Left</t>
 <t tx="ekr.20131213135427.22010">Move &amp;Right</t>
 <t tx="ekr.20131213135427.22011">Move &amp;Up</t>
-<t tx="ekr.20131213135427.22012"></t>
-<t tx="ekr.20131213135427.22013"></t>
-<t tx="ekr.20131213135427.22014"></t>
+<t tx="ekr.20131213135427.22013">&amp;Promote Node</t>
+<t tx="ekr.20131213135427.22014">&amp;Demote node</t>
 <t tx="ekr.20131213135427.22015"></t>
 <t tx="ekr.20131213135427.22016"></t>
 <t tx="ekr.20131213135427.22017"></t>
@@ -6418,7 +6457,7 @@ next-line-extend-selection      = None
 open-leo-docs-leo               = None
 open-leo-dist-leo               = None
 open-leo-plugins-leo            = None
-open-leo-settings-leo           = None
+open-leo-settings               = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
 open-online-home                = None
@@ -6626,8 +6665,8 @@ clear-kill-ring                     = None
 clear-recent-files                  = None
 clear-selected-text                 = None
 click-click-box                     = None
-click-headline                      = None
-click-icon-box                      = None
+# click-headline                    = None
+# click-icon-box                    = None
 clone-find-all                      = None
 clone-node                          = None
 close-window                        = None
@@ -6674,7 +6713,7 @@ disable-calltips                    = None
 do-nothing                          = None
 downcase-region                     = None
 downcase-word                       = None
-double-click-headline               = None
+# double-click-headline             = None
 double-click-icon-box               = None
 dump-outline                        = None
 edit-headline                       = None
@@ -6871,10 +6910,12 @@ new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
+next-or-end-of-line                 = None # ! text = Down      # Brian Theado
+next-or-end-of-line-extend-selection= None #! text = Shift-Down # Brian Theado
 open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-plugins-leo                = None
-open-leo-settings-leo               = None
+open-leo-settings                   = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
 open-online-home                    = None
@@ -6888,6 +6929,8 @@ paste-retaining-clones              = None
 paste-text                          = None
 previous-line                       = None
 previous-line-extend-selection      = None
+previous-or-beginning-of-line                   = None # ! text = Up        # Brian Theado
+previous-or-beginning-of-line-extend-selection  = None # ! text = Shift-Up  # Brian Theado
 show-bindings                       = None
 show-commands                       = None
 show-focus                          = None
@@ -6971,8 +7014,8 @@ show-color-wheel                    = None
 show-find-options                   = None
 show-fonts                          = None
 show-invisibles                     = None
-simulate-begin-drag                 = None
-simulate-end-drag                   = None
+# simulate-begin-drag               = None
+# simulate-end-drag                 = None
 sort-children                       = None
 sort-columns                        = None
 sort-fields                         = None
@@ -9682,7 +9725,7 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19779"></t>
+<t tx="ekr.20141010095448.19779">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
@@ -9969,10 +10012,7 @@ except KeyError:
             return "self, "
     return ""
 </t>
-<t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
 <t tx="ekr.20150618105435.1"></t>
-<t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
-False: leave the Find Dialog open after any search.</t>
 <t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
 
 /* alternative active pane highlighting */
@@ -11609,44 +11649,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 </t>
 <t tx="ekr.20181018113813.1"></t>
 <t tx="ekr.20181018113857.1"></t>
-<t tx="ekr.20190106080417.1">/* ----- Minibuffer ----- */
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
-
-/* ----- Status line ----- */
-
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
-    background-color:   @find-found-bg;
-    color:              @find-found-fg;
-}
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
-    background-color:   @find-not-found-bg;
-    color:              @find-not-found-fg;
-}
-
-/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
-}
-
-/* ----- bookmarks.py ----- */
+<t tx="ekr.20190106080417.1">/* ----- bookmarks.py ----- */
 
 #show_bookmarks QPushButton[style_class~='bookmark_children'] {
     color:              @bookmarks_children_color;
@@ -11764,6 +11767,50 @@ False: (Recommended) The VR dock splits the body dock.
 *Warning*: You may have to clear caches if you change this setting.
 
 The --init-docks command-line option is the easy way to do this.</t>
+<t tx="ekr.20190622093004.1"></t>
+<t tx="ekr.20190712053127.1"></t>
+<t tx="ekr.20190724171032.1"></t>
+<t tx="ekr.20190724171039.1"></t>
+<t tx="ekr.20190724173715.1"></t>
+<t tx="ekr.20190724173724.1"></t>
+<t tx="ekr.20190724173733.1"></t>
+<t tx="ekr.20190808031525.1"># Valid ids are:
+
+# pyzofilebrowser
+# pyzohistoryviewer
+# pyzointeractivehelp
+# pyzologger
+# pyzowebbrowser
+# pyzosourcestructure
+    # Partially functional.
+
+# Not ready yet:
+# pyzoworkspace</t>
+<t tx="ekr.20190915192551.1"></t>
+<t tx="ekr.20190915192624.1"></t>
+<t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
+<t tx="ekr.20190915192705.1"></t>
+<t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
+<t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
+<t tx="ekr.20190926110217.1"></t>
+<t tx="ekr.20191008030417.1"></t>
+<t tx="ekr.20191023140453.1"></t>
+<t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
+
+Otherwise, the sphinx command will cd to the directory containing the input file.</t>
+<t tx="ekr.20191023140453.3">If given, *only* this command will be executed after the cd command.</t>
+<t tx="ekr.20191023140453.4">Used only if the default command is *not* given.
+
+The input_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
+<t tx="ekr.20191023140453.5">Used only if the default command is *not* given.
+
+The output_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -11803,6 +11850,7 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
+<t tx="lkj.20190714020301.1">Open desktop-integration</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
@@ -11971,9 +12019,6 @@ the ``&lt;|`` in::
 This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``,
 if that's an abbreviation linked to next_place(), see 
 ``@@data abbreviations examples``, would select ``&lt;|code|&gt;``.</t>
-<t tx="tbrown.20130310101647.34743"></t>
-<t tx="tbrown.20130310101647.34744"># if set to True, g.redirectStdout/err will be used to
-# redirect stdout and stderr to the log pane when vs-eval is used</t>
 <t tx="tbrown.20130813134319.7223"></t>
 <t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
 
@@ -12434,5 +12479,7 @@ paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
 <t tx="vitalije.20170811125150.1"></t>
+<t tx="vitalije.20190928173155.1"></t>
+<t tx="vitalije.20190928173236.1"></t>
 </tnodes>
 </leo_file>

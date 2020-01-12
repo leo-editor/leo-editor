@@ -115,12 +115,14 @@ def configuredcommands_rclick(c,p,menu):
                 continue
             desc = desc.strip()
             action = menu.addAction(desc)
-            #action.setToolTip(cmd)
+            # action.setToolTip(cmd)
+
             def create_callback(cm):
                 return lambda: c.k.simulateCommand(cm)
+        
             configcmd_rclick_cb = create_callback(cmd)
             action.triggered.connect(configcmd_rclick_cb)
-            # action.connect(action,Qt.SIGNAL("triggered()"), configcmd_rclick_cb)
+
 #@+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
 def deletenodes_rclick(c,p,menu):
     """ Delete selected nodes """
@@ -175,7 +177,6 @@ def deletenodes_rclick(c,p,menu):
     #@-<< define deletenodes_rclick_cb >>
     action = menu.addAction("Delete")
     action.triggered.connect(deletenodes_rclick_cb)
-    # action.connect(action, Qt.SIGNAL("triggered()"), deletenodes_rclick_cb)
 #@+node:ville.20090701110830.10215: *3* editnode_rclick
 def editnode_rclick(c,p,menu):
     """ Provide "edit in EDITOR" context menu item """
@@ -189,7 +190,6 @@ def editnode_rclick(c,p,menu):
 
         action = menu.addAction("Edit in " + editor)
         action.triggered.connect(editnode_rclick_cb)
-        # action.connect(action, Qt.SIGNAL("triggered()"), editnode_rclick_cb)
 #@+node:ville.20090719202132.5248: *3* marknodes_rclick
 def marknodes_rclick(c,p,menu):
     """ Mark selected nodes """
@@ -201,7 +201,6 @@ def marknodes_rclick(c,p,menu):
             c.redraw_after_icons_changed()
         action = menu.addAction("Mark")
         action.triggered.connect(marknodes_rclick_cb)
-        # markaction.connect(action, Qt.SIGNAL("triggered()"), marknodes_rclick_cb)
     if any(p.isMarked() for p in pl):
         def unmarknodes_rclick_cb():
             for p in pl:
@@ -209,7 +208,6 @@ def marknodes_rclick(c,p,menu):
             c.redraw_after_icons_changed()
         action = menu.addAction("Unmark")
         action.triggered.connect(unmarknodes_rclick_cb)
-        # unmarkaction.connect(action, Qt.SIGNAL("triggered()"), unmarknodes_rclick_cb)
 #@+node:ville.20090702171015.5480: *3* nextclone_rclick
 def nextclone_rclick(c,p,menu):
     """ Go to next clone """
@@ -221,7 +219,6 @@ def nextclone_rclick(c,p,menu):
 
         action = menu.addAction("Go to clone")
         action.triggered.connect(nextclone_rclick_cb)
-        # action.connect(action, Qt.SIGNAL("triggered()"), nextclone_rclick_cb)
 #@+node:ekr.20120311191905.9900: *3* openurl_rclick
 def openurl_rclick(c,p,menu):
     """ open an url """
@@ -235,7 +232,6 @@ def openurl_rclick(c,p,menu):
 
         action = menu.addAction("Open URL")
         action.triggered.connect(openurl_rclick_cb)
-        # action.connect(action,Qt.SIGNAL("triggered()"),openurl_rclick_cb)
 #@+node:ville.20090630210947.5465: *3* openwith_rclick
 def openwith_rclick(c,p,menu):
     """
@@ -256,9 +252,12 @@ def openwith_rclick(c,p,menu):
             subprocess.Popen(cmd, shell=True)
     #@+node:ekr.20140613141207.17667: *4* openfolder_rclick_cb
     def openfolder_rclick_cb():
-
-        g.os_startfile(path)
-
+        
+        if g.os_path_exists(path):
+            g.os_startfile(path)
+        else:
+            # #1257:
+            g.es_print('file not found:', repr(path))
     #@+node:ekr.20140613141207.17668: *4* create_rclick_cb
     def create_rclick_cb():
 
@@ -325,10 +324,8 @@ def refresh_rclick(c,p,menu):
     #@-others
     split = p.h.split(None,1)
     if len(split) >= 2 and p.anyAtFileNodeName():
-        # typ = split[0]
         action = menu.addAction("Refresh from disk")
         action.triggered.connect(refresh_rclick_cb)
-        # action.connect(action, Qt.SIGNAL("triggered()"), refresh_rclick_cb)
 #@+node:ekr.20140724211116.19258: *3* pylint_rclick
 def pylint_rclick(c,p,menu):
     '''Run pylint on the selected node.'''
@@ -340,12 +337,8 @@ def pylint_rclick(c,p,menu):
 #@+node:ville.20110428163751.7685: *3* guess_file_type
 def guess_file_type(fname):
     base, ext = os.path.splitext(fname)
-    ext = ext.lower()
-
-    if ext in ['.txt']:
+    if ext.lower in ['.txt']:
         return "@edit"
     return "@auto"
-
-
 #@-others
 #@-leo

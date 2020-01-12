@@ -149,13 +149,13 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono</vh></v>
 <v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180318145515.801"><vh>@string font-size-body = 20px</vh></v>
-<v t="ekr.20180318145515.802"><vh>@string font-size-log = 17px</vh></v>
-<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 18px</vh></v>
+<v t="ekr.20180318145515.801"><vh>@string font-size-body = 16pt</vh></v>
+<v t="ekr.20180318145515.802"><vh>@string font-size-log = 16pt</vh></v>
+<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 16pt</vh></v>
 </v>
 <v t="ekr.20180318145515.804"><vh>Gradients</vh>
 <v t="ekr.20180318145515.805"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
@@ -182,7 +182,6 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
-<v t="ekr.20190106105105.1"><vh>zz must be last</vh></v>
 </v>
 </v>
 </v>
@@ -939,13 +938,15 @@ QSplitter::handle:hover {
 </t>
 <t tx="ekr.20180318145515.824">/* The status area */
 QLineEdit#status1 {
-  background: @dark-base03;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
   border-color: @dark-base02;
   border-width: 1px;
   border-style: solid;
 }
 QLineEdit#status2 {
-  background: @dark-base03;
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
   border-color: @dark-base02;
   border-width: 1px;
   border-style: solid;
@@ -1010,17 +1011,6 @@ QTreeView QLineEdit {
 #859900: real solarized green. Bad hue</t>
 <t tx="ekr.20181005084517.1">QFrame#gutter {
   /* background: gray; */
-}</t>
-<t tx="ekr.20190106105105.1">QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @solarized-blue;
-    color:      @solarized-white;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @solarized-red;
-    color:      @solarized-white;
 }</t>
 <t tx="ekr.20190531140643.1">QMainWindow::separator {
     /* The separator between QDockWidget's. */

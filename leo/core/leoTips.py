@@ -2,14 +2,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
 #@@first
-'''Save and show tips to the user.'''
+#@@nobeautify # black chokes on a section reference within a list.
+"""Save and show tips to the user."""
 import random
 import leo.core.leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
+#@@beautify
 class TipManager:
-    '''A class to manage user tips.'''
+    """A class to manage user tips."""
     
     key = 'shown-tips'
     
@@ -33,8 +35,9 @@ class TipManager:
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
+#@@beautify
 class UserTip:
-    '''A User Tip.'''
+    """A User Tip."""
     
     def __init__(self, n=0, tags=None, text='', title=''):
         self.n = n # Not used.
@@ -47,8 +50,9 @@ class UserTip:
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
+#@@beautify
 def make_tips(c):
-    '''
+    """
     A script to make entries in the global tips array.
     
     Each printed entry has the form:
@@ -57,15 +61,15 @@ def make_tips(c):
             n=anInt
             tags=[list of tags],
             title=aString,
-            text="""
+            text='''
             
             aString
             
-            """)
+            ''')
         
     After running this script, copy the result from the console to the
     <define tips> section of leoTips.py.
-    '''
+    """
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
     
@@ -114,12 +118,13 @@ UserTip(
     for kind in ('open',): # 'closed':
         data = requests.get(url+kind).json()
         for tip in get_tips(data):
-            tags = ["%s" % (z) for z in tip.tags or []]
+            tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
+#@@beautify
 def make_tip_nodes(c):
-    '''Create a list of all tips as the last top-level node.'''
+    """Create a list of all tips as the last top-level node."""
     global tips
     root = c.lastTopLevel().insertAfter()
     root.h = 'User Tips'
@@ -185,8 +190,8 @@ UserTip(
     
 Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 
-- The leo-settings-leo command opens leoSettings.leo.
-- The my-leo-settings-leo command opens myLeoSettings.leo.
+- The leo-settings command opens leoSettings.leo.
+- The my-leo-settings command opens myLeoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 
 """),
@@ -642,6 +647,7 @@ Note: myLeoSettings.leo can define common @command nodes that apply to all outli
 
 """),
 #@-others
+#@@beautify
 #@-<< define tips >>
 ]
 #@@language python

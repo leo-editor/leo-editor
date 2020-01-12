@@ -66,8 +66,8 @@ prof = profile_leo
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
 def run(fileName=None, pymacs=None, *args, **keywords):
     """Initialize and run Leo"""
-    # pylint: disable=keyword-arg-before-vararg
-        # putting *args first is invalid in Python 2.x.
+    # #1403: sys.excepthook doesn't help.
+    # sys.excepthook = leo_excepthook
     assert g.app
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)

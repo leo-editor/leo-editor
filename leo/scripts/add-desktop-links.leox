@@ -1,0 +1,62 @@
+#@+leo-ver=5-thin
+#@+node:mhw.20190808083008.1: * @file add-desktop-links.leox
+#@@language python
+#@@tabwidth -4
+#@+others
+#@+node:mhw.20190808083214.1: ** main
+"""Create Leo Editor desktop shortcut link
+  Assumes Leo has been installed with pip and that Leo's launcher scripts are in PATH.
+"""
+import os
+import sys
+import shutil
+import platform
+import leo.core.leoGlobals as g
+from pyshortcuts import make_shortcut
+from os.path import splitext
+
+debug = False
+iconpath = g.os_path_realpath(g.os_path_join(g.__file__, "../../Icons/LeoApp.ico"))
+
+g.es_print(f"\n----- Running add-desktop-links -----")
+
+leocmd = shutil.which("leo")
+if platform.system() == "Windows":
+    leocmd = shutil.which("leo-messages")
+if not leocmd:
+    raise ValueError("leocmd not defined")
+
+# cosmetic: ensure extension is lower case for nicer reporting
+leocmd = splitext(leocmd)[0] + splitext(leocmd)[1].lower()
+
+scut = make_shortcut(leocmd, name="Leo Editor", icon=iconpath)
+
+g.es_print(
+    f"Created shortcut '{scut.target}' in: \n   {scut.desktop_dir}\n   {scut.startmenu_dir}"
+)
+
+if debug:
+    g.es_print(f"\n*** debug:\n{(scut)}")
+#@+node:lkj.20190926225552.1: ** usage
+"""make_shortcut() arguments:
+---------
+script      (str) path to script, may include command-line arguments
+name        (str, None) name to display for shortcut [name of script]
+description (str, None) longer description of script [`name`]
+icon        (str, None) path to icon file [python icon]
+folder      (str, None) subfolder of Desktop for shortcut [None] (See Note 1)
+terminal    (bool) whether to run in a Terminal [True]
+desktop     (bool) whether to add shortcut to Desktop [True]
+startmenu   (bool) whether to add shortcut to Start Menu [True] (See Note 2)
+executable  (str, None) name of executable to use [this Python] (see Note 3)
+
+Notes:
+------
+1. `folder` will place shortcut in a subfolder of Desktop and/or Start Menu
+2. Start Menu does not exist for Darwin / MacOSX
+3. executable defaults to the Python executable used to make shortcut.
+
+Avoid 'terminal' and 'executable' when 'script' is a binary exe
+"""
+#@-others
+#@-leo

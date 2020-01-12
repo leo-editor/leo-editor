@@ -146,7 +146,7 @@ class BaseLeoCompare:
                 self.compare_two_files(path1, path2)
     #@+node:ekr.20180211123741.1: *3* compare_two_files
     def compare_two_files(self, name1, name2):
-        '''A helper function.'''
+        """A helper function."""
         f1 = f2 = None
         try:
             f1 = self.doOpen(name1)
@@ -418,13 +418,13 @@ class LeoCompare(BaseLeoCompare):
     pass
 #@+node:ekr.20180211170333.1: ** class CompareLeoOutlines
 class CompareLeoOutlines:
-    '''
+    """
     A class to do outline-oriented diffs of two or more .leo files.
     Similar to GitDiffController, adapted for use by scripts.
-    '''
+    """
     
     def __init__ (self, c):
-        '''Ctor for the LeoOutlineCompare class.'''
+        """Ctor for the LeoOutlineCompare class."""
         self.c = c
         self.file_node = None
         self.root = None
@@ -434,7 +434,7 @@ class CompareLeoOutlines:
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
     def diff_list_of_files(self, aList, visible=True):
-        '''The main entry point for scripts.'''
+        """The main entry point for scripts."""
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
@@ -448,7 +448,7 @@ class CompareLeoOutlines:
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
-        '''Create an outline describing the git diffs for fn.'''
+        """Create an outline describing the git diffs for fn."""
         self.path1, self.path2 = fn1, fn2
         s1 = self.get_file(fn1)
         s2 = self.get_file(fn2)
@@ -468,7 +468,7 @@ class CompareLeoOutlines:
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
-        '''Compute inserted, deleted, changed dictionaries.'''
+        """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
@@ -485,7 +485,7 @@ class CompareLeoOutlines:
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
-        '''Create nodes describing the changes.'''
+        """Create nodes describing the changes."""
         if not d:
             return
         parent = self.file_node.insertAsLastChild()
@@ -524,14 +524,14 @@ class CompareLeoOutlines:
                 p.b = v.b
     #@+node:ekr.20180211170333.7: *4* loc.create_file_node
     def create_file_node(self, diff_list, fn1, fn2):
-        '''Create an organizer node for the file.'''
+        """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
-        p.h = '%s, %s' % (g.shortFileName(fn1).strip(), g.shortFileName(fn2).strip())
+        p.h = f"{g.shortFileName(fn1).strip()}, {g.shortFileName(fn2).strip()}"
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root
     def create_root(self, aList):
-        '''Create the top-level organizer node describing all the diffs.'''
+        """Create the top-level organizer node describing all the diffs."""
         c = self.c
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
@@ -539,14 +539,14 @@ class CompareLeoOutlines:
         return p
     #@+node:ekr.20180211170333.9: *4* loc.find_gnx (no longer used)
     def find_gnx(self, c, gnx):
-        '''Return a position in c having the given gnx.'''
+        """Return a position in c having the given gnx."""
         for p in c.all_unique_positions():
             if p.v.fileIndex == gnx:
                 return p
         return None
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self):
-        '''Finish execution of this command.'''
+        """Finish execution of this command."""
         c = self.c
         if hasattr(g.app.gui, 'frameFactory'):
             tff = g.app.gui.frameFactory
@@ -558,13 +558,13 @@ class CompareLeoOutlines:
         c.redraw()
     #@+node:ekr.20180211170333.11: *4* loc.get_file
     def get_file(self, path):
-        '''Return the contents of the file whose path is given.'''
+        """Return the contents of the file whose path is given."""
         with open(path, 'rb') as f:
             s = f.read()
         return g.toUnicode(s).replace('\r','')
     #@+node:ekr.20180211170333.13: *4* loc.make_diff_outlines
     def make_diff_outlines(self, c1, c2):
-        '''Create an outline-oriented diff from the outlines c1 and c2.'''
+        """Create an outline-oriented diff from the outlines c1 and c2."""
         added, deleted, changed = self.compute_dicts(c1, c2)
         table = (
             (added, 'Added'),
@@ -574,11 +574,11 @@ class CompareLeoOutlines:
             self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20180211170333.14: *4* loc.open_outline
     def open_outline(self, fn):
-        '''
+        """
         Find the commander for fn, creating a new outline tab if necessary.
         
         Using open commanders works because we always read entire .leo files.
-        '''
+        """
         for frame in g.app.windowList:
             if frame.c.fileName() == fn:
                 return frame.c
@@ -589,12 +589,12 @@ class CompareLeoOutlines:
 #@+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
 def diff_and_open_leo_files(event):
-    '''
+    """
     Open a dialog prompting for two or more .leo files.
     
     Opens all the files and creates a top-level node in c's outline showing
     the diffs of those files, two at a time.
-    '''
+    """
     diff_leo_files_helper(event,
         title = "Diff And Open Leo Files",
         visible = True,
@@ -602,11 +602,11 @@ def diff_and_open_leo_files(event):
 #@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
 def diff_leo_files(event):
-    '''
+    """
     Open a dialog prompting for two or more .leo files.
 
     Creates a top-level node showing the diffs of those files, two at a time.
-    '''
+    """
     diff_leo_files_helper(event,
         title = "Diff Leo Files",
         visible = False,
@@ -614,7 +614,7 @@ def diff_leo_files(event):
 #@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
 def diffMarkedNodes(event):
-    '''
+    """
     When two or more nodes are marked, this command does the following:
 
     - Creates a "diff marked node" as the last top-level node. The body of
@@ -624,7 +624,7 @@ def diffMarkedNodes(event):
     - Each diff n contains the diffs between the two diffed nodes, that is,
       difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
       *clones* of the two compared nodes.
-    '''
+    """
     c = event and event.get('c')
     if not c:
         return
@@ -657,7 +657,7 @@ def diffMarkedNodes(event):
 
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event, title, visible):
-    '''Prompt for a list of .leo files to open.'''
+    """Prompt for a list of .leo files to open."""
     c = event and event.get('c')
     if not c:
         return

@@ -76,7 +76,6 @@
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
@@ -122,7 +121,13 @@
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
-<v t="ekr.20190410171646.1"><vh>@file pyzo_support.py</vh></v>
+<v t="ekr.20190410171646.1"><vh>Unused: pyzo_support.py</vh>
+<v t="ekr.20190412042616.1"><vh>&lt;&lt; copyright &gt;&gt;</vh></v>
+<v t="ekr.20190410171905.1"><vh>init (pyzo_support.py)</vh></v>
+<v t="ekr.20190418161712.1"><vh>class PyzoInterface</vh>
+<v t="ekr.20190803175344.1"><vh>pyzo_x.patch_pyzo</vh></v>
+</v>
+</v>
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
@@ -172,6 +177,15 @@
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 <v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
+<v t="ekr.20190813161639.1"><vh>@file pyzo_in_leo.py</vh></v>
+<v t="ekr.20190805022257.1"><vh>Unused: @file file pyzo_file_browser.py</vh>
+<v t="ekr.20190809093446.1"><vh> &lt;&lt; pyzo_file_browser imports &gt;&gt;</vh></v>
+<v t="ekr.20190809093459.1"><vh> top-level Leo functions</vh>
+<v t="ekr.20190809093459.3"><vh>init</vh></v>
+<v t="ekr.20190809093459.4"><vh>onCreate</vh></v>
+<v t="ekr.20190814050007.1"><vh>make_dock</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -383,6 +397,7 @@
 <v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
 <v t="tbrown.20130930160706.23451"><vh>@file markup_inline.py</vh></v>
+<v t="vitalije.20180804172140.1"><vh>@file md_docer.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
 <v t="ekr.20170217164004.1"><vh>@file tables.py</vh></v>
@@ -418,6 +433,7 @@
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
+<v t="vitalije.20190928154420.1"><vh>@file history_tracer.py</vh></v>
 <v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
@@ -2849,11 +2865,11 @@ if 0: # A more complex example, for the C language.
 </t>
 <t tx="ekr.20170203054655.1"></t>
 <t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
-dir_ = r'C:\leo.repo\leo-editor\leo\plugins\leo_babel'
+dir_ = r'C:\leo.repo\leo-editor\leo\plugins\pyzo'
 g.cls()
 c.recursiveImport(
     dir_ = dir_,
-    kind = '@file', # '@clean', #'@nosent','@auto','@file',
+    kind = '@clean', # '@clean', #'@nosent','@auto','@file',
     recursive = True,
     safe_at_file = False,
     theTypes = ['.py',],
@@ -2930,6 +2946,115 @@ for kind in kinds:
 c.setChanged()
 c.redraw()     </t>
 <t tx="ekr.20181030041436.1"></t>
+<t tx="ekr.20190410171646.1">@first # -*- coding: utf-8 -*-
+'''
+pyzo_support.py: Will probably be deleted.
+'''
+&lt;&lt; copyright &gt;&gt;
+import leo.core.leoGlobals as g
+assert g
+@others
+</t>
+<t tx="ekr.20190410171905.1">def init():
+    print('pyzo_support.py is not a real plugin')
+    return False
+</t>
+<t tx="ekr.20190412042616.1">@
+This file uses code from pyzo. Here is the pyzo copyright notice:
+
+Copyright (C) 2013-2018, the Pyzo development team
+
+Pyzo is distributed under the terms of the (new) BSD License.
+The full license can be found in 'license.txt'.
+
+Yoton is distributed under the terms of the (new) BSD License.
+The full license can be found in 'license.txt'.
+</t>
+<t tx="ekr.20190418161712.1">class PyzoInterface:
+    '''
+    A class representing the singleton running instance of pyzo.
+    
+    Instantiated in the top-level init() function.
+    '''
+
+    @others
+</t>
+<t tx="ekr.20190803175344.1">def patch_pyzo(self):
+    '''
+    Called at the end of pyzo.start to embed Leo into pyzo.
+    '''
+</t>
+<t tx="ekr.20190805022257.1">@first # -*- coding: utf-8 -*-
+"""pyzo_file_browser.py: Experimental plugin that adds pyzo's file browser dock to Leo."""
+&lt;&lt; pyzo_file_browser imports &gt;&gt;
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20190809093446.1">import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
+#
+# Must patch sys.path here.
+import sys
+plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+sys.path.insert(0, plugins_dir)
+#
+# Start pyzo, de-fanged.
+import pyzo
+# pylint: disable=no-member
+
+</t>
+<t tx="ekr.20190809093459.1"></t>
+<t tx="ekr.20190809093459.3">init_warning_given = False
+
+def init(): # pyzo_file_browser.py
+    '''Return True if this plugin can be loaded.'''
+    
+    def oops(message):
+        global init_warning_given
+        if not init_warning_given:
+            init_warning_given = True
+            print('%s %s' % (__name__, message))
+        return False
+        
+    if g.app.gui.guiName() != "qt":
+        return oops('requires Qt gui')
+    # if not pyzo:
+        # return oops('requires pyzo')
+    if not g.app.dock:
+        return oops('is incompatible with --no-dock')
+    g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame', onCreate)
+    return True
+</t>
+<t tx="ekr.20190809093459.4">def onCreate(tag, keys): # pyzo_file_browser.py
+    '''Create a pyzo file browser in c's outline.'''
+    c = keys.get('c')
+    dw = c and c.frame and c.frame.top
+    if not dw:
+        return
+    pyzo.start_pyzo_in_leo(c, pyzo)
+    from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+    make_dock(c,
+        name="File Browser",
+        widget=PyzoFileBrowser(parent=None),
+    )
+</t>
+<t tx="ekr.20190814050007.1">def make_dock(c, name, widget): # pyzo_file_browser.py
+    """Create a dock with the given name and widget in c's main window."""
+    dw = c.frame.top
+    dock = g.app.gui.create_dock_widget(
+        closeable=True,
+        moveable=True,
+        height=100,
+        name=name,
+    )
+    dw.leo_docks.append(dock)
+    dock.setWidget(widget)
+    area = QtCore.Qt.LeftDockWidgetArea
+    dw.addDockWidget(area, dock)
+    widget.show()
+</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

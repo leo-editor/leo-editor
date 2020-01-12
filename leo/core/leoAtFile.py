@@ -42,7 +42,7 @@ class AtFile:
     # Note: g.getScript also call the at.__init__ and at.finishCreate().
 
     def __init__(self, c):
-        '''ctor for atFile class.'''
+        """ctor for atFile class."""
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c = c
         self.encoding = 'utf-8' # 2014/08/13
@@ -60,7 +60,7 @@ class AtFile:
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self):
-        '''AtFile.reloadSettings'''
+        """AtFile.reloadSettings"""
         c = self.c
         self.checkPythonCodeOnWrite = \
             c.config.getBool('check-python-code-on-write', default=True)
@@ -70,7 +70,7 @@ class AtFile:
             c.config.getString('underindent-escape-string') or '\\-'
     #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the AtFileCommands class.'''
+        """Command decorator for the AtFileCommands class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
@@ -169,10 +169,10 @@ class AtFile:
         forcePythonSentinels=False,
         sentinels=True,
     ):
-        '''
+        """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
-        '''
+        """
         at, c = self, self.c
         assert root
         self.initCommonIvars()
@@ -229,14 +229,16 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        targetFileName = c.expand_path_expression(targetFileName) # #1341.
         return g.os_path_realpath(
-            c.os_path_finalize_join(at.default_directory, targetFileName))
+            g.os_path_finalize_join(at.default_directory, targetFileName)) # #1341.
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
     @cmd('check-derived-file')
     def checkDerivedFile(self, event=None):
-        '''Make sure an external file written by Leo may be read properly.'''
+        """Make sure an external file written by Leo may be read properly."""
         at = self; c = at.c; p = c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             return g.red('Please select an @thin or @file node')
@@ -244,7 +246,7 @@ class AtFile:
         path = g.os_path_dirname(c.mFileName)
         fn = g.os_path_finalize_join(g.app.loadDir, path, fn)
         if not g.os_path_exists(fn):
-            return g.error('file not found: %s' % (fn))
+            return g.error(f"file not found: {fn}")
         s, e = g.readFileIntoString(fn)
         if s is None:
             return None
@@ -256,10 +258,10 @@ class AtFile:
         return c
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
-        '''
+        """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
-        '''
+        """
         at, c = self, self.c
         if fromString:
             if at.atShadow:
@@ -286,14 +288,14 @@ class AtFile:
                 # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             at.warnOnReadOnlyFile(fn)
         except IOError:
-            at.error("can not open: '@file %s'" % (fn))
+            at.error(f"can not open: '@file {fn}'")
             at.inputFile = None
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
     def openAtShadowFileForReading(self, fn):
-        '''Open an @shadow for reading and return shadow_fn.'''
+        """Open an @shadow for reading and return shadow_fn."""
         at = self
         x = at.c.shadowController
         # readOneAtShadowNode should already have checked these.
@@ -303,8 +305,7 @@ class AtFile:
         if not shadow_exists:
             g.trace('can not happen: no private file',
                 shadow_fn, g.callers())
-            at.error('can not happen: private file does not exist: %s' % (
-                shadow_fn))
+            at.error(f"can not happen: private file does not exist: {shadow_fn}")
             return None
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
@@ -354,7 +355,7 @@ class AtFile:
         return True
     #@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
     def deleteTnodeList(self, p): # AtFile method.
-        '''Remove p's tnodeList.'''
+        """Remove p's tnodeList."""
         v = p.v
         if hasattr(v, "tnodeList"):
             if False: # Not an error, but a useful trace.
@@ -363,12 +364,12 @@ class AtFile:
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
     def deleteUnvisitedNodes(self, root, redraw=True):
-        '''
+        """
         Delete unvisited nodes in root's subtree, not including root.
 
         Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
         Nodes'.
-        '''
+        """
         at = self
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
@@ -381,7 +382,7 @@ class AtFile:
             at.c.deletePositionsInList(aList, redraw=redraw)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
-        '''Create a 'Resurrected Nodes' node as the last top-level node.'''
+        """Create a 'Resurrected Nodes' node as the last top-level node."""
         at = self; c = at.c; tag = 'Resurrected Nodes'
         # Find the last top-level node.
         last = c.rootPosition()
@@ -397,12 +398,12 @@ class AtFile:
         return p
     #@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
     def defineResurrectedNodeCallback(self, r, root):
-        '''Define a callback that moves node p as r's last child.'''
+        """Define a callback that moves node p as r's last child."""
 
         def callback(p, r=r.copy(), root=root):
-            '''The resurrected nodes callback.'''
+            """The resurrected nodes callback."""
             child = r.insertAsLastChild()
-            child.h = 'From %s' % root.h
+            child.h = f"From {root.h}"
             v = p.v
             if 1: # new code: based on vnodes.
                 import leo.core.leoNodes as leoNodes
@@ -424,23 +425,25 @@ class AtFile:
         return callback
     #@+node:ekr.20041005105605.22: *6* at.initFileName
     def initFileName(self, fromString, importFileName, root):
-        '''Return the fileName to be used in messages.'''
-        at = self
+        """Return the fileName to be used in messages."""
+        # at = self
+        c = self.c
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
             fileName = importFileName
         elif root.isAnyAtFileNode():
             fileName = root.anyAtFileNodeName()
+            # #102, #1341: expand user expression.
+            fileName = c.expand_path_expression(fileName) # #1341:
         else:
             fileName = None
         if fileName:
-            # Fix bug 102: call the commander method, not the global funtion.
-            fileName = at.c.os_path_finalize(fileName)
+            fileName = g.os_path_finalize(fileName) # #1341:
         return fileName
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
-        '''Return True if s has file-like sentinels.'''
+        """Return True if s has file-like sentinels."""
         at = self; tag = "@+leo"
         s = g.checkUnicode(s)
         i = s.find(tag)
@@ -547,7 +550,8 @@ class AtFile:
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fileName = c.os_path_finalize_join(at.default_directory, fileName)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341.
         if not g.os_path_exists(fileName):
             g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
             return p
@@ -576,7 +580,7 @@ class AtFile:
             g.es_print('Unexpected exception importing', fileName)
             g.es_exception()
         if ic.errors:
-            g.error('errors inhibited read @auto %s' % (fileName))
+            g.error(f"errors inhibited read @auto {fileName}")
         elif c.persistenceController:
             c.persistenceController.update_after_read_foreign_file(p)
         # Finish.
@@ -592,7 +596,8 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -622,7 +627,8 @@ class AtFile:
         '''Read one @asis node. Used only by refresh-from-disk'''
         at, c = self, self.c
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn) # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -643,8 +649,7 @@ class AtFile:
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
         if not g.os_path_exists(fileName):
-            g.es_print('not found: %s' % (fileName), color='red',
-                nodeLink=root.get_UNL(with_proto=True))
+            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL(with_proto=True))
             return False
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
@@ -673,7 +678,7 @@ class AtFile:
         return True # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
-        '''Dump all lines.'''
+        """Dump all lines."""
         print('***** %s lines...\n' % tag)
         for s in lines:
             print(s.rstrip())
@@ -703,12 +708,13 @@ class AtFile:
 
         at = self; c = at.c; x = c.shadowController
         if not fn == p.atShadowFileNodeName():
-            return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-                fn, p.atShadowFileNodeName()))
+            return at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
         # Fix bug 889175: Remember the full fileName.
+        fn = c.expand_path_expression(fn) # #1341.
         at.rememberReadPath(fn, p)
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
+        fn = g.os_path_finalize_join(at.default_directory, fn)
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
         # Delete all children.
@@ -740,7 +746,7 @@ class AtFile:
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
     def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
-        '''A convenience wrapper for FastAtReAD.read_into_root()'''
+        """A convenience wrapper for FastAtReAD.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
@@ -757,17 +763,17 @@ class AtFile:
         return p
     #@+node:ekr.20130911110233.11286: *5* at.initReadLine
     def initReadLine(self, s):
-        '''Init the ivars so that at.readLine will read all of s.'''
+        """Init the ivars so that at.readLine will read all of s."""
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
         at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     def parseLeoSentinel(self, s):
-        '''
+        """
         Parse the sentinel line s.
         If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
-        '''
+        """
         at, c = self, self.c
         # Set defaults.
         encoding = c.config.default_derived_file_encoding
@@ -850,24 +856,24 @@ class AtFile:
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
     def openFileHelper(self, fileName):
-        '''Open a file, reporting all exceptions.'''
+        """Open a file, reporting all exceptions."""
         at = self
         s = None
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
         except IOError:
-            at.error('can not open %s' % (fileName))
+            at.error(f"can not open {fileName}")
         except Exception:
-            at.error('Exception reading %s' % (fileName))
+            at.error(f"Exception reading {fileName}")
             g.es_exception()
         return s
     #@+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
     def getEncodingFromHeader(self, fileName, s):
-        '''
+        """
         Return the encoding given in the @+leo sentinel, if the sentinel is
         present, or the previous value of at.encoding otherwise.
-        '''
+        """
         at = self
         if at.errors:
             g.trace('can not happen: at.errors > 0')
@@ -925,7 +931,7 @@ class AtFile:
             at.startSentinelComment = start
             at.endSentinelComment = end
         elif giveErrors:
-            at.error("No @+leo sentinel in: %s" % fileName)
+            at.error(f"No @+leo sentinel in: {fileName}")
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
@@ -1066,10 +1072,10 @@ class AtFile:
             at.saveOutlineIfPossible()
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
     def findFilesToWrite(self, force):
-        '''
+        """
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
-        '''
+        """
         c = self.c
         if force:
             # The Write @<file> Nodes command.
@@ -1104,12 +1110,12 @@ class AtFile:
         return files, root
     #@+node:ekr.20190108053115.1: *6* at.internalWriteError
     def internalWriteError(self, p):
-        '''
+        """
         Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
         Give a more urgent, more specific, more helpful message.
-        '''
+        """
         g.es_exception()
-        g.es('Internal error writing: %s' % (p.h), color='red')
+        g.es(f"Internal error writing: {p.h}", color='red')
         g.es('Please report this error to:', color='blue')
         g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
         g.es('Warning: changes to this file will be lost', color='red')
@@ -1125,7 +1131,7 @@ class AtFile:
             if report:
                 g.es("finished")
             elif at.sameFiles:
-                g.es('finished. %s unchanged files' % at.sameFiles)
+                g.es(f"finished. {at.sameFiles} unchanged files")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
             # g.es("to write an unchanged @auto node,\nselect it directly.")
@@ -1183,14 +1189,14 @@ class AtFile:
             p2.v.clearDirty()
     #@+node:ekr.20150602204757.1: *7* at.autoBeautify
     def autoBeautify(self, p):
-        '''Auto beautify p's tree if allowed by settings and directives.'''
+        """Auto beautify p's tree if allowed by settings and directives."""
         c = self.c
         try:
             if not p.isDirty():
                 return
             if leoBeautify.should_kill_beautify(p):
                 return
-            if c.config.getBool('tidy-autobeautify'):
+            if c.config.getBool('beautify-autobeautify'):
                 leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
         except Exception:
             g.es('unexpected exception')
@@ -1207,12 +1213,14 @@ class AtFile:
             return False
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
-        pathChanged = oldPath and oldPath != newPath
-        # 2010/01/27: suppress this message during save-as and save-to commands.
+        try: # #1367: samefile can throw IOError!
+            pathChanged = oldPath and not os.path.samefile(oldPath, newPath)
+        except IOError:
+            pathChanged = True
+        # Suppress this message during save-as and save-to commands.
         if pathChanged and not c.ignoreChangedPaths:
             ok = at.promptForDangerousWrite(
                 fileName=None,
-                kind=None,
                 message='%s\n%s' % (
                     g.tr('path changed for %s' % (p.h)),
                     g.tr('write this file anyway?')))
@@ -1316,11 +1324,13 @@ class AtFile:
         c.init_error_dialogs()
         p = p.copy()
         after = p.nodeAfterTree()
+        at.default_directory = c.expand_path_expression(at.default_directory) # #1341.
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
-                    fileName = c.os_path_finalize_join(at.default_directory, fileName)
+                    fileName = c.expand_path_expression(fileName) # #1341
+                    fileName = g.os_path_finalize_join(at.default_directory, fileName) # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True
@@ -1412,13 +1422,13 @@ class AtFile:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
     def dispatch(self, ext, p):
-        '''Return the correct writer function for p, an @auto node.'''
+        """Return the correct writer function for p, an @auto node."""
         at = self
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
     def writer_for_at_auto(self, root):
-        '''A factory returning a writer function for the given kind of @auto directive.'''
+        """A factory returning a writer function for the given kind of @auto directive."""
         at = self
         d = g.app.atAutoWritersDict
         for key in d.keys():
@@ -1439,7 +1449,7 @@ class AtFile:
         return None
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
     def writer_for_ext(self, ext):
-        '''A factory returning a writer function for the given file extension.'''
+        """A factory returning a writer function for the given file extension."""
         at = self
         d = g.app.writersDispatchDict
         aClass = d.get(ext)
@@ -1578,7 +1588,7 @@ class AtFile:
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):
-        '''Write the @asis node to a string.'''
+        """Write the @asis node to a string."""
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1592,7 +1602,7 @@ class AtFile:
             return ''
     #@+node:ekr.20190109160056.2: *6* at.atAutoToString
     def atAutoToString(self, root):
-        '''Write the root @auto node to a string, and return it.'''
+        """Write the root @auto node to a string, and return it."""
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1603,7 +1613,7 @@ class AtFile:
             return ''
     #@+node:ekr.20190109160056.3: *6* at.atEditToString
     def atEditToString(self, root):
-        '''Write one @edit node.'''
+        """Write one @edit node."""
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1621,7 +1631,7 @@ class AtFile:
             return ''
     #@+node:ekr.20190109142026.1: *6* at.atFileToString
     def atFileToString(self, root, sentinels=True):
-        '''Write an external file to a string, and return its contents.'''
+        """Write an external file to a string, and return its contents."""
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1667,7 +1677,7 @@ class AtFile:
         except Exception:
             at.exception("exception preprocessing script")
             return ''
-    #@+node:ekr.20041005105605.160: *4* Writing 4.x
+    #@+node:ekr.20041005105605.160: *4* Writing helpers
     #@+node:ekr.20041005105605.161: *5* at.putBody & helper
     def putBody(self, p, fromString=''):
         '''
@@ -1739,19 +1749,19 @@ class AtFile:
             # Only @c and @code end a doc part.
             if not status.in_code:
                 at.putEndDocLine()
-            at.putDirective(s, i)
+            at.putDirective(s, i, p)
             status.in_code = True
         elif kind == at.allDirective:
             if status.in_code:
                 if p == self.root:
                     at.putAtAllLine(s, i, p)
                 else:
-                    at.error('@all not valid in: %s' % (p.h))
+                    at.error(f"@all not valid in: {p.h}")
             else: at.putDocLine(s, i)
         elif kind == at.othersDirective:
             if status.in_code:
                 if status.has_at_others:
-                    at.error('multiple @others in: %s' % (p.h))
+                    at.error(f"multiple @others in: {p.h}")
                 else:
                     at.putAtOthersLine(s, i, p)
                     status.has_at_others = True
@@ -1769,7 +1779,7 @@ class AtFile:
                 # A hack: unit tests for @shadow use @verbatim as a kind of directive.
                 pass
             else:
-                at.error('@verbatim is not a Leo directive: %s' % p.h)
+                at.error(f"@verbatim is not a Leo directive: {p.h}")
         elif kind == at.miscDirective:
             # Fix bug 583878: Leo should warn about @comment/@delims clashes.
             if g.match_word(s, i, '@comment'):
@@ -1782,10 +1792,10 @@ class AtFile:
                 status.at_warning_given
             ):
                 status.at_warning_given = True
-                at.error('@comment and @delims in node %s' % p.h)
-            at.putDirective(s, i)
+                at.error(f"@comment and @delims in node {p.h}")
+            at.putDirective(s, i, p)
         else:
-            at.error('putBody: can not happen: unknown directive kind: %s' % kind)
+            at.error(f"putBody: can not happen: unknown directive kind: {kind}")
     #@+node:ekr.20041005105605.164: *5* writing code lines...
     #@+node:ekr.20041005105605.165: *6* at.@all
     #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
@@ -1826,7 +1836,7 @@ class AtFile:
             at.putEndDocLine()
     #@+node:ekr.20041005105605.169: *7* at.putAtAllChild
     def putAtAllChild(self, p):
-        '''
+        """
         This code puts only the first of two or more cloned siblings, preceding
         the clone with an @clone n sentinel.
         
@@ -1834,7 +1844,7 @@ class AtFile:
         external file. This should be benign; the text created by @all is
         likely to be used only for recreating the outline in Leo. The
         representation in the derived file doesn't matter much.
-        '''
+        """
         at = self
         at.putOpenNodeSentinel(p, inAtAll=True)
             # Suppress warnings about @file nodes.
@@ -1951,7 +1961,7 @@ class AtFile:
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
-        '''Find a reference to name.  Raise an error if not found.'''
+        """Find a reference to name.  Raise an error if not found."""
         at = self
         ref = g.findReference(name, p)
         if not ref and not hasattr(at, 'allow_undefined_refs'):
@@ -1962,10 +1972,10 @@ class AtFile:
         return ref
     #@+node:ekr.20041005105605.199: *7* at.findSectionName
     def findSectionName(self, s, i):
-        '''
+        """
         Return n1, n2 representing a section name.
         The section name, *including* brackes is s[n1:n2]
-        '''
+        """
         end = s.find('\n', i)
         if end == -1:
             n1 = s.find("<<", i)
@@ -2079,7 +2089,7 @@ class AtFile:
         if at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.onl()
-    #@+node:ekr.20041005105605.187: *4* Writing 4,x sentinels...
+    #@+node:ekr.20041005105605.187: *4* Writing sentinels...
     #@+node:ekr.20041005105605.188: *5* at.nodeSentinelText & helper
     def nodeSentinelText(self, p):
         """Return the text of a @+node or @-node sentinel for p."""
@@ -2092,7 +2102,7 @@ class AtFile:
         gnx = p.v.fileIndex
         level = 1 + p.level() - self.root.level()
         if level > 2:
-            return "%s: *%s* %s" % (gnx, level, h)
+            return f"{gnx}: *{level}* {h}"
         return "%s: %s %s" % (gnx, '*' * level, h)
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
@@ -2177,17 +2187,17 @@ class AtFile:
             if at.endSentinelComment:
                 at.os(at.endSentinelComment)
             at.onl()
-    #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
+    #@+node:ekr.20041005105605.196: *4* Writing utils...
     #@+node:ekr.20181024134823.1: *5* at.addToOrphanList
     def addToOrphanList(self, root):
-        '''Mark the root as erroneous for c.raise_error_dialogs().'''
+        """Mark the root as erroneous for c.raise_error_dialogs()."""
         c = self.c
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
     #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
     def checkPath(self, fileName):
-        '''Return True if we can write to the file's directory.'''
+        """Return True if we can write to the file's directory."""
         at = self
         assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
         directory = g.os_path_dirname(fileName)
@@ -2198,7 +2208,7 @@ class AtFile:
         return True
     #@+node:ekr.20190111112432.1: *6* at.checkDir
     def checkDirectory(self, directory):
-        '''Return True if directory exists or could be created.'''
+        """Return True if directory exists or could be created."""
         at, c = self, self.c
         assert directory, g.callers()
         if g.os_path_exists(directory):
@@ -2212,7 +2222,7 @@ class AtFile:
             return False
     #@+node:ekr.20190111112442.1: *6* at.isWritable
     def isWritable(self, path):
-        '''Return True if the path is writable.'''
+        """Return True if the path is writable."""
         try:
             # os.access() may not exist on all platforms.
             ok = os.access(path, os.W_OK)
@@ -2223,7 +2233,7 @@ class AtFile:
         return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False): 
-        '''Perform python-related checks on root.'''
+        """Perform python-related checks on root."""
         at = self
         if contents and fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
             # It's too slow to check each node separately.
@@ -2244,7 +2254,7 @@ class AtFile:
         at = self
         try:
             body = body.replace('\r', '')
-            fn = '<node: %s>' % p.h
+            fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
             return True
         except SyntaxError:
@@ -2256,8 +2266,8 @@ class AtFile:
         return False
     #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
     def syntaxError(self, p, body):
-        '''Report a syntax error.'''
-        g.error("Syntax error in: %s" % (p.h))
+        """Report a syntax error."""
+        g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
         message = hasattr(val, 'message') and val.message
         if message: g.es_print(message)
@@ -2281,7 +2291,7 @@ class AtFile:
                 g.es_print(' ' * (7 + offset) + '^')
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
     def runPyflakes(self, root, pyflakes_errors_only):
-        '''Run pyflakes on the selected node.'''
+        """Run pyflakes on the selected node."""
         try:
             import leo.commands.checkerCommands as checkerCommands
             if checkerCommands.pyflakes:
@@ -2403,7 +2413,7 @@ class AtFile:
         return False, -1
     #@+node:ekr.20190113043601.1: *5* at.open/closeOutputFile
     def openOutputFile(self):
-        '''Open the output file, which must be file-like'''
+        """Open the output file, which must be file-like"""
         at = self
         at.outputFile = g.FileLikeObject()
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
@@ -2411,7 +2421,7 @@ class AtFile:
             at.output_newline = '\n'
 
     def closeOutputFile(self):
-        '''Close the output file, returning its contents.'''
+        """Close the output file, returning its contents."""
         at = self
         at.outputFile.flush()
         contents = g.toUnicode('' if at.errors else at.outputFile.get())
@@ -2422,7 +2432,7 @@ class AtFile:
     # open/close methods used by top-level atFile.write logic.
 
     def openOutputStream(self):
-        '''Open the output stream, which a list, *not* a file-like object.'''
+        """Open the output stream, which a list, *not* a file-like object."""
         at = self
         at.outputList = []
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
@@ -2430,7 +2440,7 @@ class AtFile:
             at.output_newline = '\n'
 
     def closeOutputStream(self):
-        '''Close the output stream, returning its contents.'''
+        """Close the output stream, returning its contents."""
         at = self
         contents = '' if at.errors else ''.join(at.outputList)
         at.outputList = []
@@ -2473,28 +2483,28 @@ class AtFile:
         at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     def outputStringWithLineEndings(self, s):
-        '''
+        """
         Write the string s as-is except that we replace '\n' with the proper line ending.
         
         Calling self.onl() runs afoul of queued newlines.
-        '''
+        """
         at = self
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
     #@+node:ekr.20190111045822.1: *5* at.precheck
     def precheck(self, fileName, root):
-        '''
+        """
         Check for dangerous writes.
         Return False if the user declines to do the write.
-        '''
+        """
         at = self
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
         # Prompt if the write would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fileName, kind='@asis')
+        ok = self.promptForDangerousWrite(fileName)
         if ok:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
@@ -2504,9 +2514,11 @@ class AtFile:
         return False
     #@+node:ekr.20050506090446.1: *5* at.putAtFirstLines
     def putAtFirstLines(self, s):
-        '''Write any @firstlines from string s.
+        """
+        Write any @firstlines from string s.
         These lines are converted to @verbatim lines,
-        so the read logic simply ignores lines preceding the @+leo sentinel.'''
+        so the read logic simply ignores lines preceding the @+leo sentinel.
+        """
         at = self; tag = "@first"
         i = 0
         while g.match(s, i, tag):
@@ -2520,9 +2532,11 @@ class AtFile:
             i = g.skip_nl(s, i)
     #@+node:ekr.20050506090955: *5* at.putAtLastLines
     def putAtLastLines(self, s):
-        '''Write any @last lines from string s.
+        """
+        Write any @last lines from string s.
         These lines are converted to @verbatim lines,
-        so the read logic simply ignores lines following the @-leo sentinel.'''
+        so the read logic simply ignores lines following the @-leo sentinel.
+        """
         at = self; tag = "@last"
         # Use g.splitLines to preserve trailing newlines.
         lines = g.splitLines(s)
@@ -2539,8 +2553,8 @@ class AtFile:
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
-    def putDirective(self, s, i):
+    #@+node:ekr.20041005105605.206: *5* at.putDirective & helper
+    def putDirective(self, s, i, p):
         r'''
         Output a sentinel a directive or reference s.
 
@@ -2559,11 +2573,27 @@ class AtFile:
         elif g.match_word(s, k, "@comment"):
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
-            self.putSentinel("@@last")
-                # Convert to an verbatim line _without_ anything else.
+            # #1307.
+            if p.isAtCleanNode():
+                at.error('ignoring @last directive in %r' % p.h)
+                g.es_print('@last is not valid in @clean nodes')
+            # #1297.
+            elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@last")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @last directive in %r' % p.h)
         elif g.match_word(s, k, "@first"):
-            self.putSentinel("@@first")
-                # Convert to an verbatim line _without_ anything else.
+            # #1307.
+            if p.isAtCleanNode():
+                at.error('ignoring @first directive in %r' % p.h)
+                g.es_print('@first is not valid in @clean nodes')
+            # #1297.
+            elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+                self.putSentinel("@@first")
+                    # Convert to an verbatim line _without_ anything else.
+            else:
+                at.error('ignoring @first directive in %r' % p.h)
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
@@ -2649,7 +2679,7 @@ class AtFile:
             if ok:
                 c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
-                    g.es('%screated: %s' % (timestamp, fileName))
+                    g.es(f"{timestamp}created: {fileName}")
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
@@ -2669,7 +2699,7 @@ class AtFile:
         if unchanged:
             at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
-                g.es('%sunchanged: %s' % (timestamp, sfn))
+                g.es(f"{timestamp}unchanged: {sfn}")
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False # No change to original file.
@@ -2687,7 +2717,7 @@ class AtFile:
         if ok:
             c.setFileTimeStamp(fileName)
             if not g.unitTesting:
-                g.es('%swrote: %s' % (timestamp, sfn))
+                g.es(f"{timestamp}wrote: {sfn}")
         else:
             g.error('error writing', sfn)
             g.es('not written:', sfn)
@@ -2697,7 +2727,7 @@ class AtFile:
         return ok
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
     def compareIgnoringBlankLines(self, s1, s2):
-        '''Compare two strings, ignoring blank lines.'''
+        """Compare two strings, ignoring blank lines."""
         assert g.isUnicode(s1), g.callers()
         assert g.isUnicode(s2), g.callers()
         if s1 == s2:
@@ -2707,7 +2737,7 @@ class AtFile:
         return s1 == s2
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
     def compareIgnoringLineEndings(self, s1, s2):
-        '''Compare two strings, ignoring line endings.'''
+        """Compare two strings, ignoring line endings."""
         assert g.isUnicode(s1), g.callers()
         assert g.isUnicode(s2), g.callers()
         if s1 == s2:
@@ -2771,7 +2801,7 @@ class AtFile:
         at.errors += 1
 
     def printError(self, *args):
-        '''Print an error message that may contain non-ascii characters.'''
+        """Print an error message that may contain non-ascii characters."""
         at = self
         if at.errors:
             g.error(*args)
@@ -2798,7 +2828,7 @@ class AtFile:
             return True
         except Exception:
             if verbose:
-                self.error("exception removing: %s" % fileName)
+                self.error(f"exception removing: {fileName}")
                 g.es_exception()
                 g.trace(g.callers(5))
             return False
@@ -2840,8 +2870,8 @@ class AtFile:
             return n, s2[i:]
         return 0, s
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(self, fileName, kind, message=None):
-        '''Raise a dialog asking the user whether to overwrite an existing file.'''
+    def promptForDangerousWrite(self, fileName, message=None):
+        """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
         if g.app.unitTesting:
             val = g.app.unitTestDict.get('promptForDangerousWrite')
@@ -2865,8 +2895,8 @@ class AtFile:
                     c.redraw()
                     return False
         if message is None:
-            message = '%s %s\n%s\n%s' % (
-                kind, g.splitLongFileName(fileName),
+            message = '%s\n%s\n%s' % (
+                g.splitLongFileName(fileName),
                 g.tr('already exists.'),
                 g.tr('Overwrite this file?'))
         result = g.app.gui.runAskYesNoCancelDialog(c,
@@ -2994,18 +3024,33 @@ class AtFile:
             "tabwidth": at.tab_width,
         }
         return d
-    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
+    #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite (#1361)
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
         Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
+        c = self.c
+        efc = g.app.externalFilesController
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             return False
+        # #1347: Prompt if the external file is newer.
+        if efc:
+            # Like c.checkFileTimeStamp.
+            if c.sqlite_connection and c.mFileName == fn:
+                # sqlite database file is never actually overwriten by Leo,
+                # so do *not* check its timestamp.
+                pass
+            elif efc.has_changed(c, fn):
+                return True
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
+            for k in d:
+                if os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                    d[fn] = d[k]
+                    return False
             aSet = d.get(fn, set())
             return p.h not in aSet
         return True
@@ -3048,24 +3093,24 @@ class FastAtRead:
         # This must be a function, because of @comments & @delims.
         delim_start, delim_end = delims
         delims = re.escape(delim_start), re.escape(delim_end or '')
-        delim_start, delim_end = delims
+        delim1, delim2 = delims
+        ref = g.angleBrackets(r'(.*)')
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
-            r'^\s*%s@afterref%s$'%delims,               # @afterref
-            r'^(\s*)%s@(\+|-)all\b(.*)%s$'%delims,      # @all
-            r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
-            r'^\s*%s@comment(.*)%s'%delims,             # @comment
-            r'^\s*%s@delims(.*)%s'%delims,              # @delims
-            r'^\s*%s@\+(at|doc)?(\s.*?)?%s\n'%delims,   # @doc or @
-            r'^\s*%s@end_raw\s*%s'%delims,              # @end_raw
-            r'^\s*%s@@first%s$'%delims,                 # @first
-            r'^\s*%s@@last%s$'%delims,                  # @last
-            r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,   # @others
-            r'^\s*%s@raw(.*)%s'%delims,                 # @raw
-            r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
-                delim_start, g.angleBrackets('(.*)'), delim_end)
+            fr'^\s*{delim1}@afterref{delim2}$',             # @afterref
+            fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$',    # @all
+            fr'^\s*{delim1}@@c(ode)?{delim2}$',             # @c and @code
+            fr'^\s*{delim1}@comment(.*){delim2}',           # @comment
+            fr'^\s*{delim1}@delims(.*){delim2}',            # @delims
+            fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n', # @doc or @
+            fr'^\s*{delim1}@end_raw\s*{delim2}',            # @end_raw
+            fr'^\s*{delim1}@@first{delim2}$',               # @first
+            fr'^\s*{delim1}@@last{delim2}$',                # @last
+            fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$', # @node
+            fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$', # @others
+            fr'^\s*{delim1}@raw(.*){delim2}',               # @raw
+            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'      # section ref
         )
         # Return the compiled patterns, in alphabetical order.
         return (re.compile(pattern) for pattern in patterns)
@@ -3120,7 +3165,7 @@ class FastAtRead:
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, start, test=False):
+    def scan_lines(self, delims, first_lines, lines, path, start, test=False):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -3207,7 +3252,7 @@ class FastAtRead:
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
         def dump_v():
-            '''Dump the level stack and v.'''
+            """Dump the level stack and v."""
             print('----- LEVEL', level, v.h)
             print('       PARENT', parent_v.h)
             print('[')
@@ -3437,7 +3482,10 @@ class FastAtRead:
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                 else:
-                    g.trace('too many @first lines')
+                    g.trace('\ntoo many @first lines: %s' %  path)
+                    print('@first is valid only at the start of @<file> nodes\n')
+                    g.printObj(first_lines, tag='first_lines')
+                    g.printObj(lines[start:i+2], tag='lines[start:i+2]')
                 continue
             m = last_pat.match(line)
             if m:
@@ -3563,7 +3611,7 @@ class FastAtRead:
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
             # This trace is less important, but interesting.
-            g.trace('UNEXPECTED LINE:', repr(sentinel), repr(line), g.shortFileName(self.path))
+            g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
             body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:
@@ -3583,7 +3631,7 @@ class FastAtRead:
         anchored in root.v.
         '''
         trace = False
-        t1 = time.clock()
+        t1 = time.process_time()
         self.path = path
         self.root = root
         sfn = g.shortFileName(path)
@@ -3591,17 +3639,17 @@ class FastAtRead:
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if not data:
-            g.trace('Invalid external file: %s' % sfn)
+            g.trace(f"Invalid external file: {sfn}")
             return False
         # Clear all children.
         # Previously, this had been done in readOpenFile.
         root.v._deleteAllChildren()
         delims, first_lines, start_i = data
         self.scan_lines(
-            delims, first_lines, lines, start_i)
+            delims, first_lines, lines, path, start_i)
         if trace:
-            t2 = time.clock()
-            g.trace('%5.3f sec. %s' % ((t2-t1), path))
+            t2 = time.process_time()
+            g.trace('%5.2f sec. %s' % ((t2-t1), path))
         return True
     #@-others
 #@-others

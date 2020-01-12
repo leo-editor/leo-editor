@@ -125,6 +125,11 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 - ``@image`` renders the file as an image.
 
+    The headline should start with @image.
+    All other characters in the headline are ignored.
+    
+    The first line of the body should be the full path to the image file.
+    All other lines are ignored.
 
 - ``@html`` renders the body text as html.
 
@@ -208,6 +213,7 @@ try:
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
     QtWidgets = False
+from distutils.spawn import find_executable
 try:
     import docutils
     import docutils.core
@@ -249,6 +255,9 @@ except ImportError:
     except ImportError:
         urllib = None
 #@-<< imports >>
+asciidoctor_exec = find_executable('asciidoctor')
+asciidoc3_exec = find_executable('asciidoc3')
+pandoc_exec = find_executable('pandoc')
 #@+<< set BaseTextWidget >>
 #@+node:ekr.20190424081947.1: ** << set BaseTextWidget >> (vr)
 if QtWidgets:
@@ -303,6 +312,11 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    global got_docutils
+    if g.app.gui.guiName() != 'qt':
+        return False
+            # #1248.
+    # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (
             not g.unitTesting and
@@ -311,7 +325,6 @@ def init():
         ):
             g.es_print('viewrendered requires Qt')
         return False
-    global got_docutils
     if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')
     # Always enable this plugin, even if imports fail.
@@ -359,6 +372,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
+    vr.show_dock_or_pane() # #1332.
     vr.update(
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
@@ -381,6 +395,8 @@ def preview(event):
 def viewrendered(event):
     """Open render view for commander"""
     global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return None
     c = event.get('c')
     if not c:
         return None
@@ -389,7 +405,12 @@ def viewrendered(event):
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
     if g.app.dock:
-        vr.show_dock_or_pane()
+        dock = vr.leo_dock
+        if not c.mFileName:
+            # #1318 and #1332: Tricky init code for new windows.
+            g.app.restoreWindowState(c)
+            dock.hide()
+            dock.raise_()
         return vr
     #
     # Legacy code: add the pane to the splitter.
@@ -407,10 +428,12 @@ def viewrendered(event):
         vr.adjust_layout('open')
     c.bodyWantsFocusNow()
     return vr
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract') (changed)
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event):
     '''Contract the rendering pane.'''
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -420,19 +443,12 @@ def contract_rendering_pane(event):
     if g.app.dock:
         return
     vr.contract()
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if vr:
-                # vr.contract()
-            # else:
-                # # Just open the pane.
-                # viewrendered(event)
-#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand') (changed)
+#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event):
     '''Expand the rendering pane.'''
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -442,17 +458,13 @@ def expand_rendering_pane(event):
     if g.app.dock:
         return
     vr.expand()
-    ###
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if not vr:
-            # vr = viewrendered(event)
-        # if vr:
-            # vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide') (changed)
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
     global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -489,32 +501,28 @@ def hide_rendering_pane(event):
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock') (changed)
+#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
     '''Lock the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if not vr.locked():
+    if not vr.locked:
         vr.lock()
-    ###
-        # c = event.get('c')
-        # if not c:
-            # return
-        # ### vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # vr = controllers.get(c.hash())
-        # if vr and not vr.locked():
-            # vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play') (changed)
+#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event):
     '''Pause or play a movie in the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -526,23 +534,13 @@ def pause_play_movie(event):
         return
     f = vp.pause if vp.isPlaying() else vp.play
     f()
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if not vr:
-                # vr = viewrendered(event)
-            # if vr and vr.vp:
-                # vp = vr.vp
-                # if vp.isPlaying():
-                    # vp.pause()
-                # else:
-                    # vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show') (changed)
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -550,13 +548,17 @@ def show_rendering_pane(event):
     if not vr:
         vr = viewrendered(event)
     vr.show_dock_or_pane()
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle') (changed)
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
+        return
+    if g.app.gui.guiName() != 'qt':
         return
     vr = controllers.get(c.hash())
     if not vr:
@@ -573,11 +575,13 @@ def toggle_rendering_pane(event):
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
-#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock') (changed)
+#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
     '''Pause or play a movie in the rendering pane.'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -586,17 +590,13 @@ def unlock_rendering_pane(event):
         vr = viewrendered(event)
     if vr.locked:
         vr.unlock()
-    ###
-    # c = event.get('c')
-    # if c:
-        # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        # if vr and vr.locked:
-            # vr.unlock()
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update') (changed)
+#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
 def update_rendering_pane(event):
     '''Update the rendering pane'''
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -604,20 +604,13 @@ def update_rendering_pane(event):
     if not vr:
         vr = viewrendered(event)
     vr.update(tag='view', keywords={'c': c, 'force': True})
-    
-    ###
-        # c = event.get('c')
-        # if c:
-            # vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-            # if not vr:
-                # vr = viewrendered(event)
-            # if vr:
-                # vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom') (changed)
+#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
 @g.command('vr-zoom')
 def zoom_rendering_pane(event):
 
     global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
     c = event.get('c')
     if not c:
         return
@@ -722,6 +715,7 @@ if QtWidgets: # NOQA
         def create_dispatch_dict(self):
             pc = self
             d = {
+                'asciidoc': pc.update_asciidoc,
                 'big': pc.update_rst,
                 'html': pc.update_html,
                 'graphics-script': pc.update_graphics_script,
@@ -732,6 +726,7 @@ if QtWidgets: # NOQA
                 'md': pc.update_md,
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
+                'pandoc': pc.update_pandoc,
                 'pyplot': pc.update_pyplot,
                 'rest': pc.update_rst,
                 'rst': pc.update_rst,
@@ -753,39 +748,32 @@ if QtWidgets: # NOQA
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
             c = self.c
-            external_dock = c.config.getBool('use-vr-dock', default=False)
-                # reload_settings has not yet been called.
+            dw = c.frame.top
             self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
+            # Create the inner contents.
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
             if not g.app.dock:
                 return
-            dw = c.frame.top
-            separate_dock = (
-                external_dock and not g.app.init_docks or
-                g.app.get_central_widget(c) == 'body'
-                ###c.config.getString('central-dock-widget') == 'body'
-            )
-            # g.trace('SEPARATE DOCK', separate_dock)
-            #
-            # Can't allow the "body dock" to move:
-            # There is (at present) no way to put it back.
-            self.leo_dock = dock = dw.createDockWidget(
-                closeable=True, moveable=separate_dock, height=50, name='Render')
-            if separate_dock:
+            # Allow the VR dock to move only in special circumstances.
+            central_body = g.app.get_central_widget(c) == 'body'
+            moveable = g.app.init_docks or central_body
+            self.leo_dock = dock = g.app.gui.create_dock_widget(
+                closeable=True, moveable=moveable, height=50, name='Render')
+            if central_body:
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+            else:
+                # Split the body dock.
+                dw.leo_docks.append(dock)
+                dock.setWidget(self)
+                dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
+            if g.app.init_docks:
                 dock.show()
-                return
-            #
-            # Split the body dock.
-            dw.leo_docks.append(dock)
-            dock.setWidget(self)
-            dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -869,9 +857,12 @@ if QtWidgets: # NOQA
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
-            '''Update the vr pane.'''
+            '''Update the vr pane. Called at idle time.'''
             pc = self
             p = pc.c.p
+            # #1256.
+            if self.locked:
+                return
             if pc.must_update(keywords):
                 #
                 # Suppress updates until we change nodes.
@@ -915,8 +906,6 @@ if QtWidgets: # NOQA
                     except Exception:
                         g.es_exception()
                         pc.deactivate()
-                # Will be called at idle time.
-                # if trace: g.trace('no update')
         #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
         def create_base_text_widget(self):
             '''Create a QWebView or a QTextBrowser.'''
@@ -991,6 +980,68 @@ if QtWidgets: # NOQA
             # This trace would be called at idle time.
                 # g.trace('no change')
             return False
+        #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
+        def update_asciidoc(self, s, keywords):
+            '''Update asciidoc in the vr pane.'''
+            global asciidoctor_exec, asciidoc3_exec
+            pc = self
+            # Do this regardless of whether we show the widget or not.
+            w = pc.ensure_text_widget()
+            assert pc.w
+            if s:
+                pc.show()
+            if asciidoctor_exec or asciidoc3_exec:
+                try:
+                    s2 = self.convert_to_asciidoctor(s)
+                    self.set_html(s2,w)
+                    return
+                except Exception:
+                    g.es_exception()
+            self.update_rst(s,keywords)
+        #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
+        def make_asciidoc_title(self, s):
+            '''Generate an asciiidoc title for s.'''
+            line = '#' * (min(4, len(s)))
+            return f"{line}\n{s}\n{line}\n\n"
+        #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
+        def convert_to_asciidoctor(self, s):
+            '''Convert s to html using the asciidoctor or asciidoc processor.'''
+            pc = self
+            c, p = pc.c, pc.c.p
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            if pc.title:
+                s = pc.make_asciidoc_title(pc.title) + s
+                pc.title = None
+            s = pc.run_asciidoctor(s)
+            return g.toUnicode(s)
+        #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor
+        def run_asciidoctor(self, s):
+            """
+            Process s with asciidoctor or asciidoc3.
+            return the contents of the html file.
+            The caller handles all exceptions.
+            """
+            global asciidoctor_exec, asciidoc3_exec
+            assert asciidoctor_exec or asciidoc3_exec, g.callers()
+            home = g.os.path.expanduser('~')
+            i_path = g.os_path_finalize_join(home, 'vr_input.adoc')
+            o_path = g.os_path_finalize_join(home, 'vr_output.html')
+            # Write the input file.
+            with open(i_path, 'w') as f:
+                f.write(s)
+            # Call the external program to write the output file.
+            prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
+            command = f"{prog} {i_path} -b html5 -o {o_path}"
+                # The -e option deletes css.
+            g.execute_shell_commands(command)
+            # Read the output file and return it.
+            with open(o_path, 'r') as f:
+                return f.read()
+          
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
@@ -1252,6 +1303,65 @@ if QtWidgets: # NOQA
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
+        #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
+        def update_pandoc(self, s, keywords):
+            '''
+            Update an @pandoc in the vr pane.
+            
+            There is no such thing as @language pandoc,
+            so only @pandoc nodes trigger this code.
+            '''
+            global pandoc_exec
+            pc = self
+            w = pc.ensure_text_widget()
+            assert pc.w
+            if s:
+                pc.show()
+            if pandoc_exec:
+                try:
+                    s2 = self.convert_to_pandoc(s)
+                    self.set_html(s2,w)
+                except Exception:
+                    g.es_exception()
+                return
+            self.update_rst(s,keywords)
+        #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
+        def convert_to_pandoc(self, s):
+            '''Convert s to html using the asciidoctor or asciidoc processor.'''
+            pc = self
+            c, p = pc.c, pc.c.p
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            if pc.title:
+                s = pc.make_pandoc_title(pc.title) + s
+                pc.title = None
+            s = pc.run_pandoc(s)
+            return g.toUnicode(s)
+        #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
+        def run_pandoc(self, s):
+            """
+            Process s with pandoc.
+            return the contents of the html file.
+            The caller handles all exceptions.
+            """
+            global pandoc_exec
+            assert pandoc_exec, g.callers()
+            home = g.os.path.expanduser('~')
+            i_path = g.os_path_finalize_join(home, 'vr_input.pandoc')
+            o_path = g.os_path_finalize_join(home, 'vr_output.html')
+            # Write the input file.
+            with open(i_path, 'w') as f:
+                f.write(s)
+            # Call pandoc to write the output file.
+            command = f"pandoc {i_path} -t html5 -o {o_path}"
+                # --quiet does no harm.
+            g.execute_shell_commands(command)
+            # Read the output file and return it.
+            with open(o_path, 'r') as f:
+                return f.read()
         #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
@@ -1281,7 +1391,7 @@ if QtWidgets: # NOQA
                     'numpy': np, 'np': np,
                     'pyplot': plt, 'plt': plt,
                 }
-            except ImportError:
+            except Exception:
                 g.es_print('matplotlib imports failed')
                 namespace = {}
             # Embedding already works without this!
@@ -1297,7 +1407,9 @@ if QtWidgets: # NOQA
                 define_name='__main__',
                 silent=False,
                 namespace=namespace,
-                raiseFlag=False)
+                raiseFlag=False,
+                runPyflakes=False, # Suppress warnings about pre-defined symbols.
+            )
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
@@ -1359,7 +1471,8 @@ if QtWidgets: # NOQA
                 w = pc.w
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
-                s = g.adjustTripleString(s, pc.c.tab_width).strip() # Sensitive to leading blank lines.
+                s = g.adjustTripleString(s, pc.c.tab_width).strip()
+                    # Sensitive to leading blank lines.
                 s = g.toEncodedString(s)
                 pc.show()
                 w.load(QtCore.QByteArray(s))
@@ -1377,7 +1490,9 @@ if QtWidgets: # NOQA
             c, p = self.c, self.c.p
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p)
-            if language in ('rest', 'rst'):
+            if language == 'asciidoc':
+                p.update_asciidoc(s, keywords)
+            elif language in ('rest', 'rst'):
                 pc.update_rst(s, keywords)
             elif language in ('markdown', 'md'):
                 pc.update_md(s, keywords)
@@ -1421,23 +1536,34 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            c, h, pc = self.c, p.h, self
-            if h.startswith('@'):
-                i = g.skip_id(h, 1, chars='-')
-                word = h[1: i].lower().strip()
-                if word in pc.dispatch_dict:
-                    return word
-            # 2016/03/25: Honor @language
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p, use_default=False)
-                # Fix #344: don't use c.target_language as a default.
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in pc.dispatch_dict:
-                return language
-            # To do: look at ancestors, or uA's.
+            c = self.c
+            
+            def get_language(p):
+                """
+                Return the language in effect at position p.
+                Headline directives over-ride normal Leo directives in body text.
+                """
+                h = p.h
+                # First, look for headline directives.
+                if h.startswith('@'):
+                    i = g.skip_id(h, 1, chars='-')
+                    word = h[1: i].lower().strip()
+                    if word in self.dispatch_dict:
+                        return word
+                # Look for @language directives.
+                # Warning: (see #344): don't use c.target_language as a default.
+                colorizer = c.frame.body.colorizer
+                return colorizer.findFirstValidAtLanguageDirective(p.copy())
+            #
+            #  #1287: Honor both kind of directives node by node.
+            for p in p.self_and_parents(p):
+                language = get_language(p)
+                if got_markdown and language in ('md', 'markdown'):
+                    return language
+                if got_docutils and language in ('rest', 'rst'):
+                    return language
+                if language and language in self.dispatch_dict:
+                    return language
             return None
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
@@ -1499,14 +1625,14 @@ if QtWidgets: # NOQA
                 splitter.load_layout(loo)
         #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane
         def show_dock_or_pane(self):
-            
+
             c, vr = self.c, self
             if g.app.dock:
-                separate_dock = vr.external_dock and not g.app.init_docks
-                if separate_dock:
-                    vr.show()
-                elif vr.leo_dock:
-                    vr.leo_dock.show()
+                dock = vr.leo_dock
+                if dock:
+                    dock.show()
+                    dock.raise_()
+                        # #1230.
             else:
                 vr.activate()
                 vr.show()

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
-'''
+"""
 This file runs pylint on predefined lists of files.
 
 The -r option no longer exists. Instead, use Leo's pylint command to run
@@ -11,7 +11,7 @@ On windows, the following .bat file runs this file::
 
 On Ubuntu, the following alias runs this file::
     pylint="python2 pylint-leo.py"
-'''
+"""
 #@@language python
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
@@ -27,7 +27,7 @@ import time
 #@+others
 #@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):
-    '''Call run on all tables in tables_table.'''
+    """Call run on all tables in tables_table."""
     n = len(files)
     print('pylint: %s file%s' % (n, g.plural(n)))
     try:
@@ -47,13 +47,13 @@ def main(files, verbose):
 #@@nobeautify
 
 def run(fn, verbose):
-    '''Run pylint on fn.'''
+    """Run pylint on fn."""
     # theDir is empty for the -f option.
     from pylint import lint
     assert lint
     # Note: g.app does not exist.
     base_dir = os.path.dirname(__file__)
-    home_dir = os.path.expanduser('~') if hasattr(os.path, 'expanduser') else ''
+    home_dir = os.path.expanduser('~')
     rc_fn = 'pylint-leo-rc.txt'
     table = (
         os.path.abspath(os.path.join(home_dir, '.leo', rc_fn)),
@@ -114,7 +114,7 @@ def report_version():
 
 #@+node:ekr.20120307142211.9886: ** scanOptions (pylint-leo.py)
 def scanOptions():
-    '''Handle all options, remove them from sys.argv.'''
+    """Handle all options, remove them from sys.argv."""
     global g_option_fn
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()

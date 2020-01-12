@@ -3,11 +3,15 @@
 #@@language python
 #@@tabwidth -4
 
-# this code from http://stackoverflow.com/questions/12431555/enabling-code-completion-in-an-embedded-python-interpreter
-# with modifications from Jake Peck
+# **Warning**: Use at your own risk.
+# Numerous significant problems have been reported, including segfaults.
 
-# to do:
-  # styling
+# This code from http://stackoverflow.com/questions/12431555
+# with modifications from Jake Peck and EKR.
+
+use_rlcompleter = False
+    # A workaround for #1212: segfaults at startup when importing this file.
+    # True: enable tab completion, at the risk of segfaults.
 
 #@+<< docstring >>
 #@+node:peckj.20150428142633.2: ** << docstring >>
@@ -53,7 +57,11 @@ import leo.core.leoGlobals as g
 import re
 import sys
 import code
-from rlcompleter import Completer
+
+if use_rlcompleter:
+    from rlcompleter import Completer
+else:
+    Completer = None
 
 from leo.core.leoQt import QtWidgets,QtCore
 #@-<< imports >>
@@ -74,32 +82,32 @@ if QtWidgets:
             hBox.addWidget(self.textEdit)
             hBox.setContentsMargins(0,0,0,0)
             hBox.setSpacing(0)
+#@+node:peckj.20150428142729.6: ** class InteractiveInterpreter (code.InteractiveInterpreter)
+class InteractiveInterpreter(code.InteractiveInterpreter):
+    #@+others
+    #@+node:peckj.20150428142729.7: *3* InteractiveInterpreter.__init__
+    def __init__(self, locals, c):
+        '''Ctor for InteractiveInterpreter class.'''
+        self.c = c
+        # inject g, c, p
+        loc = locals
+        loc['c'] = self.c
+        loc['g'] = g
+        loc['p'] = self.c.p
+        super().__init__(loc)
+    #@+node:peckj.20150428142729.8: *3* InteractiveInterpreter.runIt
+    def runIt(self, command):
+
+        code.InteractiveInterpreter.runsource(self, command)
+    #@-others
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
     
     class PyInterp(QtWidgets.QTextEdit):
         #@+others
-        #@+node:peckj.20150428142729.6: *3* class InteractiveInterpreter (code.InteractiveInterpreter)
-        class InteractiveInterpreter(code.InteractiveInterpreter):
-            #@+others
-            #@+node:peckj.20150428142729.7: *4* InteractiveInterpreter.__init__
-            def __init__(self, locals, c):
-                '''Ctor for InteractiveInterpreter class.'''
-                self.c = c
-                # inject g, c, p
-                loc = locals
-                loc['c'] = self.c
-                loc['g'] = g
-                loc['p'] = self.c.p
-                super().__init__(loc)
-            #@+node:peckj.20150428142729.8: *4* InteractiveInterpreter.runIt
-            def runIt(self, command):
-
-                code.InteractiveInterpreter.runsource(self, command)
-            #@-others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
-            super(PyInterp, self).__init__(parent)
+            super().__init__(parent)
             #
             # this widget swallows stdout + stderr while focused,
             # but resets them upon losing focus
@@ -111,7 +119,7 @@ if QtWidgets:
             # init ivars.
             self.indent = 0
             self.refreshMarker = False # to change back to >>> from ...
-            self.multiLine = False # code spans more than one line
+            ### self.multiLine = False # code spans more than one line
             # self.command        = ''    # command to be ran
             self.printBanner() # print sys info
             self.insert_marker() # make the >>> or ... marker
@@ -142,10 +150,12 @@ if QtWidgets:
         #@+node:peckj.20150428142729.12: *3* PyInterp.insert_marker
         def insert_marker(self):
             
-            line = '... ' if self.multiLine else '>>> '
+            ### line = '... ' if self.multiLine else '>>> '
+            line = '... ' if self.indent > 0 else '>>> '
             self.insertPlainText(line + ' '*self.indent)
         #@+node:peckj.20150428142729.13: *3* PyInterp.initInterpreter
         def initInterpreter(self, interpreterLocals=None):
+
             if interpreterLocals:
                 # when we pass in locals, we don't want it to be named "self"
                 # so we rename it with the name of the class that did the passing
@@ -155,7 +165,8 @@ if QtWidgets:
                 self.interpreterLocals[selfName] = interpreterLocalVars
             else:
                 self.interpreterLocals = interpreterLocals
-            self.interpreter = self.InteractiveInterpreter(self.interpreterLocals, self.c)
+
+            self.interpreter = InteractiveInterpreter(self.interpreterLocals, self.c)
         #@+node:peckj.20150428142729.14: *3* PyInterp.updateInterpreterLocals
         def updateInterpreterLocals(self, newLocals):
             className = newLocals.__class__.__name__
@@ -186,8 +197,6 @@ if QtWidgets:
         #@+node:peckj.20150428142729.18: *3* PyInterp.customCommands
         def customCommands(self, command):
 
-            # pylint: disable=anomalous-backslash-in-string
-
             if command == '!hist': # display history
                 self.append('') # move down one line
                 # vars that are in the command are prefixed with ____CC and deleted
@@ -204,7 +213,7 @@ if QtWidgets:
                 self.insert_marker()
                 return True
 
-            if re.match('!hist\(\d+\)', command): # recall command from history
+            if re.match(r'!hist\(\d+\)', command): # recall command from history
                 backup = self.interpreterLocals.copy()
                 history = self.history[:]
                 history.reverse()
@@ -212,18 +221,19 @@ if QtWidgets:
                 self.clearCurrentBlock()
                 command = history[index]
                 if command[-1] == ':':
-                    self.multiLine = True
+                    ### self.multiLine = True
+                    self.indent += 4
                 self.write(command)
                 self.updateInterpreterLocals(backup)
                 return True
 
-            if re.match('(quit|exit)\(\)', command): # prevent quitting!
+            if re.match(r'(quit|exit)\(\)', command): # prevent quitting!
                 self.append('')
                 self.write('Cannot quit() from an embedded console.\n')
                 self.insert_marker()
                 return True
 
-            if re.match('!clear', command): # clear the screen
+            if re.match(r'!clear', command): # clear the screen
                 self.clear()
                 self.insert_marker()
                 return True
@@ -232,58 +242,106 @@ if QtWidgets:
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
             qt = QtCore.Qt
-            if event.key() == qt.Key_Tab:
-                line = str(self.document().lastBlock().text())[4:]
-                completer = Completer(self.interpreter.locals)
-                suggestion = completer.complete(line, 0)
-                if suggestion is not None:
-                    self.insertPlainText(suggestion[len(line):])
-                return
-            if event.key() == qt.Key_Down:
-                if self.historyIndex == len(self.history):
-                    self.historyIndex -= 1
-                try:
-                    if self.historyIndex > -1:
-                        self.historyIndex -= 1
-                        self.recallHistory()
-                    else:
-                        self.clearCurrentBlock()
-                except Exception:
-                    pass
-                return
-            if event.key() == qt.Key_Up:
-                try:
-                    if len(self.history) - 1 > self.historyIndex:
-                        self.historyIndex += 1
-                        self.recallHistory()
-                    else:
-                        self.historyIndex = len(self.history)
-                except Exception:
-                    pass
-                return
-            if event.key() == qt.Key_Home:
-                # set cursor to position 4 in current block. 4 because that's where
-                # the marker stops
-                blockLength = len(self.document().lastBlock().text()[4:])
-                lineLength  = len(self.document().toPlainText())
-                position = lineLength - blockLength
-                textCursor  = self.textCursor()
-                textCursor.setPosition(position)
-                self.setTextCursor(textCursor)
-                return
-            if event.key() in [qt.Key_Left, qt.Key_Backspace]:
-                # don't allow deletion of marker
-                if self.textCursor().positionInBlock() == 4:
+            try:
+                # #1212: Disable this by default.
+                if use_rlcompleter and event.key() == qt.Key_Tab:
+                    line = str(self.document().lastBlock().text())[4:]
+                    completer = Completer(self.interpreter.locals)
+                    suggestion = completer.complete(line, 0)
+                    if suggestion is not None:
+                        self.insertPlainText(suggestion[len(line):])
                     return
-            if event.key() in [qt.Key_Return, qt.Key_Enter]:
-                self.doEnter(event)
-                return
-            # allow all other key events
-            super(PyInterp, self).keyPressEvent(event)
+                if event.key() == qt.Key_Down:
+                    if self.historyIndex == len(self.history):
+                        self.historyIndex -= 1
+                    try:
+                        if self.historyIndex > -1:
+                            self.historyIndex -= 1
+                            self.recallHistory()
+                        else:
+                            self.clearCurrentBlock()
+                    except Exception:
+                        pass
+                    return
+                if event.key() == qt.Key_Up:
+                    try:
+                        if len(self.history) - 1 > self.historyIndex:
+                            self.historyIndex += 1
+                            self.recallHistory()
+                        else:
+                            self.historyIndex = len(self.history)
+                    except Exception:
+                        pass
+                    return
+                if event.key() == qt.Key_Home:
+                    # set cursor to position 4 in current block. 4 because that's where
+                    # the marker stops
+                    blockLength = len(self.document().lastBlock().text()[4:])
+                    lineLength  = len(self.document().toPlainText())
+                    position = lineLength - blockLength
+                    textCursor  = self.textCursor()
+                    textCursor.setPosition(position)
+                    self.setTextCursor(textCursor)
+                    return
+                if event.key() in [qt.Key_Left, qt.Key_Backspace]:
+                    # don't allow deletion of marker
+                    if self.textCursor().positionInBlock() == 4:
+                        return
+                if event.key() in [qt.Key_Return, qt.Key_Enter]:
+                    self.doEnter(event)
+                    return
+                # allow all other key events
+                super(PyInterp, self).keyPressEvent(event)
+            except Exception:
+                g.es_exception()
+
             
-        #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter
+        #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             '''Handle the <return> key.'''
+            #
+            # Binding for functions.
+            interp = self.interpreter
+            
+            #@+others # Helper function
+            #@+node:ekr.20190619185252.1: *5* function: compute_indent
+            def compute_indent(line):
+                '''Return the indentation of a line.'''
+                indent = len(line) - len(line.lstrip())
+                if line.endswith(':'):
+                    indent += 4
+                return indent
+            #@+node:ekr.20190619183908.1: *5* function: compile_lines
+            def compile_lines(lines):
+                '''Compile one or more lines, returning the compiled code.'''
+                source = ''.join(lines)
+                try:
+                    return code.compile_command(source)
+                except SyntaxError:
+                    interp.showsyntaxerror()
+                except Exception:
+                    interp.showtraceback()
+                return None
+            #@+node:ekr.20190619190805.1: *5* function: compile_and_run_lines
+            def compile_and_run_lines(lines):
+                '''Compile and run code lines.  Return 1 if there are errors.'''
+                assert lines
+                the_code = compile_lines(lines)
+                if the_code:
+                    return run_code(the_code)
+                return None
+            #@+node:ekr.20180525110907.1: *5* fucntion: run_code
+            def run_code(the_code):
+                '''Execute the compiled code. Return True if all went well.'''
+                try:
+                    interp.runcode(the_code)
+                    return True
+                except SyntaxError:
+                    interp.showsyntaxerror()
+                except Exception:
+                    interp.showtraceback()
+                return False
+            #@-others
             #
             # Set cursor to end of line to avoid line splitting
             textCursor = self.textCursor()
@@ -294,100 +352,54 @@ if QtWidgets:
             block = self.document().lastBlock()
             #
             # Scan backward, looking for lines.
-            pasteFlag = False
             while block:
                 line = g.toUnicode(block.text())
                 line = line.replace('\t',' '*4)
                 block = block.previous()
                 if line.startswith('>>> '):
-                    lines.insert(0, line[4:].rstrip())
+                    lines.insert(0, line[4:])
                     break
                 elif line.startswith('... '):
-                    lines.insert(0, line[4:].rstrip())
+                    lines.insert(0, line[4:])
                 else:
-                    lines.insert(0, line.rstrip())
-                    pasteFlag = True
-            # Enter continuation mode for pasted lines.
-            if pasteFlag and lines and lines[-1].strip():
-                self.multiLine = True
+                    lines.insert(0, line)
             #
-            # Always end the input.
+            # Always end the log line.
             self.append('')
             #
-            # Handle special lines.
-            last_line = lines and lines[-1]
+            # Clean the lines and compute the last line.
+            last_line = lines[-1].rstrip() if lines else ''
+            lines = [z.rstrip() + '\n' for z in lines if z.strip()]
             if self.customCommands(last_line):
                 return
-            # Handle the history and indent.
+            #
+            # Handle the history and set self.indent for insert_marker.
             if last_line.strip():
-                self.history.insert(0, last_line.rstrip())
-                self.indent = len(last_line) - len(last_line.lstrip())
-                if last_line.rstrip().endswith(':'):
-                    self.indent += 4
+                self.history.insert(0, last_line)
+                self.indent = compute_indent(last_line)
             #
-            # Just return if the last line if it is a non-blank continued line.
-            if len(lines) > 1 and last_line.strip():
+            # Check for a continued line.
+            if self.indent > 0 and last_line:
                 self.insert_marker()
                 return
             #
-            # Clean the lines.
-            lines = [z for z in lines if z.strip()]
-            #
-            # Just add the marker if we are done.
-            if not lines:
-                self.insert_marker()
-                return
-            the_code = self.compile_lines(lines)
-            if the_code is None:
-                # Continuation mode.
-                self.multiLine = True
-                self.insert_marker()
-                return
-            #
-            # End continuation mode.
-            self.multiLine = False
+            # Execute lines in groups, delimited by indentation.
+            indent, ok, exec_lines = 0, True, []
+            for line in lines:
+                indent = compute_indent(line) if exec_lines else 0
+                if indent > 0 or not exec_lines:
+                    exec_lines.append(line)
+                    continue
+                # End of a group.
+                ok = compile_and_run_lines(exec_lines)
+                exec_lines = [line]
+                if not ok:
+                    break
+            # Tail group.
+            if ok and exec_lines:
+                compile_and_run_lines(exec_lines)
             self.indent = 0
-            if the_code != 'error':
-                self.run_code(the_code)
             self.insert_marker()
-        #@+node:ekr.20180525110448.1: *5* PyInterp.compile_lines
-        def compile_lines(self, lines):
-            '''Carefully call code.compile_command and return the result.'''
-            #
-            # The compile command saves a lot of guessing...
-            # https://docs.python.org/2/library/code.html#code.compile_command
-            try:
-                interp = self.interpreter
-                source = '\n'.join(lines).rstrip() + '\n'
-                return code.compile_command(source)
-            except SyntaxError:
-                # When pasting, try to separate lines with semicolons.
-                if len(lines) > 1:
-                    try:
-                        source = ';'.join(lines).rstrip() + '\n'
-                        return code.compile_command(source)
-                    except SyntaxError:
-                        interp.showsyntaxerror()
-                    except Exception:
-                        interp.showtraceback()
-                else:
-                    interp.showsyntaxerror()
-            except Exception:
-                interp.showtraceback()
-            #
-            # End the previous editing if there is any error.
-            self.multiLine = False
-            return 'error'
-        #@+node:ekr.20180525110907.1: *5* PyInterp.run_code
-        def run_code(self, the_code):
-            
-            interp = self.interpreter
-            try:
-                interp.runcode(the_code)
-            except SyntaxError:
-                interp.showsyntaxerror()
-            except Exception:
-                interp.showtraceback()
         #@+node:peckj.20150428142729.20: *3* PyInterp.focusInEvent
         def focusInEvent(self, event=None):
             # set stdout+stderr properly
@@ -402,14 +414,6 @@ if QtWidgets:
             sys.stdout = g.user_dict['old_stdout']
             sys.stderr = g.user_dict['old_stderr']
         #@-others
-
-
-
-
-
-
-
-
 
 #@+node:peckj.20150428142633.4: ** init
 def init ():

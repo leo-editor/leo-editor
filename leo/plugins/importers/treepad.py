@@ -99,7 +99,7 @@ class TreePad_Scanner():
                 p.clearDirty()
             c.setChanged(changed)
         else:
-            parent.setDirty(setDescendentsDirty=False)
+            parent.setDirty() # setDescendentsDirty=False)
             c.setChanged(True)
         return ok
     #@-others

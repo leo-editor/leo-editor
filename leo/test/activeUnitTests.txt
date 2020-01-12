@@ -1756,7 +1756,489 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20150610064911.1: *4* @test beautifier
+#@+node:ekr.20190912065312.1: *4* @test SyntaxSanitizer
+from leo.core.leoBeautify import  SyntaxSanitizer
+for child in p.subtree():
+    child_s = child.b
+    for keep in (True, False):
+        # Setup.
+        sanitizer = SyntaxSanitizer(c, keep)
+        comment, result1 = sanitizer.comment_leo_lines(child)
+        # Test basic round-tripping.
+        result2 = sanitizer.uncomment_leo_lines(comment, child, s0=result1)
+        assert child_s.rstrip() == result2.rstrip(), (
+            f"Round-trip FAIL: keep: {keep}, {child.h}\n"
+            f"{g.objToString(child_s, tag='child_s')}\n"
+            f"{g.objToString(result1, tag='result1')}\n"
+            f"{g.objToString(result2, tag='result2')}")
+#@+node:ekr.20190912105517.1: *5* basic test
+@language python
+@
+This is a doc part.
+@c
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+#@+node:ekr.20190912160752.1: *5* @others & sections references
+a = 1
+<< section ref >>
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # <section ref>
+    # ):
+        # pass
+#@+node:ekr.20190912071608.1: *5* fast_at.scan_lines
+@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    << init scan_lines >>
+    << define dump_v >>
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        << 1. common code for all lines >>
+        << 2. short-circuit later tests >>
+        << 3. handle @others >> # clears in_doc
+        << 4. handle section refs >> # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        << handle node_start >>
+        << handle end of @doc & @code parts >>
+        << handle @all >>
+        << handle afterref >>
+        << handle @first and @last >>
+        << handle @comment >>
+        << handle @delims >>
+        << handle @raw >>
+        << handle @-leo >>
+        # These must be last, in this order.
+        << Last 1. handle remaining @@ lines >>
+        << Last 2. handle remaining @doc lines >>
+        << Last 3. handle remaining @ lines >>
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+#@+node:ekr.20190912071608.2: *6* << init scan_lines >>
+#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@>'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+<section>, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '<hidden top vnode>'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+#@+node:ekr.20190912071608.3: *6* << define dump_v >>
+def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+#@+node:ekr.20190912071608.4: *6* << 1. common code for all lines >>
+if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # <delim>@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) > indent:
+    line = line[indent:]
+#@+node:ekr.20190912071608.5: *6* << 2. short-circuit later tests >>
+# This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+#@+node:ekr.20190912071608.6: *6* << 3. handle @others >>
+m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190912071608.7: *6* << 4. handle section refs >>
+m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190912071608.8: *6* << handle node_start >>
+m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+#@+node:ekr.20190912071608.9: *6* << handle end of @doc & @code parts >>
+if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+#@+node:ekr.20190912071608.10: *6* << handle @all >>
+m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+#@+node:ekr.20190912071608.11: *6* << handle afterref >>
+m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190912071608.12: *6* << handle @first and @last >>
+m = first_pat.match(line)
+if m:
+    if 0 <= first_i < len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @<file> nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+#@+node:ekr.20190912071608.13: *6* << handle @comment >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # <1, 2 or 3 comment delims>
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190912071608.14: *6* << handle @delims >>
+m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190912071608.15: *6* << handle @raw >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190912071608.16: *6* << handle @-leo >>
+if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+#@+node:ekr.20190912071608.17: *6* << Last 1. handle remaining @@ lines >>
+# @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+#@+node:ekr.20190912071608.18: *6* << Last 2. handle remaining @doc lines >>
+if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+#@+node:ekr.20190912071608.19: *6* << Last 3. handle remaining @ lines >>
+# Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+#@+node:ekr.20150610064911.1: *4* OLD @test beautifier (small) 
 # This tests only recent bugs.
 p1 = p.firstChild()
 s = p1.b
@@ -1764,11 +2246,12 @@ p2 = p1.next()
 try:
     c.selectPosition(p1)
     c.k.simulateCommand('beautify-tree')
-    assert p1.b == p2.b
+    assert p1.b == p2.b, (
+        f"{g.objToString(p1.b, tag='BEFORE')}\n"
+        f"{g.objToString(p2.b, tag='AFTER')}")
 finally:
     p1.b = s
     c.setChanged(False)
-
 #@+node:ekr.20150610064930.1: *5* before
 def spam():
     if - 1 < 2:
@@ -1777,6 +2260,1312 @@ def spam():
 def spam():
     if -1 < 2:
         pass
+#@+node:ekr.20190914104955.1: *4* @test black
+from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
+
+for child in p.subtree():
+    child_s = child.b
+    try:
+        # Blacken all nodes.
+        assert should_beautify(child), repr(child.h)
+        c.selectPosition(child)
+        BlackCommand(c).blacken_node(child, diff_flag=False, check_flag=False)
+        # Check only those nodes that should not have been changed.
+        if child.h in ('basic test', 'sections references'):
+            assert child_s.rstrip() == child.b.rstrip(), (
+                f"FAIL: blacken-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
+    finally:
+        child.b = child_s
+        c.selectPosition(p)
+#@+node:ekr.20190914104955.2: *5* basic test
+@language python
+@
+This is a doc part.
+@c
+
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+#@+node:ekr.20190914104955.3: *5* @others & sections references
+a = 1
+<< section ref >>
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # <section ref>
+    # ):
+        # pass
+#@+node:ekr.20190914104955.4: *5* fast_at.scan_lines
+@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    << init scan_lines >>
+    << define dump_v >>
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        << 1. common code for all lines >>
+        << 2. short-circuit later tests >>
+        << 3. handle @others >> # clears in_doc
+        << 4. handle section refs >> # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        << handle node_start >>
+        << handle end of @doc & @code parts >>
+        << handle @all >>
+        << handle afterref >>
+        << handle @first and @last >>
+        << handle @comment >>
+        << handle @delims >>
+        << handle @raw >>
+        << handle @-leo >>
+        # These must be last, in this order.
+        << Last 1. handle remaining @@ lines >>
+        << Last 2. handle remaining @doc lines >>
+        << Last 3. handle remaining @ lines >>
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+#@+node:ekr.20190914104955.5: *6* << init scan_lines >>
+#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@>'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+<section>, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '<hidden top vnode>'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+#@+node:ekr.20190914104955.6: *6* << define dump_v >>
+def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+#@+node:ekr.20190914104955.7: *6* << 1. common code for all lines >>
+if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # <delim>@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) > indent:
+    line = line[indent:]
+#@+node:ekr.20190914104955.8: *6* << 2. short-circuit later tests >>
+# This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+#@+node:ekr.20190914104955.9: *6* << 3. handle @others >>
+m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190914104955.10: *6* << 4. handle section refs >>
+m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190914104955.11: *6* << handle node_start >>
+m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+#@+node:ekr.20190914104955.12: *6* << handle end of @doc & @code parts >>
+if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+#@+node:ekr.20190914104955.13: *6* << handle @all >>
+m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+#@+node:ekr.20190914104955.14: *6* << handle afterref >>
+m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190914104955.15: *6* << handle @first and @last >>
+m = first_pat.match(line)
+if m:
+    if 0 <= first_i < len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @<file> nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+#@+node:ekr.20190914104955.16: *6* << handle @comment >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # <1, 2 or 3 comment delims>
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190914104955.17: *6* << handle @delims >>
+m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190914104955.18: *6* << handle @raw >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190914104955.19: *6* << handle @-leo >>
+if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+#@+node:ekr.20190914104955.20: *6* << Last 1. handle remaining @@ lines >>
+# @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+#@+node:ekr.20190914104955.21: *6* << Last 2. handle remaining @doc lines >>
+if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+#@+node:ekr.20190914104955.22: *6* << Last 3. handle remaining @ lines >>
+# Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+#@+node:ekr.20190914105123.1: *4* @test beautifier (large)
+from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+
+for child in p.subtree():
+    child_s = child.b
+    try:
+        # Beautify all nodes.
+        assert should_beautify(child), repr(child.h)
+        c.selectPosition(child)
+        PythonTokenBeautifier(c).prettyPrintNode(child)
+        # Check only those nodes that should not have been changed.
+        if child.h in ('basic test', 'sections references'):
+            assert child_s.rstrip() == child.b.rstrip(), (
+                f"FAIL: beautify-node: {child.h}\n"
+                f"{g.objToString(child_s, tag='OLD')}\n"
+                f"{g.objToString(child.b, tag='NEW')}")
+    finally:
+        child.b = child_s
+        c.selectPosition(p)
+#@+node:ekr.20190914105123.2: *5* basic test
+@language python
+@
+This is a doc part.
+@c
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
+#@+node:ekr.20190914105123.3: *5* @others & sections references
+a = 1
+<< section ref >>
+b = 2
+
+if 1:
+    @others
+
+# Note: section references will fail in if statements, because pass is not valid there:
+    
+    # if (
+        # <section ref>
+    # ):
+        # pass
+#@+node:ekr.20190914105123.4: *5* fast_at.scan_lines
+@language python
+
+def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    '''Scan all lines of the file, creating vnodes.'''
+    << init scan_lines >>
+    << define dump_v >>
+    i = 0 # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        # Order matters.
+        << 1. common code for all lines >>
+        << 2. short-circuit later tests >>
+        << 3. handle @others >> # clears in_doc
+        << 4. handle section refs >> # clears in_doc.
+        # Order doesn't matter, but match more common sentinels first.
+        << handle node_start >>
+        << handle end of @doc & @code parts >>
+        << handle @all >>
+        << handle afterref >>
+        << handle @first and @last >>
+        << handle @comment >>
+        << handle @delims >>
+        << handle @raw >>
+        << handle @-leo >>
+        # These must be last, in this order.
+        << Last 1. handle remaining @@ lines >>
+        << Last 2. handle remaining @doc lines >>
+        << Last 3. handle remaining @ lines >>
+    else:
+        # No @-leo sentinel
+        return None, []
+    # Handle @last lines.
+    last_lines = lines[start+i:]
+    if last_lines:
+        last_lines = ['@last ' + z for z in last_lines]
+        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+    self.post_pass(gnx2body, gnx2vnode, root_v)
+    return root_v, last_lines
+#@+node:ekr.20190914105123.5: *6* << init scan_lines >>
+#
+# Simple vars...
+afterref = False
+    # A special verbatim line follows @afterref.
+clone_v = None
+    # The root of the clone tree.
+    # When not None, we are scanning a clone and all it's descendants.
+delim_start, delim_end = delims
+    # The start/end delims.
+doc_skip = (delim_start + '\n', delim_end + '\n')
+    # To handle doc parts.
+first_i = 0
+    # Index into first array.
+in_doc = False
+    # True: in @doc parts.
+in_raw = False
+    # True: @raw seen.
+is_cweb = delim_start == '@q@' and delim_end == '@>'
+    # True: cweb hack in effect.
+indent = 0 
+    # The current indentation.
+level_stack = []
+    # Entries are (vnode, in_clone_tree)
+n_last_lines = 0
+    # The number of @@last directives seen.
+root_seen = False
+    # False: The next +@node sentinel denotes the root, regardless of gnx.
+    # Needed to handle #1065 so reads will not create spurious child nodes.
+sentinel = delim_start + '@'
+    # Faster than a regex!
+stack = []
+    # Entries are (gnx, indent, body)
+    # Updated when at+others, at+<section>, or at+all is seen.
+verbline = delim_start + '@verbatim' + delim_end + '\n'
+    # The spelling of at-verbatim sentinel
+verbatim = False
+    # True: the next line must be added without change.
+#
+# Init the data for the root node.
+#
+
+#
+# Init the parent vnode for testing.
+#
+if self.test:
+    root_gnx = gnx = 'root-gnx'
+        # The node that we are reading.
+        # start with the gnx for the @file node.
+    gnx_head =  '<hidden top vnode>'
+        # The headline of the root node.
+    context = None
+    parent_v = self.VNode(context=context, gnx=gnx)
+    parent_v._headString = gnx_head
+        # Corresponds to the @files node itself.
+else:
+    # Production.
+    root_gnx = gnx = self.root.gnx
+    context = self.c
+    parent_v = self.root.v
+root_v = parent_v
+    # Does not change.
+level_stack.append((root_v, False),)
+#
+# Init the gnx dict last.
+#
+gnx2vnode = self.gnx2vnode
+    # Keys are gnx's, values are vnodes.
+gnx2body = {}
+    # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v
+    # Add gnx to the keys
+gnx2body[gnx] = body = first_lines
+    # Add gnx to the keys.
+    # Body is the list of lines presently being accumulated.
+#
+# get the patterns.
+after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+doc_pat, end_raw_pat, first_pat, last_pat, \
+node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+#@+node:ekr.20190914105123.6: *6* << define dump_v >>
+def dump_v():
+    '''Dump the level stack and v.'''
+    print('----- LEVEL', level, v.h)
+    print('       PARENT', parent_v.h)
+    print('[')
+    for i, data in enumerate(level_stack):
+        v2, in_tree = data
+        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+    print(']')
+    print('PARENT.CHILDREN...')
+    g.printObj([v3.h for v3 in parent_v.children])
+    print('PARENTS...')
+    g.printObj([v4.h for v4 in v.parents])
+#@+node:ekr.20190914105123.7: *6* << 1. common code for all lines >>
+if verbatim:
+    # We are in raw mode, or other special situation.
+    # Previous line was verbatim sentinel. Append this line as it is.
+    if afterref:
+        afterref = False
+        if body: # a List of lines.
+            body[-1] = body[-1].rstrip() + line
+        else:
+            body = [line]
+        verbatim = False
+    elif in_raw:
+        m = end_raw_pat.match(line)
+        if m:
+            in_raw = False
+            verbatim = False
+        else:
+             body.append(line)
+             # Continue verbatim/raw mode.
+    else:
+        body.append(line)
+        verbatim = False
+    continue
+if line == verbline: # <delim>@verbatim.
+    verbatim = True
+    continue
+#
+# Strip the line only once.
+strip_line = line.strip()
+#
+# Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) > indent:
+    line = line[indent:]
+#@+node:ekr.20190914105123.8: *6* << 2. short-circuit later tests >>
+# This is valid because all following sections are either:
+# 1. guarded by 'if in_doc' or
+# 2. guarded by a pattern that matches the start of the sentinel.   
+#
+if not in_doc and not strip_line.startswith(sentinel):
+    # lstrip() is faster than using a regex!
+    body.append(line)
+    continue
+#@+node:ekr.20190914105123.9: *6* << 3. handle @others >>
+m = others_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+        indent += m.end(1) # adjust current identation
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190914105123.10: *6* << 4. handle section refs >>
+m = ref_pat.match(line)
+if m:
+    in_doc = False
+    if m.group(2) == '+':
+        # open sentinel.
+        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    else:
+        # close sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+    continue
+#@+node:ekr.20190914105123.11: *6* << handle node_start >>
+m = node_start_pat.match(line)
+if m:
+    in_doc, in_raw = False, False
+    gnx, head = m.group(2), m.group(5)
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+        # m.group(3) is the level number, m.group(4) is the number of stars.
+    v = gnx2vnode.get(gnx)
+    #
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # Fix #1064: The node represents the root, regardless of the gnx!
+        root_seen = True
+        clone_v = None
+        gnx2body[gnx] = body = []
+        if not v:
+            # Fix #1064.
+            v = root_v
+            # This message is annoying when using git-diff.
+                # if gnx != root_gnx:
+                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+            gnx2vnode [gnx] = v
+            v.fileIndex = gnx
+        v.children = []
+        continue
+    #
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level-2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[:level-1]
+        level_stack.append((v, clone_v),)
+        # Always clear the children!
+        v.children=[]
+        parent_v.children.append(v)
+        continue
+    #
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = self.VNode(context=context, gnx=gnx)
+    #
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    #
+    # Update the stack.
+    level_stack = level_stack[:level-1]
+    level_stack.append((v, clone_v),)
+    #
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    # dump_v()
+    continue
+#@+node:ekr.20190914105123.12: *6* << handle end of @doc & @code parts >>
+if in_doc:
+    # When delim_end exists the doc block:
+    # - begins with the opening delim, alonw on its own line
+    # - ends with the closing delim, alone on its own line.
+    # Both of these lines should be skipped
+    if line in doc_skip:
+        # doc_skip is (delim_start + '\n', delim_end + '\n')
+        continue
+    #
+    # Check for @c or @code.
+    m = code_pat.match(line)
+    if m:
+        in_doc = False 
+        body.append('@code\n' if m.group(1) else '@c\n')
+        continue
+else:
+    m = doc_pat.match(line)
+    if m:
+        # @+at or @+doc?
+        doc = '@doc' if m.group(1) == 'doc' else '@'
+        doc2 = m.group(2) or '' # Trailing text.
+        if doc2:
+            body.append('%s%s\n'%(doc, doc2))
+        else:
+            body.append(doc + '\n')
+        # Enter @doc mode.
+        in_doc = True
+        continue
+#@+node:ekr.20190914105123.13: *6* << handle @all >>
+m = all_pat.match(line)
+if m:
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+': # opening sentinel
+        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
+        stack.append((gnx, indent, body))
+    else: # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+#@+node:ekr.20190914105123.14: *6* << handle afterref >>
+m = after_pat.match(line)
+if m:
+    afterref = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190914105123.15: *6* << handle @first and @last >>
+m = first_pat.match(line)
+if m:
+    if 0 <= first_i < len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+    else:
+        g.trace('\ntoo many @first lines: %s' %  path)
+        print('@first is valid only at the start of @<file> nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start:i+2], tag='lines[start:i+2]')
+    continue
+m = last_pat.match(line)
+if m:
+    n_last_lines += 1
+    continue
+#@+node:ekr.20190914105123.16: *6* << handle @comment >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = comment_pat.match(line)
+if m:
+    # <1, 2 or 3 comment delims>
+    delims = m.group(1).strip()
+    # Whatever happens, retain the @delims line.
+    body.append('@comment %s\n' % delims)
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+        # delim1 is always the single-line delimiter.
+    if delim1:
+        delim_start, delim_end = delim1, ''
+    else:
+        delim_start, delim_end = delim2, delim3
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns.
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190914105123.17: *6* << handle @delims >>
+m = delims_pat.match(line)
+if m:
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append('@delims %s\n' % delims)
+    #
+    # Parse the delims.
+    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = delims_pat.match(delims)
+    if not m2:
+        g.trace('Ignoring invalid @comment: %r' % line)
+        continue
+    delim_start = m2.group(1)
+    delim_end = m2.group(2) or ''
+    #
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    delim_start = delim_start.replace('__','\n').replace('_',' ')
+    delim_end = delim_end.replace('__','\n').replace('_',' ')
+    # Recalculate all delim-related values
+    doc_skip = (delim_start + '\n', delim_end + '\n')
+    is_cweb = delim_start == '@q@' and delim_end == '@>'
+    sentinel = delim_start + '@'
+    #
+    # Recalculate the patterns
+    delims = delim_start, delim_end
+    (
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,
+        doc_pat, end_raw_pat, first_pat, last_pat,
+        node_start_pat, others_pat, raw_pat, ref_pat
+    ) = self.get_patterns(delims)
+    continue
+#@+node:ekr.20190914105123.18: *6* << handle @raw >>
+# http://leoeditor.com/directives.html#part-4-dangerous-directives
+m = raw_pat.match(line)
+if m:
+    in_raw = True
+    verbatim = True
+        # Avoid an extra test in the main loop.
+    continue
+#@+node:ekr.20190914105123.19: *6* << handle @-leo >>
+if line.startswith(delim_start + '@-leo'):
+    i += 1
+    break
+#@+node:ekr.20190914105123.20: *6* << Last 1. handle remaining @@ lines >>
+# @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(delim_start + '@@'):
+    ii = len(delim_start) + 1 # on second '@'
+    jj = line.rfind(delim_end) if delim_end else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+#@+node:ekr.20190914105123.21: *6* << Last 2. handle remaining @doc lines >>
+if in_doc:
+    if delim_end:
+        # doc lines are unchanged.
+        body.append(line)
+    else:
+        # Doc lines start with start_delim + one blank.
+        body.append(line[len(delim_start)+1:])
+    continue
+#@+node:ekr.20190914105123.22: *6* << Last 3. handle remaining @ lines >>
+# Handle an apparent sentinel line.
+# This *can* happen, as the result of the git-diff command.
+#
+# This assert verifies the short-circuit test.
+assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+#
+# This trace is less important, but interesting.
+g.trace(f"{g.shortFileName(self.path)}: unexpected line: {line.strip()!r}")
+body.append(line)
+#@+node:ekr.20190914111357.1: *4* @test beautifier (pet peeves) 
+from leo.core.leoBeautify import PythonTokenBeautifier, should_beautify
+errors, fails, tests = [], [], []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        tests.append(peeve.h)
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            ok = PythonTokenBeautifier(c).prettyPrintNode(test) or test.b == expected.b
+            if not ok:
+                errors.append(peeve.h)
+                print(
+                    f"ERROR: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n")
+            elif test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                # self.assertEqual(test_s, test.b, f"Beautify-node FAIL: {peeve.h}\n")
+                print(
+                    f"Beautify-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s,     tag='    TEST')}\n"
+                    f"{g.objToString(test.b,     tag='     GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}\n")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    c.setChanged(False)
+if 0:
+    g.printObj(tests, tag='TESTS')
+if fails or errors:
+    self.fail("\n"
+        f"{g.objToString(fails,  tag='Failures')}\n"
+        f"{g.objToString(errors, tag='  Errors')}")
+#@+node:ekr.20190915083933.1: *5* peeve: two spaces before a trailing comment
+#@+node:ekr.20190915083945.1: *6* test
+a = b # comment
+c = d# comment
+e - f   # comment
+#@+node:ekr.20190915084039.1: *6* expected
+a = b  # comment
+c = d  # comment
+e - f  # comment
+#@+node:ekr.20190914112029.1: *5* peeve: ws after unary minus
+#@+node:ekr.20190914111357.2: *6* test
+def spam():
+    if - 1 < 2:
+        pass
+#@+node:ekr.20190914111357.3: *6* expected
+def spam():
+    if -1 < 2:
+        pass
+#@+node:ekr.20190915074109.1: *5* peeve: ws around arithmetic ops in argument lists
+#@+node:ekr.20190915074201.1: *6* test
+def foo(a, b):
+    foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
+    bar(2 + baz)
+#@+node:ekr.20190915074205.1: *6* expected
+def foo(a, b):
+    foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
+    bar(2+baz)
+#@+node:ekr.20190915083243.1: *5* peeve: ws around word ops
+#@+node:ekr.20190915083412.1: *6* test
+b =    ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+#@+node:ekr.20190915083418.1: *6* expected
+b = ('and', 'in', 'not', 'not in', 'or')
+# def foo():
+    # return ''.join([z.to_string() for z in self.code_list])
+#@+node:ekr.20190914120318.1: *5* peeve: ws before comma, semicolon, colon
+#@+node:ekr.20190914120402.1: *6* test
+if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+#@+node:ekr.20190914120406.1: *6* expected
+if x == 4: pass
+if x == 4: pass
+print(x, y); x, y = y, x
+print(x, y); x, y = y, x
+x, y = y, x
+x, y = y, x
+#@+node:ekr.20190914123001.1: *5* peeve: ws before parens
+#@+node:ekr.20190914123101.1: *6* test
+spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914123104.1: *6* expected
+spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914115821.1: *5* peeve: ws between trailing comma & close paren
+#@+node:ekr.20190914120010.1: *6* test
+foo = (0,)
+bar = (0, )
+#@+node:ekr.20190914120016.1: *6* expected
+foo = (0,)
+bar = (0,)
+#@+node:ekr.20190914181159.1: *5* peeve: ws in slices: arithmetic ops
+#@+node:ekr.20190914181159.2: *6* test
+ham[lower + offset: upper + offset]
+ham[lower+offset : upper+offset]
+#@+node:ekr.20190914181159.3: *6* expected
+ham[lower + offset : upper + offset]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914181344.1: *5* peeve: ws in slices: function calls
+#@+node:ekr.20190914181344.2: *6* test
+ham[ : upper_fn(x) : step_fn(x)]
+ham[ : : step_fn(x)]
+#@+node:ekr.20190914181344.3: *6* expected
+ham[: upper_fn(x) : step_fn(x)]
+ham[:: step_fn(x)]
+#@+node:ekr.20190914122333.1: *5* peeve: ws in slices: numbers & words
+#@+node:ekr.20190914122356.1: *6* test
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[ lower: upper ], ham[lower : upper: ], ham[lower :: step]
+ham[: upper]
+#@+node:ekr.20190914122359.1: *6* expected
+ham[1 : 9], ham[1 : 9 : 3], ham[: 9 : 3], ham[1 :: 3], ham[1 : 9 :]
+ham[lower : upper], ham[lower : upper :], ham[lower :: step]
+ham[: upper]
+#@+node:ekr.20190914115215.1: *5* peeve: ws inside parentheses, brackets or braces.
+#@+node:ekr.20190914115300.1: *6* test
+spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914115304.1: *6* expected
+spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914132845.1: *4* @test black (pet peeves) 
+from leo.core.leoBeautify import BlackCommand, should_beautify
+try:
+    import black
+except ImportError:
+    self.skipTest('can not import black')
+try:
+    mode = black.FileMode()
+except TypeError:
+    self.skipTest('old version of black')
+fails = []
+try:
+    for peeve in p.children():
+        if peeve.h.startswith('SKIP:'):
+            continue
+        test = peeve.firstChild()
+        expected = test.next()
+        assert test.h.lower() == 'test', repr(test.h)
+        assert expected.h.lower() == 'expected', repr(expected.h)
+        expected_s = expected.b
+        test_s = test.b
+        try:
+            # Beautify "test" node in place.
+            assert should_beautify(test), repr(test.h)
+            c.selectPosition(test)
+            BlackCommand(c).blacken_node(test, diff_flag=False, check_flag=False)
+            if test.b.rstrip() != expected.b.rstrip():
+                fails.append(peeve.h)
+                print(
+                    f"blacken-node FAIL: {peeve.h}\n"
+                    f"{g.objToString(test_s, tag='TEST')}\n"
+                    f"{g.objToString(test.b, tag='GOT')}\n"
+                    f"{g.objToString(expected.b, tag='EXPECTED')}")
+        finally:
+            test.b = test_s
+            expected.b = expected_s
+finally:
+    c.selectPosition(p)
+    c.setChanged(False)
+assert not fails, g.objToString(fails, tag='FAILED tests')
+#@+node:ekr.20190914132845.2: *5* peeve: ws in slices
+# Avoid extraneous whitespace in the following situations:
+
+# However, in a slice the colon acts like a binary operator,
+# and should have equal amounts on either side (treating it as the operator with the lowest priority).
+# In an extended slice, both colons must have the same amount of spacing applied.
+# Exception: when a slice parameter is omitted, the space is omitted.
+
+# Yes:
+# ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+# ham[lower:upper], ham[lower:upper:], ham[lower::step]
+# ham[lower+offset : upper+offset]
+# ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+# ham[lower + offset : upper + offset]
+
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+#@+node:ekr.20190914132845.3: *6* test
+# FAIL
+ham[1: 9], ham[1: 9: 3], ham[: 9: 3], ham[1:: 3], ham[1: 9:]
+ham[lower + offset: upper + offset]
+ham[1: 9], ham[1: 9], ham[1: 9: 3]
+ham[lower:: upper]
+ham[: upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914132845.4: *6* expected
+# FAIL
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower + offset : upper + offset]
+ham[1:9], ham[1:9], ham[1:9:3]
+ham[lower::upper]
+ham[:upper]
+
+# PASS
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower + offset : upper + offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+#@+node:ekr.20190914132845.5: *5* peeve: ws after unary minus
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914132845.6: *6* test
+def spam():
+    if - 1 < 2:
+        pass
+#@+node:ekr.20190914132845.7: *6* expected
+def spam():
+    if -1 < 2:
+        pass
+#@+node:ekr.20190914132845.8: *5* peeve: ws between trailing comma & close paren
+# Avoid extraneous whitespace in the following situations:
+
+# Between a trailing comma and a following close parenthesis.
+
+# Yes: foo = (0,)
+# No:  bar = (0, )
+bar = (0,)
+#@+node:ekr.20190914132845.9: *6* test
+foo = (0,)
+bar = (0, )
+#@+node:ekr.20190914132845.10: *6* expected
+foo = (0,)
+bar = (0,)
+#@+node:ekr.20190914132845.11: *5* peeve: ws inside parentheses, brackets or braces.
+# Avoid extraneous whitespace in the following situations:
+    
+# Immediately inside parentheses, brackets or braces.
+
+# Yes: spam(ham[1], {eggs: 2})
+# No:  spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914132845.12: *6* test
+spam(ham[1], {eggs: 2})
+spam( ham[ 1 ], { eggs: 2 } )
+#@+node:ekr.20190914132845.13: *6* expected
+spam(ham[1], {eggs: 2})
+spam(ham[1], {eggs: 2})
+#@+node:ekr.20190914132845.14: *5* peeve: ws before comma, semicolon, colon
+# Avoid extraneous whitespace in the following situations:
+
+# Immediately before a comma, semicolon, or colon:
+
+# Yes: if x == 4: pass
+# No:  if x == 4 : pass
+if x == 4: pass
+
+# YES: print (x, y); x, y = y, x)
+# NO: print (x , y) ; x , y = y , x
+print(x, y); x, y = y, x
+#@+node:ekr.20190914132845.15: *6* test
+if x == 4: pass
+if x == 4 : pass
+print (x, y); x, y = y, x
+print (x , y) ; x , y = y , x
+x, y = y, x
+x , y = y , x
+#@+node:ekr.20190914132845.16: *6* expected
+if x == 4:
+    pass
+if x == 4:
+    pass
+print(x, y)
+x, y = y, x
+print(x, y)
+x, y = y, x
+x, y = y, x
+x, y = y, x
+#@+node:ekr.20190914132845.17: *5* peeve:  ws before parens
+# Avoid extraneous whitespace in the following situations:
+    
+# Immediately before the open parenthesis that starts the argument list of a function call:
+
+# Yes: spam(1)
+spam(1)
+
+# Immediately before the open parenthesis that starts an indexing or slicing:
+
+# Yes: dct['key'] = lst[index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914132845.18: *6* test
+spam(1)
+spam ( 1 )
+dct ['key'] = lst [index]
+dct['key'] = lst[index]
+#@+node:ekr.20190914132845.19: *6* expected
+spam(1)
+spam(1)
+dct['key'] = lst[index]
+dct['key'] = lst[index]
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
@@ -3966,6 +5755,432 @@ IF
 g.pr('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
+#@+node:ekr.20110510054817.3475: *4* @test c.alert
+c.alert('test of c.alert')
+#@+node:ekr.20050512084850: *4* @test c.checkOutline
+errors = c.checkOutline()
+assert errors == 0, "Check Outline reported %d errors" % errors
+#@+node:ekr.20040713070526: *5* Scripts
+@language python 
+dump = False 
+all = False 
+tm = c.testManager
+if all:
+    c.prettyPrintAllPythonCode(dump=dump)
+else:
+    # Warning: at present the before and after text is unprotected:
+    # Running Pretty Print on these nodes will negate the value of the test.
+    temp = tm.findNodeInTree(p,"tempNode")
+    c.setBodyString(temp,"")
+    before = tm.findNodeInTree(p,"before")
+    after = tm.findNodeInTree(p,"after")
+    temp.scriptSetBodyString(before.b)
+    c.prettyPrintPythonCode(p=temp,dump=dump)
+    assert temp.b == after.b,"Pretty Print Test failed"
+#@+node:ekr.20040713123617: *6* tempNode
+@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+#@+node:ekr.20050726141158: *6* before
+@ This is    a test of stuff.in doc parts.
+
+         I wonder           what will happen.
+@c
+
+def        spam (self         )  :   
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a==3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+#@+node:ekr.20040713123828.1: *6* after
+@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
+c.contractAllHeadlines()
+p = c.rootPosition()
+while p.hasNext():
+    p.moveToNext()
+c.selectPosition(p)
+#@+node:ekr.20070611105423.1: *4* @test c.contractAllHeadlines
+c.contractAllHeadlines()
+#@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
+# Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
+
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
+#@+node:ekr.20180120142320.1: *4* @test c.expand_path_expression
+import os
+sep = os.sep
+table = (
+    ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+)
+for s, expected in table:
+    if g.isWindows:
+        expected = expected.replace('\\','/')
+    got = c.expand_path_expression(s)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
+#@+node:ekr.20111121140833.3916: *4* @test c.findMatchingBracket
+w = c.frame.body.wrapper
+s = w.getAllText()
+i = s.find('(')
+w.setInsertPoint(i)
+c.findMatchingBracket(event=None)
+i,j = w.getSelectionRange()
+assert i < j,'i: %s j: %s' % (i,j)
+#@+node:ekr.20141016101308.4747: *4* @test c.hiddenRootNode.fileIndex
+assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
+#@+node:ekr.20120310121839.3949: *4* @test c.hoist @chapter node
+# Not valid when run externally: the chapter node will not exist.
+if not g.app.isExternalUnitTest:
+
+    p1 = g.findNodeAnywhere(c,'@chapter aaa')
+    assert p1
+    p2 = g.findNodeAnywhere(c,'aaa node 1')
+    assert p2
+    try:
+        # g.es_print('**1**', c.hoistStack)
+        assert not c.hoistStack, ('fail1', c.hoistStack)
+        c.selectPosition(p1)
+        assert c.p == p1, ('fail2', c.p, p1)
+        c.hoist()
+            # New in Leo 5.3: should do nothing
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, ('fail3', c.p, p2)
+        c.dehoist()
+            # New in Leo 5.3: should do nothing:
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
+        assert c.hoistStack == [], ('fail5', c.hoistStack)
+    finally:
+        c.hoistStack = []
+        c.selectPosition(p)
+        c.redraw()
+else:
+    self.skipTest('Can not be run locally')
+#@+node:ekr.20120311124038.3951: *4* @test c.hoist followed by goto-first-node
+p1 = p.copy()
+try:
+    assert not c.hoistStack
+    c.selectPosition(p1)
+    assert c.p == p1
+    c.hoist()
+    c.goToFirstNode()
+    assert not c.hoistStack
+        # The hoist stack must be cleared to show the first node.
+    assert c.p == c.rootPosition()
+    assert c.p.isVisible(c)
+finally:
+    c.selectPosition(p1)
+    c.redraw()
+#@+node:ekr.20071113105654.1: *4* @test c.hoist with no children
+c.hoist()
+c.dehoist()
+#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
+w = c.frame.body.wrapper
+s = w.getAllText()
+
+try:
+    w.setInsertPoint(len(s))
+    c.insertBodyTime()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # c.recolor()
+
+# end:
+#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markAllAtFileNodesDirty()
+    except Exception:
+        g.es_exception()
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+assert ok
+#@+node:ekr.20050512083822.1: *4* @test c.markSubheads
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markSubheads()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+#@+node:ekr.20050512084850.1: *5* child 1
+pass
+#@+node:ekr.20050512084850.2: *5* child 2
+pass
+#@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
+import sys
+if sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux')
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
+#@+node:ekr.20111212142649.3972: *5* child
+# child text.
+#@+node:ekr.20080917151620.9: *4* @test c.scanAllDirectives
+@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+#@+node:ekr.20100131180007.5466: *4* @test c.scanAtPathDirectives
+p2 = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+endpath = g.os_path_normpath('one/two')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+#@+node:ekr.20100131180007.5467: *5* @path one
+#@+node:ekr.20100131180007.5468: *6* @path two
+#@+node:ekr.20100131180007.5469: *7* xyz
+#@+node:sps.20100531034136.20110: *4* @test c.scanAtPathDirectives same name subdirs
+p2 = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+endpath = g.os_path_normpath('again/again')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+#@+node:sps.20100531034136.20111: *5* @path again
+#@+node:sps.20100531034136.20112: *6* @path again
+#@+node:sps.20100531034136.20113: *7* xyz
+#@+node:ekr.20040802065214: *4* @@test c.setHeadString marks descendent @thin nodes dirty
+# Make sure that changing this headline marks descendant @thin nodes dirty.
+h = p.h
+
+try:
+    child = p.firstChild()
+    child.initHeadString("@thin bogus")
+    assert child.h == "@thin bogus", "setting headline failed"
+    child.clearDirty()
+    assert not child.isDirty(), "clearing dirty failed"
+    c.setHeadString(p,"changed")
+    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
+finally:
+    try:
+        c.setHeadString(p,h)
+        c.setHeadString(child,"bogus")
+        p.clearDirty()
+        child.clearDirty()
+    finally: pass
+#@+node:ekr.20040802065214.1: *5* bogus
+test
+#@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.unmarkAll()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+#@+node:ekr.20100131180007.5465: *4* @test class StubConfig
+class StubConfig(g.NullObject):
+    pass
+
+x = StubConfig()
+assert not x.getBool(c,'mySetting')
+assert not x.enabledPluginsFileName
+#@+node:ekr.20100203103015.5353: *4* @test efc.ask
+# Not a perfect test, but stil significant.
+efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('No externalFilesController')
+result = efc.ask(c,p.h)
+assert result in (True, False),result
+#@+node:ekr.20100203103015.5355: *4* @test efc.compute_ext
+@language python
+
+efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('No externalFilesController')
+table = (
+    # (None,'.py'),
+    # ('','.py'),
+    ('txt','.txt'),
+    ('.txt','.txt'),
+)
+for ext,result in table:
+    result2 = efc.compute_ext(c,p,ext)
+    assert result==result2,'ext: %s, expected %s, got %s' % (
+        repr(ext),repr(result),repr(result2))
+#@+node:ekr.20100203103015.5354: *4* @test efc.compute_temp_file_path
+efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('no externalFilesController')
+s = efc.compute_temp_file_path(c,p,'.py')
+assert s.endswith('.py')
+#@+node:ville.20090602190735.4770: *4* @test g.command decorator
+_foo = 0
+
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
+    _foo = 1
+
+try:
+    c.k.simulateCommand('my-test-command')
+    assert _foo == 1
+    
+    # bonus test: c.app.commanders()
+    assert c in g.app.commanders()
+
+except AttributeError:
+    # Raised only for unit testing.
+    pass
+#@+node:ekr.20100203103015.5357: *4* @test g.isCallable
+def spam(): pass
+lam = lambda a: None
+class aCallable:
+    def __call__ (self):
+        pass
+c = aCallable()
+
+table = (
+    ('abc',False),
+    (spam,True),
+    (lam,True),
+    (c,True)
+)
+
+for obj,val in table:
+    val2 = g.isCallable(obj)
+    assert val == val2,'%s, expected %s, got %s' % (
+        repr(obj),val,val2)
+#@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
+# Print does not work: it is redirected.
+g.pr('\nEnd of leoCommands tests')
 #@+node:ekr.20170712132824.1: *4* add/delete comments
 #@+node:ekr.20120309155126.3949: *5* @test add comments with multiple @language directives
 w = c.frame.body.wrapper
@@ -4223,421 +6438,6 @@ def spam():
     pass
 
 # after
-#@+node:ekr.20110510054817.3475: *4* @test c.alert
-c.alert('test of c.alert')
-#@+node:ekr.20050512084850: *4* @test c.checkOutline
-errors = c.checkOutline()
-assert errors == 0, "Check Outline reported %d errors" % errors
-#@+node:ekr.20040713070526: *5* Scripts
-@language python 
-dump = False 
-all = False 
-tm = c.testManager
-if all:
-    c.prettyPrintAllPythonCode(dump=dump)
-else:
-    # Warning: at present the before and after text is unprotected:
-    # Running Pretty Print on these nodes will negate the value of the test.
-    temp = tm.findNodeInTree(p,"tempNode")
-    c.setBodyString(temp,"")
-    before = tm.findNodeInTree(p,"before")
-    after = tm.findNodeInTree(p,"after")
-    temp.scriptSetBodyString(before.b)
-    c.prettyPrintPythonCode(p=temp,dump=dump)
-    assert temp.b == after.b,"Pretty Print Test failed"
-#@+node:ekr.20040713123617: *6* tempNode
-@ This is a test of stuff.in doc parts.
-
-         I wonder what will happen.
-@c
-
-def spam (self):
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a == 3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-#@+node:ekr.20050726141158: *6* before
-@ This is    a test of stuff.in doc parts.
-
-         I wonder           what will happen.
-@c
-
-def        spam (self         )  :   
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a==3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-#@+node:ekr.20040713123828.1: *6* after
-@ This is a test of stuff.in doc parts.
-
-         I wonder what will happen.
-@c
-
-def spam (self):
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a == 3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
-c.contractAllHeadlines()
-p = c.rootPosition()
-while p.hasNext():
-    p.moveToNext()
-c.selectPosition(p)
-#@+node:ekr.20070611105423.1: *4* @test c.contractAllHeadlines
-c.contractAllHeadlines()
-#@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
-# Remove any previous children.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# Create two cloned children.
-c.selectPosition(p)
-c.insertHeadline()
-p2 = c.p
-p2.moveToFirstChildOf(p)
-p2.setHeadString('aClone')
-c.selectPosition(p2)
-c.clone()
-assert 2 == p.numberOfChildren()
-
-# Select the first clone and demote (it should be illegal)
-c.selectPosition(p2)
-c.demote() # This should do nothing.
-assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(), 'fail 2'
-assert 2 == p.numberOfChildren(), 'fail 3'
-# Delete the children, but only if there are no errors.
-while p.hasChildren():
-    p.firstChild().doDelete()
-#@+node:ekr.20111121140833.3916: *4* @test c.findMatchingBracket
-w = c.frame.body.wrapper
-s = w.getAllText()
-i = s.find('(')
-w.setInsertPoint(i)
-c.findMatchingBracket(event=None)
-i,j = w.getSelectionRange()
-assert i < j,'i: %s j: %s' % (i,j)
-#@+node:ekr.20141016101308.4747: *4* @test c.hiddenRootNode.fileIndex
-assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
-#@+node:ekr.20120310121839.3949: *4* @test c.hoist @chapter node
-# Not valid when run externally: the chapter node will not exist.
-if not g.app.isExternalUnitTest:
-
-    p1 = g.findNodeAnywhere(c,'@chapter aaa')
-    assert p1
-    p2 = g.findNodeAnywhere(c,'aaa node 1')
-    assert p2
-    try:
-        # g.es_print('**1**', c.hoistStack)
-        assert not c.hoistStack, ('fail1', c.hoistStack)
-        c.selectPosition(p1)
-        assert c.p == p1, ('fail2', c.p, p1)
-        c.hoist()
-            # New in Leo 5.3: should do nothing
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, ('fail3', c.p, p2)
-        c.dehoist()
-            # New in Leo 5.3: should do nothing:
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
-        assert c.hoistStack == [], ('fail5', c.hoistStack)
-    finally:
-        c.hoistStack = []
-        c.selectPosition(p)
-        c.redraw()
-else:
-    self.skipTest('Can not be run locally')
-#@+node:ekr.20120311124038.3951: *4* @test c.hoist followed by goto-first-node
-p1 = p.copy()
-try:
-    assert not c.hoistStack
-    c.selectPosition(p1)
-    assert c.p == p1
-    c.hoist()
-    c.goToFirstNode()
-    assert not c.hoistStack
-        # The hoist stack must be cleared to show the first node.
-    assert c.p == c.rootPosition()
-    assert c.p.isVisible(c)
-finally:
-    c.selectPosition(p1)
-    c.redraw()
-#@+node:ekr.20071113105654.1: *4* @test c.hoist with no children
-c.hoist()
-c.dehoist()
-#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
-w = c.frame.body.wrapper
-s = w.getAllText()
-
-try:
-    w.setInsertPoint(len(s))
-    c.insertBodyTime()
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # c.recolor()
-
-# end:
-#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markAllAtFileNodesDirty()
-    except Exception:
-        g.es_exception()
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-assert ok
-#@+node:ekr.20050512083822.1: *4* @test c.markSubheads
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markSubheads()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512084850.1: *5* child 1
-pass
-#@+node:ekr.20050512084850.2: *5* child 2
-pass
-#@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
-import sys
-if sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    self.skipTest('Not for Linux')
-else:
-    c.selectPosition(p)
-    c.copyOutline()
-    try:
-        p2 = c.pasteOutline()
-        assert p2
-        assert not p2.isCloned()
-    finally:
-        if p2: p2.doDelete()
-        c.redraw(p)
-#@+node:ekr.20111212142649.3972: *5* child
-# child text.
-#@+node:ekr.20080917151620.9: *4* @test c.scanAllDirectives
-@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-
-d = c.scanAllDirectives(p)
-
-table = (
-    ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
-#@+node:ekr.20100131180007.5466: *4* @test c.scanAtPathDirectives
-p2 = p.firstChild().firstChild().firstChild()
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-endpath = g.os_path_normpath('one/two')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-#@+node:ekr.20100131180007.5467: *5* @path one
-#@+node:ekr.20100131180007.5468: *6* @path two
-#@+node:ekr.20100131180007.5469: *7* xyz
-#@+node:sps.20100531034136.20110: *4* @test c.scanAtPathDirectives same name subdirs
-p2 = p.firstChild().firstChild().firstChild()
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-endpath = g.os_path_normpath('again/again')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-#@+node:sps.20100531034136.20111: *5* @path again
-#@+node:sps.20100531034136.20112: *6* @path again
-#@+node:sps.20100531034136.20113: *7* xyz
-#@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
-# Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.h
-
-try:
-    child = p.firstChild()
-    child.initHeadString("@thin bogus")
-    assert child.h == "@thin bogus", "setting headline failed"
-    child.clearDirty()
-    assert not child.isDirty(), "clearing dirty failed"
-    c.setHeadString(p,"changed")
-    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-finally:
-    try:
-        c.setHeadString(p,h)
-        c.setHeadString(child,"bogus")
-        p.clearDirty()
-        child.clearDirty()
-    finally: pass
-#@+node:ekr.20040802065214.1: *5* bogus
-test
-#@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.unmarkAll()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20100131180007.5465: *4* @test class StubConfig
-class StubConfig(g.NullObject):
-    pass
-
-x = StubConfig()
-assert not x.getBool(c,'mySetting')
-assert not x.enabledPluginsFileName
-#@+node:ekr.20100203103015.5353: *4* @test efc.ask
-# Not a perfect test, but stil significant.
-efc = g.app.externalFilesController
-if not efc:
-    self.skipTest('No externalFilesController')
-result = efc.ask(c,p.h)
-assert result in (True, False),result
-#@+node:ekr.20100203103015.5355: *4* @test efc.compute_ext
-@language python
-
-efc = g.app.externalFilesController
-if not efc:
-    self.skipTest('No externalFilesController')
-table = (
-    # (None,'.py'),
-    # ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
-)
-for ext,result in table:
-    result2 = efc.compute_ext(c,p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
-#@+node:ekr.20100203103015.5354: *4* @test efc.compute_temp_file_path
-efc = g.app.externalFilesController
-if not efc:
-    self.skipTest('no externalFilesController')
-s = efc.compute_temp_file_path(c,p,'.py')
-assert s.endswith('.py')
-#@+node:ville.20090602190735.4770: *4* @test g.command decorator
-_foo = 0
-
-@g.command('my-test-command')
-def mytestcommand(event):
-    global _foo
-    _foo = 1
-
-try:
-    c.k.simulateCommand('my-test-command')
-    assert _foo == 1
-    
-    # bonus test: c.app.commanders()
-    assert c in g.app.commanders()
-
-except AttributeError:
-    # Raised only for unit testing.
-    pass
-#@+node:ekr.20100203103015.5357: *4* @test g.isCallable
-def spam(): pass
-lam = lambda a: None
-class aCallable:
-    def __call__ (self):
-        pass
-c = aCallable()
-
-table = (
-    ('abc',False),
-    (spam,True),
-    (lam,True),
-    (c,True)
-)
-
-for obj,val in table:
-    val2 = g.isCallable(obj)
-    assert val == val2,'%s, expected %s, got %s' % (
-        repr(obj),val,val2)
-#@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
-# Print does not work: it is redirected.
-g.pr('\nEnd of leoCommands tests')
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20111115071700.3870: *4* @test c.config.printSettings
@@ -4655,7 +6455,7 @@ if p:
 try:
     parser = leoConfig.SettingsTreeParser(c,localFlag=True)
     d1,d2 = parser.traverse()
-    assert isinstance(d1,g.TypedDictOfLists),d1
+    assert isinstance(d1,g.TypedDict),d1
     assert isinstance(d2,g.TypedDict),d2
 finally:
     if p:
@@ -4673,6 +6473,8 @@ d = g.app.config.unitTestDict # Always created for this unit test.
 keys = ('config.doButtons-file-names','config.doCommands-file-names')
 for key in keys:
     aList = d.get(key,[])
+    if 'leoSettings' not in aList:
+        self.skipTest('no settings') # #1345
     for base in ('leoSettings', 'unitTest'):
         for ext in ('.leo', '.db'):
             if base+ext in aList:
@@ -4700,6 +6502,9 @@ import sys
 
 win32  = c.config.getBool('test_win32_setting')
 darwin = c.config.getBool('test_darwin_setting')
+
+if win32 is None and darwin is None:
+    self.skipTest('settings not loaded') # #1345
 
 if sys.platform == 'win32':
     assert(win32)
@@ -6044,6 +7849,81 @@ line 1
         line b
 line c
 last line
+#@+node:btheado.20190926223006.1: *5* @test end-of-line (internal blank line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926223006.2: *6* work
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926223006.3: *6* before sel=2.0,2.0
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926223006.4: *6* after sel=2.0,2.0
+first line
+
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:btheado.20190926182937.1: *5* @test end-of-line (blank last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926182937.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926182937.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926182937.4: *6* after sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190926224744.1: *5* @test end-of-line (single char last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190926224744.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
+#@+node:btheado.20190926224744.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
+#@+node:btheado.20190926224744.4: *6* after sel=7.1,7.1
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+ 
 #@+node:ekr.20061101121602.194: *5* @test end-of-line-extend-selection
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.195: *6* work
@@ -6067,6 +7947,29 @@ line 1
         line b
 line c
 last line
+#@+node:btheado.20190927201634.1: *5* @test end-of-line-extend-selection (blank last line)
+c.testManager.runEditCommandTest(p)
+#@+node:btheado.20190927201634.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190927201634.3: *6* before sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
+#@+node:btheado.20190927201634.4: *6* after sel=7.0,7.0
+first line
+line 1
+    line a
+        line b
+line c
+last non-blank line
 #@+node:ekr.20061101121602.198: *5* @test exchange-point-mark
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.199: *6* work
@@ -6658,7 +8561,9 @@ c.goNextVisitedNode()
 p3 = c.p
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
 result = c.helpCommands.getBindingsForCommand('help')
-assert result.strip().lower()=='f1'
+if not result:
+    self.skipTest('no settings')
+assert result.strip().lower()=='f1', repr(result)
 #@+node:ekr.20061101121602.266: *5* @test indent-relative
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.267: *6* work
@@ -8984,6 +10889,8 @@ Next Paragraph.
 #@+node:ekr.20150430053825.1: *5* @test abbrevCommands.next_place
 ac = c.abbrevCommands
 assert ac
+if c.abbrev_place_start is None or c.abbrev_place_end is None:
+    self.skipTest('no abbreviation settings') # #1345.
 child = g.findNodeInTree(c,p,'child')
 assert child
 old_b = child.b
@@ -9192,6 +11099,8 @@ line 1.
 line 2(xxx).
 line 3.
 #@+node:ekr.20100204165850.5373: *5* @test most toggle commands
+if g.app.inBridge:
+    self.skipTest('in bridge')
 k = c.k
 colorizer = c.frame.body.getColorizer()
 ed = c.editCommands
@@ -9316,6 +11225,9 @@ try:
     if g.app.gui.guiName() == 'curses':
         c.frame.pasteText(event=g.Bunch(widget=w))
     else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
         k.manufactureKeyPressForCommandName(w,'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
     assert p.h == h + paste,'oops2 got: %s' % p.h
@@ -9346,6 +11258,9 @@ else:
         if g.app.gui.guiName() == 'curses':
             c.frame.pasteText(event=g.Bunch(widget=w))
         else:
+            stroke = k.getStrokeForCommandName('paste-text')
+            if stroke is None:
+                self.skipTest('no binding for paste-text') # #1345
             k.manufactureKeyPressForCommandName(w,'paste-text')
             g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h[0] + paste + h[2:]
@@ -9379,6 +11294,9 @@ try:
     if g.app.gui.guiName() == 'curses':
         c.frame.pasteText(event=g.Bunch(widget=w))
     else:
+        stroke = k.getStrokeForCommandName('paste-text')
+        if stroke is None:
+            self.skipTest('no binding for paste-text') # #1345
         k.manufactureKeyPressForCommandName(w,'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
     assert p.h == h + paste,'Expected: %s, got %s' % (
@@ -9493,42 +11411,45 @@ if k.defaultUnboundKeyAction == 'insert':
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
-elif g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() == 'curses':
     # This could be adapted, but not now.
     self.skipTest('Not for curses gui')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redrawAndEdit(p) # To make the node visible.
-        w = c.edit_widget(p)
-        try:
-            assert w, 'oops1'
-            wName = g.app.gui.widget_name(w)
-            assert wName.startswith('head'),'w.name:%s' % wName
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ',(
-                'oops2: expected: %s, got: %s' % (
-                    h + 'XYZ',p.h))
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
-                    c.undoer.undoMenuLabel)
-            k.manufactureKeyPressForCommandName(w,'undo')
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-            assert p.h == h,'oops5 got: %s, expected: %s' % (
-                p.h,h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
+k = c.k
+if k.defaultUnboundKeyAction != 'insert':
+    self.skipTest('defaultUnboundKeyAction != insert')
+if not k.getStrokeForCommandName('undo'):
+    self.skipTest('no settings')
+
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make the node visible.
+w = c.edit_widget(p)
+try:
+    assert w, 'oops1'
+    wName = g.app.gui.widget_name(w)
+    assert wName.startswith('head'),'w.name:%s' % wName
+    w.setSelectionRange('end','end')
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
+    g.app.gui.event_generate(c,'\n','Return',w)
+    assert p.h == h + 'XYZ',(
+        'oops2: expected: %s, got: %s' % (
+            h + 'XYZ',p.h))
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+            c.undoer.undoMenuLabel)
+    k.manufactureKeyPressForCommandName(w,'undo')
+    if g.app.gui.guiName() != 'nullGui':
+        assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+    assert p.h == h,'oops5 got: %s, expected: %s' % (
+        p.h,h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
 #@+node:ekr.20051109091731: *5* @test typing in non-empty body text does not redraw the screen
 h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
@@ -10181,7 +12102,7 @@ for s,table in ((s1,table1),(s2,table2)):
 #@+node:ekr.20071113145804.21: *4* @test g.create_temp_file
 theFile,fn = g.create_temp_file()
 assert theFile
-assert g.isString(fn)
+assert isinstance(fn, str)
 #@+node:ekr.20100131180007.5403: *4* @test g.ensureLeadingNewlines
 s = ' \n \n\t\naa bc'
 s2 = 'aa bc'
@@ -10404,17 +12325,6 @@ for data in table:
     got = g.match_word(line + '\n', i, word)
     assert expected == got, (expected, i, word, line)
 # print('done')
-#@+node:ekr.20180120142320.1: *4* @test g.os_path_expandExpression
-import os
-sep = os.sep
-table = (
-    ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
-)
-for s, expected in table:
-    if g.isWindows:
-        expected = expected.replace('\\','/')
-    got = g.os_path_expandExpression(s, c=c)
-    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
 
@@ -26205,6 +28115,71 @@ after
 #@+node:ekr.20190210103111.5: *7* selection
 2.0
 2.0
+#@+node:bpt.20190825074247.1: *4* @test undo/redoGroup
+# This test exposed a bug with redoGroup c.undoer.bead index off-by-one
+# The first c.pasteOutline() is there to setup the test cases, but it also serves
+# an important hidden purpose of adding undo state to the undo stack. Due
+# to the wrap-around nature of python index = -1, the original redoGroup code
+# worked fine when the undo group is the first one on the undo stack.
+# There are several commands which use undoGroup. The convertAllBlanks
+# was arbitrarily chosen to expose the bug.
+c.undoer.clearUndoState()
+original = p.copy().moveToFirstChild()
+c.selectPosition(original)
+c.copyOutline()
+# Do and undo
+c.pasteOutline()
+do_and_undo = original.copy().moveToNext()
+do_and_undo.h = "do and undo"
+c.convertAllBlanks()
+c.undoer.undo()
+assert original.b == do_and_undo.b, "Undo should restore to original"
+# Do
+c.pasteOutline()
+do = do_and_undo.copy().moveToNext()
+do.h = "do"
+c.convertAllBlanks()
+# Do, undo, redo
+c.pasteOutline()
+do_undo_redo = do.copy().moveToNext()
+do_undo_redo.h = "do, undo, redo"
+c.convertAllBlanks()
+c.undoer.undo()
+c.undoer.redo()
+assert do.b == do_undo_redo.b, "Redo should do the operation again"
+#@+node:bpt.20190825074316.1: *5* original
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20190923170025.1: *4* @test undo editHeadline
+# Brian Theado.
+c.undoer.clearUndoState()
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# Select 'node 1' and modify the headline as if a user did it
+node1 = p.copy().moveToFirstChild()
+c.selectPosition(node1)
+c.editHeadline()
+w = c.frame.tree.edit_widget(node1)
+w.insert('1.0', 'changed - ')
+c.endEditing()
+assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+
+# Move the selection and undo the headline change
+c.selectPosition(node1.copy().moveToNext())
+c.undoer.undo()
+
+# The undo should restore the 'node 1' headline string
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# The undo should select the edited headline.
+assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
+#@+node:ekr.20190923170025.2: *5* node 1
+#@+node:ekr.20190923170025.3: *5* node 2
+#@+node:ekr.20190923170025.4: *5* node 3
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')

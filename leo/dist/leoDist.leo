@@ -11,16 +11,6 @@
 <v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
 </v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
-<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
-</v>
-<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-</v>
 <v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
 <v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
 </v>
@@ -145,44 +135,39 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
-<v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
-<v t="ekr.20130809141000.1992"><vh>Leo's HOME directory</vh></v>
-<v t="ekr.20130809141000.1993"><vh>Linux installation</vh></v>
-<v t="ekr.20130809141000.1994"><vh>Windows installation</vh></v>
-<v t="ekr.20130809141000.1995"><vh>Running Leo</vh></v>
-<v t="ekr.20130809141000.1996"><vh>Creating file associations</vh></v>
-<v t="ekr.20130809141000.1997"><vh>Adding Leo to your path</vh></v>
-<v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
-</v>
-<v t="matt.20190205105334.1"><vh>@asis ../../.travis.yml</vh></v>
-<v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE</vh></v>
-<v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
-<v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
+<v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
+<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh></v>
+<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
+<v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
+<v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="ekr.20151227063335.1"><vh>@clean ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="maphew.20190208135916.1"><vh>@asis ../../setup.cfg</vh></v>
-<v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
+<v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
+<v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 <v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
+</v>
+<v t="mhw.20190718140254.1"><vh>Travis</vh>
+<v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
+<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
-<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
-<v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
+<v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
+<v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
-<v t="ekr.20190506132427.1"><vh>Merge git *tag* into devel</vh></v>
-<v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
+<v t="ekr.20190618104609.1"><vh>Merge git *tag* into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
-<v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
+<v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
+<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -235,7 +220,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.0
+Version: 6.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -254,20 +239,24 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.0 beta 1, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.0**
+**The highlights of Leo 6.1**
 
-- Leo now requires python 3.6 or above.
-  This greatly simplifies Leo's code.
-- Leo's default gui uses Qt Docks.
-  Use --no-dock to use Leo's legacy gui.
-- Several commands now generate clickable links in the Log pane.
-  This greatly speeds navigation.
-- The usual assortment of bug fixes and minor improvements.
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
+- Added support for pandoc and sphinx.
+- Added support for black.
+- The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
+
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
 
 **Links**
 
@@ -383,169 +372,12 @@ and those who contribute Python modules to the world). -- David McNab
 </t>
 <t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
 redefine my personal computer experience and the ideas behind computing.</t>
-<t tx="ekr.20090901092556.1576">def genUninstallData(self,dirs,dirDict,filesDict):
-
-    '''Generate the manifest-specific uninstall data.'''
-
-    trace = True
-
-    s = r'''
-Section Uninstall
-
-    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
-
-    ; Delete files &amp; directories only if we own them!
-    ReadRegStr $$1 HKCR "${ext}" ""
-    StrCmp $$1 "${name}File" 0 FinishUninstall
-
-    ; Delete files &amp; directories only if there is no backup_val key.
-    ReadRegStr $$1 HKCR "${ext}" "backup_val"
-    StrCmp $$1 "" 0 DeleteLeoKeysAndFiles
-      DeleteRegKey HKCR "${ext}"
-    Goto FinishUninstall
-
-DeleteLeoKeysAndFiles:
-    WriteRegStr HKCR "${ext}" "" $$1
-    DeleteRegValue HKCR "${ext}" "backup_val"
-
-    ; ---- Start of manifest-related data...
-'''
-
-    self.put(s,substitute=True)
-
-    # Does all the hard work.
-    s = self.getUninstallVariableData(dirs,dirDict,filesDict)
-    if trace: g.trace('\n',s)
-    self.put(s,adjust = False)
-
-    s = r'''
-    ; ---- End of manifest related data.
-
-FinishUninstall:
-    ; MessageBox MB_YESNO|MB_ICONQUESTION \
-    ;    "Delete all files in ${INSTDIR}?" IDNO NoDelete
-; NoDelete:
-
-  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
-  RMDir "${SMPROGRAMS}\${name}-${version}"
-  Delete "${DESKTOP}\${name}.lnk"
-
-  DeleteRegKey ${uninst_root_key} "${uninst_key}"
-  SetAutoClose false
-
-; end Uninstall section
-SectionEnd
-'''
-
-    self.put(s,substitute=True)
-</t>
-<t tx="ekr.20090901121423.1567">def getUninstallVariableData(self,dirs,dirDict,filesDict):
-
-    s1 = self.getDeleteFiles(dirs,dirDict,filesDict)
-    s2 = self.getDeleteDirectories(dirs,dirDict)
-    return '%s\n%s' % (s1,s2)
-</t>
-<t tx="ekr.20090901121423.1568">def getDeleteDirectories (self,dirs,dirDict):
-
-    reverseDirs = dirs[:]
-    reverseDirs.reverse()
-
-    result = []
-
-    if 1:
-        result.append('; Recursively delete the leo directory and everything in it.\n')
-        result.append('RMDir /r "$INSTDIR\\leo"\n\n')
-    else:
-        result.append('; Uninstall directories in reverse order\n')
-        for theDir in reverseDirs:
-            # Delete the directory even if it has files.
-            if theDir and theDir != '**top':
-                if not theDir.startswith('.bzr'):
-                    result.append('RMDir "$INSTDIR\\%s"\n' % (
-                        theDir.replace('/','\\')))
-
-    # top-level folder.
-    result.append('; Delete the top-level directory.\n')
-    result.append('RMDir "$INSTDIR"\n')
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
-<t tx="ekr.20090901121423.1569">def getDeleteFiles (self,dirs,dirDict,filesDict):
-
-    result = []
-    result.append('\n')
-    result.append('; Uninstall files...\n\n')
-
-    # top-level files.
-    result.append('; Delete top-level files...\n')
-    aList = dirDict.get('**top',[])
-    # Add *.py, *.pyo, *.pyc and *.leo, the most common added files.
-    if 0: # This seems way too drastic, and not needed.
-        for fn in ('*.py','*.pyo','*.pyc','*.leo',):
-            aList.append(fn)
-    # special case.
-    aList.append('uninst.exe')
-    # Warning: **never** delete all files in the top-level directory.
-    for fn in aList:
-        result.append('Delete "$INSTDIR\\%s"\n' % fn)
-
-    if 0:
-        wildcard_delete = True
-        if wildcard_delete:
-            result.append('\n')
-        # Use the \r option to recursively delete everything in the leo directory.
-
-        for theDir in dirs:
-            if theDir:
-                dir2 = theDir.replace('/','\\')
-                if wildcard_delete:
-                    result.append('Delete "$INSTDIR\\%s\\*.*"\n' % (dir2))
-                else:
-                    aList = dirDict.get(theDir,[])
-                    if aList:
-                        result.append('\n')
-                        result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                        result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                    for fn in aList:
-                        result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                            dir2,fn))
-
-    result = [self.indent(z) for z in result]
-    return ''.join(result)
-</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 This checklist is obsolete, for the following reasons:
 
 1. There never was a SourceForge release for Leo 5.8.
 2. Matt's distribution script creates a more standard way of releasing Leo.</t>
-<t tx="ekr.20101025095431.1517">@language rest</t>
-<t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
-</t>
-<t tx="ekr.20101026142031.1516">@nocolor-node
-
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\python.exe\shell\open\command
-    val = c:\Python26\python.exe %1
-HKCU
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe
-HKEY_CURRENT_USER\Software\Classes\Applications\pythonw.exe\shell\open\command
-    val = c:\Python26\pythonw.exe %1
-
-HKEY_CURRENT_USER\Software\Classes\Applications\py_auto_file\shell\open\command
-    val = c:\Python26\python.exe %1
-    
-HKEY_CURRENT_USER\Software\Classes\Installer\Products\nnnnnn
-
-HKLM
-HKEY_LOCAL_MACHINE\SOFTWARE\Python
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
-    val = c:\python27\
-HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
-    val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
-</t>
 <t tx="ekr.20101027054254.1590">@language nsi
 
 &lt;&lt; defines &gt;&gt;
@@ -574,8 +406,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
 <t tx="ekr.20130809141000.1990">@language rest
-</t>
-<t tx="ekr.20130809141000.1991">System requirements
+System requirements
 -------------------
 
 Leo requires the `Python`_ and `PyQt_` package.
@@ -596,8 +427,7 @@ Leo's Spell tab. Download and install the PyEnchant package from
 http://pythonhosted.org/pyenchant/download.html There is an executable
 installer for Windows users.
 
-</t>
-<t tx="ekr.20130809141000.1992">
+
 Leo's HOME directory
 --------------------
 
@@ -607,8 +437,7 @@ See http://docs.python.org/lib/os-procinfo.html for details.
 Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 There are various fallback directories if there is no home directory.
-</t>
-<t tx="ekr.20130809141000.1993">
+
 Installing Leo on Linux
 -----------------------
 
@@ -625,8 +454,7 @@ I prefer using aliases because they allow me to start Leo using Python 2 or 3,
 or other distributions, like Anaconda 2 or 3.
 
 See `Running Leo`_ for how to run Leo after installing it.
-</t>
-<t tx="ekr.20130809141000.1994">
+
 Installing Leo on Windows
 --------------------------
 
@@ -637,8 +465,7 @@ http://leoeditor.com/download.html If the sources are zipped, unpack them
 into a temp folder. You may place the sources anywhere you like, including
 Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
 
-</t>
-<t tx="ekr.20130809141000.1995">
+
 Running Leo
 -----------
 
@@ -652,8 +479,7 @@ Another way to run Leo is as follows::
 
     cd &lt;path-to-launchLeo.py&gt;
     python launchLeo.py
-</t>
-<t tx="ekr.20130809141000.1996">
+
 Creating File Associations
 --------------------------
 
@@ -703,8 +529,7 @@ And put this leo.bat in %PATH%::
     @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
     
 You may omit the /b option if you want to create a separate console window for Leo.
-</t>
-<t tx="ekr.20130809141000.1997">
+
 Adding Leo to Your Path
 -----------------------
 
@@ -715,8 +540,7 @@ One way to do this is adding something like the following to python/Lib/sitecust
     sys.path.append(r'&lt;path-to-leo&gt;leo\core')
 
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
-</t>
-<t tx="ekr.20130809141000.1998">
+
 Running Leo for the first time
 ------------------------------
 
@@ -1798,7 +1622,7 @@ Overview:
 1. Do as much work as possible in "devel".
 2. Update leoVersion.py *after* creating -rel branch.
 </t>
-<t tx="ekr.20180405171433.2">LeoDocs.leo:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
@@ -1815,26 +1639,22 @@ LeoDist.leo:
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leo-dist.leo.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
 - Remove top-level clones.
 </t>
-<t tx="ekr.20180405171433.3">- Regenerate all .html files.
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
 </t>
-<t tx="ekr.20180405171433.4">- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
-- Make sure Leo looks good without myLeoSettings.leo.
+<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
 - Run ll -a with with Python 3.</t>
-<t tx="ekr.20180405171433.7">Merge the -rel branch into master.
-- Run all unit tests.
-- Run pylint on all files.
-
-Create a git tag **last**
+<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
@@ -1846,45 +1666,21 @@ Create a git tag **last**
 git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180405171433.8">- Create a documentation file at SourceForge, directing people to GitHub.
-
-- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
-   This must be done *soon* after the release's actual commit.
-   There is a "Draft New Release" button at the top-right of the page.
-</t>
-<t tx="ekr.20180405171433.9">- Update version number on Leo's wikipedia site:
-  http://en.wikipedia.org/wiki/Leo_%28editor%29
-  - Edit with the 'Edit this page' *tab* (not a link)
-  - Update version number on web site.
-
-- Announce to SourceForge:  http://sourceforge.net/projects/leo/
-   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-
-- Announce to leo-editor: **Paste source-forge announcement**.
-
-- Announce to Python-announce-list using email:
-   mailto:python-announce-list@python.org
-   **Paste source-forge or leo-editor announcement**.
-
-  - Check it by visiting the archive:
-  https://mail.python.org/pipermail/python-announce-list/
-
-- Register Leo at https://pypi.python.org/pypi/leo
-
-- My blog: http://edreamleo.blogspot.com/
-  **Paste source-forge or leo-editor announcement** as text, not html.
-  
-- Email Matt Wilkie, maphew@gmail.com, announcing the release.
-  </t>
-<t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
+<t tx="ekr.20180828095749.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout -b x.y-final-rel
 git push origin x.y-final-rel
 </t>
-<t tx="ekr.20180828095843.1">leoVersion.py:
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112153.1">git checkout master
-git merge devel</t>
-<t tx="ekr.20181001112218.1"></t>
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge create dev tag that matches
+    static version added to leoversion.py earlier.
+    #static version = '6.0-b2-devel'
+
+git checkout devel
+git tag -a v6.0-b2-dev -m "Added v6.0-b2-dev tag"
+git push --follow-tags
+update version in leoVersion.py.
+</t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
 '''
@@ -2341,7 +2137,44 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190506132427.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.</t>
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From rel branch:
+    
+- git merge master
+- Fix any conflicts and push.
+- git checkout master
+- git merge &lt;rel branch&gt;</t>
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+
+git checkout devel
+git merge master (will update leoVersion.py, so tags are also updated)
+git push</t>
+<t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+
+This must be done *soon* after the release's actual commit.
+There is a "Draft New Release" button at the top-right of the page.
+</t>
+<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
+   
+- Announce to leo-editor.
+
+- Announce to Python-announce-list using email:
+   python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+
+  - Check it by visiting the archive:
+  https://mail.python.org/pipermail/python-announce-list/
+  
+- Send email to Matt.
+
+- [Matt] Register Leo at https://pypi.python.org/pypi/leo
+
+- My blog: http://edreamleo.blogspot.com/
+  **Paste GitHub announcement**.
+</t>
+<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
+- Run pylint on all files.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -2354,11 +2187,6 @@ See https://github.com/leo-editor/leo-editor/issues/562
 Once published to pypi Leo can be installed with:
 
     pip install leo
-
-Python 2.7 will need to install PyQt 4 or 5 as a separate step. Anaconda or
-miniconda is recommended:
-
-    conda install pyqt
 
 Developers should install from git as some files are left out when using pip (see Caveats):
 
@@ -2374,8 +2202,9 @@ nb: Optional `--depth=500` fetches the last 3-4 months of activity and is
  - Wheel: for building cross platform binaries (might be installed already)
  - Setuptools: because ...setup!
  - Twine: for secure upload to pypi.org
+ - Setupext-janitor: extend clean command (e.g. `python setup.py clean --all`)
 
-    pip install setuptools twine wheel
+    pip install setuptools twine wheel setupext-janitor
 </t>
 <t tx="maphew.20180128212042.3">A PyPi account is needed to update Leo's pypi reference. Contact one of the
 package index owners to be added as a maintainer if needed. See end of
@@ -2385,6 +2214,9 @@ Verify access Leo package edit page at:
 https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
 <t tx="maphew.20180128212042.4">## Overview
+
+_All of this is now handled in Travis Continual Integration build system. This recipe kept here for troubleshooting if something goes wrong in Travis._
+
 
 * Remove stale distribution files &amp; folders.  
 * Optionally set local checkout to specific version tag.  
@@ -2499,8 +2331,11 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
 </t>
 <t tx="maphew.20190206032329.1">[build-system]
 requires = ["setuptools&gt;=38.6.0",
+    "setupext-janitor&gt;=1.1",
     "wheel&gt;=0.31.0",
     "twine&gt;=1.11.0"]
+    
+build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 # This flag says that the code is written to work on both Python 2 and Python
@@ -2539,28 +2374,66 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 
 </t>
 <t tx="matt.20190205105334.1">language: python
+python:
+  - "3.6"
 git:
     ## Clone depth, must be big enough to include a tag
-    depth: 100
+    depth: 500
 install:
     ## Using PEP-518 (pypoject.toml) requires pip &gt;v10 
     - python -m pip install --upgrade pip
     - pip --version
+    - pip install setupext-janitor
 script:
     ## Test: Unit tests
     - python run_travis_unit_tests.py
 
-    # There are no travis tests after checking out release tag
-    #- pytest travis_tests/*
+    ## Test: Build python wheel, install, and run Leo in console mode
+    - python setup.py --quiet bdist_wheel
+    - pip install dist/*.whl
+    - leo-console --version
+    
 deploy:
-  provider: pypi
-  user: maphew
-  password:
-    secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
-  on:
-    #tags: true
-    branch: master, travis
+  - provider: pypi
+    user: maphew
+    password:
+      secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
+    distributions: sdist bdist_wheel
+    on:
+      tags: true
+      branch: master
 </t>
 <t tx="mhw-nc.20190126223741.1"></t>
+<t tx="mhw.20190718140254.1"></t>
+<t tx="mhw.20190718140259.1">language: python
+python:
+  - "3.6"
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 500
+install:
+    ## Using PEP-518 (pypoject.toml) requires pip &gt;v10 
+    - python -m pip install --upgrade pip
+    - pip --version
+    - pip install setupext-janitor
+script:
+    ## Test: Unit tests
+    - python run_travis_unit_tests.py
+
+    ## Test: Build python wheel, install, and run Leo in console mode
+    - python setup.py --quiet bdist_wheel
+    - pip install dist/*.whl
+    - leo-console --version
+    
+deploy:
+  - provider: pypi
+    user: maphew
+    password:
+      secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
+    distributions: sdist bdist_wheel
+    on:
+      tags: true
+      branch: master
+</t>
 </tnodes>
 </leo_file>

@@ -28,7 +28,12 @@ def init ():
 def spyder_launch(event):
     """ Launch spyder """
     # Options
-    from spyderlib import spyder
+    try:
+        # pylint: disable=import-error
+        from spyderlib import spyder
+    except ImportError:
+        g.es_print('Can not import spyderlib')
+        return
     data = spyder.get_options()
 
     # Create the main window
