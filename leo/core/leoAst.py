@@ -708,8 +708,6 @@ if 1: # pragma: no cover
         results = tokens[first_i : last_j + 1]
         return results
     #@+node:ekr.20191224093336.1: *4* function: match_parens
-    match_parens_message_given = False
-
     def match_parens(filename, i, j, tokens):
         """
         Match parens in tokens[i:j]. Return the new j.
@@ -723,8 +721,10 @@ if 1: # pragma: no cover
             if token.kind == 'op' and token.value == '(':
                 level += 1
             if token.kind == 'op' and token.value == ')':
+                if level == 0:
+                    break
                 level -= 1
-        # Find matching ')' tokens...
+        # Find matching ')' tokens *after* j.
         if level > 0:
             while level > 0 and j + 1 < len(tokens):
                 token = tokens[j+1]
