@@ -3451,390 +3451,102 @@ def checkPath(self, fileName):
         return at.isWritable(fileName)
     return True
 #@+node:ekr.20191229062845.1: ** From leoAst.py
-#@+node:ekr.20191128074051.1: *3* << define trace functions >> (from do_token)
-def show_header():
-    if self.header_has_been_shown:
-        return
-    self.header_has_been_shown = True
-    print("\nTokenizer tokens...\n")
-    print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-    print(f"{'lines':<8} {'int indices':<8} {'kind':>7} {'value':<30} physical line")
-    print(f"{'=====':<8} {'===========':<8} {'====':>7} {'=====':<30} =============")
-
-def show_token(kind, val):
+#@+node:ekr.20200111120122.1: *3* advance_str stuff
+#@+node:ekr.20200111041044.2: *4* OLD tog.Bytes
+def do_Bytes(self, node):
+    
     """
-    Show the given token.
-    Regardless of kind, val is the ground truth, from tok_s.
+    It's invalid to mix bytes and non-bytes literals, so just
+    advancing over the next 'string' token suffices.
     """
-    if 0:
-        show_header()
-        val_s = g.truncate(val, 28)
-        if kind != 'string':
-            val_s = repr(val_s)
-        print(
-            # starting line..ending line
-            f"{show_tuple((s_row, e_row))} "  
-            # starting offset..ending offset.
-            f"{show_tuple((s_offset, e_offset))} "  
-            f"{kind:>10} {val_s:30} {line!r}")
+    token = self.advance_str()
+    yield from self.gen_token('string', token.value)
+#@+node:ekr.20200111041044.3: *4* OLD tog.JoinedStr & helpers
+# JoinedStr(expr* values)
+
+def do_JoinedStr(self, node):
+    """
+    JoinedStr nodes represent at least one f-string and all other strings
+    concatentated to it.
     
-def show_tuple(aTuple):
-    s = f"{aTuple[0]}..{aTuple[1]}"
-    return f"{s:8}"
-#@+node:ekr.20191228113510.1: *3* @@test TOG master test
-"""
-The master unit test for leoAst.TokenOrderGenerator and related classes.
-"""
-import time
-import leo.core.leoAst as leoAst
-if 0: # Not for production.
-    import importlib
-    importlib.reload(leoAst)
-if 0: # Not for production.
-    g.cls()
-
-actions = [
-    # 'dump-contents',
-    # 'run-ast-tokens',       # Alternate pass 0.
-    'make-tokens-and-tree', # Pass 0.
-        # 'dump-raw-tree',
-        # 'dump-tokens',
-    'create-links',         # Pass 1.
-        # 'dump-tree',
-    ### 'fstringify',           # Pass 2.
-        # 'dump-results',
-        # 'dump-tree',
-        # 'dump-tokens',
-    # 'dump-times',
-]
-flags = [
-    'all',
-    # 'set-trace-mode',  # Sets TOG.trace_mode.
-    'show-exception-after-fail',
-    # 'show-test-description',
-    # 'dump-tokens-after-fail',
-    # 'dump-tree-after-fail',
-    # 'dump-all-after-fail',
-    # 'trace-tokenizer-tokens',
-    # 'summarize',
-]
-# Make and run tests.
-leoAst.TestRunner().run_tests(actions, flags, root=c.p)
-#@+node:ekr.20191228113510.2: *4* test: test end-of-file handling
-# Only a comment.
-#@+node:ekr.20191228113510.3: *4* ignore: Contexts...
-#@+node:ekr.20191228113510.4: *5* test: ClassDef
-class TestClass1:
-    pass
+    Analyzing JoinedStr.values would be extremely tricky, for reasons that
+    need not be explained here.
     
-def decorator():
-    pass
+    Instead, we get the tokens *from the token list itself*!
+    """
+    for z in self.get_concatenated_string_tokens():
+        self.advance_str()
+        yield from self.gen_token(z.kind, z.value)
+#@+node:ekr.20200111041044.4: *4* OLD tog.get_concatenated_tokens
+def get_concatenated_string_tokens(self):
+    """
+    Return the next 'string' token and all 'string' tokens concatenated to
+    it.
     
-@decorator
-class TestClass2:
-    pass
-    
-@decorator
-class TestClass(base1, base2):
-    pass
-#@+node:ekr.20191228113510.5: *5* test: ClassDef, FunctionDef
-"""ds 1"""
-class TestClass:
-    """ds 2"""
-    def long_name(a, b=2):
-        """ds 3"""
-        print('done')
-#@+node:ekr.20191228113510.6: *5* test: FunctionDef & NamedConstant
-def run(fileName=None, pymacs=None, *args, **keywords):
-    pass
-#@+node:ekr.20191228113510.7: *4* ignore: Expressions & operators...
-#@+node:ekr.20191228113510.8: *5* test: attribute
-open(os.devnull, "w")
-#@+node:ekr.20191228113510.9: *5* test: CompareOp
-if a and not b and c:
-    pass
-#@+node:ekr.20191228113510.10: *5* test: dict containing ternary
-d = {
-    'a' if x else 'b': True,
-    }
-f()
-#@+node:ekr.20191228113510.11: *5* test: DictComp
-# leoGlobals.py, line 3028.
+    Do *not* update self.string_index here.
+    """
+    trace = False
+    i, results = self.string_index, []
+    i = self.next_str_index(i + 1)
+    while i < len(self.tokens):
+        token = self.tokens[i]
+        if token.kind == 'string':
+            results.append(token)
+        elif token.kind in ('endmarker', 'name', 'number', 'op'):
+            # The 'endmarker' token ensures we will have a token.
+            if not results:
+                raise AssignLinksError(
+                    f"        file: {self.filename}\n"
+                    f"        line: {token.line_number}\n"
+                    f"string_index: {i}\n"
+                    f"expected 'string' token, got {token!s}")
+            break
+        else:
+            pass # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        i += 1
+    if i >= len(self.tokens):
+        g.trace('token overrun', i)
+        raise AssignLinksError(f"token overrun")
+    if trace:
+        g.trace('\nresults...')
+        for z in results:
+            print(f"  {z!s}")
+        print('')
+    return results
+#@+node:ekr.20200111041212.1: *4* OLD tog.Str & helpers
+def do_Str(self, node):
+    """This node represents a string constant."""
+    for z in self.get_concatenated_string_tokens():
+        ### self.advance_str()
+        yield from self.gen_token(z.kind, z.value)
+#@+node:ekr.20200111041212.2: *5* tog.advance_str
+# The index in self.tokens of the previously scanned 'string' token.
+string_index = -1 
 
-d2 = {val: key for key, val in d.iteritems()}
-#@+node:ekr.20191228113510.12: *5* test: ListComp and comprehension
-any([p2.isDirty() for p2 in p.subtree()])
-#@+node:ekr.20191228113510.13: *5* test: NamedConstant
-run(a=None, b=str)
-#@+node:ekr.20191228113510.14: *5* test: Operator: semicolon
-print('c');
-print('d')
-#@+node:ekr.20191228113510.15: *5* test: Operator: semicolon between statements
-a = 1 ; b = 2
-print('a') ; print('b')
-#@+node:ekr.20191228113510.16: *5* test: UnaryOp
-print(-(2))
-#@+node:ekr.20191228113510.17: *4* ignore: Files...
-#@+node:ekr.20191228113510.18: *5* file: core..leoApp.py
-#@+node:ekr.20191228113510.19: *5* file: core..leoAst.py
-# line 1046, leoAst.py.
-
-#@+node:ekr.20191228113510.20: *5* file: core..leoDebugger.py
-#@+node:ekr.20191228113510.21: *5* file: core..leoFind.py
-# line 856 
-#@+node:ekr.20191228113510.22: *5* file: core..leoGlobals.py
-# line 1604.
-#@+node:ekr.20191228113510.23: *5* file: core..leoTips.py
-# line 93.
-#@+node:ekr.20191228113510.24: *5* file: core..runLeo.py
-#@+node:ekr.20191228113510.25: *4* ignore: If...
-#@+node:ekr.20191228113510.26: *5* test: from leoTips.py
-# Line 93, leoTips.py
-unseen = [i for i in range(5) if i not in seen]
-for issue in data:
-    for a in aList:
-        print('a')
-    else:
-        print('b')
-if b:
-    print('c')
-#@+node:ekr.20191228113510.27: *5* test: if + tuple
-for i, j in b:
-    pass
-#@+node:ekr.20191228113510.28: *5* test: if + unary op
-if -(2):
-    pass
-#@+node:ekr.20191228113510.29: *5* test: if, elif
-if 1:
-    print('a')
-elif 2:
-    print('b')
-elif 3:
-    print('c')
-    print('d')
-print('-')
-if 1:
-    print('e')
-elif 2:
-    print('f')
-    print('g')
-
-
-#@+node:ekr.20191228113510.30: *5* test: if, elif + 2
-if 1:
-    pass
-elif 2:
-    pass
-    pass
-#@+node:ekr.20191228113510.31: *5* test: if, elif, else
-if (a):
-    print('a1')
-    print('a2')
-elif b:
-    print('b1')
-    print('b2')
-else:
-    print('c1')
-    print('c2')
-#@+node:ekr.20191228113510.32: *5* test: if, else
-if 1:
-    print('a')
-else:
-    print('b')
-#@+node:ekr.20191228113510.33: *5* test: if, else, if
-if 1:
-    print('a')
-else:
-    if 2:
-        print('b')
-#@+node:ekr.20191228113510.34: *5* test: Nested If's
-if a:
-    if b:
-        print('b')
-else:
-    if d:
-        print('d')
-#@+node:ekr.20191228113510.35: *5* test: ternary + if
-if 1:
-    a = 'class' if cond else 'def'
-    # find_pattern = prefix + ' ' + word
-    print('1')
-else:
-    print('2')
-#@+node:ekr.20191228113510.36: *4* ignore: Statements...
-#@+node:ekr.20191228113510.37: *5* test: Call
-f1(a,b=2)
-f2(1 + 2)
-f3(arg, *args, **kwargs)
-f4(a='a', *args, **kwargs)
-func(a, b, one='one', two='two', *args, **kwargs)
-#@+node:ekr.20191228113510.38: *5* test: Global
-# Line 1604, leoGlobals.py
-def spam():
-    global gg
-    print('')
-#@+node:ekr.20191228113510.39: *5* test: Try
-try:
-    print('a1')
-    print('a2')
-except ImportError:
-    print('b1')
-    print('b2')
-except SyntaxError:
-    print('c1')
-    print('c2')
-finally:
-    print('d1')
-    print('d2')
-#@+node:ekr.20191228113510.40: *5* test: TryExceptElse
-# Line 240: leoDebugger.py
-
-try:
-    print('a')
-except ValueError:
-    print('b')
-else:
-    print('c')
-#@+node:ekr.20191228113510.41: *5* test: With
-# leoGlobals.py, line 1785.
-
-with open(fn) as f:
-    pass
-
-#@+node:ekr.20191228113510.42: *5* test: YieldFrom
-# Line 1046, leoAst.py
-
-self.node = tree
-yield from self.gen_token('newline', '\n')
-print('done')
-#@+node:ekr.20191228113510.43: *4* ignore: Strings...
-#@+node:ekr.20191228113510.44: *5* ignore: plain strings
-#@+node:ekr.20191228113510.45: *6* test: \x and \o escapes
-# Line 4609, leoGlobals.py
-print("\x7e" "\0777") # tilde.
-print('done')
-#@+node:ekr.20191228113510.46: *6* test: backslashes in docstring
-# leoGlobals.py.
-
-class SherlockTracer:
-    """before\\after"""
-#@+node:ekr.20191228113510.47: *6* test: bs/nl
-print('hello\
-world')
-#@+node:ekr.20191228113510.48: *6* test: bytes bs-x
-# Line 201, leoApp.py
-
-print(b'\xfe')
-print('done')
-#@+node:ekr.20191228113510.49: *6* test: empty string
-self.s = ''
-self.i = 0
-#@+node:ekr.20191228113510.50: *6* test: escaped string delims
-print("a\"b")
-#@+node:ekr.20191228113510.51: *6* test: escaped strings
-f1(a='\b', b='\n', t='\t')
-f2(f='\f', r='\r', v='\v')
-f3(bs='\\')
-#@+node:ekr.20191228113510.52: *6* test: f-string join
-# The first newline causes the fail.
-print(f"a {old_id!r}\n" "b\n")
-print('done')
-#@+node:ekr.20191228113510.53: *6* test: raw docstring
-# Line 1619 leoFind.py
-print(r"""DS""")
-#@+node:ekr.20191228113510.54: *6* test: raw escaped strings
-r1(a=r'\b', b=r'\n', t=r'\t')
-r2(f=r'\f', r=r'\r', v=r'\v')
-r3(bs=r'\\')
-#@+node:ekr.20191228113510.55: *6* test: single quote
-# leoGlobals.py line 806.
-print('"')
-#@+node:ekr.20191228113510.56: *6* test: string concatentation
-print('a' 'b')
-print('c')
-#@+node:ekr.20191228113510.57: *6* test: string with % op
-print('test %s=%s'%(a, 2))
-print('done')
-#@+node:ekr.20191228113510.58: *5* ignore: f-strings
-#@+node:ekr.20191228113510.59: *6* test: complex Call
-# Line 1177, leoApp.py
-
-print(
-    message = f"line 1: {old_id!r}\n" "line 2\n"
-)
-print('done')
-#@+node:ekr.20191228113510.60: *6* test: f-string + Ternary
-func(f"{b if not cond1 else ''}")
-#@+node:ekr.20191228113510.61: *6* test: f-string case 1: single f-string
-print(f'{7.1}')
-print('end')
-#@+node:ekr.20191228113510.62: *6* test: f-string case 2: f-string + plain
-print(f'{7.1}' 'p7.2')
-print('end')
-#@+node:ekr.20191228113510.63: *6* test: f-string case 3: plain + f-string
-print('p1' f'{f2}')
-'end'
-#@+node:ekr.20191228113510.64: *6* test: f-string case 4: f-string + fstring
-print(f'{f1}' f'{f2}')
-'end'
-#@+node:ekr.20191228113510.65: *6* test: f-string case 5: many
-print('s1', f'{f2}' f'f3' f'{f4}' 's5')
-'end'
-#@+node:ekr.20191228113510.66: *6* test: f-string containing ternary op
-# leoFind.py line 856
-
-a = f"{'a' if x else 'b'}"
-f()
-
-# Pass
-# print(f"{'a' if x else 'b'}")
-#@+node:ekr.20191228113510.67: *6* test: f-string leoFind.py line 856
-func(
-    "Isearch"
-    f"{' Backward' if True else ''}"
-)
-print('done')
-#@+node:ekr.20191228113510.68: *6* test: f-string leoFind.py: line 861
-# leoFind.py: line 861
-one(f"{'B'}" ": ")
-#@+node:ekr.20191228113510.69: *6* test: f-string summary
-print(f'x3{e3+1}y3' f'x4{e4+2}y4')
-print('done')
-#@+node:ekr.20191228113510.70: *7* more
-# Single f-strings.
-# 'p1' ;
-# f'f1' ;
-# f'x1{e1}y1' ;
-# f'x2{e2+1}y2{e2+2}z2' ;
-
-# Concatentated strings...
-# 'p2', 'p3' ;
-# f'f2' 'f3' ;
-
-# f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
-#@+node:ekr.20191228113510.71: *6* test: f-string summary: joins + 1 f-expr
-print(f'x1{e1}y1', 'p1')
-print(f'x2{e2}y2', f'f2')
-print(f'x3{e3}y3', f'x4{e4}y4')
-print('end')
-#@+node:ekr.20191228113510.72: *6* test: f-string summary: joins + 2 f-exprs
-print(f'x1{e1}y1{e2}z1', 'p1')
-print(f'x2{e3}y2{e3}z2', f'f2')
-print(f'x3{e4}y3{e5}z3', f'x4{e6}y4{e7}z4')
-print('end')
-#@+node:ekr.20191228113510.73: *6* test: f-string: complex, with commas
-print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
-#@+node:ekr.20191228113510.74: *6* test: print one f-string
-print(f"test {a}={2}")
-print('done')
-#@+node:ekr.20191228113510.75: *6* test: regex string
-# Line 7709, leoGlobals.py
-
-fr"""{kinds}://[^\s'"]+[\w=/]"""
-#@+node:ekr.20191228113510.76: *6* test: simple f-string tests
-'p1' ;
-f'f1' ;
-'done' ;
+def advance_str(self):
+    """
+    Advance over exactly one 'string' token, and return it.
+    """
+    i = self.string_index
+    i = self.next_str_index(i + 1)
+    if i >= len(self.tokens):
+        raise AssignLinksError(f"End of tokens")
+    token = self.tokens[i]
+    self.string_index = i
+    return token
+#@+node:ekr.20200111041212.3: *5* tog.next_str_index
+def next_str_index(self, i):
+    """Return the index of the next 'string' token, or None."""
+    trace = False
+    i1 = i
+    while i < len(self.tokens):
+        token = self.tokens[i]
+        if token.kind == 'string':
+            if trace:
+                g.trace(f"{i1:>2}-->{i:<2} {self.tokens[i]}")
+            break
+        i += 1
+    return i
 #@+node:ekr.20141012064706.18399: *3* class AstFormatter
 class AstFormatter:
     """
@@ -7055,61 +6767,6 @@ def join(self, aList, sep=','):
         if i < len(aList) - 1:
             tokens.append(sep)
     return tokens
-#@+node:ekr.20191125033744.1: *3* dumper.dump_one_node
-def dump_one_node(self, node, level=0):
-    
-    indent = ' ' * 2 * level
-    result = []
-    node_s = self.compute_node_string(node, level).rstrip()
-    if isinstance(node, str):
-        result.append(f"{indent}{node.__class__.__name__:>8}:{node}")
-    elif isinstance(node, ast.AST):
-        # Node and parent.
-        result.append(node_s)
-    else:
-        result.append(f"{indent}OOPS: {node.__class__.__name__}")
-    return ''.join(result)
-#@+node:ekr.20191229020834.1: *3* function: unit_test
-def unit_test(raise_on_fail=True):
-    """
-    Called from unitTest.leo.
-
-    Run basic unit tests for this file.
-    """
-    import _ast
-    # Compute all fields to test.
-    aList = sorted(dir(_ast))
-    remove = [
-        'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
-        'AST',  # The base class,
-    ]
-    aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
-    aList = [z for z in aList if not z.startswith('_') and not z in remove]
-    # Now test them.
-    table = (
-        # AstFullTraverser,
-        # AstFormatter,
-        # AstPatternFormatter,
-        # HTMLReportTraverser,
-    )
-    for class_ in table:
-        traverser = class_()
-        errors, nodes, ops = 0, 0, 0
-        for z in aList:
-            if hasattr(traverser, 'do_'+z):
-                nodes += 1
-            elif _op_names.get(z):
-                ops += 1
-            else:
-                errors += 1
-                print(f"Missing {traverser.__class__.__name__} visitor for: {z}")
-    s = f"{nodes} node types, {ops} op types, {errors} errors"
-    if raise_on_fail:
-        assert not errors, s
-    else:
-        print(s)
 #@+node:ekr.20191126074902.1: *3* tog.dump_one_node
 header_has_been_shown = False
 

@@ -3951,7 +3951,6 @@ class Fstringify (TokenOrderTraverser):
         
         Return True if the file would be changed.
         """
-        tag = 'silent-fstringify-file'
         self.filename = filename
         self.silent = True
         tog = TokenOrderGenerator()
@@ -3961,7 +3960,7 @@ class Fstringify (TokenOrderTraverser):
         # fstringify.
         results = self.fstringify(contents, filename, tokens, tree)
          # Write the results
-        print(f"{tag}: Wrote {filename}")
+        print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
