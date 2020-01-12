@@ -737,12 +737,14 @@ if 1: # pragma: no cover
                 j += 1
         if level != 0:  # pragma: no cover.
             line_n = tokens[i].line_number
-            s = tokens_to_string(tokens[i:j+1]).strip()
-            raise AssignLinksError(
+            ### s = tokens_to_string(tokens[i:j+1]).strip()
+            ### raise AssignLinksError(
+            print(
                 f"\n"
-                f"Unmatched parens: level={level}, {s!s}\n"
+                f"Unmatched parens: level={level}\n"
                 f"            file: {filename}\n"
                 f"            line: {line_n}\n")
+            g.printObj(tokens[i:j+1], tag='Tokens')
         return j
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
