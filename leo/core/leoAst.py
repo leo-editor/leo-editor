@@ -738,8 +738,7 @@ if 1: # pragma: no cover
         if level != 0:  # pragma: no cover.
             line_n = tokens[i].line_number
             ### s = tokens_to_string(tokens[i:j+1]).strip()
-            ### raise AssignLinksError(
-            print(
+            raise AssignLinksError(
                 f"\n"
                 f"Unmatched parens: level={level}\n"
                 f"            file: {filename}\n"
@@ -3904,12 +3903,11 @@ class Fstringify (TokenOrderTraverser):
         self.filename = filename
         self.silent = False
         tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            print(f"{tag}: Can not fstringify: {filename}")
-            return False
-        # fstringify.
         try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                print(f"{tag}: Can not fstringify: {filename}")
+                return False
             results = self.fstringify(contents, filename, tokens, tree)
         except Exception as e:
             print(e)
@@ -3939,11 +3937,10 @@ class Fstringify (TokenOrderTraverser):
         self.filename = filename
         self.silent = False
         tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            return False
-        # fstringify.
         try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
             results = self.fstringify(contents, filename, tokens, tree)
         except Exception as e:
             print(e)
@@ -3968,11 +3965,10 @@ class Fstringify (TokenOrderTraverser):
         self.filename = filename
         self.silent = True
         tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            return False
-        # fstringify.
         try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
             results = self.fstringify(contents, filename, tokens, tree)
         except Exception as e:
             print(e)

@@ -155,6 +155,7 @@ def fstringify_files(event):
     t1 = time.process_time()
     tag = 'fstringify-files'
     g.es(f"{tag}...")
+    ok_files = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
@@ -162,6 +163,8 @@ def fstringify_files(event):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
             changed = leoAst.Fstringify().fstringify_file(filename)
+            if changed:
+                ok_files += 1
             changed_s = 'changed' if changed else 'unchanged'
             g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -170,7 +173,7 @@ def fstringify_files(event):
             g.es(f"{tag}: file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    g.es_print(f"{tag}: {ok_files} file{g.plural(ok_files)} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
@@ -186,6 +189,7 @@ def fstringify_diff_files(event):
     t1 = time.process_time()
     tag = 'fstringify-files-diff'
     g.es(f"{tag}...")
+    ok_files = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
@@ -193,6 +197,8 @@ def fstringify_diff_files(event):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
             changed = leoAst.Fstringify().fstringify_file_diff(filename)
+            if changed:
+                ok_files += 1
             changed_s = 'changed' if changed else 'unchanged'
             g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -201,7 +207,7 @@ def fstringify_diff_files(event):
             g.es(f"file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    g.es_print(f"{tag}: {ok_files} file{g.plural(ok_files)} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200112060001.1: *4* fstringify-files-silent
 @g.command('silent-fstringify-files')
 @g.command('fstringify-files-silent')
@@ -214,18 +220,21 @@ def fstringify_files_silent(event):
     t1 = time.process_time()
     tag = 'silent-fstringify-files'
     g.es(f"{tag}...")
+    ok_files = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
-            leoAst.Fstringify().fstringify_file_silent(filename)
+            ok = leoAst.Fstringify().fstringify_file_silent(filename)
+            if ok:
+                ok_files += 1
         else:
             print('')
             print(f"{tag}: file not found:{filename}")
             g.es(f"file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    g.es_print(f"{tag}: {ok_files} file{g.plural(ok_files)} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
 def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
