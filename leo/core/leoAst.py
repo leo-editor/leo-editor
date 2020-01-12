@@ -735,10 +735,13 @@ if 1: # pragma: no cover
                 elif is_significant_token(token):
                     break
                 j += 1
-        if level != 0:
-            s = tokens_to_string(tokens[i:j+1])
-            print('')
-            g.trace(f"Unmatched tokens. level={level}, {s!r}\n")
+        if level != 0:  # pragma: no cover.
+            line_n = tokens[i].line_number
+            s = tokens_to_string(tokens[i:j+1]).strip()
+            raise AssignLinksError(
+                f"\n"
+                f"Unmatched parens: level={level}, {s!s}\n"
+                f"            line: {line_n}\n")
         return j
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
