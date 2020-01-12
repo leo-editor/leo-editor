@@ -2214,13 +2214,22 @@ class TestTOG (BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.45: *5* test_Global
-    def test_if12(self):
+    def test_Global(self):
         # Line 1604, leoGlobals.py
         contents = r"""
     def spam():
         global gg
         print('')
     """
+        self.make_data(contents)
+
+    #@+node:ekr.20200111200424.1: *5* test_ImportFrom
+    def test_ImportFrom(self):
+        contents = r"""from a import b as c"""
+        self.make_data(contents)
+    #@+node:ekr.20200111200640.1: *5* test_Nonlocal
+    def test_Nonlocal(self):
+        contents = r"""nonlocal name1, name2"""
         self.make_data(contents)
 
     #@+node:ekr.20191227052446.46: *5* test_Try
