@@ -736,7 +736,6 @@ if 1: # pragma: no cover
                     break
                 j += 1
         if level != 0:
-            print('')
             s = tokens_to_string(tokens[i:j+1])
             g.trace(f"Unmatched tokens. level={level}, {s!r}\n")
         return j
