@@ -98,7 +98,7 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
-new = False
+new = True
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -441,14 +441,6 @@ if 1: # pragma: no cover
                 break
             i += 1
         return None
-    #@+node:ekr.20200113154927.1: *4* function: get_node_tokens_range (new, not used)
-    def get_node_tokens_range(node):
-        """Return (node.first_i, node.last_i) or (None, None)."""
-        first_i = getattr(node, 'first_i', None)
-        last_i = getattr(node, 'last_i', None)
-        if first_i is None:
-            return None, None
-        return first_i, last_i
     #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (only when new)
     def get_node_token_list(node, tokens_list):
         """
@@ -858,7 +850,7 @@ if 1: # pragma: no cover
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
         if new:
-            g.trace(node.__class__.__name__, token)
+            ### g.trace(node.__class__.__name__, token)
             first_i = getattr(node, 'first_i', None)
             if first_i is None:
                 node.first_i = node.last_i = token_i
@@ -1324,7 +1316,7 @@ class TestFstringify (BaseTest):
         contents = """return ('error', 'no member %s' % ivar)"""
         expected = """return ('error', f'no member {ivar}')"""
         contents, tokens, tree = self.make_data(contents)
-        results = self.fstringify(contents, 'test_braces', tokens, tree)
+        results = self.fstringify(contents, 'test_crash_1', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200111075114.1: *5* test_fs.test_crash_2
     def test_crash_2(self):
@@ -1336,7 +1328,7 @@ class TestFstringify (BaseTest):
         contents = r"""'files: %s\n' 'defs: %s'"""
         expected = contents
         contents, tokens, tree = self.make_data(contents)
-        results = self.fstringify(contents, 'test_braces', tokens, tree)
+        results = self.fstringify(contents, 'test_crash_2', tokens, tree)
         assert results == expected, expected_got(expected, results)
 
     #@+node:ekr.20200106163535.1: *4* test_braces
@@ -1486,7 +1478,7 @@ class TestOrange (BaseTest):
         contents = """print('hi')"""
         expected = """print('hi')\n"""
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_braces', tokens, tree)
+        results = self.beautify(contents, 'test_small_contents', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108082833.1: *4* test_lines_before_class
     def test_lines_before_class(self):
@@ -2886,7 +2878,7 @@ class TokenOrderGenerator:
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
-            add_token_to_token_list(token, node) ### used token_list.
+            add_token_to_token_list(token, node) ### new
     #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
     # It's valid for these to return None.
 
@@ -4117,31 +4109,31 @@ class Fstringify (TokenOrderTraverser):
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         ### if not hasattr(node.left, 'token_list'):  # pragma: no cover
         if new:
-            token_list = get_node_token_list(node.left, self.tokens)
+            lt_token_list = get_node_token_list(node.left, self.tokens)
         else:
-            token_list = getattr(node.left, 'token_list', [])
-        if not token_list:  # pragma: no cover
+            lt_token_list = getattr(node.left, 'token_list', [])
+        if not lt_token_list:  # pragma: no cover
             print('')
             g.trace('Error: no token list in Str')
             dump_tree(self.tokens, node)
             print('')
-            return
-                
-        lt_s = tokens_to_string(node.left.token_list)
+            return  
+        lt_s = tokens_to_string(lt_token_list) ### node.left.token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         # Compute rt_s, line and line_number for later messages.
-        token0 = node.left.token_list[0]
+        ### token0 = node.left.token_list[0]
+        token0 = lt_token_list[0]
         line_number = token0.line_number
         line = token0.line.strip()
         rt_s = ''.join(tokens_to_string(z) for z in values)
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):  # pragma: no cover
-            token_list = getattr(node.left, 'token_list', None)
-            token = token_list and token_list[0]
-            line_number = token.line_number
-            line = token.line
+            ### token_list = getattr(node.left, 'token_list', None)
+            ### token = token_list and token_list[0]
+            line_number = token0.line_number
+            line = token0.line
             n_specs, n_values = len(specs), len(values)
             if not self.silent:  # pragma: no cover
                 print(
@@ -4423,7 +4415,7 @@ class Fstringify (TokenOrderTraverser):
         token.node = new_node
         # Update the token list.
         if new:  ###
-            add_token_to_token_list(token, node)
+            add_token_to_token_list(token, new_node)
         else:
             new_node.token_list = [token]
             
