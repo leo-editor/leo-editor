@@ -98,6 +98,7 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
+new = False
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -378,8 +379,8 @@ if 1: # pragma: no cover
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200113154120.1: *3* functions: tokens
-    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
-    def find_anchor_token(node):
+    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token (done: test new, add token_list arg)
+    def find_anchor_token(node, global_token_list): ### Added global_token_list
         """
         Return the anchor_token for node, a token such that token.node == node.
         """
@@ -389,7 +390,11 @@ if 1: # pragma: no cover
         def anchor_token(node):
             """Return the anchor token in node.token_list"""
             # Careful: some tokens in the token list may have been killed.
-            for token in getattr(node, 'token_list', []):
+            if new: ###
+                aList = get_node_token_list(node, global_token_list)
+            else:
+                aList = getattr(node, 'token_list', [])
+            for token in aList:
                 if is_ancestor(node1, token):
                     return token
             return None
@@ -444,7 +449,7 @@ if 1: # pragma: no cover
         if first_i is None:
             return None, None
         return first_i, last_i
-    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (new)
+    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (only when new)
     def get_node_token_list(node, tokens_list):
         """
         tokens_list must be the global tokens list.
@@ -504,22 +509,21 @@ if 1: # pragma: no cover
                 f"            file: {filename}\n"
                 f"            line: {line_n}\n")
         return j
-    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
-    def tokens_for_node(filename, node, tokens):
+    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node (add global_tokens_list arg)
+    def tokens_for_node(filename, node, global_token_list):
         """Return the list of all tokens descending from node."""
         # Find any token descending from node.
-        token = find_anchor_token(node)
+        token = find_anchor_token(node, global_token_list)
         if not token:
             if 0: # A good trace for debugging.
                 print('')
                 g.trace('===== no tokens', node.__class__.__name__)
-                g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
             return []
         assert is_ancestor(node, token)
         # Scan backward.
         i = first_i = token.index
         while i >= 0:
-            token2 = tokens[i-1]
+            token2 = global_token_list[i-1]
             if getattr(token2, 'node', None):
                 if is_ancestor(node, token2):
                     first_i = i - 1
@@ -528,16 +532,16 @@ if 1: # pragma: no cover
             i -= 1
         # Scan forward.
         j = last_j = token.index
-        while j + 1 < len(tokens):
-            token2 = tokens[j+1]
+        while j + 1 < len(global_token_list):
+            token2 = global_token_list[j+1]
             if getattr(token2, 'node', None):
                 if is_ancestor(node, token2):
                     last_j = j + 1
                 else:
                     break
             j += 1
-        last_j = match_parens(filename, first_i, last_j, tokens)
-        results = tokens[first_i : last_j + 1]
+        last_j = match_parens(filename, first_i, last_j, global_token_list)
+        results = global_token_list[first_i : last_j + 1]
         return results
     #@+node:ekr.20200101030236.1: *4* function: tokens_to_string
     def tokens_to_string(tokens):
@@ -791,10 +795,10 @@ if 1: # pragma: no cover
             print(z.dump())
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
-    def dump_tree(tree):
+    def dump_tree(tokens, tree):
         print('')
         print('Tree...\n')
-        print(AstDumper().dump_tree(tree))
+        print(AstDumper().dump_tree(tokens, tree))
     #@+node:ekr.20200107040729.1: *4* function: show_diffs
     def show_diffs(s1, s2, filename=''):
         """Print diffs between strings s1 and s2."""
@@ -849,7 +853,7 @@ if 1: # pragma: no cover
         return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
-    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (changed)
+    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (done: test new)
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
@@ -1109,10 +1113,11 @@ class AstDumper:  # pragma: no cover
 
     #@+others
     #@+node:ekr.20191112033445.1: *4* dumper.dump_tree & helper
-    def dump_tree(self, node):
+    def dump_tree(self, tokens, tree):
         """Briefly show a tree, properly indented."""
+        self.tokens = tokens
         result = [self.show_header()]
-        self.dump_tree_and_links_helper(node, 0, result)
+        self.dump_tree_and_links_helper(tree, 0, result)
         return ''.join(result)
     #@+node:ekr.20191125035321.1: *5* dumper.dump_tree_and_links_helper
     def dump_tree_and_links_helper(self, node, level, result):
@@ -1202,24 +1207,30 @@ class AstDumper:  # pragma: no cover
         else:
             val = ''
         return g.truncate(val, truncate_n)
-
-    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (api must change)
+    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (done: test new)
     def show_line_range(self, node):
         
-        token_list = getattr(node, 'token_list', [])
+        if new:
+            token_list = get_node_token_list(node, self.tokens)
+        else:
+            token_list = getattr(node, 'token_list', [])
         if not token_list:
             return ''
         min_ = min([z.line_number for z in token_list])
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
-    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (api must change)
+    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (done: test new)
     def show_tokens(self, node, n, m):
         """
         Return a string showing node.token_list.
         
         Split the result if n + len(result) > m
         """
-        token_list = getattr(node, 'token_list', [])
+        if new:
+            ### Not ready yet.
+            token_list = get_node_token_list(node, self.tokens)
+        else:
+            token_list = getattr(node, 'token_list', [])
         result = []
         for z in token_list:
             if z.kind == 'comment':
@@ -1758,9 +1769,7 @@ class TestReassignTokens (BaseTest):
     def test_nearest_common_ancestor(self):
         
         contents = """name='uninverted %s' % d.name()"""
-        contents, tokens, tree = self.make_data(contents)
-        # dump_tokens(tokens)
-        # dump_tree(tree)
+        self.make_data(contents)
         
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
@@ -2575,9 +2584,6 @@ class TestTOT (BaseTest):
             contents, tokens, tree = self.make_file_data('leoApp.py')
         else:
             contents, tokens, tree = self.make_data(contents)
-        # dump_contents(contents)
-        # dump_tokens(tokens)
-        # dump_tree(tree)
         tot = TokenOrderTraverser()
         t1 = get_time()
         n_nodes = tot.traverse(tree)
@@ -2881,7 +2887,6 @@ class TokenOrderGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node) ### used token_list.
-            
     #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
     # It's valid for these to return None.
 
@@ -4097,7 +4102,7 @@ class Fstringify (TokenOrderTraverser):
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (minor change)
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (done: test new)
     def make_fstring(self, node):
         """
         node is BinOp node representing an '%' operator.
@@ -4110,10 +4115,15 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
-        if not hasattr(node.left, 'token_list'):  # pragma: no cover
+        ### if not hasattr(node.left, 'token_list'):  # pragma: no cover
+        if new:
+            token_list = get_node_token_list(node.left, self.tokens)
+        else:
+            token_list = getattr(node.left, 'token_list', [])
+        if not token_list:  # pragma: no cover
             print('')
             g.trace('Error: no token list in Str')
-            dump_tree(node)
+            dump_tree(self.tokens, node)
             print('')
             return
                 
@@ -4325,7 +4335,7 @@ class Fstringify (TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (minor change)
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (done: test new)
     def scan_rhs(self, node):
         """
         Scan the right-hand side of a potential f-string.
@@ -4335,7 +4345,12 @@ class Fstringify (TokenOrderTraverser):
         trace = False
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
-            return [node.token_list]
+            ### return [node.token_list]
+            if new: ###
+                token_list = get_node_token_list(node, self.tokens)
+            else:
+                token_list = getattr(node, 'token_list', [])
+            return [token_list]
         if isinstance(node, (list, tuple, ast.Tuple)):
             result = []
             elts = node.elts if isinstance(node, ast.Tuple) else node
@@ -4352,7 +4367,7 @@ class Fstringify (TokenOrderTraverser):
         if trace:
             g.trace('One node:', node.__class__.__name__)
             dump_tokens(tokens)
-            dump_tree(node)
+            dump_tree(tokens, node)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
     def substitute_values(self, lt_s, specs, values):
@@ -4385,7 +4400,7 @@ class Fstringify (TokenOrderTraverser):
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
         return results
-    #@+node:ekr.20191225054848.1: *4* fs.replace (minor change)
+    #@+node:ekr.20191225054848.1: *4* fs.replace (done: test new)
     def replace(self, node, s, values):
         """
         Replace node with an ast.Str node for s.
@@ -4407,7 +4422,11 @@ class Fstringify (TokenOrderTraverser):
         token = self.tokens[i1]
         token.node = new_node
         # Update the token list.
-        new_node.token_list = [token]
+        if new:  ###
+            add_token_to_token_list(token, node)
+        else:
+            new_node.token_list = [token]
+            
     #@+node:ekr.20191231055008.1: *4* fs.visit
     def visit(self, node):
         """
@@ -4954,7 +4973,7 @@ class Orange:
                 break
             line.append(t)
         return list(reversed(line))
-    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix (new, no changed needed)
+    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix
     def find_line_prefix(self, token_list):
         """
         Return all tokens up to and including the first lt token.
