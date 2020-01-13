@@ -378,7 +378,7 @@ if 1: # pragma: no cover
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200113154120.1: *3* functions: tokens
-    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token (changed signature)
+    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
     def find_anchor_token(node, global_token_list):
         """
         Return the anchor_token for node, a token such that token.node == node.
@@ -436,7 +436,7 @@ if 1: # pragma: no cover
                 break
             i += 1
         return None
-    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (changed signature)
+    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list
     def get_node_token_list(node, global_tokens_list):
         """
         tokens_list must be the global tokens list.
@@ -496,7 +496,7 @@ if 1: # pragma: no cover
                 f"            file: {filename}\n"
                 f"            line: {line_n}\n")
         return j
-    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node (add global_tokens_list arg)
+    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
     def tokens_for_node(filename, node, global_token_list):
         """Return the list of all tokens descending from node."""
         # Find any token descending from node.
@@ -840,7 +840,7 @@ if 1: # pragma: no cover
         return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
-    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (changed)
+    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
@@ -1183,7 +1183,7 @@ class AstDumper:  # pragma: no cover
         else:
             val = ''
         return g.truncate(val, truncate_n)
-    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (changed signature)
+    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range
     def show_line_range(self, node):
         
         token_list = get_node_token_list(node, self.tokens)
@@ -1192,7 +1192,7 @@ class AstDumper:  # pragma: no cover
         min_ = min([z.line_number for z in token_list])
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
-    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (changed signature)
+    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens
     def show_tokens(self, node, n, m):
         """
         Return a string showing node.token_list.
@@ -2831,7 +2831,7 @@ class TokenOrderGenerator:
         # Step four. Advance.
         if is_significant_token(token):
             self.px = px
-    #@+node:ekr.20191125120814.1: *6* tog.set_links (minor change)
+    #@+node:ekr.20191125120814.1: *6* tog.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         trace = False
@@ -4071,7 +4071,7 @@ class Fstringify (TokenOrderTraverser):
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (changed)
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
         """
         node is BinOp node representing an '%' operator.
