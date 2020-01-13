@@ -263,16 +263,6 @@ class LeoGlobals: # pragma: no cover
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level
 if 1: # pragma: no cover
     #@+others
-    #@+node:ekr.20200101030236.1: *3* function: tokens_to_string
-    def tokens_to_string(tokens):
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
@@ -387,6 +377,178 @@ if 1: # pragma: no cover
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
+    #@+node:ekr.20200113154120.1: *3* functions: tokens
+    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
+    def find_anchor_token(node):
+        """
+        Return the anchor_token for node, a token such that token.node == node.
+        """
+        
+        node1 = node
+        
+        def anchor_token(node):
+            """Return the anchor token in node.token_list"""
+            # Careful: some tokens in the token list may have been killed.
+            for token in getattr(node, 'token_list', []):
+                if is_ancestor(node1, token):
+                    return token
+            return None
+            
+        # This table only has to cover fields for ast.Nodes that
+        # won't have any associated token.
+        fields = (
+            # Common...
+            'elt', 'elts', 'body', 'value',
+            # Less common...
+            'dims', 'ifs', 'names', 's',
+            'test', 'values', 'targets',
+        )
+        while node:
+            # First, try the node itself.
+            token = anchor_token(node)
+            if token:
+                return token
+            # Second, try the most common nodes w/o token_lists:
+            if isinstance(node, ast.Call):
+                node = node.func
+            elif isinstance(node, ast.Tuple):
+                node = node.elts
+            # Finally, try all other nodes.
+            else:
+                # This will be used rarely.
+                for field in fields:
+                    node = getattr(node, field, None)
+                    if node:
+                        token = anchor_token(node)
+                        if token:
+                            return token
+                else:
+                    break
+        return None
+    #@+node:ekr.20191231160225.1: *4* function: find_paren_token
+    def find_paren_token(i, tokens):
+        """Return i of the next paren token, starting at tokens[i]."""
+        while i < len(tokens):
+            token = tokens[i]
+            if token.kind == 'op' and token.value in '()':
+                return i
+            if is_significant_token(token):
+                break
+            i += 1
+        return None
+    #@+node:ekr.20200113154927.1: *4* function: get_node_tokens_range (new, not used)
+    def get_node_tokens_range(node):
+        """Return (node.first_i, node.last_i) or (None, None)."""
+        first_i = getattr(node, 'first_i', None)
+        last_i = getattr(node, 'last_i', None)
+        if first_i is None:
+            return None, None
+        return first_i, last_i
+    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (new)
+    def get_node_token_list(node, tokens_list):
+        """
+        tokens_list must be the global tokens list.
+        Return the tokens assigned to the node, or [].
+        """
+        first_i = getattr(node, 'first_i', None)
+        last_i = getattr(node, 'last_i', None)
+        return [] if first_i is None else tokens_list [first_i : last_i + 1]
+    #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
+    def is_significant(kind, value):
+        """
+        Return True if (kind, value) represent a token that can be used for
+        syncing generated tokens with the token list.
+        """
+        # Making 'endmarker' significant ensures that all tokens are synced.
+        return (
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
+            kind == 'op' and value not in ',;()')
+
+    def is_significant_token(token):
+        """Return True if the given token is a syncronizing token"""
+        return is_significant(token.kind, token.value)
+    #@+node:ekr.20191224093336.1: *4* function: match_parens
+    def match_parens(filename, i, j, tokens):
+        """
+        Match parens in tokens[i:j]. Return the new j.
+        """
+        if j >= len(tokens):
+            return len(tokens)
+        # Calculate paren level...
+        level = 0
+        for n in range(i, j+1):
+            token = tokens[n]
+            if token.kind == 'op' and token.value == '(':
+                level += 1
+            if token.kind == 'op' and token.value == ')':
+                if level == 0:
+                    break
+                level -= 1
+        # Find matching ')' tokens *after* j.
+        if level > 0:
+            while level > 0 and j + 1 < len(tokens):
+                token = tokens[j+1]
+                if token.kind == 'op' and token.value == ')':
+                    level -= 1
+                elif token.kind == 'op' and token.value == '(': # Bug fix.
+                    level += 1
+                elif is_significant_token(token):
+                    break
+                j += 1
+        if level != 0:  # pragma: no cover.
+            line_n = tokens[i].line_number
+            g.printObj(tokens[i:j+1], tag='Tokens')
+            raise AssignLinksError(
+                f"\n"
+                f"Unmatched parens: level={level}\n"
+                f"            file: {filename}\n"
+                f"            line: {line_n}\n")
+        return j
+    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
+    def tokens_for_node(filename, node, tokens):
+        """Return the list of all tokens descending from node."""
+        # Find any token descending from node.
+        token = find_anchor_token(node)
+        if not token:
+            if 0: # A good trace for debugging.
+                print('')
+                g.trace('===== no tokens', node.__class__.__name__)
+                g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
+            return []
+        assert is_ancestor(node, token)
+        # Scan backward.
+        i = first_i = token.index
+        while i >= 0:
+            token2 = tokens[i-1]
+            if getattr(token2, 'node', None):
+                if is_ancestor(node, token2):
+                    first_i = i - 1
+                else:
+                    break
+            i -= 1
+        # Scan forward.
+        j = last_j = token.index
+        while j + 1 < len(tokens):
+            token2 = tokens[j+1]
+            if getattr(token2, 'node', None):
+                if is_ancestor(node, token2):
+                    last_j = j + 1
+                else:
+                    break
+            j += 1
+        last_j = match_parens(filename, first_i, last_j, tokens)
+        results = tokens[first_i : last_j + 1]
+        return results
+    #@+node:ekr.20200101030236.1: *4* function: tokens_to_string
+    def tokens_to_string(tokens):
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== token list is None ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20200107114620.1: *3* functions: unit testing
     #@+node:ekr.20191027072126.1: *4* function: compare_asts & helpers
     def compare_asts(ast1, ast2):
@@ -481,20 +643,6 @@ if 1: # pragma: no cover
     #@+node:ekr.20191226071135.1: *4* function: get_time
     def get_time():
         return time.process_time()
-    #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
-    def is_significant(kind, value):
-        """
-        Return True if (kind, value) represent a token that can be used for
-        syncing generated tokens with the token list.
-        """
-        # Making 'endmarker' significant ensures that all tokens are synced.
-        return (
-            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
-            kind == 'op' and value not in ',;()')
-
-    def is_significant_token(token):
-        """Return True if the given token is a syncronizing token"""
-        return is_significant(token.kind, token.value)
     #@+node:ekr.20191119085222.1: *4* function: obj_id
     def obj_id(obj):
         """Return the last four digits of id(obj), for dumps & traces."""
@@ -659,66 +807,8 @@ if 1: # pragma: no cover
         print('')
         tag = f"Diffs for {filename}" if filename else 'Diffs'
         g.printObj(lines, tag=tag)
-    #@+node:ekr.20191223095408.1: *3* node/token finders...
+    #@+node:ekr.20191223095408.1: *3* node/token nodes...
     # Functions that associate tokens with nodes.
-    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
-    def find_anchor_token(node):
-        """
-        Return the anchor_token for node, a token such that token.node == node.
-        """
-        
-        node1 = node
-        
-        def anchor_token(node):
-            """Return the anchor token in node.token_list"""
-            # Careful: some tokens in the token list may have been killed.
-            for token in getattr(node, 'token_list', []):
-                if is_ancestor(node1, token):
-                    return token
-            return None
-            
-        # This table only has to cover fields for ast.Nodes that
-        # won't have any associated token.
-        fields = (
-            # Common...
-            'elt', 'elts', 'body', 'value',
-            # Less common...
-            'dims', 'ifs', 'names', 's',
-            'test', 'values', 'targets',
-        )
-        while node:
-            # First, try the node itself.
-            token = anchor_token(node)
-            if token:
-                return token
-            # Second, try the most common nodes w/o token_lists:
-            if isinstance(node, ast.Call):
-                node = node.func
-            elif isinstance(node, ast.Tuple):
-                node = node.elts
-            # Finally, try all other nodes.
-            else:
-                # This will be used rarely.
-                for field in fields:
-                    node = getattr(node, field, None)
-                    if node:
-                        token = anchor_token(node)
-                        if token:
-                            return token
-                else:
-                    break
-        return None
-    #@+node:ekr.20191231160225.1: *4* function: find_paren_token
-    def find_paren_token(i, tokens):
-        """Return i of the next paren token, starting at tokens[i]."""
-        while i < len(tokens):
-            token = tokens[i]
-            if token.kind == 'op' and token.value in '()':
-                return i
-            if is_significant_token(token):
-                break
-            i += 1
-        return None
     #@+node:ekr.20191223054300.1: *4* function: is_ancestor
     def is_ancestor(node, token):
         """Return True if node is an ancestor of token."""
@@ -757,81 +847,9 @@ if 1: # pragma: no cover
             else:
                 break
         return result
-    #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
-    def tokens_for_node(filename, node, tokens):
-        """Return the list of all tokens descending from node."""
-        # Find any token descending from node.
-        token = find_anchor_token(node)
-        if not token:
-            if 0: # A good trace for debugging.
-                print('')
-                g.trace('===== no tokens', node.__class__.__name__)
-                g.printObj(getattr(node, 'token_list', []), tag="Useless tokens")
-            return []
-        assert is_ancestor(node, token)
-        # Scan backward.
-        i = first_i = token.index
-        while i >= 0:
-            token2 = tokens[i-1]
-            if getattr(token2, 'node', None):
-                if is_ancestor(node, token2):
-                    first_i = i - 1
-                else:
-                    break
-            i -= 1
-        # Scan forward.
-        j = last_j = token.index
-        while j + 1 < len(tokens):
-            token2 = tokens[j+1]
-            if getattr(token2, 'node', None):
-                if is_ancestor(node, token2):
-                    last_j = j + 1
-                else:
-                    break
-            j += 1
-        last_j = match_parens(filename, first_i, last_j, tokens)
-        results = tokens[first_i : last_j + 1]
-        return results
-    #@+node:ekr.20191224093336.1: *4* function: match_parens
-    def match_parens(filename, i, j, tokens):
-        """
-        Match parens in tokens[i:j]. Return the new j.
-        """
-        if j >= len(tokens):
-            return len(tokens)
-        # Calculate paren level...
-        level = 0
-        for n in range(i, j+1):
-            token = tokens[n]
-            if token.kind == 'op' and token.value == '(':
-                level += 1
-            if token.kind == 'op' and token.value == ')':
-                if level == 0:
-                    break
-                level -= 1
-        # Find matching ')' tokens *after* j.
-        if level > 0:
-            while level > 0 and j + 1 < len(tokens):
-                token = tokens[j+1]
-                if token.kind == 'op' and token.value == ')':
-                    level -= 1
-                elif token.kind == 'op' and token.value == '(': # Bug fix.
-                    level += 1
-                elif is_significant_token(token):
-                    break
-                j += 1
-        if level != 0:  # pragma: no cover.
-            line_n = tokens[i].line_number
-            raise AssignLinksError(
-                f"\n"
-                f"Unmatched parens: level={level}\n"
-                f"            file: {filename}\n"
-                f"            line: {line_n}\n")
-            g.printObj(tokens[i:j+1], tag='Tokens')
-        return j
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
-    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
+    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (changed)
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
@@ -4074,7 +4092,7 @@ class Fstringify (TokenOrderTraverser):
             results = self.fstringify(contents, filename, tokens, tree)
         except Exception as e:
             print(e)
-            return
+            return False
          # Write the results
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
