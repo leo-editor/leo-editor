@@ -835,6 +835,15 @@ if 1: # pragma: no cover
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
+        if 0: ### new
+            g.trace(node.__class__.__name__, token)
+            min_ = getattr(node, 'first_i', None)
+            if min_ is None:
+                node.first_i = node.last_i = token_i
+            else:
+                node.first_i = min(node.first_i, token_i)
+                node.last_i = max(node.last_i, token_i)
+            return
         token_list = getattr(node, 'token_list', [])
         for i, t, in enumerate(token_list):
             if t.index > token_i:
