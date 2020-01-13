@@ -857,7 +857,7 @@ if 1: # pragma: no cover
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
-        if 0: ### new
+        if new:
             g.trace(node.__class__.__name__, token)
             first_i = getattr(node, 'first_i', None)
             if first_i is None:
