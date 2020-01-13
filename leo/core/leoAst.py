@@ -98,7 +98,6 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
-new = True
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -379,8 +378,8 @@ if 1: # pragma: no cover
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200113154120.1: *3* functions: tokens
-    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token (done: test new, add token_list arg)
-    def find_anchor_token(node, global_token_list): ### Added global_token_list
+    #@+node:ekr.20191223093539.1: *4* function: find_anchor_token (changed signature)
+    def find_anchor_token(node, global_token_list):
         """
         Return the anchor_token for node, a token such that token.node == node.
         """
@@ -390,11 +389,7 @@ if 1: # pragma: no cover
         def anchor_token(node):
             """Return the anchor token in node.token_list"""
             # Careful: some tokens in the token list may have been killed.
-            if new: ###
-                aList = get_node_token_list(node, global_token_list)
-            else:
-                aList = getattr(node, 'token_list', [])
-            for token in aList:
+            for token in get_node_token_list(node, global_token_list):
                 if is_ancestor(node1, token):
                     return token
             return None
@@ -430,26 +425,26 @@ if 1: # pragma: no cover
                 else:
                     break
         return None
-    #@+node:ekr.20191231160225.1: *4* function: find_paren_token
-    def find_paren_token(i, tokens):
+    #@+node:ekr.20191231160225.1: *4* function: find_paren_token (changed signature)
+    def find_paren_token(i, global_token_list):
         """Return i of the next paren token, starting at tokens[i]."""
-        while i < len(tokens):
-            token = tokens[i]
+        while i < len(global_token_list):
+            token = global_token_list[i]
             if token.kind == 'op' and token.value in '()':
                 return i
             if is_significant_token(token):
                 break
             i += 1
         return None
-    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (only when new)
-    def get_node_token_list(node, tokens_list):
+    #@+node:ekr.20200113110505.4: *4* function: get_node_tokens_list (changed signature)
+    def get_node_token_list(node, global_tokens_list):
         """
         tokens_list must be the global tokens list.
         Return the tokens assigned to the node, or [].
         """
         first_i = getattr(node, 'first_i', None)
         last_i = getattr(node, 'last_i', None)
-        return [] if first_i is None else tokens_list [first_i : last_i + 1]
+        return [] if first_i is None else global_tokens_list [first_i : last_i + 1]
     #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
     def is_significant(kind, value):
         """
@@ -845,27 +840,16 @@ if 1: # pragma: no cover
         return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
-    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (done: test new)
+    #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list (changed)
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
         token_i = token.index
-        if new:
-            ### g.trace(node.__class__.__name__, token)
-            first_i = getattr(node, 'first_i', None)
-            if first_i is None:
-                node.first_i = node.last_i = token_i
-            else:
-                node.first_i = min(node.first_i, token_i)
-                node.last_i = max(node.last_i, token_i)
-            return
-        token_list = getattr(node, 'token_list', [])
-        for i, t, in enumerate(token_list):
-            if t.index > token_i:
-                token_list.insert(i, token)
-                node.token_list = token_list
-                return
-        token_list.append(token)
-        node.token_list = token_list
+        first_i = getattr(node, 'first_i', None)
+        if first_i is None:
+            node.first_i = node.last_i = token_i
+        else:
+            node.first_i = min(node.first_i, token_i)
+            node.last_i = max(node.last_i, token_i)
     #@+node:ekr.20191225055616.1: *4* function: replace_node
     def replace_node(new_node, old_node):
         """Replace new_node by old_node in the parse tree."""
@@ -1199,30 +1183,23 @@ class AstDumper:  # pragma: no cover
         else:
             val = ''
         return g.truncate(val, truncate_n)
-    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (done: test new)
+    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (changed signature)
     def show_line_range(self, node):
         
-        if new:
-            token_list = get_node_token_list(node, self.tokens)
-        else:
-            token_list = getattr(node, 'token_list', [])
+        token_list = get_node_token_list(node, self.tokens)
         if not token_list:
             return ''
         min_ = min([z.line_number for z in token_list])
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
-    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (done: test new)
+    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (changed signature)
     def show_tokens(self, node, n, m):
         """
         Return a string showing node.token_list.
         
         Split the result if n + len(result) > m
         """
-        if new:
-            ### Not ready yet.
-            token_list = get_node_token_list(node, self.tokens)
-        else:
-            token_list = getattr(node, 'token_list', [])
+        token_list = get_node_token_list(node, self.tokens)
         result = []
         for z in token_list:
             if z.kind == 'comment':
@@ -2878,7 +2855,7 @@ class TokenOrderGenerator:
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
-            add_token_to_token_list(token, node) ### new
+            add_token_to_token_list(token, node)
     #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
     # It's valid for these to return None.
 
@@ -4094,7 +4071,7 @@ class Fstringify (TokenOrderTraverser):
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (done: test new)
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (changed)
     def make_fstring(self, node):
         """
         node is BinOp node representing an '%' operator.
@@ -4107,22 +4084,17 @@ class Fstringify (TokenOrderTraverser):
         """
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
-        ### if not hasattr(node.left, 'token_list'):  # pragma: no cover
-        if new:
-            lt_token_list = get_node_token_list(node.left, self.tokens)
-        else:
-            lt_token_list = getattr(node.left, 'token_list', [])
+        lt_token_list = get_node_token_list(node.left, self.tokens)
         if not lt_token_list:  # pragma: no cover
             print('')
             g.trace('Error: no token list in Str')
             dump_tree(self.tokens, node)
             print('')
             return  
-        lt_s = tokens_to_string(lt_token_list) ### node.left.token_list)
+        lt_s = tokens_to_string(lt_token_list)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         # Compute rt_s, line and line_number for later messages.
-        ### token0 = node.left.token_list[0]
         token0 = lt_token_list[0]
         line_number = token0.line_number
         line = token0.line.strip()
@@ -4130,8 +4102,6 @@ class Fstringify (TokenOrderTraverser):
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):  # pragma: no cover
-            ### token_list = getattr(node.left, 'token_list', None)
-            ### token = token_list and token_list[0]
             line_number = token0.line_number
             line = token0.line
             n_specs, n_values = len(specs), len(values)
@@ -4327,7 +4297,7 @@ class Fstringify (TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (done: test new)
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
     def scan_rhs(self, node):
         """
         Scan the right-hand side of a potential f-string.
@@ -4337,11 +4307,7 @@ class Fstringify (TokenOrderTraverser):
         trace = False
         # First, Try the most common cases.
         if isinstance(node, ast.Str):
-            ### return [node.token_list]
-            if new: ###
-                token_list = get_node_token_list(node, self.tokens)
-            else:
-                token_list = getattr(node, 'token_list', [])
+            token_list = get_node_token_list(node, self.tokens)
             return [token_list]
         if isinstance(node, (list, tuple, ast.Tuple)):
             result = []
@@ -4353,7 +4319,6 @@ class Fstringify (TokenOrderTraverser):
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
                     g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
-        
         # Now we expect only one result. 
         tokens = tokens_for_node(self.filename, node, self.tokens)
         if trace:
@@ -4392,7 +4357,7 @@ class Fstringify (TokenOrderTraverser):
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
         return results
-    #@+node:ekr.20191225054848.1: *4* fs.replace (done: test new)
+    #@+node:ekr.20191225054848.1: *4* fs.replace
     def replace(self, node, s, values):
         """
         Replace node with an ast.Str node for s.
@@ -4414,11 +4379,8 @@ class Fstringify (TokenOrderTraverser):
         token = self.tokens[i1]
         token.node = new_node
         # Update the token list.
-        if new:  ###
-            add_token_to_token_list(token, new_node)
-        else:
-            new_node.token_list = [token]
-            
+        add_token_to_token_list(token, new_node)
+        
     #@+node:ekr.20191231055008.1: *4* fs.visit
     def visit(self, node):
         """
