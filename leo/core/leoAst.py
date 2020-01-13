@@ -855,8 +855,8 @@ if 1: # pragma: no cover
         token_i = token.index
         if 0: ### new
             g.trace(node.__class__.__name__, token)
-            min_ = getattr(node, 'first_i', None)
-            if min_ is None:
+            first_i = getattr(node, 'first_i', None)
+            if first_i is None:
                 node.first_i = node.last_i = token_i
             else:
                 node.first_i = min(node.first_i, token_i)
