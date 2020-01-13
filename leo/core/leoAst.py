@@ -2880,11 +2880,8 @@ class TokenOrderGenerator:
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
-            if 1: ### Preparing for changeover. Should be harmless.
-                add_token_to_token_list(token, node)
-            else: ### Legacy code.
-                token_list = getattr(node, 'token_list', [])
-                node.token_list = token_list + [token]
+            add_token_to_token_list(token, node) ### used token_list.
+            
     #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
     # It's valid for these to return None.
 
