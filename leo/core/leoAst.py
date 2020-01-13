@@ -1203,7 +1203,7 @@ class AstDumper:  # pragma: no cover
             val = ''
         return g.truncate(val, truncate_n)
 
-    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range
+    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range (api must change)
     def show_line_range(self, node):
         
         token_list = getattr(node, 'token_list', [])
@@ -1212,7 +1212,7 @@ class AstDumper:  # pragma: no cover
         min_ = min([z.line_number for z in token_list])
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
-    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens
+    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens (api must change)
     def show_tokens(self, node, n, m):
         """
         Return a string showing node.token_list.
@@ -2856,7 +2856,7 @@ class TokenOrderGenerator:
         # Step four. Advance.
         if is_significant_token(token):
             self.px = px
-    #@+node:ekr.20191125120814.1: *6* tog.set_links
+    #@+node:ekr.20191125120814.1: *6* tog.set_links (minor change)
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         trace = False
@@ -2880,8 +2880,11 @@ class TokenOrderGenerator:
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
-            token_list = getattr(node, 'token_list', [])
-            node.token_list = token_list + [token]
+            if 1: ### Preparing for changeover. Should be harmless.
+                add_token_to_token_list(token, node)
+            else: ### Legacy code.
+                token_list = getattr(node, 'token_list', [])
+                node.token_list = token_list + [token]
     #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
     # It's valid for these to return None.
 
@@ -4097,7 +4100,7 @@ class Fstringify (TokenOrderTraverser):
         print(f"Wrote {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers (minor change)
     def make_fstring(self, node):
         """
         node is BinOp node representing an '%' operator.
@@ -4325,7 +4328,7 @@ class Fstringify (TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs (minor change)
     def scan_rhs(self, node):
         """
         Scan the right-hand side of a potential f-string.
@@ -4385,7 +4388,7 @@ class Fstringify (TokenOrderTraverser):
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
         return results
-    #@+node:ekr.20191225054848.1: *4* fs.replace
+    #@+node:ekr.20191225054848.1: *4* fs.replace (minor change)
     def replace(self, node, s, values):
         """
         Replace node with an ast.Str node for s.
@@ -4954,7 +4957,7 @@ class Orange:
                 break
             line.append(t)
         return list(reversed(line))
-    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix (new)
+    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix (new, no changed needed)
     def find_line_prefix(self, token_list):
         """
         Return all tokens up to and including the first lt token.
