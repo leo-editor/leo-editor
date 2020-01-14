@@ -48,7 +48,10 @@ This issue lists the filters that I use to organize and understand my work flow.
 
 **The "Maybe" and "Won'tDo" labels are not necessarily death sentences.** I often change my mind. Comments are not allowed here. Please argue for an issue in [leo-editor](https://groups.google.com/forum/#!forum/leo-editor), or in the issue itself.
 .. @+node:ekr.20200114052814.1: ** Backup of first comment of #1440
-[leoAst.py](https://github.com/leo-editor/leo-editor/blob/fstrings/leo/core/leoAst.py) unifies python's token-oriented and ast-oriented worlds. This project is a major contribution to python's core tools. 
+@language rest
+@wrap
+
+[leoAst.py](https://github.com/leo-editor/leo-editor/blob/fstrings/leo/core/leoAst.py) unifies python's token-oriented and ast-oriented worlds. This project is intended to be a major contribution to python's tool set.
 
 **Overview**
 
@@ -75,32 +78,23 @@ Work is in progress on distributing leoAst.py as a separate project. In the mean
 
 **Status**
 
-*The project is a complete success*:
-- The code is simple, fast, and makes no demands on the GC.
-- It is easy to debug and maintain.
-- It is robust: TOG.sync_token is an ever-present unit test.
+*The project is a complete success*.  The code in leoAst.py is simpler, easier to understand, more flexible, more robust and faster than the corresponding code in the asttokens, fstringify and black projects. See the following section for more details.
 
-The code in leoAst.py is simpler, easier to understand, more robust and faster than the corresponding code in the asttokens, fstringify and black projects. These improved figures of merit are the results of months of innovation.
+leoAst.py contains an entirely new implementation of the [fstringify](https://pypi.org/project/fstringify/) tool. This new fstringify is simpler, faster, more complete, more flexible and more reliable than fstringify itself.
 
-leoAst.py contains an entirely new implementation of the [fstringify](https://pypi.org/project/fstringify/) tool. This re-implementation of fstringify is now simpler, faster, more complete, and more reliable than fstringify itself.
-
-leoAst.py also contains an entirely new implementation of [black](https://pypi.org/project/black/). This re-implementation is under development. Basing the code on the TOG class will surely make the tool simpler and faster than black itself.
+leoAst.py also contains an entirely new implementation of [black](https://pypi.org/project/black/). This code is under development. Basing the code on the TOG class will surely make the tool simpler, more flexible and faster than black itself.
 
 **Figures of merit**
 
 **Simplicity**: The code (all of it) is the simplest thing that could possibly work. This is in stark contrast to the generators used in the [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) projects.
 
-**Innovation**: The present simplicity is the result of months of invention.  For more details, see the Theory of Operation in [this issue's second comment](https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883).
+**Flexibility**: Flexibility comes from simplicity, not special cases. The code contains no hacks of any kind. Again, this is in stark contrast to the generators used by asttokens, fstringify and black.
 
-**Speed**: The TOG creates two-way links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods.
+**Speed**: The TOG creates two-way links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods. This is substantially faster than the  [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) tools. The TOT class traverses trees annotated with parent/child links even more quickly.
 
-This is substantially faster than the  [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) tools.
+**Memory**: The TOG class makes no significant demands on python's resources. Generators add nothing to python's call stack. TOG.node_stack is the only variable length data. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries. The TOT class uses no variable-length data whatever.
 
-The TOT class traverses trees annotated with parent/child links even more quickly.
-
-TOG class avoids both [ast.fix_missing_locations](https://docs.python.org/3/library/ast.html#ast.fix_missing_locations) and [ast.get_source_segment](https://docs.python.org/3/library/ast.html#ast.get_source_segment), which are too slow to be useful.
-
-**Memory**: The TOG class makes no significant demand on python's resources. Generators add nothing to python's call stack. TOG.node_stack is the only variable length data. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries. The TOT class uses no variable-length data whatever.
+**Innovation**: The code's speed, simplicity, robustness and flexibility is the result of months of work.  For more details, see the Project's history in [this issue's third comment](https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-574145510).
 
 **To do**
 
@@ -119,11 +113,11 @@ Real world tools:
 - [x] Create fstringify-files, diff-fstringify-files and silent-fstringify-files commands.
 - [x] Rewrite Leo's beautify-files and diff-beautify-files commands using the Orange class.
 - [ ] Complete the Orange class.
-
-**Project history**
-
- See [this thread](https://groups.google.com/forum/#!topic/leo-editor/FZYJmbtRBWs). 
 .. @+node:ekr.20200114055535.1: ** Backup of second comment of #1440: Theory of operation
+@language rest
+@wrap
+
+
 **Theory of Operation**
 
 This is the Theory of Operation for the TokenOrderGenerator (TOG) class and related classes. These classes should be a substantial legacy to the python community.
@@ -187,6 +181,9 @@ To summarize token syncing:
 - TOG.find_next_significant_token and TOG.get_concatenated_string_tokens scan forward through the token list using a private copy of TOG.px. These methods never change TOG.px itself.
 - This token-syncing machinery is the *simplest* thing that could possibly work. It is also the *fastest* thing that could possibly work.
 .. @+node:ekr.20200114071235.1: ** Backup of third comment of #1440: Project history
+@language rest
+@wrap
+
 **Project history**
 
 EKR's posts record the many Aha's there have been along the way:
