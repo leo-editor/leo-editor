@@ -2352,20 +2352,22 @@
 </v>
 </v>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
-<v t="ekr.20191118120136.1"><vh>High level overview</vh></v>
-<v t="ekr.20191206062224.1"><vh>Classes</vh></v>
-<v t="ekr.20191118120821.1"><vh>Tokenize &amp; parse</vh></v>
-<v t="ekr.20191118121341.1"><vh>Traversal</vh></v>
-<v t="ekr.20191118121412.1"><vh>Assigning tokens to nodes</vh></v>
-<v t="ekr.20191206063508.1"><vh>Tokens help the tree traveral</vh></v>
+<v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
+<v t="ekr.20200113232354.1"><vh>Other classes</vh></v>
+<v t="ekr.20200113234440.1"><vh>Significant vs insignificant tokens</vh></v>
+<v t="ekr.20191206063508.1"><vh>Helping TOG visitors</vh></v>
 <v t="ekr.20191206064645.1"><vh>Syncing tokens</vh></v>
-<v t="ekr.20200107105607.1"><vh>Figures of merit</vh></v>
+<v t="ekr.20200107105607.1"><vh>Figures of merit</vh>
+<v t="ekr.20200114003344.1"><vh>Simplicity and innovation</vh></v>
+<v t="ekr.20200114003349.2"><vh>Speed</vh></v>
+<v t="ekr.20200114003350.1"><vh>Memory usage</vh></v>
+</v>
 <v t="ekr.20191206062108.1"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
 <v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
-<v t="ekr.20200107143607.1"><vh>Running unit tests</vh></v>
-<v t="ekr.20200107110111.1"><vh>An annotated example</vh></v>
+<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests</vh></v>
+<v t="ekr.20200107110111.1"><vh>Example</vh></v>
 <v t="ekr.20200107110057.1"><vh>Notable functions</vh>
 <v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
 <v t="ekr.20200107112200.1"><vh>Reading &amp; writing files</vh></v>
@@ -2373,7 +2375,6 @@
 <v t="ekr.20200107112459.1"><vh>Updating tokens and parse trees</vh></v>
 </v>
 <v t="ekr.20200107113403.1"><vh>Notable methods</vh>
-<v t="ekr.20200107113446.1"><vh>Fstringify.replace</vh></v>
 <v t="ekr.20200107142833.1"><vh>TokenOrderGenerator.init_from_file</vh></v>
 </v>
 </v>
@@ -31010,155 +31011,98 @@ The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html
 <t tx="ekr.20191118115949.1">This is the Theory of Operation for the TokenOrderGenerator (TOG) class and
 related classes. These classes should be a substantial legacy to the python
 community.
+
+The notion of a **token order traversal** of a parse tree is the foundation
+of this project. This is the traversal order that generates tokens in the
+same order that they appear in the token list corresponding to the parse
+tree. This project proves that token order traversals exist, and that the
+notion of a token order traversal is well defined.
 </t>
-<t tx="ekr.20191118120136.1">The TOG class inserts two-way links between a **token list** (created by
-python's tokenizer) and a **parse tree** of ast.Ast nodes, created by
-Python's ast module.
-
-The TOG is a straightforward tree traversal. TOG.sync_token ensures that the tree
-traversal does, in fact, visit nodes in token order.</t>
-<t tx="ekr.20191118120821.1">The **contents** are a string, a snippet of python code.
-
-1. The TOG calls python's tokenize module to create the tokens list, a list
-of Token objects:
-
-- Creates the token list and the parse tree from the **contents string**.
-- Creates links between matching parenthesis tokens.
-
-2. The TOG then calls python's ast module to create the parse tree, a tree of
-ast.AST nodes.
-
-- Creates parent/child links between parse tree nodes.
-- Creates two-way links between tokens and their associated parse-tree nodes.
-</t>
-<t tx="ekr.20191118121341.1">The TOG traverses the parse tree once, generating two-way links between
-tokens and parse tree nodes as it does so.
-
-Crucially, this traversal happens in token order. This is the one and only
-order that guarantees the tokens will be be associated with nodes in order.
-
-All visitors are generators, ensuring that the traversal can't overflow
-python's run-time stack. Visitors use "yield from" to generate results from
-sub-trees.
-
-These yields must be done in token order. Therefore, a *separate* visitor
-is required for each kind of parse tree node.
-
-The TOG.visitor method calls TOG.begin_visitor and TOG.end_visitor. These
-methods save, set and restore the tog.node ivar. This ivar is the tree node
-corresponding to each visitor.
-
-Visitors call tog.gen* methods to visit subtrees. All such generators
-eventually call TOG.sync_token, which checks that that tokens are, in
-fact, visited in the correct order. TOG.sync_token is an ever-present
-unit test.
-</t>
-<t tx="ekr.20191118121412.1">The parse tree can not possibly visit *all* tokens in correct order,
-because **insignificant** tokens do not appear in the parse tree.
-
-Therefore, sync_tokens synchronizes only of **significant** tokens.
-
-When a significant token is seen, TOG.sync_token assigns all previous
-signfificant tokens to **node.token_list**.
-
-A separate post-pass, TOG.reassign_tokens, adjusts the token list for
-ast.Call nodes.</t>
 <t tx="ekr.20191206062108.1">The notion of token-order tree traversals got this project started.
 
-I am proud of this work. One only needs to compare it with other parse-tree
-tools, including my own, to see how clever and simple this code is.
+I am proud of this work:
 
-I want to emphasize the following:
+- The code is simple, fast, and makes no demands on the GC.
+- It is easy to debug and maintain.
+- It is robust: TOG.sync_token is an ever-present unit test.
 
-1. The TOG class is a general proof of concept that can be applied to other
-   kinds of parse trees besides ast trees.
+The code in leoAst.py is simpler, easier to understand, more robust and
+faster than the corresponding code in the asttokens, fstringify and black
+projects. These improved figures of merit are the results of months of
+innovation.
 
-Having said that, there is no particular reason to use any other other kind
-of parse tree.
+The Fstringify class is already more capable and more solid than the
+official fstringify tool.</t>
+<t tx="ekr.20191206062224.1">The **TokenOrderGenerator** (TOG) class injects two-way links between all
+tokens and the corresponding ast nodes. The TOG class also injects
+parent/child links into all ast nodes.
 
-2. All parts of the TOG class are dead easy to understand.
+The TOG class defines generators that visit ast nodes in **token order**,
+the *unique* and *well defined* order that corresponds to the order of the
+tokens produced by python's tokenizer module. The only way to ensure this
+correspondence is to use separate visitors for all ast nodes. All visitors
+are straightforward generators.
 
-Others can adopt this code without any maintenance fears.
+TOG visitors `yield from` tog.gen* generators to visit subtrees. All such
+generators eventually call TOG.sync_token, which checks that that tokens
+are, in fact, visited in the correct order. TOG.sync_token is an
+ever-present unit test.
 
-3. The code does one thing, and one thing only, which is to add various
-   links between tokens and ast nodes.
+The **TokenOrderTraversal** (TOT) class uses the parent/child links created
+by the TOG class. TOT.traverse contains a single for-loop that calls all
+nodes of the parse tree in token order. This loop is extremely fast. Using
+the TOT class, client code can easily modify the token list or parse tree
+as desired.</t>
+<t tx="ekr.20191206063508.1">TOG.do_If calls **TOG.find_next_significant_token** to determine whether
+TOG.do_If should generate an "if" or an "elif" token. This help is essential,
+because the following two source files generate identical parse trees!::
 
-Simple, fast post passes could adjust those links and provide other
-services. In particular, a replace tree method, similar to that in the
-asttokens tool, will make fstringify tools a snap. Ditto for black.
+  if 1:            if 1:
+      pass             pass
+  else:            elif 2:
+      if 2:            pass
+          pass
 
-4. The TOG class contains strong consistency checks that are always in
-   effect.
+Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call
+**TOG.get_concatenated_string_tokens** to handle one ore more concatenated
+string tokens.
 
-The sync_tokens(kind, val) method ensures that generators visit nodes in
-token order. It does this by checking that (kind, val) matches the next
-significant token in the token list. A single integer index into the token
-list suffices to make this test.
+Finally, TOG.do_slice calls TOG.find_next_significant_token to determine
+whether a slice without a step contains an optional colon.
 
-5. The TOG class is surely the *simplest* thing that could possibly work.
-
-The advance_str method is a spectacular invention. It collapses the
-complexity of the do_Str and do_JoinedStr visitors.
-
-Node visitors are straightforward. The do_Str and do_JoinedStr visitors
-must call advance_str. The do_If visitor must call advance_if.
-
-6. The TOG class is also the *fastest* thing that could possibly work.
-
-The TOG executes in roughly half the time that python's library takes to
-tokenize and parse the tree. The TOG class makes no demands on either
-python's call stack or python's heap.
-
-7. It will be very easy to create subclasses for special purposes. Some
-   examples:
-
-- The TokenOrderInjector class defines overrides TOG.begin_visitor to
-  inject parent/children links in each ast node.
-
-- The TokenOrderNodeGenerator overrides TOG.begin_visitor so that it yields
-  ast nodes in token order.
-
-- An fstringify tool based on the TOG class might consist of a page or two
-  of code.
-
-A new version of black would be a bit more complex, but not much more. I will likely try my hand at that too.</t>
-<t tx="ekr.20191206062224.1">The **Token** class represents one token, created by tokenize.tokenize.
-
-The **TokenOrderGenerator** (TOG) class contains most of the
-infrastructure. 
-
-The **TokenOrderTraverser** (TOT) class traverses a tree in token order,
-using the parent/child links created by the TOG class. The traversal is
-extremely fast.</t>
-<t tx="ekr.20191206063508.1">Without Tokens, there would be *no way* for do_If to know whether it should
-call gen_token('if') or gen_token('elif'). That's because two *different*
-sources can generate exactly the same parse tree!
-
-The **TOG.advance_if** method provides the necessary hint. This method
-advances through the token list, providing *only* 'if', 'else' and 'elif'
-tokens.
-
-Similarly, the **TOG.advance_str** method allows the TOG.do_JoinedStr and
-TOG.do_Str visitors to know whether the ast.Str and ast.JoinedStr nodes
-represent one or more concatentated 'string' tokens.
-
-The TOG.advance_if and TOG.advance_str methods are crucial inventions.
-Without them the TOG class would not be possible.</t>
-<t tx="ekr.20191206064645.1">Tog.sync_tokens ensures that the traversal "visits" tokens in token order.
-Only a integer index (tog.px) is required for this check.
-
-Two other indices are required: advance_str updates tog.string_index, and
-tog.advance_if updates tog.if_index.
-
-In effect, the traversal just does the following:
-
-- Uses 'yield from' to traverse the tree, non-recursively.
-- Updates tog.px, tog.string_index and tog.if_index.
-- Insert links between tokens and nodes.
-
-That's *all*!
-
+TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are
+crucial invensions. TOG class would not be possible without them.
 </t>
+<t tx="ekr.20191206064645.1">TOG.px is an index into the token list. It is either -1, or it points at
+the previous significant token. **Note**: TOG.find_next_significant_token
+and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
+
+TOG.sync_token(self, kind, val) associates tokens with ast nodes as follows:
+
+1. If (kind, val) denote an *insignificant* token, TOG.sync_token does
+   nothing.
+   
+2. Otherwise, (kind, val) denotes a *significant* token. TOG.sync_token
+   associates that token, *plus* all previous *insignificant* tokens with
+   self.node, the ast node presently being visited.
+   
+In addition, if (kind, val) denotes a *significant* token, checks that the
+next *significant* token in the token list has the expected kind and value.
+This is done as follows:
+
+- TOG.sync_token advances TOG.px to point at the next significant token,
+  call it T.
+- TOG.raises AssignLinksError if (T.kind, T.value) != (kind, val)
+
+To summarize token syncing:
+
+- The TOG.px index tracks the last-seen *significant* token.
+- TOG.px advances monitonically through the token list.
+- TOG.find_next_significant_token and TOG.get_concatenated_string_tokens
+  scan forward through the token list using a private copy of TOG.px. These
+  methods never change TOG.px itself.
+- This token-syncing machinery is the *simplest* thing that could possibly
+  work. It is also the *fastest* thing that could possibly work.</t>
 <t tx="ekr.20191216061528.1">gnx: ekr.20170130080532.1
 </t>
 <t tx="ekr.20191216061528.2">gnx: ekr.20191216061356.4
@@ -31213,56 +31157,21 @@ gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
 <t tx="ekr.20200107061524.1">This is the How To documentation for leoAst.py.</t>
-<t tx="ekr.20200107105607.1">Both the TOG class is simple and fast. It make no significant demand on
-python's resources:
+<t tx="ekr.20200107105607.1">This project has been successful beyond my dreams...
 
-- Generators add nothing to python's call stack.
-
-- The *only* variable-length data is tog.node_stack. In the worst case it
-  would have only a few tens of thousands of entries.
-  
-The TOT class iteratively visits each node in the parse tree. It uses no
-variable-length data whatever, and is even faster than the TOG class.</t>
+</t>
 <t tx="ekr.20200107110057.1"></t>
-<t tx="ekr.20200107110111.1">The Fstringify.fstringify_file method implements Leo's fstringfy-file
-command. It contains all you need to use the TokenOrderTraverser class.
-Here it is, with annotations::
+<t tx="ekr.20200107110111.1">The Fstringify.fstringify_file method implements Leo's fstringfy-file command. 
+Here it is, minus error handling code::
 
     def fstringify_file(self, filename):
-        tag = 'fstringify-file'
-        self.filename = filename
-        #
-        # Part 1: Initialize the data structures.
-        #
-        # - Read the file into contents, and set the file's encoding.
-        # - Create the tokens list and the parse tree.
-        # - Link corresponding parenthesis tokens.
-        # - Set two-way links between tokens and corresponding nodes in the parse tree
-        # 
+    
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            print(f"{tag}: Can not fstringify: {filename}")
-            return False
-        #
-        # Part 2: fstringify.
-        #
-        self.fstringify(contents, filename, tokens, tree)
-        results = tokens_to_string(tokens)
-        if contents == results:
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        #
-        # Part 3: Show the diffs.
-        #
+        results = self.fstringify(contents, filename, tokens, tree)
         show_diffs(contents, results, filename=filename)
-        #
-        # Part 4: Write the results, with the same encoding as in the orignal file.
-        #
-        print(f"{tag}: Wrote {filename}")
-        write_file(filename, results, encoding=encoding)
-        return True
-</t>
+        print(f"Wrote {filename}")
+        write_file(filename, results, encoding=encoding)</t>
 <t tx="ekr.20200107111656.1">The dump_* functions pretty-print tokens and parse trees in various
 formats.
 
@@ -31316,14 +31225,6 @@ def replace_node(new_node, old_node):
 def replace_token(token, kind, value):
     """Replace kind and value of the given token."""</t>
 <t tx="ekr.20200107113403.1"></t>
-<t tx="ekr.20200107113446.1">Fstringify.replace shows how to make large changes to the parse tree and
-tokens list.
-
-def replace(self, node, s, values):
-    """
-    Replace node with an ast.Str node for s.
-    Replace all tokens in the range of values with a single 'string' node.
-    """</t>
 <t tx="ekr.20200107142458.1">leoAst.py is completely self contained. It imports only standard library
 modules.
 
@@ -31360,7 +31261,87 @@ def init_from_file(self, filename):
 <t tx="ekr.20200107143607.1">The following runs all unit tests for leoAst.py::
 
     python -m leo.core.leoAst
+    
+The following runs coverage tests::
+
+    pytest -x --cov-report html --cov-report term-missing --cov=leo.core.leoAst leo/core/leoAst.py
 </t>
+<t tx="ekr.20200113232354.1">The **Token** class represents one token, created by tokenize.tokenize.
+
+The **Fstringify** class is an re-implementation of the project using the
+TOG class.
+
+The **Orange** class is a re-implementation of the black project. The name
+"Orange" is a play on words: "Orange is the new black".
+
+The **AstDumper** class provides an extensive set of tools for examining
+token lists, parse trees, and the links between them.
+
+The **BaseTest** class provides common infrastructure for all other test
+classes. *Important*: BaseTest.make_data is, all by itself, a very strong
+unit test.
+</t>
+<t tx="ekr.20200113234440.1">@language rest
+
+The distinction between **significant** and **insignificant** tokens is a
+crucial invention of this project. Visitors call TOG.gen_token, TOG.gen_op,
+etc. *only* for significant tokens.
+
+The following functions declare that commas, semicolons, whitespace and parentheses are *insignificant* tokens. All other kinds of tokens are significant::
+
+@language python
+
+    def is_significant(kind, value):
+        """
+        Return True if (kind, value) represent a token that can be used for
+        syncing generated tokens with the token list.
+        """
+        # Making 'endmarker' significant ensures that all tokens are synced.
+        return (
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
+            kind == 'op' and value not in ',;()')
+    
+    def is_significant_token(token):
+        """Return True if the given token is a syncronizing token"""
+        return is_significant(token.kind, token.value)
+
+@language rest
+
+These definitions are anything but arbitrary. Visitors can't know, just by looking at the parse tree, whether the input contains *insignificant* tokens.  For example, the source tokens might contain non-essential parentheses, or optional trailing commas, or whether two statements are separated by a semicolon.</t>
+<t tx="ekr.20200114003344.1">The code (all of it) is the simplest thing that could possibly work. This
+is in stark contrast to the generators used in the asttokens, fstringify,
+and black projects.
+
+The simplicity of the present code is the result of months of invention.
+Several inventions and discoveries deserve special mention:
+
+1. The notion of a token-order traversals is the root of all the present
+   simpicity.
+
+2. The distinction between significant and insignificant tokens makes
+   token-order traversals possible. This distinction drastically simplifies
+   TOG visitors. They never have to generate insignificant tokens!
+   
+3. TOG.find_next_significant_token and TOG.get_concatenated_string_tokens()
+   use TOG.px to look ahead in the token list.
+   
+   This innovation looks obvious only in retrospect. It took a long time
+   to realize that the parse tree needs help from the token list, not the
+   other way around!</t>
+<t tx="ekr.20200114003349.2">The TOG creates links between tokens and ast nodes in roughly the time
+taken by python's tokenize.tokenize and ast.parse library methods. The TOT
+class traverses trees annotated with parent/child links even more quickly.
+
+TOG class avoids both ast.fix_missing_locations and ast.get_source_segment,
+which are too slow to be useful.</t>
+<t tx="ekr.20200114003350.1">The TOG class makes no significant demand on python's resources:
+
+- Generators add nothing to python's call stack.
+- The *only* variable-length data created by the TOG is TOG.node_stack.
+  This stack resides in python's heap, so its length is unimportant. In the
+  worst case, it might contain a few thousand entries.
+  
+The TOT uses no variable-length data whatever.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
