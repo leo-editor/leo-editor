@@ -2358,7 +2358,8 @@
 <v t="ekr.20191206063508.1"><vh>Helping TOG visitors</vh></v>
 <v t="ekr.20191206064645.1"><vh>Syncing tokens</vh></v>
 <v t="ekr.20200107105607.1"><vh>Figures of merit</vh>
-<v t="ekr.20200114003344.1"><vh>Simplicity and innovation</vh></v>
+<v t="ekr.20200114003344.1"><vh>Simplicity</vh></v>
+<v t="ekr.20200114051050.1"><vh>Innovation</vh></v>
 <v t="ekr.20200114003349.2"><vh>Speed</vh></v>
 <v t="ekr.20200114003350.1"><vh>Memory usage</vh></v>
 </v>
@@ -31026,13 +31027,13 @@ The Fstringify class is already more capable and more solid than the official fs
 </t>
 <t tx="ekr.20191206062224.1">The **TokenOrderGenerator** (TOG) class injects two-way links between all tokens and the corresponding ast nodes. The TOG class also injects parent/child links into all ast nodes.
 
-The TOG class defines generators that visit ast nodes in **token order**, the *unique* and *well defined* order that corresponds to the order of the tokens produced by python's tokenizer module. The only way to ensure this correspondence is to use separate visitors for all ast nodes. All visitors are straightforward generators.
+The TOG class defines generators that visit ast nodes in **token order**, the traversal order that corresponds to the order of the tokens produced by python's tokenizer module. The only way to ensure this correspondence is to use separate visitors for all ast nodes. All visitors are straightforward generators.
 
 TOG visitors `yield from` tog.gen* generators to visit subtrees. All such generators eventually call TOG.sync_token, which checks that that tokens are, in fact, visited in the correct order. TOG.sync_token is an ever-present unit test.
 
 The **TokenOrderTraversal** (TOT) class uses the parent/child links created by the TOG class. TOT.traverse contains a single for-loop that calls all nodes of the parse tree in token order. This loop is extremely fast. Using the TOT class, client code can easily modify the token list or parse tree as desired.
 </t>
-<t tx="ekr.20191206063508.1">TOG.do_If calls **TOG.find_next_significant_token** to determine whether TOG.do_If should generate an "if" or an "elif" token. This help is essential, because the following two source files generate identical parse trees!::
+<t tx="ekr.20191206063508.1">The TOG.do_If visitor calls **TOG.find_next_significant_token** to determine whether TOG.do_If should generate an "if" or an "elif" token. This help is essential, because the following two source files generate identical parse trees!::
 
   if 1:            if 1:
       pass             pass
@@ -31046,7 +31047,7 @@ Finally, TOG.do_slice calls TOG.find_next_significant_token to determine whether
 
 TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are crucial inventions. TOG class would not be possible without them.
 </t>
-<t tx="ekr.20191206064645.1">**TOG.px** is an index into the token list. It is either -1, or it points at the previous significant token. **Note**: TOG.find_next_significant_token and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
+<t tx="ekr.20191206064645.1">**TOG.px** is an index into the token list. It is either -1, or it points at the previous significant token. *Note*: TOG.find_next_significant_token and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
 
 TOG.sync_token(self, kind, val) associates tokens with ast nodes as follows:
 
@@ -31054,7 +31055,7 @@ TOG.sync_token(self, kind, val) associates tokens with ast nodes as follows:
    
 2. Otherwise, (kind, val) denotes a *significant* token. TOG.sync_token associates that token, *plus* all previous *insignificant* tokens with self.node, the ast node presently being visited.
    
-In addition, if (kind, val) denotes a *significant* token, checks that the next *significant* token in the token list has the expected kind and value. This is done as follows:
+In addition, if (kind, val) denotes a *significant* token, TOG.sync_token checks that the next *significant* token in the token list has the expected kind and value. This is done as follows:
 
 - TOG.sync_token advances TOG.px to point at the next significant token, call it T.
 - TOG.raises AssignLinksError if (T.kind, T.value) != (kind, val)
@@ -31268,15 +31269,6 @@ These definitions are anything but arbitrary. Visitors can't know, just by looki
 </t>
 <t tx="ekr.20200114003344.1">The code (all of it) is the simplest thing that could possibly work. This is in stark contrast to the generators used in the asttokens, fstringify, and black projects.
 
-The simplicity of the present code is the result of months of invention. Several inventions and discoveries deserve special mention:
-
-1. The notion of a token-order traversals is the root of all the present simplicity.
-
-2. The distinction between significant and insignificant tokens makes token-order traversals possible. This distinction drastically simplifies TOG visitors. They never have to generate insignificant tokens!
-   
-3. TOG.find_next_significant_token and TOG.get_concatenated_string_tokens() use TOG.px to look ahead in the token list.
-   
-This innovation looks obvious only in retrospect. It took a long time to realize that the parse tree needs help from the token list, not the other way around!
 </t>
 <t tx="ekr.20200114003349.2">The TOG creates links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods. The TOT class traverses trees annotated with parent/child links even more quickly.
 
@@ -31288,6 +31280,16 @@ TOG class avoids both ast.fix_missing_locations and ast.get_source_segment, whic
 - The *only* variable-length data created by the TOG is TOG.node_stack. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries.
   
 The TOT uses no variable-length data whatever.
+</t>
+<t tx="ekr.20200114051050.1">The simplicity of the present code is the result of months of invention. Several inventions and discoveries deserve special mention:
+
+1. The notion of a token-order traversals is the root of all the present simplicity.
+
+2. The distinction between significant and insignificant tokens makes token-order traversals possible. This distinction drastically simplifies TOG visitors. They never have to generate insignificant tokens!
+   
+3. TOG.find_next_significant_token and TOG.get_concatenated_string_tokens() use TOG.px to look ahead in the token list.
+   
+This innovation looks obvious only in retrospect. It took a long time to realize that the parse tree needs help from the token list, not the other way around!
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
