@@ -48,22 +48,24 @@ This issue lists the filters that I use to organize and understand my work flow.
 
 **The "Maybe" and "Won'tDo" labels are not necessarily death sentences.** I often change my mind. Comments are not allowed here. Please argue for an issue in [leo-editor](https://groups.google.com/forum/#!forum/leo-editor), or in the issue itself.
 .. @+node:ekr.20200114052814.1: ** Backup of first comment of #1440
-[leoAst.py](https://github.com/leo-editor/leo-editor/blob/fstrings/leo/core/leoAst.py) unifies python's token-oriented and ast-oriented worlds. This project is a major contribution to python's core tools. See the docstring at the start of leoAst.py for detailed documentation.
+[leoAst.py](https://github.com/leo-editor/leo-editor/blob/fstrings/leo/core/leoAst.py) unifies python's token-oriented and ast-oriented worlds. This project is a major contribution to python's core tools. 
 
-The classes in leoAst.py create the following data:
+**Overview**
 
-- A **children** array from each ast node to its children. Order matters is these arrays!
-- A **parent** link from each ast.node to its parent. ast.Module nodes have empty parent links.
-- Two-way links between tokens in the **token list** created by python tokenizer.tokenize function and the corresponding ast (parse tree) nodes created by python's ast.parse function:
-  - Each token's **node** link contains the ast.node "responsible" for the token.
-  - Each ast node's **first_token** and **last_token** links contain indices into the token list.
-    These indices indicate the range of tokens that can be said to be "generated" by the ast node.
+The **TokenOrderGenerator** (TOG) class in leoAst.py creates the following data:
+
+- A **children** array from each ast node to its children. Order matters!
+- A **parent** link from each ast.node to its parent.
+- Two-way links between tokens in the **token list**, a list of Token objects, and the [ast](https://docs.python.org/3/library/ast.html) nodes in the **parse tree**:
+  - For each token, **token.node** contains the ast.node "responsible" for the token.
+  - For each ast node, **node.first_i** and **node.last_i** are indices into the token list.
+    These indices give the range of tokens that can be said to be "generated" by the ast node.
 
 These links promise to collapse the complexity of any code that changes text, including the [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) projects.
 
-This project is a general solution to frequently-asked questions such as [this](https://stackoverflow.com/questions/16748029). It fills gaps in python's [ast module](https://docs.python.org/3/library/ast.html), as discussed in [this python issue](https://bugs.python.org/issue33337).
+This project is a general solution to frequently-asked questions such as [this](https://stackoverflow.com/questions/16748029). It fills gaps in python's ast module, as discussed in [this python issue](https://bugs.python.org/issue33337).
 
-**Status**
+**Project details**
 
 Leo's [fstrings branch](https://github.com/leo-editor/leo-editor/tree/fstrings) contains this work, as well as work on Leo's fstringifier command. This branch will be merged into [devel](https://github.com/leo-editor/leo-editor/tree/devel) from time to time.
 
@@ -71,8 +73,9 @@ leoAst.py is completely independent of [Leo](http://leoeditor.com/) itself. leoA
 
 Work is in progress on distributing leoAst.py as a separate project. In the meantime, you may find the latest version of leoAst.py [here](https://github.com/leo-editor/leo-editor/blob/fstrings/leo/core/leoAst.py).
 
-*The project is a complete success*:
+**Status**
 
+*The project is a complete success*:
 - The code is simple, fast, and makes no demands on the GC.
 - It is easy to debug and maintain.
 - It is robust: TOG.sync_token is an ever-present unit test.
@@ -81,17 +84,23 @@ The code in leoAst.py is simpler, easier to understand, more robust and faster t
 
 leoAst.py contains an entirely new implementation of the [fstringify](https://pypi.org/project/fstringify/) tool. This re-implementation of fstringify is now simpler, faster, more complete, and more reliable than fstringify itself.
 
-leoAst.py also contains an entirely new implementation of [black](https://pypi.org/project/black/). This re-implementation is under development. I am confident that basing the code on the TOG class will make the tool simpler and faster than black itself.
+leoAst.py also contains an entirely new implementation of [black](https://pypi.org/project/black/). This re-implementation is under development. Basing the code on the TOG class will surely make the tool simpler and faster than black itself.
 
 **Figures of merit**
 
 **Simplicity**: The code (all of it) is the simplest thing that could possibly work. This is in stark contrast to the generators used in the [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) projects.
 
-**Innovation**: The present simplicity is the result of months of invention.  In particular, *the ast module generates ambiguous parse trees*.  That is, significantly different source files can result in parse trees with exactly the same ast nodes. TOG.self.find_next_significant_token() allows visitors to disambiguate such parse trees without using ast.get_source_segment().
+**Innovation**: The present simplicity is the result of months of invention.  For more details, see the Theory of Operation in [this issue's second comment](https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883).
 
-**Speed**: The TOG creates two-way links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods.  This is substantially faster than the  [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) tools. The TOT class traverses trees annotated with parent/child links even more quickly. TOG class avoids both [ast.fix_missing_locations](https://docs.python.org/3/library/ast.html#ast.fix_missing_locations) and [ast.get_source_segment](https://docs.python.org/3/library/ast.html#ast.get_source_segment), which are too slow to be useful.
+**Speed**: The TOG creates two-way links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods.
 
-**Memory**: The TOG class makes no significant demand on python's resources. Generators add nothing to python's call stack. The *only* variable-length data created by the TOG is TOG.node_stack. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries. The TOT class uses no variable-length data whatever.
+This is substantially faster than the  [asttokens](https://pypi.org/project/asttokens/), [fstringify](https://pypi.org/project/fstringify/), and [black](https://pypi.org/project/black/) tools.
+
+The TOT class traverses trees annotated with parent/child links even more quickly.
+
+TOG class avoids both [ast.fix_missing_locations](https://docs.python.org/3/library/ast.html#ast.fix_missing_locations) and [ast.get_source_segment](https://docs.python.org/3/library/ast.html#ast.get_source_segment), which are too slow to be useful.
+
+**Memory**: The TOG class makes no significant demand on python's resources. Generators add nothing to python's call stack. TOG.node_stack is the only variable length data. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries. The TOT class uses no variable-length data whatever.
 
 **To do**
 
@@ -111,14 +120,9 @@ Real world tools:
 - [x] Rewrite Leo's beautify-files and diff-beautify-files commands using the Orange class.
 - [ ] Complete the Orange class.
 
-
 **Project history**
 
  See [this thread](https://groups.google.com/forum/#!topic/leo-editor/FZYJmbtRBWs). 
-
-**Theory of Operation**
-
-See [this issue's second comment](https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883).
 .. @+node:ekr.20161022035203.1: ** Test code: do not delete
 @language python
 # This tree contains clones. None are contained in any external file.
