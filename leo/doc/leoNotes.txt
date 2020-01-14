@@ -123,6 +123,75 @@ Real world tools:
 **Project history**
 
  See [this thread](https://groups.google.com/forum/#!topic/leo-editor/FZYJmbtRBWs). 
+.. @+node:ekr.20200114055535.1: ** Backup of second comment of #1440
+**Theory of Operation**
+
+This is the Theory of Operation for the TokenOrderGenerator (TOG) class and related classes. These classes should be a substantial legacy to the python community.
+
+The notion of a **token order traversal** of a parse tree is the foundation of this project. This is the traversal order that generates tokens in the same order that they appear in the token list corresponding to the parse tree. This project proves that token order traversals exist, and that the notion of a token order traversal is well defined.
+
+**Token-order classes**
+
+The **TokenOrderGenerator** (TOG) class injects two-way links between all tokens and the corresponding ast nodes. The TOG class also injects parent/child links into all ast nodes.
+
+The TOG class defines generators that visit ast nodes in **token order**, the traversal order that corresponds to the order of the tokens produced by python's tokenizer module. The only way to ensure this correspondence is to use separate visitors for all ast nodes. All visitors are straightforward generators.
+
+TOG visitors `yield from` tog.gen* generators to visit subtrees. All such generators eventually call TOG.sync_token, which checks that that tokens are, in fact, visited in the correct order. TOG.sync_token is an ever-present unit test.
+
+The **TokenOrderTraversal** (TOT) class uses the parent/child links created by the TOG class. TOT.traverse contains a single for-loop that calls all nodes of the parse tree in token order. This loop is extremely fast. Using the TOT class, client code can easily modify the token list or parse tree as desired.
+
+**Significant vs insignificant tokens**
+
+The distinction between **significant** and **insignificant** tokens is a crucial invention of this project. Visitors call TOG.gen_token, TOG.gen_op, etc. *only* for significant tokens.
+
+Commas, semicolons, whitespace and parentheses are *insignificant* tokens. All other kinds of tokens are significant.
+ 
+These definitions are anything but arbitrary. Visitors can't know, just by looking at the parse tree, whether the input contains *insignificant* tokens.  For example, the source tokens might contain non-essential parentheses, or optional trailing commas, or whether two statements are separated by a semicolon.
+
+**Helping TOG visitors**
+
+The TOG.do_If visitor calls **TOG.find_next_significant_token** to determine whether TOG.do_If should generate an "if" or an "elif" token. This help is essential, because the following two source files generate identical parse trees!
+```python
+  if 1:            if 1:
+      pass             pass
+  else:            elif 2:
+      if 2:            pass
+          pass
+```
+Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call **TOG.get_concatenated_string_tokens** to handle one ore more concatenated string tokens.
+
+Finally, TOG.do_slice calls TOG.find_next_significant_token to determine whether a slice without a step contains an optional colon.
+
+TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are crucial inventions. TOG class would not be possible without them.
+
+**Syncing tokens**
+
+**TOG.px** is an index into the token list. It is either -1, or it points at the previous significant token. 
+*Note*: TOG.find_next_significant_token and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
+
+TOG.sync_token(self, kind, val) associates tokens with ast nodes as follows:
+
+1. If (kind, val) denote an *insignificant* token, TOG.sync_token does nothing.
+   
+2. Otherwise, (kind, val) denotes a *significant* token. TOG.sync_token associates that token, *plus* all previous *insignificant* tokens with self.node, the ast node presently being visited.
+   
+In addition, if (kind, val) denotes a *significant* token, TOG.sync_token checks that the next *significant* token in the token list has the expected kind and value. This is done as follows:
+
+- TOG.sync_token advances TOG.px to point at the next significant token, call it T.
+- TOG.raises AssignLinksError if (T.kind, T.value) != (kind, val)
+
+To summarize token syncing:
+
+- The TOG.px index tracks the last-seen *significant* token.
+- TOG.px advances monotonically through the token list.
+- TOG.find_next_significant_token and TOG.get_concatenated_string_tokens scan forward through the token list using a private copy of TOG.px. These methods never change TOG.px itself.
+- This token-syncing machinery is the *simplest* thing that could possibly work. It is also the *fastest* thing that could possibly work.
+
+**Project history**
+
+Only those who have closely followed EKR's posts will know how many Aha's there have been along the way.
+
+ See [this thread](https://groups.google.com/forum/#!topic/leo-editor/FZYJmbtRBWs). 
 .. @+node:ekr.20161022035203.1: ** Test code: do not delete
 @language python
 # This tree contains clones. None are contained in any external file.
