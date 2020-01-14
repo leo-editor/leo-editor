@@ -31,7 +31,7 @@ nodes in the parse tree.
     print(f"{tag}: Wrote {filename}")
     write_file(filename, results, encoding=encoding)
     
-===== Methods of the TOG class.
+===== Methods of the TOG class:
 
 * TOG.def init_from_file(self, filename):
    
@@ -39,7 +39,7 @@ nodes in the parse tree.
     Create links between tokens and the parse tree.
     Return (contents, encoding, tokens, tree).
 
-==== Top-level functions, in the order client code is likely to call them.
+==== Top-level functions, in the order client code is likely to call them:
     
 * function: read_file_with_encoding(filename):
    
@@ -69,11 +69,11 @@ nodes in the parse tree.
     Write the string s to the file whose name is given.
     Handle all exeptions.
     
-===== Unit testing
+===== Unit testing:
 
     python -m leo.core.leoAst
     
-===== Coverage testing
+===== Coverage testing:
     
     pytest -x --cov-report html --cov-report term-missing --cov=leo.core.leoAst leo/core/leoAst.py
 
