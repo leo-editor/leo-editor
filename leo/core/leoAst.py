@@ -442,9 +442,10 @@ if 1: # pragma: no cover
         tokens_list must be the global tokens list.
         Return the tokens assigned to the node, or [].
         """
-        first_i = getattr(node, 'first_i', None)
-        last_i = getattr(node, 'last_i', None)
-        return [] if first_i is None else global_tokens_list [first_i : last_i + 1]
+        # Use the same ivar names as asttokens.
+        i = getattr(node, 'first_token', None)
+        j = getattr(node, 'last_token', None)
+        return [] if i is None else global_tokens_list [i : j + 1]
     #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
     def is_significant(kind, value):
         """
@@ -843,13 +844,11 @@ if 1: # pragma: no cover
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
-        token_i = token.index
-        first_i = getattr(node, 'first_i', None)
-        if first_i is None:
-            node.first_i = node.last_i = token_i
+        if getattr(node, 'first_token', None) is None:
+            node.first_token = node.last_token = token.index
         else:
-            node.first_i = min(node.first_i, token_i)
-            node.last_i = max(node.last_i, token_i)
+            node.first_token = min(node.first_token, token.index)
+            node.last_token = max(node.last_token, token.index)
     #@+node:ekr.20191225055616.1: *4* function: replace_node
     def replace_node(new_node, old_node):
         """Replace new_node by old_node in the parse tree."""
