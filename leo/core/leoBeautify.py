@@ -249,7 +249,6 @@ def orange_settings(c):
         'delete_blank_lines': not keep_blank_lines,
         'max_join_line_length': max_join_line_length,
         'max_split_line_length': max_split_line_length,
-        'orange': True,
         'tab_width': abs(c.tab_width),
     }
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions

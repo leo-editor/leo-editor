@@ -1485,11 +1485,11 @@ class TestOrange (BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20200116102345.1: *4* test_backslash_newline
+    #@+node:ekr.20200116102345.1: *4* test_backslash_newline (to do: don't blacken)
     def test_backslash_newline(self):
         tag = 'test_backslash_newline'
         contents = """print(a); \\\n print(b)""" ### Wrong.
-        g.printObj(contents, tag=tag)
+        # expected = self.blacken(contents).rstrip() + '\n\n'
         contents, tokens, tree = self.make_data(contents, tag)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tag, tokens, tree)
@@ -1618,6 +1618,21 @@ class TestOrange (BaseTest):
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 10, fails ### During development.
+    #@+node:ekr.20200116104031.1: *4* test_start_of_line_whitespace (don't blacken)
+    def test_start_of_line_whitespace(self):
+        tag = 'test_start_of_line_whitespace'
+        contents = """\
+    if (
+        a == b or
+        c == d
+    ):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents, tag)
+        # expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
     def test_single_quoted_string(self):
 
@@ -2436,8 +2451,7 @@ class TestTopLevelFunctions (BaseTest):
             bb = f.read()
         assert bb, filename
         e, s = strip_BOM(bb)
-        if e is not None:
-            assert e.lower() == 'utf-8', repr(e)
+        assert e is None or e.lower() == 'utf-8', repr(e)
         
     #@-others
     
@@ -4320,7 +4334,6 @@ class Orange:
         self.delete_blank_lines = True
         self.max_join_line_length = 88
         self.max_split_line_length = 88
-        self.orange = False  # Split or join lines only if orange is True.
         self.tab_width = 4
         # Override from settings dict...
         for key in settings:  # pragma: no cover
@@ -4628,14 +4641,6 @@ class Orange:
             'unary-op',
         ):
             self.add_token('blank', ' ')
-    #@+node:ekr.20200107165250.28: *5* orange.blank_before_end_line_comment
-    def blank_before_end_line_comment(self):
-        """Add two blanks before an end-of-line comment."""
-        prev = self.code_list[-1]
-        self.clean('blank')
-        if prev.kind not in ('blank-lines', 'file-start', 'line-end', 'line-indent'):
-            self.add_token('blank', ' ')
-            self.add_token('blank', ' ')
     #@+node:ekr.20200107165250.29: *5* orange.blank_lines
     def blank_lines(self, n):
         """
@@ -4685,28 +4690,18 @@ class Orange:
                 self.op(val)
         else:
             self.op_blank(val)
-    #@+node:ekr.20200107165250.6: *5* orange.file_end
-    def file_end(self):
-        """
-        Add a file-end token to the code list.
-        Retain exactly one line-end token.
-        """
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
         prev = self.code_list[-1]
-        if prev.kind == 'file-start':
+        if prev.kind == 'file-start':  # pragma: no cover (defensive programming)
             return
         self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
         self.add_token('line-end', '\n')
-        if self.orange:
+        if 0: ### Not ready yet.
             allow_join = True
             if self.max_split_line_length > 0:
                 allow_join = not self.break_line()
@@ -4715,8 +4710,8 @@ class Orange:
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
-    #@+node:ekr.20200107165250.34: *6* orange.break_line (new) & helpers
-    def break_line(self):
+    #@+node:ekr.20200107165250.34: *6* orange.break_line & helpers
+    def break_line(self):  # pragma: no cover ### not ready yet.
         """
         Break the preceding line, if necessary.
         
@@ -4756,7 +4751,7 @@ class Orange:
         self.add_token('line-end', '\n')
         return True
     #@+node:ekr.20200107165250.35: *7* orange.append_tail
-    def append_tail(self, prefix, tail):
+    def append_tail(self, prefix, tail):  # pragma: no cover ### not ready yet.
         """Append the tail tokens, splitting the line further as necessary."""
         g.trace('='*20)
         tail_s = ''.join([z.to_string() for z in tail])
@@ -4823,8 +4818,8 @@ class Orange:
             else:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
-    #@+node:ekr.20200107165250.36: *7* orange.find_prev_line (new)
-    def find_prev_line(self):
+    #@+node:ekr.20200107165250.36: *7* orange.find_prev_line
+    def find_prev_line(self):  # pragma: no cover ### not ready yet.
         """Return the previous line, as a list of tokens."""
         line = []
         for t in reversed(self.code_list[:-1]):
@@ -4833,7 +4828,7 @@ class Orange:
             line.append(t)
         return list(reversed(line))
     #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix
-    def find_line_prefix(self, token_list):
+    def find_line_prefix(self, token_list):  # pragma: no cover ### not ready yet.
         """
         Return all tokens up to and including the first lt token.
         Also add all lt tokens directly following the first lt token.
@@ -4851,15 +4846,15 @@ class Orange:
                 break
         return result
     #@+node:ekr.20200107165250.38: *7* orange.is_any_lt
-    def is_any_lt(self, output_token):
+    def is_any_lt(self, output_token):  # pragma: no cover ### not ready yet.
         """Return True if the given token is any lt token"""
         return (
             output_token == 'lt'
             or output_token.kind == 'op-no-blanks'
             and output_token.value in "{[("
         )
-    #@+node:ekr.20200107165250.39: *6* orange.join_lines (new) & helpers
-    def join_lines(self):
+    #@+node:ekr.20200107165250.39: *6* orange.join_lines
+    def join_lines(self):  # pragma: no cover ### not ready yet.
         """
         Join preceding lines, if the result would be short enough.
         Should be called only at the end of a line.
@@ -4909,8 +4904,6 @@ class Orange:
             elif s == '(':
                 self.in_arg_list += 1
             self.add_token('lt', s)
-        elif prev.kind == 'op':
-            self.op(s)
         else:
             self.op_no_blanks(s)
     #@+node:ekr.20200107165250.43: *6* orange.rt
