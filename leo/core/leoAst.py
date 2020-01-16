@@ -442,9 +442,8 @@ if 1: # pragma: no cover
         tokens_list must be the global tokens list.
         Return the tokens assigned to the node, or [].
         """
-        # Use the same ivar names as asttokens.
-        i = getattr(node, 'first_token', None)
-        j = getattr(node, 'last_token', None)
+        i = getattr(node, 'first_i', None)
+        j = getattr(node, 'last_i', None)
         return [] if i is None else global_tokens_list [i : j + 1]
     #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
     def is_significant(kind, value):
@@ -844,11 +843,11 @@ if 1: # pragma: no cover
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
     def add_token_to_token_list(token, node):
         """Insert token in the proper location of node.token_list."""
-        if getattr(node, 'first_token', None) is None:
-            node.first_token = node.last_token = token.index
+        if getattr(node, 'first_i', None) is None:
+            node.first_i = node.last_i = token.index
         else:
-            node.first_token = min(node.first_token, token.index)
-            node.last_token = max(node.last_token, token.index)
+            node.first_i = min(node.first_i, token.index)
+            node.last_i = max(node.last_i, token.index)
     #@+node:ekr.20191225055616.1: *4* function: replace_node
     def replace_node(new_node, old_node):
         """Replace new_node by old_node in the parse tree."""
@@ -1341,6 +1340,26 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200115162419.1: *4* test_compare_tog_vs_asttokens
+    def test_compare_tog_vs_asttokens(self):
+        """Compare asttokens token lists with TOG token lists."""
+        tag = 'test_compare_tog_vs_asttokens'
+        try:
+            import asttokens
+        except Exception:
+            self.skipTest('requires asttokens')
+        contents = """g.blue('wrote %s' % p.x())"""
+        # expected = """g.blue(f'wrote {p.x()}')"""
+        contents, tokens, tree = self.make_data(contents, description=tag)
+        # Dump GOT data.
+        dump_contents(contents)
+        dump_tree(tokens, tree)
+        # Dump asttokens data
+        print('===== asttokens =====\n')
+        atok = asttokens.ASTTokens(contents, parse=False, filename=tag)
+        atok.mark_tokens(tree)
+        for node in asttokens.util.walk(tree):
+            print(f"{node.__class__.__name__:>10} {atok.get_text(node)!s}")
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -1378,27 +1397,6 @@ class TestFstringify (BaseTest):
             results = self.fstringify(contents, '<string>', tokens, tree)
             expected = contents
             assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200104042705.1: *4* test_newlines
-    def test_newlines(self):
-
-        contents = r"""\
-    print("hello\n")
-    print('world\n')
-    print("hello\r\n")
-    print('world\r\n')
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents
-        results = self.fstringify(contents, '<string>', tokens, tree)
-        assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
-    def test_parens_in_rhs(self):
-
-        contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f'{ivar:20}', val)"""
-        contents, tokens, tree = self.make_data(contents)
-        results = self.fstringify(contents, '<string>', tokens, tree)
-        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200112163031.1: *4* test_munge_spec
     def test_munge_spec(self):
         
@@ -1420,6 +1418,27 @@ class TestFstringify (BaseTest):
                 f"     got tail: {tail}\n")
 
             
+    #@+node:ekr.20200104042705.1: *4* test_newlines
+    def test_newlines(self):
+
+        contents = r"""\
+    print("hello\n")
+    print('world\n')
+    print("hello\r\n")
+    print('world\r\n')
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.fstringify(contents, '<string>', tokens, tree)
+        assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
+    def test_parens_in_rhs(self):
+
+        contents = """print('%20s' % (ivar), val)"""
+        expected = """print(f'{ivar:20}', val)"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, '<string>', tokens, tree)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106091740.1: *4* test_single_quotes
     def test_single_quotes(self):
         
