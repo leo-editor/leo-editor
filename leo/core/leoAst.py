@@ -1485,29 +1485,6 @@ class TestOrange (BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
-    def test_single_quoted_string(self):
-
-        tag = 'test_single_quoted_string'
-        contents = """print('hi')"""
-        # blacken suppresses string normalization.
-        expected = self.blacken(contents)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200108082833.1: *4* test_lines_before_class
-    def test_lines_before_class(self):
-
-        tag = 'test_lines_before_class'
-        contents = """\
-    a = 2
-    class aClass:
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
     def test_leo_sentinels(self):
 
@@ -1523,28 +1500,20 @@ class TestOrange (BaseTest):
         expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110102248.1: *4* Pet peeves...
-    #@+node:ekr.20200110014220.86: *5* test_ws_before_comma_semicolon_colon
-    def test_ws_before_comma_semicolon_colon(self):
-        tag = 'test_ws_before_comma_semicolon_colon'
-        # Pet peeve.
+    #@+node:ekr.20200108082833.1: *4* test_lines_before_class
+    def test_lines_before_class(self):
+
+        tag = 'test_lines_before_class'
         contents = """\
-    if x == 4: pass
-    if x == 4 : pass
-    print (x, y); x, y = y, x
-    print (x , y) ; x , y = y , x
+    a = 2
+    class aClass:
+        pass
     """
-        expected = """\
-    if x == 4: pass
-    if x == 4: pass
-    print(x, y); x, y = y, x
-    print(x, y); x, y = y, x
-    """
-        expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.95: *5* test_one_line_pet_peeves (fails)
+    #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves (fails)
     def test_one_line_pet_peeves(self):
 
         tag = 'test_one_line_pet_peeves'
@@ -1606,6 +1575,36 @@ class TestOrange (BaseTest):
             elif verbose_pass:
                 print(f"Ok:\n{message}")
         assert fails == 9, fails ### During development.
+    #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
+    def test_single_quoted_string(self):
+
+        tag = 'test_single_quoted_string'
+        contents = """print('hi')"""
+        # blacken suppresses string normalization.
+        expected = self.blacken(contents)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
+    def test_multi_line_pet_peeves(self):
+        tag = 'test_multi_line_pet_peeves'
+        contents = """\
+    if x == 4: pass
+    if x == 4 : pass
+    print (x, y); x, y = y, x
+    print (x , y) ; x , y = y , x
+    """
+        # At present Orange doesn't split lines...
+        expected = """\
+    if x == 4: pass
+    if x == 4: pass
+    print(x, y); x, y = y, x
+    print(x, y); x, y = y, x
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
