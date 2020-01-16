@@ -1506,7 +1506,7 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
+    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels (don't blacken)
     def test_leo_sentinels(self):
 
         # Careful: don't put a sentinel into the file directly.
@@ -1534,6 +1534,18 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116110652.1: *4* test_function_defs (fails)
+    def test_function_defs(self):
+        tag = 'test_function_defs'
+        contents = """\
+    def f(a=2 + 5):
+        pass
+    """
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tag, tokens, tree)
+        if 0: ### Not ready yet.
+            assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
         tag = 'test_multi_line_pet_peeves'
@@ -1559,7 +1571,7 @@ class TestOrange (BaseTest):
 
         tag = 'test_one_line_pet_peeves'
         verbose_pass = False
-        verbose_fail = True
+        verbose_fail = False
         # Except where noted, all entries are expected values....
         table = (
             # Various ops...
