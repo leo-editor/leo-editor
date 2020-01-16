@@ -1485,6 +1485,27 @@ class TestOrange (BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20200116102345.1: *4* test_backslash_newline
+    def test_backslash_newline(self):
+        tag = 'test_backslash_newline'
+        contents = """print(a); \\\n print(b)""" ### Wrong.
+        g.printObj(contents, tag=tag)
+        contents, tokens, tree = self.make_data(contents, tag)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116100603.1: *4* test_decorator
+    def test_decorator(self):
+        tag = 'test_decorator'
+        contents = """\
+    @my_decorator(1)
+    def func():
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents, tag)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
     def test_leo_sentinels(self):
 
@@ -1513,6 +1534,26 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
+    def test_multi_line_pet_peeves(self):
+        tag = 'test_multi_line_pet_peeves'
+        contents = """\
+    if x == 4: pass
+    if x == 4 : pass
+    print (x, y); x, y = y, x
+    print (x , y) ; x , y = y , x
+    """
+        # At present Orange doesn't split lines...
+        expected = """\
+    if x == 4: pass
+    if x == 4: pass
+    print(x, y); x, y = y, x
+    print(x, y); x, y = y, x
+    """
+        expected = self.adjust_expected(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves (fails)
     def test_one_line_pet_peeves(self):
 
@@ -1522,6 +1563,7 @@ class TestOrange (BaseTest):
         # Except where noted, all entries are expected values....
         table = (
             # Various ops...
+            """print(a.b)""",
             """print(-1 < 2)""",
             """x, y = y, x""",
             """t = (0,)""",
@@ -1571,9 +1613,9 @@ class TestOrange (BaseTest):
                 f"    orange: {results}")
             if results != expected:
                 fails += 1
-                if verbose_fail:
+                if verbose_fail:  # pragma: no cover
                     print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:
+            elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 10, fails ### During development.
     #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
@@ -1583,38 +1625,6 @@ class TestOrange (BaseTest):
         contents = """print('hi')"""
         # blacken suppresses string normalization.
         expected = self.blacken(contents)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116100603.1: *4* test_decorator
-    def test_decorator(self):
-        tag = 'test_decorator'
-        contents = """\
-    @my_decorator(1)
-    def func():
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents, tag)
-        expected = self.blacken(contents).rstrip() + '\n\n'
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
-    def test_multi_line_pet_peeves(self):
-        tag = 'test_multi_line_pet_peeves'
-        contents = """\
-    if x == 4: pass
-    if x == 4 : pass
-    print (x, y); x, y = y, x
-    print (x , y) ; x , y = y , x
-    """
-        # At present Orange doesn't split lines...
-        expected = """\
-    if x == 4: pass
-    if x == 4: pass
-    print(x, y); x, y = y, x
-    print(x, y); x, y = y, x
-    """
-        expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -4320,7 +4330,8 @@ class Orange:
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
     #@+node:ekr.20200107165250.50: *4* orange.find_delims
-    def find_delims(self, tokens):
+    def find_delims(self, tokens):  # pragma: no cover
+        ### Not used yet.
         """
         Compute the net number of each kind of delim in the given range of tokens.
         
@@ -4573,7 +4584,7 @@ class Orange:
         Put the whitespace only if if ends with backslash-newline.
         """
         # Short-circuit if there is no ws to add.
-        if not self.val:
+        if not self.val:  # pragma: no cover
             return
         #
         # Handle backslash-newline.
