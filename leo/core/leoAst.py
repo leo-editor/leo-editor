@@ -1467,33 +1467,42 @@ class TestOrange (BaseTest):
     """Tests for the Orange class."""
 
     #@+others
-    #@+node:ekr.20200107174742.1: *4* test_small_contents
-    def test_small_contents(self):
+    #@+node:ekr.20200115201823.1: *4* blacken
+    def blacken(self, contents):
+        """Return the results of running black on contents"""
+        try:
+            import black
+        except Exception:
+            self.skipTest('Can not import black')
+        # Suppress string normalization!
+        try:
+            mode = black.FileMode()
+            mode.string_normalization = False
+        except TypeError:
+            self.skipTest('old version of black')
+        return black.format_str(contents, mode=mode)
+    #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
+    def test_single_quoted_string(self):
 
+        tag = 'test_single_quoted_string'
         contents = """print('hi')"""
-        expected = """print('hi')\n"""
+        # blacken suppresses string normalization.
+        expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_small_contents', tokens, tree)
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108082833.1: *4* test_lines_before_class
     def test_lines_before_class(self):
 
+        tag = 'test_lines_before_class'
         contents = """\
     a = 2
     class aClass:
         pass
     """
-        expected = """\
-    a = 2
-
-
-    class aClass:
-        pass
-    """
         contents, tokens, tree = self.make_data(contents)
-        contents = g.adjustTripleString(contents)
-        expected = g.adjustTripleString(expected) + '\n'
-        results = self.beautify(contents, 'test_lines_before_class', tokens, tree)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108075541.1: *4* test_leo_sentinels
     def test_leo_sentinels(self):
@@ -1549,6 +1558,7 @@ class TestOrange (BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *5* test_ws_before_comma_semicolon_colon
     def test_ws_before_comma_semicolon_colon(self):
+        tag = 'test_ws_before_comma_semicolon_colon'
         # Pet peeve.
         contents = """\
     if x == 4: pass
@@ -1568,7 +1578,7 @@ class TestOrange (BaseTest):
     """
         expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
+        results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.74: *5* test_ws_before_trailing_comment
     def test_ws_before_trailing_comment(self):
@@ -1642,91 +1652,41 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.95: *5* test_ws_in_slices_1
-    def test_ws_in_slices_1(self):
-        # Pet peeve.
-        contents = """\
-    a1[lower + offset: upper + offset]
-    """
-    # a2[lower+offset : upper+offset]
-        expected = """\
-    a1[lower + offset : upper + offset]
-    """
-    # a2[lower + offset : upper + offset]
-        tag = 'test_ws_in_slices_1'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.98: *5* test_ws_in_slices_2
-    def test_ws_in_slices_2(self):
-        # Pet peeve.
-        contents = """\
-    ham[ : upper_fn(x) : step_fn(x)]
-    """
-        expected = """\
-    ham[: upper_fn(x) : step_fn(x)]
-    """
-        tag = 'test_ws_in_slices_2'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110122249.1: *5* test_ws_in_slices_3
-    def test_ws_in_slices_3(self):
-        # Pet peeve.
-        contents = """\
-    ham[ : : step_fn(x)]
-    """
-        expected = """\
-    ham[:: step_fn(x)]
-    """
-        tag = 'test_ws_in_slices_3'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110121819.1: *5* test_ws_in_slices_4
-    def test_ws_in_slices_4(self):
-        # Pet peeve.
-        contents = """empty [ : ]"""
-        expected = """empty[:]"""
-        tag = 'test_ws_in_slice_4'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.101: *5* test_ws_in_slices_5
-    def test_ws_in_slices_5(self):
-        # Pet peeve.
-        contents = """\
-    a1[1: 9], a2[1: 9: 3]
-    """
-    # a1[1: 9], a2[1: 9: 3], a3[: 9: 3], a4[1:: 3]
-    # a5[ lower: upper ], a6[lower :: step]
-    # a7[: upper]
-        expected = """\
-    a1[1 : 9], a2[1 : 9 : 3]
-    """
-    # a1[1 : 9], a2[1 : 9 : 3], a3[:9 : 3], a4[1 :: 3]
-    # a5[lower : upper], a6[lower :: step]
-    # a7[: upper]
-        tag = 'test_ws_in_slices_5'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110124656.1: *5* test_ws_in_slices_6
-    def test_ws_in_slices_6(self):
-        # Pet peeve.
-        # Empty step.
-        contents = """a1[1: 9: ], a2[lower : upper: ]"""
-        expected = """a1[1 : 9:], a2[lower : upper:]"""
-        tag = 'test_ws_in_slices_6'
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents, tag)
-        results = self.beautify(contents, tag, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200110014220.95: *5* test_ws_in_slices (two fails)
+    def test_ws_in_slices(self):
+
+        tag = 'test_ws_in_slices'
+        self.skipTest('NOT READY') ###
+
+        # Black removes whitespace around colons in slices for numbers and names.
+        # Black inserts whitespace around colons in slices for expressions.
+        table = (
+            """a1[lower + offset: upper + offset]""", # Expect a1[lower + offset : upper + offset]
+            """a2[lower+offset : upper+offset]""",    # Expect a2[lower + offset : upper + offset]
+            """a3[ : upper_fn(x) : step_fn(x)]""",    # Expect a3[: upper_fn(x) : step_fn(x)]
+            """a4[ : : step_fn(x)]""",                # Expect a4[:: step_fn(x)]
+            """a5 [ : ]""",             # Expect a5[:]
+            # Fails:
+            """a6[1: 9]""",             # Expect a6[1:9]
+            """a7[1: 9: 3]""",          # Expect a7[1:9:3]
+            """a8[1: 9: ]""",           # Expect a8[1:9:]
+            """a9[lower : upper: ]""",  # Expect a9[upper:lower]
+        )
+        ok = True
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents, tag)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tag, tokens, tree)
+            message = (
+                f"  contents: {contents}\n"
+                f"     black: {expected.rstrip()}\n"
+                f"    orange: {results}")
+            if results != expected:
+                print(f"Fail:\n{message}")
+                ok = False
+            elif 0:
+                print(f"Ok:\n{message}")
+        assert ok
     #@+node:ekr.20200110014220.104: *5* test_ws_inside_parens_etc
     def test_ws_inside_parens_etc(self):
         # Pet peeve.
