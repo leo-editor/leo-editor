@@ -1525,42 +1525,6 @@ class TestOrange (BaseTest):
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110102248.1: *4* Pet peeves...
-    #@+node:ekr.20200110014220.26: *5* test_ws_after_unary_minus
-    def test_ws_after_unary_minus(self):
-
-        contents = """\
-    def spam():
-        if - 1 < 2:
-            pass
-    """
-        expected = """\
-    def spam():
-        if -1 < 2:
-            pass
-    """
-        expected = self.adjust_expected(expected) + '\n'
-            # Add newline because of def.
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_ws_after_unary_minus', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.80: *5* test_ws_around_arith_op_in_args
-    def test_ws_around_arith_op_in_args(self):
-        # Pet peeve.
-        contents = """\
-    def foo(a, b):
-        foo(a = 2+3, b = 4-5, c = 6*7, d = 8 / 9, e =10 // 11)
-        bar(2 + baz)
-    """
-        expected = """\
-    def foo(a, b):
-        foo(a=2+3, b=4-5, c=6*7, d=8/9, e=10//11)
-        bar(2+baz)
-    """
-        expected = self.adjust_expected(expected) + '\n'
-            # Add newline because of def.
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *5* test_ws_before_comma_semicolon_colon
     def test_ws_before_comma_semicolon_colon(self):
         tag = 'test_ws_before_comma_semicolon_colon'
@@ -1570,114 +1534,62 @@ class TestOrange (BaseTest):
     if x == 4 : pass
     print (x, y); x, y = y, x
     print (x , y) ; x , y = y , x
-    x, y = y, x
-    x , y = y , x
     """
         expected = """\
     if x == 4: pass
     if x == 4: pass
     print(x, y); x, y = y, x
     print(x, y); x, y = y, x
-    x, y = y, x
-    x, y = y, x
     """
         expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.74: *5* test_ws_before_trailing_comment
-    def test_ws_before_trailing_comment(self):
-        # Pet peeve.
-        contents = """\
-    a = b # comment
-    c = d# comment
-    e - f   # comment
-    # Single-line comment.
-    """
-        expected = """\
-    a = b  # comment
-    c = d  # comment
-    e - f  # comment
-    # Single-line comment.
-    """
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.83: *5* test_ws_before_word_ops
-    def test_ws_before_word_ops(self):
-        # Pet peeve.
-        contents = """\
-    b =    ('and', 'in', 'not', 'not in', 'or')
-    # def foo():
-        # return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20200110014220.95: *5* test_one_line_pet_peeves (fails)
+    def test_one_line_pet_peeves(self):
 
-    """
-        expected = """\
-    b = ('and', 'in', 'not', 'not in', 'or')
-    # def foo():
-        # return ''.join([z.to_string() for z in self.code_list])
-
-    """
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.89: *5* test_ws_in_parens_1
-    def test_ws_in_parens_1(self):
-        # Pet peeve.
-        contents = """\
-    spam(1)
-    spam ( 1 )
-    dct ['key'] = lst [index]
-    dct['key'] = lst[index]
-    """
-        expected = """\
-    spam(1)
-    spam(1)
-    dct['key'] = lst[index]
-    dct['key'] = lst[index]
-    """
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.92: *5* test_ws_in_parens_2
-    def test_ws_in_parens_2(self):
-        # Pet peeve.
-        contents = """\
-    foo = (0,)
-    bar = (0, )
-    """
-        expected = """\
-    foo = (0,)
-    bar = (0,)
-    """
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.95: *5* test_ws_in_slices (two fails)
-    def test_ws_in_slices(self):
-
-        tag = 'test_ws_in_slices'
-        self.skipTest('NOT READY') ###
-
-        # Black removes whitespace around colons in slices for numbers and names.
-        # Black inserts whitespace around colons in slices for expressions.
+        tag = 'test_one_line_pet_peeves'
+        # Except where noted, all entries are expected values....
         table = (
-            """a1[lower + offset: upper + offset]""", # Expect a1[lower + offset : upper + offset]
-            """a2[lower+offset : upper+offset]""",    # Expect a2[lower + offset : upper + offset]
-            """a3[ : upper_fn(x) : step_fn(x)]""",    # Expect a3[: upper_fn(x) : step_fn(x)]
-            """a4[ : : step_fn(x)]""",                # Expect a4[:: step_fn(x)]
-            """a5 [ : ]""",             # Expect a5[:]
-            # Fails:
-            """a6[1: 9]""",             # Expect a6[1:9]
-            """a7[1: 9: 3]""",          # Expect a7[1:9:3]
-            """a8[1: 9: ]""",           # Expect a8[1:9:]
-            """a9[lower : upper: ]""",  # Expect a9[upper:lower]
+            # Various ops...
+            """print(-1 < 2)""",
+            """x, y = y, x""",
+            """t = (0,)""",
+            # Dicts...
+            """f({key: 1})""",
+            """d['key'] = a[i]""",
+            # Function calls...
+            """f(1)""",
+            """f(name)""",
+            """f({key: 1})""",
+            # Slices...
+            """a[lower + offset : upper + offset]""",
+            """a[: upper_fn(x) : step_fn(x)]""",
+            """a[:: step_fn(x)]""",
+            """a[:]""",
+            """a[::]""",
+            # Trailing comments: expect two spaces.
+            """whatever # comment""",
+            """whatever  # comment""",
+            """whatever   # comment""",
+            # Word ops...
+            """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
+            """print(v7 for v8 in v9)""",
+            #
+            # Fails...
+            """a[:9]""",
+            """a[9:]""",
+            """a[1:9]""",     
+            """a[1:9:3]""",   
+            """a[1:9:]""",
+            """a[lower:upper:]""",
+            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+            """f(2 + name)""",
+            """f(a[1 + 2])""",
+            """f({key: 1 + 2})""",
+            """f({'key': 1 + 2})""",
         )
-        ok = True
+        fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents, tag)
             expected = self.blacken(contents)
@@ -1687,26 +1599,11 @@ class TestOrange (BaseTest):
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results}")
             if results != expected:
-                print(f"Fail:\n{message}")
-                ok = False
-            elif 0:
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+            elif 1:
                 print(f"Ok:\n{message}")
-        assert ok
-    #@+node:ekr.20200110014220.104: *5* test_ws_inside_parens_etc
-    def test_ws_inside_parens_etc(self):
-        # Pet peeve.
-        contents = """\
-    spam(ham[1], {eggs: 2})
-    spam( ham[ 1 ], { eggs: 2 } )
-    """
-        expected = """\
-    spam(ham[1], {eggs: 2})
-    spam(ham[1], {eggs: 2})
-    """
-        expected = self.adjust_expected(expected)
-        contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, 'test_spaces_before_trailing_comment', tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        assert fails == 0, fails
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
