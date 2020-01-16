@@ -5138,11 +5138,12 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
-        g.trace('===== node.args...', node.args)
         tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
-        g.trace('----- nca', nca.__class__.__name__)
+        if nca:
+            g.trace('===== node.args...', node.args)
+            g.trace('----- nca', nca.__class__.__name__)
         if not nca:
             # g.trace(f"***** no nca: {tokens_to_string(tokens)}")
             return
@@ -5152,6 +5153,7 @@ class ReassignTokens (TokenOrderTraverser):
             # arg0, arg9 = node.args[0], node.args[-1]
             # g.trace(arg0.node_index, arg9.node_index)
         else:
+            g.trace(g.callers())
             # Associate () with the call node.
             i = tokens[-1].index
             j = find_paren_token(i + 1, self.tokens)
