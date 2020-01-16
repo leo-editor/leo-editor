@@ -1599,7 +1599,8 @@ class TestOrange (BaseTest):
         table = (
             # Various ops...
             """print(a.b)""",
-            """b = a * b""",
+            """a = b * c""",
+            """a = b ** c""",
             """print(-1 < 2)""",
             """x, y = y, x""",
             """t = (0,)""",
@@ -5137,12 +5138,15 @@ class ReassignTokens (TokenOrderTraverser):
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
             return
+        g.trace('===== node.args...', node.args)
         tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
+        g.trace('----- nca', nca.__class__.__name__)
         if not nca:
-            # g.trace(f"no nca: {tokens_to_string(tokens)}")
+            # g.trace(f"***** no nca: {tokens_to_string(tokens)}")
             return
+        ### dump_tree(self.tokens, node.args)
         if node.args:
             pass
             # arg0, arg9 = node.args[0], node.args[-1]
