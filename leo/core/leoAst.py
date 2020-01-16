@@ -1046,7 +1046,7 @@ class BaseTest (unittest.TestCase):
     #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
     # Actions should fail by throwing an exception.
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
-    def dump_stats(self):
+    def dump_stats(self):  # pragma: no cover.
         """Show all calculated statistics."""
         if self.counts or self.times:
             print('')
@@ -1054,12 +1054,12 @@ class BaseTest (unittest.TestCase):
             self.dump_times()
             print('')
     #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
-    def dump_counts(self):
+    def dump_counts(self):  # pragma: no cover.
         """Show all calculated counts."""
         for key, n in self.counts.items():
             print(f"{key:>16}: {n:>6}")
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
-    def dump_times(self):
+    def dump_times(self):  # pragma: no cover.
         """
         Show all calculated times.
         
@@ -1352,14 +1352,16 @@ class TestFstringify (BaseTest):
         # expected = """g.blue(f'wrote {p.x()}')"""
         contents, tokens, tree = self.make_data(contents, description=tag)
         # Dump GOT data.
-        dump_contents(contents)
-        dump_tree(tokens, tree)
+        if 0:
+            dump_contents(contents)
+            dump_tree(tokens, tree)
         # Dump asttokens data
-        print('===== asttokens =====\n')
         atok = asttokens.ASTTokens(contents, parse=False, filename=tag)
         atok.mark_tokens(tree)
-        for node in asttokens.util.walk(tree):
-            print(f"{node.__class__.__name__:>10} {atok.get_text(node)!s}")
+        if 0:
+            print('===== asttokens =====\n')
+            for node in asttokens.util.walk(tree):
+                print(f"{node.__class__.__name__:>10} {atok.get_text(node)!s}")
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -2408,7 +2410,7 @@ class TestTOG (BaseTest):
         """The last test."""
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - g.total_time)
-        self.dump_stats()
+        # self.dump_stats()
     #@-others
 #@+node:ekr.20200110093802.1: *3* class TestTokens (BaseTest)
 class TestTokens (BaseTest):
@@ -2520,7 +2522,7 @@ class TestTOT (BaseTest):
         t2 = get_time()
         self.update_counts('nodes', n_nodes)
         self.update_times('50: TOT.traverse', t2 - t1)
-        self.dump_stats()
+        # self.dump_stats()
     #@-others
     
 #@+node:ekr.20191227170628.1: ** TOG classes
@@ -5141,29 +5143,24 @@ class ReassignTokens (TokenOrderTraverser):
         tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
-        if nca:
-            g.trace('===== node.args...', node.args)
-            g.trace('----- nca', nca.__class__.__name__)
         if not nca:
-            # g.trace(f"***** no nca: {tokens_to_string(tokens)}")
             return
-        ### dump_tree(self.tokens, node.args)
-        if node.args:
-            pass
+        ###
+        # if node.args:
             # arg0, arg9 = node.args[0], node.args[-1]
             # g.trace(arg0.node_index, arg9.node_index)
-        else:
-            g.trace(g.callers())
-            # Associate () with the call node.
-            i = tokens[-1].index
-            j = find_paren_token(i + 1, self.tokens)
-            if j is None: return
-            k = find_paren_token(j + 1, self.tokens)
-            if k is None: return
-            self.tokens[j].node = nca
-            self.tokens[k].node = nca
-            add_token_to_token_list(self.tokens[j], nca)
-            add_token_to_token_list(self.tokens[k], nca)
+            # return
+        ### g.trace(f"{self.filename:20} nca: {nca.__class__.__name__}")
+        # Associate () with the call node.
+        i = tokens[-1].index
+        j = find_paren_token(i + 1, self.tokens)
+        if j is None: return
+        k = find_paren_token(j + 1, self.tokens)
+        if k is None: return
+        self.tokens[j].node = nca
+        self.tokens[k].node = nca
+        add_token_to_token_list(self.tokens[j], nca)
+        add_token_to_token_list(self.tokens[k], nca)
     #@-others
 #@+node:ekr.20191227170803.1: ** Token classes
 #@+node:ekr.20191110080535.1: *3* class Token
