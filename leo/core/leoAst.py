@@ -1470,8 +1470,13 @@ class TestOrange (BaseTest):
     #@+node:ekr.20200115201823.1: *4* blacken
     def blacken(self, contents):
         """Return the results of running black on contents"""
+        import warnings
+
         try:
-            import black
+            # Suppress a warning about imp.
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                import black
         except Exception:
             self.skipTest('Can not import black')
         # Suppress string normalization!
