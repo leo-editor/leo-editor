@@ -1598,6 +1598,7 @@ class TestOrange (BaseTest):
             """whatever   # comment""",
             # Word ops...
             """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
+            """v = -1 if a < b else -2""", # Test unary op.
             """print(v7 for v8 in v9)""",
             #
             # Fails...
@@ -4954,11 +4955,14 @@ class Orange:
         """Remove a preceding blank token, then add op and blank tokens."""
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
-        if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
-            self.add_token('op', s)
-        else:
-            self.add_token('op', s)
-            self.blank()
+        self.add_token('op', s)
+        self.blank()
+        ### Not needed ???
+            # if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
+                # self.add_token('op', s)
+            # else:
+                # self.add_token('op', s)
+                # self.blank()
 
     def op_no_blanks(self, s):
         """Add an operator *not* surrounded by blanks."""
