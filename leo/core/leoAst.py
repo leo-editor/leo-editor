@@ -1558,6 +1558,7 @@ class TestOrange (BaseTest):
             """f(a[1 + 2])""",
             """f({key: 1 + 2})""",
             """f({'key': 1 + 2})""",
+            """f(**kwargs)""",
         )
         fails = 0
         for contents in table:
@@ -1574,7 +1575,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:
                 print(f"Ok:\n{message}")
-        assert fails == 9, fails ### During development.
+        assert fails == 10, fails ### During development.
     #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
     def test_single_quoted_string(self):
 
@@ -1583,6 +1584,18 @@ class TestOrange (BaseTest):
         # blacken suppresses string normalization.
         expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116100603.1: *4* test_decorator
+    def test_decorator(self):
+        tag = 'test_decorator'
+        contents = """\
+    @my_decorator(1)
+    def func():
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents, tag)
+        expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
