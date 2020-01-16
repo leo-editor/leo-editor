@@ -1538,14 +1538,37 @@ class TestOrange (BaseTest):
     def test_function_defs(self):
         tag = 'test_function_defs'
         contents = """\
-    def f(a=2 + 5):
+    def f1(a=2 + 5):
         pass
     """
-        expected = self.blacken(contents).rstrip() + '\n\n'
         contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         if 0: ### Not ready yet.
             assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116112855.1: *4* test_function_defs_2
+    def test_function_defs_2(self):
+        tag = 'test_function_defs_2'
+        contents = """\
+    def f1(*args, **kwargs):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116113143.1: *4* test_function_defs_3
+    def test_function_defs_3(self):
+        tag = 'test_function_defs_3'
+        # Coverage test for spaces
+        contents = """\
+    def f1( *args, **kwargs ):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tag, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
         tag = 'test_multi_line_pet_peeves'
@@ -1562,8 +1585,8 @@ class TestOrange (BaseTest):
     print(x, y); x, y = y, x
     print(x, y); x, y = y, x
     """
-        expected = self.adjust_expected(expected)
         contents, tokens, tree = self.make_data(contents)
+        expected = self.adjust_expected(expected)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves (fails)
@@ -1576,6 +1599,7 @@ class TestOrange (BaseTest):
         table = (
             # Various ops...
             """print(a.b)""",
+            """b = a * b""",
             """print(-1 < 2)""",
             """x, y = y, x""",
             """t = (0,)""",
@@ -1598,10 +1622,15 @@ class TestOrange (BaseTest):
             """whatever   # comment""",
             # Word ops...
             """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
-            """v = -1 if a < b else -2""", # Test unary op.
             """print(v7 for v8 in v9)""",
+            # Unary ops...
+            """v = -1 if a < b else -2""",
+            """print(-1)""",
             #
             # Fails...
+            """print(2 * 3)""",
+            """print(2*3)""",  # Expect print(2 * 3)
+            """print(b, *args)""",
             """a[:9]""",
             """a[9:]""",
             """a[1:9]""",     
@@ -1630,7 +1659,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 10, fails ### During development.
+        assert fails == 13, fails ### During development.
     #@+node:ekr.20200116104031.1: *4* test_start_of_line_whitespace (don't blacken)
     def test_start_of_line_whitespace(self):
         tag = 'test_start_of_line_whitespace'
@@ -4987,13 +5016,14 @@ class Orange:
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
         prev = self.code_list[-1]
-        prev2 = self.code_list[-2]
+        ### prev2 = self.code_list[-2]
         if prev.kind == 'lt':
             self.add_token('unary-op', s)
             return
-        if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
-            self.add_token('unary-op', s)
-            return
+        ### Huh?
+            # if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
+                # self.add_token('unary-op', s)
+                # return
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20200107165250.46: *5* orange.star_op
@@ -5002,18 +5032,24 @@ class Orange:
         val = '*'
         if self.paren_level > 0:
             i = len(self.code_list) - 1
-            if self.code_list[i].kind == 'blank':
-                i -= 1
+            ### Huh?
+                # if self.code_list[i].kind == 'blank':
+                    # i -= 1
             token = self.code_list[i]
             if token.kind == 'lt':
                 self.op_no_blanks(val)
-            elif token.value == ',':
-                self.blank()
-                self.add_token('op-no-blanks', val)
+            ### Experimental...
+                # elif token.value == ',':
+                    # self.blank()
+                    # self.add_token('op-no-blanks', val)
             else:
                 self.op(val)
         else:
-            self.op(val)
+            ### self.op(val)
+            self.clean('blank')
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
     #@+node:ekr.20200107165250.47: *5* orange.star_star_op
     def star_star_op(self):
         """Put a ** operator, with a special case for **kwargs."""
