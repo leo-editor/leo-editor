@@ -4619,7 +4619,10 @@ class Orange:
             if self.paren_level:
                 self.op_no_blanks(val)
             else:
-                self.op(val)
+                ### self.op(val)
+                self.blank()
+                self.add_token('op', val)
+                self.blank()
         elif val in '~+-':
             self.possible_unary_op(val)
         elif val == '*':
@@ -4632,7 +4635,10 @@ class Orange:
             # '^','~','*','**','&','|','/','//',
             # Pep 8: If operators with different priorities are used,
             # consider adding whitespace around the operators with the lowest priority(ies).
-            self.op(val)
+            ### self.op(val)
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
     #@+node:ekr.20200107165250.24: *5* orange.do_string (sets backslash_seen)
     def do_string(self):
         """Handle a 'string' token."""
@@ -4992,12 +4998,13 @@ class Orange:
             self.code_list.append(prev)
         self.add_token('rt', s)
     #@+node:ekr.20200107165250.44: *5* orange.op*
-    def op(self, s):
-        """Add op token to code list."""
-        assert s and isinstance(s, str), repr(s)
-        self.blank()
-        self.add_token('op', s)
-        self.blank()
+    ###
+        # def op(self, s):
+            # """Add op token to code list."""
+            # assert s and isinstance(s, str), repr(s)
+            # self.blank()
+            # self.add_token('op', s)
+            # self.blank()
 
     def op_blank(self, s):
         """Remove a preceding blank token, then add op and blank tokens."""
@@ -5022,7 +5029,10 @@ class Orange:
         ):
             self.unary_op(s)
         else:
-            self.op(s)
+            ### self.op(s)
+            self.blank()
+            self.add_token('op', s)
+            self.blank()
 
     def unary_op(self, s):
         """Add an operator request to the code list."""
