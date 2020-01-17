@@ -1536,7 +1536,7 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116110652.1: *4* test_function_defs (fails)
+    #@+node:ekr.20200116110652.1: *4* test_function_defs
     def test_function_defs(self):
         tag = 'test_function_defs'
         contents = """\
@@ -1546,8 +1546,7 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
-        if 0: ### Not ready yet.
-            assert results == expected, expected_got(repr(expected), repr(results))
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116112855.1: *4* test_function_defs_2
     def test_function_defs_2(self):
         tag = 'test_function_defs_2'
@@ -4784,7 +4783,7 @@ class Orange:
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
-    #@+node:ekr.20200107165250.34: *6* orange.break_line & helpers
+    #@+node:ekr.20200107165250.34: *6* orange.break_line & helpers (to do)
     def break_line(self):  # pragma: no cover ### not ready yet.
         """
         Break the preceding line, if necessary.
