@@ -1660,9 +1660,9 @@ class TestOrange (BaseTest):
                 f"  contents: {contents}\n"
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
-                if verbose_fail:  # pragma: no cover
+                if verbose_fail:
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
