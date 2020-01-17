@@ -1497,6 +1497,8 @@ class TestOrange (BaseTest):
         contents = r"""
     print(a);\
     print(b)
+    print(c); \
+    print(d)
     """
         contents, tokens, tree = self.make_data(contents, tag)
         expected = contents.rstrip() + '\n'
