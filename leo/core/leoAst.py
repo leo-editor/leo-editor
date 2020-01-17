@@ -4440,7 +4440,6 @@ class Orange:
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
-        self.square_brackets_level = 0  # Number of unmatched '[' tokens.
         self.square_brackets_stack = []  # A stack of bools, for self.word().
         self.state_stack = []  # Stack of ParseState objects.
         self.val = None  # The input token's value (a string).
@@ -4663,7 +4662,7 @@ class Orange:
         #
         # Handle start-of-line whitespace.
         prev = self.code_list[-1]
-        inner = self.paren_level or self.square_brackets_level or self.curly_brackets_level
+        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
         if prev.kind == 'line-indent' and inner:
             # Retain the indent that won't be cleaned away.
             self.clean('line-indent')
@@ -4755,7 +4754,7 @@ class Orange:
             self.blank()
         else:
             self.add_token('op', val)
-            # Suppress space in the next token.
+            # Suppress space in the next token. Used by word().
             self.square_brackets_stack[-1] = True
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
@@ -4956,7 +4955,6 @@ class Orange:
         if s == '(':
             self.paren_level += 1
         elif s == '[':
-            self.square_brackets_level += 1
             self.square_brackets_stack.append(False)
         else:
             self.curly_brackets_level += 1
@@ -4982,7 +4980,6 @@ class Orange:
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list-1)
         elif s == ']':
-            self.square_brackets_level -= 1
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
@@ -4998,14 +4995,9 @@ class Orange:
     def op(self, s):
         """Add op token to code list."""
         assert s and isinstance(s, str), repr(s)
-        if 0: ### self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
-            # Treat arithmetic ops differently.
-            self.clean('blank')
-            self.add_token('op', s)
-        else:
-            self.blank()
-            self.add_token('op', s)
-            self.blank()
+        self.blank()
+        self.add_token('op', s)
+        self.blank()
 
     def op_blank(self, s):
         """Remove a preceding blank token, then add op and blank tokens."""
@@ -5013,12 +5005,6 @@ class Orange:
         self.clean('blank')
         self.add_token('op', s)
         self.blank()
-        ### Not needed ???
-            # if self.in_arg_list > 0 and s in ('+-/*' or s == '//'):
-                # self.add_token('op', s)
-            # else:
-                # self.add_token('op', s)
-                # self.blank()
 
     def op_no_blanks(self, s):
         """Add an operator *not* surrounded by blanks."""
@@ -5081,28 +5067,13 @@ class Orange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-        
-        ###
-            # if self.paren_level > 0:
-                # i = len(self.code_list) - 1
-                # if self.code_list[i].kind == 'blank':
-                    # i -= 1
-                # token = self.code_list[i]
-                # if token.value == ',':
-                    # self.blank()
-                    # self.add_token('op-no-blanks', val)
-                # else:
-                    # self.op(val)
-            # else:
-                # self.op(val)
     #@+node:ekr.20200107165250.48: *5* orange.word & word_op
     def word(self, s):
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        if self.square_brackets_level > 0:
+        if self.square_brackets_stack:
             suppress = self.square_brackets_stack[-1]
             if not suppress:
-            # g.printObj(self.code_list)
                 self.blank()
             self.add_token('word', s)
         elif self.in_arg_list > 0:
