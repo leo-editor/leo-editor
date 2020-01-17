@@ -4760,10 +4760,6 @@ class Orange:
             self.blank()
         else:
             self.op_no_blanks(val)
-            if 0:
-                self.add_token('op', val)
-                # Suppress space in the next token. Used by word().
-                self.square_brackets_stack[-1] = True
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
@@ -5016,7 +5012,6 @@ class Orange:
         ):
             self.unary_op(s)
         else:
-            ### self.op(s)
             self.blank()
             self.add_token('op', s)
             self.blank()
@@ -5026,14 +5021,9 @@ class Orange:
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
         prev = self.code_list[-1]
-        ### prev2 = self.code_list[-2]
         if prev.kind == 'lt':
             self.add_token('unary-op', s)
             return
-        ### Huh?
-            # if prev2.kind == 'lt' and (prev.kind, prev.value) == ('op', ':'):
-                # self.add_token('unary-op', s)
-                # return
         self.blank()
         self.add_token('unary-op', s)
     #@+node:ekr.20200107165250.46: *5* orange.star_op
@@ -5069,11 +5059,7 @@ class Orange:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         if self.square_brackets_stack:
-            ###
-                # suppress = self.square_brackets_stack[-1]
-                # if not suppress:
-                    # self.blank()
-            # Valid because colon() may generate an 'op-no-blanks' token.
+            # This call to blank() may be cancelled by a previous 'op-no-blanks' token.
             self.blank()
             self.add_token('word', s)
         elif self.in_arg_list > 0:
