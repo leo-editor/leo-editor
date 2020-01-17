@@ -1596,16 +1596,22 @@ class TestOrange (BaseTest):
 
         tag = 'test_one_line_pet_peeves'
         verbose_pass = False
-        verbose_fail = False
+        verbose_fail = True
         # Except where noted, all entries are expected values....
         table = (
-            # Various ops...
+            # Calls...
             """print(a.b)""",
+            """print(2 * 3)""",
             """a = b * c""",
             """a = b ** c""",
             """print(-1 < 2)""",
             """x, y = y, x""",
             """t = (0,)""",
+            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+            """f(2 + name)""",
+            """f(a[1 + 2])""",
+            """f({key: 1 + 2})""",
+            """f({'key': 1 + 2})""",
             # Dicts...
             """f({key: 1})""",
             """d['key'] = a[i]""",
@@ -1619,6 +1625,8 @@ class TestOrange (BaseTest):
             """a[:: step_fn(x)]""",
             """a[:]""",
             """a[::]""",
+            """a[:9]""",
+            """a[9:]""",
             # Trailing comments: expect two spaces.
             """whatever # comment""",
             """whatever  # comment""",
@@ -1629,23 +1637,14 @@ class TestOrange (BaseTest):
             # Unary ops...
             """v = -1 if a < b else -2""",
             """print(-1)""",
+            # Recent changes.
+            """print(b, *args)""",
+            """f(**kwargs)""",
             #
             # Fails...
-            """print(2 * 3)""",
-            """print(2*3)""",  # Expect print(2 * 3)
-            """print(b, *args)""",
-            """a[:9]""",
-            """a[9:]""",
-            """a[1:9]""",     
+            """a[1:9]""",   
             """a[1:9:3]""",   
-            """a[1:9:]""",
             """a[lower:upper:]""",
-            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
-            """f(2 + name)""",
-            """f(a[1 + 2])""",
-            """f({key: 1 + 2})""",
-            """f({'key': 1 + 2})""",
-            """f(**kwargs)""",
         )
         fails = 0
         for contents in table:
@@ -1662,7 +1661,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 13, fails ### During development.
+        assert fails == 3, fails
     #@+node:ekr.20200116104031.1: *4* test_start_of_line_whitespace (don't blacken)
     def test_start_of_line_whitespace(self):
         tag = 'test_start_of_line_whitespace'
@@ -4974,7 +4973,7 @@ class Orange:
     def op(self, s):
         """Add op token to code list."""
         assert s and isinstance(s, str), repr(s)
-        if self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
+        if 0: ### self.in_arg_list > 0 and (s in '+-/*' or s == '//'):
             # Treat arithmetic ops differently.
             self.clean('blank')
             self.add_token('op', s)
@@ -5033,42 +5032,44 @@ class Orange:
     def star_op(self):
         """Put a '*' op, with special cases for *args."""
         val = '*'
+        self.clean('blank')
         if self.paren_level > 0:
-            i = len(self.code_list) - 1
-            ### Huh?
-                # if self.code_list[i].kind == 'blank':
-                    # i -= 1
-            token = self.code_list[i]
-            if token.kind == 'lt':
-                self.op_no_blanks(val)
-            ### Experimental...
-                # elif token.value == ',':
-                    # self.blank()
-                    # self.add_token('op-no-blanks', val)
-            else:
-                self.op(val)
-        else:
-            ### self.op(val)
-            self.clean('blank')
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
+            prev = self.code_list[-1]
+            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                self.blank()
+                self.add_token('op', val)
+                return
+        self.blank()
+        self.add_token('op', val)
+        self.blank()
     #@+node:ekr.20200107165250.47: *5* orange.star_star_op
     def star_star_op(self):
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
+        self.clean('blank')
         if self.paren_level > 0:
-            i = len(self.code_list) - 1
-            if self.code_list[i].kind == 'blank':
-                i -= 1
-            token = self.code_list[i]
-            if token.value == ',':
+            prev = self.code_list[-1]
+            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
                 self.blank()
-                self.add_token('op-no-blanks', val)
-            else:
-                self.op(val)
-        else:
-            self.op(val)
+                self.add_token('op', val)
+                return
+        self.blank()
+        self.add_token('op', val)
+        self.blank()
+        
+        ###
+            # if self.paren_level > 0:
+                # i = len(self.code_list) - 1
+                # if self.code_list[i].kind == 'blank':
+                    # i -= 1
+                # token = self.code_list[i]
+                # if token.value == ',':
+                    # self.blank()
+                    # self.add_token('op-no-blanks', val)
+                # else:
+                    # self.op(val)
+            # else:
+                # self.op(val)
     #@+node:ekr.20200107165250.48: *5* orange.word & word_op
     def word(self, s):
         """Add a word request to the code list."""
