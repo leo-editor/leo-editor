@@ -4605,7 +4605,6 @@ class Orange:
         elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
-            ### self.op_blank(val)
             self.clean('blank')
             self.add_token('op', val)
             self.blank()
@@ -4622,7 +4621,6 @@ class Orange:
             if self.paren_level:
                 self.op_no_blanks(val)
             else:
-                ### self.op(val)
                 self.blank()
                 self.add_token('op', val)
                 self.blank()
@@ -4638,7 +4636,6 @@ class Orange:
             # '^','~','*','**','&','|','/','//',
             # Pep 8: If operators with different priorities are used,
             # consider adding whitespace around the operators with the lowest priority(ies).
-            ### self.op(val)
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -5000,15 +4997,7 @@ class Orange:
             self.clean('blank')
             self.code_list.append(prev)
         self.add_token('rt', s)
-    #@+node:ekr.20200107165250.44: *5* orange.op*
-    ###
-        # def op_blank(self, s):
-            # """Remove a preceding blank token, then add op and blank tokens."""
-            # assert s and isinstance(s, str), repr(s)
-            # self.clean('blank')
-            # self.add_token('op', s)
-            # self.blank()
-        
+    #@+node:ekr.20200107165250.44: *5* orange.op_no_blanks
     def op_no_blanks(self, s):
         """Add an operator *not* surrounded by blanks."""
         self.clean('blank')
