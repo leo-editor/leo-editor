@@ -4723,7 +4723,6 @@ class Orange:
         node = self.token.node
         # parent = node and node.parent
         self.clean('blank')
-        ### if self.square_brackets_level == 0:
         if not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
@@ -5096,8 +5095,6 @@ class Orange:
         assert s and isinstance(s, str), repr(s)
         if self.in_arg_list > 0:
             pass
-        # elif self.square_brackets_level > 0:
-            # pass
         else:
             self.blank()
         self.add_token('word', s)
