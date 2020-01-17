@@ -1598,54 +1598,59 @@ class TestOrange (BaseTest):
         verbose_pass = False
         verbose_fail = True
         # Except where noted, all entries are expected values....
-        table = (
-            # Calls...
-            """print(a.b)""",
-            """print(2 * 3)""",
-            """a = b * c""",
-            """a = b ** c""",
-            """print(-1 < 2)""",
-            """x, y = y, x""",
-            """t = (0,)""",
-            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
-            """f(2 + name)""",
-            """f(a[1 + 2])""",
-            # """f({key: 1 + 2})""",
-            # """f({'key': 1 + 2})""",
-            # Dicts...
-            """d = {key: 1}""",
-            """d['key'] = a[i]""",
-            # Function calls...
-            """f(1)""",
-            """f(name)""",
-            """f({key: 1})""",
-            # Slices...
-            """a[lower + offset : upper + offset]""",
-            """a[: upper_fn(x) : step_fn(x)]""",
-            """a[:: step_fn(x)]""",
-            """a[:]""",
-            """a[::]""",
-            """a[:9]""",
-            """a[9:]""",
-            """a[1:9]""",
-            """a[1:9:3]""", 
-            # Trailing comments: expect two spaces.
-            """whatever # comment""",
-            """whatever  # comment""",
-            """whatever   # comment""",
-            # Word ops...
-            """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
-            """print(v7 for v8 in v9)""",
-            # Unary ops...
-            """v = -1 if a < b else -2""",
-            """print(-1)""",
-            # Recent changes.
-            """print(b, *args)""",
-            """f(**kwargs)""",
-            #
-            # Fails...
-            """a[lower:upper:]""",
-        )
+        if 0:
+            # Only test the fails.
+            table = (
+            )
+        else:
+            table = (
+                # Calls...
+                """print(a.b)""",
+                """print(2 * 3)""",
+                """a = b * c""",
+                """a = b ** c""",
+                """print(-1 < 2)""",
+                """x, y = y, x""",
+                """t = (0,)""",
+                """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+                """f(2 + name)""",
+                """f(a[1 + 2])""",
+                # """f({key: 1 + 2})""",
+                # """f({'key': 1 + 2})""",
+                # Dicts...
+                """d = {key: 1}""",
+                """d['key'] = a[i]""",
+                # Function calls...
+                """f(1)""",
+                """f(name)""",
+                """f({key: 1})""",
+                # Slices...
+                """a[lower + offset : upper + offset]""",
+                """a[: upper_fn(x) : step_fn(x)]""",
+                """a[:: step_fn(x)]""",
+                """a[:]""",
+                """a[::]""",
+                """a[:9]""",
+                """a[9:]""",
+                """a[1:9]""",
+                """a[1:9:3]""", 
+                # Trailing comments: expect two spaces.
+                """whatever # comment""",
+                """whatever  # comment""",
+                """whatever   # comment""",
+                # Word ops...
+                """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
+                """print(v7 for v8 in v9)""",
+                # Unary ops...
+                """v = -1 if a < b else -2""",
+                """print(-1)""",
+                # Recent changes.
+                """print(b, *args)""",
+                """f(**kwargs)""",
+                #
+                # Fails...
+                """a[lower:upper:]""",
+            )
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents, tag)
@@ -1661,7 +1666,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 1, fails
+        assert fails == 0, fails
     #@+node:ekr.20200116104031.1: *4* test_start_of_line_whitespace (don't blacken)
     def test_start_of_line_whitespace(self):
         tag = 'test_start_of_line_whitespace'
@@ -4436,6 +4441,7 @@ class Orange:
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
         self.square_brackets_level = 0  # Number of unmatched '[' tokens.
+        self.square_brackets_stack = []  # A stack of bools, for self.word().
         self.state_stack = []  # Stack of ParseState objects.
         self.val = None  # The input token's value (a string).
         #
@@ -4719,9 +4725,7 @@ class Orange:
     #@+node:ekr.20200107165250.32: *5* orange.colon
     def colon(self, val):
         """Handle a colon."""
-        trace = False
         node = self.token.node
-        # parent = node and node.parent
         self.clean('blank')
         if not isinstance(node, ast.Slice):
             self.add_token('op', val)
@@ -4740,19 +4744,19 @@ class Orange:
         # Put a space before the colon only if what goes before is an expression.
         #
         # Examples: a[1:2], a[first:last], a[a + 1 : 2]
+        #
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
-        if trace: dump_ast(node)
-        # The colon's location is known.
-        expressions = (ast.BinOp, ast.UnaryOp, ast.Call)
+        expressions = (ast.BinOp, ast.Call, ast.IfExp, ast.UnaryOp)
         if any(isinstance(z, expressions) for z in (lower, upper, step)):
             self.blank()
             self.add_token('op', val)
             self.blank()
         else:
             self.add_token('op', val)
-            ### To do: suppress space in next token.
+            # Suppress space in the next token.
+            self.square_brackets_stack[-1] = True
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
@@ -4953,6 +4957,7 @@ class Orange:
             self.paren_level += 1
         elif s == '[':
             self.square_brackets_level += 1
+            self.square_brackets_stack.append(False)
         else:
             self.curly_brackets_level += 1
         self.clean('blank')
@@ -4978,6 +4983,7 @@ class Orange:
             self.in_arg_list = max(0, self.in_arg_list-1)
         elif s == ']':
             self.square_brackets_level -= 1
+            self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
         self.clean('blank')
@@ -5093,12 +5099,19 @@ class Orange:
     def word(self, s):
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        if self.in_arg_list > 0:
-            pass
+        if self.square_brackets_level > 0:
+            suppress = self.square_brackets_stack[-1]
+            if not suppress:
+            # g.printObj(self.code_list)
+                self.blank()
+            self.add_token('word', s)
+        elif self.in_arg_list > 0:
+            self.add_token('word', s)
+            self.blank()
         else:
             self.blank()
-        self.add_token('word', s)
-        self.blank()
+            self.add_token('word', s)
+            self.blank()
 
     def word_op(self, s):
         """Add a word-op request to the code list."""
