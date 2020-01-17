@@ -4592,12 +4592,16 @@ class Orange:
         """Handle an op token."""
         val = self.val
         if val == '.':
-            self.op_no_blanks(val)
+            ### self.op_no_blanks(val)
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
         elif val == '@':
             if not self.decorator_seen:
                 self.blank_lines(1)
                 self.decorator_seen = True
-            self.op_no_blanks(val)
+            ### self.op_no_blanks(val)
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
             self.push_state('decorator')
         elif val == ':':
             # Treat slices differently.
@@ -4619,7 +4623,9 @@ class Orange:
             # Pep 8: Don't use spaces around the = sign when used to indicate
             # a keyword argument or a default parameter value.
             if self.paren_level:
-                self.op_no_blanks(val)
+                ### self.op_no_blanks(val)
+                self.clean('blank')
+                self.add_token('op-no-blanks', val)
             else:
                 self.blank()
                 self.add_token('op', val)
@@ -4759,7 +4765,9 @@ class Orange:
             self.add_token('op', val)
             self.blank()
         else:
-            self.op_no_blanks(val)
+            ### self.op_no_blanks(val)
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
@@ -4953,12 +4961,12 @@ class Orange:
         self.add_token('line-indent', self.lws)
     #@+node:ekr.20200107165250.41: *5* orange.lt & rt
     #@+node:ekr.20200107165250.42: *6* orange.lt
-    def lt(self, s):
+    def lt(self, val):
         """Generate code for a left paren or curly/square bracket."""
-        assert s in '([{', repr(s)
-        if s == '(':
+        assert val in '([{', repr(val)
+        if val == '(':
             self.paren_level += 1
-        elif s == '[':
+        elif val == '[':
             self.square_brackets_stack.append(False)
         else:
             self.curly_brackets_level += 1
@@ -4966,24 +4974,26 @@ class Orange:
         prev = self.code_list[-1]
         if prev.kind in ('op', 'word-op'):
             self.blank()
-            self.add_token('lt', s)
+            self.add_token('lt', val)
         elif prev.kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keyworks.
-            if s == '{' or prev.value in ('if', 'else', 'return', 'for'):
+            if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
                 self.blank()
-            elif s == '(':
+            elif val == '(':
                 self.in_arg_list += 1
-            self.add_token('lt', s)
+            self.add_token('lt', val)
         else:
-            self.op_no_blanks(s)
+            ### self.op_no_blanks(val)
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.43: *6* orange.rt
-    def rt(self, s):
+    def rt(self, val):
         """Generate code for a right paren or curly/square bracket."""
-        assert s in ')]}', repr(s)
-        if s == ')':
+        assert val in ')]}', repr(val)
+        if val == ')':
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list-1)
-        elif s == ']':
+        elif val == ']':
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
@@ -4994,12 +5004,7 @@ class Orange:
             prev = self.code_list.pop()
             self.clean('blank')
             self.code_list.append(prev)
-        self.add_token('rt', s)
-    #@+node:ekr.20200107165250.44: *5* orange.op_no_blanks
-    def op_no_blanks(self, s):
-        """Add an operator *not* surrounded by blanks."""
-        self.clean('blank')
-        self.add_token('op-no-blanks', s)
+        self.add_token('rt', val)
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s):
         """Add a unary or binary op to the token list."""
@@ -5059,7 +5064,7 @@ class Orange:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         if self.square_brackets_stack:
-            # This call to blank() may be cancelled by a previous 'op-no-blanks' token.
+            # A previous 'op-no-blanks' token may cancel this blank.
             self.blank()
             self.add_token('word', s)
         elif self.in_arg_list > 0:
