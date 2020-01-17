@@ -1591,7 +1591,7 @@ class TestOrange (BaseTest):
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves (fails)
+    #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
         tag = 'test_one_line_pet_peeves'
@@ -4605,7 +4605,10 @@ class Orange:
         elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
-            self.op_blank(val)
+            ### self.op_blank(val)
+            self.clean('blank')
+            self.add_token('op', val)
+            self.blank()
         elif val in '([{':
             # Pep 8: Avoid extraneous whitespace immediately inside
             # parentheses, brackets or braces.
@@ -4999,20 +5002,13 @@ class Orange:
         self.add_token('rt', s)
     #@+node:ekr.20200107165250.44: *5* orange.op*
     ###
-        # def op(self, s):
-            # """Add op token to code list."""
+        # def op_blank(self, s):
+            # """Remove a preceding blank token, then add op and blank tokens."""
             # assert s and isinstance(s, str), repr(s)
-            # self.blank()
+            # self.clean('blank')
             # self.add_token('op', s)
             # self.blank()
-
-    def op_blank(self, s):
-        """Remove a preceding blank token, then add op and blank tokens."""
-        assert s and isinstance(s, str), repr(s)
-        self.clean('blank')
-        self.add_token('op', s)
-        self.blank()
-
+        
     def op_no_blanks(self, s):
         """Add an operator *not* surrounded by blanks."""
         self.clean('blank')
