@@ -1034,12 +1034,17 @@ class BaseTest (unittest.TestCase):
         self.update_times('21: fstringify', t2 - t1)
         return result_s
     #@+node:ekr.20200107175223.1: *5* 2.2: BaseTest.beautify
-    def beautify(self, contents, filename, tokens, tree):
+    def beautify(self, contents, filename, tokens, tree,
+        max_join_line_length=None,
+        max_split_line_length=None,
+    ):
         """
         BaseTest.beautify.
         """
         t1 = get_time()
-        result_s = Orange().beautify(contents, filename, tokens, tree)
+        result_s = Orange().beautify(contents, filename, tokens, tree,
+            max_join_line_length=max_join_line_length,
+            max_split_line_length=max_split_line_length)
         t2 = get_time()
         self.update_times('22: beautify', t2 - t1)
         return result_s
@@ -1470,7 +1475,7 @@ class TestOrange (BaseTest):
 
     #@+others
     #@+node:ekr.20200115201823.1: *4* blacken
-    def blacken(self, contents):
+    def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
         import warnings
         warnings.simplefilter("ignore")
@@ -1484,6 +1489,8 @@ class TestOrange (BaseTest):
         try:
             mode = black.FileMode()
             mode.string_normalization = False
+            if line_length is not None:
+                mode.line_length = line_length
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
@@ -1700,6 +1707,37 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200117180956.1: *4* test_split_join_lines
+    def test_split_join_lines(self):
+        
+        tag = 'test_split_join_lines'
+        verbose_pass = False
+        verbose_fail = True
+        # Except where noted, all entries are expected values....
+        line_length = 40 # For testing.
+        table = (
+              #1234567890x1234567890x1234567890x1234567890x
+            """print('1111111111', '2222222222', '3333333333')""",
+        )
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents, tag)
+            expected = self.blacken(contents, line_length=line_length)
+            results = self.beautify(contents, tag, tokens, tree, max_split_line_length=line_length)
+            message = (
+                f"{tag}..."
+                f"  contents: {contents}\n"
+                f"     black: {expected.rstrip()}\n"
+                f"    orange: {results}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                if verbose_fail:
+                    print(f"Fail: {fails}\n{message}")
+            elif verbose_pass:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert fails == 0, fails
+
+        
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
@@ -4437,10 +4475,19 @@ class Orange:
     def oops(self):
         g.trace(f"Unknown kind: {self.kind}")
 
-    def beautify(self, contents, filename, tokens, tree):
+    def beautify(self, contents, filename, tokens, tree,
+        max_join_line_length=None,
+        max_split_line_length=None,
+    ):
         """
         The main line. Create output tokens and return the result as a string.
         """
+        # Config overrides
+        if max_join_line_length is not None:
+            self.max_join_line_length = max_join_line_length
+        if max_split_line_length is not None:
+            self.max_split_line_length = max_split_line_length
+            
         # State vars...
         self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
@@ -4774,59 +4821,49 @@ class Orange:
             self.clean_blank_lines()
         self.clean('line-indent')
         self.add_token('line-end', '\n')
-        if 0: ### Not ready yet.
-            allow_join = True
-            if self.max_split_line_length > 0:
-                allow_join = not self.break_line()
-            if allow_join and self.max_join_line_length > 0:
-                self.join_lines()
+        # Attempt to split the line.
+        allow_join = True
+        if self.max_split_line_length > 0:
+            allow_join = not self.break_line()
+        # Attempt to join the line only if it has not just been split.
+        if allow_join and self.max_join_line_length > 0:
+            self.join_lines()
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
     #@+node:ekr.20200107165250.34: *6* orange.break_line & helpers (to do)
-    def break_line(self):  # pragma: no cover ### not ready yet.
+    def break_line(self):
         """
         Break the preceding line, if necessary.
         
         Return True if the line was broken into two or more lines.
         """
+        # This method must be called just after inserting the line-end token.
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-            # Must be called just after inserting the line-end token.
-        #
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
-        # g.printObj(line_tokens, tag='PREV LINE')
         line_s = ''.join([z.to_string() for z in line_tokens])
+        # Do nothing for short lines.
         if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
             return False
-        #
         # Return if the previous line has no opening delim: (, [ or {.
         if not any([z.kind == 'lt' for z in line_tokens]):
             return False
         prefix = self.find_line_prefix(line_tokens)
-        #
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix):]
         if prefix[0].kind == 'line-indent':
             prefix = prefix[1:]
-        # g.printObj(prefix, tag='PREFIX')
-        # g.printObj(tail, tag='TAIL')
-        #
-        # Cut back the token list
+        # Cut back the token list: subtract 1 for the trailing line-end.
         self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
-            # -1 for the trailing line-end.
-        # g.printObj(self.code_list, tag='CUT CODE LIST')
-        #
         # Append the tail, splitting it further, as needed.
         self.append_tail(prefix, tail)
-        #
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
         return True
     #@+node:ekr.20200107165250.35: *7* orange.append_tail
-    def append_tail(self, prefix, tail):  # pragma: no cover ### not ready yet.
+    def append_tail(self, prefix, tail):
         """Append the tail tokens, splitting the line further as necessary."""
-        g.trace('='*20)
         tail_s = ''.join([z.to_string() for z in tail])
         if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
@@ -4836,7 +4873,6 @@ class Orange:
             self.add_token('line-indent', self.lws+' '*4)
             self.code_list.extend(tail)
             return
-        #
         # Still too long.  Split the line at commas.
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
@@ -4892,7 +4928,7 @@ class Orange:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
     #@+node:ekr.20200107165250.36: *7* orange.find_prev_line
-    def find_prev_line(self):  # pragma: no cover ### not ready yet.
+    def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
         line = []
         for t in reversed(self.code_list[:-1]):
@@ -4901,7 +4937,7 @@ class Orange:
             line.append(t)
         return list(reversed(line))
     #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix
-    def find_line_prefix(self, token_list):  # pragma: no cover ### not ready yet.
+    def find_line_prefix(self, token_list):
         """
         Return all tokens up to and including the first lt token.
         Also add all lt tokens directly following the first lt token.
@@ -4919,7 +4955,7 @@ class Orange:
                 break
         return result
     #@+node:ekr.20200107165250.38: *7* orange.is_any_lt
-    def is_any_lt(self, output_token):  # pragma: no cover ### not ready yet.
+    def is_any_lt(self, output_token):
         """Return True if the given token is any lt token"""
         return (
             output_token == 'lt'
@@ -4927,18 +4963,15 @@ class Orange:
             and output_token.value in "{[("
         )
     #@+node:ekr.20200107165250.39: *6* orange.join_lines
-    def join_lines(self):  # pragma: no cover ### not ready yet.
+    def join_lines(self):
         """
         Join preceding lines, if the result would be short enough.
         Should be called only at the end of a line.
         """
         # Must be called just after inserting the line-end token.
-        trace = False
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
-        if trace:
-            g.trace(line_s)
         # Don't bother trying if the line is already long.
         if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
             return
