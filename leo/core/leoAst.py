@@ -1487,13 +1487,20 @@ class TestOrange (BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20200116102345.1: *4* test_backslash_newline (to do: don't blacken)
+    #@+node:ekr.20200116102345.1: *4* test_backslash_newline
     def test_backslash_newline(self):
+        """
+        This test is necessarily different from black, because orange doesn't
+        delete semicolon tokens.
+        """
         tag = 'test_backslash_newline'
-        contents = """print(a); \\\n print(b)""" ### Wrong.
-        # expected = self.blacken(contents).rstrip() + '\n\n'
+        contents = r"""
+    print(a);\
+    print(b)
+    """
         contents, tokens, tree = self.make_data(contents, tag)
         expected = contents.rstrip() + '\n'
+        # expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116100603.1: *4* test_decorator
@@ -4653,28 +4660,19 @@ class Orange:
         
         Put the whitespace only if if ends with backslash-newline.
         """
-        # Short-circuit if there is no ws to add.
-        if not self.val:  # pragma: no cover
-            return
-        #
+        val = self.val
         # Handle backslash-newline.
-        if '\\\n' in self.val:
-            # Prepend a *real* blank, so later code won't add any more ws.
+        if '\\\n' in val:
             self.clean('blank')
-            self.add_token('blank', ' ')
-            self.add_token('ws', self.val.lstrip())
-            if self.val.endswith((' ', '\t')):
-                # Add a *empty* blank, so later code won't add any more ws.
-                self.add_token('blank', '')
+            self.add_token('op-no-blanks', val)
             return
-        #
         # Handle start-of-line whitespace.
         prev = self.code_list[-1]
         inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
         if prev.kind == 'line-indent' and inner:
             # Retain the indent that won't be cleaned away.
             self.clean('line-indent')
-            self.add_token('hard-blank', self.val)
+            self.add_token('hard-blank', val)
     #@+node:ekr.20200107165250.26: *4* orange: Output token generators
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value=''):
