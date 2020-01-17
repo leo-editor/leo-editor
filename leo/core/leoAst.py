@@ -4759,9 +4759,11 @@ class Orange:
             self.add_token('op', val)
             self.blank()
         else:
-            self.add_token('op', val)
-            # Suppress space in the next token. Used by word().
-            self.square_brackets_stack[-1] = True
+            self.op_no_blanks(val)
+            if 0:
+                self.add_token('op', val)
+                # Suppress space in the next token. Used by word().
+                self.square_brackets_stack[-1] = True
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
         """Add a line-end request to the code list."""
@@ -5067,9 +5069,12 @@ class Orange:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         if self.square_brackets_stack:
-            suppress = self.square_brackets_stack[-1]
-            if not suppress:
-                self.blank()
+            ###
+                # suppress = self.square_brackets_stack[-1]
+                # if not suppress:
+                    # self.blank()
+            # Valid because colon() may generate an 'op-no-blanks' token.
+            self.blank()
             self.add_token('word', s)
         elif self.in_arg_list > 0:
             self.add_token('word', s)
