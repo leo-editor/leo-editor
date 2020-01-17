@@ -4592,14 +4592,12 @@ class Orange:
         """Handle an op token."""
         val = self.val
         if val == '.':
-            ### self.op_no_blanks(val)
             self.clean('blank')
             self.add_token('op-no-blanks', val)
         elif val == '@':
             if not self.decorator_seen:
                 self.blank_lines(1)
                 self.decorator_seen = True
-            ### self.op_no_blanks(val)
             self.clean('blank')
             self.add_token('op-no-blanks', val)
             self.push_state('decorator')
@@ -4623,7 +4621,6 @@ class Orange:
             # Pep 8: Don't use spaces around the = sign when used to indicate
             # a keyword argument or a default parameter value.
             if self.paren_level:
-                ### self.op_no_blanks(val)
                 self.clean('blank')
                 self.add_token('op-no-blanks', val)
             else:
@@ -4765,7 +4762,6 @@ class Orange:
             self.add_token('op', val)
             self.blank()
         else:
-            ### self.op_no_blanks(val)
             self.clean('blank')
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
@@ -4983,7 +4979,6 @@ class Orange:
                 self.in_arg_list += 1
             self.add_token('lt', val)
         else:
-            ### self.op_no_blanks(val)
             self.clean('blank')
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.43: *6* orange.rt
@@ -5028,9 +5023,9 @@ class Orange:
         prev = self.code_list[-1]
         if prev.kind == 'lt':
             self.add_token('unary-op', s)
-            return
-        self.blank()
-        self.add_token('unary-op', s)
+        else:
+            self.blank()
+            self.add_token('unary-op', s)
     #@+node:ekr.20200107165250.46: *5* orange.star_op
     def star_op(self):
         """Put a '*' op, with special cases for *args."""
