@@ -4763,6 +4763,17 @@ class Orange:
             self.clean('line-indent')
             self.add_token('hard-blank', val)
     #@+node:ekr.20200107165250.26: *4* orange: Output token generators
+    #@+node:ekr.20200118145044.1: *5* orange.add_line_end
+    def add_line_end(self):
+        """Add a line-end request to the code list."""
+        # This may be called from do_name as well as do_newline and do_nl.
+        assert self.token.kind in ('name', 'newline', 'nl'), (self.token.kind, g.callers())
+        self.clean('blank')  # Important!
+        if self.delete_blank_lines:
+            self.clean_blank_lines()
+        self.clean('line-indent')
+        tok = self.add_token('line-end', '\n')
+        return tok
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value=''):
         """Add an output token to the code list."""
@@ -4839,18 +4850,7 @@ class Orange:
             self.blank()
         else:
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.33: *5* orange.line_end & add_line_end
-    def add_line_end(self):
-        """Add a line-end request to the code list."""
-        # This may be called from do_name as well as do_newline and do_nl.
-        assert self.token.kind in ('name', 'newline', 'nl'), (self.token.kind, g.callers())
-        self.clean('blank')  # Important!
-        if self.delete_blank_lines:
-            self.clean_blank_lines()
-        self.clean('line-indent')
-        tok = self.add_token('line-end', '\n')
-        return tok
-
+    #@+node:ekr.20200107165250.33: *5* orange.line_end
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
