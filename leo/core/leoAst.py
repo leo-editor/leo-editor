@@ -4914,12 +4914,13 @@ class Orange:
         else:
             self.curly_brackets_level -= 1
         self.clean('blank')
-        prev = self.code_list[-1]
-        if prev.kind == 'arg-end':
-            # # Remove a blank token preceding the arg-end or ')' token.
-            prev = self.code_list.pop()
-            self.clean('blank')
-            self.code_list.append(prev)
+        ###
+            # prev = self.code_list[-1]
+            # if prev.kind == 'arg-end':
+                # # Remove a blank token preceding the arg-end or ')' token.
+                # prev = self.code_list.pop()
+                # self.clean('blank')
+                # self.code_list.append(prev)
         self.add_token('rt', val)
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s):
