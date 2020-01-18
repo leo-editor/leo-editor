@@ -1718,6 +1718,7 @@ class TestOrange (BaseTest):
         table = (
               #1234567890x1234567890x1234567890x1234567890x
             """print('1111111111', '2222222222', '3333333333')""",
+            """print('4444',\n    '5555')"""
         )
         fails = 0
         for contents in table:
@@ -1735,9 +1736,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 0, fails
-
-        
+        assert fails == 1, fails
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
@@ -4971,13 +4970,15 @@ class Orange:
         # Must be called just after inserting the line-end token.
         assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
         line_tokens = self.find_prev_line()
-        line_s = ''.join([z.to_string() for z in line_tokens])
+        line_s = tokens_to_string(line_tokens)
         # Don't bother trying if the line is already long.
         if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
             return
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
             return
+        g.trace('Valid join')
+        g.trace('prev line', line_s)
         # To do...
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
