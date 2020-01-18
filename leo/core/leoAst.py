@@ -4657,11 +4657,10 @@ class Orange:
             state = self.state_stack[-1]
             if state.kind == 'decorator':
                 self.clean_blank_lines()
-                self.line_end()
+                self.add_line_end()  # Don't attempt to split/join lines.
                 self.state_stack.pop()
             else:
                 self.blank_lines(2 if name == 'class' else 1)
-                # self.blank_lines(2 if self.level == 0 else 1)
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
@@ -4673,13 +4672,11 @@ class Orange:
     #@+node:ekr.20200107165250.21: *5* orange.do_newline & do_nl
     def do_newline(self):
         """Handle a regular newline."""
-        # Retain any sidecar ws in the newline.
-        self.line_end(self.val)
+        self.line_end()
 
     def do_nl(self):
         """Handle a continuation line."""
-        # Retain any sidecar ws in the newline.
-        self.line_end(self.val)
+        self.line_end()
     #@+node:ekr.20200107165250.22: *5* orange.do_number
     def do_number(self):
         """Handle a number token."""
@@ -4841,17 +4838,29 @@ class Orange:
             self.blank()
         else:
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
-    def line_end(self, ws=''):
+    #@+node:ekr.20200107165250.33: *5* orange.line_end & add_line_end
+    def add_line_end(self):
         """Add a line-end request to the code list."""
-        prev = self.code_list[-1]
-        if prev.kind == 'file-start':  # pragma: no cover (defensive programming)
-            return
+        ###
+            # prev = self.code_list[-1]
+            # if prev.kind == 'file-start':  # pragma: no cover (defensive programming)
+                # return
         self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
         self.add_token('line-end', '\n')
+
+    def line_end(self):
+        """Add a line-end request to the code list."""
+        assert self.token.kind in ('newline', 'nl'), (self.token.kind, g.callers())
+        self.add_line_end()
+        ###
+            # self.clean('blank')  # Important!
+            # if self.delete_blank_lines:
+                # self.clean_blank_lines()
+            # self.clean('line-indent')
+            # self.add_token('line-end', '\n')
         # Attempt to split the line.
         allow_join = True
         if self.max_split_line_length > 0:
@@ -4862,159 +4871,6 @@ class Orange:
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
-    #@+node:ekr.20200107165250.34: *6* orange.break_line & helpers (to do)
-    def break_line(self):
-        """
-        Break the preceding line, if necessary.
-        
-        Return True if the line was broken into two or more lines.
-        """
-        # This method must be called just after inserting the line-end token.
-        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-        # Find the tokens of the previous lines.
-        line_tokens = self.find_prev_line()
-        line_s = ''.join([z.to_string() for z in line_tokens])
-        # Do nothing for short lines.
-        if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
-            return False
-        # Return if the previous line has no opening delim: (, [ or {.
-        if not any([z.kind == 'lt' for z in line_tokens]):
-            return False
-        prefix = self.find_line_prefix(line_tokens)
-        # Calculate the tail before cleaning the prefix.
-        tail = line_tokens[len(prefix):]
-        if prefix[0].kind == 'line-indent':
-            prefix = prefix[1:]
-        # Cut back the token list: subtract 1 for the trailing line-end.
-        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
-        # Append the tail, splitting it further, as needed.
-        self.append_tail(prefix, tail)
-        # Add the line-end token deleted by find_line_prefix.
-        self.add_token('line-end', '\n')
-        return True
-    #@+node:ekr.20200107165250.35: *7* orange.append_tail
-    def append_tail(self, prefix, tail):
-        """Append the tail tokens, splitting the line further as necessary."""
-        tail_s = ''.join([z.to_string() for z in tail])
-        if len(tail_s) < self.max_split_line_length:
-            # Add the prefix.
-            self.code_list.extend(prefix)
-            # Start a new line and increase the indentation.
-            self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws+' '*4)
-            self.code_list.extend(tail)
-            return
-        # Still too long.  Split the line at commas.
-        self.code_list.extend(prefix)
-        # Start a new line and increase the indentation.
-        self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws+' '*4)
-        open_delim = Token(kind='lt', value=prefix[-1].value)
-        close_delim = Token(
-            kind='rt',
-            value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
-        )
-        delim_count = 1
-        lws = self.lws + ' ' * 4
-        for i, t in enumerate(tail):
-            # g.trace(delim_count, str(t))
-            if t.kind == 'op' and t.value == ',':
-                if delim_count == 1:
-                    # Start a new line.
-                    self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', lws)
-                    # Kill a following blank.
-                    if i + 1 < len(tail):
-                        next_t = tail[i + 1]
-                        if next_t.kind == 'blank':
-                            next_t.kind = 'no-op'
-                            next_t.value = ''
-                else:
-                    self.code_list.append(t)
-            elif t.kind == close_delim.kind and t.value == close_delim.value:
-                # Done if the delims match.
-                delim_count -= 1
-                if delim_count == 0:
-                    if 0:
-                        # Create an error, on purpose.
-                        # This test passes: proper dumps are created,
-                        # and the body is not updated.
-                        self.add_token('line-end', '\n')
-                        self.add_token('op', ',')
-                        self.add_token('number', '666')
-                    # Start a new line
-                    self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i:])
-                    return
-                lws = lws[:-4]
-                self.code_list.append(t)
-            elif t.kind == open_delim.kind and t.value == open_delim.value:
-                delim_count += 1
-                lws = lws + ' ' * 4
-                self.code_list.append(t)
-            else:
-                self.code_list.append(t)
-        g.trace('BAD DELIMS', delim_count)
-    #@+node:ekr.20200107165250.36: *7* orange.find_prev_line
-    def find_prev_line(self):
-        """Return the previous line, as a list of tokens."""
-        line = []
-        for t in reversed(self.code_list[:-1]):
-            if t.kind == 'line-end':
-                break
-            line.append(t)
-        return list(reversed(line))
-    #@+node:ekr.20200107165250.37: *7* orange.find_line_prefix
-    def find_line_prefix(self, token_list):
-        """
-        Return all tokens up to and including the first lt token.
-        Also add all lt tokens directly following the first lt token.
-        """
-        result = []
-        for i, t in enumerate(token_list):
-            result.append(t)
-            if t.kind == 'lt':
-                for t in token_list[i + 1:]:
-                    if t.kind == 'blank' or self.is_any_lt(t):
-                    # if t.kind in ('lt', 'blank'):
-                        result.append(t)
-                    else:
-                        break
-                break
-        return result
-    #@+node:ekr.20200107165250.38: *7* orange.is_any_lt
-    def is_any_lt(self, output_token):
-        """Return True if the given token is any lt token"""
-        return (
-            output_token == 'lt'
-            or output_token.kind == 'op-no-blanks'
-            and output_token.value in "{[("
-        )
-    #@+node:ekr.20200107165250.39: *6* orange.join_lines
-    def join_lines(self):
-        """
-        Join preceding lines, if the result would be short enough.
-        Should be called only at the end of a line.
-        """
-        # Must be called just after inserting the line-end token.
-        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
-        line_tokens = self.find_prev_line()
-        line_s = tokens_to_string(line_tokens)
-        # Don't bother trying if the line is already long.
-        if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
-            return
-        # Terminating long lines must have ), ] or }
-        if not any([z.kind == 'rt' for z in line_tokens]):
-            return
-        if 0:
-            g.trace('Valid join')
-            g.trace('prev line', line_s)
-        # To do...
-        #   Scan back, looking for the first line with all balanced delims.
-        #   Do nothing if it is this line.
     #@+node:ekr.20200107165250.40: *5* orange.line_indent
     def line_indent(self):
         """Add a line-indent token."""
@@ -5142,6 +4998,160 @@ class Orange:
         self.blank()
         self.add_token('word-op', s)
         self.blank()
+    #@+node:ekr.20200118120049.1: *4* orange: Split/join
+    #@+node:ekr.20200107165250.35: *5* orange.append_tail
+    def append_tail(self, prefix, tail):
+        """Append the tail tokens, splitting the line further as necessary."""
+        tail_s = ''.join([z.to_string() for z in tail])
+        if len(tail_s) < self.max_split_line_length:
+            # Add the prefix.
+            self.code_list.extend(prefix)
+            # Start a new line and increase the indentation.
+            self.add_token('line-end', '\n')
+            self.add_token('line-indent', self.lws+' '*4)
+            self.code_list.extend(tail)
+            return
+        # Still too long.  Split the line at commas.
+        self.code_list.extend(prefix)
+        # Start a new line and increase the indentation.
+        self.add_token('line-end', '\n')
+        self.add_token('line-indent', self.lws+' '*4)
+        open_delim = Token(kind='lt', value=prefix[-1].value)
+        close_delim = Token(
+            kind='rt',
+            value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
+        )
+        delim_count = 1
+        lws = self.lws + ' ' * 4
+        for i, t in enumerate(tail):
+            # g.trace(delim_count, str(t))
+            if t.kind == 'op' and t.value == ',':
+                if delim_count == 1:
+                    # Start a new line.
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', lws)
+                    # Kill a following blank.
+                    if i + 1 < len(tail):
+                        next_t = tail[i + 1]
+                        if next_t.kind == 'blank':
+                            next_t.kind = 'no-op'
+                            next_t.value = ''
+                else:
+                    self.code_list.append(t)
+            elif t.kind == close_delim.kind and t.value == close_delim.value:
+                # Done if the delims match.
+                delim_count -= 1
+                if delim_count == 0:
+                    if 0:
+                        # Create an error, on purpose.
+                        # This test passes: proper dumps are created,
+                        # and the body is not updated.
+                        self.add_token('line-end', '\n')
+                        self.add_token('op', ',')
+                        self.add_token('number', '666')
+                    # Start a new line
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', self.lws)
+                    self.code_list.extend(tail[i:])
+                    return
+                lws = lws[:-4]
+                self.code_list.append(t)
+            elif t.kind == open_delim.kind and t.value == open_delim.value:
+                delim_count += 1
+                lws = lws + ' ' * 4
+                self.code_list.append(t)
+            else:
+                self.code_list.append(t)
+        g.trace('BAD DELIMS', delim_count)
+    #@+node:ekr.20200107165250.34: *5* orange.break_line
+    def break_line(self):
+        """
+        Break the preceding line, if necessary.
+        
+        Return True if the line was broken into two or more lines.
+        """
+        # This method must be called just after inserting the line-end token.
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        # Find the tokens of the previous lines.
+        line_tokens = self.find_prev_line()
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        # Do nothing for short lines.
+        if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
+            return False
+        # Return if the previous line has no opening delim: (, [ or {.
+        if not any([z.kind == 'lt' for z in line_tokens]):
+            return False
+        prefix = self.find_line_prefix(line_tokens)
+        # Calculate the tail before cleaning the prefix.
+        tail = line_tokens[len(prefix):]
+        if prefix[0].kind == 'line-indent':
+            prefix = prefix[1:]
+        # Cut back the token list: subtract 1 for the trailing line-end.
+        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
+        # Append the tail, splitting it further, as needed.
+        self.append_tail(prefix, tail)
+        # Add the line-end token deleted by find_line_prefix.
+        self.add_token('line-end', '\n')
+        return True
+    #@+node:ekr.20200107165250.37: *5* orange.find_line_prefix
+    def find_line_prefix(self, token_list):
+        """
+        Return all tokens up to and including the first lt token.
+        Also add all lt tokens directly following the first lt token.
+        """
+        result = []
+        for i, t in enumerate(token_list):
+            result.append(t)
+            if t.kind == 'lt':
+                for t in token_list[i + 1:]:
+                    if t.kind == 'blank' or self.is_any_lt(t):
+                    # if t.kind in ('lt', 'blank'):
+                        result.append(t)
+                    else:
+                        break
+                break
+        return result
+    #@+node:ekr.20200107165250.36: *5* orange.find_prev_line
+    def find_prev_line(self):
+        """Return the previous line, as a list of tokens."""
+        line = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind == 'line-end':
+                break
+            line.append(t)
+        return list(reversed(line))
+    #@+node:ekr.20200107165250.38: *5* orange.is_any_lt
+    def is_any_lt(self, output_token):
+        """Return True if the given token is any lt token"""
+        return (
+            output_token == 'lt'
+            or output_token.kind == 'op-no-blanks'
+            and output_token.value in "{[("
+        )
+    #@+node:ekr.20200107165250.39: *5* orange.join_lines
+    def join_lines(self):
+        """
+        Join preceding lines, if the result would be short enough.
+        Should be called only at the end of a line.
+        """
+        # Must be called just after inserting the line-end token.
+        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        line_tokens = self.find_prev_line()
+        line_s = tokens_to_string(line_tokens)
+        # Don't bother trying if the line is already long.
+        if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
+            return
+        # Terminating long lines must have ), ] or }
+        if not any([z.kind == 'rt' for z in line_tokens]):
+            return
+        if 0:
+            g.trace('Valid join')
+            g.trace('prev line', line_s)
+        # To do...
+        #   Scan back, looking for the first line with all balanced delims.
+        #   Do nothing if it is this line.
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
