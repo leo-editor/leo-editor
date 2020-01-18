@@ -1742,7 +1742,10 @@ class TestOrange (BaseTest):
         for contents in table:
             contents, tokens, tree = self.make_data(contents, tag)
             expected = self.blacken(contents, line_length=line_length)
-            results = self.beautify(contents, tag, tokens, tree, max_split_line_length=line_length)
+            results = self.beautify(contents, tag, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
             message = (
                 f"{tag}..."
                 f"  contents: {contents}\n"
@@ -2498,10 +2501,10 @@ class TestTokens (BaseTest):
             prev = token.prev_line_token
             next = token.next_line_token
             if prev and prev.kind != 'newline':
-                fails += 1
+                fails += 1  # pragma: no cover
             if next and next.kind != 'newline':
-                fails += 1
-        if fails:
+                fails += 1  # pragma: no cover
+        if fails:  # pragma: no cover
             for token in tokens:
                 prev = token.prev_line_token
                 next = token.next_line_token
