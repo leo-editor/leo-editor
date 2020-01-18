@@ -1625,6 +1625,7 @@ class TestOrange (BaseTest):
             table = (
                 # Assignments...
                 # Slices (colons)...
+                """a[1 : 1 + 2]""",
                 """a[lower:]""",
                 """a[lower::]""",
                 """a[:upper]""",
