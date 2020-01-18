@@ -4769,6 +4769,7 @@ class Orange:
         tok = Token(kind, value)
         self.code_list.append(tok)
         self.prev_output_token = self.code_list[-1]
+        return tok
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
         """Add a blank request to the code list."""
@@ -4841,19 +4842,24 @@ class Orange:
     #@+node:ekr.20200107165250.33: *5* orange.line_end & add_line_end
     def add_line_end(self):
         """Add a line-end request to the code list."""
-        # Unlike line_end, this may be called from do_name.
+        # This may be called from do_name as well as do_newline and do_nl.
         assert self.token.kind in ('name', 'newline', 'nl'), (self.token.kind, g.callers())
         self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
-        self.add_token('line-end', '\n')
+        tok = self.add_token('line-end', '\n')
+        return tok
 
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-        assert self.token.kind in ('newline', 'nl'), (self.token.kind, g.callers())
-        self.add_line_end()
+        token = self.token
+        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+        # Create the 'line-end' output token.
+        tok = self.add_line_end()
+        # Copy the prev_line_token data from the input token to the output token.
+        tok.prev_line_token = token.prev_line_token
         # Attempt to split the line.
         allow_join = True
         if self.max_split_line_length > 0:
@@ -5314,7 +5320,7 @@ class Tokenizer:
     """Create a list of Tokens from contents."""
     
     #@+others
-    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token (changed)
+    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
     token_index = 0
     prev_line_token = None
 
