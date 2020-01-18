@@ -2484,6 +2484,31 @@ class TestTokens (BaseTest):
     """Unit tests for tokenizing."""
 
     #@+others
+    #@+node:ekr.20200118084859.1: *4* test_line_links
+    def test_line_links(self):
+
+        contents = """\
+    print('line 1')
+    print('line 2')
+    print('line 3')
+    """
+        fails = 0
+        contents, tokens, tree = self.make_data(contents)
+        for token in tokens:
+            prev = token.prev_line_token
+            next = token.next_line_token
+            if prev and prev.kind != 'newline':
+                fails += 1
+            if next and next.kind != 'newline':
+                fails += 1
+        if fails:
+            for token in tokens:
+                prev = token.prev_line_token
+                next = token.next_line_token
+                prev_s = f"{prev.index:<2}" if prev else ''
+                next_s = f"{next.index:<2}" if next else ''
+                print(f"{token.kind:>12}.{token.index:<2} prev: {prev_s:2} next: {next_s}")
+        assert fails == 0, fails
     #@+node:ekr.20200110015014.6: *4* test_bs_nl_tokens
     def test_bs_nl_tokens(self):
         # Test https://bugs.python.org/issue38663.
@@ -5216,9 +5241,11 @@ class Token:
             # The line number, for errors and dumps.
             # Same as five_tuple.start[0]
         #
-        # Injected by Linker class.
+        # Injected by Tokenizer.add_token.
         self.level = 0
+        self.next_line_token = None
         self.node = None
+        self.prev_line_token = None
 
     def __repr__(self):
         s = f"{self.kind:}.{self.index:<3}"
@@ -5283,8 +5310,9 @@ class Tokenizer:
     """Create a list of Tokens from contents."""
     
     #@+others
-    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
+    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token (changed)
     token_index = 0
+    prev_line_token = None
 
     def add_token(self, kind, five_tuple, line, s_row, value):
         """
@@ -5295,6 +5323,13 @@ class Tokenizer:
         tok = Token(kind, value)
         tok.five_tuple = five_tuple
         tok.index = self.token_index
+        # New: inject prev/next_line_token fields.
+        if tok.kind == 'newline': ### What about 'nl' ???
+            tok.prev_line_token = self.prev_line_token
+            if self.prev_line_token:
+                self.prev_line_token.next_line_token = tok
+            self.prev_line_token = tok
+        # Bump the token index.
         self.token_index += 1
         tok.line = line
         tok.line_number = s_row
