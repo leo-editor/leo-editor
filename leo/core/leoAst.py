@@ -1616,6 +1616,7 @@ class TestOrange (BaseTest):
         if 0:
             # Only test the fails.
             table = (
+                """a[: upper_fn(x) :]""",
                 """a[:: step_fn(x)]""",
                 """a[:upper]""",
                 """a[::step]""",
@@ -1630,8 +1631,9 @@ class TestOrange (BaseTest):
                 """a[:upper:]""",
                 """a[::step]""",
                 """a[lower:upper:]""",
-                """a[lower:upper:]""",
+                """a[lower:upper:step]""",
                 """a[lower + offset : upper + offset]""",
+                """a[: upper_fn(x) :]""",
                 """a[: upper_fn(x) : step_fn(x)]""",
                 """a[:: step_fn(x)]""",
                 """a[:]""",
@@ -4802,13 +4804,16 @@ class Orange:
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
         expressions = (ast.BinOp, ast.Call, ast.IfExp, ast.UnaryOp)
+        ### g.printObj(self.code_list)
         if any(isinstance(z, expressions) for z in (lower, upper, step)):
             prev = self.code_list[-1]
+            ### g.trace('===== EXPR prev', prev)
             if prev.value not in '[:':
                 self.blank()
             self.add_token('op', val)
             self.blank()
         else:
+            ### g.trace('===== NO BLANK')
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
@@ -5029,7 +5034,7 @@ class Orange:
             self.curly_brackets_level -= 1
         self.clean('blank')
         prev = self.code_list[-1]
-        if prev.kind == 'arg-end' or (prev.kind, prev.value) == ('op', ':'):
+        if prev.kind == 'arg-end': ###  or (prev.kind, prev.value) == ('op', ':'):
             # # Remove a blank token preceding the arg-end or ')' token.
             prev = self.code_list.pop()
             self.clean('blank')
@@ -5092,6 +5097,7 @@ class Orange:
     #@+node:ekr.20200107165250.48: *5* orange.word & word_op
     def word(self, s):
         """Add a word request to the code list."""
+        ### g.printObj(self.code_list)
         assert s and isinstance(s, str), repr(s)
         if self.square_brackets_stack:
             # A previous 'op-no-blanks' token may cancel this blank.
