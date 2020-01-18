@@ -1616,39 +1616,58 @@ class TestOrange (BaseTest):
         if 0:
             # Only test the fails.
             table = (
+                """a[:: step_fn(x)]""",
+                """a[:upper]""",
+                """a[::step]""",
             )
         else:
             table = (
-                # Calls...
-                """print(a.b)""",
-                """print(2 * 3)""",
-                """a = b * c""",
-                """a = b ** c""",
-                """print(-1 < 2)""",
-                """x, y = y, x""",
-                """t = (0,)""",
-                """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
-                """f(2 + name)""",
-                """f(a[1 + 2])""",
-                # """f({key: 1 + 2})""",
-                # """f({'key': 1 + 2})""",
-                # Dicts...
-                """d = {key: 1}""",
-                """d['key'] = a[i]""",
-                # Function calls...
-                """f(1)""",
-                """f(name)""",
-                """f({key: 1})""",
-                # Slices...
+                # Assignments...
+                # Slices (colons)...
+                """a[lower:]""",
+                """a[lower::]""",
+                """a[:upper]""",
+                """a[:upper:]""",
+                """a[::step]""",
+                """a[lower:upper:]""",
+                """a[lower:upper:]""",
                 """a[lower + offset : upper + offset]""",
                 """a[: upper_fn(x) : step_fn(x)]""",
                 """a[:: step_fn(x)]""",
                 """a[:]""",
                 """a[::]""",
-                """a[:9]""",
-                """a[9:]""",
-                """a[1:9]""",
-                """a[1:9:3]""", 
+                """a[1:]""",
+                """a[1::]""",
+                """a[:2]""",
+                """a[:2:]""",
+                """a[::3]""",
+                """a[1:2]""",
+                """a[1:2:]""",
+                """a[:2:3]""",
+                """a[1:2:3]""",
+                # * and **, inside and outside function calls.
+                """a = b * c""",
+                """a = b ** c""",
+                """f(*args)""",
+                """f(**kwargs)""",
+                """f(*args, **kwargs)""",
+                """f(a, *args)""",
+                """f(a=2, *args)""",
+                # Calls...
+                """f(-1 < 2)""",
+                """f(1)""",
+                """f(2 * 3)""",
+                """f(2 + name)""",
+                """f(a)""",
+                """f(a.b)""",
+                """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+                """f(a[1 + 2])""",
+                """f({key: 1})""",
+                """t = (0,)""",
+                """x, y = y, x""",
+                # Dicts...
+                """d = {key: 1}""",
+                """d['key'] = a[i]""",
                 # Trailing comments: expect two spaces.
                 """whatever # comment""",
                 """whatever  # comment""",
@@ -1659,12 +1678,6 @@ class TestOrange (BaseTest):
                 # Unary ops...
                 """v = -1 if a < b else -2""",
                 """print(-1)""",
-                # Recent changes.
-                """print(b, *args)""",
-                """f(**kwargs)""",
-                #
-                # Fails...
-                """a[lower:upper:]""",
             )
         fails = 0
         for contents in table:
@@ -1712,7 +1725,7 @@ class TestOrange (BaseTest):
         
         tag = 'test_split_join_lines'
         verbose_pass = False
-        verbose_fail = True
+        verbose_fail = False
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -4784,30 +4797,18 @@ class Orange:
             self.add_token('op', val)
             self.blank()
             return
-        #
         # A slice.
-        prev = self.code_list[-1]
-        if prev.value in '[:':
-            # Don't put a space before or after the colon if the previous token is '(' or ':')
-            self.add_token('op', val)
-            return
-        #
-        # The hard case:
-        #
-        # Put a space before the colon only if what goes before is an expression.
-        #
-        # Examples: a[1:2], a[first:last], a[a + 1 : 2]
-        #
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
         expressions = (ast.BinOp, ast.Call, ast.IfExp, ast.UnaryOp)
         if any(isinstance(z, expressions) for z in (lower, upper, step)):
-            self.blank()
+            prev = self.code_list[-1]
+            if prev.value not in '[:':
+                self.blank()
             self.add_token('op', val)
             self.blank()
         else:
-            self.clean('blank')
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end & split/join helpers
     def line_end(self, ws=''):
@@ -4977,8 +4978,9 @@ class Orange:
         # Terminating long lines must have ), ] or }
         if not any([z.kind == 'rt' for z in line_tokens]):
             return
-        g.trace('Valid join')
-        g.trace('prev line', line_s)
+        if 0:
+            g.trace('Valid join')
+            g.trace('prev line', line_s)
         # To do...
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
