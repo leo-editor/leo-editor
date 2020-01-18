@@ -4841,10 +4841,8 @@ class Orange:
     #@+node:ekr.20200107165250.33: *5* orange.line_end & add_line_end
     def add_line_end(self):
         """Add a line-end request to the code list."""
-        ###
-            # prev = self.code_list[-1]
-            # if prev.kind == 'file-start':  # pragma: no cover (defensive programming)
-                # return
+        # Unlike line_end, this may be called from do_name.
+        assert self.token.kind in ('name', 'newline', 'nl'), (self.token.kind, g.callers())
         self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
@@ -4853,14 +4851,9 @@ class Orange:
 
     def line_end(self):
         """Add a line-end request to the code list."""
+        # This should be called only be do_newline and do_nl.
         assert self.token.kind in ('newline', 'nl'), (self.token.kind, g.callers())
         self.add_line_end()
-        ###
-            # self.clean('blank')  # Important!
-            # if self.delete_blank_lines:
-                # self.clean_blank_lines()
-            # self.clean('line-indent')
-            # self.add_token('line-end', '\n')
         # Attempt to split the line.
         allow_join = True
         if self.max_split_line_length > 0:
