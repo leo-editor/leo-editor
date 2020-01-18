@@ -1636,6 +1636,8 @@ class TestOrange (BaseTest):
                 """a[: upper_fn(x) :]""",
                 """a[: upper_fn(x) : step_fn(x)]""",
                 """a[:: step_fn(x)]""",
+                """a[: upper_fn(x) :]""",
+                """a[: upper_fn(x) : 2 + 1]""",
                 """a[:]""",
                 """a[::]""",
                 """a[1:]""",
