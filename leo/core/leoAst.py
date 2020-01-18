@@ -1614,17 +1614,15 @@ class TestOrange (BaseTest):
         verbose_fail = True
         # Except where noted, all entries are expected values....
         if 0:
-            # Only test the fails.
+            # Test fails or recents...
             table = (
-                """a[: upper_fn(x) :]""",
-                """a[:: step_fn(x)]""",
-                """a[:upper]""",
-                """a[::step]""",
+                """a[: 1 if True else 2 :]""",
             )
         else:
             table = (
                 # Assignments...
                 # Slices (colons)...
+                """a[: 1 if True else 2 :]""",
                 """a[1 : 1 + 2]""",
                 """a[lower:]""",
                 """a[lower::]""",
@@ -4685,7 +4683,7 @@ class Orange:
     #@+node:ekr.20200107165250.22: *5* orange.do_number
     def do_number(self):
         """Handle a number token."""
-        assert isinstance(self.val, str), repr(self.val)
+        self.blank()
         self.add_token('number', self.val)
     #@+node:ekr.20200107165250.23: *5* orange.do_op
     def do_op(self):
