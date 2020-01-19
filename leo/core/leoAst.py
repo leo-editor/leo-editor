@@ -2778,8 +2778,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20200110162044.1: *5* tog.find_next_significant_token
     def find_next_significant_token(self):
         """
-        Scan from *after* the previous significant token looking
-        for the next significant token.
+        Scan from *after* self.tokens[px] looking for the next significant
+        token.
         
         Return the token, or None. Never change self.px.
         """
@@ -2789,7 +2789,7 @@ class TokenOrderGenerator:
             px += 1
             if is_significant_token(token):
                 return token
-        # This will never be taken. because endtoken is significant.
+        # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
     #@+node:ekr.20191121180100.1: *5* tog.gen*
     # Useful wrappers.
@@ -2809,29 +2809,24 @@ class TokenOrderGenerator:
     def gen_token(self, kind, val):
         yield from self.visitor(self.sync_token(kind, val))
     #@+node:ekr.20191113063144.7: *5* tog.sync_token & set_links
-    px = -1 # Index of the previous *significant* token.
-    last_node = None
+    px = -1 # Index of the previously synced token.
+    ### last_node = None
 
     def sync_token(self, kind, val):
         """
-        Handle a token whose kind & value are given.
+        Sync to a token whose kind & value are given. This token may be
+        significant or insignificant.
         
-        If the token is significant, do the following:
-            
-        1. Find the next significant token*after* px. Call it T.
-        2. Verify that T matches the token described by (kind, val).
-        3. Create two-way links between all assignable tokens between px and T.
-        4. Create two-way links between T and self.node.
-        5. Advance by updating self.px.
+        Scan the tokens *after* px, looking for a token T matching (kind, val).
+        Fail if a significant token is found that doesn't match T.
+        Otherwise:
+        - Create two-way links between all assignable tokens between px and T.
+        - Create two-way links between T and self.node.
+        - Advance by updating self.px to point to T.
         """
         trace = False
         verbose = False
         node, tokens = self.node, self.tokens
-        if 0:
-            if isinstance(node. ast.Module) and self.last_node:
-                node = self.last_node
-            else:
-                self.last_node = node
         assert isinstance(node, ast.AST), repr(node)
         if trace and verbose: g.trace('Ignore:', self.px, kind, repr(val))
         ###
@@ -3370,10 +3365,10 @@ class TokenOrderGenerator:
         trace = False
         tag = 'tog.get_concatenated_string_tokens'
         i = self.px
-        if i > -1:
-            # self.px should point at a significant token.
-            token = self.tokens[i]
-            assert is_significant_token(token), (i, token)
+        ### px can now point at an insignificant token.
+            # if i > -1:
+                # token = self.tokens[i]
+                # assert is_significant_token(token), (i, token)
         #
         # First, find the next significant token.  It should be a string.
         i, token = i + 1, None
