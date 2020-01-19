@@ -4108,8 +4108,9 @@ class Fstringify (TokenOrderTraverser):
         except Exception as e:
             print(e)
             return False
-         # Write the results
-        print(f"Wrote {filename}")
+        # Write the results
+        status = 'Unchanged' if contents == results else 'Wrote'
+        print(f"{status:>9}: {filename}")
         write_file(filename, results, encoding=encoding)
         return contents == results
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
