@@ -222,8 +222,6 @@ def fstringify_files_silent(event):
             changed = leoAst.Fstringify().fstringify_file_silent(filename)
             if changed:
                 n_changed += 1
-            # changed_s = 'changed' if changed else 'unchanged'
-            # print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
             print(f"File not found:{filename}")
@@ -232,8 +230,9 @@ def fstringify_files_silent(event):
     print('')
     n_tot = len(roots)
     g.es_print(
-        f"{n_tot:<3} total file{g.plural(len(roots))}, "
-        f"{n_changed:<3} changed file{g.plural(n_changed)} in {t2 - t1:5.2f} sec.")
+        f"{n_tot} total file{g.plural(len(roots))}, "
+        f"{n_changed} changed file{g.plural(n_changed)} "
+        f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
 def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
