@@ -2835,7 +2835,6 @@ class TokenOrderGenerator:
         - Advance by updating self.px to point to T.
         """
         trace = False
-        verbose = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace: g.trace(
@@ -2844,28 +2843,17 @@ class TokenOrderGenerator:
             f"kind: {kind:>10}: val: {val!r}")
         #
         # Step one: Look for token T.
-        #
-        # Special case: because of JoinedStr's, syncing a
-        # string may jump over *many* significant tokens.
         old_px = px = self.px + 1
         while px < len(self.tokens):
             token = tokens[px]
-            if trace and verbose: g.trace('Token', px, token)
             if (kind, val) == (token.kind, token.value):
-                if trace and verbose: g.trace('   OK', px, token)
                 break  # Success.
             if kind == token.kind == 'number':
-                if trace and verbose: g.trace('   OK', px, token)
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
             if kind == 'newline':
-                # Failed to sync on the newline.
-                # This is *not* an error!
-                if False: ### token.kind == 'endmarker':
-                    break # Benign
-                else:
-                    # Newlines are always optional. This is not an error.
-                    return
+                # Failed to sync on the newline. This is *not* an error!
+                return
             if is_significant_token(token):  # pragma: no cover
                 # Unrecoverable sync failure.
                 line_s = f"line {token.line_number}:"
@@ -2876,7 +2864,6 @@ class TokenOrderGenerator:
                     f"Looking for: {kind}.{val!r}\n"
                     f"      found: {token.kind}.{token.value!r}\n")
             # Skip the insignificant token.
-            if trace and verbose: g.trace(' SKIP', px, token)
             px += 1
         else:  # pragma: no cover
             # Unrecoverable sync failure.
@@ -2889,17 +2876,14 @@ class TokenOrderGenerator:
         # Step two: Associate all previous tokens to the ast node.
         while old_px < px:
             token = tokens[old_px]
-            # g.trace(f"    : {node.__class__.__name__:>12} {token.brief_dump()} ")
             old_px += 1
             self.set_links(node, token)
         #
         # Step three: Set links in the found token, significant or not.
         token = tokens[px]
-        # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
         self.set_links(node, token)
         #
-        # Step four. Advance.
-        # Rescan if necessary.
+        # Step four. Advance, rescaning if necessary.
         if token.kind == 'endmarker':
             self.px = px -1
         else:
@@ -2910,9 +2894,8 @@ class TokenOrderGenerator:
         if token.kind == 'endmarker':
             # Don't bother.
             return
-        trace = False
+        # g.trace(f"{node.__class__.__name__:>12} {token.brief_dump()} ")
         if token.node is not None:  # pragma: no cover
-            g.trace('=====', token.kind, token.node)
             line_s = f"line {token.line_number}:"
             raise AssignLinksError(
                     f"       file: {self.filename}\n"
@@ -2921,14 +2904,7 @@ class TokenOrderGenerator:
                     f"token.node is not None\n"
                     f" token.node: {token.node.__class__.__name__}\n"
                     f"    callers: {g.callers()}")
-        if (
-            is_significant_token(token)
-            or token.kind in ('comment', 'newline')
-        ):
-            if trace:
-                g.trace(
-                    f"node: {node.__class__.__name__!s:16}"
-                    f"token: {token.dump()}")
+        if is_significant_token(token) or token.kind in ('comment', 'newline'):
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
