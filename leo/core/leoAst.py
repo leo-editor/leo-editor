@@ -624,6 +624,13 @@ if 1: # pragma: no cover
     #@+node:ekr.20200106094631.1: *4* function: expected_got
     def expected_got(expected, got):
         """Return a message, mostly for unit tests."""
+        if expected.rstrip() == got.rstrip():
+            # Make the difference more visible.
+            return (
+                f"\n"
+                f"expected: {expected!r}\n"
+                f"     got: {got!r}"
+        )
         return (
             f"\n"
             f"expected: {expected!s}\n"
@@ -913,7 +920,8 @@ class BaseTest (unittest.TestCase):
             return None, None, None
         t1 = get_time()
         self.update_counts('characters', len(contents))
-        contents = g.adjustTripleString(contents).rstrip()
+        # Ensure all tests end in exactly one newline.
+        contents = g.adjustTripleString(contents).rstrip() + '\n'
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
         self.tog.filename = description or '<unit test>'
@@ -1295,8 +1303,8 @@ class TestFstringify (BaseTest):
     #@+node:ekr.20200111043311.2: *5* test_fs.test_crash_1
     def test_crash_1(self):
         # leoCheck.py.
-        contents = """return ('error', 'no member %s' % ivar)"""
-        expected = """return ('error', f'no member {ivar}')"""
+        contents = """return ('error', 'no member %s' % ivar)\n"""
+        expected = """return ('error', f'no member {ivar}')\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_crash_1', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1308,7 +1316,7 @@ class TestFstringify (BaseTest):
             # 'defs: %s calls: %s undefined calls: %s returns: %s'
         # )
         contents = r"""'files: %s\n' 'defs: %s'"""
-        expected = contents
+        expected = contents + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_crash_2', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1317,16 +1325,16 @@ class TestFstringify (BaseTest):
     def test_braces(self):
 
         # From pr.construct_stylesheet in leoPrinting.py
-        contents = r"""'h1 {font-family: %s}' % (family)"""
-        expected = r"""f'h1 {{font-family: {family}}}'"""
+        contents = """'h1 {font-family: %s}' % (family)\n"""
+        expected = """f'h1 {{font-family: {family}}}'\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, 'test_braces', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
     def test_call_in_rhs(self):
         
-        contents = """'%s' % d()"""
-        expected = """f'{d()}'"""
+        contents = """'%s' % d()\n"""
+        expected = """f'{d()}'\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1334,16 +1342,16 @@ class TestFstringify (BaseTest):
     def test_call_with_attribute_2(self):
         
         # From LM.traceSettingsDict
-        contents = """print('%s' % (len(d.keys())))"""
-        expected = """print(f'{len(d.keys())}')"""
+        contents = """print('%s' % (len(d.keys())))\n"""
+        expected = """print(f'{len(d.keys())}')\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
         
-        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
-        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')"""
+        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())\n"""
+        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1355,7 +1363,7 @@ class TestFstringify (BaseTest):
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
-        contents = """g.blue('wrote %s' % p.x())"""
+        contents = """g.blue('wrote %s' % p.x())\n"""
         # expected = """g.blue(f'wrote {p.x()}')"""
         contents, tokens, tree = self.make_data(contents, description=tag)
         # Dump GOT data.
@@ -1374,10 +1382,10 @@ class TestFstringify (BaseTest):
         # From LM.mergeShortcutsDicts.
         contents = (
             """g.trace('--trace-binding: %20s binds %s to %s' % ("""
-            """   c.shortFileName(), binding, d.get(binding) or []))""")
+            """   c.shortFileName(), binding, d.get(binding) or []))\n""")
         expected = (
             """g.trace(f'--trace-binding: {c.shortFileName():20} """
-            """binds {binding} to {d.get(binding) or []}')""")
+            """binds {binding} to {d.get(binding) or []}')\n""")
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1385,9 +1393,9 @@ class TestFstringify (BaseTest):
     def test_ImportFrom(self):
         
         table = (
-            """from .globals import a, b""",
-            """from ..globals import x, y, z""",
-            """from . import j""",
+            """from .globals import a, b\n""",
+            """from ..globals import x, y, z\n""",
+            """from . import j\n""",
         )
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
@@ -1397,9 +1405,9 @@ class TestFstringify (BaseTest):
     def test_ListComp(self):
         
         table = (
-            """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]""",
-            """[L for L in x for c in y]""",
-            """[L for L in x for c in y if L if not c]""",
+            """replaces = [L + c + R[1:] for L, R in splits if R for c in letters]\n""",
+            """[L for L in x for c in y]\n""",
+            """[L for L in x for c in y if L if not c]\n""",
         )
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
@@ -1425,8 +1433,6 @@ class TestFstringify (BaseTest):
                 f"     got head: {head}\n"
                 f"expected tail: {e_tail}\n"
                 f"     got tail: {tail}\n")
-
-            
     #@+node:ekr.20200104042705.1: *4* test_newlines
     def test_newlines(self):
 
@@ -1443,8 +1449,8 @@ class TestFstringify (BaseTest):
     #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
     def test_parens_in_rhs(self):
 
-        contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f'{ivar:20}', val)"""
+        contents = """print('%20s' % (ivar), val)\n"""
+        expected = """print(f'{ivar:20}', val)\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, '<string>', tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -1452,13 +1458,13 @@ class TestFstringify (BaseTest):
     def test_single_quotes(self):
         
         table = (
-            ("""print('%r "default"' % style_name)""",
-             """print(f'{style_name!r} "default"')"""),
-            ("""print('%r' % "val")""",
-             """print(f'{"val"!r}')"""),
+            ("""print('%r "default"' % style_name)\n""",
+             """print(f'{style_name!r} "default"')\n"""),
+            ("""print('%r' % "val")\n""",
+             """print(f'{"val"!r}')\n"""),
             # f-strings can't contain backslashes.
-            ("""print("%r" % "val")""",
-             """print("%r" % "val")"""),
+            ("""print("%r" % "val")\n""",
+             """print("%r" % "val")\n"""),
         )
         fails = []
         for i, data in enumerate(table):
@@ -1793,7 +1799,7 @@ class TestTOG (BaseTest):
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
-        contents = r"""\
+        contents = """\
     class TestClass1:
         pass
         
