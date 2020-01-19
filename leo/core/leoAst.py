@@ -1042,7 +1042,7 @@ class BaseTest (unittest.TestCase):
         BaseTest.beautify.
         """
         t1 = get_time()
-        if not contents:
+        if not contents:  # pragma: no cover
             return ''
         result_s = Orange().beautify(contents, filename, tokens, tree,
             max_join_line_length=max_join_line_length,
