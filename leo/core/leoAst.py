@@ -4428,7 +4428,18 @@ class Fstringify (TokenOrderTraverser):
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
-    """Orange is the new black."""
+    """
+    A flexible and powerful beautifier for Python.
+    Orange is the new black.
+    """
+    
+    # Nodes that are candidates for splitting into shorter lines.
+    long_statements = (
+        ast.Assign, ast.AugAssign, ast.Call, ast.For,
+        ast.Global, ast.If, ast.Import, ast.ImportFrom,
+        ast.Nonlocal, ast.Return, ast.While, ast.With,
+        ast.Yield, ast.YieldFrom,
+    )
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
@@ -4825,13 +4836,6 @@ class Orange:
         else:
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end
-    long_statements = (
-        ast.Assign, ast.AugAssign, ast.Call, ast.For,
-        ast.Global, ast.If, ast.Import, ast.ImportFrom,
-        ast.Nonlocal, ast.Return, ast.While, ast.With,
-        ast.Yield, ast.YieldFrom,
-    )
-
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
