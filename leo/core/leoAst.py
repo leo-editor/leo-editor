@@ -782,9 +782,9 @@ if 1: # pragma: no cover
             print(z.dump())
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
-    def dump_tree(tokens, tree):
+    def dump_tree(tokens, tree, tag=None):
         print('')
-        print('Tree...\n')
+        print(f"Tree {tag or ''}...\n")
         print(AstDumper().dump_tree(tokens, tree))
     #@+node:ekr.20200107040729.1: *4* function: show_diffs
     def show_diffs(s1, s2, filename=''):
@@ -1042,6 +1042,8 @@ class BaseTest (unittest.TestCase):
         BaseTest.beautify.
         """
         t1 = get_time()
+        if not contents:
+            return ''
         result_s = Orange().beautify(contents, filename, tokens, tree,
             max_join_line_length=max_join_line_length,
             max_split_line_length=max_split_line_length)
@@ -1527,6 +1529,7 @@ class TestOrange (BaseTest):
     #@+node:ekr.20200108075541.1: *4* test_leo_sentinels (don't blacken)
     def test_leo_sentinels(self):
 
+        tag = 'test_leo_sentinels'
         # Careful: don't put a sentinel into the file directly.
         # That would corrupt leoAst.py.
         sentinel = '#@+node:ekr.20200105143308.54: ** test'
@@ -1535,7 +1538,7 @@ class TestOrange (BaseTest):
     def spam():
         pass
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, 'test_leo_sentinels', tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1548,7 +1551,7 @@ class TestOrange (BaseTest):
     class aClass:
         pass
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1559,7 +1562,7 @@ class TestOrange (BaseTest):
     def f1(a=2 + 5):
         pass
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1570,7 +1573,7 @@ class TestOrange (BaseTest):
     def f1(*args, **kwargs):
         pass
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1582,7 +1585,7 @@ class TestOrange (BaseTest):
     def f1( *args, **kwargs ):
         pass
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1602,7 +1605,7 @@ class TestOrange (BaseTest):
     print(x, y); x, y = y, x
     print(x, y); x, y = y, x
     """
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -1683,10 +1686,11 @@ class TestOrange (BaseTest):
                 """print(-1)""",
             )
         fails = 0
-        for contents in table:
-            contents, tokens, tree = self.make_data(contents, tag)
+        for i, contents in enumerate(table):
+            description = f"{tag} part {i}"
+            contents, tokens, tree = self.make_data(contents, description)
             expected = self.blacken(contents)
-            results = self.beautify(contents, tag, tokens, tree)
+            results = self.beautify(contents, description, tokens, tree)
             message = (
                 f"  contents: {contents}\n"
                 f"     black: {expected.rstrip()}\n"
@@ -1720,7 +1724,7 @@ class TestOrange (BaseTest):
         contents = """print('hi')"""
         # blacken suppresses string normalization.
         expected = self.blacken(contents)
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, tag)
         results = self.beautify(contents, tag, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200117180956.1: *4* test_split_join_lines
@@ -2800,6 +2804,7 @@ class TokenOrderGenerator:
         yield from self.visitor(self.sync_token(kind, val))
     #@+node:ekr.20191113063144.7: *5* tog.sync_token & set_links
     px = -1 # Index of the previous *significant* token.
+    last_node = None
 
     def sync_token(self, kind, val):
         """
@@ -2814,16 +2819,24 @@ class TokenOrderGenerator:
         5. Advance by updating self.px.
         """
         trace = False
+        verbose = False
         node, tokens = self.node, self.tokens
+        if 0:
+            if isinstance(node. ast.Module) and self.last_node:
+                node = self.last_node
+            else:
+                self.last_node = node
         assert isinstance(node, ast.AST), repr(node)
-        if trace:
-            g.trace('Ignore:', self.px, kind, repr(val))
-        #
-        # Leave all non-significant tokens for later.
-        if not is_significant(kind, val):
-            if trace:
-                g.trace('  Scan:', self.px, kind, repr(val))
-            return
+        if trace and verbose: g.trace('Ignore:', self.px, kind, repr(val))
+        ###
+        ### To do: we *should* sync (kind, val), even if it is insignificant!
+        ###
+        if 1:
+            # Leave all non-significant tokens for later.
+            if not is_significant(kind, val):
+                if trace: g.trace('Not significant', kind, repr(val))
+                ### if trace and verbose: g.trace('  Scan:', self.px, kind, repr(val))
+                return
         #
         # Step one: Scan from *after* the previous significant token,
         #           looking for a token that matches (kind, val)
@@ -2834,36 +2847,31 @@ class TokenOrderGenerator:
         old_px = px = self.px + 1
         while px < len(self.tokens):
             token = tokens[px]
-            if trace: g.trace('Token', px, token)
+            if trace and verbose: g.trace('Token', px, token)
             if (kind, val) == (token.kind, token.value):
-                if trace: g.trace('   OK', px, token)
+                if trace and verbose: g.trace('   OK', px, token)
                 break  # Success.
             if kind == token.kind == 'number':
-                if trace: g.trace('   OK', px, token)
+                if trace and verbose: g.trace('   OK', px, token)
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
+            ### Experimental:
+                # if kind == 'newline' and token.kind == 'endmarker':
+                    # break  # Benign.
             if is_significant_token(token):  # pragma: no cover
                 # Unrecoverable sync failure.
-                if 0:
-                    pre_tokens = tokens[max(0, px-10):px+1]
-                    g.trace('\nSync Failed...\n')
-                    for s in [f"{i:>4}: {z!r}" for i, z in enumerate(pre_tokens)]:
-                        print(s)
                 line_s = f"line {token.line_number}:"
                 val = g.truncate(val, 40)
                 raise AssignLinksError(
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
-                    f"Looking for: {kind}.{val}\n"
-                    f"      found: {token.kind}.{g.truncate(token.value, 80)}")
+                    f"Looking for: {kind}.{val!r}\n"
+                    f"      found: {token.kind}.{token.value!r}\n")
             # Skip the insignificant token.
-            if trace: g.trace(' SKIP', px, token)
+            if trace and verbose: g.trace(' SKIP', px, token)
             px += 1
         else:  # pragma: no cover
             # Unrecoverable sync failure.
-            if 0:
-                g.trace('\nSync failed...')
-                g.printObj(tokens[max(0, px-5):], tag='Tokens')
             val = g.truncate(val, 40)
             raise AssignLinksError(
                  f"       file: {self.filename}\n"
@@ -2873,16 +2881,17 @@ class TokenOrderGenerator:
         # Step two: Associate all previous assignable tokens to the ast node.
         while old_px < px:
             token = tokens[old_px]
-            if trace: g.trace('Link insignificant', old_px, token)
+            if trace:
+                g.trace(f"    : {node.__class__.__name__:>12} {token.brief_dump()} ")
             old_px += 1
-            self.set_links(self.node, token)
+            self.set_links(node, token)
         #
         # Step three: Set links in the significant token.
         token = tokens[px]
         if is_significant_token(token):
+            if trace:
+                g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
             self.set_links(node, token)
-        else:
-            if trace: g.trace('Skip insignificant', px, token, g.callers())
         #
         # Step four. Advance.
         if is_significant_token(token):
@@ -3161,121 +3170,6 @@ class TokenOrderGenerator:
         """
         token = self.find_next_significant_token()
         yield from self.gen_token('string', token.value)
-    #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
-    # Call(expr func, expr* args, keyword* keywords)
-
-    # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
-
-    def do_Call(self, node):
-        
-        if False:
-            #@+<< trace the ast.Call >>
-            #@+node:ekr.20191204105344.1: *7* << trace the ast.Call >>
-            dumper = AstDumper()
-
-            def show_fields(node):
-                class_name = 'None' if node is None else node.__class__.__name__
-                return dumper.show_fields(class_name, node, 80)
-                
-            def dump(node):
-                class_name = node.__class__.__name__
-                if node is None:
-                    class_name, fields = 'None', ''
-                elif isinstance(node, (list, tuple)):
-                    fields = ', '.join([show_fields(z) for z in node])
-                else:
-                    fields = show_fields(node)
-                return f"{class_name:>12}: {fields}"
-                
-            print('\ndo_Call...\n\n'
-                f"    func: {dump(node.func)}\n"
-                f"    args: {dump(node.args)}\n"
-                f"keywords: {dump(node.keywords)}\n")
-            #@-<< trace the ast.Call >>
-        yield from self.gen(node.func)
-        yield from self.gen_op('(')
-        # No need to generate any commas.
-        yield from self.handle_call_arguments(node)
-        yield from self.gen_op(')')
-    #@+node:ekr.20191204114930.1: *7* tog.arg_helper
-    def arg_helper(self, node):
-        """
-        Yield the node, with a special case for strings.
-        """
-        if 0:
-            g.trace(AstDumper().show_fields(node.__class__.__name__, node, 40))
-
-        if isinstance(node, str):
-            yield from self.gen_token('name', node)
-        else:
-            yield from self.gen(node)
-    #@+node:ekr.20191204105506.1: *7* tog.handle_call_arguments
-    def handle_call_arguments(self, node):
-        """
-        Generate arguments in the correct order.
-        
-        See https://docs.python.org/3/reference/expressions.html#calls.
-        
-        This is similar to tog.do_arguments.
-        
-        At present, this code assumes the standard order:
-        
-        positional args, then keyword args, then * arg the ** kwargs.
-        """
-        trace = False
-        #
-        # Filter the * arg from args.
-        args = [z for z in node.args or [] if not isinstance(z, ast.Starred)]
-        star_arg = [z for z in node.args or [] if isinstance(z, ast.Starred)]
-        #
-        # Filter the ** kwarg arg from keywords.
-        keywords = [z for z in node.keywords or [] if z.arg]
-        kwarg_arg = [z for z in node.keywords or [] if not z.arg]
-        if trace:
-            #@+<< trace the ast.Call arguments >>
-            #@+node:ekr.20191204113843.1: *8* << trace the ast.Call arguments >>
-                
-            def show_fields(node):
-                class_name = 'None' if node is None else node.__class__.__name__
-                return AstDumper().show_fields(class_name, node, 40)
-                
-            # Let block.
-            arg_fields = ', '.join([show_fields(z) for z in args])
-            keyword_fields = ', '.join([show_fields(z) for z in keywords])
-            star_field = show_fields(star_arg[0]) if star_arg else 'None'
-            kwarg_field = show_fields(kwarg_arg[0]) if kwarg_arg else 'None'
-            # Print.
-            print(
-                f"\nhandle_call_args...\n\n"
-                f"    args: {arg_fields!s}\n"
-                f"keywords: {keyword_fields!s}\n"
-                f"    star: {star_field!s}\n"
-                f"   kwarg: {kwarg_field!s}")
-            #@-<< trace the ast.Call arguments >>
-            print('')
-        #
-        # Add the plain arguments.
-        for z in args:
-            yield from self.arg_helper(z)
-        #
-        # Add the keyword args.
-        for z in keywords:
-            yield from self.arg_helper(z.arg)
-            yield from self.gen_op('=')
-            yield from self.arg_helper(z.value)
-        # Add the * arg.
-        if star_arg:
-            assert len(star_arg) == 1
-            star = star_arg[0]
-            assert isinstance(star, ast.Starred)
-            yield from self.arg_helper(star)
-        # Add the kwarg.
-        if kwarg_arg:
-            assert len(kwarg_arg) == 1
-            kwarg = kwarg_arg[0]
-            assert isinstance(kwarg, ast.keyword)
-            yield from self.gen_op('**')
-            yield from self.gen(kwarg.value)
     #@+node:ekr.20191113063144.33: *6* tog.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
@@ -3686,6 +3580,97 @@ class TokenOrderGenerator:
         
         yield from self.gen_name('break')
         yield from self.gen_newline()
+    #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
+    # Call(expr func, expr* args, keyword* keywords)
+
+    # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
+
+    def do_Call(self, node):
+
+        yield from self.gen(node.func)
+        yield from self.gen_op('(')
+        # No need to generate any commas.
+        yield from self.handle_call_arguments(node)
+        yield from self.gen_op(')')
+    #@+node:ekr.20191204114930.1: *7* tog.arg_helper
+    def arg_helper(self, node):
+        """
+        Yield the node, with a special case for strings.
+        """
+        if 0:
+            g.trace(AstDumper().show_fields(node.__class__.__name__, node, 40))
+
+        if isinstance(node, str):
+            yield from self.gen_token('name', node)
+        else:
+            yield from self.gen(node)
+    #@+node:ekr.20191204105506.1: *7* tog.handle_call_arguments
+    def handle_call_arguments(self, node):
+        """
+        Generate arguments in the correct order.
+        
+        See https://docs.python.org/3/reference/expressions.html#calls.
+        
+        This is similar to tog.do_arguments.
+        
+        At present, this code assumes the standard order:
+        
+        positional args, then keyword args, then * arg the ** kwargs.
+        """
+        trace = False
+        #
+        # Filter the * arg from args.
+        args = [z for z in node.args or [] if not isinstance(z, ast.Starred)]
+        star_arg = [z for z in node.args or [] if isinstance(z, ast.Starred)]
+        #
+        # Filter the ** kwarg arg from keywords.
+        keywords = [z for z in node.keywords or [] if z.arg]
+        kwarg_arg = [z for z in node.keywords or [] if not z.arg]
+        if trace:
+            #@+<< trace the ast.Call arguments >>
+            #@+node:ekr.20191204113843.1: *8* << trace the ast.Call arguments >>
+                
+            def show_fields(node):
+                class_name = 'None' if node is None else node.__class__.__name__
+                return AstDumper().show_fields(class_name, node, 40)
+                
+            # Let block.
+            arg_fields = ', '.join([show_fields(z) for z in args])
+            keyword_fields = ', '.join([show_fields(z) for z in keywords])
+            star_field = show_fields(star_arg[0]) if star_arg else 'None'
+            kwarg_field = show_fields(kwarg_arg[0]) if kwarg_arg else 'None'
+            # Print.
+            print(
+                f"\nhandle_call_args...\n\n"
+                f"    args: {arg_fields!s}\n"
+                f"keywords: {keyword_fields!s}\n"
+                f"    star: {star_field!s}\n"
+                f"   kwarg: {kwarg_field!s}")
+            #@-<< trace the ast.Call arguments >>
+            print('')
+        #
+        # Add the plain arguments.
+        for z in args:
+            yield from self.arg_helper(z)
+        #
+        # Add the keyword args.
+        for z in keywords:
+            yield from self.arg_helper(z.arg)
+            yield from self.gen_op('=')
+            yield from self.arg_helper(z.value)
+        # Add the * arg.
+        if star_arg:
+            assert len(star_arg) == 1
+            star = star_arg[0]
+            assert isinstance(star, ast.Starred)
+            yield from self.arg_helper(star)
+        # Add the kwarg.
+        if kwarg_arg:
+            assert len(kwarg_arg) == 1
+            kwarg = kwarg_arg[0]
+            assert isinstance(kwarg, ast.keyword)
+            yield from self.gen_op('**')
+            yield from self.gen(kwarg.value)
     #@+node:ekr.20191113063144.69: *6* tog.Continue
     def do_Continue(self, node):
 
@@ -4530,7 +4515,6 @@ class Orange:
             self.max_join_line_length = max_join_line_length
         if max_split_line_length is not None:
             self.max_split_line_length = max_split_line_length
-            
         # State vars...
         self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
@@ -4545,10 +4529,12 @@ class Orange:
         # Init output list and state...
         self.code_list = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
+        self.tree = tree
+        ### dump_tree(tokens, tree)
         self.add_token('file-start')
         self.push_state('file-start')
-        while self.tokens:
-            self.token = token = self.tokens.pop(0)
+        for i, token in enumerate(tokens):
+            self.token = token ### = self.tokens.pop(0)
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
@@ -4851,11 +4837,23 @@ class Orange:
         else:
             self.add_token('op-no-blanks', val)
     #@+node:ekr.20200107165250.33: *5* orange.line_end
+    long_statements = (
+        ast.Assign, ast.AugAssign, ast.Call, ast.For,
+        ast.Global, ast.If, ast.Import, ast.ImportFrom,
+        ast.Nonlocal, ast.Return, ast.While, ast.With,
+        ast.Yield, ast.YieldFrom,
+    )
+
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
         token = self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+        if 0:
+            node = token.node
+            g.trace(node.__class__.__name__)
+        ### if isinstance(node, self.long_statements):
+        ### dump_tree(self.tokens, node)
         # Create the 'line-end' output token.
         tok = self.add_line_end()
         # Copy the prev_line_token data from the input token to the output token.
@@ -5204,12 +5202,7 @@ class ReassignTokens (TokenOrderTraverser):
         nca = nearest_common_ancestor(node0, node9)
         if not nca:
             return
-        ###
-        # if node.args:
-            # arg0, arg9 = node.args[0], node.args[-1]
-            # g.trace(arg0.node_index, arg9.node_index)
-            # return
-        ### g.trace(f"{self.filename:20} nca: {nca.__class__.__name__}")
+        # g.trace(f"{self.filename:20} nca: {nca.__class__.__name__}")
         # Associate () with the call node.
         i = tokens[-1].index
         j = find_paren_token(i + 1, self.tokens)
