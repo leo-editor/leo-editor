@@ -2853,6 +2853,11 @@ class TokenOrderGenerator:
                 if trace and verbose: g.trace('   OK', px, token)
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
+            if OLD:
+                pass
+            else:
+                if kind == 'newline' and token.kind == 'endmarker':
+                    break  ### Experimental.
             if is_significant_token(token):  # pragma: no cover
                 # Unrecoverable sync failure.
                 line_s = f"line {token.line_number}:"
@@ -2895,12 +2900,19 @@ class TokenOrderGenerator:
             if is_significant_token(token):
                 self.px = px
         else:
-            self.px = px
+            if token.kind == 'endmarker':
+                self.px = px -1
+            else:
+                self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
+        if token.kind == 'endmarker':
+            # Don't bother.
+            return
         trace = False
         if token.node is not None:  # pragma: no cover
+            g.trace('=====', token.kind, token.node)
             line_s = f"line {token.line_number}:"
             raise AssignLinksError(
                     f"       file: {self.filename}\n"
