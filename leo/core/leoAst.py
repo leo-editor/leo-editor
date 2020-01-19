@@ -4555,7 +4555,7 @@ class Orange:
             print(f"{tag}: Can not fstringify: {filename}")
             return False
         # Beautify.
-        results = self.beautify(contents, tokens, tree, filename=filename)
+        results = self.beautify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
@@ -4579,7 +4579,7 @@ class Orange:
         if not contents or not tokens or not tree:
             return False
         # fstringify.
-        results = self.beautify(contents, tokens, tree, filename=filename)
+        results = self.beautify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
