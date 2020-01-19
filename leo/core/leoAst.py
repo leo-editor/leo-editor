@@ -945,6 +945,8 @@ class BaseTest (unittest.TestCase):
             # The caller will give the error.
             return None, None, None
         self.reassign_tokens(tokens, tree)
+        if 0: # sometimes useful.
+            dump_tree(tokens, tree)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
         return contents, tokens, tree
@@ -1196,8 +1198,8 @@ class AstDumper:  # pragma: no cover
             name = node.op.__class__.__name__
             val = f"op={_op_names.get(name, name)}"
         elif class_name == 'Compare':
-            ops = ','.join([_op_names.get(z, repr(z)) for z in node.ops])
-            val = f"ops={ops}"
+            ops = ','.join([op_name(z) for z in node.ops])
+            val = f"ops='{ops}'"
         else:
             val = ''
         return g.truncate(val, truncate_n)
@@ -1231,7 +1233,7 @@ class AstDumper:  # pragma: no cover
             elif z.kind == 'number':
                 result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'op':
-                result.append(f"{z.kind}.{z.index}={z.value}")
+                result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'string':
                 val = g.truncate(z.value,30)
                 result.append(f"{z.kind}.{z.index}({val})")
@@ -1369,7 +1371,6 @@ class TestFstringify (BaseTest):
         except Exception:
             self.skipTest('requires asttokens')
         contents = """g.blue('wrote %s' % p.x())"""
-        # expected = """g.blue(f'wrote {p.x()}')"""
         contents, tokens, tree = self.make_data(contents, description=tag)
         # Dump GOT data.
         if 0:
@@ -1766,6 +1767,16 @@ class TestOrange (BaseTest):
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 1, fails
+    #@+node:ekr.20200119155207.1: *4* test_sync_tokens
+    def test_sync_tokens(self):
+
+        contents = """if x == 4: pass"""
+        # At present Orange doesn't split lines...
+        expected = """if x == 4: pass"""
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.adjust_expected(expected)
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
     
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
@@ -2825,11 +2836,13 @@ class TokenOrderGenerator:
         """
         trace = False
         verbose = False
-        OLD = True
+        OLD = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        
-        ### if trace and verbose: g.trace('Ignore:', self.px, kind, repr(val))
+        if trace: g.trace(
+            f"px: {self.px:2} "
+            f"node: {node.__class__.__name__:<10} "
+            f"kind: {kind:>10}: val: {val!r}")
         if OLD:
             # Leave all non-significant tokens for later.
             if not is_significant(kind, val):
@@ -2858,6 +2871,11 @@ class TokenOrderGenerator:
             else:
                 if kind == 'newline' and token.kind == 'endmarker':
                     break  ### Experimental.
+                elif kind == 'newline':
+                    # Calls to gen_newline do *not* guarantee that
+                    # the token list contains a newline.
+                    # For example: `if 1: pass`
+                    return
             if is_significant_token(token):  # pragma: no cover
                 # Unrecoverable sync failure.
                 line_s = f"line {token.line_number}:"
@@ -2881,7 +2899,7 @@ class TokenOrderGenerator:
         # Step two: Associate all previous tokens to the ast node.
         while old_px < px:
             token = tokens[old_px]
-            if trace: g.trace(f"    : {node.__class__.__name__:>12} {token.brief_dump()} ")
+            # g.trace(f"    : {node.__class__.__name__:>12} {token.brief_dump()} ")
             old_px += 1
             self.set_links(node, token)
         #
@@ -2889,10 +2907,10 @@ class TokenOrderGenerator:
         token = tokens[px]
         if OLD:
             if is_significant_token(token):
-                if trace: g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
+                # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
                 self.set_links(node, token)
         else:
-            if trace: g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
+            # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
             self.set_links(node, token)
         #
         # Step four. Advance.
@@ -2900,6 +2918,7 @@ class TokenOrderGenerator:
             if is_significant_token(token):
                 self.px = px
         else:
+            # Rescan if necessary.
             if token.kind == 'endmarker':
                 self.px = px -1
             else:
@@ -4543,11 +4562,10 @@ class Orange:
         self.code_list = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
         self.tree = tree
-        ### dump_tree(tokens, tree)
         self.add_token('file-start')
         self.push_state('file-start')
         for i, token in enumerate(tokens):
-            self.token = token ### = self.tokens.pop(0)
+            self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
