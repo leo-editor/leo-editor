@@ -2836,25 +2836,17 @@ class TokenOrderGenerator:
         """
         trace = False
         verbose = False
-        OLD = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         if trace: g.trace(
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
             f"kind: {kind:>10}: val: {val!r}")
-        if OLD:
-            # Leave all non-significant tokens for later.
-            if not is_significant(kind, val):
-                if trace: g.trace('Not significant', kind, repr(val))
-                return
         #
-        # Step one: Scan from *after* the previous significant token,
-        #           looking for a token that matches (kind, val)
-        #           Leave px pointing at the next significant token.
+        # Step one: Look for token T.
         #
-        #           Special case: because of JoinedStr's, syncing a
-        #           string may jump over *many* significant tokens.
+        # Special case: because of JoinedStr's, syncing a
+        # string may jump over *many* significant tokens.
         old_px = px = self.px + 1
         while px < len(self.tokens):
             token = tokens[px]
@@ -2866,15 +2858,13 @@ class TokenOrderGenerator:
                 if trace and verbose: g.trace('   OK', px, token)
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
-            if OLD:
-                pass
-            else:
-                if kind == 'newline' and token.kind == 'endmarker':
-                    break  ### Experimental.
-                elif kind == 'newline':
-                    # Calls to gen_newline do *not* guarantee that
-                    # the token list contains a newline.
-                    # For example: `if 1: pass`
+            if kind == 'newline':
+                # Failed to sync on the newline.
+                # This is *not* an error!
+                if False: ### token.kind == 'endmarker':
+                    break # Benign
+                else:
+                    # Newlines are always optional. This is not an error.
                     return
             if is_significant_token(token):  # pragma: no cover
                 # Unrecoverable sync failure.
@@ -2905,24 +2895,15 @@ class TokenOrderGenerator:
         #
         # Step three: Set links in the found token, significant or not.
         token = tokens[px]
-        if OLD:
-            if is_significant_token(token):
-                # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
-                self.set_links(node, token)
-        else:
-            # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
-            self.set_links(node, token)
+        # g.trace(f"Link: {node.__class__.__name__:>12} {token.brief_dump()} ")
+        self.set_links(node, token)
         #
         # Step four. Advance.
-        if OLD:
-            if is_significant_token(token):
-                self.px = px
+        # Rescan if necessary.
+        if token.kind == 'endmarker':
+            self.px = px -1
         else:
-            # Rescan if necessary.
-            if token.kind == 'endmarker':
-                self.px = px -1
-            else:
-                self.px = px
+            self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
