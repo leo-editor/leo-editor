@@ -2745,10 +2745,8 @@ class TokenOrderGenerator:
         except StopIteration:
             pass
         #
-        # Patch the last tokens.
-        # Thise ensures that all tokens are patched.
+        # Ensure that all tokens are patched.
         self.node = tree
-        ### yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename):  # pragma: no cover
@@ -2840,17 +2838,13 @@ class TokenOrderGenerator:
         # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
     #@+node:ekr.20191121180100.1: *5* tog.gen*
-    # Useful wrappers.
+    # Useful wrappers...
 
     def gen(self, z):
         yield from self.visitor(z)
         
     def gen_name(self, val):
         yield from self.visitor(self.sync_name(val))
-        
-    ###            
-        # def gen_newline(self):
-            # yield from self.visitor(self.sync_token('newline', '\n'))
 
     def gen_op(self, val):
         yield from self.visitor(self.sync_op(val))
@@ -3071,7 +3065,6 @@ class TokenOrderGenerator:
                 # '@%s\n'
                 yield from self.gen_op('@')
                 yield from self.gen(z)
-                ### yield from self.gen_newline()
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
         yield from self.gen_token('async', 'async')
@@ -3085,7 +3078,6 @@ class TokenOrderGenerator:
             yield from self.gen_op('->')
             yield from self.gen(node.returns)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         self.level += 1
         yield from self.gen(node.body)
         self.level -= 1
@@ -3096,7 +3088,6 @@ class TokenOrderGenerator:
             # @{z}\n
             yield from self.gen_op('@')
             yield from self.gen(z)
-            ### yield from self.gen_newline()
         # class name(bases):\n
         yield from self.gen_name('class')
         yield from self.gen_name(node.name) # A string.
@@ -3105,7 +3096,6 @@ class TokenOrderGenerator:
             yield from self.gen(node.bases)
             yield from self.gen_op(')')
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3127,7 +3117,6 @@ class TokenOrderGenerator:
         for z in node.decorator_list or []:
             yield from self.gen_op('@')
             yield from self.gen(z)
-            ### yield from self.gen_newline()
         # Signature...
             # def name(args): -> returns\n
             # def name(args):\n
@@ -3140,7 +3129,6 @@ class TokenOrderGenerator:
             yield from self.gen_op('->')
             yield from self.gen(node.returns)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3160,7 +3148,6 @@ class TokenOrderGenerator:
     def do_Module(self, node):
 
         # Encoding is a non-syncing statement.
-        ###   yield from self.gen_token('encoding', '')
         yield from self.gen(node.body)
     #@+node:ekr.20191113063144.21: *5* tog: Expressions
     #@+node:ekr.20191113063144.22: *6* tog.Expr
@@ -3393,11 +3380,6 @@ class TokenOrderGenerator:
         trace = False
         tag = 'tog.get_concatenated_string_tokens'
         i = self.px
-        ### px can now point at an insignificant token.
-            # if i > -1:
-                # token = self.tokens[i]
-                # assert is_significant_token(token), (i, token)
-        #
         # First, find the next significant token.  It should be a string.
         i, token = i + 1, None
         while i < len(self.tokens):
@@ -3410,7 +3392,6 @@ class TokenOrderGenerator:
             # An error.
             if is_significant_token(token):  # pragma: no cover
                 break
-        #
         # Raise an error if we didn't find the expected 'string' token.
         if not token or token.kind != 'string':  # pragma: no cover
             if not token:
@@ -3423,7 +3404,6 @@ class TokenOrderGenerator:
                 f"line: {token.line_number}\n"
                 f"   i: {i}\n"
                 f"expected 'string' token, got {token!s}")
-        #
         # Accumulate string tokens.
         assert self.tokens[i].kind == 'string'
         results = []
@@ -3436,7 +3416,6 @@ class TokenOrderGenerator:
                 # Any significant token *or* any op will halt string concatenation.
                 break
             # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-        #
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
         if trace:
@@ -3536,7 +3515,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.annotation)
         yield from self.gen_op('=')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.62: *6* tog.Assert
     # Assert(expr test, expr? msg)
 
@@ -3549,7 +3527,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.test)
         if msg is not None:
             yield from self.gen(node.msg)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.63: *6* tog.Assign
     def do_Assign(self, node):
             
@@ -3557,7 +3534,6 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             yield from self.gen_op('=')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.64: *6* tog.AsyncFor
     def do_AsyncFor(self, node):
         
@@ -3568,7 +3544,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3578,7 +3553,6 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
         self.level -= 1
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
         
@@ -3594,7 +3568,6 @@ class TokenOrderGenerator:
         yield from self.gen(node.target)
         yield from self.gen_op(op_name_+'=')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.67: *6* tog.Await
     # Await(expr value)
 
@@ -3603,12 +3576,10 @@ class TokenOrderGenerator:
         #'await %s\n'
         yield from self.gen_token('await', 'await')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.68: *6* tog.Break
     def do_Break(self, node):
         
         yield from self.gen_name('break')
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
 
@@ -3704,14 +3675,12 @@ class TokenOrderGenerator:
     def do_Continue(self, node):
 
         yield from self.gen_name('continue')
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.70: *6* tog.Delete
     def do_Delete(self, node):
 
         # No need to put commas.
         yield from self.gen_name('del')
         yield from self.gen(node.targets)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.71: *6* tog.ExceptHandler
     def do_ExceptHandler(self, node):
         
@@ -3723,7 +3692,6 @@ class TokenOrderGenerator:
             yield from self.gen_name('as')
             yield from self.gen_name(node.name)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3737,7 +3705,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3755,7 +3722,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         for z in node.names:
             yield from self.gen_name(z)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.75: *6* tog.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
@@ -3782,7 +3748,6 @@ class TokenOrderGenerator:
         yield from self.gen_name(token.value)
         yield from self.gen(node.test)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         #
         # Body...
         self.level += 1
@@ -3796,7 +3761,6 @@ class TokenOrderGenerator:
             if token.value == 'else':
                 yield from self.gen_name('else')
                 yield from self.gen_op(':')
-                ### yield from self.gen_newline()
                 yield from self.gen(node.orelse)
             else:
                 yield from self.gen(node.orelse)
@@ -3810,7 +3774,6 @@ class TokenOrderGenerator:
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.77: *6* tog.ImportFrom
     # ImportFrom(identifier? module, alias* names, int? level)
 
@@ -3828,7 +3791,6 @@ class TokenOrderGenerator:
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.78: *6* tog.Nonlocal
     # Nonlocal(identifier* names)
 
@@ -3839,12 +3801,10 @@ class TokenOrderGenerator:
         yield from self.gen_name('nonlocal')
         for z in node.names:
             yield from self.gen_name(z)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.79: *6* tog.Pass
     def do_Pass(self, node):
         
         yield from self.gen_name('pass')
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.81: *6* tog.Raise
     # Raise(expr? exc, expr? cause)
 
@@ -3858,13 +3818,11 @@ class TokenOrderGenerator:
         yield from self.gen(exc)
         yield from self.gen(cause)
         yield from self.gen(tback)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.82: *6* tog.Return
     def do_Return(self, node):
         
         yield from self.gen_name('return')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.85: *6* tog.Try
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
@@ -3873,7 +3831,6 @@ class TokenOrderGenerator:
         # Try line...
         yield from self.gen_name('try')
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3887,7 +3844,6 @@ class TokenOrderGenerator:
         if node.finalbody:
             yield from self.gen_name('finally')
             yield from self.gen_op(':')
-            ### yield from self.gen_newline()
             yield from self.gen(node.finalbody)
         self.level -= 1
     #@+node:ekr.20191113063144.88: *6* tog.While
@@ -3898,7 +3854,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('while')
         yield from self.gen(node.test)
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3906,7 +3861,6 @@ class TokenOrderGenerator:
         if node.orelse:
             yield from self.gen_name('else')
             yield from self.gen_op(':')
-            ### yield from self.gen_newline()
             yield from self.gen(node.orelse)
         self.level -= 1
     #@+node:ekr.20191113063144.89: *6* tog.With
@@ -3929,7 +3883,6 @@ class TokenOrderGenerator:
                 yield from self.gen(item.optional_vars)
         # End the line.
         yield from self.gen_op(':')
-        ### yield from self.gen_newline()
         # Body...
         self.level += 1
         yield from self.gen(node.body)
@@ -3940,7 +3893,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('yield')
         if hasattr(node, 'value'):
             yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@+node:ekr.20191113063144.91: *6* tog.YieldFrom
     # YieldFrom(expr value)
 
@@ -3949,7 +3901,6 @@ class TokenOrderGenerator:
         yield from self.gen_name('yield')
         yield from self.gen_name('from')
         yield from self.gen(node.value)
-        ### yield from self.gen_newline()
     #@-others
 #@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
 class TokenOrderTraverser:
