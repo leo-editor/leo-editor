@@ -818,6 +818,11 @@ if 1: # pragma: no cover
         g.printObj(lines, tag=tag)
     #@+node:ekr.20191223095408.1: *3* node/token nodes...
     # Functions that associate tokens with nodes.
+
+    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
+    def find_statement_node(node):
+        # Return nearest statement node.
+        return node ### To do
     #@+node:ekr.20191223054300.1: *4* function: is_ancestor
     def is_ancestor(node, token):
         """Return True if node is an ancestor of token."""
@@ -830,6 +835,17 @@ if 1: # pragma: no cover
                 return True
             t_node = t_node.parent
         return False
+    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
+    def is_long_statement(node):
+        """
+        Return True if node is an instance of a node that might be split into
+        shorter lines.
+        """
+        return isinstance(node, (
+            ast.Assign, ast.AugAssign, ast.Call, ast.For,
+            ast.Global, ast.If, ast.Import, ast.ImportFrom,
+            ast.Nonlocal, ast.Return,
+            ast.While, ast.With, ast.Yield, ast.YieldFrom))
     #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
     def nearest_common_ancestor(node1, node2):
         """
@@ -1768,6 +1784,9 @@ class TestOrange (BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
+            if verbose_fail:
+                dump_tokens(tokens)
+                dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
             results = self.beautify(contents, tokens, tree,
                 max_join_line_length=line_length,
@@ -2729,7 +2748,7 @@ class TokenOrderGenerator:
         # Patch the last tokens.
         # Thise ensures that all tokens are patched.
         self.node = tree
-        yield from self.gen_token('newline', '\n')
+        ### yield from self.gen_token('newline', '\n')
         yield from self.gen_token('endmarker', '')
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename):  # pragma: no cover
@@ -2830,7 +2849,8 @@ class TokenOrderGenerator:
         yield from self.visitor(self.sync_name(val))
                     
     def gen_newline(self):
-        yield from self.visitor(self.sync_token('newline', '\n'))
+        yield from self.visitor(None)
+        ### yield from self.visitor(self.sync_token('newline', '\n'))
 
     def gen_op(self, val):
         yield from self.visitor(self.sync_op(val))
@@ -2838,7 +2858,7 @@ class TokenOrderGenerator:
     def gen_token(self, kind, val):
         yield from self.visitor(self.sync_token(kind, val))
     #@+node:ekr.20191113063144.7: *5* tog.sync_token & set_links
-    px = -1 # Index of the previously synced token.
+    px = -1  # Index of the previously synced token.
 
     def sync_token(self, kind, val):
         """
@@ -2848,7 +2868,7 @@ class TokenOrderGenerator:
         The checks in this method constitute a strong, ever-present, unit test.
         
         Scan the tokens *after* px, looking for a token T matching (kind, val).
-        - Fail if a significant token is found that doesn't match T.
+        raise AssignLinksError if a significant token is found that doesn't match T.
         Otherwise:
         - Create two-way links between all assignable tokens between px and T.
         - Create two-way links between T and self.node.
@@ -2861,9 +2881,11 @@ class TokenOrderGenerator:
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
             f"kind: {kind:>10}: val: {val!r}")
-        if 0: ### The old way.
-            if not is_significant(kind, val):
-                return
+        #
+        # set_links will reassign some nodes later.
+        if not is_significant(kind, val):
+            g.trace("Unexpected", kind)
+            return
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -2874,26 +2896,19 @@ class TokenOrderGenerator:
             if kind == token.kind == 'number':
                 val = token.value
                 break  # Benign: use the token's value, a string, instead of a number.
-            if kind == 'newline':
-                # Failed to sync on the newline. This is *not* an error!
-                return
             if is_significant_token(token):  # pragma: no cover
-                # Unrecoverable sync failure.
                 line_s = f"line {token.line_number}:"
-                val = g.truncate(val, 40)
                 raise AssignLinksError(
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
-                    f"Looking for: {kind}.{val!r}\n"
+                    f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
                     f"      found: {token.kind}.{token.value!r}\n")
             # Skip the insignificant token.
             px += 1
         else:  # pragma: no cover
-            # Unrecoverable sync failure.
-            val = g.truncate(val, 40)
             raise AssignLinksError(
                  f"       file: {self.filename}\n"
-                 f"Looking for: {kind}.{val}\n"
+                 f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                  f"      found: end of token list")
         #
         # Step two: Associate all previous tokens to the ast node.
@@ -2927,7 +2942,10 @@ class TokenOrderGenerator:
                     f"token.node is not None\n"
                     f" token.node: {token.node.__class__.__name__}\n"
                     f"    callers: {g.callers()}")
-        if is_significant_token(token) or token.kind in ('comment', 'newline'):
+        # Import special case for newlines: switch nodes.
+        if token.kind in ('newline', 'nl'):
+            node = find_statement_node(node)
+        if is_significant_token(token) or token.kind in ('comment', 'newline', 'nl'):
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
@@ -3142,7 +3160,7 @@ class TokenOrderGenerator:
     def do_Module(self, node):
 
         # Encoding is a non-syncing statement.
-        yield from self.gen_token('encoding', '')
+        ###   yield from self.gen_token('encoding', '')
         yield from self.gen(node.body)
     #@+node:ekr.20191113063144.21: *5* tog: Expressions
     #@+node:ekr.20191113063144.22: *6* tog.Expr
@@ -4455,14 +4473,7 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
-    
-    # Nodes that are candidates for splitting into shorter lines.
-    long_statements = (
-        ast.Assign, ast.AugAssign, ast.Call, ast.For,
-        ast.Global, ast.If, ast.Import, ast.ImportFrom,
-        ast.Nonlocal, ast.Return, ast.While, ast.With,
-        ast.Yield, ast.YieldFrom,
-    )
+
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
@@ -5074,7 +5085,7 @@ class Orange:
         trace = False
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
-        if not isinstance(node, self.long_statements):
+        if not is_long_statement(node):
             if trace: g.trace('===== not long statement', node)
             return False
         # Return if splitting is disabled:
