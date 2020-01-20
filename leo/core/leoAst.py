@@ -1827,7 +1827,7 @@ class TestOrange (BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 2, fails
+        assert fails == 1, fails
     #@+node:ekr.20200119155207.1: *4* test_sync_tokens
     def test_sync_tokens(self):
 
@@ -4863,7 +4863,8 @@ class Orange:
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-        node, token = self.token.node, self.token
+        ### node, token = self.token.node, self.token
+        node, token = self.token.statement_node, self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         # Create the 'line-end' output token.
         tok = self.add_line_end()
