@@ -784,10 +784,21 @@ if 1: # pragma: no cover
     def dump_tokens(tokens):
         print('')
         print('Tokens...\n')
-        print("Note: values shown are repr(value) *except* for 'string' tokens.\n")
-        for z in tokens:
+        print("Note: values shown are repr(value) *except* for 'string' tokens.")
+        dump_token_header()
+        for i, z in enumerate(tokens):
+            if 0: # Confusing.
+                if (i % 20) == 0:
+                    dump_token_header()
             print(z.dump())
         print('')
+        
+    def dump_token_header():
+         # Print the header. See token.dump.
+        print(
+            f"\n"
+            f"{'kind':>13}   {'value':<24} {'line':<9} {'node':21} parent\n"
+            f"{'====':>13}   {'=====':<24} {'====':<9} {'====':21} ======\n")
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
     def dump_tree(tokens, tree, tag=None):
         print('')
@@ -945,8 +956,10 @@ class BaseTest (unittest.TestCase):
             # The caller will give the error.
             return None, None, None
         self.reassign_tokens(tokens, tree)
-        if 0: # sometimes useful.
+        if 0: # Sometimes useful.
             dump_tree(tokens, tree)
+        if 0: # Sometimes useful.
+            dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
         return contents, tokens, tree
@@ -2824,11 +2837,13 @@ class TokenOrderGenerator:
 
     def sync_token(self, kind, val):
         """
-        Sync to a token whose kind & value are given. This token may be
-        significant or insignificant.
+        Sync to a token whose kind & value are given. This token must be either
+        a significant token or a 'newline' token.
+        
+        The checks in this method constitute a strong, ever-present, unit test.
         
         Scan the tokens *after* px, looking for a token T matching (kind, val).
-        Fail if a significant token is found that doesn't match T.
+        - Fail if a significant token is found that doesn't match T.
         Otherwise:
         - Create two-way links between all assignable tokens between px and T.
         - Create two-way links between T and self.node.
@@ -5266,9 +5281,9 @@ class Token:
         kind_s = f"{self.kind}.{self.index:<3}"
         return (
             f"{kind_s:>15} {self.show_val(20):<24} "
-            f"line: {self.line_number:<2} "
+            f"{self.line_number:>4} "
             f"{node_id:4} {node_cn:16} "
-            f"parent: {parent_id:>4} {parent_class}")
+            f"{parent_id:>4} {parent_class}")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):  # pragma: no cover
         """Dump a token or result node for error message."""
