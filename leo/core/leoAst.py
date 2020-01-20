@@ -821,8 +821,18 @@ if 1: # pragma: no cover
 
     #@+node:ekr.20200120082031.1: *4* function: find_statement_node
     def find_statement_node(node):
-        # Return nearest statement node.
-        return node ### To do
+        """
+        Return the nearest statement node.
+        Return None if node has only Module for a parent.
+        """
+        if isinstance(node, ast.Module):
+            return None
+        parent = node
+        while parent:
+            if is_statement_node(parent):
+                return parent
+            parent = parent.parent
+        return None
     #@+node:ekr.20191223054300.1: *4* function: is_ancestor
     def is_ancestor(node, token):
         """Return True if node is an ancestor of token."""
@@ -842,10 +852,15 @@ if 1: # pragma: no cover
         shorter lines.
         """
         return isinstance(node, (
-            ast.Assign, ast.AugAssign, ast.Call, ast.For,
-            ast.Global, ast.If, ast.Import, ast.ImportFrom,
-            ast.Nonlocal, ast.Return,
-            ast.While, ast.With, ast.Yield, ast.YieldFrom))
+            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
+            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
+            ast.If, ast.Import, ast.ImportFrom,
+            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
+    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
+    def is_statement_node(node):
+        """Return True if node is a top-level statement."""
+        return is_long_statement(node) or isinstance(node, (
+            ast.Break, ast.Continue, ast.Pass, ast.Try))
     #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
     def nearest_common_ancestor(node1, node2):
         """
@@ -1264,7 +1279,7 @@ class AstDumper:  # pragma: no cover
             elif z.kind == 'number':
                 result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'op':
-                if z.value != ',' or show_cruft:
+                if z.value not in ',()' or show_cruft:
                     result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'string':
                 val = g.truncate(z.value,30)
@@ -1377,7 +1392,16 @@ class TestFstringify (BaseTest):
         contents = """'%s' % d()"""
         expected = """f'{d()}'\n"""
         contents, tokens, tree = self.make_data(contents)
+        if 0:
+            dump_tokens(tokens)
+            dump_tree(tokens, tree)
         results = self.fstringify(contents, tokens, tree)
+        if results != expected:
+            # dump_contents(contents)
+            # dump_tokens(tokens)
+            for z in tokens:
+                print(z)
+            dump_tree(tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
     def test_call_with_attribute_2(self):
@@ -1785,7 +1809,7 @@ class TestOrange (BaseTest):
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
             if verbose_fail:
-                dump_tokens(tokens)
+                # dump_tokens(tokens)
                 dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
             results = self.beautify(contents, tokens, tree,
@@ -2911,7 +2935,7 @@ class TokenOrderGenerator:
             old_px += 1
             self.set_links(node, token)
         #
-        # Step three: Set links in the found token, significant or not.
+        # Step three: Set links in the found token.
         token = tokens[px]
         self.set_links(node, token)
         #
@@ -2921,11 +2945,20 @@ class TokenOrderGenerator:
         else:
             self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
+    last_statement_node = None
+
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
         # Don't bother assigning comma, ws and endtoken tokens.
-        if token.kind in ('endmarker', 'ws') or (token.kind, token.value) == ('op', ','):
+        if token.kind in ('endmarker', 'ws'):
             return
+        if token.kind == 'op' and token.value in ',()':
+            return
+        # *Always* remember the last statement.
+        statement = find_statement_node(node)
+        if statement:
+            self.last_statement_node = statement
+            assert not isinstance(self.last_statement_node, ast.Module)
         # g.trace(f"{node.__class__.__name__:>12} {token.brief_dump()} ")
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
@@ -2936,10 +2969,12 @@ class TokenOrderGenerator:
                     f"token.node is not None\n"
                     f" token.node: {token.node.__class__.__name__}\n"
                     f"    callers: {g.callers()}")
-        # Import special case for newlines: switch nodes.
+        # Assign newlines to the previous statement node, if any.
         if token.kind in ('newline', 'nl'):
-            node = find_statement_node(node)
-        if is_significant_token(token) or token.kind in ('comment', 'newline', 'nl'):
+            # Set an auxilliary link for the split/join logic.
+            token.statement_node = self.last_statement_node
+            return
+        if is_significant_token(token) or token.kind in ('comment',): ### 'newline', 'nl'):
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
@@ -4355,9 +4390,11 @@ class Fstringify (TokenOrderTraverser):
         
         Double { and } as needed.
         """
+        trace = False
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = tokens_to_string(values[spec_i])
+            if trace: g.trace(i, repr(value))
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 val = lt_s[i : start].replace('{', '{{').replace('}', '}}')
@@ -4376,8 +4413,10 @@ class Fstringify (TokenOrderTraverser):
         # Add the tail.
         tail = lt_s[i:]
         if tail:
+            if trace: g.trace('TAIL', repr(tail))
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail))
+        if trace: g.printObj(results, tag='Results')
         return results
     #@+node:ekr.20191225054848.1: *4* fs.replace
     def replace(self, node, s, values):
@@ -5166,8 +5205,6 @@ class ReassignTokens (TokenOrderTraverser):
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
-        # For now, only one pass is needed.
-        # self.pass_n = 1
         self.traverse(tree)
     #@+node:ekr.20191231084853.1: *4* reassign.visit
     def visit(self, node):
