@@ -1502,7 +1502,7 @@ class TestOrange (BaseTest):
     """Tests for the Orange class."""
 
     #@+others
-    #@+node:ekr.20200115201823.1: *4* blacken
+    #@+node:ekr.20200115201823.1: *4* TestOrange.blacken
     def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
         import warnings
@@ -1752,7 +1752,7 @@ class TestOrange (BaseTest):
     def test_split_join_lines(self):
 
         verbose_pass = False
-        verbose_fail = False
+        verbose_fail = True
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -2856,6 +2856,9 @@ class TokenOrderGenerator:
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
             f"kind: {kind:>10}: val: {val!r}")
+        if 0: ### The old way.
+            if not is_significant(kind, val):
+                return
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -4854,24 +4857,19 @@ class Orange:
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-        token = self.token
+        node, token = self.token.node, self.token
+        dump_tokens(self.tokens)
+        dump_ast(node)
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
-        if 0:
-            node = token.node
-            g.trace(node.__class__.__name__)
-        ### if isinstance(node, self.long_statements):
-        ### dump_tree(self.tokens, node)
         # Create the 'line-end' output token.
         tok = self.add_line_end()
         # Copy the prev_line_token data from the input token to the output token.
         tok.prev_line_token = token.prev_line_token
         # Attempt to split the line.
-        allow_join = True
-        if self.max_split_line_length > 0:
-            allow_join = not self.break_line()
+        allow_join = not self.split_line(node, token)
         # Attempt to join the line only if it has not just been split.
         if allow_join and self.max_join_line_length > 0:
-            self.join_lines()
+            self.join_lines(node, token)
         self.line_indent()
             # Add the indentation for all lines
             # until the next indent or unindent token.
@@ -5063,15 +5061,22 @@ class Orange:
             else:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
-    #@+node:ekr.20200107165250.34: *5* orange.break_line
-    def break_line(self):
+    #@+node:ekr.20200107165250.34: *5* orange.split_line
+    def split_line(self, node, token):
         """
-        Break the preceding line, if necessary.
+        Split token's line, if possible and enabled.
         
         Return True if the line was broken into two or more lines.
         """
-        # This method must be called just after inserting the line-end token.
-        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        assert token.kind in ('newline', 'nl'), repr(token)
+        # Return if the node can't be split.
+        if not isinstance(node, self.long_statements):
+            g.trace('===== not long statement', node)
+            return False
+        # Return if splitting is disabled:
+        if self.max_split_line_length <= 0:
+            return False
+        dump_tree(self.tokens, node, tag='split_line')
         # Find the tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
@@ -5129,13 +5134,12 @@ class Orange:
             and output_token.value in "{[("
         )
     #@+node:ekr.20200107165250.39: *5* orange.join_lines
-    def join_lines(self):
+    def join_lines(self, node, token):
         """
-        Join preceding lines, if the result would be short enough.
-        Should be called only at the end of a line.
+        Join preceding lines, if possible and enabled.
+        token is a line_end token. node is the corresponding ast node.
         """
-        # Must be called just after inserting the line-end token.
-        assert self.code_list[-1].kind == 'line-end', repr(self.code_list[-1])
+        assert token.kind in ('newline', 'nl'), repr(token)
         line_tokens = self.find_prev_line()
         line_s = tokens_to_string(line_tokens)
         # Don't bother trying if the line is already long.
