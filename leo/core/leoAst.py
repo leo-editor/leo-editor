@@ -4850,7 +4850,6 @@ class Orange:
     def line_end(self):
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-        ### node, token = self.token.node, self.token
         node, token = self.token.statement_node, self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         # Create the 'line-end' output token.
@@ -5110,7 +5109,7 @@ class Orange:
                         break
                 break
         return result
-    #@+node:ekr.20200107165250.36: *5* orange.find_prev_line
+    #@+node:ekr.20200107165250.36: *5* orange.find_prev_line (to be removed)
     def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
         line = []
