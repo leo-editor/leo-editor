@@ -5260,7 +5260,7 @@ class Token:
         # Injected by Tokenizer.add_token.
         self.level = 0
         self.node = None
-        # These are injected only as needed.
+        # These are injected only for 'newline' and 'nl' tokens.
             # self.next_line_token = None
             # self.prev_line_token = None
 
