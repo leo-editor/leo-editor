@@ -1275,7 +1275,8 @@ class AstDumper:  # pragma: no cover
                 val = g.truncate(z.value,20)
                 result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'newline':
-                result.append(f"{z.kind}.{z.index}({z.line_number}:{len(z.line)})")
+                # result.append(f"{z.kind}.{z.index}({z.line_number}:{len(z.line)})")
+                result.append(f"{z.kind}.{z.index}")
             elif z.kind == 'number':
                 result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'op':
@@ -1788,7 +1789,7 @@ class TestOrange (BaseTest):
     def test_split_join_lines(self):
 
         verbose_pass = False
-        verbose_fail = True
+        verbose_fail = False
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -2558,6 +2559,20 @@ class TestTokens (BaseTest):
     """Unit tests for tokenizing."""
 
     #@+others
+    #@+node:ekr.20200121025938.1: *4* TestTokens.show_example_dump
+    def show_example_dump(self):
+        
+        # Will only be run when enabled explicitly.
+
+        contents = """\
+    print('line 1')
+    print('line 2')
+    print('line 3')
+    """
+        contents, tokens, tree = self.make_data(contents)
+        dump_contents(contents)
+        dump_tokens(tokens)
+        dump_tree(tokens, tree)
     #@+node:ekr.20200118084859.1: *4* TestTokens.test_line_links
     def test_line_links(self):
 
@@ -2921,17 +2936,22 @@ class TokenOrderGenerator:
         while old_px < px:
             token = tokens[old_px]
             old_px += 1
-            self.set_links(node, token)
+            ### Experimental: assign secondary links for newline tokens.
+            if token.kind in ('newline', 'nl'):
+                self.set_links(node, token)
         #
         # Step three: Set links in the found token.
         token = tokens[px]
         self.set_links(node, token)
         #
-        # Step four. Advance, rescaning if necessary.
-        if token.kind == 'endmarker':
-            self.px = px -1
-        else:
-            self.px = px
+        # Step four: Advance.
+        self.px = px
+        ###
+            # Step four. Advance, rescaning if necessary.
+            # if token.kind == 'endmarker':
+                # self.px = px -1
+            # else:
+                # self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     last_statement_node = None
 
