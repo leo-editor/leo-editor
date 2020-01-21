@@ -2566,6 +2566,7 @@ class TestTokens (BaseTest):
     print('line 2')
     print('line 3')
     """
+        dump = False
         fails = 0
         contents, tokens, tree = self.make_data(contents)
         for token in tokens:
@@ -2576,13 +2577,14 @@ class TestTokens (BaseTest):
                 fails += 1  # pragma: no cover
             if next and next.kind not in ('newline', 'nl'):
                 fails += 1  # pragma: no cover
-        if fails:  # pragma: no cover
+        if dump or fails:  # pragma: no cover
             for token in tokens:
-                prev = token.prev_line_token
-                next = token.next_line_token
-                prev_s = f"{prev.index:<2}" if prev else ''
-                next_s = f"{next.index:<2}" if next else ''
-                print(f"{token.kind:>12}.{token.index:<2} prev: {prev_s:2} next: {next_s}")
+                if token.kind in ('newline', 'nl'):
+                    prev = token.prev_line_token
+                    next = token.next_line_token
+                    prev_s = f"{prev.index:<2}" if prev else ''
+                    next_s = f"{next.index:<2}" if next else ''
+                    print(f"{token.kind:>12}.{token.index:<2} prev: {prev_s:2} next: {next_s}")
         assert fails == 0, fails
     #@+node:ekr.20200110015014.6: *4* test_bs_nl_tokens
     def test_bs_nl_tokens(self):
