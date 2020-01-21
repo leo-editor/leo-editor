@@ -2582,8 +2582,8 @@ class TestTokens (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         for token in tokens:
             # Only 'newline' and 'nl' tokens have non-empty links.
-            prev = token.prev_line_token
-            next = token.next_line_token
+            prev = getattr(token, 'prev_line_token', None)
+            next = getattr(token, 'next_line_token', None)
             if prev and prev.kind not in ('newline', 'nl'):
                 fails += 1  # pragma: no cover
             if next and next.kind not in ('newline', 'nl'):
@@ -4870,11 +4870,13 @@ class Orange:
         # Create the 'line-end' output token.
         tok = self.add_line_end()
         # Copy the prev_line_token data from the input token to the output token.
-        tok.prev_line_token = token.prev_line_token
+        prev_line_token = getattr(token, 'prev_line_token', None)
+        if prev_line_token:
+            tok.prev_line_token = prev_line_token
         # Attempt to split the line.
-        allow_join = not self.split_line(node, token)
+        was_split = self.split_line(node, token)
         # Attempt to join the line only if it has not just been split.
-        if allow_join and self.max_join_line_length > 0:
+        if not was_split and self.max_join_line_length > 0:
             self.join_lines(node, token)
         self.line_indent()
             # Add the indentation for all lines
@@ -5257,9 +5259,10 @@ class Token:
         #
         # Injected by Tokenizer.add_token.
         self.level = 0
-        self.next_line_token = None
         self.node = None
-        self.prev_line_token = None
+        # These are injected only as needed.
+            # self.next_line_token = None
+            # self.prev_line_token = None
 
     def __repr__(self):
         s = f"{self.kind:}.{self.index:<3}"
