@@ -1788,7 +1788,7 @@ class TestOrange (BaseTest):
     def test_split_join_lines(self):
 
         verbose_pass = False
-        verbose_fail = False
+        verbose_fail = True
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -1799,7 +1799,7 @@ class TestOrange (BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if verbose_fail:  # pragma: no cover
+            if 0: # verbose_fail:  # pragma: no cover
                 # dump_tokens(tokens)
                 dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
@@ -2558,7 +2558,7 @@ class TestTokens (BaseTest):
     """Unit tests for tokenizing."""
 
     #@+others
-    #@+node:ekr.20200118084859.1: *4* test_line_links
+    #@+node:ekr.20200118084859.1: *4* TestTokens.test_line_links
     def test_line_links(self):
 
         contents = """\
@@ -2569,11 +2569,12 @@ class TestTokens (BaseTest):
         fails = 0
         contents, tokens, tree = self.make_data(contents)
         for token in tokens:
+            # Only 'newline' and 'nl' tokens have non-empty links.
             prev = token.prev_line_token
             next = token.next_line_token
-            if prev and prev.kind != 'newline':
+            if prev and prev.kind not in ('newline', 'nl'):
                 fails += 1  # pragma: no cover
-            if next and next.kind != 'newline':
+            if next and next.kind not in ('newline', 'nl'):
                 fails += 1  # pragma: no cover
         if fails:  # pragma: no cover
             for token in tokens:
@@ -5321,7 +5322,7 @@ class Tokenizer:
         tok.five_tuple = five_tuple
         tok.index = self.token_index
         # New: inject prev/next_line_token fields.
-        if tok.kind == 'newline': ### What about 'nl' ???
+        if tok.kind in ('newline', 'nl'):
             tok.prev_line_token = self.prev_line_token
             if self.prev_line_token:
                 self.prev_line_token.next_line_token = tok
