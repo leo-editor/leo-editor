@@ -1392,16 +1392,7 @@ class TestFstringify (BaseTest):
         contents = """'%s' % d()"""
         expected = """f'{d()}'\n"""
         contents, tokens, tree = self.make_data(contents)
-        if 0:
-            dump_tokens(tokens)
-            dump_tree(tokens, tree)
         results = self.fstringify(contents, tokens, tree)
-        if results != expected:
-            # dump_contents(contents)
-            # dump_tokens(tokens)
-            for z in tokens:
-                print(z)
-            dump_tree(tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
     def test_call_with_attribute_2(self):
@@ -1808,7 +1799,7 @@ class TestOrange (BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if verbose_fail:
+            if verbose_fail:  # pragma: no cover
                 # dump_tokens(tokens)
                 dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
@@ -2880,9 +2871,7 @@ class TokenOrderGenerator:
 
     def sync_token(self, kind, val):
         """
-        Sync to a token whose kind & value are given. This token must be either
-        a significant token or a 'newline' token.
-        
+        Sync to a *significant* token whose kind & value are given.
         The checks in this method constitute a strong, ever-present, unit test.
         
         Scan the tokens *after* px, looking for a token T matching (kind, val).
@@ -2895,15 +2884,11 @@ class TokenOrderGenerator:
         trace = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
+        assert is_significant(kind, val), (kind, val, g.callers())
         if trace: g.trace(
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
             f"kind: {kind:>10}: val: {val!r}")
-        #
-        # set_links will reassign some nodes later.
-        if not is_significant(kind, val):
-            g.trace("Unexpected", kind)
-            return
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -2949,7 +2934,7 @@ class TokenOrderGenerator:
 
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
-        # Don't bother assigning comma, ws and endtoken tokens.
+        # Don't bother assigning comma, parens, ws and endtoken tokens.
         if token.kind in ('endmarker', 'ws'):
             return
         if token.kind == 'op' and token.value in ',()':
@@ -2959,7 +2944,6 @@ class TokenOrderGenerator:
         if statement:
             self.last_statement_node = statement
             assert not isinstance(self.last_statement_node, ast.Module)
-        # g.trace(f"{node.__class__.__name__:>12} {token.brief_dump()} ")
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
             raise AssignLinksError(
@@ -2974,7 +2958,7 @@ class TokenOrderGenerator:
             # Set an auxilliary link for the split/join logic.
             token.statement_node = self.last_statement_node
             return
-        if is_significant_token(token) or token.kind in ('comment',): ### 'newline', 'nl'):
+        if is_significant_token(token):
             # Link the token to the ast node.
             token.node = node
             # Add the token to node's token_list.
