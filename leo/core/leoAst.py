@@ -5303,9 +5303,9 @@ class Token:
         """Print the header for token.dump"""
         print(
             f"\n"
-            f"     newlines   node  node  {' ':10} token\n"
-            f"line prev.next  index class {' ':10} index   token kind token value\n"
-            f"==== =========  ===== ===== {' ':10} =====   ========== ===========\n")
+            f"     newlines   node  node  {'':10} token\n"
+            f"line prev.next  index class {'':10} index   token kind token value\n"
+            f"==== =========  ===== ===== {'':10} =====   ========== ===========\n")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):  # pragma: no cover
         """Dump a token or result node for error message."""
