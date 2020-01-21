@@ -2562,7 +2562,7 @@ class TestTokens (BaseTest):
 
     #@+others
     #@+node:ekr.20200121025938.1: *4* TestTokens.show_example_dump
-    def show_example_dump(self):
+    def show_example_dump(self):  # pragma: no cover
         
         # Will only be run when enabled explicitly.
 
@@ -2891,7 +2891,9 @@ class TokenOrderGenerator:
 
     def sync_token(self, kind, val):
         """
-        Sync to a *significant* token whose kind & value are given.
+        Sync to a token whose kind & value are given. The token need not be
+        significant, but it must be guaranteed to exist in the token list.
+        
         The checks in this method constitute a strong, ever-present, unit test.
         
         Scan the tokens *after* px, looking for a token T matching (kind, val).
@@ -2904,7 +2906,6 @@ class TokenOrderGenerator:
         trace = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        ### assert is_significant(kind, val), (kind, val, g.callers())
         if trace: g.trace(
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
@@ -2934,11 +2935,11 @@ class TokenOrderGenerator:
                  f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                  f"      found: end of token list")
         #
-        # Step two: Associate all previous tokens to the ast node.
+        # Step two: Assign *secondary* links only for newline tokens.
+        #           Ignore all other non-significant tokens.
         while old_px < px:
             token = tokens[old_px]
             old_px += 1
-            ### Experimental: assign secondary links for newline tokens.
             if token.kind in ('newline', 'nl'):
                 self.set_links(node, token)
         #
@@ -2948,12 +2949,6 @@ class TokenOrderGenerator:
         #
         # Step four: Advance.
         self.px = px
-        ###
-            # Step four. Advance, rescaning if necessary.
-            # if token.kind == 'endmarker':
-                # self.px = px -1
-            # else:
-                # self.px = px
     #@+node:ekr.20191125120814.1: *6* tog.set_links
     last_statement_node = None
 
@@ -3002,12 +2997,14 @@ class TokenOrderGenerator:
                     self.sync_op('.')
 
     def sync_op(self, val):
-        ### if val in ',()': g.trace('-----', val, g.callers())
-        ### Experimental: Allow calls to sync_token for non-significant tokens.
+        """
+        Sync to the given operator.
+        
+        val may be '(' or ')' *only* if the parens *will* actually exist in the
+        token list.
+        """
         self.sync_token('op', val)
-        ### Old.
-            # if val not in ',()':
-                # self.sync_token('op', val)
+        
     #@+node:ekr.20191113081443.1: *5* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -3483,8 +3480,8 @@ class TokenOrderGenerator:
 
     def do_Tuple(self, node):
 
-        # No need to put commas.
-        # Commas do not necessarily exist in the token list!
+        # Do not call gen_op for parens or commas here.
+        # They do not necessarily exist in the token list!
         yield from self.gen(node.elts)
     #@+node:ekr.20191113063144.53: *5* tog: Operators
     #@+node:ekr.20191113063144.55: *6* tog.BinOp
