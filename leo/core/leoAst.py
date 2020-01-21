@@ -1781,8 +1781,8 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200117180956.1: *4* test_split_join_lines
-    def test_split_join_lines(self):
+    #@+node:ekr.20200117180956.1: *4* test_split_lines
+    def test_split_lines(self):
 
         verbose_pass = False
         verbose_fail = False
@@ -1791,13 +1791,12 @@ class TestOrange (BaseTest):
         table = (
               #1234567890x1234567890x1234567890x1234567890x
             """print('1111111111', '2222222222', '3333333333')""",
-            """print('4444',\n    '5555')"""
         )
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
             if 0: # verbose_fail:  # pragma: no cover
-                # dump_tokens(tokens)
+                dump_tokens(tokens)
                 dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
             results = self.beautify(contents, tokens, tree,
@@ -1805,7 +1804,42 @@ class TestOrange (BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
-                f"test_split_join_lines..."
+                f"test_split_lines..."
+                f"  contents: {contents}\n"
+                f"     black: {expected.rstrip()}\n"
+                f"    orange: {results}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                if verbose_fail:
+                    print(f"Fail: {fails}\n{message}")
+            elif verbose_pass:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert fails == 0, fails
+    #@+node:ekr.20200121093134.1: *4* test_join_lines
+    def test_join_lines(self):
+
+        verbose_pass = False
+        verbose_fail = False
+        # Except where noted, all entries are expected values....
+        line_length = 40 # For testing.
+        table = (
+              #1234567890x1234567890x1234567890x1234567890x
+            """print('4444',\n    '5555')""",
+        )
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 1: # verbose_fail:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                dump_tree(tokens, tree)
+            expected = self.blacken(contents, line_length=line_length)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"test_join_lines..."
                 f"  contents: {contents}\n"
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results}")
@@ -5069,7 +5103,7 @@ class Orange:
             else:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
-    #@+node:ekr.20200107165250.34: *5* orange.split_line
+    #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
     def split_line(self, node, token):
         """
         Split token's line, if possible and enabled.
@@ -5077,14 +5111,13 @@ class Orange:
         Return True if the line was broken into two or more lines.
         """
         trace = False
+        assert self.max_split_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
         if not is_long_statement(node):
             if trace: g.trace('===== not long statement', node)
             return False
         # Return if splitting is disabled:
-        if self.max_split_line_length <= 0:
-            return False
         if trace:
             dump_tree(self.tokens, node, tag='split_line')
         # Find the tokens of the previous lines.
@@ -5108,7 +5141,16 @@ class Orange:
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
         return True
-    #@+node:ekr.20200107165250.37: *5* orange.find_line_prefix
+    #@+node:ekr.20200107165250.36: *6* orange.find_prev_line
+    def find_prev_line(self):
+        """Return the previous line, as a list of tokens."""
+        line = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind == 'line-end':
+                break
+            line.append(t)
+        return list(reversed(line))
+    #@+node:ekr.20200107165250.37: *6* orange.find_line_prefix
     def find_line_prefix(self, token_list):
         """
         Return all tokens up to and including the first lt token.
@@ -5126,16 +5168,7 @@ class Orange:
                         break
                 break
         return result
-    #@+node:ekr.20200107165250.36: *5* orange.find_prev_line (to be removed)
-    def find_prev_line(self):
-        """Return the previous line, as a list of tokens."""
-        line = []
-        for t in reversed(self.code_list[:-1]):
-            if t.kind == 'line-end':
-                break
-            line.append(t)
-        return list(reversed(line))
-    #@+node:ekr.20200107165250.38: *5* orange.is_any_lt
+    #@+node:ekr.20200107165250.38: *6* orange.is_any_lt
     def is_any_lt(self, output_token):
         """Return True if the given token is any lt token"""
         return (
@@ -5149,18 +5182,13 @@ class Orange:
         Join preceding lines, if possible and enabled.
         token is a line_end token. node is the corresponding ast node.
         """
+        assert self.max_join_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
-        line_tokens = self.find_prev_line()
-        line_s = tokens_to_string(line_tokens)
-        # Don't bother trying if the line is already long.
-        if self.max_join_line_length == 0 or len(line_s) > self.max_join_line_length:
+        prev_line_token = getattr(token, 'prev_line_token', None)
+        if not (prev_line_token and prev_line_token.node):
+            g.trace('No previous line', prev_line_token)
             return
-        # Terminating long lines must have ), ] or }
-        if not any([z.kind == 'rt' for z in line_tokens]):
-            return
-        if 0:
-            g.trace('Valid join')
-            g.trace('prev line', line_s)
+        dump_tree(self.tokens, prev_line_token.node)
         # To do...
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
@@ -5297,18 +5325,18 @@ class Token:
         next_line_index = next_line_token.index if next_line_token else ''
         return (
             f"{self.line_number:4} "
+            f"{node_id:5} {node_cn:16} "
             f"{prev_line_index:>4}.{next_line_index:<4} "
-            f"{node_id:6} {node_cn:16} "
-            f"{self.index:>5} {self.kind:>12} {self.show_val(100)}")
+            f"{self.index:>5} {self.kind:>11} {self.show_val(100)}")
             # f"{parent_id:>4} {parent_class}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
     def dump_header(self):
         """Print the header for token.dump"""
         print(
             f"\n"
-            f"     newlines   node  node  {'':10} token\n"
-            f"line prev.next  index class {'':10} index   token kind token value\n"
-            f"==== =========  ===== ===== {'':10} =====   ========== ===========\n")
+            f"     node  node  {'':10} newlines  token\n"
+            f"line index class {'':10} prev.next index  token kind token value\n"
+            f"==== ===== ===== {'':10} ========= =====  ========== ===========\n")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):  # pragma: no cover
         """Dump a token or result node for error message."""
