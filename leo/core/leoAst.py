@@ -784,21 +784,15 @@ if 1: # pragma: no cover
     def dump_tokens(tokens):
         print('')
         print('Tokens...\n')
+        if not tokens:
+            return
         print("Note: values shown are repr(value) *except* for 'string' tokens.")
-        dump_token_header()
+        tokens[0].dump_header()
         for i, z in enumerate(tokens):
-            if 0: # Confusing.
-                if (i % 20) == 0:
-                    dump_token_header()
+            # Confusing.
+                # if (i % 20) == 0: z.dump_header()
             print(z.dump())
         print('')
-        
-    def dump_token_header():
-         # Print the header. See token.dump.
-        print(
-            f"\n"
-            f"{'kind':>13}   {'value':<24} {'line':<9} {'node':21} parent\n"
-            f"{'====':>13}   {'=====':<24} {'====':<9} {'====':21} ======\n")
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
     def dump_tree(tokens, tree, tag=None):
         print('')
@@ -2574,7 +2568,7 @@ class TestTokens (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         dump_contents(contents)
         dump_tokens(tokens)
-        dump_tree(tokens, tree)
+        ### dump_tree(tokens, tree)
     #@+node:ekr.20200118084859.1: *4* TestTokens.test_line_links
     def test_line_links(self):
 
@@ -5291,15 +5285,27 @@ class Token:
         # Let block.
         node_id = self.node.node_index if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
-        parent = getattr(self.node, 'parent', None)
-        parent_class = parent.__class__.__name__ if parent else ''
-        parent_id = parent.node_index if parent else ''
-        kind_s = f"{self.kind}.{self.index:<3}"
+        # parent = getattr(self.node, 'parent', None)
+        # parent_class = parent.__class__.__name__ if parent else ''
+        # parent_id = parent.node_index if parent else ''
+        prev_line_token = getattr(self, 'prev_line_token', None)
+        next_line_token = getattr(self, 'next_line_token', None)
+        prev_line_index = prev_line_token.index if prev_line_token else ''
+        next_line_index = next_line_token.index if next_line_token else ''
         return (
-            f"{kind_s:>15} {self.show_val(20):<24} "
-            f"{self.line_number:>4} "
-            f"{node_id:4} {node_cn:16} "
-            f"{parent_id:>4} {parent_class}")
+            f"{self.line_number:4} "
+            f"{prev_line_index:>4}.{next_line_index:<4} "
+            f"{node_id:6} {node_cn:16} "
+            f"{self.index:>5} {self.kind:>12} {self.show_val(100)}")
+            # f"{parent_id:>4} {parent_class}")
+    #@+node:ekr.20200121081151.1: *4* token.dump_header
+    def dump_header(self):
+        """Print the header for token.dump"""
+        print(
+            f"\n"
+            f"     newlines   node  node  {' ':10} token\n"
+            f"line prev.next  index class {' ':10} index   token kind token value\n"
+            f"==== =========  ===== ===== {' ':10} =====   ========== ===========\n")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):  # pragma: no cover
         """Dump a token or result node for error message."""
