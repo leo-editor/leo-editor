@@ -1829,7 +1829,7 @@ class TestOrange (BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if 1: # verbose_fail:  # pragma: no cover
+            if 0: # verbose_fail:  # pragma: no cover
                 dump_contents(contents)
                 dump_tokens(tokens)
                 dump_tree(tokens, tree)
@@ -3005,6 +3005,8 @@ class TokenOrderGenerator:
         if token.kind in ('newline', 'nl'):
             # Set an auxilliary link for the split/join logic.
             token.statement_node = self.last_statement_node
+            # Set token.node, but do *not* add it to node's token list.
+            ### token.node = self.last_statement_node
             return
         if is_significant_token(token):
             # Link the token to the ast node.
@@ -5184,11 +5186,7 @@ class Orange:
         """
         assert self.max_join_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
-        prev_line_token = getattr(token, 'prev_line_token', None)
-        if not (prev_line_token and prev_line_token.node):
-            g.trace('No previous line', prev_line_token)
-            return
-        dump_tree(self.tokens, prev_line_token.node)
+        ### dump_tree(self.tokens, token.node)
         # To do...
         #   Scan back, looking for the first line with all balanced delims.
         #   Do nothing if it is this line.
