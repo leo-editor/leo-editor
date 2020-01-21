@@ -959,7 +959,7 @@ class BaseTest (unittest.TestCase):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:  # pragma: no cover
-            return None, None, None
+            return '', None, None
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
@@ -970,10 +970,10 @@ class BaseTest (unittest.TestCase):
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:  # pragma: no cover
-            return None, None, None
+            return '', None, None
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
-            return None, None, None
+            return '', None, None
         if 0: # Excellent traces for tracking down mysteries.
             dump_contents(contents)
             dump_ast(tree)
@@ -984,8 +984,10 @@ class BaseTest (unittest.TestCase):
         try:
             self.create_links(tokens, tree)
         except Exception as e:
-            # The caller will give the error.
-            return None, None, None
+            # self.create_links has already given the exception.
+                # g.trace('BaseTest.make_data: Exception in create_links...')
+                # print(e)
+            return '', None, None
         self.reassign_tokens(tokens, tree)
         if 0: # Sometimes useful.
             dump_tree(tokens, tree)
@@ -1396,7 +1398,7 @@ class TestFstringify (BaseTest):
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
-    def test_call_with_attribute_2(self):
+    def test_call_in_rhs_2(self):
         
         # From LM.traceSettingsDict
         contents = """print('%s' % (len(d.keys())))"""
@@ -2902,7 +2904,7 @@ class TokenOrderGenerator:
         trace = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        assert is_significant(kind, val), (kind, val, g.callers())
+        ### assert is_significant(kind, val), (kind, val, g.callers())
         if trace: g.trace(
             f"px: {self.px:2} "
             f"node: {node.__class__.__name__:<10} "
@@ -2986,7 +2988,7 @@ class TokenOrderGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
-    #@+node:ekr.20191124083124.1: *5* tog.sync_token helpers
+    #@+node:ekr.20191124083124.1: *5* tog.sync_name and sync_op
     # It's valid for these to return None.
 
     def sync_name(self, val):
@@ -3000,8 +3002,12 @@ class TokenOrderGenerator:
                     self.sync_op('.')
 
     def sync_op(self, val):
-        if val not in ',()':
-            self.sync_token('op', val)
+        ### if val in ',()': g.trace('-----', val, g.callers())
+        ### Experimental: Allow calls to sync_token for non-significant tokens.
+        self.sync_token('op', val)
+        ### Old.
+            # if val not in ',()':
+                # self.sync_token('op', val)
     #@+node:ekr.20191113081443.1: *5* tog.visitor (calls begin/end_visitor)
     def visitor(self, node):
         """Given an ast node, return a *generator* from its visitor."""
@@ -3477,11 +3483,9 @@ class TokenOrderGenerator:
 
     def do_Tuple(self, node):
 
-        # no need to put commas.
-        # The parens are also optional, but they help a tiny bit.
-        yield from self.gen_op('(')
+        # No need to put commas.
+        # Commas do not necessarily exist in the token list!
         yield from self.gen(node.elts)
-        yield from self.gen_op(')')
     #@+node:ekr.20191113063144.53: *5* tog: Operators
     #@+node:ekr.20191113063144.55: *6* tog.BinOp
     def do_BinOp(self, node):
