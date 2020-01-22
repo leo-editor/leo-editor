@@ -1335,7 +1335,7 @@ class AstDumper:  # pragma: no cover
         )
     #@-others
 #@+node:ekr.20200122161530.1: *3* class TestFiles (BaseTest)
-class TestFiles (BaseTest):
+class TestFiles (BaseTest):  # pragma: no cover
     """
     Tests for the TokenOrderGenerator class that act on files.
     
@@ -2607,7 +2607,7 @@ class TestTokens (BaseTest):
     """Unit tests for tokenizing."""
 
     #@+others
-    #@+node:ekr.20200121025938.1: *4* TestTokens.show_example_dump
+    #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
     def show_example_dump(self):  # pragma: no cover
         
         # Will only be run when enabled explicitly.
@@ -2621,7 +2621,103 @@ class TestTokens (BaseTest):
         dump_contents(contents)
         dump_tokens(tokens)
         dump_tree(tokens, tree)
-    #@+node:ekr.20200118084859.1: *4* TestTokens.test_line_links
+    #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
+    def show_asttokens_script(self):
+        """
+        A script showing how asttokens can *easily* do the following:
+        - Inject parent/child links into ast nodes.
+            
+        """
+        import asttokens, ast, token as token_module
+        # Define Token class and helper functions.
+        #@+others
+        #@+node:ekr.20200122170101.3: *5* class Token
+        class Token:
+            """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
+            def __init__(self, kind, value):
+                self.kind = kind
+                self.value = value
+                self.node_list = []
+                
+            def __str__(self):
+                tokens_s = ', '.join([z.__class__.__name__ for z in self.node_list])
+                return f"{self.kind:12} {self.value:20} {tokens_s!s}"
+            __repr__ = __str__
+        #@+node:ekr.20200122170101.1: *5* function: atok_name
+        def atok_name(token):
+            """Return a good looking name for the given 5-tuple"""
+            return token_module.tok_name[token[0]].lower()
+            
+        #@+node:ekr.20200122170101.2: *5* function: atok_value
+        def atok_value(token):
+            """Print a good looking value for the given 5-tuple"""
+            return token.string if atok_name(token) == 'string' else repr(token.string)
+
+        #@+node:ekr.20200122170057.1: *5* function: dump_token
+        def dump_token(token):
+            node_list = list(set(getattr(token, 'node_set', [])))
+            node_list = sorted([z.__class__.__name__ for z in node_list])
+            return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
+
+        #@+node:ekr.20200122170337.1: *5* function: postvisit
+        def postvisit(node, par_value, value):
+            nonlocal stack
+            stack.pop()
+            return par_value or []
+        #@+node:ekr.20200122170101.4: *5* function: previsit
+        def previsit(node, par_value):
+            nonlocal stack
+            if isinstance(node, ast.Module):
+                stack = []
+            if stack:
+                parent = stack[-1]
+                children = getattr(parent, 'children', [])
+                parent.children = children + [node]
+                node.parent = parent
+            else:
+                node.parent = None
+                node.children = []
+            stack.append(node)
+            return par_value, []
+            
+        #@-others
+        table = (
+            # """print('%s in %5.2f sec' % ("done", 2.9))\n""",
+            """print(a[1:2:3])\n""",
+        )
+        stack = []
+        for source in table:
+            print(f"Source...\n\n{source}")
+            atok = asttokens.ASTTokens(source, parse=True)
+            # Create a patchable list of Token objects.
+            tokens = [Token(atok_name(z), atok_value(z)) for z in atok.tokens]
+            # Inject parent/child links into nodes.
+            asttokens.util.visit_tree(atok.tree, previsit, postvisit)
+            # Create token.token_list for each token.
+            for node in asttokens.util.walk(atok.tree):
+                # Inject node into token.node_list
+                for ast_token in atok.get_tokens(node, include_extra=True):
+                    i = ast_token.index
+                    token = tokens[i]
+                    token.node_list.append(node)
+            # Print the resulting parent/child links.
+            for node in ast.walk(atok.tree):
+                if hasattr(node, 'first_token'):
+                    parent = getattr(node, 'parent', None)
+                    parent_s = parent.__class__.__name__ if parent else 'None'
+                    children = getattr(node, 'children', [])
+                    if children:
+                        children_s = ', '.join(z.__class__.__name__ for z in children)
+                    else:
+                        children_s = 'None'
+                    print(
+                        f"\n"
+                        f"    node: {node.__class__.__name__}\n"
+                        f"  parent: {parent_s}\n"
+                        f"children: {children_s}")
+            # Print the resulting tokens.
+            g.printObj(tokens, tag='Tokens')
+    #@+node:ekr.20200118084859.1: *4* TT.test_line_links
     def test_line_links(self):
 
         contents = """\
@@ -2649,7 +2745,7 @@ class TestTokens (BaseTest):
                     next_s = f"{next.index:<2}" if next else ''
                     print(f"{token.kind:>12}.{token.index:<2} prev: {prev_s:2} next: {next_s}")
         assert fails == 0, fails
-    #@+node:ekr.20200110015014.6: *4* test_bs_nl_tokens
+    #@+node:ekr.20200110015014.6: *4* TT.test_bs_nl_tokens
     def test_bs_nl_tokens(self):
         # Test https://bugs.python.org/issue38663.
 
@@ -2658,7 +2754,7 @@ class TestTokens (BaseTest):
         ('abc')
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200110015014.8: *4* test_continuation_1
+    #@+node:ekr.20200110015014.8: *4* TT.test_continuation_1
     def test_continuation_1(self):
         
         contents = """\
@@ -2673,7 +2769,7 @@ class TestTokens (BaseTest):
         'b']
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200111085210.1: *4* test_continuation_2
+    #@+node:ekr.20200111085210.1: *4* TT.test_continuation_2
     def test_continuation_2(self):
         # Backslash means line continuation, except for comments
         contents = """\
@@ -2681,7 +2777,7 @@ class TestTokens (BaseTest):
     # This is a comment\\\n# This also
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200111085211.1: *4* test_continuation_3
+    #@+node:ekr.20200111085211.1: *4* TT.test_continuation_3
     def test_continuation_3(self):
 
         contents = """\
@@ -2689,15 +2785,15 @@ class TestTokens (BaseTest):
     x = 0
     """
         self.check_roundtrip(contents)
-    #@+node:ekr.20200110015014.10: *4* test_string_concatenation_1
+    #@+node:ekr.20200110015014.10: *4* TT.test_string_concatenation_1
     def test_string_concatentation_1(self):
         # Two *plain* string literals on the same line
         self.check_roundtrip("""'abc' 'xyz'""")
-    #@+node:ekr.20200111081801.1: *4* test_string_concatenation_2
+    #@+node:ekr.20200111081801.1: *4* TT.test_string_concatenation_2
     def test_string_concatentation_2(self):
         # f-string followed by plain string on the same line
         self.check_roundtrip("""f'abc' 'xyz'""")
-    #@+node:ekr.20200111081832.1: *4* test_string_concatenation_3
+    #@+node:ekr.20200111081832.1: *4* TT.test_string_concatenation_3
     def test_string_concatentation_3(self):
         # plain string followed by f-string on the same line
         self.check_roundtrip("""'abc' f'xyz'""")
