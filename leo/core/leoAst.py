@@ -1334,6 +1334,44 @@ class AstDumper:  # pragma: no cover
                 if a not in ['ctx',] and b not in (None, [])
         )
     #@-others
+#@+node:ekr.20200122161530.1: *3* class TestFiles (BaseTest)
+class TestFiles (BaseTest):
+    """
+    Tests for the TokenOrderGenerator class that act on files.
+    
+    These tests do not start with 'test_', so they are not run by default.
+    """
+
+    #@+others
+    #@+node:ekr.20191227052446.25: *4* file_test_leoApp.py
+    def file_test_leoApp(self):
+        self.make_file_data('leoApp.py')
+        
+    #@+node:ekr.20191227052446.26: *4* file_test_leoAst.py
+    def file_test_leoAst(self):
+        self.make_file_data('leoAst.py')
+       
+    #@+node:ekr.20191227052446.27: *4* file_test_leoDebugger.py
+    def file_test_leoDebugger(self):
+        self.make_file_data('leoDebugger.py')
+       
+    #@+node:ekr.20191227052446.28: *4* file_test_leoFind.py
+    def file_test_leoFind(self):
+        self.make_file_data('leoFind.py')
+       
+    #@+node:ekr.20191227052446.29: *4* file_test_leoGlobals.py
+    def file_test_leoGlobals(self):
+        self.make_file_data('leoGlobals.py')
+       
+    #@+node:ekr.20191227052446.30: *4* file_test_leoTips.py
+    def file_test_leoTips(self):
+        self.make_file_data('leoTips.py')
+       
+    #@+node:ekr.20191227052446.31: *4* file_test_runLeo.py
+    def file_test_runLeo(self):
+        self.make_file_data('runLeo.py')
+       
+    #@-others
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
     """Tests for the TokenOrderGenerator class."""
@@ -2169,35 +2207,6 @@ class TestTOG (BaseTest):
     fr"""{kinds}://[^\s'"]+[\w=/]"""
     '''
         self.make_data(contents)
-    #@+node:ekr.20191227052446.24: *4* Files...
-    #@+node:ekr.20191227052446.25: *5* test_leoApp.py
-    def test_leoApp(self):
-        self.make_file_data('leoApp.py')
-        
-    #@+node:ekr.20191227052446.26: *5* test_leoAst.py
-    def test_leoAst(self):
-        self.make_file_data('leoAst.py')
-       
-    #@+node:ekr.20191227052446.27: *5* test_leoDebugger.py
-    def test_leoDebugger(self):
-        self.make_file_data('leoDebugger.py')
-       
-    #@+node:ekr.20191227052446.28: *5* test_leoFind.py
-    def test_leoFind(self):
-        self.make_file_data('leoFind.py')
-       
-    #@+node:ekr.20191227052446.29: *5* test_leoGlobals.py
-    def test_leoGlobals(self):
-        self.make_file_data('leoGlobals.py')
-       
-    #@+node:ekr.20191227052446.30: *5* test_leoTips.py
-    def test_leoTips(self):
-        self.make_file_data('leoTips.py')
-       
-    #@+node:ekr.20191227052446.31: *5* test_runLeo.py
-    def test_runLeo(self):
-        self.make_file_data('runLeo.py')
-       
     #@+node:ekr.20191227052446.32: *4* If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
     def test_if1(self):
