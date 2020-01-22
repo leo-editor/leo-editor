@@ -463,9 +463,7 @@ if 1: # pragma: no cover
         return is_significant(token.kind, token.value)
     #@+node:ekr.20191224093336.1: *4* function: match_parens
     def match_parens(filename, i, j, tokens):
-        """
-        Match parens in tokens[i:j]. Return the new j.
-        """
+        """Match parens in tokens[i:j]. Return the new j."""
         if j >= len(tokens):
             return len(tokens)
         # Calculate paren level...
@@ -5238,8 +5236,7 @@ class ReassignTokens (TokenOrderTraverser):
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
-        if 1: ### For now, this is needed, but match_parens should handle this.
-            self.traverse(tree)
+        self.traverse(tree)
     #@+node:ekr.20191231084853.1: *4* reassign.visit
     def visit(self, node):
         """ReassignTokens.visit"""
