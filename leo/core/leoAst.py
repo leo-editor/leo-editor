@@ -1387,6 +1387,28 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200122035055.1: *4* test_call_with_comments
+    def test_call_with_comments(self):
+        
+        if 0:
+            contents = """print('%s in %5.2f sec' % ("done", 2.9))"""
+            expected = """print(f'{"done"} in {2.9:5.2f} sec')\n"""
+        else:
+
+            contents = """\
+    print('%s in %5.2f sec' % (
+        "done", # message
+        2.9, # time
+    )) # trailing comment"""
+
+            ### What about internal comments?
+            expected = """\
+    print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = g.adjustTripleString(expected).rstrip() + '\n'
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
 
