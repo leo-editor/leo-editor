@@ -382,6 +382,8 @@ if 1: # pragma: no cover
     def find_anchor_token(node, global_token_list):
         """
         Return the anchor_token for node, a token such that token.node == node.
+        
+        The search starts at node, and then all the usual child nodes.
         """
         
         node1 = node
@@ -482,14 +484,13 @@ if 1: # pragma: no cover
                 token = tokens[j+1]
                 if token.kind == 'op' and token.value == ')':
                     level -= 1
-                elif token.kind == 'op' and token.value == '(': # Bug fix.
+                elif token.kind == 'op' and token.value == '(':
                     level += 1
                 elif is_significant_token(token):
                     break
                 j += 1
         if level != 0:  # pragma: no cover.
             line_n = tokens[i].line_number
-            g.printObj(tokens[i:j+1], tag='Tokens')
             raise AssignLinksError(
                 f"\n"
                 f"Unmatched parens: level={level}\n"
@@ -765,9 +766,9 @@ if 1: # pragma: no cover
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *4* function: dump_lines
-    def dump_lines(tokens):
+    def dump_lines(tokens, tag='Token lines'):
         print('')
-        print('Token lines...\n')
+        print(f"{tag}...\n")
         for z in tokens:
             if z.line.strip():
                 print(z.line.rstrip())
@@ -775,15 +776,15 @@ if 1: # pragma: no cover
                 print(repr(z.line))
         print('')
     #@+node:ekr.20191228095945.7: *4* function: dump_results
-    def dump_results(tokens):
+    def dump_results(tokens, tag='Results'):
         print('')
-        print('Results...\n')
+        print(f"{tag}...\n")
         print(tokens_to_string(tokens))
         print('')
     #@+node:ekr.20191228095945.8: *4* function: dump_tokens
-    def dump_tokens(tokens):
+    def dump_tokens(tokens, tag='Tokens'):
         print('')
-        print('Tokens...\n')
+        print(f"{tag}...\n")
         if not tokens:
             return
         print("Note: values shown are repr(value) *except* for 'string' tokens.")
@@ -794,9 +795,9 @@ if 1: # pragma: no cover
             print(z.dump())
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
-    def dump_tree(tokens, tree, tag=None):
+    def dump_tree(tokens, tree, tag='Tree'):
         print('')
-        print(f"Tree {tag or ''}...\n")
+        print(f"{tag}...\n")
         print(AstDumper().dump_tree(tokens, tree))
     #@+node:ekr.20200107040729.1: *4* function: show_diffs
     def show_diffs(s1, s2, filename=''):
@@ -1399,7 +1400,7 @@ class TestFstringify (BaseTest):
         expected = """print(f'{len(d.keys())}')\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
     def test_call_with_attribute(self):
 
@@ -2602,7 +2603,7 @@ class TestTokens (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         dump_contents(contents)
         dump_tokens(tokens)
-        ### dump_tree(tokens, tree)
+        dump_tree(tokens, tree)
     #@+node:ekr.20200118084859.1: *4* TestTokens.test_line_links
     def test_line_links(self):
 
@@ -3003,10 +3004,9 @@ class TokenOrderGenerator:
                     f"    callers: {g.callers()}")
         # Assign newlines to the previous statement node, if any.
         if token.kind in ('newline', 'nl'):
-            # Set an auxilliary link for the split/join logic.
+            # Set an *auxilliary* link for the split/join logic.
+            # Do *not* set token.node!
             token.statement_node = self.last_statement_node
-            # Set token.node, but do *not* add it to node's token list.
-            ### token.node = self.last_statement_node
             return
         if is_significant_token(token):
             # Link the token to the ast node.
@@ -4177,6 +4177,7 @@ class Fstringify (TokenOrderTraverser):
         Replace the node's entire tree with a new ast.Str node.
         Replace all the relevant tokens with a single new 'string' token.
         """
+        trace = False
         assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_token_list = get_node_token_list(node.left, self.tokens)
@@ -4187,8 +4188,12 @@ class Fstringify (TokenOrderTraverser):
             print('')
             return  
         lt_s = tokens_to_string(lt_token_list)
+        if trace: g.trace('lt_s:', lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
+        if trace:
+            for i, z in enumerate(values):
+                dump_tokens(z, tag=f"RHS value {i}")
         # Compute rt_s, line and line_number for later messages.
         token0 = lt_token_list[0]
         line_number = token0.line_number
@@ -4218,14 +4223,16 @@ class Fstringify (TokenOrderTraverser):
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
         # Show the results
-        if not self.silent:  # pragma: no cover
+        if trace or not self.silent:  # pragma: no cover
+            before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
+            after = result.replace('\n', '<NL>')
             print(
                 f"\n"
                 f"       file: {self.filename}\n"
                 f"line number: {line_number}\n"
                 f"       line: {line!r}\n"
-                f"       from: {lt_s} % {rt_s}\n"
-                f"         to: {result}")
+                f"       from: {before!s}\n"
+                f"         to: {after!s}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
@@ -4414,12 +4421,8 @@ class Fstringify (TokenOrderTraverser):
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
                     g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
-        # Now we expect only one result. 
+        # Now we expect only one result.
         tokens = tokens_for_node(self.filename, node, self.tokens)
-        if trace:
-            g.trace('One node:', node.__class__.__name__)
-            dump_tokens(tokens)
-            dump_tree(tokens, node)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
     def substitute_values(self, lt_s, specs, values):
@@ -5235,7 +5238,8 @@ class ReassignTokens (TokenOrderTraverser):
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
-        self.traverse(tree)
+        if 1: ### For now, this is needed, but match_parens should handle this.
+            self.traverse(tree)
     #@+node:ekr.20191231084853.1: *4* reassign.visit
     def visit(self, node):
         """ReassignTokens.visit"""
