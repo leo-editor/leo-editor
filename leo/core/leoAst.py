@@ -2813,7 +2813,6 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        ### self.post_pass(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
     def init_from_string(self, contents, filename):  # pragma: no cover
@@ -2827,7 +2826,6 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        ### self.post_pass(tokens, tree)
         return tokens, tree
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
