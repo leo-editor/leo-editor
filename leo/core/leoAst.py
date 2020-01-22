@@ -982,7 +982,7 @@ class BaseTest (unittest.TestCase):
                 # print(e)
             return '', None, None
         ### For now, always reassign tokens.
-        self.reassign_tokens(tokens, tree)
+        ### self.reassign_tokens(tokens, tree)
         if 0: # Sometimes useful.
             dump_tree(tokens, tree)
         if 0: # Sometimes useful.
@@ -1069,6 +1069,7 @@ class BaseTest (unittest.TestCase):
         
         Reassign tokens to ast nodes. This pass is optional.
         """
+        return ###
         t1 = get_time()
         ### self.tog.post_pass(tokens, tree)
         ReassignTokens().reassign(filename, tokens, tree)
@@ -2740,7 +2741,7 @@ class TestTOT (BaseTest):
         # self.dump_stats()
     #@-others
     
-#@+node:ekr.20191227170628.1: ** TOG classes
+#@+node:ekr.20191227170628.1: ** TOG classes...
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
     """A class that traverses ast (parse) trees in token order."""
@@ -4060,450 +4061,6 @@ class TokenOrderTraverser:
         assert self.last_node_index == node.node_index, (
             self.last_node_index, node.node_index)
     #@-others
-#@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
-class Fstringify (TokenOrderTraverser):
-    """A class to fstringify files."""
-    
-    silent = True  # for pytest. Defined in all entries.
-    
-    #@+others
-    #@+node:ekr.20191222083947.1: *4* fs.fstringify
-    def fstringify(self, contents, filename, tokens, tree):
-        """
-        Fstringify.fstringify:
-            
-        f-stringify the sources given by (tokens, tree).
-        
-        Return the resulting string.
-        """
-        self.filename = filename
-        self.tokens = tokens
-        self.tree = tree
-        self.traverse(self.tree)
-        results = tokens_to_string(self.tokens)
-        return results
-    #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
-    def fstringify_file(self, filename):  # pragma: no cover
-        """
-        Fstringify.fstringify_file.
-        
-        The entry point for the fstringify-file command.
-        
-        f-stringify the given external file with the Fstrinfify class.
-        
-        Return True if the file was changed.
-        """
-        tag = 'fstringify-file'
-        self.filename = filename
-        self.silent = False
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                print(f"{tag}: Can not fstringify: {filename}")
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        if contents == results:
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        if not self.silent:  # pragma: no cover
-            show_diffs(contents, results, filename=filename)
-        # Write the results
-        print(f"{tag}: Wrote {filename}")
-        write_file(filename, results, encoding=encoding)
-        return True
-    #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
-    def fstringify_file_diff(self, filename):  # pragma: no cover
-        """
-        Fstringify.fstringify_file_diff.
-        
-        The entry point for the diff-fstringify-file command.
-        
-        Print the diffs that would resulf from the fstringify-file command.
-        
-        Return True if the file would be changed.
-        """
-        tag = 'diff-fstringify-file'
-        self.filename = filename
-        self.silent = False
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        if contents == results:
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        show_diffs(contents, results, filename=filename)
-        return True
-    #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
-    def fstringify_file_silent(self, filename):  # pragma: no cover
-        """
-        Fstringify.fstringify_file_silent.
-        
-        The entry point for the silent-fstringify-file command.
-        
-        fstringify the given file, suppressing all but serious error messages.
-        
-        Return True if the file would be changed.
-        """
-        self.filename = filename
-        self.silent = True
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        # Write the results
-        status = 'Unchanged' if contents == results else 'Wrote'
-        print(f"{status:>9}: {filename}")
-        write_file(filename, results, encoding=encoding)
-        return contents == results
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
-    def make_fstring(self, node):
-        """
-        node is BinOp node representing an '%' operator.
-        node.left is an ast.Str node.
-        node.right reprsents the RHS of the '%' operator.
-
-        Convert this tree to an f-string, if possible.
-        Replace the node's entire tree with a new ast.Str node.
-        Replace all the relevant tokens with a single new 'string' token.
-        """
-        trace = False
-        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        # Careful: use the tokens, not Str.s.  This preserves spelling.
-        lt_token_list = get_node_token_list(node.left, self.tokens)
-        if not lt_token_list:  # pragma: no cover
-            print('')
-            g.trace('Error: no token list in Str')
-            dump_tree(self.tokens, node)
-            print('')
-            return  
-        lt_s = tokens_to_string(lt_token_list)
-        if trace: g.trace('lt_s:', lt_s)
-        # Get the RHS values, a list of token lists.
-        values = self.scan_rhs(node.right)
-        if trace:
-            for i, z in enumerate(values):
-                dump_tokens(z, tag=f"RHS value {i}")
-        # Compute rt_s, line and line_number for later messages.
-        token0 = lt_token_list[0]
-        line_number = token0.line_number
-        line = token0.line.strip()
-        rt_s = ''.join(tokens_to_string(z) for z in values)
-        # Get the % specs in the LHS string.
-        specs = self.scan_format_string(lt_s)
-        if len(values) != len(specs):  # pragma: no cover
-            line_number = token0.line_number
-            line = token0.line
-            n_specs, n_values = len(specs), len(values)
-            if not self.silent:  # pragma: no cover
-                print(
-                    f"\n"
-                    f"f-string mismatch: "
-                    f"{n_values} value{g.plural(n_values)}, "
-                    f"{n_specs} spec{g.plural(n_specs)}\n"
-                    f"             file: {self.filename}\n"
-                    f"      line number: {line_number}\n"
-                    f"             line: {line.strip()!r}")
-            return
-        # Replace specs with values.
-        results = self.substitute_values(lt_s, specs, values)
-        result = self.compute_result(line, line_number, lt_s, results)
-        if not result:
-            return
-        # Remove whitespace before ! and :.
-        result = self.clean_ws(result)
-        # Show the results
-        if trace or not self.silent:  # pragma: no cover
-            before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
-            after = result.replace('\n', '<NL>')
-            print(
-                f"\n"
-                f"       file: {self.filename}\n"
-                f"line number: {line_number}\n"
-                f"       line: {line!r}\n"
-                f"       from: {before!s}\n"
-                f"         to: {after!s}")
-        # Adjust the tree and the token list.
-        self.replace(node, result, values)
-    #@+node:ekr.20191222102831.3: *5* fs.clean_ws
-    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
-
-    def clean_ws(self, s):
-        """Carefully remove whitespace before ! and : specifiers."""
-        s = re.sub(self.ws_pat, r'\2', s)
-        return s
-
-    #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, line, line_number, lt_s, tokens):
-        """
-        Create the final result, with various kinds of munges.
-
-        Return the result string, or None if there are errors.
-        """
-        # Fail if there is a backslash within { and }.
-        if not self.check_newlines(tokens):  # pragma: no cover
-            if not self.silent:
-                print(
-                    f"\n"
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f"string contains a backslash\n"
-                    f"                  file: {self.filename}\n"
-                    f"           line number: {line_number}\n"
-                    f"                  line: {line.strip()!r}")
-            return None
-        # Ensure consistent quotes.
-        if not self.change_quotes(lt_s, tokens):  # pragma: no cover
-            if not self.silent:
-                print(
-                    f"\n"
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f"can't escape string delims\n"
-                    f"                  file: {self.filename}\n"
-                    f"           line number: {line_number}\n"
-                    f"                  line: {line.strip()!r}")
-            return None
-        return tokens_to_string(tokens)
-    #@+node:ekr.20191222102831.2: *6* fs.check_newlines
-    def check_newlines(self, tokens):
-        """
-        Check to ensure that no newlines appear within { and }.
-        
-        Return False if there is an error
-        """
-        level = 0
-        for token in tokens:
-            kind, val = token.kind, token.value
-            if kind == 'op':
-                if val == '{':
-                    level += 1
-                elif val == '}':
-                    level -= 1
-                    if level < 0:  # pragma: no cover
-                        if not self.silent:
-                            print('curly bracket underflow')
-                        return False
-            if '\\n' in val and level > 0:  # pragma: no cover
-                return False
-        if level > 0:  # pragma: no cover
-            print('unclosed curly bracket')
-            return False
-        return True
-    #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, lt_s, aList):
-        """
-        Carefully check quotes in all "inner" tokens as necessary.
-        
-        Return False if the f-string would contain backslashes.
-        
-        We expect the following "outer" tokens.
-            
-        aList[0]:  ('string', 'f')
-        aList[1]:  ('string', a string starting with a quote)
-        aList[-1]: ('string', a string ending with a quote that matches aList[1])
-        """
-        trace = False
-        # Sanity checks.
-        if len(aList) < 4:  # pragma: no cover
-            return True
-        if not lt_s:  # pragma: no cover
-            g.trace('no lt_s!')
-            return False
-        if trace:
-            g.trace(f"lt_s: {lt_s!s}")
-            g.printObj(aList, tag='aList')
-        delim = lt_s[0]
-        # Check tokens 0, 1 and -1.
-        token0 = aList[0]
-        token1 = aList[1]
-        token_last = aList[-1]
-        for token in token0, token1, token_last:
-            # These are the only kinds of tokens we expect to generate.
-            ok = (
-                token.kind == 'string' or
-                token.kind == 'op' and token.value in '{}')
-            if not ok:  # pragma: no cover
-                g.trace(
-                    f"unexpected token: {token.kind} {token.value}\n"
-                    f"            lt_s: {lt_s!r}\n"
-                    f"            line: {token0.line!r}")
-                g.printObj(aList, tag = 'aList')
-                return False
-        # These checks are important...
-        if token0.value != 'f':  # pragma: no cover
-            if trace:
-                g.trace('token[0]  error:', repr(token0))
-            return False
-        val1 = token1.value and token1.value[0]
-        if delim != val1:  # pragma: no cover
-            if trace:
-                g.trace('token[1]  error:', delim, val1, repr(token1))
-                g.printObj(aList, tag = 'aList')
-            return False
-        val_last = token_last.value and token_last.value[-1]
-        if delim != val_last:  # pragma: no cover
-            if trace:
-                g.trace('token[-1] error:', delim, val_last, repr(token_last))
-                g.printObj(aList, tag = 'aList')
-            return False
-        # Return False if any inner token contains the delim or a backslash.
-        for z in aList[2:-1]:
-            if delim in z.value or '\\' in z.value:
-                return False
-        return True
-    #@+node:ekr.20191222102831.6: *5* fs.munge_spec
-    def munge_spec(self, spec):
-        """
-        Return (head, tail).
-        
-        The format is spec !head:tail or :tail
-        
-        Example specs: s2, r3
-        """
-        ### To do: handle more specs.
-        head, tail = [], []
-        if spec.startswith('+'):
-            pass # Leave it alone!
-        elif spec.startswith('-'):
-            tail.append('>')
-            spec = spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            head.append('r')
-            spec = spec[:-1]
-        tail = ''.join(tail) + spec
-        head = ''.join(head)
-        return head, tail
-    #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
-
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
-
-    def scan_format_string(self, s):
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
-    def scan_rhs(self, node):
-        """
-        Scan the right-hand side of a potential f-string.
-        
-        Return a list of the token lists for each element.
-        """
-        trace = False
-        # First, Try the most common cases.
-        if isinstance(node, ast.Str):
-            token_list = get_node_token_list(node, self.tokens)
-            return [token_list]
-        if isinstance(node, (list, tuple, ast.Tuple)):
-            result = []
-            elts = node.elts if isinstance(node, ast.Tuple) else node
-            for i, elt in enumerate(elts):
-                tokens = tokens_for_node(self.filename, elt, self.tokens)
-                result.append(tokens)
-                if trace:
-                    g.trace(f"item: {i}: {elt.__class__.__name__}")
-                    g.printObj(tokens, tag=f"Tokens for item {i}")
-            return result
-        # Now we expect only one result.
-        tokens = tokens_for_node(self.filename, node, self.tokens)
-        return [tokens]
-    #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s, specs, values):
-        """
-        Replace specifieriers with values in lt_s string.
-        
-        Double { and } as needed.
-        """
-        trace = False
-        i, results = 0, [Token('string', 'f')]
-        for spec_i, m in enumerate(specs):
-            value = tokens_to_string(values[spec_i])
-            if trace: g.trace(i, repr(value))
-            start, end, spec = m.start(0), m.end(0), m.group(1)
-            if start > i:
-                val = lt_s[i : start].replace('{', '{{').replace('}', '}}')
-                results.append(Token('string', val))
-            head, tail = self.munge_spec(spec)
-            results.append(Token('op', '{'))
-            results.append(Token('string', value))
-            if head:
-                results.append(Token('string', '!'))
-                results.append(Token('string', head))
-            if tail:
-                results.append(Token('string', ':'))
-                results.append(Token('string', tail))
-            results.append(Token('op', '}'))
-            i = end
-        # Add the tail.
-        tail = lt_s[i:]
-        if tail:
-            if trace: g.trace('TAIL', repr(tail))
-            tail = tail.replace('{', '{{').replace('}', '}}')
-            results.append(Token('string', tail))
-        if trace: g.printObj(results, tag='Results')
-        return results
-    #@+node:ekr.20191225054848.1: *4* fs.replace
-    def replace(self, node, s, values):
-        """
-        Replace node with an ast.Str node for s.
-        Replace all tokens in the range of values with a single 'string' node.
-        """
-        # Replace the tokens...
-        tokens = tokens_for_node(self.filename, node, self.tokens)
-        i1 = i = tokens[0].index
-        replace_token(self.tokens[i], 'string', s)
-        j = 1
-        while j < len(tokens):
-            replace_token(self.tokens[i1 + j], 'killed', '')
-            j += 1
-        # Replace the node.
-        new_node = ast.Str()
-        new_node.s = s
-        replace_node(new_node, node)
-        # Update the token.
-        token = self.tokens[i1]
-        token.node = new_node
-        # Update the token list.
-        add_token_to_token_list(token, new_node)
-        
-    #@+node:ekr.20191231055008.1: *4* fs.visit
-    def visit(self, node):
-        """
-        FStringify.visit. (Overrides TOT visit).
-        
-        Call fs.makes_fstring if node is a BinOp that might be converted to an
-        f-string.
-        """
-        if (
-            isinstance(node, ast.BinOp)
-            and op_name(node.op) == '%'
-            and isinstance(node.left, ast.Str)
-        ):
-            self.make_fstring(node)
-    #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
     """
@@ -5233,6 +4790,454 @@ class ParseState:
         return f"State: {self.kind} {self.value!r}"
 
     __str__ = __repr__
+#@+node:ekr.20200122033203.1: ** TOT classes...
+#@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
+class Fstringify (TokenOrderTraverser):
+    """A class to fstringify files."""
+    
+    silent = True  # for pytest. Defined in all entries.
+    
+    #@+others
+    #@+node:ekr.20191222083947.1: *4* fs.fstringify
+    def fstringify(self, contents, filename, tokens, tree):
+        """
+        Fstringify.fstringify:
+            
+        f-stringify the sources given by (tokens, tree).
+        
+        Return the resulting string.
+        """
+        self.filename = filename
+        self.tokens = tokens
+        self.tree = tree
+        # Prepass: reassign tokens.
+        ReassignTokens().reassign(filename, tokens, tree)
+        # Main pass.
+        self.traverse(self.tree)
+        results = tokens_to_string(self.tokens)
+        return results
+    #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
+    def fstringify_file(self, filename):  # pragma: no cover
+        """
+        Fstringify.fstringify_file.
+        
+        The entry point for the fstringify-file command.
+        
+        f-stringify the given external file with the Fstrinfify class.
+        
+        Return True if the file was changed.
+        """
+        tag = 'fstringify-file'
+        self.filename = filename
+        self.silent = False
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                print(f"{tag}: Can not fstringify: {filename}")
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        if contents == results:
+            print(f"{tag}: Unchanged: {filename}")
+            return False
+        # Show the diffs.
+        if not self.silent:  # pragma: no cover
+            show_diffs(contents, results, filename=filename)
+        # Write the results
+        print(f"{tag}: Wrote {filename}")
+        write_file(filename, results, encoding=encoding)
+        return True
+    #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
+    def fstringify_file_diff(self, filename):  # pragma: no cover
+        """
+        Fstringify.fstringify_file_diff.
+        
+        The entry point for the diff-fstringify-file command.
+        
+        Print the diffs that would resulf from the fstringify-file command.
+        
+        Return True if the file would be changed.
+        """
+        tag = 'diff-fstringify-file'
+        self.filename = filename
+        self.silent = False
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        if contents == results:
+            print(f"{tag}: Unchanged: {filename}")
+            return False
+        # Show the diffs.
+        show_diffs(contents, results, filename=filename)
+        return True
+    #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
+    def fstringify_file_silent(self, filename):  # pragma: no cover
+        """
+        Fstringify.fstringify_file_silent.
+        
+        The entry point for the silent-fstringify-file command.
+        
+        fstringify the given file, suppressing all but serious error messages.
+        
+        Return True if the file would be changed.
+        """
+        self.filename = filename
+        self.silent = True
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        # Write the results
+        status = 'Unchanged' if contents == results else 'Wrote'
+        print(f"{status:>9}: {filename}")
+        write_file(filename, results, encoding=encoding)
+        return contents == results
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
+    def make_fstring(self, node):
+        """
+        node is BinOp node representing an '%' operator.
+        node.left is an ast.Str node.
+        node.right reprsents the RHS of the '%' operator.
+
+        Convert this tree to an f-string, if possible.
+        Replace the node's entire tree with a new ast.Str node.
+        Replace all the relevant tokens with a single new 'string' token.
+        """
+        trace = False
+        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        # Careful: use the tokens, not Str.s.  This preserves spelling.
+        lt_token_list = get_node_token_list(node.left, self.tokens)
+        if not lt_token_list:  # pragma: no cover
+            print('')
+            g.trace('Error: no token list in Str')
+            dump_tree(self.tokens, node)
+            print('')
+            return  
+        lt_s = tokens_to_string(lt_token_list)
+        if trace: g.trace('lt_s:', lt_s)
+        # Get the RHS values, a list of token lists.
+        values = self.scan_rhs(node.right)
+        if trace:
+            for i, z in enumerate(values):
+                dump_tokens(z, tag=f"RHS value {i}")
+        # Compute rt_s, line and line_number for later messages.
+        token0 = lt_token_list[0]
+        line_number = token0.line_number
+        line = token0.line.strip()
+        rt_s = ''.join(tokens_to_string(z) for z in values)
+        # Get the % specs in the LHS string.
+        specs = self.scan_format_string(lt_s)
+        if len(values) != len(specs):  # pragma: no cover
+            line_number = token0.line_number
+            line = token0.line
+            n_specs, n_values = len(specs), len(values)
+            if not self.silent:  # pragma: no cover
+                print(
+                    f"\n"
+                    f"f-string mismatch: "
+                    f"{n_values} value{g.plural(n_values)}, "
+                    f"{n_specs} spec{g.plural(n_specs)}\n"
+                    f"             file: {self.filename}\n"
+                    f"      line number: {line_number}\n"
+                    f"             line: {line.strip()!r}")
+            return
+        # Replace specs with values.
+        results = self.substitute_values(lt_s, specs, values)
+        result = self.compute_result(line, line_number, lt_s, results)
+        if not result:
+            return
+        # Remove whitespace before ! and :.
+        result = self.clean_ws(result)
+        # Show the results
+        if trace or not self.silent:  # pragma: no cover
+            before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
+            after = result.replace('\n', '<NL>')
+            print(
+                f"\n"
+                f"       file: {self.filename}\n"
+                f"line number: {line_number}\n"
+                f"       line: {line!r}\n"
+                f"       from: {before!s}\n"
+                f"         to: {after!s}")
+        # Adjust the tree and the token list.
+        self.replace(node, result, values)
+    #@+node:ekr.20191222102831.3: *5* fs.clean_ws
+    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+    def clean_ws(self, s):
+        """Carefully remove whitespace before ! and : specifiers."""
+        s = re.sub(self.ws_pat, r'\2', s)
+        return s
+
+    #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
+    def compute_result(self, line, line_number, lt_s, tokens):
+        """
+        Create the final result, with various kinds of munges.
+
+        Return the result string, or None if there are errors.
+        """
+        # Fail if there is a backslash within { and }.
+        if not self.check_newlines(tokens):  # pragma: no cover
+            if not self.silent:
+                print(
+                    f"\n"
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"string contains a backslash\n"
+                    f"                  file: {self.filename}\n"
+                    f"           line number: {line_number}\n"
+                    f"                  line: {line.strip()!r}")
+            return None
+        # Ensure consistent quotes.
+        if not self.change_quotes(lt_s, tokens):  # pragma: no cover
+            if not self.silent:
+                print(
+                    f"\n"
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"can't escape string delims\n"
+                    f"                  file: {self.filename}\n"
+                    f"           line number: {line_number}\n"
+                    f"                  line: {line.strip()!r}")
+            return None
+        return tokens_to_string(tokens)
+    #@+node:ekr.20191222102831.2: *6* fs.check_newlines
+    def check_newlines(self, tokens):
+        """
+        Check to ensure that no newlines appear within { and }.
+        
+        Return False if there is an error
+        """
+        level = 0
+        for token in tokens:
+            kind, val = token.kind, token.value
+            if kind == 'op':
+                if val == '{':
+                    level += 1
+                elif val == '}':
+                    level -= 1
+                    if level < 0:  # pragma: no cover
+                        if not self.silent:
+                            print('curly bracket underflow')
+                        return False
+            if '\\n' in val and level > 0:  # pragma: no cover
+                return False
+        if level > 0:  # pragma: no cover
+            print('unclosed curly bracket')
+            return False
+        return True
+    #@+node:ekr.20191222102831.7: *6* fs.change_quotes
+    def change_quotes(self, lt_s, aList):
+        """
+        Carefully check quotes in all "inner" tokens as necessary.
+        
+        Return False if the f-string would contain backslashes.
+        
+        We expect the following "outer" tokens.
+            
+        aList[0]:  ('string', 'f')
+        aList[1]:  ('string', a string starting with a quote)
+        aList[-1]: ('string', a string ending with a quote that matches aList[1])
+        """
+        trace = False
+        # Sanity checks.
+        if len(aList) < 4:  # pragma: no cover
+            return True
+        if not lt_s:  # pragma: no cover
+            g.trace('no lt_s!')
+            return False
+        if trace:
+            g.trace(f"lt_s: {lt_s!s}")
+            g.printObj(aList, tag='aList')
+        delim = lt_s[0]
+        # Check tokens 0, 1 and -1.
+        token0 = aList[0]
+        token1 = aList[1]
+        token_last = aList[-1]
+        for token in token0, token1, token_last:
+            # These are the only kinds of tokens we expect to generate.
+            ok = (
+                token.kind == 'string' or
+                token.kind == 'op' and token.value in '{}')
+            if not ok:  # pragma: no cover
+                g.trace(
+                    f"unexpected token: {token.kind} {token.value}\n"
+                    f"            lt_s: {lt_s!r}\n"
+                    f"            line: {token0.line!r}")
+                g.printObj(aList, tag = 'aList')
+                return False
+        # These checks are important...
+        if token0.value != 'f':  # pragma: no cover
+            if trace:
+                g.trace('token[0]  error:', repr(token0))
+            return False
+        val1 = token1.value and token1.value[0]
+        if delim != val1:  # pragma: no cover
+            if trace:
+                g.trace('token[1]  error:', delim, val1, repr(token1))
+                g.printObj(aList, tag = 'aList')
+            return False
+        val_last = token_last.value and token_last.value[-1]
+        if delim != val_last:  # pragma: no cover
+            if trace:
+                g.trace('token[-1] error:', delim, val_last, repr(token_last))
+                g.printObj(aList, tag = 'aList')
+            return False
+        # Return False if any inner token contains the delim or a backslash.
+        for z in aList[2:-1]:
+            if delim in z.value or '\\' in z.value:
+                return False
+        return True
+    #@+node:ekr.20191222102831.6: *5* fs.munge_spec
+    def munge_spec(self, spec):
+        """
+        Return (head, tail).
+        
+        The format is spec !head:tail or :tail
+        
+        Example specs: s2, r3
+        """
+        ### To do: handle more specs.
+        head, tail = [], []
+        if spec.startswith('+'):
+            pass # Leave it alone!
+        elif spec.startswith('-'):
+            tail.append('>')
+            spec = spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            head.append('r')
+            spec = spec[:-1]
+        tail = ''.join(tail) + spec
+        head = ''.join(head)
+        return head, tail
+    #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s):
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
+    def scan_rhs(self, node):
+        """
+        Scan the right-hand side of a potential f-string.
+        
+        Return a list of the token lists for each element.
+        """
+        trace = False
+        # First, Try the most common cases.
+        if isinstance(node, ast.Str):
+            token_list = get_node_token_list(node, self.tokens)
+            return [token_list]
+        if isinstance(node, (list, tuple, ast.Tuple)):
+            result = []
+            elts = node.elts if isinstance(node, ast.Tuple) else node
+            for i, elt in enumerate(elts):
+                tokens = tokens_for_node(self.filename, elt, self.tokens)
+                result.append(tokens)
+                if trace:
+                    g.trace(f"item: {i}: {elt.__class__.__name__}")
+                    g.printObj(tokens, tag=f"Tokens for item {i}")
+            return result
+        # Now we expect only one result.
+        tokens = tokens_for_node(self.filename, node, self.tokens)
+        return [tokens]
+    #@+node:ekr.20191226155316.1: *5* fs.substitute_values
+    def substitute_values(self, lt_s, specs, values):
+        """
+        Replace specifieriers with values in lt_s string.
+        
+        Double { and } as needed.
+        """
+        trace = False
+        i, results = 0, [Token('string', 'f')]
+        for spec_i, m in enumerate(specs):
+            value = tokens_to_string(values[spec_i])
+            if trace: g.trace(i, repr(value))
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                val = lt_s[i : start].replace('{', '{{').replace('}', '}}')
+                results.append(Token('string', val))
+            head, tail = self.munge_spec(spec)
+            results.append(Token('op', '{'))
+            results.append(Token('string', value))
+            if head:
+                results.append(Token('string', '!'))
+                results.append(Token('string', head))
+            if tail:
+                results.append(Token('string', ':'))
+                results.append(Token('string', tail))
+            results.append(Token('op', '}'))
+            i = end
+        # Add the tail.
+        tail = lt_s[i:]
+        if tail:
+            if trace: g.trace('TAIL', repr(tail))
+            tail = tail.replace('{', '{{').replace('}', '}}')
+            results.append(Token('string', tail))
+        if trace: g.printObj(results, tag='Results')
+        return results
+    #@+node:ekr.20191225054848.1: *4* fs.replace
+    def replace(self, node, s, values):
+        """
+        Replace node with an ast.Str node for s.
+        Replace all tokens in the range of values with a single 'string' node.
+        """
+        # Replace the tokens...
+        tokens = tokens_for_node(self.filename, node, self.tokens)
+        i1 = i = tokens[0].index
+        replace_token(self.tokens[i], 'string', s)
+        j = 1
+        while j < len(tokens):
+            replace_token(self.tokens[i1 + j], 'killed', '')
+            j += 1
+        # Replace the node.
+        new_node = ast.Str()
+        new_node.s = s
+        replace_node(new_node, node)
+        # Update the token.
+        token = self.tokens[i1]
+        token.node = new_node
+        # Update the token list.
+        add_token_to_token_list(token, new_node)
+        
+    #@+node:ekr.20191231055008.1: *4* fs.visit
+    def visit(self, node):
+        """
+        FStringify.visit. (Overrides TOT visit).
+        
+        Call fs.makes_fstring if node is a BinOp that might be converted to an
+        f-string.
+        """
+        if (
+            isinstance(node, ast.BinOp)
+            and op_name(node.op) == '%'
+            and isinstance(node.left, ast.Str)
+        ):
+            self.make_fstring(node)
+    #@-others
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens (TokenOrderTraverser):
     """A class that reassigns tokens to more appropriate ast nodes."""
