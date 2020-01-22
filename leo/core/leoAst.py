@@ -981,8 +981,6 @@ class BaseTest (unittest.TestCase):
                 # g.trace('BaseTest.make_data: Exception in create_links...')
                 # print(e)
             return '', None, None
-        ### For now, always reassign tokens.
-        ### self.reassign_tokens(tokens, tree)
         if 0: # Sometimes useful.
             dump_tree(tokens, tree)
         if 0: # Sometimes useful.
@@ -1062,19 +1060,6 @@ class BaseTest (unittest.TestCase):
             print(e)
             # g.es_exception()
             raise
-    #@+node:ekr.20191229065358.1: *5* 1.2: BaseTest.reassign_tokens
-    def reassign_tokens(self, tokens, tree, filename='unit test'):
-        """
-        BaseTest.reassign_tokens
-        
-        Reassign tokens to ast nodes. This pass is optional.
-        """
-        return ###
-        t1 = get_time()
-        ### self.tog.post_pass(tokens, tree)
-        ReassignTokens().reassign(filename, tokens, tree)
-        t2 = get_time()
-        self.update_times('12: reassign-links', t2 - t1)
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, contents, tokens, tree, filename=None):
         """
@@ -2828,7 +2813,7 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        self.post_pass(tokens, tree)
+        ### self.post_pass(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
     def init_from_string(self, contents, filename):  # pragma: no cover
@@ -2842,14 +2827,8 @@ class TokenOrderGenerator:
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         list(self.create_links(tokens, tree))
-        self.post_pass(tokens, tree)
+        ### self.post_pass(tokens, tree)
         return tokens, tree
-    #@+node:ekr.20191229072907.1: *5* tog.post_pass
-    def post_pass(self, tokens, tree):
-        """
-        Reassign tokens to ast nodes as needed.
-        """
-        ReassignTokens().reassign(self.filename, tokens, tree)
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
     begin_end_stack = []
