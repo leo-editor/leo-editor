@@ -2622,11 +2622,11 @@ class TestTokens (BaseTest):
         dump_tokens(tokens)
         dump_tree(tokens, tree)
     #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
-    def show_asttokens_script(self):
+    def show_asttokens_script(self):  # pragma: no cover: Will only be run automatically.
         """
         A script showing how asttokens can *easily* do the following:
-        - Inject parent/child links into ast nodes.
-            
+        - Inject parent/child links into ast nodes. 
+        - Inject many-to-many links between tokens and ast nodes.
         """
         import asttokens, ast, token as token_module
         # Define Token class and helper functions.
