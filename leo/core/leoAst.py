@@ -3006,6 +3006,11 @@ class TokenOrderGenerator:
             # Do *not* set token.node!
             token.statement_node = self.last_statement_node
             return
+        if token.kind == 'comment':
+            # Append the comment to node.comment_list.
+            comment_list = getattr(node, 'comment_list', [])
+            node.comment_list = comment_list + [token]
+            return
         if is_significant_token(token):
             # Link the token to the ast node.
             token.node = node
@@ -3658,6 +3663,8 @@ class TokenOrderGenerator:
 
     def do_Call(self, node):
 
+        # The calls to gen_op(')') and gen_op('(') do nothing by default.
+        # Subclasses might handle them in an overridden tog.set_links.
         yield from self.gen(node.func)
         yield from self.gen_op('(')
         # No need to generate any commas.
