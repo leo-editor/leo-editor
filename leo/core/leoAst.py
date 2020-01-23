@@ -1343,34 +1343,16 @@ class TestFiles (BaseTest):  # pragma: no cover
     """
 
     #@+others
-    #@+node:ekr.20191227052446.25: *4* file_test_leoApp.py
-    def file_test_leoApp(self):
-        self.make_file_data('leoApp.py')
-        
-    #@+node:ekr.20191227052446.26: *4* file_test_leoAst.py
-    def file_test_leoAst(self):
-        self.make_file_data('leoAst.py')
-       
-    #@+node:ekr.20191227052446.27: *4* file_test_leoDebugger.py
-    def file_test_leoDebugger(self):
-        self.make_file_data('leoDebugger.py')
-       
-    #@+node:ekr.20191227052446.28: *4* file_test_leoFind.py
-    def file_test_leoFind(self):
-        self.make_file_data('leoFind.py')
-       
-    #@+node:ekr.20191227052446.29: *4* file_test_leoGlobals.py
-    def file_test_leoGlobals(self):
-        self.make_file_data('leoGlobals.py')
-       
-    #@+node:ekr.20191227052446.30: *4* file_test_leoTips.py
-    def file_test_leoTips(self):
-        self.make_file_data('leoTips.py')
-       
-    #@+node:ekr.20191227052446.31: *4* file_test_runLeo.py
-    def file_test_runLeo(self):
-        self.make_file_data('runLeo.py')
-       
+    #@+node:ekr.20200123050742.1: *4* option_file_tests
+    def optional_file_tests(self):
+
+        table = (
+            'leoApp.py', 'leoAst.py', 'leoDebugger.py', 'leoFind.py',
+            'leoGlobals.py', 'leoTips.py', 'runLeo.py',
+        )
+        for filename in table:
+            g.trace(filename)
+            self.make_file_data(filename)
     #@-others
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
