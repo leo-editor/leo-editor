@@ -1343,7 +1343,7 @@ class TestFiles (BaseTest):  # pragma: no cover
     """
 
     #@+others
-    #@+node:ekr.20200123050742.1: *4* option_file_tests
+    #@+node:ekr.20200123050742.1: *4* TestFiles.optional_file_tests
     def optional_file_tests(self):
 
         table = (
@@ -1353,6 +1353,28 @@ class TestFiles (BaseTest):  # pragma: no cover
         for filename in table:
             g.trace(filename)
             self.make_file_data(filename)
+    #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
+    def compare_tog_vs_asttokens(self):
+        """Compare asttokens token lists with TOG token lists."""
+        tag = 'test_compare_tog_vs_asttokens'
+        try:
+            import asttokens
+        except Exception:
+            self.skipTest('requires asttokens')
+        t1 = get_time()
+        contents, tokens, tree = self.make_file_data('leoAst.py')
+        t2 = get_time()
+        atok = asttokens.ASTTokens(contents, parse=False, filename=tag)
+        atok.mark_tokens(tree)
+        t3 = get_time()
+        if 1:
+            print(
+                f"      TOG: {t2-t1:5.3f} sec.\n"
+                f"asttokens: {t3-t2:5.3f} sec.")
+        if 0:
+            print('===== asttokens =====\n')
+            for node in asttokens.util.walk(tree):
+                print(f"{node.__class__.__name__:>10} {atok.get_text(node)!s}")
     #@-others
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify (BaseTest):
@@ -1437,27 +1459,6 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200115162419.1: *4* test_compare_tog_vs_asttokens
-    def test_compare_tog_vs_asttokens(self):
-        """Compare asttokens token lists with TOG token lists."""
-        tag = 'test_compare_tog_vs_asttokens'
-        try:
-            import asttokens
-        except Exception:
-            self.skipTest('requires asttokens')
-        contents = """g.blue('wrote %s' % p.x())"""
-        contents, tokens, tree = self.make_data(contents, description=tag)
-        # Dump GOT data.
-        if 0:
-            dump_contents(contents)
-            dump_tree(tokens, tree)
-        # Dump asttokens data
-        atok = asttokens.ASTTokens(contents, parse=False, filename=tag)
-        atok.mark_tokens(tree)
-        if 0:
-            print('===== asttokens =====\n')
-            for node in asttokens.util.walk(tree):
-                print(f"{node.__class__.__name__:>10} {atok.get_text(node)!s}")
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
