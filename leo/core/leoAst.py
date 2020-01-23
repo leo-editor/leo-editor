@@ -5428,7 +5428,7 @@ class Token:
             f"{self.index:>5} {self.kind:>11} {self.show_val(100)}")
             # f"{parent_id:>4} {parent_class}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
-    def dump_header(self):
+    def dump_header(self):  # pragma: no cover
         """Print the header for token.dump"""
         print(
             f"\n"
