@@ -1356,19 +1356,31 @@ class TestFiles (BaseTest):  # pragma: no cover
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
-        tag = 'test_compare_tog_vs_asttokens'
         try:
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
+        directory = r'c:\leo.repo\leo-editor\leo\core'
+        filename = 'leoAst.py'
+        filename = os.path.join(directory, filename)
+        # A fair comparison omits the read time.
+        t0 = get_time()
+        contents = read_file(filename)
         t1 = get_time()
-        contents, tokens, tree = self.make_file_data('leoAst.py')
+        tog = TokenOrderGenerator()
+        tog.filename = filename
+        tokens = make_tokens(contents)
+        tree = parse_ast(contents)
+        tog.create_links(tokens, tree)
+        tog.balance_tokens(tokens)
         t2 = get_time()
-        atok = asttokens.ASTTokens(contents, parse=False, filename=tag)
-        atok.mark_tokens(tree)
+        atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
+        assert atok
+        # print(len(atok.tokens))
         t3 = get_time()
         if 1:
             print(
+                f"     read: {t1-t0:5.3f} sec.\n"
                 f"      TOG: {t2-t1:5.3f} sec.\n"
                 f"asttokens: {t3-t2:5.3f} sec.")
         if 0:
