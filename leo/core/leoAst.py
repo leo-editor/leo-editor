@@ -1356,10 +1356,64 @@ class TestFiles (BaseTest):  # pragma: no cover
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
+        import ast
+        import token as token_module
         try:
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
+        # Define Token class and helper functions.
+        #@+others
+        #@+node:ekr.20200124024159.2: *5* class Token
+        class Token:
+            """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
+            def __init__(self, kind, value):
+                self.kind = kind
+                self.value = value
+                self.node_list = []
+                
+            def __str__(self):
+                tokens_s = ', '.join([z.__class__.__name__ for z in self.node_list])
+                return f"{self.kind:12} {self.value:20} {tokens_s!s}"
+            __repr__ = __str__
+        #@+node:ekr.20200124024159.3: *5* function: atok_name
+        def atok_name(token):
+            """Return a good looking name for the given 5-tuple"""
+            return token_module.tok_name[token[0]].lower()
+            
+        #@+node:ekr.20200124024159.4: *5* function: atok_value
+        def atok_value(token):
+            """Print a good looking value for the given 5-tuple"""
+            return token.string if atok_name(token) == 'string' else repr(token.string)
+
+        #@+node:ekr.20200124024159.5: *5* function: dump_token
+        def dump_token(token):
+            node_list = list(set(getattr(token, 'node_set', [])))
+            node_list = sorted([z.__class__.__name__ for z in node_list])
+            return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
+
+        #@+node:ekr.20200124024159.6: *5* function: postvisit
+        def postvisit(node, par_value, value):
+            nonlocal stack
+            stack.pop()
+            return par_value or []
+        #@+node:ekr.20200124024159.7: *5* function: previsit
+        def previsit(node, par_value):
+            nonlocal stack
+            if isinstance(node, ast.Module):
+                stack = []
+            if stack:
+                parent = stack[-1]
+                children = getattr(parent, 'children', [])
+                parent.children = children + [node]
+                node.parent = parent
+            else:
+                node.parent = None
+                node.children = []
+            stack.append(node)
+            return par_value, []
+            
+        #@-others
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = 'leoAst.py'
         filename = os.path.join(directory, filename)
@@ -1367,6 +1421,7 @@ class TestFiles (BaseTest):  # pragma: no cover
         t0 = get_time()
         contents = read_file(filename)
         t1 = get_time()
+        # Part 1: TOG.
         tog = TokenOrderGenerator()
         tog.filename = filename
         tokens = make_tokens(contents)
@@ -1374,15 +1429,28 @@ class TestFiles (BaseTest):  # pragma: no cover
         tog.create_links(tokens, tree)
         tog.balance_tokens(tokens)
         t2 = get_time()
+        # Part 2: Create asttokens data.
         atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
-        assert atok
-        # print(len(atok.tokens))
         t3 = get_time()
+        stack = []
+        # Create a patchable list of Token objects.
+        tokens = [Token(atok_name(z), atok_value(z)) for z in atok.tokens]
+        # Inject parent/child links into nodes.
+        asttokens.util.visit_tree(atok.tree, previsit, postvisit)
+        # Create token.token_list for each token.
+        for node in asttokens.util.walk(atok.tree):
+            # Inject node into token.node_list
+            for ast_token in atok.get_tokens(node, include_extra=True):
+                i = ast_token.index
+                token = tokens[i]
+                token.node_list.append(node)
+        t4 = get_time()
         if 1:
             print(
-                f"     read: {t1-t0:5.3f} sec.\n"
-                f"      TOG: {t2-t1:5.3f} sec.\n"
-                f"asttokens: {t3-t2:5.3f} sec.")
+                f"       read: {t1-t0:5.3f} sec.\n"
+                f"        TOG: {t2-t1:5.3f} sec.\n"
+                f"asttokens 1: {t3-t2:5.3f} sec.\n"
+                f"asttokens 2: {t4-t3:5.3f} sec.\n")
         if 0:
             print('===== asttokens =====\n')
             for node in asttokens.util.walk(tree):
