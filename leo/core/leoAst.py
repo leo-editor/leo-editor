@@ -980,6 +980,7 @@ class BaseTest (unittest.TestCase):
             # self.create_links has already given the exception.
                 # g.trace('BaseTest.make_data: Exception in create_links...')
                 # print(e)
+            assert e
             return '', None, None
         if 0: # Sometimes useful.
             dump_tree(tokens, tree)
