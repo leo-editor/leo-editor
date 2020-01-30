@@ -1082,7 +1082,8 @@ class LeoBrowserApp(flx.PyComponent):
         p.v.setHeadString(h)
         undoType = 'Typing'
         undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
+        if not c.changed:
+            c.setChanged()
         dirtyVnodeList = p.setDirty()
         u.afterChangeNodeContents(p, undoType, undoData,
             dirtyVnodeList=dirtyVnodeList, inHead=True)

@@ -97,10 +97,13 @@ class TreePad_Scanner():
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            c.setChanged(changed)
+            if changed:
+                c.setChanged()
+            else:
+                c.clearChanged()
         else:
             parent.setDirty() # setDescendentsDirty=False)
-            c.setChanged(True)
+            c.setChanged()
         return ok
     #@-others
 #@-others
