@@ -118,6 +118,7 @@ class JS_Importer(Importer):
         '''
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
+        # div: '/' is an operator. regex: '/' starts a regex.
         expect = None # (None, 'regex', 'div')
         i = 0
         while i < len(s):
@@ -275,13 +276,6 @@ class JS_Importer(Importer):
                     if pattern.match(line[i:]) is not None:
                         return True
         return False
-
-        if 0: ### Old code
-            g.trace(prev_state, new_state, repr(line))
-            for pattern in self.func_patterns:
-                if pattern.search(line) is not None:
-                    return True
-            return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
