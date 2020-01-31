@@ -75,11 +75,10 @@ need to do so.
 #@-<< linescanner docstring >>
 #@+<< linescanner imports >>
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>
-# pylint: disable=wrong-import-order
-import leo.core.leoGlobals as g
 import io
 StringIO = io.StringIO
 import re
+import leo.core.leoGlobals as g
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
@@ -232,14 +231,13 @@ class Importer:
 
         if context:
             d = {
-                # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [('len', '"',    context == '"'),],
-                "'":    [('len', "'",    context == "'"),],
+                # key    kind      pattern  ends?
+                '\\':   [('len+1', '\\',    None),],
+                '"':    [('len',   '"',     context == '"'),],
+                "'":    [('len',   "'",     context == "'"),],
             }
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
-                    # Bug fix: 2016/12/04: the tuple contained block1, not block2.
         else:
             # Not in any context.
             d = {

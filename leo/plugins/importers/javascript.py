@@ -120,18 +120,11 @@ class JS_Importer(Importer):
         curlies, parens = prev_state.curlies, prev_state.parens
         expect = None # (None, 'regex', 'div')
         i = 0
-        # Special case for the start of a *file*
-        # if not context:
-            # i = g.skip_ws(s, i)
-            # m = self.start_pattern.match(s, i)
-            # if m:
-                # i += len(m.group(0))
-                # if g.match(s, i, '/'):
-                    # i = self.skip_regex(s, i)
         while i < len(s):
             assert expect is None, expect
             progress = i
             ch, s2 = s[i], s[i:i+2]
+            ### if "'function'" in s: g.trace(f"context: {context!r:5} ch: {ch!r}")
             if context == '/*':
                 if s2 == '*/':
                     i += 2
@@ -266,10 +259,29 @@ class JS_Importer(Importer):
         if new_state.level() <= prev_state.level():
             return False
         line = lines[i]
-        for pattern in self.func_patterns:
-            if pattern.search(line) is not None:
-                return True
+        # #1481. Partially repeat the logic of js_i.scan_line.
+        #        Don't look for patterns inside strings.
+        #        This could fail if one of the patterns is in a regex.
+        in_string = False
+        for i, ch in enumerate(line):
+            if in_string and ch == in_string:
+                in_string = None
+            elif in_string:
+                pass
+            elif ch in '"`\'':
+                in_string = ch
+            else:
+                for pattern in self.func_patterns:
+                    if pattern.match(line[i:]) is not None:
+                        return True
         return False
+
+        if 0: ### Old code
+            g.trace(prev_state, new_state, repr(line))
+            for pattern in self.func_patterns:
+                if pattern.search(line) is not None:
+                    return True
+            return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
