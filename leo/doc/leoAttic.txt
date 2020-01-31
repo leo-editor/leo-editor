@@ -265,397 +265,6 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
         # A directive line.
         result.append(s)
     return i
-#@+node:ekr.20180328065332.1: *3* Check conventions stuff
-#@+node:ekr.20171208042251.1: *4* @@button check-conventions (no longer used)
-g.cls()
-if c.changed: c.save()
-
-import imp
-import leo.core.leoCheck as leoCheck
-imp.reload(leoCheck)
-
-do_all = True
-do_string = True
-
-fails = []
-    # All of Leo's core files pass!
-fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
-<< define s >>
-<< old tests >>
-if do_all:
-    utils = leoCheck.ProjectUtils()
-    aList = utils.project_files('leo', force_all=False)
-    # g.printList(aList)
-    for fn in aList:
-        sfn = g.shortFileName(fn)
-        if sfn in fails:
-            print('===== skipping', sfn)
-        else:
-            print('==== fn', sfn)
-            leoCheck.ConventionChecker(c).check(fn=fn)
-elif do_string: # Test string s.
-    leoCheck.ConventionChecker(c).check(s=s)
-else: # Test an actual file.
-    leoCheck.ConventionChecker(c).check(fn=fn)
-#@+node:ekr.20171208105236.1: *5* << define s >>
-s = '''\
-class T:
-    
-    def __init__(self, tempNode):
-        self.tempNode = tempNode.copy()
-    
-    def setUp(self):
-        tempNode = self.tempNode
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
-'''
-
-s_ok2 = '''
-class Context(object):
-    def __init__ (self, parent_context):
-        self.parent_context = parent_context
-        if parent_context:
-            parent_context.inner_contexts_list.append(self)
-'''
-
-s_ok= '''
-class TC:
-    def __init__(self, c):
-        c.tc = self
-    def add_tag(self, p):
-        print(p.v) # AttributeError if p is a vnode.
-
-class Test:
-    def __init__(self,c):
-        self.c = c
-        self.tc = self.c.tc
-    def add_tag(self):
-        p = self.c.p
-        self.tc.add_tag(p.v) # WRONG: arg should be p.
-'''
-
-#@+node:ekr.20171210062719.1: *5* << old tests >>
-s_passes_1 = '''\
-class C1:
-        
-    def f1(self, p):
-        print(p.v)
-        
-    def f2(self, p):
-        self.f1(p.v) # WRONG
-
-'''
-
-
-s_1 = '''\
-class C1:
-
-    def __init__(self, c):
-        self.c = c
-        c.theTagController = self
-        
-    def add_tag(self, p):
-        pass
-
-class C2:
-
-    def oops(self, p):
-        c.tagController.add_tag(p.v,tag)
-            # WRONG: should be p.
-
-'''
-
-
-s_2 = '''\
-class TagController:
-
-    def __init__(self, c):
-        self.c = c
-        c.theTagController = self
-
-    def add_tag(self, p, tag):
-        # Will fail if p is a vnode
-        tags = set(p.v.u.get('__node_tags', set([])))
-
-class LeoTagWidget(QtWidgets.QWidget):
-
-    def __init__(self,c,parent=None):
-        self.c = c
-        self.tc = self.c.theTagController
-
-    def add_tag(self, event=None):
-        p = self.c.p
-        self.tc.add_tag(p.v,tag) # WRONG: should be p.
-
-'''
-#@+node:ekr.20160109150703.1: *4* class Stats (old & stupid, from leoCheck.py)
-class Stats(object):
-    '''A class containing global statistics & other data'''
-    @others
-#@+node:ekr.20160109150703.2: *5*  sd.ctor
-def __init__ (self):
-
-    # Files...
-    # self.completed_files = [] # Files handled by do_files.
-    # self.failed_files = [] # Files that could not be opened.
-    # self.files_list = [] # Files given by user or by import statements.
-    # self.module_names = [] # Module names corresponding to file names.
-
-    # Contexts.
-    # self.context_list = {}
-        # Keys are fully qualified context names; values are contexts.
-    # self.modules_dict = {}
-        # Keys are full file names; values are ModuleContext's.
-
-    # Statistics...
-    # self.n_chains = 0
-    self.n_contexts = 0
-    # self.n_errors = 0
-    self.n_lambdas = 0
-    self.n_modules = 0
-    # self.n_relinked_pointers = 0
-    # self.n_resolvable_names = 0
-    # self.n_resolved_contexts = 0
-    # self.n_relinked_names = 0
-
-    # Names...
-    self.n_attributes = 0
-    self.n_expressions = 0
-    self.n_ivars = 0
-    self.n_names = 0        # Number of symbol table entries.
-    self.n_del_names = 0
-    self.n_load_names = 0
-    self.n_param_names = 0
-    self.n_param_refs = 0
-    self.n_store_names = 0
-
-    # Statements...
-    self.n_assignments = 0
-    self.n_calls = 0
-    self.n_classes = 0
-    self.n_defs = 0
-    self.n_fors = 0
-    self.n_globals = 0
-    self.n_imports = 0
-    self.n_lambdas = 0
-    self.n_list_comps = 0
-    self.n_returns = 0
-    self.n_withs = 0
-
-    # Times...
-    self.parse_time = 0.0
-    self.pass1_time = 0.0
-    self.pass2_time = 0.0
-    self.total_time = 0.0
-#@+node:ekr.20160109150703.6: *5* sd.print_times
-def print_times (self):
-
-    sd = self
-    times = (
-        'parse_time',
-        'pass1_time',
-        # 'pass2_time', # the resolve_names pass is no longer used.
-        'total_time',
-    )
-    max_n = 5
-    for s in times:
-        max_n = max(max_n,len(s))
-    print('\nScan times...\n')
-    for s in times:
-        pad = ' ' * (max_n - len(s))
-        print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
-    print('')
-#@+node:ekr.20160109150703.7: *5* sd.print_stats
-def print_stats (self):
-
-    sd = self
-    table = (
-        '*', 'errors',
-
-        '*Contexts',
-        'classes','contexts','defs','modules',
-
-        '*Statements',
-        'assignments','calls','fors','globals','imports',
-        'lambdas','list_comps','returns','withs',
-
-        '*Names',
-        'attributes','del_names','load_names','names',
-        'param_names','param_refs','store_names',
-        #'resolvable_names','relinked_names','relinked_pointers',
-        # 'ivars',
-        # 'resolved_contexts',
-    )
-    max_n = 5
-    for s in table:
-        max_n = max(max_n,len(s))
-    print('\nStatistics...\n')
-    for s in table:
-        var = 'n_%s' % s
-        pad = ' ' * (max_n - len(s))
-        if s.startswith('*'):
-            if s[1:].strip():
-                print('\n%s\n' % s[1:])
-            else:
-                pass # print('')
-        else:
-            pad = ' ' * (max_n - len(s))
-            print('%s%s: %s' % (pad,s,getattr(sd,var)))
-    print('')
-#@+node:ekr.20171211054600.1: *4* OLD checkConventions (leoCheck.py)
-def checkConventions(c):
-    '''
-    A stand-alone version of the @button node that tested the
-    ConventionChecker class.
-    
-    The check-conventions command in checkerCommands.py saves c and reloads
-    the leoCheck module before calling this function.
-    '''
-    g.cls()
-    kind = 'all'
-    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
-    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
-    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
-    report_stats = True # and kind != 'production'
-    trace_fn = True
-    trace_skipped = False
-    fails_dict = {
-        'coverage': ['cmdline.py',],
-        'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
-        'leo': [], # All of Leo's core files pass.
-        'pylint': [
-            'base.py', 'classes.py', 'format.py',
-            'logging.py', 'python3.py', 'stdlib.py', 
-            'docparams.py', 'lint.py',
-        ],
-        'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
-    }
-    fails = fails_dict.get(project_name, [])
-    << define s >>
-    s = g.adjustTripleString(s, c.tab_width)
-    << old tests >>
-    stats = Stats()
-    if kind == 'production':
-        for p in g.findRootsWithPredicate(c, c.p, predicate=None):
-            x = ConventionChecker(c, stats)
-            x.check(fn=g.fullPath(c, p), trace_fn=trace_fn)
-    elif kind == 'all':
-        utils = ProjectUtils()
-        aList = utils.project_files(project_name, force_all=False)
-        if aList:
-            t1 = time.clock()
-            for fn in aList:
-                sfn = g.shortFileName(fn)
-                if sfn in fails or fn in fails:
-                    if trace_skipped: print('===== skipping', sfn)
-                else:
-                    ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
-            t2 = time.clock()
-            print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
-        else:
-            print('no files for project: %s' % (project_name))
-    elif kind == 'string':
-        ConventionChecker(c, stats).check(s=s)
-    else:
-        assert kind == 'file', repr(kind)
-        ConventionChecker(c, stats).check(fn=fn)
-    if report_stats:
-        stats.report()
-#@+node:ekr.20171211054736.2: *5* << define s >>
-s = '''\
-class T:
-    
-    def __init__(self, tempNode):
-        self.tempNode = tempNode.copy()
-    
-    def setUp(self):
-        tempNode = self.tempNode
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
-'''
-
-s_ok2 = '''
-class Context(object):
-    def __init__ (self, parent_context):
-        self.parent_context = parent_context
-        if parent_context:
-            parent_context.inner_contexts_list.append(self)
-'''
-assert s_ok2
-
-s_ok= '''
-class TC:
-    def __init__(self, c):
-        c.tc = self
-    def add_tag(self, p):
-        print(p.v) # AttributeError if p is a vnode.
-
-class Test:
-    def __init__(self,c):
-        self.c = c
-        self.tc = self.c.tc
-    def add_tag(self):
-        p = self.c.p
-        self.tc.add_tag(p.v) # WRONG: arg should be p.
-'''
-assert s_ok
-
-#@+node:ekr.20171211054736.3: *5* << old tests >>
-s_passes_1 = '''\
-class C1:
-        
-    def f1(self, p):
-        print(p.v)
-        
-    def f2(self, p):
-        self.f1(p.v) # WRONG
-
-'''
-assert s_passes_1
-
-s_1 = '''\
-class C1:
-
-    def __init__(self, c):
-        self.c = c
-        c.theTagController = self
-        
-    def add_tag(self, p):
-        pass
-
-class C2:
-
-    def oops(self, p):
-        c.tagController.add_tag(p.v,tag)
-            # WRONG: should be p.
-
-'''
-assert s_1
-
-
-s_2 = '''\
-class TagController:
-
-    def __init__(self, c):
-        self.c = c
-        c.theTagController = self
-
-    def add_tag(self, p, tag):
-        # Will fail if p is a vnode
-        tags = set(p.v.u.get('__node_tags', set([])))
-
-class LeoTagWidget(QtWidgets.QWidget):
-
-    def __init__(self,c,parent=None):
-        self.c = c
-        self.tc = self.c.theTagController
-
-    def add_tag(self, event=None):
-        p = self.c.p
-        self.tc.add_tag(p.v,tag) # WRONG: should be p.
-
-'''
-assert s_2
 #@+node:ekr.20180813063846.1: *3* Fast-draw branches
 #@+node:ekr.20180808075509.1: *4* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
@@ -8009,7 +7618,235 @@ self.assertEqual(u.untokenize(iter(tokens)), 'Hello ')
 self.assertEqual(u.encoding, 'utf-8')
 self.assertEqual(untokenize(iter(tokens)), b'Hello ')
     # *not* u.untokenize.
-#@+node:ekr.20200131102913.1: ** From leoCheck.py
+#@+node:ekr.20150605175037.1: ** leoCheck.py
+@first # -*- coding: utf-8 -*-
+"""Experimental code checking for Leo."""
+import leo.core.leoGlobals as g
+import leo.core.leoAst as leoAst
+if 0:
+    import importlib
+    importlib.reload(leoAst)
+import os
+@others
+@language python
+@tabwidth -4
+@pagewidth 70
+#@+node:ekr.20160109102859.1: *3* class Context
+class Context:
+    """
+    Context class (NEW)
+
+    Represents a binding context: module, class or def.
+
+    For any Ast context node N, N.cx is a reference to a Context object.
+    """
+    @others
+#@+node:ekr.20160109103533.1: *4* Context.ctor
+def __init__ (self, fn, kind, name, node, parent_context):
+    """Ctor for Context class."""
+    self.fn = fn
+    self.kind = kind
+    self.name = name
+    self.node = node
+    self.parent_context = parent_context
+    # Name Data...
+    self.defined_names = set()
+    self.global_names = set()
+    self.imported_names = set()
+    self.nonlocal_names = set() # To do.
+    self.st = {}
+        # Keys are names seen in this context, values are defining contexts.
+    self.referenced_names = set()
+    # Node lists. Entries are Ast nodes...
+    self.inner_contexts_list = []
+    self.minor_contexts_list = []
+    self.assignments_list = []
+    self.calls_list = []
+    self.classes_list = []
+    self.defs_list = []
+    self.expressions_list = []
+    self.returns_list = []
+    self.statements_list = []
+    self.yields_list = []
+    # Add this context to the inner context of the parent context.
+    if parent_context:
+        parent_context.inner_contexts_list.append(self)
+#@+node:ekr.20160109134527.1: *4* Context.define_name
+def define_name(self, name):
+    """Define a name in this context."""
+    self.defined_names.add(name)
+    if name in self.referenced_names:
+        self.referenced_names.remove(name)
+#@+node:ekr.20160109143040.1: *4* Context.global_name
+def global_name(self, name):
+    """Handle a global name in this context."""
+    self.global_names.add(name)
+    # Not yet.
+        # Both Python 2 and 3 generate SyntaxWarnings when a name
+        # is used before the corresponding global declarations.
+        # We can make the same assumpution here:
+        # give an *error* if an STE appears in this context for the name.
+        # The error indicates that scope resolution will give the wrong result.
+        # e = cx.st.d.get(name)
+        # if e:
+            # self.u.error(f"name {name!r} used prior to global declaration")
+            # # Add the name to the global_names set in *this* context.
+            # # cx.global_names.add(name)
+        # # Regardless of error, bind the name in *this* context,
+        # # using the STE from the module context.
+        # cx.st.d[name] = module_e
+#@+node:ekr.20160109144139.1: *4* Context.import_name
+def import_name(self, module, name):
+
+    if True and name == '*':
+        g.trace('From x import * not ready yet')
+    else:
+        self.imported_names.add(name)
+#@+node:ekr.20160109145526.1: *4* Context.reference_name
+def reference_name(self, name):
+
+    self.referenced_names.add(name)
+#@+node:ekr.20150525123715.1: *3* class ProjectUtils
+class ProjectUtils:
+    """A class to compute the files in a project."""
+    # To do: get project info from @data nodes.
+    @others
+#@+node:ekr.20150525123715.2: *4* pu.files_in_dir
+def files_in_dir(self, theDir, recursive=True, extList=None, excludeDirs=None):
+    """
+    Return a list of all Python files in the directory.
+    Include all descendants if recursiveFlag is True.
+    Include all file types if extList is None.
+    """
+    # import glob
+    import os
+    # if extList is None: extList = ['.py']
+    if excludeDirs is None: excludeDirs = []
+    result = []
+    if recursive:
+        for root, dirs, files in os.walk(theDir):
+            for z in files:
+                fn = g.os_path_finalize_join(root, z)
+                junk, ext = g.os_path_splitext(fn)
+                if not extList or ext in extList:
+                    result.append(fn)
+            if excludeDirs and dirs:
+                for z in dirs:
+                    if z in excludeDirs:
+                        dirs.remove(z)
+    else:
+        for ext in extList:
+            result.extend(g.glob_glob(f"{theDir}.*{ext}"))
+    return sorted(list(set(result)))
+#@+node:ekr.20150525123715.3: *4* pu.get_project_directory
+def get_project_directory(self, name):
+    # Ignore everything after the first space.
+    i = name.find(' ')
+    if i > -1:
+        name = name[: i].strip()
+    leo_path, junk = g.os_path_split(__file__)
+    d = {
+        # Change these paths as required for your system.
+        'coverage': r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+        'leo': r'C:\leo.repo\leo-editor\leo\core',
+        'lib2to3': r'C:\Python26\Lib\lib2to3',
+        'pylint': r'C:\Python26\Lib\site-packages\pylint',
+        'rope': r'C:\Python26\Lib\site-packages\rope-0.9.4-py2.6.egg\rope\base',
+        'test': g.os_path_finalize_join(g.app.loadDir, '..', 'test-proj'),
+    }
+    dir_ = d.get(name.lower())
+    if not dir_:
+        g.trace(f"bad project name: {name}")
+    if not g.os_path_exists(dir_):
+        g.trace('directory not found:' % (dir_))
+    return dir_ or ''
+#@+node:ekr.20171213071416.1: *4* pu.leo_core_files
+def leo_core_files(self):
+    """Return all the files in Leo's core."""
+    loadDir = g.app.loadDir
+    # Compute directories.
+    commands_dir = g.os_path_finalize_join(loadDir, '..', 'commands')
+    plugins_dir = g.os_path_finalize_join(loadDir, '..', 'plugins')
+    # Compute files.
+    core_files = g.glob_glob('%s%s%s' % (loadDir, os.sep, '*.py'))
+    for exclude in ['format-code.py',]:
+        core_files = [z for z in core_files if not z.endswith(exclude)]
+    command_files = g.glob_glob(f"{commands_dir}{os.sep}{'*.py'}")
+    plugins_files = g.glob_glob(f"{plugins_dir}{os.sep}{'qt_*.py'}")
+    # Compute the result.
+    files = core_files + command_files + plugins_files
+    files = [z for z in files if not z.endswith('__init__.py')]
+    return files
+#@+node:ekr.20150525123715.4: *4* pu.project_files
+@nobeautify
+
+def project_files(self, name, force_all=False):
+    """Return a list of all files in the named project."""
+    # Ignore everything after the first space.
+    i = name.find(' ')
+    if i > -1:
+        name = name[: i].strip()
+    leo_path, junk = g.os_path_split(__file__)
+    if name == 'leo':
+        # Get the leo files directly.
+        return self.leo_core_files()
+    # Import the appropriate module.
+    try:
+        m = importlib.import_module(name, name)
+        theDir = g.os_path_dirname(m.__file__)
+    except ImportError:
+        g.trace('package not found', name)
+        return []
+    d = {
+        'coverage': (['.py'], ['.bzr', 'htmlfiles']),
+        'lib2to3':  (['.py'], ['tests']),
+        'pylint':   (['.py'], ['.bzr', 'test']),
+        'rope':     (['.py'], ['.bzr']),
+    }
+    data = d.get(name.lower())
+    if not data:
+        g.trace(f"bad project name: {name}")
+        return []
+    extList, excludeDirs = data
+    files = self.files_in_dir(theDir,
+        recursive=True,
+        extList=extList,
+        excludeDirs=excludeDirs,
+    )
+    if files:
+        if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
+            return [files[0]]
+    if not files:
+        g.trace(f"no files found for {name} in {theDir}")
+    if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
+        return [files[0]]
+    return files
+#@+node:ekr.20171211163833.1: *3* class Stats
+class Stats:
+    """
+    A basic statistics class.  Use this way:
+        
+        stats = Stats()
+        stats.classes += 1
+        stats.defs += 1
+        stats.report()
+    """
+
+    d = {}
+    
+    def __getattr__(self, name):
+        return self.d.get(name, 0)
+        
+    def __setattr__(self, name, val):
+        self.d[name] = val
+        
+    def report(self):
+        if self.d:
+            n = max([len(key) for key in self.d])
+            for key, val in sorted(self.d.items()):
+                print('%*s: %s' % (n, key, val))
+        else:
+            print('no stats')
 #@+node:ekr.20150606024455.1: *3* class ShowDataTraverser (AstFullTraverser)
 class ShowDataTraverser(leoAst.AstFullTraverser):
     """
