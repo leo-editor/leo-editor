@@ -7,6 +7,7 @@
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
+import leo.core.leoAst as leoAst
 import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
 import os
@@ -1207,7 +1208,7 @@ class AtFile:
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
-    #@+node:ekr.20150602204757.1: *7* at.autoBeautify
+    #@+node:ekr.20150602204757.1: *7* at.autoBeautify (changed)
     def autoBeautify(self, p):
         """Auto beautify p's tree if allowed by settings and directives."""
         c = self.c
@@ -1217,7 +1218,7 @@ class AtFile:
             if leoBeautify.should_kill_beautify(p):
                 return
             if c.config.getBool('beautify-autobeautify'):
-                leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
+                leoAst.beautify_tree(event={'c': c, 'p': p.copy()})
         except Exception:
             g.es('unexpected exception')
             g.es_exception()

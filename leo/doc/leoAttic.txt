@@ -6665,7 +6665,7 @@ def blacken_tree(event):
         BlackCommand(c).blacken_tree(c.p, diff_flag=False)
     else:
         g.es_print('can not import black')
-#@+node:ekr.20150528131012.5: *4* beautify-tree
+#@+node:ekr.20150528131012.5: *4* beautify-tree (not used)
 @g.command('beautify-tree')
 @g.command('pretty-print-tree')
 def beautifyPythonTree(event):
@@ -9687,6 +9687,58 @@ def do_Return(self,node):
     cx = self.context
     cx.returns_list.append(node)
     cx.statements_list.append(node)
+#@+node:ekr.20171211055756.1: ** checkConventions (checkerCommands.py)
+@g.command('check-conventions')
+@g.command('cc')
+def checkConventions(event):
+    """Experimental script to test Leo's convensions."""
+    c = event.get('c')
+    if c:
+        if c.changed: c.save()
+        import importlib
+        import leo.core.leoCheck as leoCheck
+        importlib.reload(leoCheck)
+        leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20200131144935.1: ** pretty_print.py
+'''Customizes pretty printing.
+
+The plugin creates a do-nothing subclass of Leo's tokenizing pretty printer. To
+customize, simply override in this file the methods of the base prettyPrinter
+class in leoBeautify.py. You would typically want to override putNormalToken or
+its allies. Templates for these methods have been provided. You may, however,
+override any methods you like. You could even define your own class entirely,
+provided you implement the prettyPrintNode method.
+
+'''
+import leo.core.leoGlobals as g
+import leo.core.leoBeautify as leoBeautify
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20200131144935.2: *3* init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    ok = not g.app.unitTesting # Not for unit testing: modifies core.
+    if ok:
+        # Huh?
+        # leoBeautify.prettyPrinter = MyPrettyPrinter
+        g.plugin_signon(__name__)
+    return ok
+#@+node:ekr.20200131144935.3: *3* class MyPrettyPrinter
+class MyPrettyPrinter(leoBeautify.PythonTokenBeautifier):
+
+    '''An example subclass of Leo's PrettyPrinter class.
+
+    Not all the base class methods are shown here:
+    just the ones you are likely to want to override.'''
+
+    @others
+#@+node:ekr.20200131144935.4: *4* myPrettyPrinter.__init__
+def __init__ (self,c):
+    '''Ctor for MyPrettyPrinter class.'''
+    super().__init__(c)
+    self.tracing = False
+    # g.pr("Overriding class leoBeautifier.PythonTokenBeautifier")
 #@-all
 #@@nosearch
 #@-leo
