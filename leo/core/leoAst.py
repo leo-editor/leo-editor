@@ -270,7 +270,7 @@ if 1: # pragma: no cover
         p = event.get('p')
         if not c or not p:
             return
-        g.trace(p.h) ### To do.
+        g.es('@bool beautify-autobeautify is not yet supported')
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
