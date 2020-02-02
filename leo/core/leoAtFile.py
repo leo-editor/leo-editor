@@ -7,8 +7,6 @@
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
-import leo.core.leoAst as leoAst
-import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
 import os
 import re
@@ -1187,8 +1185,6 @@ class AtFile:
             at.writePathChanged(p)
         except IOError:
             return
-        if p.isDirty():
-            at.autoBeautify(p)
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
             at.asisWrite(p)
@@ -1208,20 +1204,7 @@ class AtFile:
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
-    #@+node:ekr.20150602204757.1: *7* at.autoBeautify (changed)
-    def autoBeautify(self, p):
-        """Auto beautify p's tree if allowed by settings and directives."""
-        c = self.c
-        try:
-            if not p.isDirty():
-                return
-            if leoBeautify.should_kill_beautify(p):
-                return
-            if c.config.getBool('beautify-autobeautify'):
-                leoAst.beautify_tree(event={'c': c, 'p': p.copy()})
-        except Exception:
-            g.es('unexpected exception')
-            g.es_exception()
+    
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''

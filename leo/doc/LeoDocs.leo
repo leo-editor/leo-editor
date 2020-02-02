@@ -940,7 +940,6 @@
 <v t="ekr.20170314092126.1"><vh>nodediff.py</vh></v>
 <v t="ekr.20101113063552.9425"><vh>outline_export.py</vh></v>
 <v t="ekr.20101113063552.9426"><vh>paste_as_headlines.py</vh></v>
-<v t="ekr.20101113063552.9427"><vh>pretty_print.py</vh></v>
 <v t="ekr.20101113063552.9428"><vh>quickMove.py</vh></v>
 <v t="ekr.20101113063552.9429"><vh>setHomeDirectory.py</vh></v>
 <v t="ekr.20170314092144.1"><vh>sftp.py</vh></v>
@@ -9918,9 +9917,7 @@ controller(c).run()
 ``paste_as_headlines.py``
     Creates new headlines from clipboard text.
 ``plugins_menu.py``
-    Creates a Plugins menu and adds all actives plugins to it.
-``pretty_print.py``
-    Customizes pretty printing.   
+    Creates a Plugins menu and adds all actives plugins to it.  
 ``projectwizard.py``
     Creates a wizard that creates @auto nodes.
 ``python_terminal.py``
@@ -10426,11 +10423,6 @@ Feedback on this plugin can be sent to::
 <t tx="ekr.20101113063552.9426">Creates new headlines from clipboard text.
 
 If the pasted text would be greater than 50 characters in length, the plugin truncates the headline to 50 characters and pastes the entire line into the body text of that node. Creates a "Paste as Headlines" option the Edit menu directly under the existing Paste option.
-
-</t>
-<t tx="ekr.20101113063552.9427">Customizes pretty printing.
-
-The plugin creates a do-nothing subclass of the default pretty printer. To customize, simply override in this file the methods of the base prettyPrinter class in leoCommands.py. You would typically want to override putNormalToken or its allies. Templates for these methods have been provided. You may, however, override any methods you like. You could even define your own class entirely, provided you implement the prettyPrintNode method.
 
 </t>
 <t tx="ekr.20101113063552.9428">Creates buttons to move nodes quickly to other nodes.

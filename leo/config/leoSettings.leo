@@ -522,7 +522,6 @@
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20190926110021.1"><vh>@bool beautify-autobeautify = False</vh></v>
 <v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
 <v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
@@ -11791,7 +11790,6 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
 <t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
 <t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
-<t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
 <t tx="ekr.20191023140453.1"></t>
