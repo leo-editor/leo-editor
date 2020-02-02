@@ -535,6 +535,11 @@ class Importer:
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
+            # g.trace(new_state.level(), f"{new_state.level() < top.state.level():1}", repr(line))
+            g.trace('%d %d %s' % (
+                self.starts_block(i, lines, new_state, prev_state),
+                self.ends_block(line, new_state, prev_state, stack),
+                line.rstrip()))
             if self.skip > 0:
                 self.skip -= 1
             elif self.is_ws_line(line):
@@ -612,6 +617,7 @@ class Importer:
         '''
         Generate the ref line. Return the headline.
         '''
+        g.trace('' if  target.ref_flag else '@others')
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if self.gen_refs:

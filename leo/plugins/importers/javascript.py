@@ -29,6 +29,7 @@ class JS_Importer(Importer):
         All substages **must** use the API for setting body text. Changing
         p.b directly will cause asserts to fail later in i.finish().
         '''
+        return ###
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         self.remove_singleton_at_others(parent)
@@ -67,6 +68,7 @@ class JS_Importer(Importer):
                     lines = lines[:i] + self.get_lines(child) + lines[i+1:]
                     self.set_lines(p, lines)
                     self.clear_lines(child) # Delete child later. Is this enough???
+                    g.trace('Clear', child.h)
         return found
         
                 
@@ -74,6 +76,7 @@ class JS_Importer(Importer):
     def remove_organizer_nodes(self, parent):
         '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
         # Careful: Restart this loop whenever we find an organizer.
+        g.trace(parent.h)
         found = True
         while found:
             found = False
@@ -259,11 +262,11 @@ class JS_Importer(Importer):
         '''True if the new state starts a block.'''
         if new_state.level() <= prev_state.level():
             return False
-        line = lines[i]
         # #1481. Partially repeat the logic of js_i.scan_line.
         #        Don't look for patterns inside strings.
         #        This could fail if one of the patterns is in a regex.
         in_string = False
+        line = lines[i]
         for i, ch in enumerate(line):
             if in_string and ch == in_string:
                 in_string = None
@@ -274,8 +277,16 @@ class JS_Importer(Importer):
             else:
                 for pattern in self.func_patterns:
                     if pattern.match(line[i:]) is not None:
+                        ### g.trace(repr(line))
                         return True
         return False
+    #@+node:ekr.20200131193217.1: *3* js_i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        ### g.trace(f"{new_state.level() < top.state.level():1}") # , {line!r}")
+        return new_state.level() < top.state.level()
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
