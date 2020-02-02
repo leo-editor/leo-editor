@@ -1185,9 +1185,6 @@ class AtFile:
             at.writePathChanged(p)
         except IOError:
             return
-        ### Auto-beautify is no longer supported.
-            # if p.isDirty():
-                # at.autoBeautify(p)
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
             at.asisWrite(p)
