@@ -29,7 +29,6 @@ class JS_Importer(Importer):
         All substages **must** use the API for setting body text. Changing
         p.b directly will cause asserts to fail later in i.finish().
         '''
-        return ###
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         self.remove_singleton_at_others(parent)
@@ -68,15 +67,13 @@ class JS_Importer(Importer):
                     lines = lines[:i] + self.get_lines(child) + lines[i+1:]
                     self.set_lines(p, lines)
                     self.clear_lines(child) # Delete child later. Is this enough???
-                    g.trace('Clear', child.h)
+                    ### g.trace('Clear', child.h)
         return found
-        
-                
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
         '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
         # Careful: Restart this loop whenever we find an organizer.
-        g.trace(parent.h)
+        ### g.trace(parent.h)
         found = True
         while found:
             found = False
