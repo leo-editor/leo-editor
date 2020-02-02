@@ -31,25 +31,26 @@ class JS_Importer(Importer):
         '''
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
-        self.remove_singleton_at_others(parent)
-        self.unindent_all_nodes(parent)
-        #
-        # This sub-pass must follow unindent_all_nodes.
-        self.promote_trailing_underindented_lines(parent)
-        self.promote_last_lines(parent)
-        #
-        # Usually the last sub-pass, but not in javascript.
-        self.delete_all_empty_nodes(parent)
-        #
-        # Must follow delete_all_empty_nodes.
-        self.remove_organizer_nodes(parent)
-        # 
-        # Remove up to 5 more levels of @others.
-        for i in range(5):
-            if self.remove_singleton_at_others(parent):
-                self.remove_organizer_nodes(parent)
-            else:
-                break
+        if 0:
+            self.remove_singleton_at_others(parent)
+            self.unindent_all_nodes(parent)
+            #
+            # This sub-pass must follow unindent_all_nodes.
+            self.promote_trailing_underindented_lines(parent)
+            self.promote_last_lines(parent)
+            #
+            # Usually the last sub-pass, but not in javascript.
+            self.delete_all_empty_nodes(parent)
+            #
+            # Must follow delete_all_empty_nodes.
+            self.remove_organizer_nodes(parent)
+            # 
+            # Remove up to 5 more levels of @others.
+            for i in range(5):
+                if self.remove_singleton_at_others(parent):
+                    self.remove_organizer_nodes(parent)
+                else:
+                    break
     #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
     at_others = re.compile(r'^\s*@others\b')
 
@@ -82,6 +83,15 @@ class JS_Importer(Importer):
                     p.promote()
                     p.doDelete()
                     found = True # Restart the loop.
+    #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
+    def clean_all_nodes(self, parent):
+        c = self.c
+        g.trace(parent.h)
+        for p in parent.subtree():
+            lines = self.get_lines(p)
+            s = ''.join(lines)
+            s = g.adjustTripleString(s, tab_width=c.tab_width)
+            self.set_lines(p, g.splitLines(s))
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
     #@@nobeautify
 
@@ -251,8 +261,11 @@ class JS_Importer(Importer):
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
     func_patterns = [
         re.compile(r'\)\s*=>\s*\{'),
-        re.compile(r'\bclass\b'),
-        re.compile(r'\bfunction\b'),
+        # re.compile(r'\bclass\b'),
+        re.compile(r'^\s*class\b'),
+        # re.compile(r'\bfunction\b'),
+        # re.compile(r'^\s*(^function\b)|([(]+\s*function\b)|(.*?[(=,]\s*\(?\s*function\b)')
+        re.compile(r'^\s*(^function\b)|(.*?[(=,]\s*\(?\s*function\b)')
     ]
 
     def starts_block(self, i, lines, new_state, prev_state):
