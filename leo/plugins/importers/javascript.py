@@ -458,8 +458,8 @@ class JS_ScanState:
 #@+node:ekr.20200131070055.1: ** class TestJSImporter
 class TestJSImporter(unittest.TestCase):
     #@+others
-    #@+node:ekr.20200202093420.1: *3* test_move_trailing_comments
-    def test_move_trailing_comments(self):
+    #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
+    def test_get_trailing_comments(self):
         
         table = (
             # Test 1
