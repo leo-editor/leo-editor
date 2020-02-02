@@ -473,6 +473,20 @@ class TestJSImporter(unittest.TestCase):
     /* comment 1
      * comment 2
      */""", 3),
+     
+            # Test 3
+            ("""\
+    head
+    /* comment 1
+     * comment 2
+     */
+    tail""", 0), # no tail
+
+            # Test 4
+            ("""\
+    head
+    // comment
+    tail""", 0), # no tail
 
     ) # End table.
         for s, expected_length in table:
@@ -480,7 +494,7 @@ class TestJSImporter(unittest.TestCase):
             s = g.adjustTripleString(s, -4)
             lines = g.splitLines(s)
             head, tail = x.get_trailing_comments(lines)
-            expected_lines = lines[-expected_length:]
+            expected_lines = lines[-expected_length:] if expected_length else []
             assert tail == expected_lines , (repr(tail), repr(expected_lines))
     #@-others
 #@+node:ekr.20200131110322.2: ** JsLex (not used yet)
