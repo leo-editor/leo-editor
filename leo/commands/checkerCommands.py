@@ -22,18 +22,6 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
-#@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
-@g.command('check-conventions')
-@g.command('cc')
-def checkConventions(event):
-    """Experimental script to test Leo's convensions."""
-    c = event.get('c')
-    if c:
-        if c.changed: c.save()
-        import importlib
-        import leo.core.leoCheck as leoCheck
-        importlib.reload(leoCheck)
-        leoCheck.ConventionChecker(c).check()
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event):

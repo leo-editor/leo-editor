@@ -2695,7 +2695,9 @@ class TestTokens (BaseTest):
         - Inject parent/child links into ast nodes. 
         - Inject many-to-many links between tokens and ast nodes.
         """
-        import asttokens, ast, token as token_module
+        import ast
+        import asttokens
+        import token as token_module
         # Define Token class and helper functions.
         #@+others
         #@+node:ekr.20200122170101.3: *5* class Token
