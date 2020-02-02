@@ -127,13 +127,11 @@ class JS_Importer(Importer):
                     in_block_comment = False
             elif s.startswith('/*'):
                 in_block_comment = True
-                assert not tail
                 head = lines[:i]
-                tail.append(line)
+                tail = [line]
             elif s.startswith('//'):
-                assert not tail
                 head = lines[:i]
-                tail.append(line)
+                tail = [line]
             elif s: # Clear any previous comments.
                 head = lines
                 tail = []
