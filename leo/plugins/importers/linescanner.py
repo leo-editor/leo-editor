@@ -100,11 +100,13 @@ class Importer:
         strict=False,
         **kwargs
     ):
-        '''Importer.__init__.'''
+        '''
+        Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
+        '''
         # Copies of args...
         self.importCommands = ic = importCommands
-        self.c = c = ic.c
-        self.encoding = ic.encoding
+        self.c = c = ic and ic.c
+        self.encoding = ic and ic.encoding or 'utf-8'
         self.gen_refs = gen_refs
         self.language = language or name
             # For the @language directive.
@@ -120,15 +122,19 @@ class Importer:
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
-        self.tree_type = ic.treeType # '@root', '@file', etc.
+        self.tree_type = ic.treeType if c else None # '@root', '@file', etc.
         #
         # Constants...
-        data = g.set_delims_from_language(self.name)
-        self.single_comment, self.block1, self.block2 = data
-        self.escape = c.atFileCommands.underindentEscapeString
-        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
+        if ic:
+            data = g.set_delims_from_language(self.name)
+            self.single_comment, self.block1, self.block2 = data
+        else:
+            self.single_comment, self.block1, self.block2 = '//', '/*', '*/' # Javascript.
+        if ic:
+            self.escape = c.atFileCommands.underindentEscapeString
+            self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
             # m.group(1) is the unindent value.
-        self.escape_pattern = re.compile(self.escape_string)
+            self.escape_pattern = re.compile(self.escape_string)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0 # Must be set in run, using self.root.
@@ -139,7 +145,8 @@ class Importer:
         #
         # State vars.
         self.errors = 0
-        ic.errors = 0 # Required.
+        if ic:
+            ic.errors = 0 # Required.
         self.parse_body = False
         self.refs_dict = {}
             # Keys are headlines. Values are disambiguating number.
@@ -149,6 +156,8 @@ class Importer:
 
     def reloadSettings(self):
         c = self.c
+        if not c:
+            return
         c.registerReloadSettings(self)
         # self.at_auto_separate_non_def_nodes = False
         self.at_auto_warns_about_leading_whitespace = \

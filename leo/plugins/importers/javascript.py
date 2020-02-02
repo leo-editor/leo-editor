@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18144: * @file importers/javascript.py
 '''The @auto importer for JavaScript.'''
 import re
+import unittest
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
@@ -30,9 +31,10 @@ class JS_Importer(Importer):
         p.b directly will cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
+        self.remove_singleton_at_others(parent)
         self.clean_all_nodes(parent)
+        self.move_trailing_comments(parent)
         if 0:
-            self.remove_singleton_at_others(parent)
             self.unindent_all_nodes(parent)
             #
             # This sub-pass must follow unindent_all_nodes.
@@ -68,7 +70,7 @@ class JS_Importer(Importer):
                     lines = lines[:i] + self.get_lines(child) + lines[i+1:]
                     self.set_lines(p, lines)
                     self.clear_lines(child) # Delete child later. Is this enough???
-                    ### g.trace('Clear', child.h)
+                    # g.trace('Clear', child.h)
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
@@ -92,6 +94,50 @@ class JS_Importer(Importer):
             s = ''.join(lines)
             s = g.adjustTripleString(s, tab_width=c.tab_width)
             self.set_lines(p, g.splitLines(s))
+    #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper
+    def move_trailing_comments(self, parent):
+        """Move all trailing comments to the start of the next node."""
+        for p in parent.subtree():
+            next = p.threadNext()
+            if not next:
+                break
+            lines = self.get_lines(p)
+            head_lines, tail_lines = self.get_trailing_comments(lines)
+            if tail_lines:
+                self.set_lines(p, head_lines)
+                next_lines = self.get_lines(next)
+                self.set_lines(next, tail_lines + next_lines)
+    #@+node:ekr.20200202092332.1: *5* js_i.get_trailing_comments
+    def get_trailing_comments(self, lines):
+        """
+        Return the trailing comments of p.
+        Return (head_lines, tail_lines).
+        """
+        s = ''.join(lines)
+        head, tail = [], []
+        if not s.strip:
+            return head, tail
+        in_block_comment = False
+        head = lines
+        for i, line in enumerate(lines):
+            s = line.strip()
+            if in_block_comment:
+                tail.append(line)
+                if s.startswith('*/'):
+                    in_block_comment = False
+            elif s.startswith('/*'):
+                in_block_comment = True
+                assert not tail
+                head = lines[:i]
+                tail.append(line)
+            elif s.startswith('//'):
+                assert not tail
+                head = lines[:i]
+                tail.append(line)
+            elif s: # Clear any previous comments.
+                head = lines
+                tail = []
+        return head, tail
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
     #@@nobeautify
 
@@ -409,6 +455,34 @@ class JS_ScanState:
 
     #@-others
 
+#@+node:ekr.20200131070055.1: ** class TestJSImporter
+class TestJSImporter(unittest.TestCase):
+    #@+others
+    #@+node:ekr.20200202093420.1: *3* test_move_trailing_comments
+    def test_move_trailing_comments(self):
+        
+        table = (
+            # Test 1
+            ( """\
+    head
+    // tail""", 1),
+
+            # Test 2
+            ("""\
+    head
+    /* comment 1
+     * comment 2
+     */""", 3),
+
+    ) # End table.
+        for s, expected_length in table:
+            x = JS_Importer(None)
+            s = g.adjustTripleString(s, -4)
+            lines = g.splitLines(s)
+            head, tail = x.get_trailing_comments(lines)
+            expected_lines = lines[-expected_length:]
+            assert tail == expected_lines , (repr(tail), repr(expected_lines))
+    #@-others
 #@+node:ekr.20200131110322.2: ** JsLex (not used yet)
 # JsLex: a lexer for Javascript
 #
