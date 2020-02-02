@@ -98,6 +98,9 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
+v1, v2, junk, junk, junk = sys.version_info
+isPy38 = (v1, v2) >= (3, 8)
+# print('isPy38', isPy38)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -3784,7 +3787,9 @@ class TokenOrderGenerator:
     def do_AsyncFor(self, node):
         
         # The def line...
-        yield from self.gen_token('async', 'async')
+        # Py 3.8 changes the kind of token.
+        async_token_type = 'async' if isPy38 else 'name'
+        yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
         yield from self.gen_name('in')
