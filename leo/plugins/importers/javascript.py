@@ -103,7 +103,6 @@ class JS_Importer(Importer):
                 lines = self.get_lines(p)
                 head_lines, tail_lines = self.get_trailing_comments(lines)
                 if tail_lines:
-                    g.trace(p.h, next.h)
                     self.set_lines(p, head_lines)
                     next_lines = self.get_lines(next)
                     self.set_lines(next, tail_lines + next_lines)
