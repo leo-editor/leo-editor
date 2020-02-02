@@ -98,6 +98,9 @@ import tokenize
 import traceback
 import unittest
 #@-<< imports >>
+v1, v2, junk, junk, junk = sys.version_info
+isPy38 = (v1, v2) >= (3, 8)
+# print('isPy38', isPy38)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -1067,7 +1070,7 @@ class BaseTest (unittest.TestCase):
             g.trace(f"Exception...\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
             print(e)
-            # g.es_exception()
+            g.es_exception()
             raise
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, contents, tokens, tree, filename=None):
@@ -3325,7 +3328,8 @@ class TokenOrderGenerator:
                 yield from self.gen(z)
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        yield from self.gen_token('async', 'async')
+        async_token_type = 'async' if isPy38 else 'name'
+        yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('def')
         yield from self.gen_name(node.name) # A string
         yield from self.gen_op('(')
@@ -3794,7 +3798,9 @@ class TokenOrderGenerator:
     def do_AsyncFor(self, node):
         
         # The def line...
-        yield from self.gen_token('async', 'async')
+        # Py 3.8 changes the kind of token.
+        async_token_type = 'async' if isPy38 else 'name'
+        yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
         yield from self.gen_name('in')
@@ -3812,7 +3818,8 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
         
-        yield from self.gen_token('async', 'async')
+        async_token_type = 'async' if isPy38 else 'name'
+        yield from self.gen_token(async_token_type, 'async')
         yield from self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
@@ -3830,7 +3837,8 @@ class TokenOrderGenerator:
     def do_Await(self, node):
         
         #'await %s\n'
-        yield from self.gen_token('await', 'await')
+        async_token_type = 'await' if isPy38 else 'name'
+        yield from self.gen_token(async_token_type, 'await')
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.68: *6* tog.Break
     def do_Break(self, node):
