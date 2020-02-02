@@ -85,8 +85,8 @@ class JS_Importer(Importer):
                     found = True # Restart the loop.
     #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
     def clean_all_nodes(self, parent):
+        """Remove common leading whitespace from all nodes."""
         c = self.c
-        g.trace(parent.h)
         for p in parent.subtree():
             lines = self.get_lines(p)
             s = ''.join(lines)
