@@ -98,15 +98,15 @@ class JS_Importer(Importer):
     def move_trailing_comments(self, parent):
         """Move all trailing comments to the start of the next node."""
         for p in parent.subtree():
-            next = p.threadNext()
-            if not next:
-                break
-            lines = self.get_lines(p)
-            head_lines, tail_lines = self.get_trailing_comments(lines)
-            if tail_lines:
-                self.set_lines(p, head_lines)
-                next_lines = self.get_lines(next)
-                self.set_lines(next, tail_lines + next_lines)
+            next = p.next()
+            if next:
+                lines = self.get_lines(p)
+                head_lines, tail_lines = self.get_trailing_comments(lines)
+                if tail_lines:
+                    g.trace(p.h, next.h)
+                    self.set_lines(p, head_lines)
+                    next_lines = self.get_lines(next)
+                    self.set_lines(next, tail_lines + next_lines)
     #@+node:ekr.20200202092332.1: *5* js_i.get_trailing_comments
     def get_trailing_comments(self, lines):
         """
