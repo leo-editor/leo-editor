@@ -452,49 +452,7 @@ class JS_ScanState:
 
     #@-others
 
-#@+node:ekr.20200131070055.1: ** class TestJSImporter
-class TestJSImporter(unittest.TestCase):
-    #@+others
-    #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
-    def test_get_trailing_comments(self):
-        
-        table = (
-            # Test 1
-            ( """\
-    head
-    // tail""", 1),
-
-            # Test 2
-            ("""\
-    head
-    /* comment 1
-     * comment 2
-     */""", 3),
-     
-            # Test 3
-            ("""\
-    head
-    /* comment 1
-     * comment 2
-     */
-    tail""", 0), # no tail
-
-            # Test 4
-            ("""\
-    head
-    // comment
-    tail""", 0), # no tail
-
-    ) # End table.
-        for s, expected_length in table:
-            x = JS_Importer(None)
-            s = g.adjustTripleString(s, -4)
-            lines = g.splitLines(s)
-            head, tail = x.get_trailing_comments(lines)
-            expected_lines = lines[-expected_length:] if expected_length else []
-            assert tail == expected_lines , (repr(tail), repr(expected_lines))
-    #@-others
-#@+node:ekr.20200131110322.2: ** JsLex (not used yet)
+#@+node:ekr.20200131110322.2: ** class JsLexer
 # JsLex: a lexer for Javascript
 #
 # Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
@@ -520,15 +478,13 @@ class Lexer:
     def __init__(self, states, first):
         self.regexes = {}
         self.toks = {}
-
         for state, rules in states.items():
             parts = []
             for tok in rules:
                 groupid = "t%d" % tok.id
                 self.toks[groupid] = tok
                 parts.append("(?P<%s>%s)" % (groupid, tok.regex))
-            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE)
-
+            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE|re.UNICODE)
         self.state = first
 
     #@+node:ekr.20200131110322.9: *4* Lexer.lex
@@ -536,29 +492,25 @@ class Lexer:
         """Lexically analyze `text`.
 
         Yields pairs (`name`, `tokentext`).
-
         """
         end = len(text)
         state = self.state
         regexes = self.regexes
         toks = self.toks
         start = 0
-
         while start < end:
             for match in regexes[state].finditer(text, start):
+                # g.trace(state, start, text, match)
+                # g.printObj(regexes[state])
                 name = match.lastgroup
                 tok = toks[name]
                 toktext = match.group(name)
                 start += len(toktext)
                 yield (tok.name, toktext)
-
                 if tok.next:
                     state = tok.next
                     break
-
         self.state = state
-
-
     #@-others
 #@+node:ekr.20200131110322.6: *3* function: literals
 def literals(choices, prefix="", suffix=""):
@@ -584,7 +536,7 @@ class JsLexer(Lexer):
     """
     
     #@+<< constants >>
-    #@+node:ekr.20200131190707.1: *4* << constants >>
+    #@+node:ekr.20200131190707.1: *4* << constants >> (JsLexer)
 
     # Because these tokens are matched as alternatives in a regex, longer possibilities
     # must appear in the list before shorter ones, for example, '>>' before '>'.
@@ -598,11 +550,14 @@ class JsLexer(Lexer):
     # A useful explanation of automatic semicolon insertion is at
     # http://inimino.org/~inimino/blog/javascript_semicolons
 
+    # See https://stackoverflow.com/questions/6314614/match-any-unicode-letter
+
     both_before = [
         Tok("comment",      r"/\*(.|\n)*?\*/"),
         Tok("linecomment",  r"//.*?$"),
         Tok("ws",           r"\s+"),
         Tok("keyword",      literals("""
+                                async await
                                 break case catch class const continue debugger
                                 default delete do else enum export extends
                                 finally for function if import in instanceof new
@@ -610,10 +565,13 @@ class JsLexer(Lexer):
                                 void while with
                                 """, suffix=r"\b"), next='reg'),
         Tok("reserved",     literals("null true false", suffix=r"\b"), next='div'),
-        Tok("id",           r"""
-                            ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
-                            ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
-                            """, next='div'),
+        # EKR: This works because all patterns are compiled with the re.UNICODE flag.
+        Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
+        # Old...
+        # Tok("id",           r"""
+                            # ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
+                            # ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
+                            # """, next='div'),
         Tok("hnum",         r"0[xX][0-9a-fA-F]+", next='div'),
         Tok("onum",         r"0[0-7]+"),
         Tok("dnum",         r"""
@@ -720,6 +678,63 @@ def js_to_c_for_gettext(js):
             tok = tok.replace("\\", "U")
         c.append(tok)
     return ''.join(c)
+#@+node:ekr.20200131070055.1: ** class TestJSImporter
+class TestJSImporter(unittest.TestCase):
+    #@+others
+    #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
+    def test_get_trailing_comments(self):
+        
+        table = (
+            # Test 1
+            ( """\
+    head
+    // tail""", 1),
+
+            # Test 2
+            ("""\
+    head
+    /* comment 1
+     * comment 2
+     */""", 3),
+     
+            # Test 3
+            ("""\
+    head
+    /* comment 1
+     * comment 2
+     */
+    tail""", 0), # no tail
+
+            # Test 4
+            ("""\
+    head
+    // comment
+    tail""", 0), # no tail
+
+    ) # End table.
+        for s, expected_length in table:
+            x = JS_Importer(None)
+            s = g.adjustTripleString(s, -4)
+            lines = g.splitLines(s)
+            head, tail = x.get_trailing_comments(lines)
+            expected_lines = lines[-expected_length:] if expected_length else []
+            assert tail == expected_lines , (repr(tail), repr(expected_lines))
+    #@+node:ekr.20200202104932.1: *3* test_JsLex
+    def test_JsLex(self):
+        
+        table = (
+            ('id', ('f_Á', '$', 'A1', 'abc')),
+            ('keyword', ('async', 'await', 'if')),
+            ('punct', ('(', ')', '{', '}', ',', ':', ';')),
+            # Fails
+            # ('num', ('9', '2')),
+        )
+        for kind, data in table:
+            for contents in data:
+                lexer = JsLexer()
+                for name, tok in lexer.lex(contents):
+                    assert name == kind, f"{name!s} {kind!s} {tok!r} {contents}"
+    #@-others
 #@-others
 importer_dict = {
     'class': JS_Importer,
