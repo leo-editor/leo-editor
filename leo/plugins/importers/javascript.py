@@ -94,7 +94,7 @@ class JS_Importer(Importer):
             s = ''.join(lines)
             s = g.adjustTripleString(s, tab_width=c.tab_width)
             self.set_lines(p, g.splitLines(s))
-    #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper
+    #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper (new)
     def move_trailing_comments(self, parent):
         """Move all trailing comments to the start of the next node."""
         for p in parent.subtree():
