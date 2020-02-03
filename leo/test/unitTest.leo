@@ -321,13 +321,13 @@
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
-<v t="ekr.20191219051321.68"><vh>@@file @test python top-level later decl</vh>
-<v t="ekr.20191219051321.69"><vh>Declarations</vh></v>
-<v t="ekr.20191219051321.70"><vh>merge_value</vh></v>
-<v t="ekr.20191219051321.71"><vh>class MainDisplay(object)</vh>
-<v t="ekr.20191219051321.72"><vh>save_file</vh></v>
+<v t="ekr.20200203073552.210"><vh>@@file @test python top-level later decl</vh>
+<v t="ekr.20200203073552.211"><vh>Declarations</vh></v>
+<v t="ekr.20200203073552.212"><vh>merge_value</vh></v>
+<v t="ekr.20200203073552.213"><vh>class MainDisplay(object)</vh>
+<v t="ekr.20200203073552.214"><vh>save_file</vh></v>
 </v>
-<v t="ekr.20191219051321.73"><vh>retab</vh></v>
+<v t="ekr.20200203073552.215"><vh>retab</vh></v>
 </v>
 </v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
@@ -810,8 +810,6 @@
 <v t="ekr.20181020063007.3"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20181020063656.1"><vh>@test importers.dart.clean_headline</vh></v>
-<v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
-<v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20181020064529.1"><vh>@test importers.markdown.is_hash</vh></v>
 <v t="ekr.20181020071052.1"><vh>@test importers.markdown.is_underline</vh></v>
 <v t="ekr.20181020072106.1"><vh>@test importers.pascal methods</vh></v>
@@ -3990,33 +3988,6 @@ The next section is empty. It must not be deleted.
 Section 3, line 1
 
 '''
-</t>
-<t tx="ekr.20161011052016.1">import importlib
-import leo.plugins.importers.javascript as js
-importlib.reload(js)
-table = (
-    # base  result          s
-    (None, (0, 0, '/*'),    r'/* abc'),
-    (None, (0, 0, ''),      r'a + b // /*'),
-    (None, (0, 1, ''),      r'(function'),
-    (None, (1, 1, ''),      r'(function(a) {'),
-    (None, (0, 0, ''),      r'var x = /abc/'),
-    (None, (0, 0, ''),      r'var x = /a"c/'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
-    (None, (0, 1, ''),      r'var x = (0,'),
-)
-for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands)
-    prev_state = js.JS_ScanState()
-    new_state = importer.scan_line(s, prev_state)
-    curlies, parens, context = result
-    ok = (
-        new_state.curlies == curlies and
-        new_state.parens == parens and
-        new_state.context == context)
-    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
 </t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
@@ -9041,27 +9012,6 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20170407065952.1">import importlib
-import leo.plugins.importers.javascript as js
-importlib.reload(js)
-importer = js.JS_Importer(c.importCommands)
-pattern = importer.op_pattern
-table = (
-    '++', '--', '&amp;&amp;', '||', '~', '&gt;&gt;', '&lt;&lt;', 
-    # '&gt;&gt;=',  '&lt;&lt;=',
-    # '&gt;&gt;&gt;', '&gt;&gt;&gt;=',
-    # '&lt;&lt;&lt;', '&lt;&lt;&lt;=',
-    '&lt;', '&lt;=', '&gt;', '&gt;=',
-    '+', '+=', '-', '-=',
-    '/', '/=', '*', '*=', 
-    '%', '%=', '&amp;', '&amp;=',
-    '|', '|=',
-)
-for s in table:
-    m = pattern.match(s)
-    assert m, s
-    assert m.group(0) == s, (s, m.group(0))
-</t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
 html
@@ -9892,7 +9842,7 @@ finally:
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
-<t tx="ekr.20191219051321.68">#!/usr/bin/env python3
+<t tx="ekr.20200203073552.210">#!/usr/bin/env python3
 
 @others
 if __name__=="__main__":
@@ -9900,29 +9850,29 @@ if __name__=="__main__":
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20191219051321.69">import os
+<t tx="ekr.20200203073552.211">import os
 import re
 
 </t>
-<t tx="ekr.20191219051321.70">def merge_value(v1, v2):
+<t tx="ekr.20200203073552.212">def merge_value(v1, v2):
     return v
 
 </t>
-<t tx="ekr.20191219051321.71">class MainDisplay(object):
+<t tx="ekr.20200203073552.213">class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
 </t>
-<t tx="ekr.20191219051321.72">def save_file(self):
+<t tx="ekr.20200203073552.214">def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
         for newline in newlines:
             f.write(newline)
 
-# This line should be included at the end of the class node.
+\\-4.# This line should be included at the end of the class node.
 </t>
-<t tx="ekr.20191219051321.73">def retab(s, tabsize):
+<t tx="ekr.20200203073552.215">def retab(s, tabsize):
     return ''.join(pieces)
 
 </t>
