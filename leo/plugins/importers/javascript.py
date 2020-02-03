@@ -631,6 +631,8 @@ importer_dict = {
     'class': JS_Importer,
     'extensions': ['.js',],
 }
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@-leo
