@@ -135,203 +135,69 @@ class JS_Importer(Importer):
                 head = lines
                 tail = []
         return head, tail
-    #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
-    #@@nobeautify
-
-    op_table = [
-        # Longest first in each line.
-        # '>>>', '>>>=',
-        # '<<<', '<<<=',
-        # '>>=',  '<<=',
-        '>>', '>=', '>',
-        '<<', '<=', '<',
-        '++', '+=', '+',
-        '--', '-=', '-',
-              '*=', '*',
-              '/=', '/',
-              '%=', '%',
-        '&&', '&=', '&',
-        '||', '|=', '|',
-                    '~',
-                    '=',
-                    '!', # Unary op can trigger regex.
-    ]
-    op_string = '|'.join([re.escape(z) for z in op_table])
-    op_pattern = re.compile(op_string)
-
+    #@+node:ekr.20161105140842.5: *3* js_i.scan_line (rewritten)
     def scan_line(self, s, prev_state):
         '''
-        Update the scan state at the *end* of the line by scanning all of s.
+        Update the scan state at the *end* of the line.
+        Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
+        
+        This code uses JsLex to scan the tokens, which scans strings and regexs properly.
 
-        Distinguishing the the start of a regex from a div operator is tricky:
-        http://stackoverflow.com/questions/4726295/
-        http://stackoverflow.com/questions/5519596/
-        (, [, {, ;, and binops can only be followed by a regexp.
-        ), ], }, ids, strings and numbers can only be followed by a div operator.
+        This code also handles *partial* tokens: tokens continued from the
+        previous line or continued to the next line.
         '''
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
-        # div: '/' is an operator. regex: '/' starts a regex.
-        expect = None # (None, 'regex', 'div')
-        i = 0
-        while i < len(s):
-            assert expect is None, expect
-            progress = i
-            ch, s2 = s[i], s[i:i+2]
-            ### if "'function'" in s: g.trace(f"context: {context!r:5} ch: {ch!r}")
-            if context == '/*':
-                if s2 == '*/':
-                    i += 2
-                    context = ''
-                    expect = 'div'
-                else:
-                    i += 1 # Eat the next comment char.
-            elif context:
-                assert context in ('"', "'", '`'), repr(context)
-                    # #651: support back tick
-                if ch == '\\':
-                    i += 2
-                elif context == ch:
-                    i += 1
-                    context = '' # End the string.
-                    expect = 'regex'
-                else:
-                    i += 1 # Eat the string character.
-            elif s2 == '//':
-                break # The single-line comment ends the line.
-            elif s2 == '/*':
-                # Start a comment.
-                i += 2
+        # Scan tokens, updating context and counts.
+        prev_val = None
+        for kind, val in JsLexer().lex(s):
+            # g.trace(f"context: {context:2} kind: {kind:10} val: {val!r}")
+            if context:
+                if context in ('"', "'") and kind in ('other', 'punct') and val == context:
+                    context = None
+                elif context == '/*' and kind in ('other', 'punct') and val == '*/':
+                    context = None
+            elif kind == 'other' and val in ('"', "'"):
+                context = val
+            elif kind == 'punct' and val == '*' and prev_val == '/':
                 context = '/*'
-            elif ch in ('"', "'", '`',):
-                # #651: support back tick
-                # Start a string.
-                i += 1
-                context = ch
-            elif ch in '_$' or ch.isalpha():
-                # An identifier. Only *approximately* correct.
-                # http://stackoverflow.com/questions/1661197/
-                i += 1
-                while i < len(s) and (s[i] in '_$' or s[i].isalnum()):
-                    i += 1
-                expect = 'div'
-            elif ch.isdigit():
-                i += 1
-                # Only *approximately* correct.
-                while i < len(s) and (s[i] in '.+-e' or s[i].isdigit()):
-                    i += 1
-                # This should work even if the scan ends with '+' or '-'
-                expect = 'div'
-            elif ch in '?:':
-                i += 1
-                expect = 'regex'
-            elif ch in ';,':
-                i += 1
-                expect = 'regex'
-            elif ch == '\\':
-                i += 2
-            elif ch == '{':
-                i += 1
-                curlies += 1
-                expect = 'regex'
-            elif ch == '}':
-                i += 1
-                curlies -= 1
-                expect = 'div'
-            elif ch == '(':
-                i += 1
-                parens += 1
-                expect = 'regex'
-            elif ch == ')':
-                i += 1
-                parens -= 1
-                expect = 'div'
-            elif ch == '[':
-                i += 1
-                expect = 'regex'
-            elif ch == ']':
-                i += 1
-                expect = 'div'
-            else:
-                m = self.op_pattern.match(s, i)
-                if m:
-                    i += len(m.group(0))
-                    expect = 'regex'
-                elif ch == '/':
-                    g.trace('no lookahead for "/"', repr(s))
-                    assert False, i
-                else:
-                    i += 1
-                    expect = None
-            # Look for a '/' in the expected context.
-            if expect:
-                assert not context, repr(context)
-                i = g.skip_ws(s, i)
-                # Careful // is the comment operator.
-                if g.match(s, i, '//'):
-                    break
-                elif g.match(s, i, '/'):
-                    if expect == 'div':
-                        i += 1
-                    else:
-                        assert expect == 'regex', repr(expect)
-                        i = self.skip_regex(s,i)
-            expect = None
-            assert progress < i
+            elif kind == 'punct':
+                if val == '*' and prev_val == '/':
+                    context = '/*'
+                elif val == '{':
+                    curlies += 1
+                elif val == '}':
+                    curlies -= 1
+                elif val == '(':
+                    parens += 1
+                elif val == ')':
+                    parens -= 1
+            prev_val = val
         d = {'context':context, 'curlies':curlies, 'parens':parens}
         state = JS_ScanState(d)
         return state
-    #@+node:ekr.20161011045426.1: *4* js_i.skip_regex
-    def skip_regex(self, s, i):
-        '''Skip an *actual* regex /'''
-        assert s[i] == '/', (i, repr(s))
-        i1 = i
-        i += 1
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            if ch == '\\':
-                i += 2
-            elif ch == '/':
-                i += 1
-                if i < len(s) and s[i] in 'igm':
-                    i += 1 # Skip modifier.
-                return i
-            else:
-                i += 1
-            assert progress < i
-        return i1 # Don't skip ahead.
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
     func_patterns = [
-        re.compile(r'\)\s*=>\s*\{'),
-        # re.compile(r'\bclass\b'),
-        re.compile(r'^\s*class\b'),
-        # re.compile(r'\bfunction\b'),
-        # re.compile(r'^\s*(^function\b)|([(]+\s*function\b)|(.*?[(=,]\s*\(?\s*function\b)')
-        re.compile(r'^\s*(^function\b)|(.*?[(=,]\s*\(?\s*function\b)')
+        re.compile(r'.*?\)\s*=>\s*\{'),
+        re.compile(r'\s*class\b'),
+        re.compile(r'\s*function\b'),
+        re.compile(r'.*?[(=,]\s*function\b'),
     ]
 
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
         if new_state.level() <= prev_state.level():
             return False
-        # #1481. Partially repeat the logic of js_i.scan_line.
-        #        Don't look for patterns inside strings.
-        #        This could fail if one of the patterns is in a regex.
-        in_string = False
-        line = lines[i]
-        for i, ch in enumerate(line):
-            if in_string and ch == in_string:
-                in_string = None
-            elif in_string:
-                pass
-            elif ch in '"`\'':
-                in_string = ch
-            else:
-                for pattern in self.func_patterns:
-                    if pattern.match(line[i:]) is not None:
-                        ### g.trace(repr(line))
-                        return True
+        # Remove strings and regexs from the line before applying the patterns.
+        cleaned_line = []
+        for kind, val in JsLexer().lex(lines[i]):
+            if kind not in ('string', 'regex'):
+                cleaned_line.append(val)
+        # Search for any of the patterns.
+        line = ''.join(cleaned_line)
+        for pattern in self.func_patterns:
+            if pattern.match(line) is not None:
+                return True
         return False
     #@+node:ekr.20200131193217.1: *3* js_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
@@ -452,7 +318,7 @@ class JS_ScanState:
 
     #@-others
 
-#@+node:ekr.20200131110322.2: ** class JsLexer
+#@+node:ekr.20200131110322.2: ** JsLexer...
 # JsLex: a lexer for Javascript
 #
 # Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
@@ -484,7 +350,7 @@ class Lexer:
                 groupid = "t%d" % tok.id
                 self.toks[groupid] = tok
                 parts.append("(?P<%s>%s)" % (groupid, tok.regex))
-            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE|re.UNICODE)
+            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE) # |re.UNICODE)
         self.state = first
 
     #@+node:ekr.20200131110322.9: *4* Lexer.lex
@@ -565,13 +431,17 @@ class JsLexer(Lexer):
                                 void while with
                                 """, suffix=r"\b"), next='reg'),
         Tok("reserved",     literals("null true false", suffix=r"\b"), next='div'),
-        # EKR: This works because all patterns are compiled with the re.UNICODE flag.
-        Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
-        # Old...
-        # Tok("id",           r"""
-                            # ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
-                            # ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
-                            # """, next='div'),
+        #
+        # EKR: This would work if patterns were compiled with the re.UNICODE flag.
+        #      However, \w is not the same as valid JS characters.
+        #      In any case, the JS importer doesn't need to handle id's carefully.
+        #
+        # Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
+        #
+        Tok("id",           r"""
+                            ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
+                            ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
+                            """, next='div'),
         Tok("hnum",         r"0[xX][0-9a-fA-F]+", next='div'),
         Tok("onum",         r"0[0-7]+"),
         Tok("dnum",         r"""
@@ -645,39 +515,6 @@ class JsLexer(Lexer):
 
 
     #@-others
-#@+node:ekr.20200131110608.12: *3* function: js_to_c_for_gettext (Will never be used)
-def js_to_c_for_gettext(js):
-    """Convert the Javascript source `js` into something resembling C for xgettext.
-
-    What actually happens is that all the regex literals are replaced with
-    "REGEX".
-
-    """
-    def escape_quotes(m):
-        """Used in a regex to properly escape double quotes."""
-        s = m.group(0)
-        return r'\"' if s == '"' else s
-
-    lexer = JsLexer()
-    c = []
-    for name, tok in lexer.lex(js):
-        if name == 'regex':
-            # C doesn't grok regexes, and they aren't needed for gettext,
-            # so just output a string instead.
-            tok = '"REGEX"'
-        elif name == 'string':
-            # C doesn't have single-quoted strings, so make all strings
-            # double-quoted.
-            if tok.startswith("'"):
-                guts = re.sub(r"\\.|.", escape_quotes, tok[1:-1])
-                tok = '"' + guts + '"'
-        elif name == 'id':
-            # C can't deal with Unicode escapes in identifiers.  We don't
-            # need them for gettext anyway, so replace them with something
-            # innocuous
-            tok = tok.replace("\\", "U")
-        c.append(tok)
-    return ''.join(c)
 #@+node:ekr.20200131070055.1: ** class TestJSImporter
 class TestJSImporter(unittest.TestCase):
     #@+others
@@ -723,17 +560,71 @@ class TestJSImporter(unittest.TestCase):
     def test_JsLex(self):
         
         table = (
-            ('id', ('f_Á', '$', 'A1', 'abc')),
+            ('id', ('f_', '$', 'A1', 'abc')),
+            ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
             ('keyword', ('async', 'await', 'if')),
             ('punct', ('(', ')', '{', '}', ',', ':', ';')),
-            # Fails
-            # ('num', ('9', '2')),
+            # ('num', ('9', '2')),  # This test doesn't matter at present.
         )
         for kind, data in table:
             for contents in data:
-                lexer = JsLexer()
-                for name, tok in lexer.lex(contents):
-                    assert name == kind, f"{name!s} {kind!s} {tok!r} {contents}"
+                for name, tok in JsLexer().lex(contents):
+                    assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
+                    # print(f"{kind!s:10} {tok!r:10}")
+                        
+    #@+node:ekr.20200203051839.1: *3* test_starts_block
+    def test_starts_block(self):
+
+        table = (
+            (1, 'xx) => {}'),
+            (1, 'class c1'),
+            (1, 'function f1'),
+            (1, 'xx(function f2'),
+            (1, 'xx = function f3'),
+            (1, 'xx, function f4'),
+            (0, 'a = "function"'),
+            (0, 'a = /function/'),
+        )
+        for expected, line in table:
+            x = JS_Importer(None)
+            lines = [line]
+            new_state = JS_ScanState()
+            new_state.curlies += 1
+            prev_state = JS_ScanState()
+            results = x.starts_block(0, lines, new_state, prev_state)
+            # if expected != results: x.scan_line(line, prev_state
+            assert expected == results, f"expected: {expected} got: {int(results)} {line!r}\n"
+    #@+node:ekr.20200203060718.1: *3* test_scan_line
+    def test_scan_line(self):
+
+        table = (
+            # result           s
+            ( (0, 0, '"'),     r'"string'),
+            ( (0, 0, '/*'),    r'/* abc'),
+            ( (0, 0, ''),      r'a + b // /*'),
+            ( (0, 1, ''),      r'(function'),
+            ( (1, 1, ''),      r'(function(a) {'),
+            ( (0, 0, ''),      r'var x = /abc/'),
+            ( (0, 0, ''),      r'var x = /a"c/'),
+            ( (0, 0, ''),      r'var x = /a\//'),
+            ( (0, 0, ''),      r'var x = /a\//'),
+            # ( (0, 0, ''),      r"console.log(/'\d+'/)"),
+            ( (0, 1, ''),      r'var x = (0,'),
+        )
+        for result, s in table:
+            importer = JS_Importer(None) ### c.importCommands)
+            prev_state = JS_ScanState()
+            new_state = importer.scan_line(s, prev_state)
+            curlies, parens, context = result
+            ok = (
+                new_state.curlies == curlies and
+                new_state.parens == parens and
+                new_state.context == context)
+            assert ok, (
+                    f"\n"
+                    f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
+                    f"new_state: {new_state}\n"
+                    f"        s: {s!r}")
     #@-others
 #@-others
 importer_dict = {
