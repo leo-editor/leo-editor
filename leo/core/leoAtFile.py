@@ -1450,7 +1450,7 @@ class AtFile:
         """A factory returning a writer function for the given kind of @auto directive."""
         at = self
         d = g.app.atAutoWritersDict
-        for key in d.keys():
+        for key in d:
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
