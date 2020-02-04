@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import time
+import unittest
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -1204,7 +1205,7 @@ class AtFile:
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
-    
+
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''
@@ -3070,7 +3071,8 @@ class AtFile:
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
-                if os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                # Fix bug # #1469: make sure k still exists.
+                if os.path.exists(k) and os.path.samefile(k, fn) and p.h in d.get(k, set()):
                     d[fn] = d[k]
                     if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
@@ -3679,7 +3681,55 @@ class FastAtRead:
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
+#@+node:ekr.20200204092455.1: ** class TestAtFile
+class TestAtFile (unittest.TestCase):
+    
+    filename = r'c:\test\tree_F1.leo'
+
+    #@+others
+    #@+node:ekr.20200204095726.1: *3* TestAtFile.bridge
+    def bridge(self):
+        import leo.core.leoBridge as leoBridge
+        return leoBridge.controller(gui='nullGui',
+            loadPlugins=False,
+            readSettings=False,
+            silent=False,
+            verbose=False)
+    #@+node:ekr.20200204095837.1: *3* TestAtFile.tree_F1
+    def tree_F1(self, bridge):
+        """
+            Simple one node tree with an @file matching name of the node
+        """
+        c = bridge.openLeoFile(self.filename)
+        p = c.rootPosition()
+        p.h = "@file 1"
+        p.b = "b_1"
+        return c
+    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
+    def test_save_after_external_file_rename(self):
+        """Test #1469."""
+        if 0: ### Not ready yet.
+            # Create a new outline with @file node and save it
+            bridge = self.bridge()
+            c = self.tree_F1(bridge)
+            c.save()
+            # Rename the @file node and save
+            p1 = c.rootPosition()
+            p1.h = "@file 1_renamed"
+            c.save()
+            # Remove the original "@file 1" from the disk
+            # self.tmpdir.join("1").remove()
+            # Change the @file contents, save and reopen the outline
+            p1.b = "b_1_changed"
+            c.save()
+            c.close()
+            c = bridge.openLeoFile(c.fileName())
+            p1 = c.rootPosition()
+            assert p1.b == "b_1_changed"
+    #@-others
 #@-others
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
