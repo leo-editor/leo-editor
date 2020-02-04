@@ -3698,25 +3698,7 @@ class TestAtFile (unittest.TestCase):
         )
     #@+node:ekr.20200204095837.1: *4* TestAtFile.create_test_tree
     def create_test_tree(self, bridge, filename):
-        """
-        Simple one node tree with an @file matching name of the node
-        """
-        # minimal_leo_file = f"""\
-    # <?xml version="1.0" encoding="utf-8"?>
-    # <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    # <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    # <leo_header file_format="2"/>
-    # <globals/>
-    # <preferences/>
-    # <find_panel_settings/>
-    # <vnodes>
-    # <v t="ekr.20200204101528.4"><vh>@file whatever</vh></v>
-    # </vnodes>
-    # <tnodes>
-    # </tnodes>
-    # </leo_file>
-    # """
-        # temp_file.write(minimal_leo_file)
+        """Return one node tree a single @file node."""
         c = bridge.openLeoFile(filename)
         p = c.rootPosition()
         p.h = "@file 1"
@@ -3740,7 +3722,6 @@ class TestAtFile (unittest.TestCase):
     def test_save_after_external_file_rename(self):
         """Test #1469."""
         import os
-       ###  with tempfile.TemporaryDirectory() as temp_dir:
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         temp_dir = self.temp_dir()
