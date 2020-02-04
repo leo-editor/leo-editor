@@ -8361,9 +8361,9 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 0:
-        test_node.deleteAllChildren()
 finally:
+    if 1:
+        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161224101046.1">@tabwidth -4

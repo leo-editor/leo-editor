@@ -17703,9 +17703,9 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 0:
-        test_node.deleteAllChildren()
 finally:
+    if 1:
+        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20200203073552.210: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
