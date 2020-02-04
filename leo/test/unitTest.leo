@@ -822,6 +822,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20161222064421.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -9870,7 +9871,7 @@ ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
         for newline in newlines:
             f.write(newline)
 
-\\-4.# This line should be included at the end of the class node.
+# This line should be included at the end of the class node.
 </t>
 <t tx="ekr.20200203073552.215">def retab(s, tabsize):
     return ''.join(pieces)
