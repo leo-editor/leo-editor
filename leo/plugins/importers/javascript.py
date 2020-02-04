@@ -180,16 +180,6 @@ class JS_Importer(Importer):
             prev_val = val
         d = {'context': context, 'curlies': curlies, 'parens': parens}
         state = JS_ScanState(d)
-        ###
-            # old_state = self.OLD_scan_line(s, prev_state)
-            # if old_state.context != state.context:
-                # g.trace(
-                    # f"\n"
-                    # f"   s: {s!r}\n"
-                    # f"prev: {prev_state}\n"
-                    # f" old: {old_state}\n"
-                    # f" new: {state}")
-                # raise ImportError
         return state
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
     func_patterns = [
