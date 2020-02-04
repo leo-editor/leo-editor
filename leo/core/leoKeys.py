@@ -1423,6 +1423,7 @@ class GetArg:
             self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
             return
+        # g.trace(char, stroke)
         if char == 'Escape':
             k.keyboardQuit()
         elif self.should_end(char, stroke):

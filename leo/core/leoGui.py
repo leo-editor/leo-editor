@@ -262,8 +262,7 @@ class LeoKeyEvent:
             stroke = g.KeyStroke(binding) if binding else None
         assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
         if 'keys' in g.app.debug:
-            print('LeoKeyEvent: binding: %s, stroke: %s, char: %r' % (
-                binding, stroke, char))
+            print(f"LeoKeyEvent: binding: {binding}, stroke: {stroke}, char: {char!r}")
         self.c = c
         self.char = char or ''
         self.event = event # New in Leo 4.11.
