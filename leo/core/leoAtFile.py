@@ -3683,24 +3683,48 @@ class FastAtRead:
     #@-others
 #@+node:ekr.20200204092455.1: ** class TestAtFile
 class TestAtFile (unittest.TestCase):
-    
-    filename = r'c:\test\tree_F1.leo'
 
     #@+others
-    #@+node:ekr.20200204095726.1: *3* TestAtFile.bridge
+    #@+node:ekr.20200204104247.1: *3* Helpers
+    #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
     def bridge(self):
+        """Return an instance of Leo's bridge."""
         import leo.core.leoBridge as leoBridge
         return leoBridge.controller(gui='nullGui',
             loadPlugins=False,
             readSettings=False,
-            silent=False,
-            verbose=False)
-    #@+node:ekr.20200204095837.1: *3* TestAtFile.tree_F1
-    def tree_F1(self, bridge):
+            silent=True,
+            verbose=False,
+        )
+    #@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
+    def temp_file(self):
+        """Create a temp file with the given name."""
+        import warnings
+        warnings.simplefilter("ignore")
+        import tempfile
+        return tempfile.NamedTemporaryFile(mode='w')
+    #@+node:ekr.20200204095837.1: *4* TestAtFile.create_test_tree
+    def create_test_tree(self, bridge, temp_file):
         """
-            Simple one node tree with an @file matching name of the node
+        Simple one node tree with an @file matching name of the node
         """
-        c = bridge.openLeoFile(self.filename)
+        minimal_leo_file = f"""\
+    <?xml version="1.0" encoding="utf-8"?>
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+    <leo_header file_format="2"/>
+    <globals/>
+    <preferences/>
+    <find_panel_settings/>
+    <vnodes>
+    <v t="ekr.20200204101528.4"><vh>@file whatever</vh></v>
+    </vnodes>
+    <tnodes>
+    </tnodes>
+    </leo_file>
+    """
+        temp_file.write(minimal_leo_file)
+        c = bridge.openLeoFile(temp_file.name)
         p = c.rootPosition()
         p.h = "@file 1"
         p.b = "b_1"
@@ -3708,24 +3732,24 @@ class TestAtFile (unittest.TestCase):
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
     def test_save_after_external_file_rename(self):
         """Test #1469."""
-        if 0: ### Not ready yet.
-            # Create a new outline with @file node and save it
-            bridge = self.bridge()
-            c = self.tree_F1(bridge)
-            c.save()
-            # Rename the @file node and save
-            p1 = c.rootPosition()
-            p1.h = "@file 1_renamed"
-            c.save()
-            # Remove the original "@file 1" from the disk
-            # self.tmpdir.join("1").remove()
-            # Change the @file contents, save and reopen the outline
-            p1.b = "b_1_changed"
-            c.save()
-            c.close()
-            c = bridge.openLeoFile(c.fileName())
-            p1 = c.rootPosition()
-            assert p1.b == "b_1_changed"
+        # Create a new outline with @file node and save it
+        bridge = self.bridge()
+        temp_file = self.temp_file()
+        c = self.create_test_tree(bridge, temp_file)
+        c.save()
+        # Rename the @file node and save
+        p1 = c.rootPosition()
+        p1.h = "@file 1_renamed"
+        c.save()
+        # Remove the original "@file 1" from the disk
+        # self.tmpdir.join("1").remove()
+        # Change the @file contents, save and reopen the outline
+        p1.b = "b_1_changed"
+        c.save()
+        c.close()
+        c = bridge.openLeoFile(c.fileName())
+        p1 = c.rootPosition()
+        assert p1.b == "b_1_changed\n", repr(p1.b)
     #@-others
 #@-others
 if __name__ == '__main__':
