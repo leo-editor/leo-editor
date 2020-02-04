@@ -3696,14 +3696,6 @@ class TestAtFile (unittest.TestCase):
             silent=True,
             verbose=False,
         )
-    #@+node:ekr.20200204095837.1: *4* TestAtFile.create_test_tree
-    def create_test_tree(self, bridge, filename):
-        """Return one node tree a single @file node."""
-        c = bridge.openLeoFile(filename)
-        p = c.rootPosition()
-        p.h = "@file 1"
-        p.b = "b_1"
-        return c
     #@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
     def temp_dir(self):
         """Create a temp file with the given name."""
@@ -3726,7 +3718,10 @@ class TestAtFile (unittest.TestCase):
         bridge = self.bridge()
         temp_dir = self.temp_dir()
         filename = f"{temp_dir.name}{os.sep}test_file.leo"
-        c = self.create_test_tree(bridge, filename)
+        c = bridge.openLeoFile(filename)
+        p = c.rootPosition()
+        p.h = '@file 1'
+        p.b = 'b1'
         c.save()
         # Rename the @file node and save
         p1 = c.rootPosition()
