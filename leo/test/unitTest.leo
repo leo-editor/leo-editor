@@ -822,7 +822,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4774"></v>
-<v t="ekr.20161222064421.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
