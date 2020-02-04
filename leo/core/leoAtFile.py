@@ -3696,6 +3696,39 @@ class TestAtFile (unittest.TestCase):
             silent=True,
             verbose=False,
         )
+    #@+node:ekr.20200204095837.1: *4* TestAtFile.create_test_tree
+    def create_test_tree(self, bridge, filename):
+        """
+        Simple one node tree with an @file matching name of the node
+        """
+        # minimal_leo_file = f"""\
+    # <?xml version="1.0" encoding="utf-8"?>
+    # <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+    # <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+    # <leo_header file_format="2"/>
+    # <globals/>
+    # <preferences/>
+    # <find_panel_settings/>
+    # <vnodes>
+    # <v t="ekr.20200204101528.4"><vh>@file whatever</vh></v>
+    # </vnodes>
+    # <tnodes>
+    # </tnodes>
+    # </leo_file>
+    # """
+        # temp_file.write(minimal_leo_file)
+        c = bridge.openLeoFile(filename)
+        p = c.rootPosition()
+        p.h = "@file 1"
+        p.b = "b_1"
+        return c
+    #@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
+    def temp_dir(self):
+        """Create a temp file with the given name."""
+        import warnings
+        warnings.simplefilter("ignore")
+        import tempfile
+        return tempfile.TemporaryDirectory()
     #@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
     def temp_file(self):
         """Create a temp file with the given name."""
@@ -3703,53 +3736,36 @@ class TestAtFile (unittest.TestCase):
         warnings.simplefilter("ignore")
         import tempfile
         return tempfile.NamedTemporaryFile(mode='w')
-    #@+node:ekr.20200204095837.1: *4* TestAtFile.create_test_tree
-    def create_test_tree(self, bridge, temp_file):
-        """
-        Simple one node tree with an @file matching name of the node
-        """
-        minimal_leo_file = f"""\
-    <?xml version="1.0" encoding="utf-8"?>
-    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    <leo_header file_format="2"/>
-    <globals/>
-    <preferences/>
-    <find_panel_settings/>
-    <vnodes>
-    <v t="ekr.20200204101528.4"><vh>@file whatever</vh></v>
-    </vnodes>
-    <tnodes>
-    </tnodes>
-    </leo_file>
-    """
-        temp_file.write(minimal_leo_file)
-        c = bridge.openLeoFile(temp_file.name)
-        p = c.rootPosition()
-        p.h = "@file 1"
-        p.b = "b_1"
-        return c
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
     def test_save_after_external_file_rename(self):
         """Test #1469."""
+        import os
+       ###  with tempfile.TemporaryDirectory() as temp_dir:
         # Create a new outline with @file node and save it
         bridge = self.bridge()
-        temp_file = self.temp_file()
-        c = self.create_test_tree(bridge, temp_file)
+        temp_dir = self.temp_dir()
+        filename = f"{temp_dir.name}{os.sep}test_file.leo"
+        c = self.create_test_tree(bridge, filename)
         c.save()
         # Rename the @file node and save
         p1 = c.rootPosition()
         p1.h = "@file 1_renamed"
         c.save()
         # Remove the original "@file 1" from the disk
-        # self.tmpdir.join("1").remove()
+        external_filename = f"{temp_dir.name}{os.sep}1"
+        assert os.path.exists(external_filename)
+        os.remove(external_filename)
+        assert not os.path.exists(external_filename)
         # Change the @file contents, save and reopen the outline
         p1.b = "b_1_changed"
         c.save()
         c.close()
         c = bridge.openLeoFile(c.fileName())
         p1 = c.rootPosition()
+        assert p1.h == "@file 1_renamed", repr(p1.h)
         assert p1.b == "b_1_changed\n", repr(p1.b)
+        # Delete the tempory directory.
+        del temp_dir
     #@-others
 #@-others
 if __name__ == '__main__':
