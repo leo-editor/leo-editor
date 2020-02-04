@@ -154,14 +154,19 @@ class JS_Importer(Importer):
             # g.trace(f"context: {context:2} kind: {kind:10} val: {val!r}")
             if context:
                 if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                    context = None
-                elif context == '/*' and kind in ('other', 'punct') and val == '*/':
-                    context = None
-            elif kind == 'other' and val in ('"', "'"):
+                    context = ''
+                elif (
+                    context == '/*'
+                    and kind in ('other', 'punct')
+                    and prev_val == '*'
+                    and val == '/'
+                ):
+                    context = ''
+            elif kind in ('other', 'punct') and val in ('"', "'"):
                 context = val
-            elif kind == 'punct' and val == '*' and prev_val == '/':
+            elif kind in ('other', 'punct') and val == '*' and prev_val == '/':
                 context = '/*'
-            elif kind == 'punct':
+            elif kind in ('other', 'punct'):
                 if val == '*' and prev_val == '/':
                     context = '/*'
                 elif val == '{':
@@ -173,8 +178,18 @@ class JS_Importer(Importer):
                 elif val == ')':
                     parens -= 1
             prev_val = val
-        d = {'context':context, 'curlies':curlies, 'parens':parens}
+        d = {'context': context, 'curlies': curlies, 'parens': parens}
         state = JS_ScanState(d)
+        ###
+            # old_state = self.OLD_scan_line(s, prev_state)
+            # if old_state.context != state.context:
+                # g.trace(
+                    # f"\n"
+                    # f"   s: {s!r}\n"
+                    # f"prev: {prev_state}\n"
+                    # f" old: {old_state}\n"
+                    # f" new: {state}")
+                # raise ImportError
         return state
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
     func_patterns = [
@@ -599,22 +614,24 @@ class TestJSImporter(unittest.TestCase):
     def test_scan_line(self):
 
         table = (
-            # result           s
-            ( (0, 0, '"'),     r'"string'),
-            ( (0, 0, '/*'),    r'/* abc'),
-            ( (0, 0, ''),      r'a + b // /*'),
-            ( (0, 1, ''),      r'(function'),
-            ( (1, 1, ''),      r'(function(a) {'),
-            ( (0, 0, ''),      r'var x = /abc/'),
-            ( (0, 0, ''),      r'var x = /a"c/'),
-            ( (0, 0, ''),      r'var x = /a\//'),
-            ( (0, 0, ''),      r'var x = /a\//'),
-            # ( (0, 0, ''),      r"console.log(/'\d+'/)"),
-            ( (0, 1, ''),      r'var x = (0,'),
+            # result        prev_context    s
+            ( (0, 0, '"'),  "",             r'"string'),
+            ( (0, 0, '/*'), "",             r'/* line 1'),
+            ( (0, 0, '/*'), "/*",           r'line 2'), # New.
+            ( (0, 0, ''),   "/*",           r'line 3 */'), # New.
+            ( (0, 0, ''),   "",             r'a + b // /*'),
+            ( (0, 1, ''),   "",             r'(function'),
+            ( (1, 1, ''),   "",             r'(function(a) {'),
+            ( (0, 0, ''),   "",             r'var x = /abc/'),
+            ( (0, 0, ''),   "",             r'var x = /a"c/'),
+            ( (0, 0, ''),   "",             r'var x = /a\//'),
+            ( (0, 0, ''),   "",             r'var x = /a\//'),
+            ( (0, 1, ''),   "",             r'var x = (0,'),
         )
-        for result, s in table:
+        for result, prev_context, s in table:
             importer = JS_Importer(None) ### c.importCommands)
             prev_state = JS_ScanState()
+            prev_state.context = prev_context
             new_state = importer.scan_line(s, prev_state)
             curlies, parens, context = result
             ok = (
