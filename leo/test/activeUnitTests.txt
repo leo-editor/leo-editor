@@ -17703,11 +17703,11 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 0:
-        test_node.deleteAllChildren()
 finally:
+    if 1:
+        test_node.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20191219051321.68: *7* @@file @test python top-level later decl
+#@+node:ekr.20200203073552.210: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -17715,21 +17715,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20191219051321.69: *8* Declarations
+#@+node:ekr.20200203073552.211: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20191219051321.70: *8* merge_value
+#@+node:ekr.20200203073552.212: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20191219051321.71: *8* class MainDisplay(object)
+#@+node:ekr.20200203073552.213: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20191219051321.72: *9* save_file
+#@+node:ekr.20200203073552.214: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -17737,7 +17737,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20191219051321.73: *8* retab
+#@+node:ekr.20200203073552.215: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -20555,54 +20555,6 @@ for s, expected in table:
     # print('%20s ==> %s' % (s, x.clean_headline(s)))
     got = x.clean_headline(s)
     assert got == expected
-#@+node:ekr.20170407065952.1: *5* @test importers.javascript.op_pattern
-import importlib
-import leo.plugins.importers.javascript as js
-importlib.reload(js)
-importer = js.JS_Importer(c.importCommands)
-pattern = importer.op_pattern
-table = (
-    '++', '--', '&&', '||', '~', '>>', '<<', 
-    # '>>=',  '<<=',
-    # '>>>', '>>>=',
-    # '<<<', '<<<=',
-    '<', '<=', '>', '>=',
-    '+', '+=', '-', '-=',
-    '/', '/=', '*', '*=', 
-    '%', '%=', '&', '&=',
-    '|', '|=',
-)
-for s in table:
-    m = pattern.match(s)
-    assert m, s
-    assert m.group(0) == s, (s, m.group(0))
-#@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
-import importlib
-import leo.plugins.importers.javascript as js
-importlib.reload(js)
-table = (
-    # base  result          s
-    (None, (0, 0, '/*'),    r'/* abc'),
-    (None, (0, 0, ''),      r'a + b // /*'),
-    (None, (0, 1, ''),      r'(function'),
-    (None, (1, 1, ''),      r'(function(a) {'),
-    (None, (0, 0, ''),      r'var x = /abc/'),
-    (None, (0, 0, ''),      r'var x = /a"c/'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
-    (None, (0, 1, ''),      r'var x = (0,'),
-)
-for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands)
-    prev_state = js.JS_ScanState()
-    new_state = importer.scan_line(s, prev_state)
-    curlies, parens, context = result
-    ok = (
-        new_state.curlies == curlies and
-        new_state.parens == parens and
-        new_state.context == context)
-    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
 #@+node:ekr.20181020064529.1: *5* @test importers.markdown.is_hash
 import leo.plugins.importers.markdown as markdown
 if 0: # Preamble.
