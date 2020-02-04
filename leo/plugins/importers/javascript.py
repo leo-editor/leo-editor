@@ -320,6 +320,7 @@ class JS_ScanState:
 
 #@+node:ekr.20200131110322.2: ** JsLexer...
 # JsLex: a lexer for Javascript
+# Written by Ned Batchelder. Used by permission.
 #
 # Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
 # For details: https://bitbucket.org/ned/jslex/src/default/NOTICE.txt
