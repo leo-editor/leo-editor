@@ -148,7 +148,7 @@ class OpmlController:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
+        # self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
         self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
 
     #@+node:ekr.20060914163456: *3* oc.createVnodes & helpers
@@ -404,7 +404,7 @@ class PutToOPML:
         self.opml_write_leo_details = True
         self.opml_write_leo_globals_attributes = True
         self.opml_write_body_text = True
-        self.opml_write_ua_attributes = True
+        self.opml_write_uAs = True
         self.opml_expand_ua_dictionary = True
         self.opml_skip_ua_dictionary_blanks = True
         for ivar in (
@@ -413,11 +413,14 @@ class PutToOPML:
             'opml_write_leo_details',
             'opml_write_leo_globals_attributes',
             'opml_write_body_text',
-            'opml_write_ua_attributes',
+            'opml_write_uAs',
             'opml_expand_ua_dictionary',
             'opml_skip_ua_dictionary_blanks',
         ):
-            setattr(self, ivar, c.config.getBool(ivar))
+            val = c.config.getBool(ivar)
+            if val in (True, False):
+                g.trace(ivar, val)
+                setattr(self, ivar, val)
     #@+node:ekr.20141020112451.18337: *3* putAll
     def putAll(self):
         '''
@@ -488,32 +491,35 @@ class PutToOPML:
     #@+node:ekr.20060919172012.6: *3* putOPMLNode
     def putOPMLNode(self, p):
 
-        # indent = ' ' * (4 * p.level()) # Always use 4-space indents.
         indent = ''
         body = p.bodyString() or ''; head = p.headString() or ''
-        attrFormat = ' %s="%s"'
-        self.put('\n%s<outline' % indent)
-        if self.opml_write_leo_details: # Put leo-specific attributes.
+        self.put(f'\n{indent}<outline')
+        head_s = self.attributeEscape(head)
+        self.put(f' text="{head_s}"')
+        if self.opml_write_leo_details:
+            # Put leo-specific attributes.
             for name, val in (
                 ('leo:v', p.v.fileIndex),
                 ('leo:a', self.aAttributes(p)),
-                # ('leo:tnodeList',self.tnodeListAttributes(p)),
             ):
-                if val: self.put(attrFormat % (name, val))
+                if val:
+                    self.put(f' {name}="{val}"')
             data = self.uAAttributes(p)
             if data:
+                # g.printObj(data, tag=f'uAs for {p.h}')
                 for name in list(data.keys()):
                     val = data.get(name)
-                    self.put(attrFormat % (name, val))
-        self.put(attrFormat % ('text', self.attributeEscape(head)))
+                    self.put(f' {name}="{val}"')
         closed = False
         if body and self.opml_write_body_text:
             if self.opml_use_outline_elements:
                 self.put('>')
-                self.put('\n%s<leo:body>%s\n</leo:body>' % (indent, xml.sax.saxutils.escape(body)))
+                body_s = xml.sax.saxutils.escape(body)
+                self.put(f'\n{indent}<leo:body>{body_s}</leo:body>')
                 closed = True
             else:
-                self.put(attrFormat % ('leo:body', self.attributeEscape(body)))
+                body_s = self.attributeEscape(body)
+                self.put(f' leo:body="{body_s}"')
         if p.hasChildren():
             if not closed:
                 self.put('>')
@@ -523,7 +529,7 @@ class PutToOPML:
         if closed:
             self.put('\n%s</outline>' % indent)
         else:
-            self.put('/>')
+            self.put(' />')
     #@+node:ekr.20060919172012.7: *4* attributeEscape
     def attributeEscape(self, s):
         # Unlike xml.sax.saxutils.escape, replace " by &quot; and replace newlines by character reference.
@@ -565,13 +571,12 @@ class PutToOPML:
     def uAAttributes(self, p):
         """write unknownAttributes with various levels of expansion"""
         data = {}
-        if self.opml_write_ua_attributes and hasattr(p.v, 'unknownAttributes'):
-            # for uak, uav in p.v.unknownAttributes.iteritems():
+        # g.trace(self.opml_write_uAs, getattr(p.v, 'unknownAttributes', None))
+        if self.opml_write_uAs and hasattr(p.v, 'unknownAttributes'):
             d = p.u
             for uak in list(d.keys()):
                 uav = d.get(uak)
                 if self.opml_expand_ua_dictionary and isinstance(uav, dict):
-                    # for uakc, uavc in uav.iteritems():
                     for uakc in list(uav.keys()):
                         uavc = uav.get(uakc)
                         if str(uavc) != '' or not self.opml_skip_ua_dictionary_blanks:
