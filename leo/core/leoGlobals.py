@@ -957,7 +957,7 @@ class KeyStroke:
         if s == 'BackSpace':
             return False
         return True
-    #@+node:ekr.20180511092713.1: *4* ks.isNumPadKey, ks.isPlainNumPad & ks.removeNumPadModier
+    #@+node:ekr.20180511092713.1: *4* ks.isNumPadKey, ks.isPlainNumPad & ks.removeNumPadModifier
     def isNumPadKey(self):
         return self.s.find('Keypad+') > -1
 
