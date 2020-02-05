@@ -105,27 +105,27 @@ class BridgeController:
             return
         #@+<< initLeo imports >>
         #@+node:ekr.20070227093629.1: *4* << initLeo imports >> initLeo (leoBridge)
-        # Import leoGlobals, but do NOT set g.
         try:
-            import leo.core.leoGlobals as leoGlobals
+            # #1472: Simplify import of g
+            import leo.core.leoGlobals as g
+            self.g = g
         except ImportError:
             print("Error importing leoGlobals.py")
+        #
         # Create the application object.
         try:
-            leoGlobals.in_bridge = True
+            g.in_bridge = True
                 # Tell leoApp.createDefaultGui not to create a gui.
                 # This module will create the gui later.
             import leo.core.leoApp as leoApp
-            leoGlobals.app = leoApp.LeoApp()
+            g.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
-        # NOW we can set g.
-        self.g = g = leoGlobals
-        assert(g.app)
         g.app.leoID = None
         if self.tracePlugins:
             g.app.debug.append('plugins')
         g.app.silentMode = self.silentMode
+        #
         # Create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
@@ -139,9 +139,6 @@ class BridgeController:
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback; traceback.print_exc()
-        #
-        # Set leoGlobals.g here, rather than in leoGlobals.
-        leoGlobals.g = leoGlobals
         #@-<< initLeo imports >>
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
