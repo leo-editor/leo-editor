@@ -1887,22 +1887,17 @@ class RecursiveImportController:
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return
-        if self.kind == '@auto':
-            p = parent.insertAsLastChild()
-            p.v.h = path.replace('\\', '/')
-            p.clearDirty()
-        else:
-            c.importCommands.importFilesCommand(
-                files=[path],
-                # force_at_others = self.force_at_others, #tag:no-longer-used
-                parent=parent,
-                redrawFlag=False,
-                shortFn=True,
-                treeType='@file', # '@auto','@clean','@nosent' cause problems.
-            )
-            p = parent.lastChild()
-            p.h = self.kind + p.h[5:]
-                # Bug fix 2017/10/27: honor the requested kind.
+        # #1484: Use this for @auto as well.
+        c.importCommands.importFilesCommand(
+            files=[path],
+            parent=parent,
+            redrawFlag=False,
+            shortFn=True,
+            treeType='@file', # '@auto','@clean','@nosent' cause problems.
+        )
+        p = parent.lastChild()
+        p.h = self.kind + p.h[5:]
+            # Bug fix 2017/10/27: honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
