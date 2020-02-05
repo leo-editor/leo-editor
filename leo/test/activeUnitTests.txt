@@ -800,6 +800,20 @@ assert not p.isDirty(),p.h # Do not ignore this failure!
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
+#@+node:ekr.20200205065605.1: *4* @test @asis: @@ in headline
+if g.app.isExternalUnitTest:
+    self.skipTest('Not for external tests: uses @<file> node.')
+h = '@asis unittest/at-asis-test2.txt'
+p = g.findNodeAnywhere(c,h)
+assert p, h
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'@@eggs')
+)
+assert not p.isDirty(),p.h # Do not ignore this failure!
+for p2,h2 in table:
+    assert p2.h == h2
+    assert len(p2.b) > 10
 #@+node:ekr.20090627070131.4971: *4* @test @auto (newlines at end of nodes)
 c.testManager.runAtFileTest(p)
 #@+node:ekr.20090627070131.4975: *5* #@auto

@@ -1289,17 +1289,25 @@ class AtFile:
     def writeAsisNode(self, p):
         '''Write the p's node to an @asis file.'''
         at = self
+        
+        def put(s):
+            """Append s to self.output_list."""
+            # #1480: Avoid calling at.os().
+            s = g.toUnicode(s, at.encoding, reportErrors=True)
+            at.outputList.append(s)
+
         # Write the headline only if it starts with '@@'.
         s = p.h
         if g.match(s, 0, "@@"):
             s = s[2:]
             if s:
-                at.outputFile.write(s)
+                put('\n') # Experimental.
+                put(s)
+                put('\n')
         # Write the body.
         s = p.b
         if s:
-            s = g.toEncodedString(s, at.encoding, reportErrors=True)
-            at.outputStringWithLineEndings(s)
+            put(s)
     #@+node:ekr.20041005105605.144: *6* at.write
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
@@ -2448,7 +2456,6 @@ class AtFile:
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
-    # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
     def oblank(self):
         self.os(' ')
@@ -2470,7 +2477,7 @@ class AtFile:
     #@+node:ekr.20041005105605.204: *6* at.os
     def os(self, s):
         """
-        Write a string to the output file or stream.
+        Append a string to at.outputList.
 
         All output produced by leoAtFile module goes here.
         """
