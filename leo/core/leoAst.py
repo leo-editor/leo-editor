@@ -2389,6 +2389,14 @@ class TestTOG (BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227145620.1: *4* Miscellaneous...
+    #@+node:ekr.20200206041753.1: *5* test_comment_in_set_links
+    def test_comment_in_set_links(self):
+        contents = """
+    def spam():
+        # comment
+        pass
+    """
+        self.make_data(contents)
     #@+node:ekr.20200112065944.1: *5* test_ellipsis_1
     def test_ellipsis_1(self):
         contents = """
@@ -2584,6 +2592,12 @@ class TestTOG (BaseTest):
     # f3(arg, *args, **kwargs)
     # f4(a='a', *args, **kwargs)
         self.make_data(contents)
+    #@+node:ekr.20200206040732.1: *5* test_Delete
+    def test_Delete(self):
+
+        # Coverage test for spaces
+        contents = """del x"""
+        self.make_data(contents)
     #@+node:ekr.20200111175335.1: *5* test_For
     def test_For(self):
         contents = r"""\
@@ -2604,6 +2618,12 @@ class TestTOG (BaseTest):
     #@+node:ekr.20200111200424.1: *5* test_ImportFrom
     def test_ImportFrom(self):
         contents = r"""from a import b as c"""
+        self.make_data(contents)
+    #@+node:ekr.20200206040424.1: *5* test_Lambda
+    def test_Lambda(self):
+
+        # Coverage test for spaces
+        contents = """f = lambda x: x"""
         self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
@@ -2639,6 +2659,16 @@ class TestTOG (BaseTest):
         print('c')
     """
         self.make_data(contents)
+    #@+node:ekr.20200206041336.1: *5* test_While
+    def test_While(self):
+        contents = r"""\
+    while f():
+        print('continue')
+    else:
+        print('done')
+    """
+        self.make_data(contents)
+
     #@+node:ekr.20191227052446.48: *5* test_With
     def test_With(self):
         # leoGlobals.py, line 1785.
@@ -2648,6 +2678,13 @@ class TestTOG (BaseTest):
     """
         self.make_data(contents)
 
+    #@+node:ekr.20200206041611.1: *5* test_Yield
+    def test_Yield(self):
+        contents = r"""\
+    def gen_test():
+        yield self.gen_token('newline', '\n')
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.49: *5* test_YieldFrom
     def test_YieldFrom(self):
         # Line 1046, leoAst.py
@@ -3142,7 +3179,7 @@ class TokenOrderGenerator:
         while old_px < px:
             token = tokens[old_px]
             old_px += 1
-            if token.kind in ('newline', 'nl'):
+            if token.kind in ('comment', 'newline', 'nl'):
                 self.set_links(node, token)
         #
         # Step three: Set links in the found token.
@@ -3156,7 +3193,12 @@ class TokenOrderGenerator:
 
     def set_links(self, node, token):
         """Make two-way links between token and the given node."""
-        # Don't bother assigning comma, parens, ws and endtoken tokens.
+        # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
+        if token.kind == 'comment':
+            # Append the comment to node.comment_list.
+            comment_list = getattr(node, 'comment_list', [])
+            node.comment_list = comment_list + [token]
+            return
         if token.kind in ('endmarker', 'ws'):
             return
         if token.kind == 'op' and token.value in ',()':
@@ -3180,11 +3222,6 @@ class TokenOrderGenerator:
             # Set an *auxilliary* link for the split/join logic.
             # Do *not* set token.node!
             token.statement_node = self.last_statement_node
-            return
-        if token.kind == 'comment':
-            # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])
-            node.comment_list = comment_list + [token]
             return
         if is_significant_token(token):
             # Link the token to the ast node.
