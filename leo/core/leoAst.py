@@ -1513,6 +1513,14 @@ class TestFstringify (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
+    def test_call_with_attribute(self):
+
+        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
+        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')\n"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200122035055.1: *4* test_call_with_comments
     def test_call_with_comments(self):
         
@@ -1535,14 +1543,33 @@ class TestFstringify (BaseTest):
         expected = g.adjustTripleString(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
-    def test_call_with_attribute(self):
+    #@+node:ekr.20200206173126.1: *4* test_cant_convert_1
+    def test_cant_convert_1(self):
 
-        contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
-        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')\n"""
+        contents = """ret = '[%s]' % ','.join([show(z) for z in arg])"""
+        expected = contents + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200206173628.1: *4* test_cant_convert_2
+    def test_cant_convert_2(self):
+
+        contents = """print('Test %s' % 'one')"""
+        expected = contents + '\n'
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200206173725.1: *4* test_cant_convert_3
+    def test_cant_convert_3(self):
+
+        contents = """
+    g.es('%s blah blah' % (
+        g.angleBrackets('*')))
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200101060616.1: *4* test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -1553,6 +1580,14 @@ class TestFstringify (BaseTest):
             """g.trace(f'--trace-binding: {c.shortFileName():20} """
             """binds {binding} to {d.get(binding) or []}')\n""")
         contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200206174208.1: *4* test_function_call
+    def test_function_call(self):
+
+        contents = """mods = ''.join(['%s+' % z.capitalize() for z in self.mods])"""
+        contents, tokens, tree = self.make_data(contents)
+        expected = """mods = ''.join([f'{z.capitalize()}+' for z in self.mods])\n"""
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106085608.1: *4* test_ImportFrom
